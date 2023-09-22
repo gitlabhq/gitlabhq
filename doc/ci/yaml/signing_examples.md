@@ -169,7 +169,7 @@ needed to make it safer to distribute and use open source software.
 **Related topics**:
 
 - [SLSA Provenance definition](https://slsa.dev/provenance/v1)
-- [npm Docs](https://docs.npmjs.com/generating-provenance-statements)
+- [npm Docs](https://docs.npmjs.com/generating-provenance-statements/)
 - [npm Provenance RFC](https://github.com/npm/rfcs/blob/main/accepted/0049-link-packages-to-source-and-build.md#detailed-steps-to-publish)
 
 ### Generating provenance in GitLab CI/CD

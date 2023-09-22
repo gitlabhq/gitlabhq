@@ -4,6 +4,7 @@ module API
   # MergeRequestDiff API
   class MergeRequestDiffs < ::API::Base
     include PaginationParams
+    include Helpers::Unidiff
 
     before { authenticate! }
 
@@ -39,12 +40,13 @@ module API
       params do
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request'
         requires :version_id, type: Integer, desc: 'The ID of the merge request diff version'
+        use :with_unidiff
       end
 
       get ":id/merge_requests/:merge_request_iid/versions/:version_id", urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present_cached merge_request.merge_request_diffs.find(params[:version_id]), with: Entities::MergeRequestDiffFull, cache_context: nil
+        present_cached merge_request.merge_request_diffs.find(params[:version_id]), with: Entities::MergeRequestDiffFull, cache_context: nil, enable_unidiff: declared_params[:unidiff]
       end
     end
   end

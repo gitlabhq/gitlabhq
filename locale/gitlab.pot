@@ -25968,6 +25968,9 @@ msgstr ""
 msgid "IssueBoards|No matching boards found"
 msgstr ""
 
+msgid "IssueBoards|Select board"
+msgstr ""
+
 msgid "IssueBoards|Some of your boards are hidden, add a license to see them again."
 msgstr ""
 
@@ -48103,6 +48106,9 @@ msgstr ""
 msgid "This %{issuable} is locked. Only project members can comment."
 msgstr ""
 
+msgid "This %{issuable} would exceed the maximum number of linked %{issuables} (%{limit})."
+msgstr ""
+
 msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and %{lockedLinkStart}locked%{lockedLinkEnd}."
 msgstr ""
 
@@ -48302,9 +48308,6 @@ msgid "This epic cannot be added. You don't have access to perform this action."
 msgstr ""
 
 msgid "This epic does not exist or you don't have sufficient permission."
-msgstr ""
-
-msgid "This epic would exceed maximum number of related epics."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"
@@ -52568,6 +52571,9 @@ msgstr ""
 msgid "Vulnerability|Explain this vulnerability and how to mitigate it with AI"
 msgstr ""
 
+msgid "Vulnerability|Explain vulnerability"
+msgstr ""
+
 msgid "Vulnerability|External Security Report"
 msgstr ""
 
@@ -52713,9 +52719,6 @@ msgid "Vulnerability|Training"
 msgstr ""
 
 msgid "Vulnerability|Training not available for this vulnerability."
-msgstr ""
-
-msgid "Vulnerability|Try it out"
 msgstr ""
 
 msgid "Vulnerability|URL:"
@@ -53529,9 +53532,6 @@ msgid "Work item promoted successfully."
 msgstr ""
 
 msgid "Work items are already linked"
-msgstr ""
-
-msgid "WorkItems|This work item would exceed the maximum number of linked items."
 msgstr ""
 
 msgid "WorkItem|%{count} more assignees"

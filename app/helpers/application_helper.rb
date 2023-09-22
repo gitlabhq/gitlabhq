@@ -404,6 +404,10 @@ module ApplicationHelper
   end
 
   def add_page_specific_style(path, defer: true)
+    @already_added_styles ||= Set.new
+    return if @already_added_styles.include?(path)
+
+    @already_added_styles.add(path)
     content_for :page_specific_styles do
       if defer
         stylesheet_link_tag_defer path

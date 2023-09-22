@@ -121,7 +121,7 @@ export default {
 <template>
   <gl-badge
     v-gl-tooltip
-    :class="{ 'gl-pl-2': isSmallBadgeSize }"
+    :class="{ 'gl-pl-2': isSmallBadgeSize, 'gl-p-2!': !showText }"
     :title="title"
     :href="detailsPath"
     :size="size"

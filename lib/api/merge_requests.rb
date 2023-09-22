@@ -3,6 +3,7 @@
 module API
   class MergeRequests < ::API::Base
     include PaginationParams
+    include Helpers::Unidiff
 
     CONTEXT_COMMITS_POST_LIMIT = 20
 
@@ -505,6 +506,9 @@ module API
         ]
         tags %w[merge_requests]
       end
+      params do
+        use :with_unidiff
+      end
       get ':id/merge_requests/:merge_request_iid/changes', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -512,7 +516,8 @@ module API
           with: Entities::MergeRequestChanges,
           current_user: current_user,
           project: user_project,
-          access_raw_diffs: to_boolean(params.fetch(:access_raw_diffs, false))
+          access_raw_diffs: to_boolean(params.fetch(:access_raw_diffs, false)),
+          enable_unidiff: declared_params[:unidiff]
       end
 
       desc 'Get the merge request diffs' do
@@ -526,11 +531,12 @@ module API
       end
       params do
         use :pagination
+        use :with_unidiff
       end
       get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page])).diffs, with: Entities::Diff
+        present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page])).diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
       end
 
       desc 'Get single merge request pipelines' do

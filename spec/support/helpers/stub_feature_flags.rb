@@ -24,6 +24,15 @@ module StubFeatureFlags
     Feature.stub = false
   end
 
+  def stub_with_new_feature_current_request
+    return unless Gitlab::SafeRequestStore.active?
+
+    new_request = Feature::FlipperRequest.new
+    allow(new_request).to receive(:id).and_return(SecureRandom.uuid)
+
+    allow(Feature).to receive(:current_request).and_return(new_request)
+  end
+
   # Stub Feature flags with `flag_name: true/false`
   #
   # @param [Hash] features where key is feature name and value is boolean whether enabled or not.

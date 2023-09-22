@@ -453,8 +453,8 @@ The following sections intend to deep-dive into specific characteristics of our 
 
 - table engines
 
-  - [MergeTree](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree/)
-  - [S3 Table Engine](https://clickhouse.com/docs/en/engines/table-engines/integrations/s3/)
+  - [MergeTree](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree)
+  - [S3 Table Engine](https://clickhouse.com/docs/en/engines/table-engines/integrations/s3)
 
 - efficient partitioning and/or sharding
 

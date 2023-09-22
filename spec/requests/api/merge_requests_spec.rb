@@ -1829,6 +1829,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(json_response['overflow']).to be_falsy
     end
 
+    context 'when unidiff format is requested' do
+      it 'returns the diff in Unified format' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/changes", user), params: { unidiff: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig('changes', 0, 'diff')).to eq(merge_request.diffs.diffs.first.unidiff)
+      end
+    end
+
     context 'when using DB-backed diffs' do
       it_behaves_like 'find an existing merge request'
 
@@ -1900,6 +1909,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(merge_request.diffs.size)
+    end
+
+    context 'when unidiff format is requested' do
+      it 'returns the diff in Unified format' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user), params: { unidiff: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig(0, 'diff')).to eq(merge_request.diffs.diffs.first.unidiff)
+      end
     end
 
     context 'when pagination params are present' do

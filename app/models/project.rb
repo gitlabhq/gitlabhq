@@ -3346,7 +3346,7 @@ class Project < ApplicationRecord
   end
 
   def merge_requests_allowing_collaboration(source_branch = nil)
-    relation = source_of_merge_requests.opened.where(allow_collaboration: true)
+    relation = source_of_merge_requests.from_fork.opened.where(allow_collaboration: true)
     relation = relation.where(source_branch: source_branch) if source_branch
     relation
   end

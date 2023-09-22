@@ -42,7 +42,8 @@ module Import
         project_name,
         target_namespace,
         current_user,
-        credentials
+        credentials,
+        timeout_strategy
       ).execute
     end
 
@@ -72,6 +73,10 @@ module Import
 
     def url
       @url ||= params[:bitbucket_server_url]
+    end
+
+    def timeout_strategy
+      @timeout_strategy ||= params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT
     end
 
     def allow_local_requests?

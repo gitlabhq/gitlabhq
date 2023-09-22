@@ -102,6 +102,12 @@ describe('SentryConfig', () => {
         );
       });
 
+      it('Uses data-page to set BrowserTracing transaction name', () => {
+        const context = BrowserTracing.mock.calls[0][0].beforeNavigate();
+
+        expect(context).toMatchObject({ name: mockPage });
+      });
+
       it('binds the BrowserClient to the hub', () => {
         expect(mockBindClient).toHaveBeenCalledTimes(1);
         expect(mockBindClient).toHaveBeenCalledWith(expect.any(BrowserClient));
@@ -172,6 +178,28 @@ describe('SentryConfig', () => {
 
         // eslint-disable-next-line no-underscore-dangle
         expect(window._Sentry).toBe(undefined);
+      });
+    });
+
+    describe('when data-page is not defined in the body', () => {
+      beforeEach(() => {
+        delete document.body.dataset.page;
+        initSentry();
+      });
+
+      it('calls Sentry.setTags with gon values', () => {
+        expect(mockSetTags).toHaveBeenCalledTimes(1);
+        expect(mockSetTags).toHaveBeenCalledWith(
+          expect.objectContaining({
+            page: undefined,
+          }),
+        );
+      });
+
+      it('Uses location.path to set BrowserTracing transaction name', () => {
+        const context = BrowserTracing.mock.calls[0][0].beforeNavigate({ op: 'pageload' });
+
+        expect(context).toEqual({ op: 'pageload', name: window.location.pathname });
       });
     });
   });

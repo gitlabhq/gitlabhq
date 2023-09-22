@@ -15,12 +15,14 @@ RSpec.describe Import::GithubService, feature_category: :importers do
   let(:settings) { instance_double(Gitlab::GithubImport::Settings) }
   let(:user_namespace_path) { user.namespace_path }
   let(:optional_stages) { nil }
+  let(:timeout_strategy) { "optimistic" }
   let(:params) do
     {
       repo_id: 123,
       new_name: 'new_repo',
       target_namespace: user_namespace_path,
-      optional_stages: optional_stages
+      optional_stages: optional_stages,
+      timeout_strategy: timeout_strategy
     }
   end
 
@@ -36,7 +38,8 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         .to receive(:write)
         .with(
           optional_stages: optional_stages,
-          additional_access_tokens: access_params[:additional_access_tokens]
+          additional_access_tokens: access_params[:additional_access_tokens],
+          timeout_strategy: timeout_strategy
         )
     end
 
@@ -95,7 +98,10 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           expect(subject.execute(access_params, :github)).to include(status: :success)
           expect(settings)
             .to have_received(:write)
-            .with(optional_stages: nil, additional_access_tokens: access_params[:additional_access_tokens])
+            .with(optional_stages: nil,
+              additional_access_tokens: access_params[:additional_access_tokens],
+              timeout_strategy: timeout_strategy
+            )
           expect_snowplow_event(
             category: 'Import::GithubService',
             action: 'create',
@@ -117,7 +123,11 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           expect(subject.execute(access_params, :github)).to include(status: :success)
           expect(settings)
             .to have_received(:write)
-            .with(optional_stages: nil, additional_access_tokens: access_params[:additional_access_tokens])
+            .with(
+              optional_stages: nil,
+              additional_access_tokens: access_params[:additional_access_tokens],
+              timeout_strategy: timeout_strategy
+            )
           expect_snowplow_event(
             category: 'Import::GithubService',
             action: 'create',
@@ -146,7 +156,11 @@ RSpec.describe Import::GithubService, feature_category: :importers do
             expect(subject.execute(access_params, :github)).to include(status: :success)
             expect(settings)
               .to have_received(:write)
-              .with(optional_stages: nil, additional_access_tokens: access_params[:additional_access_tokens])
+              .with(
+                optional_stages: nil,
+                additional_access_tokens: access_params[:additional_access_tokens],
+                timeout_strategy: timeout_strategy
+              )
             expect_snowplow_event(
               category: 'Import::GithubService',
               action: 'create',
@@ -181,7 +195,24 @@ RSpec.describe Import::GithubService, feature_category: :importers do
             .to have_received(:write)
             .with(
               optional_stages: optional_stages,
-              additional_access_tokens: access_params[:additional_access_tokens]
+              additional_access_tokens: access_params[:additional_access_tokens],
+              timeout_strategy: timeout_strategy
+            )
+        end
+      end
+
+      context 'when timeout strategy param is present' do
+        let(:timeout_strategy) { 'pessimistic' }
+
+        it 'saves timeout strategy to import_data' do
+          subject.execute(access_params, :github)
+
+          expect(settings)
+            .to have_received(:write)
+            .with(
+              optional_stages: optional_stages,
+              additional_access_tokens: access_params[:additional_access_tokens],
+              timeout_strategy: timeout_strategy
             )
         end
       end
@@ -192,7 +223,11 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
           expect(settings)
             .to have_received(:write)
-            .with(optional_stages: optional_stages, additional_access_tokens: %w[foo bar])
+            .with(
+              optional_stages: optional_stages,
+              additional_access_tokens: %w[foo bar],
+              timeout_strategy: timeout_strategy
+            )
         end
       end
     end

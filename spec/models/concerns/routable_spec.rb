@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'routable resource' do
-  shared_examples_for '.find_by_full_path' do
+  shared_examples_for '.find_by_full_path' do |has_cross_join: false|
     it 'finds records by their full path' do
       expect(described_class.find_by_full_path(record.full_path)).to eq(record)
       expect(described_class.find_by_full_path(record.full_path.upcase)).to eq(record)
     end
 
-    it 'checks if `optimize_routable` is enabled only once' do
-      expect(Routable).to receive(:optimize_routable_enabled?).once
+    it 'checks if `optimize_find_routable` is enabled only once' do
+      expect(Routable).to receive(:optimize_routable_enabled?).and_call_original
 
       described_class.find_by_full_path(record.full_path)
     end
@@ -51,16 +51,46 @@ RSpec.shared_examples 'routable resource' do
         end
       end
     end
+
+    if has_cross_join
+      it 'has a cross-join' do
+        expect(Gitlab::Database).to receive(:allow_cross_joins_across_databases)
+
+        described_class.find_by_full_path(record.full_path)
+      end
+    else
+      it 'does not have cross-join' do
+        expect(Gitlab::Database).not_to receive(:allow_cross_joins_across_databases)
+
+        described_class.find_by_full_path(record.full_path)
+      end
+    end
   end
 
   it_behaves_like '.find_by_full_path', :aggregate_failures
 
-  context 'when the `optimize_routable` feature flag is turned OFF' do
+  context 'when the `optimize_find_routable` feature flag is enabled for the current request', :request_store do
     before do
-      stub_feature_flags(optimize_routable: false)
+      stub_feature_flags(optimize_find_routable: Feature.current_request)
     end
 
     it_behaves_like '.find_by_full_path', :aggregate_failures
+
+    context 'for a different request' do
+      before do
+        stub_with_new_feature_current_request
+      end
+
+      it_behaves_like '.find_by_full_path', :aggregate_failures, has_cross_join: true
+    end
+  end
+
+  context 'when the `optimize_find_routable` feature flag is turned OFF' do
+    before do
+      stub_feature_flags(optimize_find_routable: false)
+    end
+
+    it_behaves_like '.find_by_full_path', :aggregate_failures, has_cross_join: true
 
     it 'includes route information when loading a record' do
       control_count = ActiveRecord::QueryRecorder.new do
@@ -280,9 +310,9 @@ RSpec.describe Routable, feature_category: :groups_and_projects do
 
     it { is_expected.to eq(true) }
 
-    context 'when the `optimize_routable` feature flag is turned OFF' do
+    context 'when the `optimize_find_routable` feature flag is turned OFF' do
       before do
-        stub_feature_flags(optimize_routable: false)
+        stub_feature_flags(optimize_find_routable: false)
       end
 
       it { is_expected.to eq(false) }

@@ -292,5 +292,29 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
       end
     end
+
+    context 'when inviting a registered user by a secondary email address' do
+      let(:user) { create(:user) }
+      let(:secondary_email) { create(:email, user: user) }
+
+      before do
+        create(:group_member, :invited, group: group, invite_email: secondary_email.email, created_by: owner)
+        gitlab_sign_in(user)
+      end
+
+      it 'does not accept the pending invitation and does not redirect to the groups activity path' do
+        expect(page).not_to have_current_path(activity_group_path(group), ignore_query: true)
+        expect(group.reload.users).not_to include(user)
+      end
+
+      context 'when the secondary email address is confirmed' do
+        let(:secondary_email) { create(:email, :confirmed, user: user) }
+
+        it 'accepts the pending invitation and redirects to the groups activity path' do
+          expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+          expect(group.reload.users).to include(user)
+        end
+      end
+    end
   end
 end

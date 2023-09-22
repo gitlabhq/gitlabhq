@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'multiple issue boards' do
+  include ListboxHelpers
+
   context 'authorized user' do
     before do
       stub_feature_flags(apollo_boards: false)
@@ -27,7 +29,7 @@ RSpec.shared_examples 'multiple issue boards' do
 
     it 'switches current board' do
       in_boards_switcher_dropdown do
-        click_button board2.name
+        select_listbox_item(board2.name)
       end
 
       wait_for_requests
@@ -67,7 +69,7 @@ RSpec.shared_examples 'multiple issue boards' do
 
     it 'adds a list to the none default board' do
       in_boards_switcher_dropdown do
-        click_button board2.name
+        select_listbox_item(board2.name)
       end
 
       wait_for_requests
@@ -89,7 +91,7 @@ RSpec.shared_examples 'multiple issue boards' do
       expect(page).to have_selector('.board', count: 3)
 
       in_boards_switcher_dropdown do
-        click_button board.name
+        select_listbox_item(board.name)
       end
 
       wait_for_requests
@@ -101,7 +103,7 @@ RSpec.shared_examples 'multiple issue boards' do
       assert_boards_nav_active
 
       in_boards_switcher_dropdown do
-        click_button board2.name
+        select_listbox_item(board2.name)
       end
 
       assert_boards_nav_active
@@ -109,7 +111,7 @@ RSpec.shared_examples 'multiple issue boards' do
 
     it 'switches current board back' do
       in_boards_switcher_dropdown do
-        click_button board.name
+        select_listbox_item(board.name)
       end
 
       wait_for_requests
@@ -142,7 +144,7 @@ RSpec.shared_examples 'multiple issue boards' do
 
     it 'switches current board' do
       in_boards_switcher_dropdown do
-        click_button board2.name
+        select_listbox_item(board2.name)
       end
 
       wait_for_requests
@@ -165,7 +167,7 @@ RSpec.shared_examples 'multiple issue boards' do
 
     wait_for_requests
 
-    dropdown_selector = '[data-testid="boards-selector"] .dropdown-menu'
+    dropdown_selector = '[data-testid="boards-selector"] .gl-new-dropdown'
     page.within(dropdown_selector) do
       yield
     end

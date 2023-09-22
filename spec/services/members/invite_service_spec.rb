@@ -321,11 +321,11 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
       let(:params) { { email: unconfirmed_user.email } }
 
-      it 'adds an existing user to members' do
+      it 'adds a new member as an invite for unconfirmed primary email' do
         expect_to_create_members(count: 1)
         expect(result[:status]).to eq(:success)
-        expect(project.users).to include unconfirmed_user
-        expect(project.members.last).not_to be_invite
+        expect(project.users).not_to include unconfirmed_user
+        expect(project.members.last).to be_invite
       end
     end
 

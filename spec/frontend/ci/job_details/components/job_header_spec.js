@@ -34,17 +34,15 @@ describe('Header CI Component', () => {
   const findUserLink = () => wrapper.findComponent(GlAvatarLink);
   const findSidebarToggleBtn = () => wrapper.findComponent(GlButton);
   const findStatusTooltip = () => wrapper.findComponent(GlTooltip);
-  const findActionButtons = () => wrapper.findByTestId('job-header-action-buttons');
   const findJobName = () => wrapper.findByTestId('job-name');
 
-  const createComponent = (props, slots) => {
+  const createComponent = (props) => {
     wrapper = extendedWrapper(
       shallowMount(JobHeader, {
         propsData: {
           ...defaultProps,
           ...props,
         },
-        ...slots,
       }),
     );
   };
@@ -64,10 +62,6 @@ describe('Header CI Component', () => {
 
     it('should render sidebar toggle button', () => {
       expect(findSidebarToggleBtn().exists()).toBe(true);
-    });
-
-    it('should not render header action buttons when slot is empty', () => {
-      expect(findActionButtons().exists()).toBe(false);
     });
 
     it('renders the correct job name', () => {
@@ -125,25 +119,6 @@ describe('Header CI Component', () => {
       it('has the correct user id', () => {
         expect(findUserLink().attributes('data-user-id')).toBe(defaultProps.user.id.toString());
       });
-    });
-  });
-
-  describe('job name', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('should render the job name', () => {
-      expect(findJobName().text()).toBe('build_job');
-    });
-  });
-
-  describe('slot', () => {
-    it('should render header action buttons', () => {
-      createComponent({}, { slots: { default: 'Test Actions' } });
-
-      expect(findActionButtons().exists()).toBe(true);
-      expect(findActionButtons().text()).toBe('Test Actions');
     });
   });
 

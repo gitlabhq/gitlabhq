@@ -20,7 +20,6 @@ module QA
 
           view 'app/assets/javascripts/boards/components/boards_selector.vue' do
             element :boards_dropdown
-            element :boards_dropdown_content
             element :create_new_board_button
           end
 
@@ -45,10 +44,6 @@ module QA
 
           def boards_dropdown
             find_element(:boards_dropdown)
-          end
-
-          def boards_dropdown_content
-            find_element(:boards_dropdown_content)
           end
 
           def boards_list_cards_area_with_index(index)

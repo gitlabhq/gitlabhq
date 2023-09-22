@@ -9,6 +9,7 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
   let(:secret) { "sekrettt" }
   let(:project_key) { 'TES' }
   let(:repo_slug) { 'vim' }
+  let(:timeout_strategy) { 'pessimistic' }
   let(:repo) do
     double('repo',
       name: repo_slug,
@@ -52,7 +53,7 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
 
       it 'returns 201 response when the project is imported successfully' do
         allow(Gitlab::BitbucketServerImport::ProjectCreator)
-          .to receive(:new).with(project_key, repo_slug, anything, repo_slug, user.namespace, user, anything)
+          .to receive(:new).with(project_key, repo_slug, anything, repo_slug, user.namespace, user, anything, timeout_strategy)
             .and_return(double(execute: project))
 
         post api("/import/bitbucket_server", user), params: {
@@ -87,7 +88,7 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
 
       it 'returns 201 response when the project is imported successfully with a new project name' do
         allow(Gitlab::BitbucketServerImport::ProjectCreator)
-        .to receive(:new).with(project_key, repo_slug, anything, project.name, user.namespace, user, anything)
+        .to receive(:new).with(project_key, repo_slug, anything, project.name, user.namespace, user, anything, 'pessimistic')
         .and_return(double(execute: project))
 
         post api("/import/bitbucket_server", user), params: {
@@ -96,7 +97,8 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
           personal_access_token: token,
           bitbucket_server_project: project_key,
           bitbucket_server_repo: repo_slug,
-          new_name: 'new-name'
+          new_name: 'new-name',
+          timeout_strategy: 'pessimistic'
         }
 
         expect(response).to have_gitlab_http_status(:created)
@@ -123,7 +125,7 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
 
       it 'returns 400 response due to a blocked URL' do
         allow(Gitlab::BitbucketServerImport::ProjectCreator)
-        .to receive(:new).with(project_key, repo_slug, anything, project.name, user.namespace, user, anything)
+        .to receive(:new).with(project_key, repo_slug, anything, project.name, user.namespace, user, anything, timeout_strategy)
         .and_return(double(execute: project))
 
         allow(Gitlab::UrlBlocker)
@@ -139,6 +141,24 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
         }
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'with an invalid timeout strategy' do
+      let_it_be(:project) { create(:project, name: 'new-name') }
+
+      it 'returns 400 response due to a blocked URL' do
+        post api("/import/bitbucket_server", user), params: {
+          bitbucket_server_url: base_uri,
+          bitbucket_server_username: user,
+          personal_access_token: token,
+          bitbucket_server_project: project_key,
+          bitbucket_server_repo: repo_slug,
+          timeout_strategy: 'no-strategy'
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response["error"]).to eq("timeout_strategy does not have a valid value")
       end
     end
 
@@ -159,7 +179,7 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
 
       it 'returns 201 response when the project is imported successfully to a new namespace' do
         allow(Gitlab::BitbucketServerImport::ProjectCreator)
-        .to receive(:new).with(project_key, repo_slug, anything, repo_slug, an_instance_of(Group), user, anything)
+        .to receive(:new).with(project_key, repo_slug, anything, repo_slug, an_instance_of(Group), user, anything, timeout_strategy)
         .and_return(double(execute: create(:project, name: repo_slug)))
 
         post api("/import/bitbucket_server", user), params: {
@@ -195,7 +215,7 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
 
       it 'returns 401 response when user can not create projects in the chosen namespace' do
         allow(Gitlab::BitbucketServerImport::ProjectCreator)
-        .to receive(:new).with(project_key, repo_slug, anything, repo_slug, an_instance_of(Group), user, anything)
+        .to receive(:new).with(project_key, repo_slug, anything, repo_slug, an_instance_of(Group), user, anything, timeout_strategy)
         .and_return(double(execute: build(:project)))
 
         other_namespace = create(:group, :private, name: 'private-group')

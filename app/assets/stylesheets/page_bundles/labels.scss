@@ -1,3 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
 .suggest-colors {
   padding-top: 3px;
 
@@ -29,19 +31,19 @@
       margin-bottom: -5px;
 
       &:first-of-type {
-        border-top-left-radius: $border-radius-base;
+        border-top-left-radius: $gl-border-radius-base;
       }
 
       &:nth-of-type(7) {
-        border-top-right-radius: $border-radius-base;
+        border-top-right-radius: $gl-border-radius-base;
       }
 
       &:nth-last-child(7) {
-        border-bottom-left-radius: $border-radius-base;
+        border-bottom-left-radius: $gl-border-radius-base;
       }
 
       &:last-of-type {
-        border-bottom-right-radius: $border-radius-base;
+        border-bottom-right-radius: $gl-border-radius-base;
       }
     }
   }
@@ -78,7 +80,7 @@
   padding: 0 $grid-size;
   line-height: 16px;
   border-radius: $label-border-radius;
-  color: $white;
+  color: var(--white, $white);
 }
 
 .manage-labels-list {
@@ -94,7 +96,7 @@
 
       &:hover,
       &:focus-within {
-        background-color: $blue-50;
+        background-color: var(--blue-50, $blue-50);
       }
 
       &:active {
@@ -129,7 +131,7 @@
 }
 
 .label-badge {
-  color: $gray-900;
+  color: var(--gray-900, $gray-900);
   display: inline-block;
   font-weight: $gl-font-weight-normal;
   padding: $gl-padding-4 $gl-padding-8;
@@ -147,15 +149,15 @@
   }
 
   .label-action {
-    color: $gray-700;
+    color: var(--gray-700, $gray-700);
     cursor: pointer;
 
     &:hover {
-      color: $blue-600;
+      color: var(--blue-600, $blue-600);
     }
 
     &.hover-red:hover {
-      color: $red-500;
+      color: var(--red-500, $red-500);
     }
   }
 }
@@ -187,22 +189,4 @@
 
 .priority-labels-empty-state .svg-content img {
   max-width: $priority-label-empty-state-width;
-}
-
-.scoped-label-tooltip-title {
-  color: $indigo-300;
-}
-
-.gl-label-scoped {
-  box-shadow: 0 0 0 2px currentColor inset;
-
-  &.gl-label-sm {
-    box-shadow: 0 0 0 1px inset;
-  }
-}
-
-/* Fix scoped label padding in cases where old markdown uses the old label structure */
-.gl-label-text + .gl-label-text {
-  @include gl-pl-2;
-  @include gl-pr-3;
 }

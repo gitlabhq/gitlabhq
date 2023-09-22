@@ -138,6 +138,7 @@ module Import
       Gitlab::GithubImport::Settings
         .new(project)
         .write(
+          timeout_strategy: params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT,
           optional_stages: params[:optional_stages],
           additional_access_tokens: access_params[:additional_access_tokens]
         )

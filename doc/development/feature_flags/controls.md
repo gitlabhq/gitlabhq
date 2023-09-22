@@ -70,12 +70,19 @@ there for any exceptions while testing your feature after enabling the feature f
 For these pre-production environments, it's strongly encouraged to run the command in
 `#staging`, `#production`, or `#chatops-ops-test`, for improved visibility.
 
+#### Enabling the feature flag with percentage of time
+
 To enable a feature for 25% of the time, run the following in Slack:
 
 ```shell
 /chatops run feature set new_navigation_bar 25 --random --dev
 /chatops run feature set new_navigation_bar 25 --random --staging
 ```
+
+NOTE:
+Percentage of time feature flags are deprecated in favor of [percentage of actors](#percentage-based-actor-selection).
+If you understand the consequences of using percentage of time feature flags, you can force it using
+`--ignore-random-deprecation-check`.
 
 ### Enabling a feature for GitLab.com
 
@@ -129,6 +136,11 @@ To enable a feature for 25% of the time, run the following in Slack:
 ```shell
 /chatops run feature set new_navigation_bar 25 --random
 ```
+
+NOTE:
+Percentage of time feature flags are deprecated in favor of [percentage of actors](#percentage-based-actor-selection).
+If you understand the consequences of using percentage of time feature flags, you can force it using
+`--ignore-random-deprecation-check`.
 
 This sets a feature flag to `true` based on the following formula:
 

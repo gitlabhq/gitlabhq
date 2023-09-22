@@ -3,9 +3,9 @@
 module Gitlab
   module BitbucketServerImport
     class ProjectCreator
-      attr_reader :project_key, :repo_slug, :repo, :name, :namespace, :current_user, :session_data
+      attr_reader :project_key, :repo_slug, :repo, :name, :namespace, :current_user, :session_data, :timeout_strategy
 
-      def initialize(project_key, repo_slug, repo, name, namespace, current_user, session_data)
+      def initialize(project_key, repo_slug, repo, name, namespace, current_user, session_data, timeout_strategy)
         @project_key = project_key
         @repo_slug = repo_slug
         @repo = repo
@@ -13,6 +13,7 @@ module Gitlab
         @namespace = namespace
         @current_user = current_user
         @session_data = session_data
+        @timeout_strategy = timeout_strategy
       end
 
       def execute
@@ -28,7 +29,7 @@ module Gitlab
           import_url: repo.clone_url,
           import_data: {
             credentials: session_data,
-            data: { project_key: project_key, repo_slug: repo_slug }
+            data: { project_key: project_key, repo_slug: repo_slug, timeout_strategy: timeout_strategy }
           },
           skip_wiki: true
         ).execute

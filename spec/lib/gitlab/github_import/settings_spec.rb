@@ -62,17 +62,20 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
           collaborators_import: false,
           foo: :bar
         },
+        timeout_strategy: "optimistic",
         additional_access_tokens: %w[foo bar]
       }.stringify_keys
     end
 
-    it 'puts optional steps & access tokens into projects import_data' do
+    it 'puts optional steps, timeout strategy & access tokens into projects import_data' do
       project.create_or_update_import_data(credentials: { user: 'token' })
 
       settings.write(data_input)
 
       expect(project.import_data.data['optional_stages'])
         .to eq optional_stages.stringify_keys
+      expect(project.import_data.data['timeout_strategy'])
+        .to eq("optimistic")
       expect(project.import_data.credentials.fetch(:additional_access_tokens))
         .to eq(data_input['additional_access_tokens'])
     end

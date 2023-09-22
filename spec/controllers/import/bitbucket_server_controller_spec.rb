@@ -8,6 +8,7 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
   let(:repo_slug) { 'some-repo' }
   let(:repo_id) { "#{project_key}/#{repo_slug}" }
   let(:client) { instance_double(BitbucketServer::Client) }
+  let(:timeout_strategy) { "pessimistic" }
 
   def assign_session_tokens
     session[:bitbucket_server_url] = 'http://localhost:7990'
@@ -44,7 +45,7 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
 
     it 'returns the new project' do
       allow(Gitlab::BitbucketServerImport::ProjectCreator)
-        .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
+        .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything, timeout_strategy)
         .and_return(double(execute: project))
 
       post :create, params: { repo_id: repo_id }, format: :json
@@ -57,7 +58,7 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
 
       it 'successfully creates a project' do
         allow(Gitlab::BitbucketServerImport::ProjectCreator)
-          .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
+          .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything, timeout_strategy)
           .and_return(double(execute: project))
 
         post :create, params: { repo_id: repo_id }, format: :json
@@ -88,7 +89,7 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
 
     it 'returns an error when the project cannot be saved' do
       allow(Gitlab::BitbucketServerImport::ProjectCreator)
-        .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
+        .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything, timeout_strategy)
         .and_return(double(execute: build(:project)))
 
       post :create, params: { repo_id: repo_id }, format: :json

@@ -747,7 +747,7 @@ You can read more about this decision in this [issue](https://gitlab.com/gitlab-
 
 ## Links
 
-- [Remote Development direction](https://about.gitlab.com/direction/create/editor/remote_development)
+- [Remote Development direction](https://about.gitlab.com/direction/create/ide/remote_development/)
 - [Remote Development presentation](https://docs.google.com/presentation/d/1XHH_ZilZPufQoWVWViv3evipI-BnAvRQrdvzlhBuumw/edit#slide=id.g131f2bb72e4_0_8)
 - [Category Strategy epic](https://gitlab.com/groups/gitlab-org/-/epics/7419)
 - [Minimal Maturity epic](https://gitlab.com/groups/gitlab-org/-/epics/9189)
@@ -760,5 +760,4 @@ You can read more about this decision in this [issue](https://gitlab.com/gitlab-
 - [Browser runtime](https://gitlab.com/groups/gitlab-org/-/epics/8291)
 - [GitLab-hosted infrastructure](https://gitlab.com/groups/gitlab-org/-/epics/8292)
 - [Browser runtime spike](https://gitlab.com/gitlab-org/gitlab-web-ide/-/merge_requests/58)
-- [Ideal user journey](https://about.gitlab.com/direction/create/editor/remote_development/#ideal-user-journey)
 - [Building container images for workspaces](https://gitlab.com/gitlab-org/gitlab/-/issues/396300#note_1375061754)

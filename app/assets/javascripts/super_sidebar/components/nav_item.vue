@@ -145,6 +145,9 @@ export default {
     hasAvatar() {
       return Boolean(this.item.entity_id);
     },
+    hasEndSpace() {
+      return this.hasPill || this.isPinnable || this.isFlyout;
+    },
     avatarShape() {
       return this.item.avatar_shape || 'rect';
     },
@@ -236,7 +239,7 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasPill || isPinnable" class="gl-text-right gl-relative gl-min-w-8">
+      <span v-if="hasEndSpace" class="gl-text-right gl-relative gl-min-w-6">
         <gl-badge
           v-if="hasPill"
           size="sm"

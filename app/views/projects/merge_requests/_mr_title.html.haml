@@ -2,7 +2,7 @@
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 - hide_gutter_toggle = local_assigns.fetch(:hide_gutter_toggle, false)
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.1-updated_header", moved_mr_sidebar_enabled?, hide_gutter_toggle, fluid_layout]
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.1-updated_header", moved_mr_sidebar_enabled?, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled]
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?

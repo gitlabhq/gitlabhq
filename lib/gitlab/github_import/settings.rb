@@ -62,7 +62,10 @@ module Gitlab
         )
 
         import_data = project.create_or_update_import_data(
-          data: { optional_stages: optional_stages },
+          data: {
+            optional_stages: optional_stages,
+            timeout_strategy: user_settings[:timeout_strategy]
+          },
           credentials: credentials
         )
 

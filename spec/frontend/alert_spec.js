@@ -271,6 +271,74 @@ describe('Flash', () => {
           expect(findTextContent()).toBe('message 1 message 2');
         });
       });
+
+      describe('with message links', () => {
+        const findAlertMessageLinks = () =>
+          Array.from(document.querySelectorAll('.flash-container a'));
+
+        it('creates a link', () => {
+          alert = createAlert({
+            message: 'Read more at %{exampleLinkStart}example site%{exampleLinkEnd}.',
+            messageLinks: {
+              exampleLink: 'https://example.com',
+            },
+          });
+          const messageLinks = findAlertMessageLinks();
+
+          expect(messageLinks).toHaveLength(1);
+          const link = messageLinks.at(0);
+          expect(link.textContent).toBe('example site');
+          expect(link.getAttribute('href')).toBe('https://example.com');
+        });
+
+        it('creates multiple links', () => {
+          alert = createAlert({
+            message:
+              'Read more at %{exampleLinkStart}example site%{exampleLinkEnd}, or on %{docsLinkStart}the documentation%{docsLinkEnd}.',
+            messageLinks: {
+              exampleLink: 'https://example.com',
+              docsLink: 'https://docs.example.com',
+            },
+          });
+          const messageLinks = findAlertMessageLinks();
+
+          expect(messageLinks).toHaveLength(2);
+          const [firstLink, secondLink] = messageLinks;
+          expect(firstLink.textContent).toBe('example site');
+          expect(firstLink.getAttribute('href')).toBe('https://example.com');
+          expect(secondLink.textContent).toBe('the documentation');
+          expect(secondLink.getAttribute('href')).toBe('https://docs.example.com');
+        });
+
+        it('allows passing more props to gl-link', () => {
+          alert = createAlert({
+            message: 'Read more at %{exampleLinkStart}example site%{exampleLinkEnd}.',
+            messageLinks: {
+              exampleLink: {
+                href: 'https://example.com',
+                target: '_blank',
+              },
+            },
+          });
+          const messageLinks = findAlertMessageLinks();
+
+          expect(messageLinks).toHaveLength(1);
+          const link = messageLinks.at(0);
+          expect(link.textContent).toBe('example site');
+          expect(link.getAttribute('href')).toBe('https://example.com');
+          expect(link.getAttribute('target')).toBe('_blank');
+        });
+
+        it('does not create any links when given an empty messageLinks object', () => {
+          alert = createAlert({
+            message: 'Read more at %{exampleLinkStart}example site%{exampleLinkEnd}.',
+            messageLinks: {},
+          });
+          const messageLinks = findAlertMessageLinks();
+
+          expect(messageLinks).toHaveLength(0);
+        });
+      });
     });
   });
 });

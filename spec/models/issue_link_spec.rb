@@ -7,7 +7,9 @@ RSpec.describe IssueLink, feature_category: :portfolio_management do
 
   it_behaves_like 'issuable link' do
     let_it_be_with_reload(:issuable_link) { create(:issue_link) }
-    let_it_be(:issuable) { create(:issue) }
+    let_it_be(:issuable) { create(:issue, project: project) }
+    let_it_be(:issuable2) { create(:issue, project: project) }
+    let_it_be(:issuable3) { create(:issue, project: project) }
     let(:issuable_class) { 'Issue' }
     let(:issuable_link_factory) { :issue_link }
   end

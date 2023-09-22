@@ -95,7 +95,7 @@ The Design Tokens Format Module promotes a `*.token.json` extension standard for
 
 ### Transformations
 
-Our design tokens use [style-dictionary](https://amzn.github.io/style-dictionary) to convert design tokens into consumable file formats (CSS/SCSS/JavaScript/JSON).
+Our design tokens use [style-dictionary](https://amzn.github.io/style-dictionary/) to convert design tokens into consumable file formats (CSS/SCSS/JavaScript/JSON).
 
 A parser makes [design tokens format properties](https://tr.designtokens.org/format/#design-token-properties) compatible with [style-dictionary design token attributes](https://amzn.github.io/style-dictionary/#/tokens?id=design-token-attributes).
 

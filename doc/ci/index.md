@@ -84,7 +84,7 @@ They can be hard-coded in your `.gitlab-ci.yml` file, project settings, or dynam
 ## Related topics
 
 - [Five teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/).
-- [Make the case for CI/CD in your organization](https://about.gitlab.com/devops-tools/github-vs-gitlab/).
+- [Make the case for CI/CD in your organization](https://about.gitlab.com/why-gitlab/).
 - Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/) from 30 days to under 8 hours with GitLab.
 - Use the [GitLab Workflow VS Code extension](../user/project/repository/vscode.md) to
   [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)

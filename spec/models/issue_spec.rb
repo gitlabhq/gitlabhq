@@ -867,6 +867,29 @@ RSpec.describe Issue, feature_category: :team_planning do
           .to contain_exactly(authorized_issue_b, authorized_incident_a)
       end
     end
+
+    context 'when authorize argument is false' do
+      it 'returns all related issues' do
+        expect(authorized_issue_a.related_issues(authorize: false))
+          .to contain_exactly(authorized_issue_b, authorized_issue_c, authorized_incident_a, unauthorized_issue)
+      end
+    end
+
+    context 'when current_user argument is nil' do
+      let_it_be(:public_issue) { create(:issue, project: create(:project, :public)) }
+
+      it 'returns public linked issues only' do
+        create(:issue_link, source: authorized_issue_a, target: public_issue)
+
+        expect(authorized_issue_a.related_issues).to contain_exactly(public_issue)
+      end
+    end
+
+    context 'when issue is a new record' do
+      let(:new_issue) { build(:issue, project: authorized_project) }
+
+      it { expect(new_issue.related_issues(user)).to be_empty }
+    end
   end
 
   describe '#can_move?' do
@@ -2036,6 +2059,23 @@ RSpec.describe Issue, feature_category: :team_planning do
       issue = create(:issue)
 
       expect(issue.search_data.namespace_id).to eq(issue.namespace_id)
+    end
+  end
+
+  describe '#linked_items_count' do
+    let_it_be(:issue1) { create(:issue, project: reusable_project) }
+    let_it_be(:issue2) { create(:issue, project: reusable_project) }
+    let_it_be(:issue3) { create(:issue, project: reusable_project) }
+    let_it_be(:issue4) { build(:issue, project: reusable_project) }
+
+    it 'returns number of issues linked to the issue' do
+      create(:issue_link, source: issue1, target: issue2)
+      create(:issue_link, source: issue1, target: issue3)
+
+      expect(issue1.linked_items_count).to eq(2)
+      expect(issue2.linked_items_count).to eq(1)
+      expect(issue3.linked_items_count).to eq(1)
+      expect(issue4.linked_items_count).to eq(0)
     end
   end
 end

@@ -543,7 +543,9 @@ class Issue < ApplicationRecord
     end
   end
 
-  def related_issues(current_user, preload: nil)
+  def related_issues(current_user = nil, authorize: true, preload: nil)
+    return [] if new_record?
+
     related_issues =
       linked_issues_select
         .joins("INNER JOIN issue_links ON
@@ -554,11 +556,16 @@ class Issue < ApplicationRecord
         .reorder('issue_link_id')
 
     related_issues = yield related_issues if block_given?
+    return related_issues unless authorize
 
     cross_project_filter = -> (issues) { issues.where(project: project) }
     Ability.issues_readable_by_user(related_issues,
       current_user,
       filters: { read_cross_project: cross_project_filter })
+  end
+
+  def linked_items_count
+    related_issues(authorize: false).size
   end
 
   def can_be_worked_on?

@@ -268,14 +268,6 @@ module BlobHelper
     }.compact
   end
 
-  def edit_modify_file_fork_params(action)
-    {
-      to: request.fullpath,
-      notice: edit_in_new_fork_notice_action(action),
-      notice_now: edit_in_new_fork_notice_now
-    }
-  end
-
   def edit_fork_button_tag(common_classes, project, label, params, action = 'edit')
     fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: params)
 
@@ -320,11 +312,6 @@ module BlobHelper
 
   def human_access
     @project.team.human_max_access(current_user&.id).try(:downcase)
-  end
-
-  def editing_ci_config?
-    @path.to_s.end_with?(Ci::Pipeline::CONFIG_EXTENSION) ||
-      @path.to_s == @project.ci_config_path_or_default
   end
 
   def vue_blob_app_data(project, blob, ref)

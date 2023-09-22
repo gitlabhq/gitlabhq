@@ -88,49 +88,11 @@ Among the proprietary GAR APIs, the [REST API](https://cloud.google.com/artifact
 
 Last but not least, there is also an [RPC API](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1), backed by gRPC and Protocol Buffers. This API provides the most functionality, covering all GAR features. From the available operations, we can make use of the [`ListDockerImagesRequest`](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1#listdockerimagesrequest) and [`GetDockerImageRequest`](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1#google.devtools.artifactregistry.v1.GetDockerImageRequest) operations. As with the REST API, both responses are composed of [`DockerImage`](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1#google.devtools.artifactregistry.v1.DockerImage) objects.
 
-Between the two proprietary API options, we chose the RPC one because it provides support not only for the operations we need today but also offers better coverage of all GAR features, which will be beneficial in future iterations. Finally, we do not intend to make direct use of this API but rather use it through the official Ruby client SDK. Please see [Client SDK](#client-sdk) below for more details.
+Between the two proprietary API options, we chose the RPC one because it provides support not only for the operations we need today but also offers better coverage of all GAR features, which will be beneficial in future iterations. Finally, we do not intend to make direct use of this API but rather use it through the official Ruby client SDK. Please see [Client SDK](backend.md#client-sdk) below for more details.
 
 #### Backend Integration
 
-##### Client SDK
-
-To interact with GAR we will make use of the official GAR [Ruby client SDK](https://cloud.google.com/ruby/docs/reference/google-cloud-artifact_registry/latest).
-
-*TODO: Add more details about the client SDK integration and its limitations (no filtering for example).*
-
-##### Database Changes
-
-*TODO: Describe any necessary changes to the database to support this integration.*
-
-##### CI/CD variables
-
-Similar to the [Harbor](../../../user/project/integrations/harbor.md#configure-gitlab) integration, once users activates the GAR integration, additional CI/CD variables will be automatically available if the integration is enabled. These will be set according to the requirements described in the [documentation](https://cloud.google.com/artifact-registry/docs/docker/authentication#json-key):
-
-- `GCP_ARTIFACT_REGISTRY_URL`: This will be set to `https://LOCATION-docker.pkg.dev`, where `LOCATION` is the GCP project location configured for the integration.
-- `GCP_ARTIFACT_REGISTRY_PROJECT_URI`: This will be set to `LOCATION-docker.pkg.dev/PROJECT-ID`. `PROJECT-ID` is the GCP project ID of the GAR repository configured for the integration.
-- `GCP_ARTIFACT_REGISTRY_PASSWORD`: This will be set to the base64-encode version of the service account JSON key file configured for the integration.
-- `GCP_ARTIFACT_REGISTRY_USER`: This will be set to `_json_key_base64`.
-
-These can then be used to log in using `docker login`:
-
-```shell
-docker login -u $GCP_ARTIFACT_REGISTRY_USER -p $GCP_ARTIFACT_REGISTRY_PASSWORD $GCP_ARTIFACT_REGISTRY_URL
-```
-
-Similarly, these can be used to download images from the repository with `docker pull`:
-
-```shell
-docker pull $GCP_ARTIFACT_REGISTRY_PROJECT_URI/REPOSITORY/myapp:latest
-```
-
-Finally, provided that the configured service account has the `Artifact Registry Writer` role, one can also push images to GAR:
-
-```shell
-docker build -t $GCP_ARTIFACT_REGISTRY_REPOSITORY_URI/myapp:latest .
-docker push $GCP_ARTIFACT_REGISTRY_REPOSITORY_URI/myapp:latest
-```
-
-For forward compatibility reasons, the repository name (`REPOSITORY` in the command above) must be appended to `GCP_ARTIFACT_REGISTRY_PROJECT_URI` by the user. In the first iteration we will only support a single GAR repository, and therefore we could technically provide an e.g. `GCP_ARTIFACT_REGISTRY_REPOSITORY_URI` variable with the repository name already included. However, once we add support for multiple repositories, there is no way we can tell what repository a user will want to target for a specific instruction. So it must be the user to tell that.
+This integration will need several changes on the backend side of the rails project. See the [backend](backend.md) page for additional details.
 
 #### UI/UX
 

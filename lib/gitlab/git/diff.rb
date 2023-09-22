@@ -33,7 +33,7 @@ module Gitlab
 
       SERIALIZE_KEYS = %i[diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large].freeze
 
-      BINARY_NOTICE_PATTERN = %r{Binary files a\/(.*) and b\/(.*) differ}
+      BINARY_NOTICE_PATTERN = %r{Binary files (.*) and (.*) differ}
 
       class << self
         def between(repo, head, base, options = {}, *paths)
@@ -181,6 +181,16 @@ module Gitlab
 
       def submodule?
         a_mode == '160000' || b_mode == '160000'
+      end
+
+      def unidiff
+        return diff if diff.blank?
+        return json_safe_diff if detect_binary?(@diff) || has_binary_notice?
+
+        old_path_header = new_file? ? '/dev/null' : "a/#{old_path}"
+        new_path_header = deleted_file? ? '/dev/null' : "b/#{new_path}"
+
+        "--- #{old_path_header}\n+++ #{new_path_header}\n" + diff
       end
 
       def line_count

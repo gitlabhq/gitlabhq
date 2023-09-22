@@ -19,28 +19,30 @@ RSpec.describe Gitlab::BitbucketImport::AdvanceStageWorker, :clean_gitlab_redis_
     context 'when there are remaining jobs' do
       before do
         allow(worker)
-          .to receive(:find_import_state)
+          .to receive(:find_import_state_jid)
           .and_return(import_state)
       end
 
       it 'reschedules itself' do
-        expect(worker)
-          .to receive(:wait_for_jobs)
-          .with({ '123' => 2 })
-          .and_return({ '123' => 1 })
+        freeze_time do
+          expect(worker)
+            .to receive(:wait_for_jobs)
+            .with({ '123' => 2 })
+            .and_return({ '123' => 1 })
 
-        expect(described_class)
-          .to receive(:perform_in)
-          .with(described_class::INTERVAL, project.id, { '123' => 1 }, :finish)
+          expect(described_class)
+            .to receive(:perform_in)
+            .with(described_class::INTERVAL, project.id, { '123' => 1 }, :finish, Time.zone.now, 1)
 
-        worker.perform(project.id, { '123' => 2 }, :finish)
+          worker.perform(project.id, { '123' => 2 }, :finish)
+        end
       end
     end
 
     context 'when there are no remaining jobs' do
       before do
         allow(worker)
-          .to receive(:find_import_state)
+          .to receive(:find_import_state_jid)
           .and_return(import_state)
 
         allow(worker)
@@ -98,18 +100,30 @@ RSpec.describe Gitlab::BitbucketImport::AdvanceStageWorker, :clean_gitlab_redis_
     end
   end
 
-  describe '#find_import_state' do
-    it 'returns a ProjectImportState' do
+  describe '#find_import_state_jid' do
+    it 'returns a ProjectImportState with only id and jid' do
       import_state.update_column(:status, 'started')
 
-      found = worker.find_import_state(project.id)
+      found = worker.find_import_state_jid(project.id)
 
       expect(found).to be_an_instance_of(ProjectImportState)
       expect(found.attributes.keys).to match_array(%w[id jid])
     end
 
     it 'returns nil if the project import is not running' do
-      expect(worker.find_import_state(project.id)).to be_nil
+      expect(worker.find_import_state_jid(project.id)).to be_nil
+    end
+  end
+
+  describe '#find_import_state' do
+    it 'returns a ProjectImportState' do
+      import_state.update_column(:status, 'started')
+
+      found_partial = worker.find_import_state_jid(project.id)
+      found = worker.find_import_state(found_partial.id)
+
+      expect(found).to be_an_instance_of(ProjectImportState)
+      expect(found.attributes.keys).to include('id', 'project_id', 'status', 'last_error')
     end
   end
 end

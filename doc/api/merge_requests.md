@@ -986,6 +986,7 @@ Supported attributes:
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer        | Yes      | The internal ID of the merge request. |
 | `access_raw_diffs`  | boolean        | No       | Retrieve change diffs via Gitaly. |
+| `unidiff`           | boolean        | No       | Present change diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
 
 ```json
 {
@@ -1110,6 +1111,7 @@ Supported attributes:
 | `merge_request_iid` | integer | Yes | The internal ID of the merge request. |
 | `page` | integer | no | The page of results to return. Defaults to 1. |
 | `per_page` | integer | no | The number of results per page. Defaults to 20. |
+| `unidiff`  | boolean | no | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5.      |
 
 If successful, returns [`200 OK`](rest/index.md#status-codes) and the
 following response attributes:
@@ -2605,6 +2607,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 | `id`                | String  | Yes      | The ID of the project.                    |
 | `merge_request_iid` | integer | Yes      | The internal ID of the merge request.     |
 | `version_id`        | integer | Yes      | The ID of the merge request diff version. |
+| `unidiff`           | boolean | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5.      |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1"

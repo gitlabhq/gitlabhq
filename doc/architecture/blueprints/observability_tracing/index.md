@@ -45,14 +45,14 @@ To release a generally available distributed tracing feature as part of GitLab.c
 
 Specific goals:
 
-- An HTTPS write API implemented in the [GitLab Observability Backend](https://GitLab.com/GitLab-org/opstrace/opstrace) project which receives spans sent to GitLab using [OTLP (OpenTelemetry Protocol)](https://opentelemetry.io/docs/specs/otel/protocol/). Users can collect and send distributed traces using either the [OpenTelemetry SDK](https://opentelemetry.io/docs/collector/deployment/no-collector/) or the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/).
+- An HTTPS write API implemented in the [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace) project which receives spans sent to GitLab using [OTLP (OpenTelemetry Protocol)](https://opentelemetry.io/docs/specs/otel/protocol/). Users can collect and send distributed traces using either the [OpenTelemetry SDK](https://opentelemetry.io/docs/collector/deployment/no-collector/) or the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/).
 - UI to list and filter/search for traces by ID, service, attributes or time
 - UI to show a detail view of a trace and its corresponding spans
 - Apply sensible ingestion and storage limits per top-level namespace for all GitLab tiers
 
 ## Timeline
 
-In order to achieve the group objectives, the following timelines must be met for [GitLab phased rollout](https://about.GitLab.com/handbook/product/GitLab-the-product/#experiment-beta-ga) of Tracing.
+In order to achieve the group objectives, the following timelines must be met for [GitLab phased rollout](https://about.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga) of Tracing.
 
 - **Tracing Experiment Release**: 16.2
 - **Tracing Beta Release**: 16.3
@@ -114,7 +114,7 @@ The scope of effort for GA would include two APIs:
 ### Authentication and Authorization
 
 <!-- markdownlint-disable-next-line MD044 -->
-GitLab Observability Backend utilizes an [instance-wide trusted GitLab OAuth](https://docs.GitLab.com/ee/integration/OAuth_provider.html#create-an-instance-wide-application) token to perform a seamless OAuth flow that authenticates the GitLab user against the GitLab Observability Backend (GOB). GOB creates an auth session and stores the session identifier in an http-only, secure cookie. This mechanism has already been examined and approved by AppSec. Now that the Observability UI will be native within the UI hosted at GitLab.com, a few small adjustments must be made for authentication to work against the new UI domain vs the embedded iframe that we previously relied upon (GitLab.com instead of observe.gitLab.com).
+GitLab Observability Backend utilizes an [instance-wide trusted GitLab OAuth](../../../integration/oauth_provider.md#create-an-instance-wide-application) token to perform a seamless OAuth flow that authenticates the GitLab user against the GitLab Observability Backend (GOB). GOB creates an auth session and stores the session identifier in an http-only, secure cookie. This mechanism has already been examined and approved by AppSec. Now that the Observability UI will be native within the UI hosted at GitLab.com, a few small adjustments must be made for authentication to work against the new UI domain vs the embedded iframe that we previously relied upon (GitLab.com instead of observe.gitLab.com).
 
 A hidden iframe will be embedded in the GitLab UI only on pages where GOB authenticated APIs must be consumed. This allows GitLab.com UI to directly communicate with GOB APIs without the need for an intermediate proxy layer in rails and without relying on the less secure shared token between proxy and GOB. This iframe will be hidden and its sole purpose is to perform the OAuth flow and assign the http-only secure cookie containing the GOB user session. This flow is seamless and can be fully hidden from the user since its a **trusted** GitLab OAuth flow. Sessions currently expire after 30 days which is configurable in GOB deployment terraform.
 

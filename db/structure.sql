@@ -646,6 +646,14 @@ CREATE TABLE p_batched_git_ref_updates_deletions (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_finished_build_ch_sync_events (
+    build_id bigint NOT NULL,
+    partition bigint DEFAULT 1 NOT NULL,
+    build_finished_at timestamp without time zone NOT NULL,
+    processed boolean DEFAULT false NOT NULL
+)
+PARTITION BY LIST (partition);
+
 CREATE TABLE projects_visits (
     id bigint NOT NULL,
     entity_id bigint NOT NULL,
@@ -24696,7 +24704,8 @@ CREATE TABLE vulnerabilities (
     resolved_on_default_branch boolean DEFAULT false NOT NULL,
     present_on_default_branch boolean DEFAULT true NOT NULL,
     detected_at timestamp with time zone DEFAULT now(),
-    finding_id bigint
+    finding_id bigint,
+    cvss jsonb DEFAULT '[]'::jsonb
 );
 
 CREATE SEQUENCE vulnerabilities_id_seq
@@ -25441,6 +25450,7 @@ CREATE TABLE workspaces (
     personal_access_token_id bigint,
     config_version integer DEFAULT 1 NOT NULL,
     force_full_reconciliation boolean DEFAULT false NOT NULL,
+    force_include_all_resources boolean DEFAULT false NOT NULL,
     CONSTRAINT check_15543fb0fa CHECK ((char_length(name) <= 64)),
     CONSTRAINT check_157d5f955c CHECK ((char_length(namespace) <= 64)),
     CONSTRAINT check_2b401b0034 CHECK ((char_length(deployment_resource_version) <= 64)),
@@ -28615,6 +28625,9 @@ ALTER TABLE ONLY organizations
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions
     ADD CONSTRAINT p_batched_git_ref_updates_deletions_pkey PRIMARY KEY (id, partition_id);
 
+ALTER TABLE ONLY p_ci_finished_build_ch_sync_events
+    ADD CONSTRAINT p_ci_finished_build_ch_sync_events_pkey PRIMARY KEY (build_id, partition);
+
 ALTER TABLE ONLY p_ci_job_annotations
     ADD CONSTRAINT p_ci_job_annotations_pkey PRIMARY KEY (id, partition_id);
 
@@ -31365,6 +31378,8 @@ CREATE INDEX index_ci_editor_ai_messages_on_user_project_and_created_at ON ci_ed
 
 CREATE INDEX index_ci_editor_ai_messages_project_id ON ci_editor_ai_conversation_messages USING btree (project_id);
 
+CREATE INDEX index_ci_finished_build_ch_sync_events_for_partitioned_query ON ONLY p_ci_finished_build_ch_sync_events USING btree (((build_id % (100)::bigint)), build_id) WHERE (processed = false);
+
 CREATE INDEX index_ci_freeze_periods_on_project_id ON ci_freeze_periods USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_group_variables_on_group_id_and_key_and_environment ON ci_group_variables USING btree (group_id, key, environment_scope);
@@ -31380,6 +31395,8 @@ CREATE INDEX index_ci_job_artifacts_for_terraform_reports ON ci_job_artifacts US
 CREATE INDEX index_ci_job_artifacts_id_for_terraform_reports ON ci_job_artifacts USING btree (id) WHERE (file_type = 18);
 
 CREATE INDEX index_ci_job_artifacts_on_expire_at_and_job_id ON ci_job_artifacts USING btree (expire_at, job_id);
+
+CREATE INDEX index_ci_job_artifacts_on_file_final_path ON ci_job_artifacts USING btree (file_final_path) WHERE (file_final_path IS NOT NULL);
 
 CREATE INDEX index_ci_job_artifacts_on_file_store ON ci_job_artifacts USING btree (file_store);
 

@@ -144,12 +144,6 @@ module MergeRequestsHelper
     end
   end
 
-  def toggle_draft_merge_request_path(issuable)
-    wip_event = issuable.draft? ? 'ready' : 'draft'
-
-    issuable_path(issuable, { merge_request: { wip_event: wip_event } })
-  end
-
   def user_merge_requests_counts
     @user_merge_requests_counts ||= begin
       assigned_count = assigned_issuables_count(:merge_requests)

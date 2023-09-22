@@ -79,7 +79,7 @@ guides document the necessary steps for a selection of popular reverse proxies:
 
 - [Apache](https://httpd.apache.org/docs/2.4/mod/mod_proxy_wstunnel.html)
 - [NGINX](https://www.nginx.com/blog/websocket-nginx/)
-- [HAProxy](https://www.haproxy.com/blog/websockets-load-balancing-with-haproxy/)
+- [HAProxy](https://www.haproxy.com/blog/websockets-load-balancing-with-haproxy)
 - [Varnish](https://varnish-cache.org/docs/4.1/users-guide/vcl-example-websockets.html)
 
 Workhorse doesn't let WebSocket requests through to non-WebSocket endpoints, so

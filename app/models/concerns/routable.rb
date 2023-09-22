@@ -77,7 +77,7 @@ module Routable
   # rubocop:enable Metrics/CyclomaticComplexity
 
   def self.optimize_routable_enabled?
-    Feature.enabled?(:optimize_routable)
+    Feature.enabled?(:optimize_find_routable, Feature.current_request)
   end
 
   included do

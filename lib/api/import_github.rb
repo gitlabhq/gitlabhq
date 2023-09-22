@@ -62,6 +62,8 @@ module API
       requires :target_namespace, type: String, allow_blank: false, desc: 'Namespace or group to import repository into'
       optional :github_hostname, type: String, desc: 'Custom GitHub enterprise hostname'
       optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
+      optional :timeout_strategy, type: String, values: ::ProjectImportData::TIMEOUT_STRATEGIES,
+        desc: 'Strategy for behavior on timeouts'
       optional :additional_access_tokens,
         type: Array[String],
         coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,

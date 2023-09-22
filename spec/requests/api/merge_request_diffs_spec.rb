@@ -55,6 +55,15 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :s
       expect(json_response['diffs'].size).to eq(merge_request_diff.diffs.size)
     end
 
+    context 'when unidiff format is requested' do
+      it 'returns a diff in Unified format' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user), params: { unidiff: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig('diffs', 0, 'diff')).to eq(merge_request_diff.diffs.diffs.first.unidiff)
+      end
+    end
+
     it 'returns a 404 when merge_request id is used instead of the iid' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/#{merge_request_diff.id}", user)
       expect(response).to have_gitlab_http_status(:not_found)

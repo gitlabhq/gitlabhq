@@ -1640,6 +1640,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
         it_behaves_like 'ref diff'
       end
+
+      context 'when unidiff format is requested' do
+        it 'returns the diff in Unified format' do
+          get api(route, current_user), params: { unidiff: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_limited_pagination_headers
+          expect(json_response.dig(0, 'diff')).to eq(commit.diffs.diffs.first.unidiff)
+        end
+      end
     end
   end
 

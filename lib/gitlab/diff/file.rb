@@ -7,7 +7,7 @@ module Gitlab
 
       attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs, :unique_identifier
 
-      delegate :new_file?, :deleted_file?, :renamed_file?,
+      delegate :new_file?, :deleted_file?, :renamed_file?, :unidiff,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
         :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, :has_binary_notice?, to: :diff, prefix: false
 

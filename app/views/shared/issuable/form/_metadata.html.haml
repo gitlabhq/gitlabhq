@@ -3,6 +3,7 @@
 - presenter = local_assigns.fetch(:presenter)
 - has_due_date = issuable.has_attribute?(:due_date)
 - form = local_assigns.fetch(:form)
+- add_page_specific_style 'page_bundles/labels'
 
 - if @add_related_issue
   .form-group

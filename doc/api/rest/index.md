@@ -808,7 +808,7 @@ For questions about these integrations, use the [GitLab community forum](https:/
 
 ### Haskell
 
-- [`gitlab-haskell`](http://hackage.haskell.org/package/gitlab-haskell)
+- [`gitlab-haskell`](https://hackage.haskell.org/package/gitlab-haskell)
 
 ### Java
 
