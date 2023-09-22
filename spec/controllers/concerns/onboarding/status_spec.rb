@@ -8,12 +8,6 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
   let_it_be(:tasks_to_be_done) { %w[ci code] }
   let_it_be(:source) { member.group }
 
-  describe '#continue_full_onboarding?' do
-    subject { described_class.new(nil, {}, user).continue_full_onboarding? }
-
-    it { is_expected.to eq(false) }
-  end
-
   describe '#single_invite?' do
     subject { described_class.new(nil, nil, user).single_invite? }
 

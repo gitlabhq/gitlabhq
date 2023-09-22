@@ -4,9 +4,18 @@ module QA
   module Page
     module Registration
       class Welcome < Page::Base
-        view 'app/views/registrations/welcome/show.html.haml' do
+        view 'ee/app/views/registrations/welcome/show.html.haml' do
           element :get_started_button
           element :role_dropdown
+        end
+
+        view 'ee/app/views/registrations/welcome/_setup_for_company.html.haml' do
+          element :setup_for_just_me_content
+          element :setup_for_just_me_radio
+        end
+
+        view 'ee/app/views/registrations/welcome/_joining_project.html.haml' do
+          element :create_a_new_project_radio
         end
 
         def has_get_started_button?(wait: Capybara.default_max_wait_time)
@@ -17,12 +26,12 @@ module QA
           select_element(:role_dropdown, role)
         end
 
-        def choose_setup_for_just_me_if_available
-          # Only implemented in EE
+        def choose_create_a_new_project_if_available
+          click_element(:create_a_new_project_radio) if has_element?(:create_a_new_project_radio, wait: 1)
         end
 
-        def choose_create_a_new_project_if_available
-          # Only implemented in EE
+        def choose_setup_for_just_me_if_available
+          choose_element(:setup_for_just_me_radio, true) if has_element?(:setup_for_just_me_content, wait: 1)
         end
 
         def click_get_started_button
@@ -35,5 +44,3 @@ module QA
     end
   end
 end
-
-QA::Page::Registration::Welcome.prepend_mod_with('Page::Registration::Welcome', namespace: QA)

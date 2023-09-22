@@ -2,19 +2,10 @@
 
 module Onboarding
   class Status
-    def self.tracking_label
-      { free: 'free_registration' }
-    end
-
     def initialize(params, session, user)
       @params = params
       @session = session
       @user = user
-    end
-
-    # overridden in EE
-    def continue_full_onboarding?
-      false
     end
 
     def single_invite?

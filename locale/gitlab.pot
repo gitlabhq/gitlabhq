@@ -9117,10 +9117,10 @@ msgstr ""
 msgid "CICD|Disabling this feature is a permanent change."
 msgstr ""
 
-msgid "CICD|Enable feature to allow job token access by the following projects."
+msgid "CICD|Enable feature to limit job token access to the following projects."
 msgstr ""
 
-msgid "CICD|Enable feature to limit job token access to the following projects."
+msgid "CICD|Enable feature to limit job token access, so only the projects in this list can access this project with a CI/CD job token."
 msgstr ""
 
 msgid "CICD|Jobs"

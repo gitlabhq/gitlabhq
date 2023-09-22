@@ -527,7 +527,7 @@ gem 'gitaly', '~> 16.3.0-rc1'
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.2.0'
 
-gem 'grpc', '~> 1.55.0'
+gem 'grpc', '~> 1.58.0'
 
 gem 'google-protobuf', '~> 3.24', '>= 3.24.3'
 
