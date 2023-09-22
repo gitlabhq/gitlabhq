@@ -46,7 +46,7 @@ export default {
     <span
       v-else
       v-safe-html="$options.logo"
-      aria-hidden
+      aria-hidden="true"
       data-testid="brand-header-default-logo"
     ></span>
   </a>

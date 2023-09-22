@@ -30879,7 +30879,7 @@ msgstr ""
 msgid "Navigation|Plan"
 msgstr ""
 
-msgid "Navigation|Primary"
+msgid "Navigation|Primary navigation"
 msgstr ""
 
 msgid "Navigation|Projects you visit often will appear here."
