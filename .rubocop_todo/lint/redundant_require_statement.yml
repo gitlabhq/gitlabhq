@@ -1,0 +1,4 @@
+---
+# Cop supports --autocorrect.
+Lint/RedundantRequireStatement:
+  Enabled: false

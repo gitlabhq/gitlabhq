@@ -206,18 +206,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect { parent.update!(name: 'Foo') }.not_to raise_error
         end
       end
-
-      context 'when restrict_special_characters_in_namespace_path feature flag is disabled' do
-        before do
-          stub_feature_flags(restrict_special_characters_in_namespace_path: false)
-        end
-
-        it 'allows special character at the start or end of project namespace path' do
-          namespace = build(:namespace, type: project_sti_name, parent: parent, path: '_path_')
-
-          expect(namespace).to be_valid
-        end
-      end
     end
 
     describe '1 char path length' do

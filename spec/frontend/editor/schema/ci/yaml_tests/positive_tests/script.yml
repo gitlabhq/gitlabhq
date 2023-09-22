@@ -1,0 +1,52 @@
+default:
+  before_script:
+    - echo "default before_script"
+  after_script: |
+    echo "default after_script"
+
+valid_job_with_empty_string_script:
+  before_script: ""
+  after_script: ""
+  script:
+    - echo "overwrite default before_script and after_script"
+
+valid_job_with_empty_array_script:
+  before_script: []
+  after_script: []
+  script:
+    - echo "overwrite default before_script and after_script"
+
+valid_job_with_string_scripts:
+  before_script: echo before_script
+  script: echo script
+  after_script: echo after_script
+
+valid_job_with_multi_line_scripts:
+  before_script: |
+    echo multiline
+    echo before_script
+  script: |
+    echo multiline
+    echo script
+  after_script: |
+    echo multiline
+    echo after_script
+
+valid_job_with_array_scripts:
+  before_script:
+    - echo array
+    - echo before_script
+  script:
+    - echo array
+    - echo script
+  after_script:
+    - echo array
+    - echo after_script
+
+valid_job_with_nested_array_scripts:
+  before_script:
+    - [echo nested_array, echo before_script]
+  script:
+    - [echo nested_array, echo script]
+  after_script:
+    - [echo nested_array, echo after_script]

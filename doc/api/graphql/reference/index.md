@@ -10593,6 +10593,7 @@ The connection type for [`MergeRequestAssignee`](#mergerequestassignee).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestassigneeconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergerequestassigneeconnectionedges"></a>`edges` | [`[MergeRequestAssigneeEdge]`](#mergerequestassigneeedge) | A list of edges. |
 | <a id="mergerequestassigneeconnectionnodes"></a>`nodes` | [`[MergeRequestAssignee]`](#mergerequestassignee) | A list of nodes. |
 | <a id="mergerequestassigneeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -10710,6 +10711,7 @@ The connection type for [`MergeRequestParticipant`](#mergerequestparticipant).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestparticipantconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergerequestparticipantconnectionedges"></a>`edges` | [`[MergeRequestParticipantEdge]`](#mergerequestparticipantedge) | A list of edges. |
 | <a id="mergerequestparticipantconnectionnodes"></a>`nodes` | [`[MergeRequestParticipant]`](#mergerequestparticipant) | A list of nodes. |
 | <a id="mergerequestparticipantconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -10756,6 +10758,7 @@ The connection type for [`MergeRequestReviewer`](#mergerequestreviewer).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestreviewerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergerequestreviewerconnectionedges"></a>`edges` | [`[MergeRequestReviewerEdge]`](#mergerequestrevieweredge) | A list of edges. |
 | <a id="mergerequestreviewerconnectionnodes"></a>`nodes` | [`[MergeRequestReviewer]`](#mergerequestreviewer) | A list of nodes. |
 | <a id="mergerequestreviewerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -10894,6 +10897,7 @@ The connection type for [`Note`](#note).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="noteconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="noteconnectionedges"></a>`edges` | [`[NoteEdge]`](#noteedge) | A list of edges. |
 | <a id="noteconnectionnodes"></a>`nodes` | [`[Note]`](#note) | A list of nodes. |
 | <a id="noteconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -12450,6 +12454,7 @@ The connection type for [`UserCore`](#usercore).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="usercoreconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="usercoreconnectionedges"></a>`edges` | [`[UserCoreEdge]`](#usercoreedge) | A list of edges. |
 | <a id="usercoreconnectionnodes"></a>`nodes` | [`[UserCore]`](#usercore) | A list of nodes. |
 | <a id="usercoreconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |

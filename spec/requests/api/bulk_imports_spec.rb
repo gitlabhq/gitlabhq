@@ -262,26 +262,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
     end
 
     context 'when the destination_slug is invalid' do
-      it 'returns invalid error when restricting special characters is disabled' do
-        Feature.disable(:restrict_special_characters_in_namespace_path)
-
-        params[:entities][0][:destination_slug] = 'des?tin?atoi-slugg'
-
-        request
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include("entities[0][destination_slug] cannot start with " \
-                                                  "a non-alphanumeric character except for periods or " \
-                                                  "underscores, can contain only alphanumeric characters, " \
-                                                  "periods, and underscores, cannot end with a period or " \
-                                                  "forward slash, and has no leading or trailing forward " \
-                                                  "slashes. It can only contain alphanumeric characters, " \
-                                                  "periods, underscores, and dashes. For example, " \
-                                                  "'destination_namespace' not 'destination/namespace'")
-      end
-
-      it 'returns invalid error when restricting special characters is enabled' do
-        Feature.enable(:restrict_special_characters_in_namespace_path)
-
+      it 'returns invalid error' do
         params[:entities][0][:destination_slug] = 'des?tin?atoi-slugg'
 
         request

@@ -236,6 +236,9 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       @developers << user
     end
 
+    project.group&.add_developer(admin)
+    project.add_developer(admin)
+
     AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
   end
 

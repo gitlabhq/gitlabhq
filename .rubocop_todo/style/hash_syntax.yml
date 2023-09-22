@@ -1,0 +1,4 @@
+---
+# Cop supports --autocorrect.
+Style/HashSyntax:
+  Enabled: false

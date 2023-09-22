@@ -7,7 +7,7 @@ module Types
 
     authorize :read_custom_emoji
 
-    connection_type_class(Types::CountableConnectionType)
+    connection_type_class Types::CountableConnectionType
 
     expose_permissions Types::PermissionTypes::CustomEmoji
 
