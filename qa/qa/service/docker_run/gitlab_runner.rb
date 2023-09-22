@@ -16,13 +16,11 @@ module QA
         MSG
 
         def initialize(name)
-          @image = "#{QA::Runtime::Env.container_registry_host}/gitlab-org/#{QA::Runtime::Env.runner_container_image}"
+          @image = "#{QA::Runtime::Env.container_registry_host}/#{QA::Runtime::Env.runner_container_namespace}/#{QA::Runtime::Env.runner_container_image}" # rubocop:disable Layout/LineLength
           @name = name || "qa-runner-#{SecureRandom.hex(4)}"
           @run_untagged = true
           @executor = :shell
-          @executor_image = "#{QA::Runtime::Env.container_registry_host}/
-            gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7"
-
+          @executor_image = "#{QA::Runtime::Env.container_registry_host}/#{QA::Runtime::Env.runner_container_namespace}/#{QA::Runtime::Env.gitlab_qa_build_image}" # rubocop:disable Layout/LineLength
           super()
         end
 

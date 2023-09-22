@@ -632,6 +632,14 @@ module QA
         ENV.fetch('QA_RUNNER_CONTAINER_IMAGE', 'gitlab-runner:alpine')
       end
 
+      def runner_container_namespace
+        ENV['QA_RUNNER_CONTAINER_NAMESPACE'] || 'gitlab-org'
+      end
+
+      def gitlab_qa_build_image
+        ENV['QA_GITLAB_QA_BUILD_IMAGE'] || 'gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
+      end
+
       # ENV variables for authenticating against a private container registry
       # These need to be set if using the
       # Service::DockerRun::Mixins::ThirdPartyDocker module
