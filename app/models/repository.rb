@@ -688,7 +688,7 @@ class Repository
   def head_tree(skip_flat_paths: true)
     return if empty? || root_ref.nil?
 
-    @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths)
+    @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths, ref_type: 'heads')
   end
 
   def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil, rescue_not_found: true)

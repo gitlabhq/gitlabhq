@@ -10,9 +10,9 @@ module ExtractsRef
   REF_TYPES = [BRANCH_REF_TYPE, TAG_REF_TYPE].freeze
 
   def self.ref_type(type)
-    return unless REF_TYPES.include?(type)
+    return unless REF_TYPES.include?(type&.downcase)
 
-    type
+    type.downcase
   end
 
   def self.qualify_ref(ref, type)

@@ -87,6 +87,12 @@ RSpec.describe ExtractsRef do
       it { is_expected.to eq('tags') }
     end
 
+    context 'when case does not match' do
+      let(:ref_type) { 'tAgS' }
+
+      it { is_expected.to(eq('tags')) }
+    end
+
     context 'when ref_type is invalid' do
       let(:ref_type) { 'invalid' }
 

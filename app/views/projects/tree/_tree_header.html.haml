@@ -10,6 +10,7 @@
     = render_if_exists 'projects/tree/lock_link'
     #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
 
+    = render 'projects/buttons/compare', project: @project, ref: @ref, root_ref: @repository&.root_ref
     = render 'projects/find_file_link'
     = render 'shared/web_ide_button', blob: nil
     = render 'projects/buttons/download', project: @project, ref: @ref

@@ -63,6 +63,9 @@ export default function createRouter(base, baseRef) {
         props: {
           refType: 'HEADS',
         },
+        meta: {
+          refType: 'HEADS',
+        },
       },
     ],
   });

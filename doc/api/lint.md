@@ -56,9 +56,12 @@ Example responses:
 
 ## Validate a project's CI configuration
 
-Checks if a project's latest (`HEAD` of the project's default branch)
-`.gitlab-ci.yml` configuration is valid. This endpoint uses all namespace
-specific data available, including variables and local includes.
+> `sha` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369212) in GitLab 16.5.
+
+Checks if a project’s `.gitlab-ci.yml` configuration in a given commit
+(by default `HEAD` of the project’s default branch) is valid. This
+endpoint uses all namespace specific data available, including variables
+and local includes.
 
 ```plaintext
 GET /projects/:id/ci/lint
@@ -69,6 +72,7 @@ GET /projects/:id/ci/lint
 | `dry_run`      | boolean | No       | Run pipeline creation simulation, or only do static check. |
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
 | `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
+| `sha`          | string  | No       | The commit SHA of a branch or tag. Defaults to the SHA of the head of the project's default branch when not set. |
 
 Example request:
 

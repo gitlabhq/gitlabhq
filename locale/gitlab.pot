@@ -42622,6 +42622,9 @@ msgstr ""
 msgid "SecurityOrchestration|This is a project-level policy"
 msgstr ""
 
+msgid "SecurityOrchestration|This policy is inherited"
+msgstr ""
+
 msgid "SecurityOrchestration|This policy is inherited from %{namespace}"
 msgstr ""
 

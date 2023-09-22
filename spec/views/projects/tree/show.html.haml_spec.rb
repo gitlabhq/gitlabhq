@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'projects/tree/show' do
   include Devise::Test::ControllerHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, create_branch: 'bar') }
   let(:repository) { project.repository }
   let(:ref) { 'master' }
   let(:commit) { repository.commit(ref) }
@@ -36,6 +36,26 @@ RSpec.describe 'projects/tree/show' do
       render
 
       expect(rendered).to have_css('#js-tree-ref-switcher')
+    end
+  end
+
+  context 'when on root ref' do
+    let(:ref) { repository.root_ref }
+
+    it 'hides compare button' do
+      render
+
+      expect(rendered).not_to include('Compare')
+    end
+  end
+
+  context 'when not on root ref' do
+    let(:ref) { 'bar' }
+
+    it 'shows a compare button' do
+      render
+
+      expect(rendered).to include('Compare')
     end
   end
 end

@@ -126,7 +126,7 @@ table.supported-languages ul {
         8 LTS,
         11 LTS,
         17 LTS,
-        or 21 EA<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>
+        or 21 LTS<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>
       </td>
       <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
       <td>
@@ -236,7 +236,7 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
     <p>
-      Java 21 EA is only available when using <a href="https://maven.apache.org/">Maven</a> and is not supported when
+      Java 21 LTS is only available when using <a href="https://maven.apache.org/">Maven</a> and is not supported when
       <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>

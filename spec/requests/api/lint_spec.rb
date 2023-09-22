@@ -4,9 +4,10 @@ require 'spec_helper'
 
 RSpec.describe API::Lint, feature_category: :pipeline_composition do
   describe 'GET /projects/:id/ci/lint' do
-    subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { dry_run: dry_run, include_jobs: include_jobs } }
+    subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { sha: sha, dry_run: dry_run, include_jobs: include_jobs } }
 
     let(:project) { create(:project, :repository) }
+    let(:sha) { nil }
     let(:dry_run) { nil }
     let(:include_jobs) { nil }
 
@@ -288,6 +289,102 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
             ci_lint
 
             expect(json_response).not_to have_key('jobs')
+          end
+        end
+      end
+
+      context 'with different sha values' do
+        let(:original_content) do
+          { test: { stage: 'test', script: 'echo 1' } }.deep_stringify_keys.to_yaml
+        end
+
+        let(:first_edit) do
+          { image: 'image:1.0', services: ['postgres'] }.deep_stringify_keys.to_yaml
+        end
+
+        let(:second_edit) do
+          { new_test: { stage: 'test', script: 'echo 0' } }.deep_stringify_keys.to_yaml
+        end
+
+        before do
+          project.repository.create_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            original_content,
+            message: 'Automatically created .gitlab-ci.yml',
+            branch_name: 'master'
+          )
+
+          project.repository.update_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            first_edit,
+            message: 'Automatically edited .gitlab-ci.yml',
+            branch_name: 'master'
+          )
+
+          project.repository.update_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            second_edit,
+            message: 'Automatically edited .gitlab-ci.yml again',
+            branch_name: 'master'
+          )
+        end
+
+        context 'when latest .gitlab-ci.yml is valid' do
+          # check with explicit sha
+          let(:sha) { project.repository.commit.sha }
+
+          it 'passes validation' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Hash
+            expect(json_response['merged_yaml']).to eq(second_edit)
+            expect(json_response['valid']).to eq(true)
+            expect(json_response['warnings']).to eq([])
+            expect(json_response['errors']).to eq([])
+          end
+        end
+
+        context 'when previous .gitlab-ci.yml is invalid' do
+          let(:sha) { project.repository.commit.parent.sha }
+
+          it 'fails validation' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Hash
+            expect(json_response['merged_yaml']).to eq(first_edit)
+            expect(json_response['valid']).to eq(false)
+            expect(json_response['warnings']).to eq([])
+            expect(json_response['errors']).to eq(["jobs config should contain at least one visible job"])
+          end
+        end
+
+        context 'when first .gitlab-ci.yml is valid' do
+          let(:sha) { project.repository.commit.parent.parent.sha }
+
+          it 'passes validation' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Hash
+            expect(json_response['merged_yaml']).to eq(original_content)
+            expect(json_response['valid']).to eq(true)
+            expect(json_response['warnings']).to eq([])
+            expect(json_response['errors']).to eq([])
+          end
+        end
+
+        context 'when sha is not found' do
+          let(:sha) { "unknown" }
+
+          it 'returns 404 response' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end

@@ -122,7 +122,7 @@ export default function setupVueRepositoryList() {
         return h(LastCommit, {
           props: {
             currentPath: this.$route.params.path,
-            refType: this.$route.query.ref_type,
+            refType: this.$route.meta.refType || this.$route.query.ref_type,
           },
         });
       },
