@@ -23,16 +23,8 @@ module QA
             open_build_submenu('Pipeline schedules')
           end
 
-          def go_to_environments
-            open_operations_submenu('Environments')
-          end
-
-          def go_to_feature_flags
-            open_operations_submenu('Feature Flags')
-          end
-
-          def go_to_releases
-            open_operations_submenu('Releases')
+          def go_to_artifacts
+            open_build_submenu('Artifacts')
           end
 
           private

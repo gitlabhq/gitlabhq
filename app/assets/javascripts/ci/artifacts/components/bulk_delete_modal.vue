@@ -65,6 +65,7 @@ export default {
     :title="$options.i18n.modalTitle(checkedCount)"
     :action-primary="modalActionPrimary"
     :action-cancel="modalActionCancel"
+    data-testid="artifacts-bulk-delete-modal"
     v-bind="$attrs"
     v-on="$listeners"
   >

@@ -401,6 +401,7 @@ export default {
           :checked="isAnyVisibleArtifactSelected"
           :indeterminate="isAnyVisibleArtifactSelected && !areAllVisibleArtifactsSelected"
           :disabled="isSelectedArtifactsLimitReached && !isAnyVisibleArtifactSelected"
+          data-testid="select-all-artifacts-checkbox"
           @change="handleSelectAllChecked"
         />
       </template>
