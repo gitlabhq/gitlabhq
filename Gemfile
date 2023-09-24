@@ -417,7 +417,7 @@ group :development, :test do
   gem 'gitlab-styles', '~> 10.1.0', require: false
 
   gem 'haml_lint', '~> 0.40.0', require: false
-  gem 'bundler-audit', '~> 0.7.0.1', require: false
+  gem 'bundler-audit', '~> 0.9.1', require: false
 
   # Benchmarking & profiling
   gem 'benchmark-ips', '~> 2.11.0', require: false
