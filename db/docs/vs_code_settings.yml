@@ -1,7 +1,7 @@
 ---
 table_name: vs_code_settings
 classes:
-- VsCode::VSCodeSetting
+- VsCode::VsCodeSetting
 feature_categories:
 - web_ide
 description: VSCode Settings

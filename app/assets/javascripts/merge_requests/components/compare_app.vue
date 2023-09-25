@@ -32,6 +32,9 @@ export default {
     toggleClass: {
       default: () => ({}),
     },
+    compareSide: {
+      default: null,
+    },
   },
   props: {
     currentBranch: {
@@ -116,6 +119,7 @@ export default {
           :input-name="inputs.branch.name"
           :default="currentBranch"
           :toggle-class="toggleClass.branch"
+          :data-qa-compare-side="compareSide"
           data-testid="compare-dropdown"
           @selected="selectBranch"
         />
