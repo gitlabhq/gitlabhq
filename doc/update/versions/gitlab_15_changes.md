@@ -144,6 +144,9 @@ if you can't upgrade to 15.11.12 and later.
   - This issue may not manifest immediately as it can take up to a week before the Sidekiq is saturated enough.
   - Elasticsearch does not need to be enabled for this to occur.
   - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
+- A bug with the [`BackfillTraversalIdsToBlobsAndWikiBlobs` advanced search migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107730) might cause the Elasticsearch cluster to become saturated.
+  - When this issue occurs, searches might become slow and updates to the Elasticsearch cluster might take a long time to complete.
+  - To resolve this issue, upgrade to GitLab 15.10 to [reduce the migration batch size](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113719).
 - **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
   - Patch releases 15.9.0, 15.9.1, 15.9.2 have a bug that can cause data loss
     from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`,

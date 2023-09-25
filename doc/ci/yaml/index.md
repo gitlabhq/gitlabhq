@@ -7,13 +7,14 @@ type: reference
 
 # `.gitlab-ci.yml` keyword reference **(FREE ALL)**
 
-This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
+This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
+This file is where you define the CI/CD jobs that make up your pipeline.
 
+- To create your own `.gitlab-ci.yml` file, try a tutorial that demonstrates a
+  [simple](../quick_start/index.md) or [complex](../quick_start/tutorial.md) pipeline.
 - For a collection of examples, see [GitLab CI/CD examples](../examples/index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
-- To create your own `.gitlab-ci.yml` file, try a tutorial that demonstrates a
-  [simple](../quick_start/index.md) or [complex](../quick_start/tutorial.md) pipeline.
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](../lint.md) tool.
@@ -2768,8 +2769,8 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
 ### `only` / `except`
 
 NOTE:
-`only` and `except` are not being actively developed. [`rules`](#rules) is the preferred
-keyword to control when to add jobs to pipelines.
+`only` and `except` are not being actively developed. To control when to add jobs to pipelines,
+use [`rules`](#rules) instead.
 
 You can use `only` and `except` to control when to add jobs to pipelines.
 
@@ -2781,12 +2782,12 @@ for more details and examples.
 
 #### `only:refs` / `except:refs`
 
+NOTE:
+`only:refs` and `except:refs` are not being actively developed. To use refs, regular expressions,
+or variables to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
+
 Use the `only:refs` and `except:refs` keywords to control when to add jobs to a
 pipeline based on branch names or pipeline types.
-
-`only:refs` and `except:refs` are not being actively developed. [`rules:if`](#rulesif)
-is the preferred keyword when using refs, regular expressions, or variables to control
-when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2870,12 +2871,12 @@ job2:
 
 #### `only:variables` / `except:variables`
 
+NOTE:
+`only:variables` and `except:variables` are not being actively developed. To use refs,
+regular expressions, or variables to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
+
 Use the `only:variables` or `except:variables` keywords to control when to add jobs
 to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
-
-`only:variables` and `except:variables` are not being actively developed. [`rules:if`](#rulesif)
-is the preferred keyword when using refs, regular expressions, or variables to control
-when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2900,6 +2901,10 @@ deploy:
 
 #### `only:changes` / `except:changes`
 
+NOTE:
+`only:changes` and `except:changes` are not being actively developed. To use changed files
+to control when to add a job to a pipeline, use [`rules:changes`](#ruleschanges) instead.
+
 Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
 when a Git push event modifies a file.
 
@@ -2908,9 +2913,6 @@ Use `changes` in pipelines with the following refs:
 - `branches`
 - `external_pull_requests`
 - `merge_requests` (see additional details about [using `only:changes` with merge request pipelines](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines))
-
-`only:changes` and `except:changes` are not being actively developed. [`rules:changes`](#ruleschanges)
-is the preferred keyword when using changed files to control when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2959,12 +2961,13 @@ docker build:
 
 #### `only:kubernetes` / `except:kubernetes`
 
+NOTE:
+`only:refs` and `except:refs` are not being actively developed. To control if jobs are added
+to the pipeline when the Kubernetes service is active in the project, use [`rules:if`](#rulesif)
+with the [`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable instead.
+
 Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
 when the Kubernetes service is active in the project.
-
-`only:refs` and `except:refs` are not being actively developed. Use [`rules:if`](#rulesif)
-with the [`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable
-to control if jobs are added to the pipeline when the Kubernetes service is active in the project.
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 

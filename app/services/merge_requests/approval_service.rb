@@ -7,7 +7,7 @@ module MergeRequests
 
       approval = merge_request.approvals.new(
         user: current_user,
-        patch_id_sha: fetch_patch_id_sha(merge_request)
+        patch_id_sha: merge_request.current_patch_id_sha
       )
 
       return success unless save_approval(approval)
@@ -35,17 +35,6 @@ module MergeRequests
     end
 
     private
-
-    def fetch_patch_id_sha(merge_request)
-      diff_refs = merge_request.diff_refs
-      base_sha = diff_refs&.base_sha
-      head_sha = diff_refs&.head_sha
-
-      return unless base_sha && head_sha
-      return if base_sha == head_sha
-
-      merge_request.project.repository.get_patch_id(base_sha, head_sha)
-    end
 
     def eligible_for_approval?(merge_request)
       merge_request.eligible_for_approval_by?(current_user)

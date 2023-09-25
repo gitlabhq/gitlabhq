@@ -194,7 +194,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
   describe '#replace_hosts' do
     before do
-      stub_env('LOAD_BALANCER_PARALLEL_DISCONNECT', 'true')
       allow(service)
               .to receive(:load_balancer)
               .and_return(load_balancer)
@@ -255,26 +254,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
         expect(::Gitlab::Database::LoadBalancing::Logger).not_to receive(:info)
 
         service.replace_hosts([address_foo, address_bar])
-      end
-    end
-
-    context 'when LOAD_BALANCER_PARALLEL_DISCONNECT is false' do
-      before do
-        stub_env('LOAD_BALANCER_PARALLEL_DISCONNECT', 'false')
-      end
-
-      it 'disconnects them sequentially' do
-        host = load_balancer.host_list.hosts.first
-
-        allow(service)
-          .to receive(:disconnect_timeout)
-          .and_return(2)
-
-        expect(host)
-          .to receive(:disconnect!)
-          .with(timeout: 2)
-
-        service.replace_hosts([address_bar])
       end
     end
   end

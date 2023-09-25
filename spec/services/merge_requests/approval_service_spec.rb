@@ -82,39 +82,12 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
         it 'records a value' do
           service.execute(merge_request)
 
-          expect(merge_request.approvals.last.patch_id_sha).not_to be_nil
+          expect(merge_request.approvals.last.patch_id_sha).to eq(merge_request.current_patch_id_sha)
         end
 
-        context 'when base_sha is nil' do
+        context 'when MergeRequest#current_patch_id_sha is nil' do
           it 'records patch_id_sha as nil' do
-            expect_next_instance_of(Gitlab::Diff::DiffRefs) do |diff_ref|
-              expect(diff_ref).to receive(:base_sha).at_least(:once).and_return(nil)
-            end
-
-            service.execute(merge_request)
-
-            expect(merge_request.approvals.last.patch_id_sha).to be_nil
-          end
-        end
-
-        context 'when head_sha is nil' do
-          it 'records patch_id_sha as nil' do
-            expect_next_instance_of(Gitlab::Diff::DiffRefs) do |diff_ref|
-              expect(diff_ref).to receive(:head_sha).at_least(:once).and_return(nil)
-            end
-
-            service.execute(merge_request)
-
-            expect(merge_request.approvals.last.patch_id_sha).to be_nil
-          end
-        end
-
-        context 'when base_sha and head_sha match' do
-          it 'records patch_id_sha as nil' do
-            expect_next_instance_of(Gitlab::Diff::DiffRefs) do |diff_ref|
-              expect(diff_ref).to receive(:base_sha).at_least(:once).and_return("abc123")
-              expect(diff_ref).to receive(:head_sha).at_least(:once).and_return("abc123")
-            end
+            expect(merge_request).to receive(:current_patch_id_sha).and_return(nil)
 
             service.execute(merge_request)
 

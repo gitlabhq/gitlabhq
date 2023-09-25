@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign */
 
-const { statSync } = require('fs');
+const { statSync, existsSync } = require('fs');
 const path = require('path');
 const glob = require('glob');
 const sass = require('sass');
 const webpack = require('webpack');
+const { red } = require('chalk');
 const IS_EE = require('../../config/helpers/is_ee_env');
 const IS_JH = require('../../config/helpers/is_jh_env');
 const gitlabWebpackConfig = require('../../config/webpack.config');
@@ -182,6 +183,22 @@ module.exports = function storybookWebpackConfig({ config }) {
   // which depends on the existence of a global `gon` variable.
   // By deleting the alias, imports of this path will resolve as expected.
   delete config.resolve.alias['@gitlab/svgs/dist/icons.svg'];
+
+  // Fail soft if a story requires a fixture, and the fixture file is absent.
+  // Without this, webpack fails at build phase, with a hard to read error.
+  // This rewrite rule pushes the error to be runtime.
+  config.plugins.push(
+    new webpack.NormalModuleReplacementPlugin(/^test_fixtures/, (resource) => {
+      const filename = resource.request.replace(
+        /^test_fixtures/,
+        config.resolve.alias.test_fixtures,
+      );
+      if (!existsSync(filename)) {
+        console.error(red(`\nFixture '${filename}' wasn't found.\n`));
+        resource.request = path.join(ROOT, 'storybook', 'fixture_stub.js');
+      }
+    }),
+  );
 
   return config;
 };

@@ -119,13 +119,13 @@ shared configuration in a hidden job:
 
 test-job:
   extends:
-    - .docker-config
+    - .test-config
   script:
     - bundle exec rake rspec
 
 lint-job:
   extends:
-    - .docker-config
+    - .test-config
   script:
     - yarn run prettier
 ```

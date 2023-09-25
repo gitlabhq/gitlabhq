@@ -47626,6 +47626,9 @@ msgstr ""
 msgid "The selected image is too large."
 msgstr ""
 
+msgid "The selected project is not available"
+msgstr ""
+
 msgid "The snippet can be accessed without any authentication."
 msgstr ""
 

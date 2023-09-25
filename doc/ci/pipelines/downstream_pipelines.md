@@ -68,9 +68,6 @@ Multi-project pipelines:
 - Are visible in the downstream project's pipeline list.
 - Are independent, so there are no nesting limits.
 
-For more information, see the **Cross-project Pipeline Triggering and Visualization** demo at
-[GitLab@learn](https://about.gitlab.com/learn/) in the **Continuous Integration** section.
-
 If you use a public project to trigger downstream pipelines in a private project,
 make sure there are no confidentiality problems. The upstream project's pipelines page
 always displays:

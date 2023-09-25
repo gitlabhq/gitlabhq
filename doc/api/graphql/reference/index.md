@@ -80,7 +80,7 @@ WARNING:
 **Introduced** in 16.1.
 This feature is an Experiment. It can be changed or removed at any time.
 
-Returns [`AiChatMessageConnection!`](#aichatmessageconnection).
+Returns [`AiMessageConnection!`](#aimessageconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
@@ -91,7 +91,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryaimessagesrequestids"></a>`requestIds` | [`[ID!]`](#id) | Array of request IDs to fetch. |
-| <a id="queryaimessagesroles"></a>`roles` | [`[AiChatMessageRole!]`](#aichatmessagerole) | Array of roles to fetch. |
+| <a id="queryaimessagesroles"></a>`roles` | [`[AiMessageRole!]`](#aimessagerole) | Array of roles to fetch. |
 
 ### `Query.auditEventDefinitions`
 
@@ -7951,28 +7951,28 @@ The edge type for [`AgentConfiguration`](#agentconfiguration).
 | <a id="agentconfigurationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="agentconfigurationedgenode"></a>`node` | [`AgentConfiguration`](#agentconfiguration) | The item at the end of the edge. |
 
-#### `AiChatMessageConnection`
+#### `AiMessageConnection`
 
-The connection type for [`AiChatMessage`](#aichatmessage).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aichatmessageconnectionedges"></a>`edges` | [`[AiChatMessageEdge]`](#aichatmessageedge) | A list of edges. |
-| <a id="aichatmessageconnectionnodes"></a>`nodes` | [`[AiChatMessage]`](#aichatmessage) | A list of nodes. |
-| <a id="aichatmessageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `AiChatMessageEdge`
-
-The edge type for [`AiChatMessage`](#aichatmessage).
+The connection type for [`AiMessage`](#aimessage).
 
 ##### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aichatmessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="aichatmessageedgenode"></a>`node` | [`AiChatMessage`](#aichatmessage) | The item at the end of the edge. |
+| <a id="aimessageconnectionedges"></a>`edges` | [`[AiMessageEdge]`](#aimessageedge) | A list of edges. |
+| <a id="aimessageconnectionnodes"></a>`nodes` | [`[AiMessage]`](#aimessage) | A list of nodes. |
+| <a id="aimessageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiMessageEdge`
+
+The edge type for [`AiMessage`](#aimessage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aimessageedgenode"></a>`node` | [`AiMessage`](#aimessage) | The item at the end of the edge. |
 
 #### `AlertManagementAlertConnection`
 
@@ -13127,22 +13127,24 @@ Information about a connected Agent.
 | <a id="agentmetadatapodnamespace"></a>`podNamespace` | [`String`](#string) | Namespace of the pod running the Agent. |
 | <a id="agentmetadataversion"></a>`version` | [`String`](#string) | Agent version tag. |
 
-### `AiChatMessage`
+### `AiMessage`
 
-GitLab Duo Chat message.
+AI features communication message.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aichatmessagecontent"></a>`content` | [`String`](#string) | Content of the message. Can be null for failed responses. |
-| <a id="aichatmessagecontenthtml"></a>`contentHtml` | [`String`](#string) | Content of the message in HTML format. Can be null for failed responses. |
-| <a id="aichatmessageerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI (assistant) response. |
-| <a id="aichatmessageextras"></a>`extras` | [`AiMessageExtras`](#aimessageextras) | Extra message metadata. |
-| <a id="aichatmessageid"></a>`id` | [`ID`](#id) | UUID of the message. |
-| <a id="aichatmessagerequestid"></a>`requestId` | [`ID`](#id) | UUID of the original request message. Shared between chat prompt and response. |
-| <a id="aichatmessagerole"></a>`role` | [`AiChatMessageRole!`](#aichatmessagerole) | Message role. |
-| <a id="aichatmessagetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
+| <a id="aimessagechunkid"></a>`chunkId` | [`Int`](#int) | Incremental ID for a chunk from a streamed message. Null when it is not a streamed message. |
+| <a id="aimessagecontent"></a>`content` | [`String`](#string) | Raw response content. |
+| <a id="aimessagecontenthtml"></a>`contentHtml` | [`String`](#string) | Response content as HTML. |
+| <a id="aimessageerrors"></a>`errors` | [`[String!]`](#string) | Message errors. |
+| <a id="aimessageextras"></a>`extras` | [`AiMessageExtras`](#aimessageextras) | Extra message metadata. |
+| <a id="aimessageid"></a>`id` | [`ID`](#id) | UUID of the message. |
+| <a id="aimessagerequestid"></a>`requestId` | [`String`](#string) | UUID of the original request. Shared between chat prompt and response. |
+| <a id="aimessagerole"></a>`role` | [`AiMessageRole!`](#aimessagerole) | Message owner role. |
+| <a id="aimessagetimestamp"></a>`timestamp` | [`Time!`](#time) | Message creation timestamp. |
+| <a id="aimessagetype"></a>`type` | [`AiMessageType`](#aimessagetype) | Message type. |
 
 ### `AiMessageExtras`
 
@@ -13153,25 +13155,6 @@ Extra metadata for AI message.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aimessageextrassources"></a>`sources` | [`[JSON!]`](#json) | Sources used to form the message. |
-
-### `AiResponse`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="airesponsechunkid"></a>`chunkId` | [`Int`](#int) | Incremental ID for a chunk from a streamed response. Null when it is not a streamed response. |
-| <a id="airesponsecontent"></a>`content` | [`String`](#string) | Raw response content. |
-| <a id="airesponsecontenthtml"></a>`contentHtml` | [`String`](#string) | Response content as HTML. |
-| <a id="airesponseerrors"></a>`errors` | [`[String!]`](#string) | Errors return by AI API as response. |
-| <a id="airesponseextras"></a>`extras` | [`AiMessageExtras`](#aimessageextras) | Extra message metadata. |
-| <a id="airesponseid"></a>`id` | [`ID`](#id) | UUID of the message. |
-| <a id="airesponserequestid"></a>`requestId` | [`String`](#string) | ID of the original request. |
-| <a id="airesponseresponsebody"></a>`responseBody` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. Moved to content attribute. |
-| <a id="airesponseresponsebodyhtml"></a>`responseBodyHtml` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. Moved to contentHtml attribute. |
-| <a id="airesponserole"></a>`role` | [`AiChatMessageRole!`](#aichatmessagerole) | Message role. |
-| <a id="airesponsetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
-| <a id="airesponsetype"></a>`type` | [`AiMessageType`](#aimessagetype) | Message type. |
 
 ### `AlertManagementAlert`
 
@@ -26758,15 +26741,15 @@ Agent token statuses.
 | <a id="agenttokenstatusactive"></a>`ACTIVE` | Active agent token. |
 | <a id="agenttokenstatusrevoked"></a>`REVOKED` | Revoked agent token. |
 
-### `AiChatMessageRole`
+### `AiMessageRole`
 
-Roles to filter in chat message.
+Possible message roles for AI features.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="aichatmessageroleassistant"></a>`ASSISTANT` | Filter only assistant messages. |
-| <a id="aichatmessagerolesystem"></a>`SYSTEM` | Filter only system messages. |
-| <a id="aichatmessageroleuser"></a>`USER` | Filter only user messages. |
+| <a id="aimessageroleassistant"></a>`ASSISTANT` | assistant message. |
+| <a id="aimessagerolesystem"></a>`SYSTEM` | system message. |
+| <a id="aimessageroleuser"></a>`USER` | user message. |
 
 ### `AiMessageType`
 
