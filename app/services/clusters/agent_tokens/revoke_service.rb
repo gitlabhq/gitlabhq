@@ -13,7 +13,7 @@ module Clusters
       def execute
         return error_no_permissions unless current_user.can?(:create_cluster, token.agent.project)
 
-        if token.update(status: token.class.statuses[:revoked])
+        if token.revoke!
           log_activity_event(token)
 
           ServiceResponse.success

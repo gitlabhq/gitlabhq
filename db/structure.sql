@@ -12052,6 +12052,7 @@ CREATE TABLE application_settings (
     decompress_archive_file_timeout integer DEFAULT 210 NOT NULL,
     search_rate_limit_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     snowplow_database_collector_hostname text,
+    container_registry_db_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -16602,8 +16603,6 @@ CREATE TABLE geo_node_statuses (
     replication_slots_count integer,
     replication_slots_used_count integer,
     replication_slots_max_retained_wal_bytes bigint,
-    wikis_synced_count integer,
-    wikis_failed_count integer,
     job_artifacts_count integer,
     job_artifacts_synced_count integer,
     job_artifacts_failed_count integer,
@@ -16611,28 +16610,18 @@ CREATE TABLE geo_node_statuses (
     revision character varying,
     repositories_verified_count integer,
     repositories_verification_failed_count integer,
-    wikis_verified_count integer,
-    wikis_verification_failed_count integer,
     lfs_objects_synced_missing_on_primary_count integer,
     job_artifacts_synced_missing_on_primary_count integer,
     repositories_checksummed_count integer,
     repositories_checksum_failed_count integer,
     repositories_checksum_mismatch_count integer,
-    wikis_checksummed_count integer,
-    wikis_checksum_failed_count integer,
-    wikis_checksum_mismatch_count integer,
     storage_configuration_digest bytea,
     repositories_retrying_verification_count integer,
-    wikis_retrying_verification_count integer,
     projects_count integer,
     container_repositories_count integer,
     container_repositories_synced_count integer,
     container_repositories_failed_count integer,
     container_repositories_registry_count integer,
-    design_repositories_count integer,
-    design_repositories_synced_count integer,
-    design_repositories_failed_count integer,
-    design_repositories_registry_count integer,
     status jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
@@ -23650,6 +23639,7 @@ CREATE TABLE subscription_add_on_purchases (
     quantity integer NOT NULL,
     expires_on date NOT NULL,
     purchase_xid text NOT NULL,
+    last_assigned_users_refreshed_at timestamp with time zone,
     CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255))
 );
 

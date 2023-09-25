@@ -708,6 +708,8 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
         describe 'POST /projects/:id/export_relations' do
           it_behaves_like '404 response' do
+            let(:message) { '404 Not Found' }
+
             subject(:request) { post api(path, user) }
           end
         end
@@ -721,12 +723,16 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           end
 
           it_behaves_like '404 response' do
-            subject(:request) { post api(path, user) }
+            let(:message) { '404 Not Found' }
+
+            subject(:request) { get api(download_path, user) }
           end
         end
 
         describe 'GET /projects/:id/export_relations/status' do
           it_behaves_like '404 response' do
+            let(:message) { '404 Not Found' }
+
             subject(:request) { get api(status_path, user) }
           end
         end
@@ -756,12 +762,6 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         it_behaves_like '403 response' do
           subject(:request) { get api(status_path, developer) }
         end
-      end
-    end
-
-    context 'when bulk import is disabled' do
-      it_behaves_like '404 response' do
-        subject(:request) { get api(path, user) }
       end
     end
   end

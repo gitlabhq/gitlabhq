@@ -36,13 +36,6 @@ module ActiveRecord
       def aliased_types(name, fallback)
         fallback
       end
-
-      # Adds a compatible_table_definition method that
-      # returns the value passed in so that all of the
-      # versioned Migrations can always return super.
-      def compatible_table_definition(table)
-        table
-      end
     end
   end
 end

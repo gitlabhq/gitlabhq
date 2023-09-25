@@ -95,6 +95,15 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
 
       expect(agent_token.token).to start_with described_class::TOKEN_PREFIX
     end
+
+    it 'is revoked on revoke!' do
+      agent_token = build(:cluster_agent_token, token_encrypted: nil)
+      agent_token.save!
+
+      agent_token.revoke!
+
+      expect(agent_token.active?).to be_falsey
+    end
   end
 
   describe '#to_ability_name' do

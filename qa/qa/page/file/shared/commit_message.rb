@@ -14,7 +14,7 @@ module QA
               element :commit_message_field
             end
 
-            base.view 'app/assets/javascripts/repository/components/last_commit.vue' do
+            base.view 'app/assets/javascripts/repository/components/commit_info.vue' do
               element :commit_content
             end
 

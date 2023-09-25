@@ -231,7 +231,8 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 
 ## Set CI/CD limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352175) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352175) in GitLab 14.10.
+> - **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
 
 You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
 from the Admin Area:
@@ -243,7 +244,6 @@ from the Admin Area:
 1. In the **CI/CD limits** section, you can set the following limits:
    - **Maximum number of jobs in a single pipeline**
    - **Total number of jobs in currently active pipelines**
-   - **Maximum number of active pipelines per project**
    - **Maximum number of pipeline subscriptions to and from a project**
    - **Maximum number of pipeline schedules**
    - **Maximum number of DAG dependencies that a job can have**

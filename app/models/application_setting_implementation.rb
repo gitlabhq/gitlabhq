@@ -51,6 +51,7 @@ module ApplicationSettingImplementation
         container_registry_token_expire_delay: 5,
         container_registry_vendor: '',
         container_registry_version: '',
+        container_registry_db_enabled: false,
         custom_http_clone_url_root: nil,
         decompress_archive_file_timeout: 210,
         default_artifacts_expire_in: '30 days',

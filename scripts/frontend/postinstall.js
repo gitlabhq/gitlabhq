@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 const chalk = require('chalk');
 
 // check that fsevents is available if we're on macOS
@@ -24,5 +24,7 @@ console.log(`${chalk.green('success')} Dependency postinstall check passed.`);
 
 // Apply any patches to our packages
 // See https://gitlab.com/gitlab-org/gitlab/-/issues/336138
-execSync('node_modules/.bin/patch-package --error-on-fail');
-console.log(`${chalk.green('success')} Packages successfully patched.`);
+process.exitCode =
+  spawnSync('node_modules/.bin/patch-package', ['--error-on-fail', '--error-on-warn'], {
+    stdio: ['ignore', 'inherit', 'inherit'],
+  }).status ?? 1;

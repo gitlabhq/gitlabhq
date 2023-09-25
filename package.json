@@ -176,7 +176,7 @@
     "mousetrap": "1.6.5",
     "orderedmap": "^2.1.1",
     "papaparse": "^5.3.1",
-    "patch-package": "^6.4.7",
+    "patch-package": "6.5.1",
     "pdfjs-dist": "^2.16.105",
     "pikaday": "^1.8.0",
     "popper.js": "^1.16.1",

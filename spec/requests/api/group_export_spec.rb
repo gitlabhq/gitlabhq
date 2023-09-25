@@ -325,8 +325,13 @@ RSpec.describe API::GroupExport, feature_category: :importers do
     end
 
     context 'when bulk import is disabled' do
+      before do
+        stub_application_setting(bulk_import_enabled: false)
+      end
+
       it_behaves_like '404 response' do
-        let(:request) { get api(path, user) }
+        let(:message) { '404 Not Found' }
+        let(:request) { post api(path, user) }
       end
     end
   end

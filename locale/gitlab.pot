@@ -27504,9 +27504,6 @@ msgstr ""
 msgid "Last year"
 msgstr ""
 
-msgid "LastCommit|authored"
-msgstr ""
-
 msgid "LastPushEvent|You pushed to"
 msgstr ""
 
@@ -46689,9 +46686,6 @@ msgid "TanukiBot|There was an error communicating with GitLab Duo Chat. Please t
 msgstr ""
 
 msgid "TanukiBot|What is a fork?"
-msgstr ""
-
-msgid "Targe branch"
 msgstr ""
 
 msgid "Target"

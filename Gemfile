@@ -253,7 +253,7 @@ gem 'rainbow', '~> 3.0'
 gem 'ruby-progressbar', '~> 1.10'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '2.1.2'
+gem 're2', '2.1.3'
 
 # Misc
 
@@ -349,6 +349,7 @@ gem 'sentry-sidekiq', '~> 5.8.0'
 gem 'pg_query', '~> 4.2.3'
 
 gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation'
+gem 'gitlab-http', path: 'gems/gitlab-http'
 
 gem 'premailer-rails', '~> 1.10.3'
 

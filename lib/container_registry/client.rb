@@ -10,6 +10,7 @@ module ContainerRegistry
     REGISTRY_VERSION_HEADER = 'gitlab-container-registry-version'
     REGISTRY_FEATURES_HEADER = 'gitlab-container-registry-features'
     REGISTRY_TAG_DELETE_FEATURE = 'tag_delete'
+    REGISTRY_DB_ENABLED_HEADER = 'gitlab-container-registry-database-enabled'
 
     DEFAULT_TAGS_PAGE_SIZE = 10000
 
@@ -47,11 +48,13 @@ module ContainerRegistry
 
       version = response.headers[REGISTRY_VERSION_HEADER]
       features = response.headers.fetch(REGISTRY_FEATURES_HEADER, '')
+      db_enabled = response.headers.fetch(REGISTRY_DB_ENABLED_HEADER, '')
 
       {
         version: version,
         features: features.split(',').map(&:strip),
-        vendor: version ? 'gitlab' : 'other'
+        vendor: version ? 'gitlab' : 'other',
+        db_enabled: ::Gitlab::Utils.to_boolean(db_enabled, default: false)
       }
     end
 

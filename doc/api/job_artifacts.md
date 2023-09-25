@@ -315,9 +315,20 @@ If the artifacts were deleted successfully, a response with status `204 No Conte
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223793) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `bulk_expire_project_artifacts`. Enabled by default on GitLab self-managed. Enabled on GitLab.com.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350609) in GitLab 14.10.
 
-Delete artifacts of a project that can be deleted.
+Delete artifacts eligible for deletion in a project. By default, artifacts from
+[the most recent successful pipeline of each ref](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+are not deleted.
 
-By default, [artifacts from the most recent successful pipeline of each ref are kept](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+Requests to this endpoint set the expiry of all artifacts that
+can be deleted to the current time. The files are then deleted from the system as part
+of the regular cleanup of expired job artifacts. Job logs are never deleted.
+
+The regular cleanup occurs asynchronously on a schedule, so there might be a short delay
+before artifacts are deleted.
+
+Prerequisite:
+
+- You must have at least the Maintainer role for the project.
 
 ```plaintext
 DELETE /projects/:id/artifacts
@@ -333,8 +344,4 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/artifacts"
 ```
 
-NOTE:
-At least Maintainer role is required to delete artifacts.
-
-Schedules a worker to update to the current time the expiry of all artifacts that can be deleted.
 A response with status `202 Accepted` is returned.

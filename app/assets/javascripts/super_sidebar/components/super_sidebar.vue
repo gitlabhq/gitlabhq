@@ -163,7 +163,7 @@ export default {
         <div class="gl-flex-grow-1 gl-overflow-auto" data-testid="nav-container">
           <div
             id="super-sidebar-context-header"
-            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-sm super-sidebar-context-header"
+            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
           >
             {{ sidebarData.current_context_header }}
           </div>

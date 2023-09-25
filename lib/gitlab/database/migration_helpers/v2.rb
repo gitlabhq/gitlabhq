@@ -43,7 +43,7 @@ module Gitlab
               end
             end
 
-            t.instance_eval(&block) unless block.nil?
+            yield t unless block.nil?
           end
         end
 

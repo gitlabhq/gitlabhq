@@ -9,7 +9,7 @@ class AddAuthorizedScopesToSlackIntegration < Gitlab::Database::Migration[2.1]
     end
 
     create_table :slack_integrations_scopes do |t|
-      references :slack_api_scope,
+      t.references :slack_api_scope,
         null: false,
         index: false, # See composite index
         foreign_key: {
@@ -17,7 +17,7 @@ class AddAuthorizedScopesToSlackIntegration < Gitlab::Database::Migration[2.1]
           on_delete: :cascade
         }
 
-      references :slack_integration,
+      t.references :slack_integration,
         null: false,
         index: false, # see composite index
         foreign_key: {

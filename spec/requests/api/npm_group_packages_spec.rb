@@ -22,11 +22,11 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
 
       where(:auth, :group_visibility, :project_visibility, :user_role, :expected_status) do
         nil                    | :public   | :public   | nil        | :ok
-        nil                    | :public   | :internal | nil        | :not_found
-        nil                    | :public   | :private  | nil        | :not_found
-        nil                    | :internal | :internal | nil        | :not_found
-        nil                    | :internal | :private  | nil        | :not_found
-        nil                    | :private  | :private  | nil        | :not_found
+        nil                    | :public   | :internal | nil        | :unauthorized
+        nil                    | :public   | :private  | nil        | :unauthorized
+        nil                    | :internal | :internal | nil        | :unauthorized
+        nil                    | :internal | :private  | nil        | :unauthorized
+        nil                    | :private  | :private  | nil        | :unauthorized
 
         :oauth                 | :public   | :public   | :guest     | :ok
         :oauth                 | :public   | :internal | :guest     | :ok

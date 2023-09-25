@@ -24,6 +24,7 @@ RSpec/FilePath:
     - 'spec/benchmarks/banzai_benchmark.rb'
     - 'spec/docs_screenshots/container_registry_docs.rb'
     - 'spec/docs_screenshots/wiki_docs.rb'
+    - 'spec/initializers/gitlab_http_spec.rb'
     - 'spec/lib/error_tracking/sentry_client/event_spec.rb'
     - 'spec/lib/gitlab/import_export/import_export_spec.rb'
     - 'spec/lib/gitlab/mail_room/mail_room_spec.rb'

@@ -68,22 +68,22 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
       nil                    | :unscoped                    | false | :public   | nil       | :accept   | :ok
       nil                    | :non_existing                | true  | :public   | nil       | :redirect | :redirected
       nil                    | :non_existing                | false | :public   | nil       | :reject   | :not_found
-      nil                    | :scoped_naming_convention    | true  | :private  | nil       | :reject   | :not_found
-      nil                    | :scoped_naming_convention    | false | :private  | nil       | :reject   | :not_found
-      nil                    | :scoped_no_naming_convention | true  | :private  | nil       | :reject   | :not_found
-      nil                    | :scoped_no_naming_convention | false | :private  | nil       | :reject   | :not_found
-      nil                    | :unscoped                    | true  | :private  | nil       | :reject   | :not_found
-      nil                    | :unscoped                    | false | :private  | nil       | :reject   | :not_found
+      nil                    | :scoped_naming_convention    | true  | :private  | nil       | :reject   | :unauthorized
+      nil                    | :scoped_naming_convention    | false | :private  | nil       | :reject   | :unauthorized
+      nil                    | :scoped_no_naming_convention | true  | :private  | nil       | :reject   | :unauthorized
+      nil                    | :scoped_no_naming_convention | false | :private  | nil       | :reject   | :unauthorized
+      nil                    | :unscoped                    | true  | :private  | nil       | :reject   | :unauthorized
+      nil                    | :unscoped                    | false | :private  | nil       | :reject   | :unauthorized
       nil                    | :non_existing                | true  | :private  | nil       | :redirect | :redirected
-      nil                    | :non_existing                | false | :private  | nil       | :reject   | :not_found
-      nil                    | :scoped_naming_convention    | true  | :internal | nil       | :reject   | :not_found
-      nil                    | :scoped_naming_convention    | false | :internal | nil       | :reject   | :not_found
-      nil                    | :scoped_no_naming_convention | true  | :internal | nil       | :reject   | :not_found
-      nil                    | :scoped_no_naming_convention | false | :internal | nil       | :reject   | :not_found
-      nil                    | :unscoped                    | true  | :internal | nil       | :reject   | :not_found
-      nil                    | :unscoped                    | false | :internal | nil       | :reject   | :not_found
+      nil                    | :non_existing                | false | :private  | nil       | :reject   | :unauthorized
+      nil                    | :scoped_naming_convention    | true  | :internal | nil       | :reject   | :unauthorized
+      nil                    | :scoped_naming_convention    | false | :internal | nil       | :reject   | :unauthorized
+      nil                    | :scoped_no_naming_convention | true  | :internal | nil       | :reject   | :unauthorized
+      nil                    | :scoped_no_naming_convention | false | :internal | nil       | :reject   | :unauthorized
+      nil                    | :unscoped                    | true  | :internal | nil       | :reject   | :unauthorized
+      nil                    | :unscoped                    | false | :internal | nil       | :reject   | :unauthorized
       nil                    | :non_existing                | true  | :internal | nil       | :redirect | :redirected
-      nil                    | :non_existing                | false | :internal | nil       | :reject   | :not_found
+      nil                    | :non_existing                | false | :internal | nil       | :reject   | :unauthorized
 
       :oauth                 | :scoped_naming_convention    | true  | :public   | :guest    | :accept   | :ok
       :oauth                 | :scoped_naming_convention    | true  | :public   | :reporter | :accept   | :ok
@@ -280,9 +280,13 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
         end
       end
 
-      if (scope == :group && params[:package_name_type] == :non_existing) &&
-          (!params[:request_forward] || (!params[:auth] && params[:request_forward] && params[:visibility] != :public))
+      if scope == :group && params[:package_name_type] == :non_existing && !params[:request_forward] && params[:auth]
         status = :not_found
+      end
+
+      if scope == :group && params[:package_name_type] == :non_existing && params[:request_forward] && !params[:auth] && params[:visibility] != :public
+        example_name = 'reject metadata request'
+        status = :unauthorized
       end
 
       # Check the error message for :not_found
@@ -522,14 +526,14 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
       nil                    | :scoped_no_naming_convention | :public   | nil       | :accept   | :ok
       nil                    | :unscoped                    | :public   | nil       | :accept   | :ok
       nil                    | :non_existing                | :public   | nil       | :reject   | :not_found
-      nil                    | :scoped_naming_convention    | :private  | nil       | :reject   | :not_found
-      nil                    | :scoped_no_naming_convention | :private  | nil       | :reject   | :not_found
-      nil                    | :unscoped                    | :private  | nil       | :reject   | :not_found
-      nil                    | :non_existing                | :private  | nil       | :reject   | :not_found
-      nil                    | :scoped_naming_convention    | :internal | nil       | :reject   | :not_found
-      nil                    | :scoped_no_naming_convention | :internal | nil       | :reject   | :not_found
-      nil                    | :unscoped                    | :internal | nil       | :reject   | :not_found
-      nil                    | :non_existing                | :internal | nil       | :reject   | :not_found
+      nil                    | :scoped_naming_convention    | :private  | nil       | :reject   | :unauthorized
+      nil                    | :scoped_no_naming_convention | :private  | nil       | :reject   | :unauthorized
+      nil                    | :unscoped                    | :private  | nil       | :reject   | :unauthorized
+      nil                    | :non_existing                | :private  | nil       | :reject   | :unauthorized
+      nil                    | :scoped_naming_convention    | :internal | nil       | :reject   | :unauthorized
+      nil                    | :scoped_no_naming_convention | :internal | nil       | :reject   | :unauthorized
+      nil                    | :unscoped                    | :internal | nil       | :reject   | :unauthorized
+      nil                    | :non_existing                | :internal | nil       | :reject   | :unauthorized
 
       :oauth                 | :scoped_naming_convention    | :public   | :guest    | :accept   | :ok
       :oauth                 | :scoped_naming_convention    | :public   | :reporter | :accept   | :ok
