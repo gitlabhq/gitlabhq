@@ -6,6 +6,12 @@ module Mutations
       class Retry < Base
         graphql_name 'JobRetry'
 
+        JobID = ::Types::GlobalIDType[::Ci::Processable]
+
+        argument :id, JobID,
+                 required: true,
+                 description: 'ID of the job to mutate.'
+
         field :job,
               Types::Ci::JobType,
               null: true,

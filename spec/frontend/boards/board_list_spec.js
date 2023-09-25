@@ -202,8 +202,6 @@ describe('Board list component', () => {
 
       describe('handleDragOnEnd', () => {
         beforeEach(() => {
-          jest.spyOn(wrapper.vm, 'moveItem').mockImplementation(() => {});
-
           startDrag();
         });
 

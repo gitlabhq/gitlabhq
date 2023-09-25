@@ -88,6 +88,20 @@ class NotificationService
     end
   end
 
+  # Notify the owner of the account when a new application is created
+  def application_created(user)
+    return unless user.can?(:receive_notifications)
+
+    mailer.application_created_email(user).deliver_now
+  end
+
+  # Notify the owner of the account when an application is authorized
+  def application_authorized(user)
+    return unless user.can?(:receive_notifications)
+
+    mailer.application_authorized_email(user).deliver_now
+  end
+
   # Notify the owner of the account when a new personal access token is created
   def access_token_created(user, token_name)
     return unless user.can?(:receive_notifications)

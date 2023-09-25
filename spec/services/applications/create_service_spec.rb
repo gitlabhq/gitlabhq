@@ -12,7 +12,13 @@ RSpec.describe ::Applications::CreateService do
   context 'when scopes are present' do
     let(:params) { attributes_for(:application, scopes: ['read_user']) }
 
-    it { expect { subject.execute(test_request) }.to change { Doorkeeper::Application.count }.by(1) }
+    it 'receive notification and change application count' do
+      notification_service = instance_double(NotificationService)
+      allow(NotificationService).to receive(:new).and_return(notification_service)
+
+      expect(notification_service).to receive(:application_created).with(user)
+      expect { subject.execute(test_request) }.to change { Doorkeeper::Application.count }.by(1)
+    end
   end
 
   context 'when scopes are missing' do

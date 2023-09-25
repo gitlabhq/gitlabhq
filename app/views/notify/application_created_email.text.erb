@@ -1,0 +1,7 @@
+<p>
+  <%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
+</p>
+<p>
+  <% docs_link = link_to _("documentation"), help_page_url('integration/oauth_provider'), target: '_blank', rel: 'noopener noreferrer' %>
+  <%= s_('Notify|A new OAuth 2 application has been created. If you did not create this application, check the OAuth 2 applications %{docs_link}.').html_safe % { docs_link: docs_link } %>
+</p>

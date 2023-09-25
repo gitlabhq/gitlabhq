@@ -1,6 +1,6 @@
 #import "../fragments/job.fragment.graphql"
 
-mutation retryJob($id: CiBuildID!) {
+mutation retryJob($id: CiProcessableID!) {
   jobRetry(input: { id: $id }) {
     job {
       ...Job

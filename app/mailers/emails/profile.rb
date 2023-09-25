@@ -82,6 +82,22 @@ module Emails
       )
     end
 
+    def application_created_email(user)
+      return unless user
+
+      @user = user
+
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("A new application has been created")))
+    end
+
+    def application_authorized_email(user)
+      return unless user
+
+      @user = user
+
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("An application has been authorized")))
+    end
+
     def access_token_created_email(user, token_name)
       return unless user&.active?
 

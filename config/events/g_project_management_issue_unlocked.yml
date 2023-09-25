@@ -1,0 +1,25 @@
+---
+description: An issue was unlocked
+category: InternalEventTracking
+action: g_project_management_issue_unlocked
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_section: dev
+product_stage: plan
+product_group: project_management
+milestone: "16.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131847
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+

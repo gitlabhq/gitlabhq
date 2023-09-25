@@ -1812,6 +1812,9 @@ msgstr ""
 msgid "A new Release %{tag} for %{name} was published. Visit the Releases page to read more about it:"
 msgstr ""
 
+msgid "A new application has been created"
+msgstr ""
+
 msgid "A new email address has been added to your GitLab account: %{email}"
 msgstr ""
 
@@ -4917,6 +4920,9 @@ msgid "An alert has been triggered in %{project_path}."
 msgstr ""
 
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
+msgstr ""
+
+msgid "An application has been authorized"
 msgstr ""
 
 msgid "An email notification was recently sent from the admin panel. Please wait %{wait_time_in_words} before attempting to send another message."
@@ -31893,6 +31899,12 @@ msgstr ""
 msgid "Notify|A new GPG key was added to your account:"
 msgstr ""
 
+msgid "Notify|A new OAuth 2 application has been authorized. If you did not expect this, check the authorized OAuth 2 applications %{docs_link}."
+msgstr ""
+
+msgid "Notify|A new OAuth 2 application has been created. If you did not create this application, check the OAuth 2 applications %{docs_link}."
+msgstr ""
+
 msgid "Notify|A remote mirror update has failed."
 msgstr ""
 
@@ -55930,6 +55942,9 @@ msgid "design"
 msgstr ""
 
 msgid "disabled"
+msgstr ""
+
+msgid "documentation"
 msgstr ""
 
 msgid "does not exist"

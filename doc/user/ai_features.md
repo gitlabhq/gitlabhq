@@ -32,7 +32,7 @@ The [Generally Available](../policy/experiment-beta-support.md#generally-availab
 
 [Experiment features](../policy/experiment-beta-support.md#experiment) and [Beta features](../policy/experiment-beta-support.md#beta) (besides Code Suggestions) on SaaS must be enabled by a user who has the Owner role in the group. Their usage is subject to the [Testing Terms of Use](https://about.gitlab.com/handbook/legal/testing-agreement/).
 
-In addition, all features built on large language models (LLM) from Google, Anthropic or OpenAI require that [third-party AI features are enabled](group/manage.md#enable-third-party-ai-features) (which they are by default). The table above shows which features are built on which LLM. To disable AI features powered by third-party APIs, clear this setting.
+In addition, all features built on large language models (LLM) from Google, Anthropic or OpenAI (besides Code Suggestions) require that [third-party AI features are enabled](group/manage.md#enable-third-party-ai-features) (which they are by default). The table above shows which features are built on which LLM. To disable AI features powered by third-party APIs, clear this setting.
 
 Code Suggestions currently has its own settings:
 

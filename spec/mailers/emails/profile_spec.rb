@@ -124,6 +124,46 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
+  describe 'new application has been created' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when valid' do
+      subject { Notify.application_created_email(user) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject /^A new application has been created$/i
+      end
+    end
+  end
+
+  describe 'An application has been authorized' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when valid' do
+      subject { Notify.application_authorized_email(user) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject /^An application has been authorized$/i
+      end
+    end
+  end
+
   describe 'user personal access token has been created' do
     let_it_be(:user) { create(:user) }
     let_it_be(:token) { create(:personal_access_token, user: user) }

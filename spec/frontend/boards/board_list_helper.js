@@ -122,5 +122,7 @@ export default function createComponent({
     },
   });
 
+  jest.spyOn(store, 'dispatch').mockImplementation(() => {});
+
   return component;
 }

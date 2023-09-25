@@ -37,14 +37,30 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
     expect(graphql_errors).not_to be_empty
   end
 
-  it 'retries a job' do
-    post_graphql_mutation(mutation, current_user: user)
+  context 'when the job is a Ci::Build' do
+    it 'retries the build' do
+      post_graphql_mutation(mutation, current_user: user)
 
-    expect(response).to have_gitlab_http_status(:success)
-    new_job_id = GitlabSchema.object_from_id(mutation_response['job']['id']).sync.id
+      expect(response).to have_gitlab_http_status(:success)
+      new_job_id = GitlabSchema.object_from_id(mutation_response['job']['id']).sync.id
 
-    new_job = ::Ci::Build.find(new_job_id)
-    expect(new_job).not_to be_retried
+      new_job = ::Ci::Build.find(new_job_id)
+      expect(new_job).not_to be_retried
+    end
+  end
+
+  context 'when the job is a Ci::Bridge' do
+    let(:job) { create(:ci_bridge, :success, pipeline: pipeline, name: 'puente') }
+
+    it 'retries the bridge' do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      new_job_id = GitlabSchema.object_from_id(mutation_response['job']['id']).sync.id
+
+      new_job = ::Ci::Bridge.find(new_job_id)
+      expect(new_job).not_to be_retried
+    end
   end
 
   context 'when given CI variables' do
