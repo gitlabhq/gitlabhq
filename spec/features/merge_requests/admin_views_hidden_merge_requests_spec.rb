@@ -17,7 +17,7 @@ RSpec.describe 'Admin views hidden merge requests', feature_category: :insider_t
 
     it 'shows a hidden merge request icon' do
       page.within("#merge_request_#{merge_request.id}") do
-        tooltip = format(_('This %{issuable} is hidden because its author has been banned'),
+        tooltip = format(_('This %{issuable} is hidden because its author has been banned.'),
           issuable: _('merge request'))
         expect(page).to have_css("span[title='#{tooltip}']")
         expect(page).to have_css('svg[data-testid="spam-icon"]')

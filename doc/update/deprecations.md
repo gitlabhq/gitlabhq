@@ -1773,6 +1773,20 @@ GitLab 16.0.
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
+### GitLab administrators must have permission to modify protected branches or tags
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.0</span>
+- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12776).
+</div>
+
+GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/protected_branches.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
 ### GitLab self-monitoring project
 
 <div class="deprecation-notes">
@@ -2395,6 +2409,20 @@ GitLab's operational container scanning capabilities no longer require starboard
 
 </div>
 
+<div class="deprecation " data-milestone="16.0">
+
+### Stop publishing GitLab Runner images based on Windows Server 2004 and 20H2
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.0</span>
+- Removal in GitLab <span class="milestone">16.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/31001).
+</div>
+
+As of GitLab 16.0, GitLab Runner images based on Windows Server 2004 and 20H2 will not be provided as these operating systems are end-of-life.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="16.0">
 
 ### Support for Praefect custom metrics endpoint configuration
@@ -2781,6 +2809,20 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 GitLab self-managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/ee/update/deprecations.html#self-managed-certificate-based-integration-with-kubernetes).
 
 </div>
+
+<div class="deprecation breaking-change" data-milestone="15.9">
+
+### `omniauth-authentiq` gem no longer available
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">15.9</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/389452).
+</div>
+
+`omniauth-authentiq` is an OmniAuth strategy gem that was part of GitLab. The company providing authentication services, Authentiq, has shut down. Therefore the gem is being removed.
+
+</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="15.7">
@@ -2800,6 +2842,20 @@ GitLab self-managed customers can still use the feature [with a feature flag](ht
 Previously, variables that referenced or applied alias file variables expanded the value of the `File` type variable. For example, the file contents. This behavior was incorrect because it did not comply with typical shell variable expansion rules. To leak secrets or sensitive information stored in `File` type variables, a user could run an $echo command with the variable as an input parameter.
 
 This breaking change fixes this issue but could disrupt user workflows that work around the behavior. With this change, job variable expansions that reference or apply alias file variables, expand to the file name or path of the `File` type variable, instead of its value, such as the file contents.
+
+</div>
+
+<div class="deprecation " data-milestone="15.7">
+
+### Flowdock integration
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.7</span>
+- Removal in GitLab <span class="milestone">15.7</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379197).
+</div>
+
+As of December 22, 2022, we are removing the Flowdock integration because the service was shut down on August 15, 2022.
 
 </div>
 </div>
@@ -4334,6 +4390,22 @@ Configuring the `per_repository` Gitaly election strategy is [deprecated](https:
 `per_repository` has been the only option since GitLab 14.0.
 
 This change is part of regular maintenance to keep our codebase clean.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="14.9">
+
+### Integrated error tracking disabled by default
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">14.9</span>
+- Removal in GitLab <span class="milestone">14.9</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/353639).
+</div>
+
+In GitLab 14.4, GitLab released an integrated error tracking backend that replaces Sentry. This feature caused database performance issues. In GitLab 14.9, integrated error tracking is removed from GitLab.com, and turned off by default in GitLab self-managed. While we explore the future development of this feature, please consider switching to the Sentry backend by [changing your error tracking to Sentry in your project settings](https://docs.gitlab.com/ee/operations/error_tracking.html#sentry-error-tracking).
+
+For additional background on this removal, please reference [Disable Integrated Error Tracking by Default](https://gitlab.com/groups/gitlab-org/-/epics/7580). If you have feedback please add a comment to [Feedback: Removal of Integrated Error Tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/355493).
 
 </div>
 </div>

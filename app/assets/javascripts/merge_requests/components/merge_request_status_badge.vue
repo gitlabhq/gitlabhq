@@ -70,5 +70,5 @@ export default {
 </script>
 
 <template>
-  <status-badge class="gl-align-self-center gl-mr-3" :issuable-type="issuableType" :state="state" />
+  <status-badge class="gl-align-self-center gl-mr-2" :issuable-type="issuableType" :state="state" />
 </template>

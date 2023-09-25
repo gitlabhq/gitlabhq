@@ -14,7 +14,7 @@ import * as Sentry from '@sentry/browser';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { STATUS_CLOSED, TYPE_ISSUE, IssuableTypeText } from '~/issues/constants';
+import { STATUS_CLOSED, TYPE_ISSUE, issuableTypeText } from '~/issues/constants';
 import {
   ISSUE_STATE_EVENT_CLOSE,
   ISSUE_STATE_EVENT_REOPEN,
@@ -138,7 +138,7 @@ export default {
     issueTypeText() {
       const { issueType } = this;
 
-      return IssuableTypeText[issueType] ?? issueType;
+      return issuableTypeText[issueType] ?? issueType;
     },
     buttonText() {
       return this.isClosed

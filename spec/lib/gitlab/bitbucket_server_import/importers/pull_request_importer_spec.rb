@@ -48,6 +48,68 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       end
     end
 
+    describe 'merge request diff head_commit_sha' do
+      before do
+        allow(pull_request).to receive(:source_branch_sha).and_return(source_branch_sha)
+      end
+
+      context 'when a commit with the source_branch_sha exists' do
+        let(:source_branch_sha) { project.repository.head_commit.sha }
+
+        it 'is equal to the source_branch_sha' do
+          importer.execute
+
+          merge_request = project.merge_requests.find_by_iid(pull_request.iid)
+
+          expect(merge_request.merge_request_diffs.first.head_commit_sha).to eq(source_branch_sha)
+        end
+      end
+
+      context 'when a commit with the source_branch_sha does not exist' do
+        let(:source_branch_sha) { 'x' * Commit::MIN_SHA_LENGTH }
+
+        it 'is nil' do
+          importer.execute
+
+          merge_request = project.merge_requests.find_by_iid(pull_request.iid)
+
+          expect(merge_request.merge_request_diffs.first.head_commit_sha).to be_nil
+        end
+
+        context 'when a commit containing the sha in the message exists' do
+          let(:source_branch_sha) { project.repository.head_commit.sha }
+
+          it 'is equal to the sha' do
+            message = "
+            Squashed commit of the following:
+
+            commit #{source_branch_sha}
+            Author: John Smith <john@smith.com>
+            Date:   Mon Sep 18 15:58:38 2023 +0200
+
+            My commit message
+            "
+
+            Files::CreateService.new(
+              project,
+              project.creator,
+              start_branch: 'master',
+              branch_name: 'master',
+              commit_message: message,
+              file_path: 'files/lfs/ruby.rb',
+              file_content: 'testing'
+            ).execute
+
+            importer.execute
+
+            merge_request = project.merge_requests.find_by_iid(pull_request.iid)
+
+            expect(merge_request.merge_request_diffs.first.head_commit_sha).to eq(source_branch_sha)
+          end
+        end
+      end
+    end
+
     it 'logs its progress' do
       expect(Gitlab::BitbucketServerImport::Logger)
         .to receive(:info).with(include(message: 'starting', iid: pull_request.iid)).and_call_original

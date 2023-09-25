@@ -1,3 +1,4 @@
 .detail-page-description.gl-pt-2.gl-pb-4.gl-display-flex.gl-align-items-baseline.gl-flex-wrap{ class: "#{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
-  = render 'shared/issuable/status_box', issuable: @merge_request
+  .js-mr-status-box{ data: { project_path: @merge_request.project.path_with_namespace, iid: @merge_request.iid, issuable_type: 'merge_request', state: @merge_request.state } }
+  .js-mr-header-metadata-root{ data: { hidden: @merge_request.hidden?.to_s } }
   = merge_request_header(@project, @merge_request)

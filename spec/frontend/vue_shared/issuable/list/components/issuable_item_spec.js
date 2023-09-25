@@ -352,7 +352,7 @@ describe('IssuableItem', () => {
 
       expect(hiddenIcon.props('name')).toBe('spam');
       expect(hiddenIcon.attributes()).toMatchObject({
-        title: 'This issue is hidden because its author has been banned',
+        title: 'This issue is hidden because its author has been banned.',
         arialabel: 'Hidden',
       });
     });

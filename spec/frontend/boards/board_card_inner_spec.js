@@ -235,7 +235,7 @@ describe('Board card component', () => {
 
       expect(tooltip).toBeDefined();
       expect(findHiddenIssueIcon().attributes('title')).toBe(
-        'This issue is hidden because its author has been banned',
+        'This issue is hidden because its author has been banned.',
       );
     });
   });

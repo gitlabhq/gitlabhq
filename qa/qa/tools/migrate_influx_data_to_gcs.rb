@@ -28,7 +28,7 @@ module QA
       # Run Influx Migrator
       # @param [Integer] the last x hours for which data is required
       # @return [void]
-      def self.run(range: 1)
+      def self.run(range: 6)
         migrator = new(range)
 
         QA::Runtime::Logger.info("Fetching Influx data for the last #{range} hours")
@@ -76,9 +76,8 @@ module QA
       # @return void
       def influx_to_csv(influx_bucket, stats_type, data_file_name)
         all_runs = query_api.query(query: query(influx_bucket, stats_type))
-        CSV.open(data_file_name, "wb") do |csv|
+        CSV.open(data_file_name, "wb", col_sep: '|') do |csv|
           stats_array = stats_type == "test-stats" ? TEST_STATS_FIELDS : FABRICATION_STATS_FIELDS
-          csv << stats_array.flatten
           all_runs.each do |table|
             table.records.each do |record|
               csv << stats_array.map { |key| record.values[key] }

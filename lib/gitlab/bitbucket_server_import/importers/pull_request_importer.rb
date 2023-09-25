@@ -30,7 +30,7 @@ module Gitlab
             reviewer_ids: reviewers,
             source_project_id: project.id,
             source_branch: Gitlab::Git.ref_name(object[:source_branch_name]),
-            source_branch_sha: object[:source_branch_sha],
+            source_branch_sha: source_branch_sha,
             target_project_id: project.id,
             target_branch: Gitlab::Git.ref_name(object[:target_branch_name]),
             target_branch_sha: object[:target_branch_sha],
@@ -67,6 +67,14 @@ module Gitlab
               user_finder.find_user_id(by: :email, value: reviewer.dig('user', 'emailAddress'))
             end
           end
+        end
+
+        def source_branch_sha
+          source_branch_sha = project.repository.commit(object[:source_branch_sha])&.sha
+
+          return source_branch_sha if source_branch_sha
+
+          project.repository.find_commits_by_message(object[:source_branch_sha])&.first&.sha
         end
       end
     end

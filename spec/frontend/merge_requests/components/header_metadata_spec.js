@@ -1,5 +1,6 @@
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMount } from '@vue/test-utils';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
+import LockedBadge from '~/issuable/components/locked_badge.vue';
 import HeaderMetadata from '~/merge_requests/components/header_metadata.vue';
 import mrStore from '~/mr_notes/stores';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
@@ -9,21 +10,18 @@ jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/
 describe('HeaderMetadata component', () => {
   let wrapper;
 
-  const findConfidentialIcon = () => wrapper.findComponent(ConfidentialityBadge);
-  const findLockedIcon = () => wrapper.findByTestId('locked');
-  const findHiddenIcon = () => wrapper.findByTestId('hidden');
+  const findConfidentialBadge = () => wrapper.findComponent(ConfidentialityBadge);
+  const findLockedBadge = () => wrapper.findComponent(LockedBadge);
+  const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
 
   const renderTestMessage = (renders) => (renders ? 'renders' : 'does not render');
 
   const createComponent = ({ store, provide }) => {
-    wrapper = shallowMountExtended(HeaderMetadata, {
+    wrapper = shallowMount(HeaderMetadata, {
       mocks: {
         $store: store,
       },
       provide,
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
     });
   };
 
@@ -51,42 +49,24 @@ describe('HeaderMetadata component', () => {
         createComponent({ store, provide: { hidden: hiddenStatus } });
       });
 
-      it(`${renderTestMessage(lockStatus)} the locked icon`, () => {
-        const lockedIcon = findLockedIcon();
-
-        expect(lockedIcon.exists()).toBe(lockStatus);
-
-        if (lockStatus) {
-          expect(lockedIcon.attributes('title')).toBe(
-            `This merge request is locked. Only project members can comment.`,
-          );
-          expect(getBinding(lockedIcon.element, 'gl-tooltip')).not.toBeUndefined();
-        }
-      });
-
-      it(`${renderTestMessage(confidentialStatus)} the confidential icon`, () => {
-        const confidentialIcon = findConfidentialIcon();
-        expect(confidentialIcon.exists()).toBe(confidentialStatus);
+      it(`${renderTestMessage(confidentialStatus)} the confidential badge`, () => {
+        const confidentialBadge = findConfidentialBadge();
+        expect(confidentialBadge.exists()).toBe(confidentialStatus);
 
         if (confidentialStatus && !hiddenStatus) {
-          expect(confidentialIcon.props()).toMatchObject({
+          expect(confidentialBadge.props()).toMatchObject({
             workspaceType: 'project',
             issuableType: 'issue',
           });
         }
       });
 
-      it(`${renderTestMessage(confidentialStatus)} the hidden icon`, () => {
-        const hiddenIcon = findHiddenIcon();
+      it(`${renderTestMessage(lockStatus)} the locked badge`, () => {
+        expect(findLockedBadge().exists()).toBe(lockStatus);
+      });
 
-        expect(hiddenIcon.exists()).toBe(hiddenStatus);
-
-        if (hiddenStatus) {
-          expect(hiddenIcon.attributes('title')).toBe(
-            `This merge request is hidden because its author has been banned`,
-          );
-          expect(getBinding(hiddenIcon.element, 'gl-tooltip')).not.toBeUndefined();
-        }
+      it(`${renderTestMessage(hiddenStatus)} the hidden badge`, () => {
+        expect(findHiddenBadge().exists()).toBe(hiddenStatus);
       });
     },
   );

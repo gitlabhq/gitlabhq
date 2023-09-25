@@ -14,10 +14,8 @@
 
   .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "gl-md-display-flex! #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
     .detail-page-header-body
-      .issuable-meta.gl-display-flex
-        .js-header-metadata-root{ data: { hidden: @merge_request.hidden?.to_s } }
-        %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block{ data: { qa_selector: 'title_content' } }
-          = markdown_field(@merge_request, :title)
+      %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block{ data: { qa_selector: 'title_content' } }
+        = markdown_field(@merge_request, :title)
 
       - unless hide_gutter_toggle
         %div

@@ -1,24 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Beta badge component renders the badge 1`] = `
+exports[`Experiment badge component renders the badge 1`] = `
 <div>
   <a
     class="badge badge-neutral badge-pill gl-badge gl-cursor-pointer md"
     href="#"
     target="_self"
   >
-    Beta
+    Experiment
   </a>
   <div
     class="gl-popover"
   >
     <p>
-      A Beta feature is not production-ready, but is unlikely to change drastically before it's released. We encourage users to try Beta features and provide feedback.
+      An Experiment is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback.
     </p>
     <p
       class="gl-mb-0"
     >
-      A Beta feature:
+      An Experiment:
     </p>
     <ul
       class="gl-pl-4"
@@ -27,13 +27,13 @@ exports[`Beta badge component renders the badge 1`] = `
         May be unstable.
       </li>
       <li>
-        Should not cause data loss.
+        Can cause data loss.
       </li>
       <li>
-        Is supported by a commercially reasonable effort.
+        Has no support and might not be documented.
       </li>
       <li>
-        Is complete or near completion.
+        Can be removed at any time.
       </li>
     </ul>
   </div>

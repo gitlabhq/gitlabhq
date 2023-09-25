@@ -19436,6 +19436,30 @@ msgstr ""
 msgid "Experiment features' settings not allowed."
 msgstr ""
 
+msgid "ExperimentBadge|An Experiment is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback."
+msgstr ""
+
+msgid "ExperimentBadge|An Experiment:"
+msgstr ""
+
+msgid "ExperimentBadge|Can be removed at any time."
+msgstr ""
+
+msgid "ExperimentBadge|Can cause data loss."
+msgstr ""
+
+msgid "ExperimentBadge|Experiment"
+msgstr ""
+
+msgid "ExperimentBadge|Has no support and might not be documented."
+msgstr ""
+
+msgid "ExperimentBadge|May be unstable."
+msgstr ""
+
+msgid "ExperimentBadge|What's an Experiment?"
+msgstr ""
+
 msgid "Experiments"
 msgstr ""
 
@@ -48097,7 +48121,7 @@ msgstr ""
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
 msgstr ""
 
-msgid "This %{issuable} is hidden because its author has been banned"
+msgid "This %{issuable} is hidden because its author has been banned."
 msgstr ""
 
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
@@ -48430,13 +48454,10 @@ msgstr ""
 msgid "This issue is currently blocked by the following issues:"
 msgstr ""
 
-msgid "This issue is hidden because its author has been banned"
+msgid "This issue is hidden because its author has been banned."
 msgstr ""
 
 msgid "This issue is in a child epic of the filtered epic"
-msgstr ""
-
-msgid "This issue is locked. Only project members can comment."
 msgstr ""
 
 msgid "This job could not start because it could not retrieve the needed artifacts%{punctuation}%{invalid_dependencies}"
@@ -48571,13 +48592,7 @@ msgstr ""
 msgid "This merge request is from an internal project to a public project."
 msgstr ""
 
-msgid "This merge request is hidden because its author has been banned"
-msgstr ""
-
 msgid "This merge request is locked."
-msgstr ""
-
-msgid "This merge request is locked. Only project members can comment."
 msgstr ""
 
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."

@@ -568,41 +568,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#state_name_with_icon' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    context 'for an issue' do
-      let_it_be(:issue) { create(:issue, project: project) }
-      let_it_be(:issue_closed) { create(:issue, :closed, project: project) }
-
-      it 'returns the correct state name and icon when issue is open' do
-        expect(helper.state_name_with_icon(issue)).to match_array([_('Open'), 'issues'])
-      end
-
-      it 'returns the correct state name and icon when issue is closed' do
-        expect(helper.state_name_with_icon(issue_closed)).to match_array([_('Closed'), 'issue-closed'])
-      end
-    end
-
-    context 'for a merge request' do
-      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-      let_it_be(:merge_request_merged) { create(:merge_request, :merged, source_project: project) }
-      let_it_be(:merge_request_closed) { create(:merge_request, :closed, source_project: project) }
-
-      it 'returns the correct state name and icon when merge request is open' do
-        expect(helper.state_name_with_icon(merge_request)).to match_array([_('Open'), 'merge-request-open'])
-      end
-
-      it 'returns the correct state name and icon when merge request is merged' do
-        expect(helper.state_name_with_icon(merge_request_merged)).to match_array([_('Merged'), 'merge'])
-      end
-
-      it 'returns the correct state name and icon when merge request is closed' do
-        expect(helper.state_name_with_icon(merge_request_closed)).to match_array([_('Closed'), 'merge-request-close'])
-      end
-    end
-  end
-
   describe '#issuable_type_selector_data' do
     using RSpec::Parameterized::TableSyntax
 

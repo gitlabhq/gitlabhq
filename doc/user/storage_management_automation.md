@@ -7,11 +7,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Storage management automation **(FREE ALL)**
 
-You can manage your storage through the GitLab UI and the API. This page describes how to
-automate storage analysis and cleanup to manage your [usage quota](usage_quotas.md). You can also
-manage your storage usage by making your pipelines more efficient. For more information, see [pipeline efficiency](../ci/pipelines/pipeline_efficiency.md).
+This page describes how to automate storage analysis and cleanup to manage your storage usage
+with the GitLab REST API.
 
-You can also use the [GitLab community forum and Discord](https://about.gitlab.com/community/) to ask for help with API automation.
+You can also manage your storage usage by improving [pipeline efficiency](../ci/pipelines/pipeline_efficiency.md).
+
+For more help with API automation, you can also use the [GitLab community forum and Discord](https://about.gitlab.com/community/).
 
 ## API requirements
 
@@ -30,15 +31,20 @@ You must use the following scopes to [authenticate](../api/rest/index.md#authent
 
 You can use command-line tools or a programming language to interact with the REST API.
 
-### Command line
+### Command line tools
 
-You must install the following tools to send API requests:
+To send API requests, install either:
 
-- Install `curl` with your preferred package manager.
-- Install the [GitLab CLI](../editor_extensions/gitlab_cli/index.md) and use the `api` subcommand.
-- Install `jq` to format JSON responses. For more information, see [Tips for productive DevOps workflows: JSON formatting with jq and CI/CD linting automation](https://about.gitlab.com/blog/2021/04/21/devops-workflows-json-format-jq-ci-cd-lint/).
+- curl with your preferred package manager.
+- [GitLab CLI](../editor_extensions/gitlab_cli/index.md) and use the `glab api` subcommand.
 
-Example with `curl` and `jq`:
+To format JSON responses, install `jq`. For more information, see [Tips for productive DevOps workflows: JSON formatting with jq and CI/CD linting automation](https://about.gitlab.com/blog/2021/04/21/devops-workflows-json-format-jq-ci-cd-lint/).
+
+To use these tools with the REST API:
+
+::Tabs
+
+:::TabTitle curl
 
 ```shell
 export GITLAB_TOKEN=xxx
@@ -46,7 +52,7 @@ export GITLAB_TOKEN=xxx
 curl --silent --header "Authorization: Bearer $GITLAB_TOKEN" "https://gitlab.com/api/v4/user" | jq
 ```
 
-Example with the [GitLab CLI](../editor_extensions/gitlab_cli/index.md):
+:::TabTitle GitLab CLI
 
 ```shell
 glab auth login
@@ -54,18 +60,25 @@ glab auth login
 glab api groups/YOURGROUPNAME/projects
 ```
 
+::EndTabs
+
 #### Using the GitLab CLI
 
 Some API endpoints require [pagination](../api/rest/index.md#pagination) and subsequent page fetches to retrieve all results. The [GitLab CLI](../editor_extensions/gitlab_cli/index.md) provides the flag `--paginate`.
 
-Requests that require sending a POST body formatted as JSON data can be written as `key=value` pairs passed to the `--raw-field` parameter.
+Requests that require a POST body formatted as JSON data can be written as `key=value` pairs passed to the `--raw-field` parameter.
 
 For more information, see the [GitLab CLI endpoint documentation](../editor_extensions/gitlab_cli/index.md#core-commands).
 
 ### API client libraries
 
-The storage management and cleanup automation methods described in this page use the [`python-gitlab`](https://python-gitlab.readthedocs.io/en/stable/) library in programmatic example. The `python-gitlab` library provides
-a feature-rich programming interface. For more information about use cases for the `python-gitlab` library,
+The storage management and cleanup automation methods described in this page use:
+
+- The [`python-gitlab`](https://python-gitlab.readthedocs.io/en/stable/) library, which provides
+a feature-rich programming interface.
+- The `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` script in the [GitLab API with Python](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/) project.
+
+For more information about use cases for the `python-gitlab` library,
 see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/).
 
 For more information about other API client libraries, see [Third-party clients](../api/rest/index.md#third-party-clients).
@@ -92,7 +105,11 @@ This data provides insight into storage consumption of the project by the follow
 
 Additional queries are required for detailed storage statistics for [job artifacts](../api/job_artifacts.md), the [container registry](../api/container_registry.md), the [package registry](../api/packages.md) and [dependency proxy](../api/dependency_proxy.md). It is explained later in this how-to.
 
-Example that uses `curl` and `jq` on the command line:
+To identify storage types:
+
+::Tabs
+
+:::TabTitle curl
 
 ```shell
 curl --silent --header "Authorization: Bearer $GITLAB_TOKEN" "https://gitlab.com/api/v4/projects/$GL_PROJECT_ID?statistics=true" | jq --compact-output '.id,.statistics' | jq
@@ -111,7 +128,7 @@ curl --silent --header "Authorization: Bearer $GITLAB_TOKEN" "https://gitlab.com
 }
 ```
 
-Example that uses the [GitLab CLI](../editor_extensions/gitlab_cli/index.md):
+:::TabTitle GitLab CLI
 
 ```shell
 export GL_PROJECT_ID=48349590
@@ -131,7 +148,7 @@ glab api --method GET projects/$GL_PROJECT_ID --field 'statistics=true' | jq --c
 }
 ```
 
-Example using the `python-gitlab` library:
+:::TabTitle Python
 
 ```python
 project_obj = gl.projects.get(project.id, statistics=True)
@@ -139,7 +156,9 @@ project_obj = gl.projects.get(project.id, statistics=True)
 print("Project {n} statistics: {s}".format(n=project_obj.name_with_namespace, s=json.dump(project_obj.statistics, indent=4)))
 ```
 
-You can find an example implementation in the script `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` which is located in the [GitLab API with Python project](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/). Export the `GL_GROUP_ID` environment variable and run the script to see the project statistics printed in the terminal.
+::EndTabs
+
+To see the project statistics printed in the terminal, export the `GL_GROUP_ID` environment variable and run the script.
 
 ```shell
 export GL_TOKEN=xxx
@@ -175,7 +194,17 @@ Here's an example of an algorithm that analyzes multiple subgroups and projects:
 1. Identify the storage type to analyze, and collect the information from project attributes, like project statistics, and job artifacts.
 1. Print an overview of all projects, grouped by group, and their storage information.
 
-Example with the [GitLab CLI](../editor_extensions/gitlab_cli/index.md):
+The shell approach with `glab` might be more suitable for smaller analyses. For larger analyses, you should consider a script that
+uses the API client libraries. This script improves readability, data storage, flow control, testing, and reusability.
+
+To ensure the script doesn't reach [API rate limits](../api/rest/index.md#rate-limits), the following
+example code is not optimized for parallel API requests.
+
+To implement this algorithm:
+
+::Tabs
+
+:::TabTitle GitLab CLI
 
 ```shell
 export GROUP_NAME="gitlab-de"
@@ -221,10 +250,7 @@ glab api projects/48349590/jobs | jq --compact-output '.[]' | jq --compact-outpu
 [{"file_type":"archive","size":1049089,"filename":"artifacts.zip","file_format":"zip"},{"file_type":"metadata","size":157,"filename":"metadata.gz","file_format":"gzip"},{"file_type":"trace","size":3140,"filename":"job.log","file_format":null}]
 ```
 
-While the shell approach with `glab` works for smaller analysis, you should consider a script that
-uses the API client libraries. This improves readability, storing data, flow control, testing, and reusability.
-
-You can also implement this algorithm with a Python script that uses the `python-gitlab` library:
+:::TabTitle Python
 
 ```python
 #!/usr/bin/env python
@@ -266,6 +292,8 @@ if __name__ == "__main__":
             print("DEBUG: ID {i}: {a}".format(i=job.id, a=job.attributes['artifacts']))
 ```
 
+::EndTabs
+
 The script outputs the project job artifacts in a JSON formatted list:
 
 ```json
@@ -290,8 +318,6 @@ The script outputs the project job artifacts in a JSON formatted list:
     }
 ]
 ```
-
-The full script `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` with specific examples for automating storage management and cleanup is located is located in the [GitLab API with Python](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/) project. To ensure the script doesn't reach [API rate limits](../api/rest/index.md#rate-limits), the example code is not optimized for parallel API requests.
 
 ### Helper functions
 
@@ -430,8 +456,6 @@ $ python3 get_all_projects_top_level_namespace_storage_analysis_cleanup_example.
 | [gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297945 | job.log | trace | 0.0030 |
 ```
 
-The full example of the script `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` is located in the [GitLab API with Python project](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/). To ensure the script doesn't hit [API rate limits](../api/rest/index.md#rate-limits), the example code is not optimized for parallel API requests.
-
 ### Delete job artifacts
 
 You can use a filter to select the types of job artifacts to delete in bulk. A typical request:
@@ -489,8 +513,6 @@ only. When the collection loops remove the object locks, all marked as deleted j
     # Print collection summary (removed for readability)
 ```
 
-The full example of the script `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` is located in the [GitLab API Python project](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/).
-
 #### Delete all job artifacts for a project
 
 If you do not need the project's [job artifacts](../ci/jobs/job_artifacts.md), you can
@@ -500,7 +522,11 @@ Job artifact deletion happens asynchronously in GitLab and can take a while to c
 
 The [artifacts for the most recent successful jobs](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs) are also kept by default.
 
-Example with curl:
+To delete all job artifacts for a project:
+
+::Tabs
+
+:::TabTitle curl
 
 ```shell
 export GL_PROJECT_ID=48349590
@@ -508,7 +534,7 @@ export GL_PROJECT_ID=48349590
 curl --silent --header "Authorization: Bearer $GITLAB_TOKEN" --request DELETE "https://gitlab.com/api/v4/projects/$GL_PROJECT_ID/artifacts"
 ```
 
-Example with the [GitLab CLI](../editor_extensions/gitlab_cli/index.md):
+:::TabTitle GitLab CLI
 
 ```shell
 glab api --method GET projects/$GL_PROJECT_ID/jobs | jq --compact-output '.[]' | jq --compact-output '.id, .artifacts'
@@ -516,17 +542,19 @@ glab api --method GET projects/$GL_PROJECT_ID/jobs | jq --compact-output '.[]' |
 glab api --method DELETE projects/$GL_PROJECT_ID/artifacts
 ```
 
-Example with the [`python-gitlab` library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/pipelines_and_jobs.html#jobs):
+:::TabTitle Python
 
 ```python
         project.artifacts.delete()
 ```
 
+::EndTabs
+
 ### Delete job logs
 
 When you delete a job log you also [erase the entire job](../api/jobs.md#erase-a-job).
 
-Example with the [GitLab CLI](../editor_extensions/gitlab_cli/index.md):
+Example with the GitLab CLI:
 
 ```shell
 glab api --method GET projects/$GL_PROJECT_ID/jobs | jq --compact-output '.[]' | jq --compact-output '.id'
@@ -554,8 +582,6 @@ that delete the job artifact.
         # Sleep for 1 second
         time.sleep(1)
 ```
-
-The full example of the script `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` is located in the [GitLab API with Python project](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/).
 
 Support for creating a retention policy for job logs is proposed in [issue 374717](https://gitlab.com/gitlab-org/gitlab/-/issues/374717).
 
@@ -748,15 +774,17 @@ the `created_at` attribute to implement a similar algorithm that compares the jo
                 pipeline_obj.delete()
 ```
 
-The full example of the script `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` is located in the [GitLab API with Python project](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/).
-
 Automatically deleting old pipelines in GitLab is tracked in [this feature proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/338480).
 
 ## Manage storage for Container Registries
 
 Container registries are available [in a project](../api/container_registry.md#within-a-project) or [in a group](../api/container_registry.md#within-a-group). Both locations require analysis and cleanup strategies.
 
-The following example uses using `curl` and `jq` for a project:
+To analyze and cleanup Container Registries in a project:
+
+::Tabs
+
+:::TabTitle curl
 
 ```shell
 export GL_PROJECT_ID=48057080
@@ -771,7 +799,7 @@ curl --silent --header "Authorization: Bearer $GITLAB_TOKEN" "https://gitlab.com
 3401613
 ```
 
-The following example uses the [GitLab CLI](../editor_extensions/gitlab_cli/index.md) for a project:
+:::TabTitle GitLab CLI
 
 ```shell
 export GL_PROJECT_ID=48057080
@@ -793,6 +821,8 @@ glab api --method GET projects/$GL_PROJECT_ID/registry/repositories/4435617/tags
 "2023-08-07T19:20:20.894+00:00"
 3401613
 ```
+
+::EndTabs
 
 A similar automation shell script is created in the [delete old pipelines](#delete-old-pipelines) section.
 
@@ -827,9 +857,6 @@ The following example uses the [`python-gitlab` API library](https://python-gitl
             # Cleanup: Delete all tags matching the regex `v.*`, and keep the latest 2 tags
             repository.tags.delete_in_bulk(name_regex_delete="v.+", keep_n=2)
 ```
-
-The full example of the script `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` is located
-in the [GitLab API with Python](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/) project.
 
 ### Cleanup policy for containers
 
@@ -980,8 +1007,6 @@ Package name: generator File name: 20-nightly.tar.gz Size 20.0033
 Package size: 20.0033
 Package size 20.0033 > threshold 10.0000, deleting package.
 ```
-
-The full example of the script `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` is located in the [GitLab API with Python](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/) project.
 
 ### Dependency Proxy
 

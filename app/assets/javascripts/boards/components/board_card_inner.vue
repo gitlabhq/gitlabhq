@@ -252,7 +252,7 @@ export default {
           v-if="item.hidden"
           v-gl-tooltip
           name="spam"
-          :title="__('This issue is hidden because its author has been banned')"
+          :title="__('This issue is hidden because its author has been banned.')"
           class="gl-mr-2 hidden-icon gl-text-orange-500 gl-cursor-help"
           data-testid="hidden-icon"
         />

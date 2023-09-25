@@ -472,7 +472,7 @@ module ApplicationHelper
   end
 
   def hidden_resource_icon(resource, css_class: nil)
-    issuable_title = _('This %{issuable} is hidden because its author has been banned')
+    issuable_title = _('This %{issuable} is hidden because its author has been banned.')
 
     case resource
     when Issue

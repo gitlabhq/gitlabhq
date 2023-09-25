@@ -4,7 +4,7 @@ import { s__, sprintf } from '~/locale';
 import { getCookie, parseBoolean, setCookie } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { NEW_ACTIONS_POPOVER_KEY } from '~/issues/show/constants';
-import { IssuableTypeText } from '~/issues/constants';
+import { issuableTypeText } from '~/issues/constants';
 
 export default {
   name: 'NewHeaderActionsPopover',
@@ -34,7 +34,7 @@ export default {
   computed: {
     popoverText() {
       return sprintf(this.$options.i18n.popoverText, {
-        issueType: IssuableTypeText[this.issueType],
+        issueType: issuableTypeText[this.issueType],
       });
     },
     showPopover() {

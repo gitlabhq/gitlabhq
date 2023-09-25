@@ -231,22 +231,6 @@ module IssuablesHelper
     end
   end
 
-  def state_name_with_icon(issuable)
-    if issuable.is_a?(MergeRequest)
-      if issuable.open?
-        [_("Open"), "merge-request-open"]
-      elsif issuable.merged?
-        [_("Merged"), "merge"]
-      else
-        [_("Closed"), "merge-request-close"]
-      end
-    elsif issuable.open?
-      [_("Open"), "issues"]
-    else
-      [_("Closed"), "issue-closed"]
-    end
-  end
-
   def issuable_type_selector_data(issuable)
     {
       selected_type: issuable.issue_type,

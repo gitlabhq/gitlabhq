@@ -261,7 +261,7 @@ export default {
           v-if="issuable.hidden"
           v-gl-tooltip
           name="spam"
-          :title="__('This issue is hidden because its author has been banned')"
+          :title="__('This issue is hidden because its author has been banned.')"
           :aria-label="__('Hidden')"
         />
         <gl-link

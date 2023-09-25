@@ -38,7 +38,7 @@ gem 'responders', '~> 3.0'
 
 gem 'sprockets', '~> 3.7.0'
 
-gem 'view_component', '~> 3.5.0'
+gem 'view_component', '~> 3.6.0'
 
 # Supported DBs
 gem 'pg', '~> 1.5.4'

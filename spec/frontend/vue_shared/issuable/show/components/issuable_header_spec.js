@@ -2,6 +2,8 @@ import { GlBadge, GlButton, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
+import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { STATUS_CLOSED, STATUS_OPEN, STATUS_REOPENED, TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
@@ -23,8 +25,8 @@ describe('IssuableHeader component', () => {
     wrapper.findAllComponents(GlIcon).filter((component) => component.props('name') === name);
   const findIcon = (name) =>
     findGlIconWithName(name).exists() ? findGlIconWithName(name).at(0) : undefined;
-  const findBlockedIcon = () => findIcon('lock');
-  const findHiddenIcon = () => findIcon('spam');
+  const findBlockedBadge = () => wrapper.findComponent(LockedBadge);
+  const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
   const findExternalLinkIcon = () => findIcon('external-link');
   const findFirstContributionIcon = () => findIcon('first-contribution');
   const findComponentTooltip = (component) => getBinding(component.element, 'gl-tooltip');
@@ -111,49 +113,31 @@ describe('IssuableHeader component', () => {
     });
   });
 
-  describe('blocked icon', () => {
+  describe('blocked badge', () => {
     it('renders when issuable is blocked', () => {
       createComponent({ blocked: true });
 
-      expect(findBlockedIcon().props('ariaLabel')).toBe('Blocked');
-    });
-
-    it('has tooltip', () => {
-      createComponent({ blocked: true });
-
-      expect(findComponentTooltip(findBlockedIcon())).toBeDefined();
-      expect(findBlockedIcon().attributes('title')).toBe(
-        'This issue is locked. Only project members can comment.',
-      );
+      expect(findBlockedBadge().props('issuableType')).toBe('issue');
     });
 
     it('does not render when issuable is not blocked', () => {
       createComponent({ blocked: false });
 
-      expect(findBlockedIcon()).toBeUndefined();
+      expect(findBlockedBadge().exists()).toBe(false);
     });
   });
 
-  describe('hidden icon', () => {
+  describe('hidden badge', () => {
     it('renders when issuable is hidden', () => {
       createComponent({ isHidden: true });
 
-      expect(findHiddenIcon().props('ariaLabel')).toBe('Hidden');
-    });
-
-    it('has tooltip', () => {
-      createComponent({ isHidden: true });
-
-      expect(findComponentTooltip(findHiddenIcon())).toBeDefined();
-      expect(findHiddenIcon().attributes('title')).toBe(
-        'This issue is hidden because its author has been banned',
-      );
+      expect(findHiddenBadge().props('issuableType')).toBe('issue');
     });
 
     it('does not render when issuable is not hidden', () => {
       createComponent({ isHidden: false });
 
-      expect(findHiddenIcon()).toBeUndefined();
+      expect(findHiddenBadge().exists()).toBe(false);
     });
   });
 

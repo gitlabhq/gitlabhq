@@ -1,5 +1,7 @@
 <script>
-import { GlBadge, GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlIntersectionObserver, GlLink } from '@gitlab/ui';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
+import LockedBadge from '~/issuable/components/locked_badge.vue';
 import {
   issuableStatusText,
   STATUS_CLOSED,
@@ -15,9 +17,9 @@ export default {
     GlBadge,
     GlIcon,
     GlIntersectionObserver,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlLink,
+    HiddenBadge,
+    LockedBadge,
   },
   props: {
     isConfidential: {
@@ -88,36 +90,20 @@ export default {
             <gl-icon :name="statusIcon" />
             <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ statusText }}</span>
           </gl-badge>
-          <span
-            v-if="isLocked"
-            v-gl-tooltip.bottom
-            data-testid="locked"
-            class="issuable-warning-icon"
-            :title="__('This issue is locked. Only project members can comment.')"
-          >
-            <gl-icon name="lock" :aria-label="__('Locked')" />
-          </span>
           <confidentiality-badge
             v-if="isConfidential"
             :issuable-type="issuableType"
             :workspace-type="$options.WORKSPACE_PROJECT"
           />
-          <span
-            v-if="isHidden"
-            v-gl-tooltip.bottom
-            :title="__('This issue is hidden because its author has been banned')"
-            data-testid="hidden"
-            class="issuable-warning-icon"
-          >
-            <gl-icon name="spam" />
-          </span>
-          <a
+          <locked-badge v-if="isLocked" :issuable-type="issuableType" />
+          <hidden-badge v-if="isHidden" :issuable-type="issuableType" />
+          <gl-link
+            class="gl-font-weight-bold gl-text-black-normal gl-text-truncate"
             href="#top"
-            class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-text-black-normal"
             :title="title"
           >
             {{ title }}
-          </a>
+          </gl-link>
         </div>
       </div>
     </transition>

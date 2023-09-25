@@ -700,14 +700,17 @@ module API
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 
-    def track_event(event_name, user_id:, namespace_id: nil, project_id: nil)
-      return unless user_id.present?
+    def track_event(event_name, user:, namespace_id: nil, project_id: nil)
+      return unless user.present?
+
+      namespace = Namespace.find(namespace_id) if namespace_id
+      project = Project.find(project_id) if project_id
 
       Gitlab::InternalEvents.track_event(
         event_name,
-        user_id: user_id,
-        namespace_id: namespace_id,
-        project_id: project_id
+        user: user,
+        namespace: namespace,
+        project: project
       )
     rescue StandardError => e
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name)

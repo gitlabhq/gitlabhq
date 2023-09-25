@@ -1,10 +1,10 @@
 <script>
-import { GlBadge, GlPopover } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import HoverBadge from './hover_badge.vue';
 
 export default {
   name: 'BetaBadge',
-  components: { GlBadge, GlPopover },
+  components: { HoverBadge },
   i18n: {
     badgeLabel: s__('BetaBadge|Beta'),
     popoverTitle: s__("BetaBadge|What's Beta?"),
@@ -41,27 +41,16 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-badge ref="badge" href="#" :size="size" variant="neutral" class="gl-cursor-pointer">{{
-      $options.i18n.badgeLabel
-    }}</gl-badge>
-    <gl-popover
-      triggers="hover focus click"
-      :show-close-button="true"
-      :target="target"
-      :title="$options.i18n.popoverTitle"
-      data-testid="beta-badge"
-    >
-      <p>{{ $options.i18n.descriptionParagraph }}</p>
+  <hover-badge :label="$options.i18n.badgeLabel" :size="size" :title="$options.i18n.popoverTitle">
+    <p>{{ $options.i18n.descriptionParagraph }}</p>
 
-      <p class="gl-mb-0">{{ $options.i18n.listIntroduction }}</p>
+    <p class="gl-mb-0">{{ $options.i18n.listIntroduction }}</p>
 
-      <ul class="gl-pl-4">
-        <li>{{ $options.i18n.listItemStability }}</li>
-        <li>{{ $options.i18n.listItemDataLoss }}</li>
-        <li>{{ $options.i18n.listItemReasonableEffort }}</li>
-        <li>{{ $options.i18n.listItemNearCompletion }}</li>
-      </ul>
-    </gl-popover>
-  </div>
+    <ul class="gl-pl-4">
+      <li>{{ $options.i18n.listItemStability }}</li>
+      <li>{{ $options.i18n.listItemDataLoss }}</li>
+      <li>{{ $options.i18n.listItemReasonableEffort }}</li>
+      <li>{{ $options.i18n.listItemNearCompletion }}</li>
+    </ul>
+  </hover-badge>
 </template>

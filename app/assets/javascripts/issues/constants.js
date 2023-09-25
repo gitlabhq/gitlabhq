@@ -28,7 +28,7 @@ export const issuableStatusText = {
   [STATUS_LOCKED]: __('Open'),
 };
 
-export const IssuableTypeText = {
+export const issuableTypeText = {
   [TYPE_ISSUE]: __('issue'),
   [TYPE_EPIC]: __('epic'),
   [TYPE_MERGE_REQUEST]: __('merge request'),

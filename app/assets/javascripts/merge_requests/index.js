@@ -3,7 +3,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import HeaderMetadata from './components/header_metadata.vue';
 
 export function mountHeaderMetadata(store) {
-  const el = document.querySelector('.js-header-metadata-root');
+  const el = document.querySelector('.js-mr-header-metadata-root');
 
   if (!el) {
     return null;
