@@ -23,6 +23,6 @@ export default {
 </script>
 <template>
   <div class="gl-text-truncate">
-    <gl-link :href="projectUrl"> {{ projectName }}</gl-link>
+    <gl-link :href="projectUrl" data-testid="job-project-link">{{ projectName }}</gl-link>
   </div>
 </template>

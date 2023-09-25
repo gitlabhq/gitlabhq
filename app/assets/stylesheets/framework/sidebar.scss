@@ -73,8 +73,16 @@
     }
   }
 
-  &:not(.is-merge-request) {
+  &:not(.is-merge-request):not(.build-sidebar) {
     @include media-breakpoint-up(md) {
+      .content-wrapper {
+        padding-right: $right-sidebar-width;
+      }
+    }
+  }
+
+  &.build-sidebar {
+    @include media-breakpoint-up(lg) {
       .content-wrapper {
         padding-right: $right-sidebar-width;
       }

@@ -135,7 +135,7 @@ To integrate Microsoft Azure AD, you:
 
 <!-- vale gitlab.SentenceSpacing = NO -->
 
-1. In the [Azure Portal](https://portal.azure.com), go to **Azure Active Directory > App registrations > All applications**, and select your GitLab SAML application.
+1. In the [Azure Portal](https://portal.azure.com), go to **Microsoft Entra ID > App registrations > All applications**, and select your GitLab SAML application.
 1. Under **Essentials**, the **Application (client) ID** and **Directory (tenant) ID** values are displayed. Copy these values, because you need them for the GitLab configuration.
 1. In the left navigation, select **Certificates & secrets**.
 1. On the **Client secrets** tab, select **New client secret**.

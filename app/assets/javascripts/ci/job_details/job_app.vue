@@ -195,7 +195,7 @@ export default {
     },
     updateSidebar() {
       const breakpoint = bp.getBreakpointSize();
-      if (breakpoint === 'xs' || breakpoint === 'sm') {
+      if (breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md') {
         this.hideSidebar();
       } else if (!this.isSidebarOpen) {
         this.showSidebar();
@@ -290,11 +290,7 @@ export default {
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->
-        <div
-          v-if="hasJobLog && !showUpdateVariablesState"
-          class="build-log-container gl-relative"
-          :class="{ 'gl-mt-3': !job.archived }"
-        >
+        <div v-if="hasJobLog && !showUpdateVariablesState" class="build-log-container gl-relative">
           <log-top-bar
             :class="{
               'has-archived-block': job.archived,
@@ -332,18 +328,17 @@ export default {
         <!-- EO empty state -->
 
         <!-- EO Body Section -->
+
+        <sidebar
+          :class="{
+            'right-sidebar-expanded': isSidebarOpen,
+            'right-sidebar-collapsed': !isSidebarOpen,
+          }"
+          :artifact-help-url="artifactHelpUrl"
+          data-testid="job-sidebar"
+          @updateVariables="onUpdateVariables()"
+        />
       </div>
     </template>
-
-    <sidebar
-      v-if="shouldRenderContent"
-      :class="{
-        'right-sidebar-expanded': isSidebarOpen,
-        'right-sidebar-collapsed': !isSidebarOpen,
-      }"
-      :artifact-help-url="artifactHelpUrl"
-      data-testid="job-sidebar"
-      @updateVariables="onUpdateVariables()"
-    />
   </div>
 </template>

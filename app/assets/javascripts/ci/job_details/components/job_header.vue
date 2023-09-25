@@ -99,9 +99,20 @@ export default {
       <h1 class="gl-font-size-h-display gl-my-0 gl-display-inline-block" data-testid="job-name">
         {{ name }}
       </h1>
-    </div>
 
-    <section class="gl-md-display-flex gl-align-items-center gl-mr-3">
+      <div class="gl-display-flex gl-align-self-start gl-mt-n2">
+        <div class="gl-flex-grow-1 gl-flex-shrink-0 gl-text-right">
+          <gl-button
+            :aria-label="__('Toggle sidebar')"
+            category="secondary"
+            class="gl-lg-display-none gl-ml-2"
+            icon="chevron-double-lg-left"
+            @click="onClickSidebarButton"
+          />
+        </div>
+      </div>
+    </div>
+    <section class="header-main-content gl-display-flex gl-align-items-center gl-mr-3">
       <ci-badge-link class="gl-mr-3" :status="status" />
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('Started') }}</template>
@@ -140,12 +151,5 @@ export default {
         </gl-avatar-link>
       </template>
     </section>
-
-    <gl-button
-      class="gl-md-display-none gl-ml-auto gl-align-self-start js-sidebar-build-toggle"
-      icon="chevron-double-lg-left"
-      :aria-label="__('Toggle sidebar')"
-      @click="onClickSidebarButton"
-    />
   </header>
 </template>

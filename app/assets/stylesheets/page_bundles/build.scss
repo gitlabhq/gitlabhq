@@ -17,7 +17,7 @@
     @include build-log-top-bar(50px);
     z-index: 2;
     border-radius: $border-radius-default $border-radius-default 0 0;
-    box-shadow: 0 -2px 0 0 var(--white);
+    box-shadow: 0 -4px 0 0 var(--white);
 
     &.has-archived-block {
       top: calc(#{$calc-application-header-height} + 28px);
@@ -89,13 +89,20 @@
 }
 
 .right-sidebar.build-sidebar {
+  padding: 0;
+
+  @include media-breakpoint-up(lg) {
+    @include gl-border-l-0;
+  }
+
   &.right-sidebar-collapsed {
     display: none;
   }
 
   .sidebar-container {
-    padding-right: 100px;
-    height: 100%;
+    @include gl-sticky;
+    top: #{$top-bar-height - 1px};
+    max-height: calc(100vh - #{$top-bar-height - 1px});
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;

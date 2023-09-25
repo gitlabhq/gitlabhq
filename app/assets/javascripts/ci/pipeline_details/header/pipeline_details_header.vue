@@ -565,7 +565,7 @@ export default {
           </span>
         </div>
       </div>
-      <div class="gl-mt-5 gl-lg-mt-0">
+      <div class="gl-mt-5 gl-lg-mt-0 gl-display-flex gl-align-items-flex-start gl-gap-3">
         <gl-button
           v-if="canRetryPipeline"
           v-gl-tooltip
@@ -588,7 +588,6 @@ export default {
           :title="$options.BUTTON_TOOLTIP_CANCEL"
           :loading="isCanceling"
           :disabled="isCanceling"
-          class="gl-ml-3"
           variant="danger"
           data-testid="cancel-pipeline"
           @click="cancelPipeline()"
@@ -601,7 +600,6 @@ export default {
           v-gl-modal="$options.modal.id"
           :loading="isDeleting"
           :disabled="isDeleting"
-          class="gl-ml-3"
           variant="danger"
           category="secondary"
           data-testid="delete-pipeline"

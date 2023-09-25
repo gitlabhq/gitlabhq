@@ -5,14 +5,14 @@ action: click_button
 label_description: agent_token_creation_modal
 property_description: One of "create-token", "close"
 product_section: ops
-product_stage: configure
-product_group: group::configure
+product_stage: deploy
+product_group: group::environments
 milestone: "14.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82690
 distributions:
 - ce
 - ee
-tiers: 
+tiers:
 - free
 - premium
 - ultimate

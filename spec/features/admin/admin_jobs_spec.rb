@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
+  include FilteredSearchHelpers
+
   before do
     admin = create(:admin)
     sign_in(admin)
@@ -26,9 +28,9 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
 
           expect(page).to have_selector('[data-testid="jobs-all-tab"]')
           expect(page.all('[data-testid="jobs-table-row"]').size).to eq(4)
-          expect(page).to have_button 'Cancel all jobs'
 
           click_button 'Cancel all jobs'
+
           expect(page).to have_button 'Yes, proceed'
           expect(page).to have_content 'Are you sure?'
         end
@@ -85,6 +87,52 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
           expect(page).to have_selector('[data-testid="jobs-finished-tab"]')
           expect(page).to have_content 'No jobs to show'
           expect(page).to have_button 'Cancel all jobs'
+        end
+      end
+    end
+
+    context 'jobs table links' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:project) { create(:project, namespace: namespace) }
+      let_it_be(:runner) { create(:ci_runner, :instance) }
+
+      it 'displays correct links' do
+        pipeline = create(:ci_pipeline, project: project)
+        job = create(:ci_build, pipeline: pipeline, status: :success, runner: runner)
+
+        visit admin_jobs_path
+
+        wait_for_requests
+
+        within_testid('jobs-table') do
+          expect(page).to have_link(href: project_job_path(project, job))
+          expect(page).to have_link(href: project_pipeline_path(project, pipeline))
+          expect(find_by_testid('job-project-link')['href']).to include(project_path(project))
+          expect(find_by_testid('job-runner-link')['href']).to include("/admin/runners/#{runner.id}")
+        end
+      end
+    end
+
+    context 'job filtering' do
+      it 'filters jobs by status' do
+        create(:ci_build, pipeline: pipeline, status: :success)
+        create(:ci_build, pipeline: pipeline, status: :failed)
+
+        visit admin_jobs_path
+
+        wait_for_requests
+
+        within_testid('jobs-table') do
+          expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 2)
+        end
+
+        select_tokens 'Status', 'Failed', submit: true, input_text: 'Filter jobs'
+
+        wait_for_requests
+
+        within_testid('jobs-table') do
+          expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 1)
+          expect(find_by_testid('ci-badge-text')).to have_content('failed')
         end
       end
     end

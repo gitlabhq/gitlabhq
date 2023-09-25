@@ -118,8 +118,8 @@ For each attribute:
 1. Select **Ok**.
 
 If your SAML configuration differs from [the recommended SAML settings](index.md#azure), select the mapping
-attributes and modify them accordingly. In particular, the `objectId` source attribute must map to the `externalId`
-target attribute.
+attributes and modify them accordingly. The source attribute that you map to the `externalId`
+target attribute must match the attribute used for the SAML `NameID`.
 
 If a mapping is not listed in the table, use the Azure Active Directory defaults. For a list of required attributes,
 refer to the [internal group SCIM API](../../../development/internal_api/index.md#group-scim-api) documentation.

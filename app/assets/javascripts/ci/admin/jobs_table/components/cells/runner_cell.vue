@@ -31,7 +31,7 @@ export default {
 
 <template>
   <div class="gl-text-truncate">
-    <gl-link v-if="adminUrl" :href="adminUrl">
+    <gl-link v-if="adminUrl" :href="adminUrl" data-testid="job-runner-link">
       {{ description }}
     </gl-link>
     <span v-else data-testid="empty-runner-text"> {{ $options.i18n.emptyRunnerText }}</span>

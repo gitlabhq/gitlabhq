@@ -4,5 +4,5 @@ introduced_by_url:
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358838
 milestone: '14.10'
 type: development
-group: group::antiabuse
+group: group::anti-abuse
 default_enabled: false

@@ -1,5 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
+import { mapActions } from 'vuex';
 import { createAlert } from '~/alert';
 import { TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -80,70 +82,93 @@ export default {
     retryButtonCategory() {
       return this.restJob.status && this.restJob.recoverable ? 'primary' : 'secondary';
     },
+    jobHasPath() {
+      return Boolean(
+        this.restJob.erase_path ||
+          this.restJob.new_issue_path ||
+          this.restJob.terminal_path ||
+          this.restJob.retry_path ||
+          this.restJob.cancel_path,
+      );
+    },
+  },
+  methods: {
+    ...mapActions(['toggleSidebar']),
   },
 };
 </script>
 
 <template>
-  <div>
-    <div class="gl-display-flex gl-gap-3">
+  <div class="gl-py-3!">
+    <div class="gl-display-flex gl-justify-content-space-between gl-gap-3">
+      <div class="gl-display-flex gl-gap-3">
+        <template v-if="jobHasPath">
+          <gl-button
+            v-if="restJob.erase_path"
+            v-gl-tooltip.bottom
+            :title="$options.i18n.eraseLogButtonLabel"
+            :aria-label="$options.i18n.eraseLogButtonLabel"
+            :href="restJob.erase_path"
+            :data-confirm="$options.i18n.eraseLogConfirmText"
+            data-testid="job-log-erase-link"
+            data-confirm-btn-variant="danger"
+            data-method="post"
+            icon="remove"
+          />
+          <gl-button
+            v-if="restJob.new_issue_path"
+            v-gl-tooltip.bottom
+            :href="restJob.new_issue_path"
+            :title="$options.i18n.newIssue"
+            :aria-label="$options.i18n.newIssue"
+            category="secondary"
+            variant="confirm"
+            data-testid="job-new-issue"
+            icon="issue-new"
+          />
+          <gl-button
+            v-if="restJob.terminal_path"
+            v-gl-tooltip.bottom
+            :href="restJob.terminal_path"
+            :title="$options.i18n.debug"
+            :aria-label="$options.i18n.debug"
+            target="_blank"
+            icon="external-link"
+            data-testid="terminal-link"
+          />
+          <job-sidebar-retry-button
+            v-if="canShowJobRetryButton"
+            v-gl-tooltip.bottom
+            :title="buttonTitle"
+            :aria-label="buttonTitle"
+            :is-manual-job="isManualJob"
+            :category="retryButtonCategory"
+            :href="restJob.retry_path"
+            :modal-id="$options.forwardDeploymentFailureModalId"
+            variant="confirm"
+            data-testid="retry-button"
+            @updateVariablesClicked="$emit('updateVariables')"
+          />
+          <gl-button
+            v-if="restJob.cancel_path"
+            v-gl-tooltip.bottom
+            :title="$options.i18n.cancelJobButtonLabel"
+            :aria-label="$options.i18n.cancelJobButtonLabel"
+            :href="restJob.cancel_path"
+            variant="danger"
+            icon="cancel"
+            data-method="post"
+            data-testid="cancel-button"
+            rel="nofollow"
+          />
+        </template>
+      </div>
       <gl-button
-        v-if="restJob.erase_path"
-        v-gl-tooltip.bottom
-        :title="$options.i18n.eraseLogButtonLabel"
-        :aria-label="$options.i18n.eraseLogButtonLabel"
-        :href="restJob.erase_path"
-        :data-confirm="$options.i18n.eraseLogConfirmText"
-        data-testid="job-log-erase-link"
-        data-confirm-btn-variant="danger"
-        data-method="post"
-        icon="remove"
-      />
-      <gl-button
-        v-if="restJob.new_issue_path"
-        v-gl-tooltip.bottom
-        :href="restJob.new_issue_path"
-        :title="$options.i18n.newIssue"
-        :aria-label="$options.i18n.newIssue"
+        :aria-label="$options.i18n.toggleSidebar"
         category="secondary"
-        variant="confirm"
-        data-testid="job-new-issue"
-        icon="issue-new"
-      />
-      <gl-button
-        v-if="restJob.terminal_path"
-        v-gl-tooltip.bottom
-        :href="restJob.terminal_path"
-        :title="$options.i18n.debug"
-        :aria-label="$options.i18n.debug"
-        target="_blank"
-        icon="external-link"
-        data-testid="terminal-link"
-      />
-      <job-sidebar-retry-button
-        v-if="canShowJobRetryButton"
-        v-gl-tooltip.bottom
-        :title="buttonTitle"
-        :aria-label="buttonTitle"
-        :is-manual-job="isManualJob"
-        :category="retryButtonCategory"
-        :href="restJob.retry_path"
-        :modal-id="$options.forwardDeploymentFailureModalId"
-        variant="confirm"
-        data-testid="retry-button"
-        @updateVariablesClicked="$emit('updateVariables')"
-      />
-      <gl-button
-        v-if="restJob.cancel_path"
-        v-gl-tooltip.bottom
-        :title="$options.i18n.cancelJobButtonLabel"
-        :aria-label="$options.i18n.cancelJobButtonLabel"
-        :href="restJob.cancel_path"
-        variant="danger"
-        icon="cancel"
-        data-method="post"
-        data-testid="cancel-button"
-        rel="nofollow"
+        class="gl-lg-display-none"
+        icon="chevron-double-lg-right"
+        @click="toggleSidebar"
       />
     </div>
   </div>

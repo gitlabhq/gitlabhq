@@ -1,5 +1,4 @@
 <script>
-import { GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -24,7 +23,6 @@ export default {
   name: 'JobSidebar',
   forwardDeploymentFailureModalId,
   components: {
-    GlButton,
     ArtifactsBlock,
     CommitBlock,
     JobsContainer,
@@ -70,15 +68,6 @@ export default {
     externalLinks() {
       return filterAnnotations(this.job.annotations, 'external_link');
     },
-    jobHasPath() {
-      return Boolean(
-        this.job.erase_path ||
-          this.job.new_issue_path ||
-          this.job.terminal_path ||
-          this.job.retry_path ||
-          this.job.cancel_path,
-      );
-    },
   },
   watch: {
     job(value, oldValue) {
@@ -91,7 +80,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchJobsForStage', 'toggleSidebar']),
+    ...mapActions(['fetchJobsForStage']),
   },
 };
 </script>
@@ -99,18 +88,7 @@ export default {
   <aside class="right-sidebar build-sidebar" data-offset-top="101" data-spy="affix">
     <div class="sidebar-container">
       <div class="blocks-container gl-p-4 gl-pt-0">
-        <div
-          class="gl-py-4 gl-border-b gl-border-gray-50 gl-display-flex gl-md-display-none! gl-justify-content-end"
-        >
-          <gl-button
-            :aria-label="$options.i18n.toggleSidebar"
-            category="tertiary"
-            icon="chevron-double-lg-right"
-            @click="toggleSidebar"
-          />
-        </div>
         <sidebar-header
-          v-if="jobHasPath"
           class="gl-py-4 gl-border-b gl-border-gray-50"
           :rest-job="job"
           :job-id="job.id"

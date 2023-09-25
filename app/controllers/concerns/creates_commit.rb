@@ -10,18 +10,18 @@ module CreatesCommit
 
     if user_access(target_project).can_push_to_branch?(branch_name_or_ref)
       @project_to_commit_into = target_project
+      @different_project = false
       @branch_name ||= @ref
     else
       @project_to_commit_into = current_user.fork_of(target_project)
+      @different_project = true
       @branch_name ||= @project_to_commit_into.repository.next_branch('patch')
     end
 
     @start_branch ||= @ref || @branch_name
 
-    start_project = @project_to_commit_into
-
     commit_params = @commit_params.merge(
-      start_project: start_project,
+      start_project: @project_to_commit_into,
       start_branch: @start_branch,
       source_project: @project,
       target_project: target_project,
@@ -74,7 +74,7 @@ module CreatesCommit
           nil
         else
           mr_message =
-            if different_project?
+            if @different_project # rubocop:disable Gitlab/ModuleWithInstanceVariables
               _("You can now submit a merge request to get this change into the original project.")
             else
               _("You can now submit a merge request to get this change into the original branch.")
@@ -128,16 +128,12 @@ module CreatesCommit
   # rubocop: enable CodeReuse/ActiveRecord
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-  def different_project?
-    @project_to_commit_into != @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  end
-
   def create_merge_request?
     # Even if the field is set, if we're checking the same branch
     # as the target branch in the same project,
     # we don't want to create a merge request.
     params[:create_merge_request].present? &&
-      (different_project? || @start_branch != @branch_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      (@different_project || @start_branch != @branch_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def branch_name_or_ref

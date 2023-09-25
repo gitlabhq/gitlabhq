@@ -254,7 +254,7 @@
 @mixin build-log-bar($height) {
   height: $height;
   min-height: $height;
-  background: var(--gray-50, $gray-50);
+  background: var(--white, $white);
   border: 1px solid var(--border-color, $border-color);
   color: var(--gl-text-color, $gl-text-color);
   padding: $grid-size;

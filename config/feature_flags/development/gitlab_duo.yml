@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/413688
 milestone: '16.1'
 type: development
-group: group::ai-enablement
+group: group::ai framework
 default_enabled: false

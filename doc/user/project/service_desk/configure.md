@@ -272,6 +272,89 @@ External participants can [reply by email](../../../administration/reply_by_emai
 GitLab uses an email reply address with a 32-character reply key that corresponds to the ticket.
 When a custom email is configured, GitLab generates the reply address from that email.
 
+### Use Google Workspace with your own domain
+
+Set up a custom email address for Service Desk when using Google Workspace with your own domain.
+
+Prerequisites:
+
+- You already have a Google Workspace account.
+- You can create new accounts for your tenant.
+
+To configure a custom Service Desk email address with Google Workspace:
+
+1. [Configure a Google Workspace account](#configure-a-google-workspace-account).
+1. [Configure email forwarding](#configure-email-forwarding).
+1. [Configure custom email address](#configure-custom-email-address).
+
+#### Configure a Google Workspace account
+
+First, you must create and configure a Google Workspace account.
+
+In Google Workspace:
+
+1. Create a new account for the custom email address you'd like to use (for example, `support@example.com`).
+1. Sign in to that account and activate
+   [two-factor authentication](https://myaccount.google.com/u/3/signinoptions/two-step-verification).
+1. [Create an app password](https://myaccount.google.com/u/3/apppasswords) that you can use as your
+   SMTP password.
+   Store it in a secure place and remove spaces between the characters.
+
+Next, you must [configure email forwarding](#configure-email-forwarding).
+
+#### Configure email forwarding
+
+The following steps require moving between GitLab and Google Workspace.
+
+In GitLab:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**
+1. Expand **Service Desk**.
+1. Note the email address below **Service Desk email address to forward emails to**.
+
+In Google Workspace:
+
+1. Sign in to the custom email account and open the [Forwarding and POP/IMAP](https://mail.google.com/mail/u/0/#settings/fwdandpop) settings page.
+1. Select **Add a forwarding address**.
+1. Enter the Service Desk address from the custom email form.
+1. Select **Next**.
+1. Confirm your input and select **Proceed**. Google sends an email to the Service Desk address and
+   requires a confirmation code.
+
+In GitLab:
+
+1. Go to **Issues** of the project and wait for a new issue to be created from the confirmation
+   email from Google.
+1. Open the issue and note the confirmation code.
+1. (Optional) Delete the issue.
+
+In Google Workspace:
+
+1. Enter the confirmation code and select **Verify**.
+1. Select **Forward a copy of incoming mail to** and make sure the Service Desk address is selected
+   from the dropdown list.
+1. At the bottom of the page, select **Save Changes**.
+
+Next, [configure a custom email address](#configure-a-custom-email-address) to use with Service Desk.
+
+#### Configure custom email address
+
+In GitLab:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**
+1. Expand **Service Desk** and find the custom email settings.
+1. Complete the fields:
+   - **Custom email address**: Your custom email address.
+   - **SMTP host**: `smtp.gmail.com`.
+   - **SMTP port**: `587`.
+   - **SMTP username**: Prefilled with the custom email address.
+   - **SMTP password**: The app password you previously created for the custom email account.
+1. Select **Save and test connection**
+1. After the [verification process](#verification) you should be able to
+   [enable the custom email address](#enable-or-disable-the-custom-email-address).
+
 ### Known issues
 
 - Some service providers don't allow SMTP connections any more.

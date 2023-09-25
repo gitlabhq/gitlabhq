@@ -52,6 +52,10 @@ describe('Header CI Component', () => {
       createComponent();
     });
 
+    it('renders the correct job name', () => {
+      expect(findJobName().text()).toBe(defaultProps.name);
+    });
+
     it('should render status badge', () => {
       expect(findCiBadgeLink().exists()).toBe(true);
     });
@@ -62,10 +66,6 @@ describe('Header CI Component', () => {
 
     it('should render sidebar toggle button', () => {
       expect(findSidebarToggleBtn().exists()).toBe(true);
-    });
-
-    it('renders the correct job name', () => {
-      expect(findJobName().text()).toBe(defaultProps.name);
     });
   });
 

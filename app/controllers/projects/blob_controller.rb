@@ -101,8 +101,9 @@ class Projects::BlobController < Projects::ApplicationController
     )
   rescue Files::UpdateService::FileChangedError
     @conflict = true
-    @different_project = different_project?
-    render :edit
+    render "edit", locals: {
+      commit_to_fork: @different_project
+    }
   end
 
   def preview
