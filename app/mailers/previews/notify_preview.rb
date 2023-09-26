@@ -319,14 +319,6 @@ class NotifyPreview < ActionMailer::Preview
     Notify.github_gists_import_errors_email(user.id, { '12345' => 'Snippet maximum file count exceeded', '67890' => 'error message 2' }).message
   end
 
-  def application_authorized_email
-    Notify.application_authorized_email(user).message
-  end
-
-  def application_created_email
-    Notify.application_created_email(user).message
-  end
-
   private
 
   def project

@@ -4,6 +4,7 @@ import { initGitlabWebIDE } from '~/ide/init_gitlab_web_ide';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
 import { handleTracking } from '~/ide/lib/gitlab_web_ide/handle_tracking_event';
+import Tracking from '~/tracking';
 import { TEST_HOST } from 'helpers/test_constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -15,6 +16,7 @@ jest.mock('~/lib/utils/csrf', () => ({
   token: 'mock-csrf-token',
   headerKey: 'mock-csrf-header',
 }));
+jest.mock('~/tracking');
 
 const ROOT_ELEMENT_ID = 'ide';
 const TEST_NONCE = 'test123nonce';
@@ -88,7 +90,11 @@ describe('ide/init_gitlab_web_ide', () => {
   });
 
   describe('default', () => {
+    const telemetryEnabled = true;
+
     beforeEach(() => {
+      Tracking.enabled.mockReturnValueOnce(telemetryEnabled);
+
       createSubject();
     });
 
@@ -121,6 +127,7 @@ describe('ide/init_gitlab_web_ide', () => {
         },
         handleStartRemote: expect.any(Function),
         handleTracking,
+        telemetryEnabled,
       });
     });
 

@@ -2,8 +2,6 @@
 
 module Applications
   class CreateService
-    include BaseServiceUtility
-
     attr_reader :current_user, :params
 
     def initialize(current_user, params)
@@ -22,7 +20,6 @@ module Applications
       end
 
       @application.save
-      notification_service.application_created(current_user)
       @application
     end
   end

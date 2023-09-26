@@ -1244,7 +1244,14 @@ class Repository
 
   def get_patch_id(old_revision, new_revision)
     raw_repository.get_patch_id(old_revision, new_revision)
-  rescue Gitlab::Git::CommandError
+  rescue Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository => e
+    Gitlab::ErrorTracking.track_exception(
+      e,
+      project_id: project.id,
+      old_revision: old_revision,
+      new_revision: new_revision
+    )
+
     nil
   end
 

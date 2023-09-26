@@ -14,18 +14,14 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   # include the call to session.delete
   def new
     if pre_auth.authorizable?
-
       if skip_authorization? || (matching_token? && pre_auth.client.application.confidential?)
         auth = authorization.authorize
         parsed_redirect_uri = URI.parse(auth.redirect_uri)
         session.delete(:user_return_to)
-        Authorizations::NotificationService.new(current_user).execute
-
         render "doorkeeper/authorizations/redirect", locals: { redirect_uri: parsed_redirect_uri }, layout: false
       else
         redirect_uri = URI(authorization.authorize.redirect_uri)
         allow_redirect_uri_form_action(redirect_uri.scheme)
-        Authorizations::NotificationService.new(current_user).execute
 
         render "doorkeeper/authorizations/new"
       end

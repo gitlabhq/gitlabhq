@@ -177,7 +177,7 @@ module Gitlab
           def parsed_timeout
             return unless has_timeout?
 
-            ChronicDuration.parse(timeout.to_s, use_complete_matcher: true)
+            ChronicDuration.parse(timeout.to_s)
           end
 
           def ignored?
