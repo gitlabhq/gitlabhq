@@ -11,7 +11,10 @@ module AuditEvents
     def initialize(
       author:, scope:, target:, message:,
       created_at: DateTime.current, additional_details: {}, ip_address: nil, target_details: nil)
-      raise MissingAttributeError if missing_attribute?(author, scope, target, message)
+      raise MissingAttributeError, "author" if author.blank?
+      raise MissingAttributeError, "scope" if scope.blank?
+      raise MissingAttributeError, "target" if target.blank?
+      raise MissingAttributeError, "message" if message.blank?
 
       @author = build_author(author)
       @scope = scope
@@ -31,10 +34,6 @@ module AuditEvents
     end
 
     private
-
-    def missing_attribute?(author, scope, target, message)
-      author.blank? || scope.blank? || target.blank? || message.blank?
-    end
 
     def payload
       base_payload.merge(details: base_details_payload)

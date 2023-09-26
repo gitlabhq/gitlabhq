@@ -100,7 +100,6 @@ export default {
         :disabled="isRetrying"
         :loading="isRetrying"
         class="js-pipelines-retry-button"
-        data-qa-selector="pipeline_retry_button"
         data-testid="pipelines-retry-button"
         icon="retry"
         variant="default"

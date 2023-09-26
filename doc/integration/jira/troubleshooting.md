@@ -10,23 +10,41 @@ This page contains a list of common issues you might encounter when working with
 
 ## GitLab cannot comment on a Jira issue
 
-If GitLab cannot comment on Jira issues, make sure the Jira user you
-set up for the [Jira integration](configure.md) has permission to:
+If GitLab cannot comment on a Jira issue, ensure the Jira user you created for the [Jira issue integration](configure.md) has permission to:
 
 - Post comments on a Jira issue.
 - Transition the Jira issue.
 
-Jira issue references and update comments do not work if the [GitLab issue tracker](../../integration/external-issue-tracker.md) is disabled.
+When the [GitLab issue tracker](../../integration/external-issue-tracker.md) is disabled, Jira issue references and comments do not work.
+If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), ensure you add your self-managed IP addresses or [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist in Jira.
 
-If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), make sure you add your self-managed IP addresses or [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist in Jira.
+For the root cause, check the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.
+
+In GitLab 16.1 and later, when an error occurs, the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file contains `client_*` keys in the outgoing API request to Jira.
+You can use the `client_*` keys to check the [Atlassian API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-group-issues) for why the error has occurred.
+
+In the following example, Jira responds with a `404` because the Jira issue `ALPHA-1` does not exist:
+
+```json
+{
+  "severity": "ERROR",
+  "time": "2023-07-25T21:38:56.510Z",
+  "message": "Error sending message",
+  "client_url": "https://my-jira-cloud.atlassian.net",
+  "client_path": "/rest/api/2/issue/ALPHA-1",
+  "client_status": "404",
+  "exception.class": "JIRA::HTTPError",
+  "exception.message": "Not Found",
+}
+```
 
 ## GitLab cannot close a Jira issue
 
 If GitLab cannot close a Jira issue:
 
-- Make sure the `Transition ID` you set in the Jira settings matches the one
-  your project needs to close an issue.
-
+- Ensure the transition ID you set in the Jira settings matches the one
+  your project must have to close an issue. For more information, see
+  [automatic issue transitions](issues.md#automatic-issue-transitions) and [custom issue transitions](issues.md#custom-issue-transitions).
 - Make sure the Jira issue is not already marked as resolved:
   - Check the Jira issue resolution field is not set.
   - Check the issue is not struck through in Jira lists.
@@ -47,45 +65,44 @@ There is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/341571)
 where the Jira integration sometimes does not work for a project that has been imported.
 As a workaround, disable the integration and then re-enable it.
 
-## Bulk change all Jira integrations to Jira instance-level values
+## Bulk change all Jira integrations to Jira group-level or instance-level values
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 To change all Jira projects to use instance-level integration settings:
 
 1. In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run the following:
 
-   ```ruby
-   jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
-   Integrations::Jira.where(active: true, instance: false, inherit_from_id: nil).find_each do |integration|
-     integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
-   end
-   ```
+   - In GitLab 15.0 and later:
+
+     ```ruby
+     Integrations::Jira.where(active: true, instance: false, inherit_from_id: nil).find_each do |integration|
+       default_integration = Integration.default_integration(integration.type, integration.project)
+
+       integration.inherit_from_id = default_integration.id
+
+       if integration.save(context: :manual_change)
+         BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+       end
+     end
+     ```
+
+   - In GitLab 14.10 and earlier:
+
+     ```ruby
+     jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
+     Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
+       integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
+     end
+     ```
 
 1. Modify and save the instance-level integration from the UI to propagate the changes to all group-level and project-level integrations.
 
-## Check if Jira Cloud is linked
-
-You can use the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session) to check if Jira Cloud is linked to:
-
-A specified namespace:
-
-```ruby
-JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
-```
-
-A specified project:
-
-```ruby
-Project.find_by_full_path('path/to/project').jira_subscription_exists?
-```
-
-Any namespace:
-
-```ruby
-installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
-installation.subscriptions
-```
-
 ## Bulk update the service integration password for all projects
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 To reset the Jira user's password for all projects with active Jira integrations,
 run the following in a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
@@ -107,7 +124,7 @@ Check [`production.log`](../../administration/logs/index.md#productionlog) to se
 :NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)
 ```
 
-If that's the case, ensure the **Due date** field is visible for issues in the integrated Jira project.
+If that's the case, ensure the [**Due date** field is visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
 
 ## `An error occurred while requesting data from Jira` when viewing the Jira issues list in GitLab
 

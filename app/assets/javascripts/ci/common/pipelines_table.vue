@@ -165,7 +165,6 @@ export default {
   },
   TBODY_TR_ATTR: {
     'data-testid': 'pipeline-table-row',
-    'data-qa-selector': 'pipeline_row_container',
   },
 };
 </script>

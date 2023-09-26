@@ -327,3 +327,26 @@ Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remot
 - The authenticated Jira user does not have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access.
 
 To resolve this issue, ensure the authenticated user is a Jira site administrator and try again.
+
+### Check if Jira Cloud is linked
+
+You can use the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session) to check if Jira Cloud is linked to:
+
+- A specified group:
+
+  ```ruby
+  JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
+  ```
+
+- A specified project:
+
+  ```ruby
+  Project.find_by_full_path('path/to/project').jira_subscription_exists?
+  ```
+
+- Any group:
+
+  ```ruby
+  installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
+  installation.subscriptions
+  ```

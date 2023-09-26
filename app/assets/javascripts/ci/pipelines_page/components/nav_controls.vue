@@ -58,7 +58,6 @@ export default {
       category="primary"
       class="js-run-pipeline"
       data-testid="run-pipeline-button"
-      data-qa-selector="run_pipeline_button"
     >
       {{ s__('Pipeline|Run pipeline') }}
     </gl-button>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DiffHelper do
+RSpec.describe DiffHelper, feature_category: :code_review_workflow do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

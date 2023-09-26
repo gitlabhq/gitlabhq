@@ -39,16 +39,6 @@ RSpec.describe Gitlab::SlashCommands::Run do
 
       expect(described_class.available?(project)).to eq(false)
     end
-
-    it 'returns false when chatops is not available' do
-      allow(Gitlab::Chat)
-        .to receive(:available?)
-        .and_return(false)
-
-      project = double(:project, builds_enabled?: true)
-
-      expect(described_class.available?(project)).to eq(false)
-    end
   end
 
   describe '.allowed?' do

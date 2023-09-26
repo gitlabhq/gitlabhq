@@ -6,7 +6,7 @@ module QA
       extend self
 
       def onboard_user(wait: Capybara.default_max_wait_time)
-        Page::Registration::Welcome.perform do |welcome_page|
+        EE::Page::Registration::Welcome.perform do |welcome_page|
           if welcome_page.has_get_started_button?(wait: wait)
             welcome_page.select_role('Other')
             welcome_page.choose_setup_for_just_me_if_available

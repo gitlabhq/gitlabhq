@@ -694,7 +694,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'creates a new pipeline' do
             expect do
-              find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
+              find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -704,13 +704,13 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           context 'when variables are specified' do
             it 'creates a new pipeline with variables' do
-              page.within(find("[data-testid='ci-variable-row']")) do
-                find("[data-testid='pipeline-form-ci-variable-key']").set('key_name')
-                find("[data-testid='pipeline-form-ci-variable-value']").set('value')
+              page.within(find("[data-testid='ci-variable-row-container']")) do
+                find("[data-testid='pipeline-form-ci-variable-key-field']").set('key_name')
+                find("[data-testid='pipeline-form-ci-variable-value-field']").set('value')
               end
 
               expect do
-                find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
+                find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
                 wait_for_requests
               end
                 .to change { Ci::Pipeline.count }.by(1)
@@ -723,7 +723,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'without gitlab-ci.yml' do
           before do
-            find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
+            find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
             wait_for_requests
           end
 
@@ -733,7 +733,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
-              find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
+              find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)

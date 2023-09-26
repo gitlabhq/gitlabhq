@@ -173,7 +173,6 @@ export default {
         :href="pipeline.path"
         class="gl-mr-1 gl-text-blue-500!"
         data-testid="pipeline-url-link"
-        data-qa-selector="pipeline_url_link"
         @click="trackClick('click_pipeline_id')"
         >#{{ pipeline[pipelineKey] }}</gl-link
       >

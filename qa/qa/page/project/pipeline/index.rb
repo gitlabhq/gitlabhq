@@ -5,32 +5,26 @@ module QA
     module Project
       module Pipeline
         class Index < QA::Page::Base
+          include Component::CiBadgeLink
+
           view 'app/assets/javascripts/ci/pipelines_page/components/pipeline_url.vue' do
-            element :pipeline_url_link
-          end
-
-          view 'app/assets/javascripts/ci/pipelines_page/components/pipelines_status_badge.vue' do
-            element :pipeline_commit_status
-          end
-
-          view 'app/assets/javascripts/ci/pipelines_page/components/pipeline_operations.vue' do
-            element :pipeline_retry_button
+            element 'pipeline-url-link'
           end
 
           view 'app/assets/javascripts/ci/pipelines_page/components/nav_controls.vue' do
-            element :run_pipeline_button
+            element 'run-pipeline-button'
           end
 
           view 'app/assets/javascripts/ci/common/pipelines_table.vue' do
-            element :pipeline_row_container
+            element 'pipeline-table-row'
           end
 
           def latest_pipeline
-            all_elements(:pipeline_row_container, minimum: 1).first
+            all_elements('pipeline-table-row', minimum: 1).first
           end
 
           def latest_pipeline_status
-            latest_pipeline.find(element_selector_css(:pipeline_commit_status)).text
+            latest_pipeline.find(element_selector_css('ci-badge-link')).text
           end
 
           # If no status provided, wait for pipeline to complete
@@ -46,20 +40,20 @@ module QA
           def has_any_pipeline?(wait: nil)
             wait ||= Support::Repeater::DEFAULT_MAX_WAIT_TIME
             wait_until(max_duration: wait, message: "Wait for any pipeline") do
-              has_element?(:pipeline_row_container)
+              has_element?('pipeline-table-row')
             end
           end
 
           def has_no_pipeline?
-            has_no_element?(:pipeline_row_container)
+            has_no_element?('pipeline-table-row')
           end
 
           def click_run_pipeline_button
-            click_element(:run_pipeline_button, Page::Project::Pipeline::New)
+            click_element('run-pipeline-button', Page::Project::Pipeline::New)
           end
 
           def click_on_latest_pipeline
-            latest_pipeline.find(element_selector_css(:pipeline_url_link)).click
+            latest_pipeline.find(element_selector_css('pipeline-url-link')).click
           end
         end
       end
