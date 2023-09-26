@@ -133,7 +133,8 @@ make sure a new fixture is generated and committed together with the change.
 The GraphQL Subscription for Chat behaves slightly different because it's user-centric. A user could have Chat open on multiple browser tabs, or also on their IDE.
 We therefore need to broadcast messages to multiple clients to keep them in sync. The `aiAction` mutation with the `chat` action behaves the following:
 
-1. All complete Chat messages (including messages from the user) are broadcasted with the `userId` and the `resourceId` from the mutation as identifier, ignoring the `clientSubscriptionId`.
-1. Chunks from streamed Chat messages are broadcasted with the `userId`, `resourceId`, and `clientSubscriptionId` as identifier.
+1. All complete Chat messages (including messages from the user) are broadcasted with the `userId`, `aiAction: "chat"` as identifier.
+1. Chunks from streamed Chat messages and currently used tools are broadcasted with the `userId`, `resourceId`, and the `clientSubscriptionId` from the mutation as identifier.
 
-To truly sync messages between all clients of a user, we need to remove the `resourceId` as well, which will be fixed by [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).
+Note that we still broadcast chat messages and currently used tools using the `userId` and `resourceId` as identifier.
+However, this is deprecated and should no longer be used. We want to remove `resourceId` on the subscription as part of [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).

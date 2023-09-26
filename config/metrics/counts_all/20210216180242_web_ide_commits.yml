@@ -14,6 +14,8 @@ options:
   prefix: web_ide
   event: commits_count
   include_usage_prefix: false
+events:
+  - name: web_ide_commit_created
 distribution:
 - ce
 - ee

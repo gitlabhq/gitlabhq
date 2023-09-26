@@ -32250,6 +32250,12 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
+msgid "OKRs|%{author_link}'s OKR %{work_item_link} requires an update."
+msgstr ""
+
+msgid "OKRs|An update is due on: %{update_due_date}"
+msgstr ""
+
 msgid "OKR|Existing key result"
 msgstr ""
 

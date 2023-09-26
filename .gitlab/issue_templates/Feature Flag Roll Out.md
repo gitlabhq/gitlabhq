@@ -77,7 +77,7 @@ Note: Please make sure to run the chatops commands in the slack channel that get
 - [ ] Deploy the feature flag at a percentage (recommended percentage: 50%)
   - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors --dev --staging --staging-ref`
-  - If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
+  - [Deprecated] If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --random --dev --staging --staging-ref`
   - [ ] Monitor that the error rates did not increase (repeat with a different percentage as necessary)
 <!-- End of block for deletes -->
@@ -128,9 +128,9 @@ For visibility, all `/chatops` commands that target production should be execute
 
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature.
   - [ ] Between every step wait for at least 15 minutes and monitor the appropriate graphs on https://dashboards.gitlab.net.
-  - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.
+  - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout. For a reference on how to choose the percentages, see [here](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process)
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`
-  - If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
+  - [Deprecated] If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --random`
   - Enable the feature globally on production environment.
     - [ ] `/chatops run feature set <feature-flag-name> true`

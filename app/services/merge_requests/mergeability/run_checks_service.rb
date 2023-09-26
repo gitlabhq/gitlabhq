@@ -9,8 +9,8 @@ module MergeRequests
         @params = params
       end
 
-      def execute
-        @results = merge_request.mergeability_checks.each_with_object([]) do |check_class, result_hash|
+      def execute(checks)
+        @results = checks.each_with_object([]) do |check_class, result_hash|
           check = check_class.new(merge_request: merge_request, params: params)
 
           next if check.skip?

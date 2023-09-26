@@ -1239,11 +1239,10 @@ class MergeRequest < ApplicationRecord
     )
 
     check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
-
-    can_be_merged? && (!should_be_rebased? || skip_rebase_check)
+    mergeable_git_state?(skip_rebase_check: skip_rebase_check)
   end
 
-  def mergeability_checks
+  def mergeable_state_checks
     # We want to have the cheapest checks first in the list, that way we can
     #   fail fast before running the more expensive ones.
     #
@@ -1256,8 +1255,20 @@ class MergeRequest < ApplicationRecord
     ]
   end
 
+  def mergeable_git_state_checks
+    [
+      ::MergeRequests::Mergeability::CheckConflictStatusService,
+      ::MergeRequests::Mergeability::CheckRebaseStatusService
+    ]
+  end
+
+  def all_mergeability_checks
+    mergeable_state_checks + mergeable_git_state_checks
+  end
+
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false)
     additional_checks = execute_merge_checks(
+      mergeable_state_checks,
       params: {
         skip_ci_check: skip_ci_check,
         skip_discussions_check: skip_discussions_check,
@@ -1265,6 +1276,17 @@ class MergeRequest < ApplicationRecord
       }
     )
     additional_checks.success?
+  end
+
+  def mergeable_git_state?(skip_rebase_check: false)
+    checks = execute_merge_checks(
+      mergeable_git_state_checks,
+      params: {
+        skip_rebase_check: skip_rebase_check
+      }
+    )
+
+    checks.success?
   end
 
   def ff_merge_possible?
@@ -2081,9 +2103,11 @@ class MergeRequest < ApplicationRecord
     false # Overridden in EE
   end
 
-  def execute_merge_checks(params: {})
+  def execute_merge_checks(checks, params: {})
     # rubocop: disable CodeReuse/ServiceClass
-    MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: params).execute
+    MergeRequests::Mergeability::RunChecksService
+      .new(merge_request: self, params: params)
+      .execute(checks)
     # rubocop: enable CodeReuse/ServiceClass
   end
 

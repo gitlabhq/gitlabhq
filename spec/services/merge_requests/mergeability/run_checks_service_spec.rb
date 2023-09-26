@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redis_cache, feature_category: :code_review_workflow do
+  let(:checks) { merge_request.all_mergeability_checks }
+
   subject(:run_checks) { described_class.new(merge_request: merge_request, params: {}) }
 
   describe '#execute' do
-    subject(:execute) { run_checks.execute }
+    subject(:execute) { run_checks.execute(checks) }
 
     let_it_be(:merge_request) { create(:merge_request) }
 
@@ -29,7 +31,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
     context 'when a check is skipped' do
       it 'does not execute the check' do
-        merge_request.mergeability_checks.each do |check|
+        checks.each do |check|
           allow_next_instance_of(check) do |service|
             allow(service).to receive(:skip?).and_return(false)
             allow(service).to receive(:execute).and_return(success_result)
@@ -50,7 +52,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
       let(:merge_check) { instance_double(MergeRequests::Mergeability::CheckCiStatusService) }
 
       before do
-        merge_request.mergeability_checks.each do |check|
+        checks.each do |check|
           allow_next_instance_of(check) do |service|
             allow(service).to receive(:skip?).and_return(true)
           end
@@ -114,7 +116,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
     context 'when the execute method has been executed' do
       before do
-        run_checks.execute
+        run_checks.execute(checks)
       end
 
       context 'when all the checks succeed' do
@@ -126,7 +128,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
       context 'when one check fails' do
         before do
           allow(merge_request).to receive(:open?).and_return(false)
-          run_checks.execute
+          run_checks.execute(checks)
         end
 
         it 'returns false' do
@@ -151,7 +153,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
     context 'when the execute method has been executed' do
       context 'when all the checks succeed' do
         before do
-          run_checks.execute
+          run_checks.execute(checks)
         end
 
         it 'returns nil' do
@@ -162,7 +164,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
       context 'when one check fails' do
         before do
           allow(merge_request).to receive(:open?).and_return(false)
-          run_checks.execute
+          run_checks.execute(checks)
         end
 
         it 'returns the open reason' do

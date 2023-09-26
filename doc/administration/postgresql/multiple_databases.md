@@ -41,6 +41,9 @@ databases. Some examples:
 To migrate existing data from the `main` database to the `ci` database, you can
 copy the database across.
 
+NOTE:
+If something unexpected happens during the migration, it is safe to start over.
+
 ### Existing self-compiled installation
 
 1. [Disable background migrations](../../development/database/batched_background_migrations.md#enable-or-disable-background-migrations)

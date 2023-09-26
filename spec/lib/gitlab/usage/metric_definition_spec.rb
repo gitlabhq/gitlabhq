@@ -126,11 +126,13 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     context 'with data_source redis metric' do
       before do
         attributes[:data_source] = 'redis'
-        attributes[:options] = { prefix: 'web_ide', event: 'views_count', include_usage_prefix: false }
+        attributes[:events] = [
+          { name: 'web_ide_viewed' }
+        ]
       end
 
-      it 'returns a ServicePingContext with redis key as event_name' do
-        expect(subject.to_h[:data][:event_name]).to eq('WEB_IDE_VIEWS_COUNT')
+      it 'returns a ServicePingContext with first event as event_name' do
+        expect(subject.to_h[:data][:event_name]).to eq('web_ide_viewed')
       end
     end
 

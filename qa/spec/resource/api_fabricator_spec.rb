@@ -203,4 +203,34 @@ RSpec.describe QA::Resource::ApiFabricator do
       end
     end
   end
+
+  describe '#exists?' do
+    let(:resource) { resource_with_api_support }
+    let(:request) { double('GET request', url: 'new-url') }
+    let(:args) { { max_redirects: 0 } }
+
+    before do
+      allow(QA::Runtime::API::Request).to receive(:new).and_return(request)
+    end
+
+    context 'when request is successful' do
+      let(:response) { double('GET response', code: 200) }
+
+      it 'returns true' do
+        expect(subject).to receive(:get).with(request.url, args).and_return(response)
+
+        expect(subject.exists?(**args)).to eq(true)
+      end
+    end
+
+    context 'when request is unsuccessful' do
+      let(:response) { double('GET response', code: 404) }
+
+      it 'returns false' do
+        expect(subject).to receive(:get).with(request.url, args).and_return(response)
+
+        expect(subject.exists?(**args)).to eq(false)
+      end
+    end
+  end
 end

@@ -190,6 +190,8 @@ Feature.enabled?(:feature_ice_cold_projects, project)
 
 If you are not certain what percentages to use, use the following steps:
 
+1. 1%
+1. 10%
 1. 25%
 1. 50%
 1. 75%

@@ -357,6 +357,72 @@ Get the ClickUp integration settings for a project.
 GET /projects/:id/integrations/clickup
 ```
 
+## Confluence Workspace
+
+### Set up Confluence Workspace
+
+Set up the Confluence Workspace integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/confluence
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `confluence_url` | string | true | The URL of the Confluence Cloud Workspace hosted on atlassian.net.  |
+
+### Disable Confluence Workspace
+
+Disable the Confluence Workspace integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/confluence
+```
+
+### Get Confluence Workspace settings
+
+Get the Confluence Workspace integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/confluence
+```
+
+## Custom issue tracker
+
+### Set up a custom issue tracker
+
+Set up a custom issue tracker for a project.
+
+```plaintext
+PUT /projects/:id/integrations/custom-issue-tracker
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `new_issue_url` | string | true |  New Issue URL |
+| `issues_url` | string | true | Issue URL |
+| `project_url` | string | true | Project URL |
+
+### Disable a custom issue tracker
+
+Disable a custom issue tracker for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/custom-issue-tracker
+```
+
+### Get custom issue tracker settings
+
+Get the custom issue tracker settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/custom-issue-tracker
+```
+
 ## Datadog
 
 ### Set up Datadog
@@ -395,219 +461,13 @@ Get the Datadog integration settings for a project.
 GET /projects/:id/integrations/datadog
 ```
 
-## Telegram
-
-### Set up Telegram
-
-Set up the Telegram integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/telegram
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `token`   | string | true | The Telegram bot token. For example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`. |
-| `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`) |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
-| `push_events` | boolean | true | Enable notifications for push events |
-| `issues_events` | boolean | true | Enable notifications for issue events |
-| `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events |
-| `merge_requests_events` | boolean | true | Enable notifications for merge request events |
-| `tag_push_events` | boolean | true | Enable notifications for tag push events |
-| `note_events` | boolean | true | Enable notifications for note events |
-| `confidential_note_events` | boolean | true | Enable notifications for confidential note events |
-| `pipeline_events` | boolean | true | Enable notifications for pipeline events |
-| `wiki_page_events` | boolean | true | Enable notifications for wiki page events |
-
-### Disable Telegram
-
-Disable the Telegram integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/telegram
-```
-
-### Get Telegram settings
-
-Get the Telegram integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/telegram
-```
-
-## Unify Circuit
-
-### Set up Unify Circuit
-
-Set up the Unify Circuit integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/unify-circuit
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Unify Circuit webhook (for example, `https://circuit.com/rest/v2/webhooks/incoming/...`). |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-
-### Disable Unify Circuit
-
-Disable the Unify Circuit integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/unify-circuit
-```
-
-### Get Unify Circuit settings
-
-Get the Unify Circuit integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/unify-circuit
-```
-
-## Pumble
-
-### Set up Pumble
-
-Set up the Pumble integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/pumble
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Pumble webhook (for example, `https://api.pumble.com/workspaces/x/...`). |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default is `default`. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-
-### Disable Pumble
-
-Disable the Pumble integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/pumble
-```
-
-### Get Pumble settings
-
-Get the Pumble integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/pumble
-```
-
-## Webex Teams
-
-### Set up Webex Teams
-
-Set up the Webex Teams integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/webex-teams
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Webex Teams webhook (for example, `https://api.ciscospark.com/v1/webhooks/incoming/...`). |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-
-### Disable Webex Teams
-
-Disable the Webex Teams integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/webex-teams
-```
-
-### Get Webex Teams settings
-
-Get the Webex Teams integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/webex-teams
-```
-
-## Custom issue tracker
-
-### Set up a custom issue tracker
-
-Set up a custom issue tracker for a project.
-
-```plaintext
-PUT /projects/:id/integrations/custom-issue-tracker
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New Issue URL |
-| `issues_url` | string | true | Issue URL |
-| `project_url` | string | true | Project URL |
-
-### Disable a custom issue tracker
-
-Disable a custom issue tracker for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/custom-issue-tracker
-```
-
-### Get custom issue tracker settings
-
-Get the custom issue tracker settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/custom-issue-tracker
-```
-
 ## Discord Notifications
 
 ### Set up Discord Notifications
 
 > `_channel` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621) in GitLab 16.3.
 
-Set up the Discord Notifications integration for a project.
+Set up Discord Notifications for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/discord
@@ -641,7 +501,7 @@ Parameters:
 
 ### Disable Discord Notifications
 
-Disable the Discord Notifications integration for a project. Integration settings are reset.
+Disable Discord Notifications for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/discord
@@ -649,7 +509,7 @@ DELETE /projects/:id/integrations/discord
 
 ### Get Discord Notifications settings
 
-Get the Discord Notifications integration settings for a project.
+Get the Discord Notifications settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/discord
@@ -763,38 +623,6 @@ Get the EWM integration settings for a project.
 GET /projects/:id/integrations/ewm
 ```
 
-## Confluence Workspace
-
-### Set up Confluence Workspace
-
-Set up the Confluence Workspace integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/confluence
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `confluence_url` | string | true | The URL of the Confluence Cloud Workspace hosted on atlassian.net.  |
-
-### Disable Confluence Workspace
-
-Disable the Confluence Workspace integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/confluence
-```
-
-### Get Confluence Workspace settings
-
-Get the Confluence Workspace integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/confluence
-```
-
 ## External wiki
 
 ### Set up an external wiki
@@ -859,6 +687,69 @@ Get the GitHub integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/github
+```
+
+## GitLab for Slack app
+
+### Set up the GitLab for Slack app
+
+Set up the GitLab for Slack app for a project.
+
+```plaintext
+PUT /projects/:id/integrations/slack
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | `https://hooks.slack.com/services/...`. |
+| `username` | string | false | username. |
+| `channel` | string | false | Default channel to use if others are not configured. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `alert_channel` | string | false | The name of the channel to receive alert events notifications. |
+| `alert_events` | boolean | false | Enable notifications for alert events. |
+| `commit_events` | boolean | false | Enable notifications for commit events. |
+| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `confidential_note_channel` | string | false | The name of the channel to receive confidential note events notifications. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `deployment_channel` | string | false | The name of the channel to receive deployment events notifications. |
+| `deployment_events` | boolean | false | Enable notifications for deployment events. |
+| `incident_channel` | string | false | The name of the channel to receive incidents events notifications. |
+| `incidents_events` | boolean | false | Enable notifications for incident events. |
+| `issue_channel` | string | false | The name of the channel to receive issues events notifications. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `job_events` | boolean | false | Enable notifications for job events. |
+| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `note_channel` | string | false | The name of the channel to receive note events notifications. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `push_channel` | string | false | The name of the channel to receive push events notifications. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable the GitLab for Slack app
+
+Disable the GitLab for Slack app for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/slack
+```
+
+### Get the GitLab for Slack app settings
+
+Get the GitLab for Slack app settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/slack
 ```
 
 ## Google Chat
@@ -941,6 +832,85 @@ Get the irker integration settings for a project.
 GET /projects/:id/integrations/irker
 ```
 
+## Jenkins
+
+### Set up Jenkins
+
+Set up the Jenkins integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/jenkins
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `jenkins_url` | string | true | Jenkins URL like `http://jenkins.example.com`. |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
+| `project_name` | string | true | The URL-friendly project name. Example: `my_project_name`. |
+| `username` | string | false | Username for authentication with the Jenkins server, if authentication is required by the server. |
+| `password` | string | false | Password for authentication with the Jenkins server, if authentication is required by the server. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+
+### Disable Jenkins
+
+Disable the Jenkins integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/jenkins
+```
+
+### Get Jenkins settings
+
+Get the Jenkins integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/jenkins
+```
+
+## JetBrains TeamCity
+
+### Set up JetBrains TeamCity
+
+Set up the JetBrains TeamCity integration for a project.
+
+The build configuration in TeamCity must use the build number format `%build.vcs.number%`. Configure monitoring of all branches so merge requests build. This setting is in the VCS root advanced settings.
+
+```plaintext
+PUT /projects/:id/integrations/teamcity
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `teamcity_url` | string | true | TeamCity root URL (for example, `https://teamcity.example.com`). |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
+| `build_type` | string | true | Build configuration ID. |
+| `username` | string | true | A user with permissions to trigger a manual build. |
+| `password` | string | true | The password of the user. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+
+### Disable JetBrains TeamCity
+
+Disable the JetBrains TeamCity integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/teamcity
+```
+
+### Get JetBrains TeamCity settings
+
+Get the JetBrains TeamCity integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/teamcity
+```
+
 ## Jira
 
 ### Set up Jira
@@ -985,61 +955,59 @@ Get the Jira integration settings for a project.
 GET /projects/:id/integrations/jira
 ```
 
-## Slack slash commands
+## Mattermost notifications
 
-### Set up Slack slash commands
+### Set up Mattermost notifications
 
-Set up Slack slash commands for a project.
+Set up Mattermost notifications for a project.
 
 ```plaintext
-PUT /projects/:id/integrations/slack-slash-commands
+PUT /projects/:id/integrations/mattermost
 ```
 
 Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | yes | The Slack token. |
+| `webhook` | string | true | The Mattermost webhook (for example, `http://mattermost_host/hooks/...`). |
+| `username` | string | false | username. |
+| `channel` | string | false | Default channel to use if others are not configured. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `push_channel` | string | false | The name of the channel to receive push events notifications. |
+| `issue_channel` | string | false | The name of the channel to receive issues events notifications. |
+| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications. |
+| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications. |
+| `note_channel` | string | false | The name of the channel to receive note events notifications. |
+| `confidential_note_channel` | string | false | The name of the channel to receive confidential note events notifications. |
+| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications. |
+| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications. |
+| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications. |
 
-### Disable Slack slash commands
+### Disable Mattermost notifications
 
-Disable Slack slash commands for a project. Integration settings are reset.
+Disable Mattermost notifications for a project. Integration settings are reset.
 
 ```plaintext
-DELETE /projects/:id/integrations/slack-slash-commands
+DELETE /projects/:id/integrations/mattermost
 ```
 
-### Get Slack Slash Commands settings
+### Get Mattermost notifications settings
 
-Get the Slack slash commands settings for a project.
+Get the Mattermost notifications settings for a project.
 
 ```plaintext
-GET /projects/:id/integrations/slack-slash-commands
-```
-
-Example response:
-
-```json
-{
-  "id": 4,
-  "title": "Slack slash commands",
-  "slug": "slack-slash-commands",
-  "created_at": "2017-06-27T05:51:39-07:00",
-  "updated_at": "2017-06-27T05:51:39-07:00",
-  "active": true,
-  "push_events": true,
-  "issues_events": true,
-  "confidential_issues_events": true,
-  "merge_requests_events": true,
-  "tag_push_events": true,
-  "note_events": true,
-  "job_events": true,
-  "pipeline_events": true,
-  "comment_on_event_enabled": false,
-  "properties": {
-    "token": "<your_access_token>"
-  }
-}
+GET /projects/:id/integrations/mattermost
 ```
 
 ## Mattermost slash commands
@@ -1072,6 +1040,86 @@ Get the Mattermost slash commands settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/mattermost-slash-commands
+```
+
+## Microsoft Teams notifications
+
+### Set up Microsoft Teams notifications
+
+Set up Microsoft Teams notifications for a project.
+
+```plaintext
+PUT /projects/:id/integrations/microsoft-teams
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Microsoft Teams webhook (for example, `https://outlook.office.com/webhook/...`). |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable Microsoft Teams notifications
+
+Disable Microsoft Teams notifications for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/microsoft-teams
+```
+
+### Get Microsoft Teams notifications settings
+
+Get the Microsoft Teams notifications settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/microsoft-teams
+```
+
+## Mock CI
+
+This integration is only available when your environment is set to development.
+See [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service) for an example of a companion mock integration.
+
+### Set up Mock CI
+
+Set up the Mock CI integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/mock-ci
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `mock_service_url` | string | true | `http://localhost:4004`. |
+| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
+
+### Disable Mock CI
+
+Disable the Mock CI integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/mock-ci
+```
+
+### Get Mock CI settings
+
+Get the Mock CI integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/mock-ci
 ```
 
 ## Packagist
@@ -1180,6 +1228,49 @@ Get the Pivotal Tracker integration settings for a project.
 GET /projects/:id/integrations/pivotaltracker
 ```
 
+## Pumble
+
+### Set up Pumble
+
+Set up the Pumble integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/pumble
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Pumble webhook (for example, `https://api.pumble.com/workspaces/x/...`). |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default is `default`. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable Pumble
+
+Disable the Pumble integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/pumble
+```
+
+### Get Pumble settings
+
+Get the Pumble integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/pumble
+```
+
 ## Pushover
 
 ### Set up Pushover
@@ -1250,281 +1341,61 @@ Get the Redmine integration settings for a project.
 GET /projects/:id/integrations/redmine
 ```
 
-## GitLab for Slack app
+## Slack slash commands
 
-### Set up the GitLab for Slack app
+### Set up Slack slash commands
 
-Set up the GitLab for Slack app for a project.
+Set up Slack slash commands for a project.
 
 ```plaintext
-PUT /projects/:id/integrations/slack
+PUT /projects/:id/integrations/slack-slash-commands
 ```
 
 Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | `https://hooks.slack.com/services/...`. |
-| `username` | string | false | username. |
-| `channel` | string | false | Default channel to use if others are not configured. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `alert_channel` | string | false | The name of the channel to receive alert events notifications. |
-| `alert_events` | boolean | false | Enable notifications for alert events. |
-| `commit_events` | boolean | false | Enable notifications for commit events. |
-| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_note_channel` | string | false | The name of the channel to receive confidential note events notifications. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `deployment_channel` | string | false | The name of the channel to receive deployment events notifications. |
-| `deployment_events` | boolean | false | Enable notifications for deployment events. |
-| `incident_channel` | string | false | The name of the channel to receive incidents events notifications. |
-| `incidents_events` | boolean | false | Enable notifications for incident events. |
-| `issue_channel` | string | false | The name of the channel to receive issues events notifications. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `job_events` | boolean | false | Enable notifications for job events. |
-| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `note_channel` | string | false | The name of the channel to receive note events notifications. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `push_channel` | string | false | The name of the channel to receive push events notifications. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `token` | string | yes | The Slack token. |
 
-### Disable the GitLab for Slack app
+### Disable Slack slash commands
 
-Disable the GitLab for Slack app for a project. Integration settings are reset.
+Disable Slack slash commands for a project. Integration settings are reset.
 
 ```plaintext
-DELETE /projects/:id/integrations/slack
+DELETE /projects/:id/integrations/slack-slash-commands
 ```
 
-### Get the GitLab for Slack app settings
+### Get Slack slash commands settings
 
-Get the GitLab for Slack app settings for a project.
+Get the Slack slash commands settings for a project.
 
 ```plaintext
-GET /projects/:id/integrations/slack
+GET /projects/:id/integrations/slack-slash-commands
 ```
 
-## Microsoft Teams
+Example response:
 
-### Set up Microsoft Teams
-
-Set up the Microsoft Teams integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/microsoft-teams
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Microsoft Teams webhook (for example, `https://outlook.office.com/webhook/...`). |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-
-### Disable Microsoft Teams
-
-Disable the Microsoft Teams integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/microsoft-teams
-```
-
-### Get Microsoft Teams settings
-
-Get the Microsoft Teams integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/microsoft-teams
-```
-
-## Mattermost notifications
-
-### Set up Mattermost notifications
-
-Set up Mattermost notifications for a project.
-
-```plaintext
-PUT /projects/:id/integrations/mattermost
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Mattermost webhook (for example, `http://mattermost_host/hooks/...`). |
-| `username` | string | false | username. |
-| `channel` | string | false | Default channel to use if others are not configured. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-| `push_channel` | string | false | The name of the channel to receive push events notifications. |
-| `issue_channel` | string | false | The name of the channel to receive issues events notifications. |
-| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications. |
-| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications. |
-| `note_channel` | string | false | The name of the channel to receive note events notifications. |
-| `confidential_note_channel` | string | false | The name of the channel to receive confidential note events notifications. |
-| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications. |
-| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications. |
-| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications. |
-
-### Disable Mattermost notifications
-
-Disable Mattermost notifications for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/mattermost
-```
-
-### Get Mattermost notifications settings
-
-Get the Mattermost notifications settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/mattermost
-```
-
-## JetBrains TeamCity
-
-### Set up JetBrains TeamCity
-
-Set up the JetBrains TeamCity integration for a project.
-
-The build configuration in TeamCity must use the build number format `%build.vcs.number%`. Configure monitoring of all branches so merge requests build. This setting is in the VCS root advanced settings.
-
-```plaintext
-PUT /projects/:id/integrations/teamcity
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `teamcity_url` | string | true | TeamCity root URL (for example, `https://teamcity.example.com`). |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-| `build_type` | string | true | Build configuration ID. |
-| `username` | string | true | A user with permissions to trigger a manual build. |
-| `password` | string | true | The password of the user. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-
-### Disable JetBrains TeamCity
-
-Disable the JetBrains TeamCity integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/teamcity
-```
-
-### Get JetBrains TeamCity settings
-
-Get the JetBrains TeamCity integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/teamcity
-```
-
-## Jenkins
-
-### Set up Jenkins
-
-Set up the Jenkins integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/jenkins
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `jenkins_url` | string | true | Jenkins URL like `http://jenkins.example.com`. |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-| `project_name` | string | true | The URL-friendly project name. Example: `my_project_name`. |
-| `username` | string | false | Username for authentication with the Jenkins server, if authentication is required by the server. |
-| `password` | string | false | Password for authentication with the Jenkins server, if authentication is required by the server. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-
-### Disable Jenkins
-
-Disable the Jenkins integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/jenkins
-```
-
-### Get Jenkins settings
-
-Get the Jenkins integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/jenkins
-```
-
-## Mock CI
-
-This integration is only available when your environment is set to development.
-See [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service) for an example of a companion mock integration.
-
-### Set up Mock CI
-
-Set up the Mock CI integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/mock-ci
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `mock_service_url` | string | true | `http://localhost:4004`. |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-
-### Disable Mock CI
-
-Disable the Mock CI integration for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/mock-ci
-```
-
-### Get Mock CI settings
-
-Get the Mock CI integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/mock-ci
+```json
+{
+  "id": 4,
+  "title": "Slack slash commands",
+  "slug": "slack-slash-commands",
+  "created_at": "2017-06-27T05:51:39-07:00",
+  "updated_at": "2017-06-27T05:51:39-07:00",
+  "active": true,
+  "push_events": true,
+  "issues_events": true,
+  "confidential_issues_events": true,
+  "merge_requests_events": true,
+  "tag_push_events": true,
+  "note_events": true,
+  "job_events": true,
+  "pipeline_events": true,
+  "comment_on_event_enabled": false,
+  "properties": {
+    "token": "<your_access_token>"
+  }
+}
 ```
 
 ## Squash TM
@@ -1560,6 +1431,135 @@ Get the Squash TM integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/squash-tm
+```
+
+## Telegram
+
+### Set up Telegram
+
+Set up the Telegram integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/telegram
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token`   | string | true | The Telegram bot token. For example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`. |
+| `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`) |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `push_events` | boolean | true | Enable notifications for push events |
+| `issues_events` | boolean | true | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | true | Enable notifications for merge request events |
+| `tag_push_events` | boolean | true | Enable notifications for tag push events |
+| `note_events` | boolean | true | Enable notifications for note events |
+| `confidential_note_events` | boolean | true | Enable notifications for confidential note events |
+| `pipeline_events` | boolean | true | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | true | Enable notifications for wiki page events |
+
+### Disable Telegram
+
+Disable the Telegram integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/telegram
+```
+
+### Get Telegram settings
+
+Get the Telegram integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/telegram
+```
+
+## Unify Circuit
+
+### Set up Unify Circuit
+
+Set up the Unify Circuit integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/unify-circuit
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Unify Circuit webhook (for example, `https://circuit.com/rest/v2/webhooks/incoming/...`). |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable Unify Circuit
+
+Disable the Unify Circuit integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/unify-circuit
+```
+
+### Get Unify Circuit settings
+
+Get the Unify Circuit integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/unify-circuit
+```
+
+## Webex Teams
+
+### Set up Webex Teams
+
+Set up Webex Teams for a project.
+
+```plaintext
+PUT /projects/:id/integrations/webex-teams
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Webex Teams webhook (for example, `https://api.ciscospark.com/v1/webhooks/incoming/...`). |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable Webex Teams
+
+Disable Webex Teams for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/webex-teams
+```
+
+### Get Webex Teams settings
+
+Get the Webex Teams settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/webex-teams
 ```
 
 ## YouTrack

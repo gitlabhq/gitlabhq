@@ -28,7 +28,6 @@ You can use two types of labels in GitLab:
 
 ## Assign and unassign labels
 
-> - Unassigning labels with the **X** button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216881) in GitLab 13.5.
 > - Real-time updates in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
 > - Real-time updates in the sidebar [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357370#note_991987201) in GitLab 15.1.
 > - Real-time updates in the sidebar [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/357370) in GitLab 15.5.
@@ -64,8 +63,6 @@ You can also assign and unassign labels with [quick actions](quick_actions.md):
 ## View available labels
 
 ### View project labels
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241990) in GitLab 13.5: the label list in a project also shows all inherited labels.
 
 To view the **project's labels**:
 
@@ -184,7 +181,8 @@ To edit a **project** label:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Labels**.
-1. Next to the label you want to edit, select **Edit** (**{pencil}**).
+1. Next to the label you want to edit, select the vertical ellipsis (**{ellipsis_v}**), and then select **Edit**.
+1. Select **Save changes**.
 
 ### Edit a group label
 
@@ -192,7 +190,8 @@ To edit a **group** label:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Labels**.
-1. Next to the label you want to edit, select **Edit** (**{pencil}**).
+1. Next to the label you want to edit, select the vertical ellipsis (**{ellipsis_v}**), and then select **Edit**.
+1. Select **Save changes**.
 
 ## Delete a label
 
@@ -210,12 +209,7 @@ To delete a **project** label:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Labels**.
-1. Either:
-
-   - Next to the **Subscribe** button, select (**{ellipsis_v}**).
-   - Next to the label you want to edit, select **Edit** (**{pencil}**).
-
-1. Select **Delete**.
+1. Next to the **Subscribe** button, select (**{ellipsis_v}**), and then select **Delete**.
 
 ### Delete a group label
 
@@ -231,8 +225,6 @@ To delete a **group** label:
 1. Select **Delete**.
 
 ## Promote a project label to a group label
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231472) in GitLab 13.6: promoting a project label keeps that label's ID and changes it into a group label. Previously, promoting a project label created a new group label with a new ID and deleted the old label.
 
 You might want to make a project label available for other
 projects in the same group. Then, you can promote the label to a group label.
@@ -454,6 +446,34 @@ The labels higher in the list get higher priority.
 
 To learn what happens when you sort by priority or label priority, see
 [Sorting and ordering issue lists](issues/sorting_issue_lists.md).
+
+## Lock labels when a merge request is merged **(BETA)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [Beta](../../policy/experiment-beta-support.md).
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group or per project, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`.
+On GitLab.com, this feature is only available for use by GitLab Inc.
+
+To comply with certain auditing requirements, you can set labels to be locked.
+When a merge request with locked labels gets merged, nobody can remove them from the MR.
+
+When you add locked labels to issues or epics, they behave like regular labels.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project or group.
+
+WARNING:
+After you set a label as locked, nobody can undo it or delete the label.
+
+To set a label to get locked on merge:
+
+1. On the left sidebar, select **Search or go to** and find your group or project.
+1. Select **Manage > Labels**.
+1. Next to the label you want to edit, select the vertical ellipsis (**{ellipsis_v}**), and then select **Edit**.
+1. Select the **Lock label after a merge request is merged** checkbox.
+1. Select **Save changes**.
 
 ## Related topics
 

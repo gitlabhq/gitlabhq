@@ -26742,6 +26742,14 @@ Agent token statuses.
 | <a id="agenttokenstatusactive"></a>`ACTIVE` | Active agent token. |
 | <a id="agenttokenstatusrevoked"></a>`REVOKED` | Revoked agent token. |
 
+### `AiAction`
+
+Action to subscribe to.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiactionchat"></a>`CHAT` | Chat action. |
+
 ### `AiMessageRole`
 
 Possible message roles for AI features.

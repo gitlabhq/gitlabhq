@@ -100,7 +100,6 @@ RSpec/ExpectInHook:
     - 'qa/qa/specs/features/browser_ui/5_package/package_registry/pypi_repository_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/11_fulfillment/license/cloud_activation_spec.rb'
     - 'spec/commands/metrics_server/metrics_server_spec.rb'
-    - 'spec/controllers/admin/runners_controller_spec.rb'
     - 'spec/controllers/autocomplete_controller_spec.rb'
     - 'spec/controllers/concerns/controller_with_cross_project_access_check_spec.rb'
     - 'spec/controllers/concerns/spammable_actions/captcha_check/html_format_actions_support_spec.rb'

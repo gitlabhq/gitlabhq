@@ -17,7 +17,6 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   describe '#new' do
@@ -29,7 +28,7 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -42,7 +41,7 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is not maintainer' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -55,15 +54,19 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#register' do
-    subject(:register) { get :register, params: { namespace_id: project.namespace, project_id: project, id: new_runner } }
+    subject(:register) do
+      get :register, params: { namespace_id: project.namespace, project_id: project, id: new_runner }
+    end
 
     context 'when user is maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
       context 'when runner can be registered after creation' do
-        let_it_be(:new_runner) { create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user) }
+        let_it_be(:new_runner) do
+          create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user)
+        end
 
         it 'renders a :register template' do
           register
@@ -85,12 +88,14 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is not maintainer' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
       context 'when runner can be registered after creation' do
-        let_it_be(:new_runner) { create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user) }
+        let_it_be(:new_runner) do
+          create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user)
+        end
 
         it 'returns :not_found' do
           register
@@ -102,6 +107,10 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#update' do
+    before_all do
+      project.add_maintainer(user)
+    end
+
     it 'updates the runner and ticks the queue' do
       new_desc = runner.description.swapcase
 
@@ -117,6 +126,10 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#destroy' do
+    before_all do
+      project.add_maintainer(user)
+    end
+
     it 'destroys the runner' do
       expect_next_instance_of(Ci::Runners::UnregisterRunnerService, runner, user) do |service|
         expect(service).to receive(:execute).once.and_call_original
@@ -130,6 +143,10 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#resume' do
+    before_all do
+      project.add_maintainer(user)
+    end
+
     it 'marks the runner as active and ticks the queue' do
       runner.update!(active: false)
 
@@ -145,6 +162,10 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#pause' do
+    before_all do
+      project.add_maintainer(user)
+    end
+
     it 'marks the runner as inactive and ticks the queue' do
       runner.update!(active: true)
 
@@ -160,8 +181,13 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#toggle_shared_runners' do
+    let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:project) { create(:project, group: group) }
+
+    before do
+      project.add_maintainer(user) # rubocop: disable RSpec/BeforeAllRoleAssignment
+    end
 
     it 'toggles shared_runners_enabled when the group allows shared runners' do
       project.update!(shared_runners_enabled: true)
@@ -196,7 +222,8 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
 
       expect(response).to have_gitlab_http_status(:unauthorized)
       expect(project.shared_runners_enabled).to eq(false)
-      expect(json_response['error']).to eq('Shared runners enabled cannot be enabled because parent group does not allow it')
+      expect(json_response['error'])
+        .to eq('Shared runners enabled cannot be enabled because parent group does not allow it')
     end
   end
 end

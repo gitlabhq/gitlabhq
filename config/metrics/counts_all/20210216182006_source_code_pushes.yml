@@ -13,6 +13,8 @@ instrumentation_class: RedisMetric
 options:
   prefix: source_code
   event: pushes
+events:
+  - name: source_code_pushed
 distribution:
 - ce
 - ee
