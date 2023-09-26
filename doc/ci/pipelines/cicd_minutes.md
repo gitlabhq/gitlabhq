@@ -264,16 +264,16 @@ GitLab administrators can add a namespace to the reduced cost factor
 
 GitLab SaaS runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
 
-| GitLab SaaS runner type      | Machine Size         | Cost factor |
-|:-----------------------------|:---------------------|:------------|
-| Linux OS amd64               | small                | 1           |
-| Linux OS amd64               | medium               | 2           |
-| Linux OS amd64               | large                | 3           |
-| Linux OS amd64               | xlarge               | 6           |
-| Linux OS amd64               | 2xlarge              | 12          |
-| Linux OS amd64 + GPU-enabled | medium, GPU standard | 7           |
-| macOS M1                     | medium               | 6 (Beta)    |
-| Windows Server               | -                    | 1 (Beta)    |
+| GitLab SaaS runner type      | Machine Size           | Cost factor |
+|:-----------------------------|:-----------------------|:------------|
+| Linux OS amd64               | `small`                | 1           |
+| Linux OS amd64               | `medium`               | 2           |
+| Linux OS amd64               | `large`                | 3           |
+| Linux OS amd64               | `xlarge`               | 6           |
+| Linux OS amd64               | `2xlarge`              | 12          |
+| Linux OS amd64 + GPU-enabled | `medium`, GPU standard | 7           |
+| macOS M1                     | `medium`               | 6 (Beta)    |
+| Windows Server               | -                      | 1 (Beta)    |
 
 ### Monthly reset of compute usage
 

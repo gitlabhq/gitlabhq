@@ -18,7 +18,7 @@ In GitLab 16.0 and later you can use ID tokens without any settings changes.
 Jobs that use `secrets:vault` automatically do not have `CI_JOB_JWT` tokens available,
 Jobs that don't use `secrets:vault` can still use `CI_JOB_JWT` tokens.
 
-This tutorial will focus on v16 onwards, if you are running a slightly older version you will need to toggle the `Limit JSON Web Token (JWT) access` setting as appropriate.
+This tutorial will focus on v16 onward, if you are running a slightly older version you will need to toggle the `Limit JSON Web Token (JWT) access` setting as appropriate.
 
 There isn't one standard method to migrate to [ID tokens](../secrets/id_token_authentication.md), so this tutorial includes two variations for how to convert your existing CI/CD secrets. Choose the method that is most appropriate for your use case:
 

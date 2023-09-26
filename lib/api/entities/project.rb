@@ -159,9 +159,6 @@ module API
       }
 
       expose :autoclose_referenced_issues, documentation: { type: 'boolean' }
-      expose :repository_storage, documentation: { type: 'string', example: 'default' }, if: ->(project, options) {
-        Ability.allowed?(options[:current_user], :change_repository_storage, project)
-      }
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_resource(project)

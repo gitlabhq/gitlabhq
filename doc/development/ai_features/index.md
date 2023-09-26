@@ -134,17 +134,26 @@ Gitlab::CurrentSettings.update(openai_api_key: "<open-ai-key>")
 Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 ```
 
-#### Populating embeddings and using embeddings fixture
+### Populating embeddings and using embeddings fixture
+
+Currently we have embeddings generate both with OpenAI and VertexAI. Bellow sections explain how to populate
+embeddings in the DB or extract embeddings to be used in specs.
+
+FLAG:
+We are moving towards having VertexAI embeddings only, so eventually the OpenAI embeddings support will be drop
+as well as the section bellow will be removed.
+
+#### OpenAI embeddings
 
 To seed your development database with the embeddings for GitLab Documentation,
-you may use the pre-generated embeddings and a Rake test.
+you may use the pre-generated embeddings and a Rake task.
 
 ```shell
 RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:seed_pre_generated
 ```
 
 The DBCleaner gem we use clear the database tables before each test runs.
-Instead of fully populating the table `tanuki_bot_mvc` where we store embeddings for the documentations,
+Instead of fully populating the table `tanuki_bot_mvc` where we store OpenAI embeddings for the documentations,
 we can add a few selected embeddings to the table from a pre-generated fixture.
 
 For instance, to test that the question "How can I reset my password" is correctly
@@ -156,6 +165,31 @@ You can add or remove the questions needed to be tested in the Rake task and run
 ```shell
 RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:extract_embeddings
 ```
+
+#### VertexAI embeddings
+
+To seed your development database with the embeddings for GitLab Documentation,
+you may use the pre-generated embeddings and a Rake task.
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:seed
+```
+
+The DBCleaner gem we use clear the database tables before each test runs.
+Instead of fully populating the table `vertex_gitlab_docs` where we store VertexAI embeddings for the documentations,
+we can add a few selected embeddings to the table from a pre-generated fixture.
+
+For instance, to test that the question "How can I reset my password" is correctly
+retrieving the relevant embeddings and answered, we can extract the top N closet embeddings
+to the question into a fixture and only restore a small number of embeddings quickly.
+To faciliate an extraction process, a Rake task been written.
+You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:extract_embeddings
+```
+
+#### Using embeddings in specs
 
 In the specs where you need to use the embeddings,
 use the RSpec config hook `:ai_embedding_fixtures` on a context.

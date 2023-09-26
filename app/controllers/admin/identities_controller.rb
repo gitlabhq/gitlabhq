@@ -63,6 +63,6 @@ class Admin::IdentitiesController < Admin::ApplicationController
   end
 
   def identity_params
-    params.require(:identity).permit(:provider, :extern_uid)
+    params.require(:identity).permit(:provider, :extern_uid, :saml_provider_id)
   end
 end

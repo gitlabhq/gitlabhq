@@ -121,7 +121,7 @@ In this example:
 - `image: ruby:3.0` and `retry: 2` are the default keywords for all jobs in the pipeline.
 - The `rspec` job does not have `image` or `retry` defined, so it uses the defaults of
   `image: ruby:3.0` and `retry: 2`.
-- The `rspec 2.7` job does not have `retry` defined, but it does have `image` explictly defined.
+- The `rspec 2.7` job does not have `retry` defined, but it does have `image` explicitly defined.
   It uses the default `retry: 2`, but ignores the default `image` and uses the `image: ruby:2.7`
   defined in the job.
 

@@ -1,6 +1,7 @@
 import {
   updateChangesTabCount,
   getDerivedMergeRequestInformation,
+  extractFileHash,
 } from '~/diffs/utils/merge_request';
 import { ZERO_CHANGES_ALT_DISPLAY } from '~/diffs/constants';
 import { diffMetadata } from '../mock_data/diff_metadata';
@@ -126,6 +127,21 @@ describe('Merge Request utilities', () => {
       it('extracts nothing if there is no available version-like information in the URL', () => {
         expect(getDerivedMergeRequestInformation({ endpoint: bare })).toMatchObject(noVersion);
       });
+    });
+  });
+
+  describe('extractFileHash', () => {
+    const sha1Like = 'abcdef1234567890abcdef1234567890abcdef12';
+    const sha1LikeToo = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+    it('returns undefined when a SHA1-like string cannot be found in the input', () => {
+      expect(extractFileHash({ input: 'something' })).toBe(undefined);
+    });
+
+    it('returns the first matching string of SHA1-like characters in the input', () => {
+      const fullString = `#${sha1Like}_34_42--${sha1LikeToo}`;
+
+      expect(extractFileHash({ input: fullString })).toBe(sha1Like);
     });
   });
 });

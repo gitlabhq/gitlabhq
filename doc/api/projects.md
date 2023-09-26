@@ -1330,7 +1330,8 @@ target the upstream project by default.
             "kind": "group",
             "full_path": "gitlab-org",
             "parent_id": null
-      }
+      },
+      "repository_storage": "default"
    }
 
    ...

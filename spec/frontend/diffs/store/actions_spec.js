@@ -1627,6 +1627,7 @@ describe('DiffsStoreActions', () => {
       name: updatedViewerName,
       automaticallyCollapsed: false,
       manuallyCollapsed: false,
+      forceOpen: false,
     };
     const testData = [{ rich_text: 'test' }, { rich_text: 'file2' }];
     let renamedFile;
@@ -1673,7 +1674,7 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('setFileUserCollapsed', () => {
+  describe('setFileCollapsedByUser', () => {
     it('commits SET_FILE_COLLAPSED', () => {
       return testAction(
         diffActions.setFileCollapsedByUser,
@@ -1687,6 +1688,17 @@ describe('DiffsStoreActions', () => {
         ],
         [],
       );
+    });
+  });
+
+  describe('setFileForcedOpen', () => {
+    it('commits SET_FILE_FORCED_OPEN', () => {
+      return testAction(diffActions.setFileForcedOpen, { filePath: 'test', forced: true }, null, [
+        {
+          type: types.SET_FILE_FORCED_OPEN,
+          payload: { filePath: 'test', forced: true },
+        },
+      ]);
     });
   });
 

@@ -232,10 +232,15 @@ export default {
       'setCurrentFileHash',
       'reviewFile',
       'setFileCollapsedByUser',
+      'setFileForcedOpen',
       'setGenerateTestFilePath',
       'toggleFileCommentForm',
     ]),
     handleToggleFile() {
+      this.setFileForcedOpen({
+        filePath: this.diffFile.file_path,
+        forced: false,
+      });
       this.$emit('toggleFile');
     },
     showForkMessage(e) {
@@ -278,6 +283,10 @@ export default {
       }
 
       if ((open && reviewed) || (closed && !reviewed)) {
+        this.setFileForcedOpen({
+          filePath: this.diffFile.file_path,
+          forced: false,
+        });
         this.$emit('toggleFile');
       }
     },

@@ -1055,4 +1055,14 @@ describe('DiffsStoreMutations', () => {
       expect(state.diffFiles[0].drafts[0]).toEqual('test');
     });
   });
+
+  describe('SET_FILE_FORCED_OPEN', () => {
+    it('sets the forceOpen property of a diff file viewer correctly', () => {
+      const state = { diffFiles: [{ file_path: 'abc', viewer: { forceOpen: 'not-a-boolean' } }] };
+
+      mutations[types.SET_FILE_FORCED_OPEN](state, { filePath: 'abc', force: true });
+
+      expect(state.diffFiles[0].viewer.forceOpen).toBe(true);
+    });
+  });
 });

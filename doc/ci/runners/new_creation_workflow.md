@@ -72,9 +72,10 @@ To continue using registration tokens after GitLab 17.0:
 
 Plans to implement a UI setting to re-enable registration tokens are proposed in [issue 411923](https://gitlab.com/gitlab-org/gitlab/-/issues/411923)
 
-## Runners registered with a registration token will continue to work after 18.0
+## Using runners registered with a runner registration token
 
-Existing runners will not be affected by these changes, they will still work even after the legacy registration method is removed.
+Existing runners will not be affected by these changes and will continue to 
+work after the legacy registration method is removed in GitLab 18.0.
 
 ## Changes to the `gitlab-runner register` command syntax
 

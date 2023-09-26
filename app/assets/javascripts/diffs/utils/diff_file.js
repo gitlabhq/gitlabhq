@@ -35,6 +35,7 @@ function collapsed(file) {
   return {
     automaticallyCollapsed: viewer.automaticallyCollapsed || viewer.collapsed || false,
     manuallyCollapsed: null,
+    forceOpen: false,
   };
 }
 

@@ -120,7 +120,7 @@ To use custom settings for a project or group integration:
 | Buildkite                                                                   | Run CI/CD pipelines with Buildkite.                                   | **{check-circle}** Yes |
 | Campfire                                                                    | Connect to chat.                                                      | **{dotted-circle}** No |
 | [ClickUp](clickup.md)                                                       | Use ClickUp as the issue tracker.                                     | **{dotted-circle}** No |
-| [Confluence Workspace](../../../api/integrations.md#confluence-integration) | Use Confluence Cloud Workspace as an internal wiki.                   | **{dotted-circle}** No |
+| [Confluence Workspace](../../../api/integrations.md#confluence-workspace)   | Use Confluence Cloud Workspace as an internal wiki.                   | **{dotted-circle}** No |
 | [Custom issue tracker](custom_issue_tracker.md)                             | Use a custom issue tracker.                                           | **{dotted-circle}** No |
 | [Datadog](../../../integration/datadog.md)                                  | Trace your GitLab pipelines with Datadog.                             | **{check-circle}** Yes |
 | [Discord Notifications](discord_notifications.md)                           | Send notifications about project events to a Discord channel.         | **{dotted-circle}** No |

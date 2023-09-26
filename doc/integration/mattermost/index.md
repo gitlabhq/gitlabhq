@@ -139,7 +139,7 @@ Save the changes and then run `sudo gitlab-ctl reconfigure`. If there are no err
 
 ## Specify numeric user and group identifiers
 
-The Linux pacakage creates a user and group `mattermost`. You can specify the
+The Linux package creates a user and group `mattermost`. You can specify the
 numeric identifiers for these users in `/etc/gitlab/gitlab.rb` as follows:
 
 ```ruby

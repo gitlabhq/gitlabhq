@@ -42,7 +42,7 @@ import {
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
-import { updateChangesTabCount } from '../utils/merge_request';
+import { updateChangesTabCount, extractFileHash } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
 import FindingsDrawer from './shared/findings_drawer.vue';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
@@ -344,12 +344,13 @@ export default {
     ...mapActions(['startTaskList']),
     ...mapActions('diffs', [
       'moveToNeighboringCommit',
-      'setBaseConfig',
       'setCodequalityEndpoint',
       'setSastEndpoint',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
       'fetchFileByFile',
+      'loadCollapsedDiff',
+      'setFileForcedOpen',
       'fetchCoverageFiles',
       'fetchCodequality',
       'fetchSast',
@@ -373,14 +374,33 @@ export default {
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
       notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
+      diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
     },
     unsubscribeFromEvents() {
       diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
+      diffsEventHub.$off('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$off('diffFilesModified', this.setDiscussions);
       notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
+    },
+    autoScroll() {
+      const lineCode = window.location.hash;
+      const sha1InHash = extractFileHash({ input: lineCode });
+
+      if (sha1InHash) {
+        const idx = this.diffs.findIndex((diffFile) => diffFile.file_hash === sha1InHash);
+        const file = this.diffs[idx];
+
+        this.loadCollapsedDiff({ file })
+          .then(() => {
+            this.setDiscussions();
+            this.scrollVirtualScrollerToIndex(idx);
+            this.setFileForcedOpen({ filePath: file.new_path });
+          })
+          .catch(() => {});
+      }
     },
     navigateToDiffFileNumber(number) {
       this.navigateToDiffFileIndex(number - 1);

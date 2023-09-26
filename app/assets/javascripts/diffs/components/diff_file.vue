@@ -161,6 +161,9 @@ export default {
     manuallyCollapsed() {
       return collapsedType(this.file) === DIFF_FILE_MANUAL_COLLAPSE;
     },
+    forcedOpen() {
+      return this.file.viewer.forceOpen;
+    },
     showBody() {
       return !this.isCollapsed || this.automaticallyCollapsed;
     },
@@ -174,6 +177,10 @@ export default {
       return Boolean(gon.current_user_id);
     },
     isCollapsed() {
+      if (this.forcedOpen) {
+        return false;
+      }
+
       if (collapsedType(this.file) !== DIFF_FILE_MANUAL_COLLAPSE) {
         return this.viewDiffsFileByFile ? false : this.file.viewer?.automaticallyCollapsed;
       }
@@ -199,6 +206,11 @@ export default {
     'file.id': {
       handler: function fileIdHandler() {
         this.manageViewedEffects();
+      },
+    },
+    'file.viewer.forceOpen': {
+      handler: function fileForcedOpenHandler() {
+        this.handleToggle();
       },
     },
     'file.file_hash': {

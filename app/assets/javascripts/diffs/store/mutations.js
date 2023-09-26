@@ -349,6 +349,11 @@ export default {
       }
     }
   },
+  [types.SET_FILE_FORCED_OPEN](state, { filePath, forced = true }) {
+    const file = state.diffFiles.find((f) => f.file_path === filePath);
+
+    Vue.set(file.viewer, 'forceOpen', forced);
+  },
   [types.SET_CURRENT_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {
     const file = state.diffFiles.find((f) => f.file_path === filePath);
 

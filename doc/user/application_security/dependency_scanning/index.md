@@ -1353,7 +1353,7 @@ The `go.sum` file contains an entry of every module that was considered while ge
 Multiple versions of a module are included in the `go.sum` file, but the [MVS](https://go.dev/ref/mod#minimal-version-selection)
 algorithm used by `go build` only selects one. As a result, when dependency scanning uses `go.sum`, it might report false positives.
 
-To prevent false positives, gemnasium only uses `go.sum` if it is unable to generate the build list for the Go project. If `go.sum` is selected, a warning occurs:
+To prevent false positives, Gemnasium only uses `go.sum` if it is unable to generate the build list for the Go project. If `go.sum` is selected, a warning occurs:
 
 ```shell
 [WARN] [Gemnasium] [2022-09-14T20:59:38Z] ▶ Selecting "go.sum" parser for "/test-projects/gitlab-shell/go.sum". False positives may occur. See https://gitlab.com/gitlab-org/gitlab/-/issues/321081.
