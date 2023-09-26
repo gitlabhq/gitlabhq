@@ -9,8 +9,8 @@ RSpec.describe Gitlab::Ci::Status::SuccessWarning, feature_category: :continuous
     described_class.new(status)
   end
 
-  describe '#test' do
-    it { expect(subject.text).to eq 'warning' }
+  describe '#text' do
+    it { expect(subject.text).to eq 'Warning' }
   end
 
   describe '#label' do

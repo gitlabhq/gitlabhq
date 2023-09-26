@@ -26,7 +26,7 @@ module QA
             parent_job_name: 'parent_1', parent_script: 'echo parent',
             child_job_name: 'child_1', child_script: 'echo child'
           )
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         context 'when latest pipeline family is successful' do
@@ -35,7 +35,7 @@ module QA
               parent_job_name: 'parent_2', parent_script: 'echo parent',
               child_job_name: 'child_2', child_script: 'echo child'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+            Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
           end
 
           it 'unlocks job artifacts from previous successful pipeline family',
@@ -68,7 +68,7 @@ module QA
               parent_job_name: 'parent_2', parent_script: 'exit 1',
               child_job_name: 'child_2', child_script: 'echo child'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'failed')
+            Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
           end
 
           it 'does not unlock job artifacts from previous successful pipeline family',
@@ -101,7 +101,7 @@ module QA
               parent_job_name: 'parent_2', parent_script: 'echo parent',
               child_job_name: 'child_2', child_script: 'exit 1'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+            Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
           end
 
           it 'unlocks job artifacts from previous successful pipeline family because the latest parent is successful',
@@ -137,7 +137,7 @@ module QA
             parent_job_name: 'parent_1', parent_script: 'echo parent',
             child_job_name: 'child_1', child_script: 'echo child'
           )
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         context 'when latest pipeline family is successful' do
@@ -146,7 +146,7 @@ module QA
               parent_job_name: 'parent_2', parent_script: 'echo parent',
               child_job_name: 'child_2', child_script: 'echo child'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+            Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
           end
 
           it 'unlocks job artifacts from previous successful pipeline family',
@@ -179,7 +179,7 @@ module QA
               parent_job_name: 'parent_2', parent_script: 'exit 1',
               child_job_name: 'child_2', child_script: 'echo child'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'failed')
+            Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
           end
 
           it 'does not unlock job artifacts from previous successful pipeline family',
@@ -212,7 +212,7 @@ module QA
               parent_job_name: 'parent_2', parent_script: 'echo parent',
               child_job_name: 'child_2', child_script: 'exit 1'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'failed')
+            Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
           end
 
           it 'does not unlock job artifacts from previous successful pipeline family',

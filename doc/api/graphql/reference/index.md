@@ -4880,7 +4880,7 @@ Input type: `MemberRoleUpdateInput`
 ### `Mutation.mergeRequestAccept`
 
 Accepts a merge request.
-When accepted, the source branch will be merged into the target branch, either
+When accepted, the source branch will be scheduled to merge into the target branch, either
 immediately if possible, or using one of the automatic merge strategies.
 
 Input type: `MergeRequestAcceptInput`

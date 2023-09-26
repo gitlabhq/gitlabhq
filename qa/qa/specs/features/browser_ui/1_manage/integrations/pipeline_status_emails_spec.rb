@@ -100,8 +100,8 @@ module QA
 
       def exit_code_meta(exit_code)
         {
-          0 => { status: 'passed', email_subject: /Successful pipeline/ },
-          1 => { status: 'failed', email_subject: /Failed pipeline/ }
+          0 => { status: 'Passed', email_subject: /Successful pipeline/ },
+          1 => { status: 'Failed', email_subject: /Failed pipeline/ }
         }[exit_code]
       end
 

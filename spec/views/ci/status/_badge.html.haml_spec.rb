@@ -22,7 +22,7 @@ RSpec.describe 'ci/status/_badge' do
 
         render_status(build)
 
-        expect(rendered).to have_link 'passed', href: details_path
+        expect(rendered).to have_link 'Passed', href: details_path
       end
     end
 
@@ -32,11 +32,11 @@ RSpec.describe 'ci/status/_badge' do
       end
 
       it 'contains build status text' do
-        expect(rendered).to have_content 'passed'
+        expect(rendered).to have_content 'Passed'
       end
 
       it 'does not contain links' do
-        expect(rendered).not_to have_link 'passed'
+        expect(rendered).not_to have_link 'Passed'
       end
     end
   end
@@ -60,11 +60,11 @@ RSpec.describe 'ci/status/_badge' do
         end
 
         it 'contains valid commit status text' do
-          expect(rendered).to have_content 'running'
+          expect(rendered).to have_content 'Running'
         end
 
         it 'has link to external status page' do
-          expect(rendered).to have_link 'running', href: 'http://gitlab.com'
+          expect(rendered).to have_link 'Running', href: 'http://gitlab.com'
         end
       end
 
@@ -76,11 +76,11 @@ RSpec.describe 'ci/status/_badge' do
         end
 
         it 'contains valid commit status text' do
-          expect(rendered).to have_content 'canceled'
+          expect(rendered).to have_content 'Canceled'
         end
 
         it 'has link to external status page' do
-          expect(rendered).not_to have_link 'canceled'
+          expect(rendered).not_to have_link 'Canceled'
         end
       end
     end

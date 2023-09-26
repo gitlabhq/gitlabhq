@@ -8,11 +8,12 @@ module Gitlab
         # Performs CI config file interpolation, and surfaces all possible interpolation errors.
         #
         class Interpolator
-          attr_reader :config, :args, :errors
+          attr_reader :config, :args, :variables, :errors
 
-          def initialize(config, args)
+          def initialize(config, args, variables)
             @config = config
             @args = args.to_h
+            @variables = variables
             @errors = []
             @interpolated = false
           end
@@ -86,7 +87,7 @@ module Gitlab
           end
 
           def context
-            @context ||= Context.new({ inputs: inputs.to_hash })
+            @context ||= Context.new({ inputs: inputs.to_hash }, variables: variables)
           end
 
           def template

@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Ci::Status::Factory do
       end
 
       it 'delegates to core status' do
-        expect(fabricated_status.text).to eq 'passed'
+        expect(fabricated_status.text).to eq 'Passed'
       end
 
       it 'latest matches status becomes a status name' do
@@ -104,7 +104,7 @@ RSpec.describe Gitlab::Ci::Status::Factory do
       end
 
       it 'delegates to core status' do
-        expect(fabricated_status.text).to eq 'passed'
+        expect(fabricated_status.text).to eq 'Passed'
       end
 
       it 'matches correct core status' do

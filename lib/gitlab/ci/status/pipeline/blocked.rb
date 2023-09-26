@@ -6,7 +6,7 @@ module Gitlab
       module Pipeline
         class Blocked < Status::Extended
           def text
-            s_('CiStatusText|blocked')
+            s_('CiStatusText|Blocked')
           end
 
           def label

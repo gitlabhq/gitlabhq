@@ -62,7 +62,7 @@ module Gitlab
             return @errors.concat(access.errors) unless access.valid?
             return @errors.push('too many functions in interpolation block') if functions.count > MAX_FUNCTIONS
 
-            result = Interpolation::FunctionsStack.new(functions).evaluate(access.value)
+            result = Interpolation::FunctionsStack.new(functions, ctx).evaluate(access.value)
 
             if result.success?
               @value = result.value

@@ -41,7 +41,7 @@ const body = {
           }),
           text: Matchers.term({
             matcher: PIPELINE_TEXTS,
-            generate: 'running',
+            generate: 'Running',
           }),
         },
         createdAt: Matchers.iso8601DateTime('2022-06-30T16:58:59Z'),

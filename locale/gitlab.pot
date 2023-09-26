@@ -10168,6 +10168,9 @@ msgstr ""
 msgid "CiStatusLabel|preparing"
 msgstr ""
 
+msgid "CiStatusLabel|running"
+msgstr ""
+
 msgid "CiStatusLabel|scheduled"
 msgstr ""
 
@@ -10183,46 +10186,46 @@ msgstr ""
 msgid "CiStatusLabel|waiting for resource"
 msgstr ""
 
-msgid "CiStatusText|blocked"
+msgid "CiStatusText|Blocked"
 msgstr ""
 
-msgid "CiStatusText|canceled"
+msgid "CiStatusText|Canceled"
 msgstr ""
 
-msgid "CiStatusText|created"
+msgid "CiStatusText|Created"
 msgstr ""
 
-msgid "CiStatusText|delayed"
+msgid "CiStatusText|Delayed"
 msgstr ""
 
-msgid "CiStatusText|failed"
+msgid "CiStatusText|Failed"
 msgstr ""
 
-msgid "CiStatusText|manual"
+msgid "CiStatusText|Manual"
 msgstr ""
 
-msgid "CiStatusText|passed"
+msgid "CiStatusText|Passed"
 msgstr ""
 
-msgid "CiStatusText|pending"
+msgid "CiStatusText|Pending"
 msgstr ""
 
-msgid "CiStatusText|preparing"
+msgid "CiStatusText|Preparing"
 msgstr ""
 
-msgid "CiStatusText|scheduled"
+msgid "CiStatusText|Running"
 msgstr ""
 
-msgid "CiStatusText|skipped"
+msgid "CiStatusText|Scheduled"
 msgstr ""
 
-msgid "CiStatusText|waiting"
+msgid "CiStatusText|Skipped"
 msgstr ""
 
-msgid "CiStatusText|warning"
+msgid "CiStatusText|Waiting"
 msgstr ""
 
-msgid "CiStatus|running"
+msgid "CiStatusText|Warning"
 msgstr ""
 
 msgid "CiVariables|Add Variable"

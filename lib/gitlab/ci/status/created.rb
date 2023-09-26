@@ -5,7 +5,7 @@ module Gitlab
     module Status
       class Created < Status::Core
         def text
-          s_('CiStatusText|created')
+          s_('CiStatusText|Created')
         end
 
         def label

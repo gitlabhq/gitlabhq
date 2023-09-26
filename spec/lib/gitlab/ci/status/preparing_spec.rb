@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Preparing do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'preparing' }
+    it { expect(subject.text).to eq 'Preparing' }
   end
 
   describe '#label' do

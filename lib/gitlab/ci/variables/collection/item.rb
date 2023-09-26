@@ -34,6 +34,10 @@ module Gitlab
             @variable.fetch(:file)
           end
 
+          def masked?
+            @variable.fetch(:masked)
+          end
+
           def [](key)
             @variable.fetch(key)
           end

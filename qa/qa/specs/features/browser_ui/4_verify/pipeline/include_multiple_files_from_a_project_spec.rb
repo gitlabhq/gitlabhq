@@ -23,7 +23,7 @@ module QA
         add_included_files
         add_main_ci_file
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'passed')
+        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
       end
 
       after do

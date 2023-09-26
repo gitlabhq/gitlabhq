@@ -1,0 +1,8 @@
+---
+name: reduced_build_attributes_list_for_rules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132654
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426259
+milestone: '16.5'
+type: development
+group: group::pipeline execution
+default_enabled: false

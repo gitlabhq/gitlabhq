@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
   let(:result) { ::Gitlab::Ci::Config::Yaml::Result.new(config: [header, content]) }
 
-  subject { described_class.new(result, arguments) }
+  subject { described_class.new(result, arguments, []) }
 
   context 'when input data is valid' do
     let(:header) do

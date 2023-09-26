@@ -72,7 +72,7 @@ RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
 
           wait_for_requests
 
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'canceled')
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Canceled')
           expect(page).not_to have_selector('[data-testid="jobs-table-error-alert"]')
         end
       end
@@ -93,7 +93,7 @@ RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
 
           wait_for_requests
 
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'pending')
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Pending')
         end
       end
 
@@ -133,7 +133,7 @@ RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
 
           wait_for_requests
 
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'pending')
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Pending')
         end
 
         it 'unschedules a job successfully' do
@@ -141,7 +141,7 @@ RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
 
           wait_for_requests
 
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'manual')
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Manual')
         end
       end
 

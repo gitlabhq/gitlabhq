@@ -266,7 +266,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | Buildkite project GitLab token. |
-| `project_url` | string | true | Pipeline URL. For example, `https://buildkite.com/example/pipeline`. |
+| `project_url` | string | true | Pipeline URL (for example, `https://buildkite.com/example/pipeline`). |
 | `enable_ssl_verification` | boolean | false | **Deprecated:** This parameter has no effect because SSL verification is always enabled. |
 | `push_events` | boolean | false | Enable notifications for push events. |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
@@ -877,7 +877,8 @@ GET /projects/:id/integrations/jenkins
 
 Set up the JetBrains TeamCity integration for a project.
 
-The build configuration in TeamCity must use the build number format `%build.vcs.number%`. Configure monitoring of all branches so merge requests build. This setting is in the VCS root advanced settings.
+The build configuration in TeamCity must use the build number format `%build.vcs.number%`.
+In the advanced settings for VCS root, configure monitoring for all branches so merge requests can build.
 
 ```plaintext
 PUT /projects/:id/integrations/teamcity
@@ -1088,8 +1089,8 @@ GET /projects/:id/integrations/microsoft-teams
 
 ## Mock CI
 
-This integration is only available when your environment is set to development.
-See [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service) for an example of a companion mock integration.
+This integration is only available in a development environment.
+For an example Mock CI server, see [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service).
 
 ### Set up Mock CI
 
@@ -1447,7 +1448,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token`   | string | true | The Telegram bot token. For example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`. |
+| `token`   | string | true | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
 | `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`) |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `push_events` | boolean | true | Enable notifications for push events |

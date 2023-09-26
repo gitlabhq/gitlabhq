@@ -5,7 +5,7 @@ module Gitlab
     module Status
       class Preparing < Status::Core
         def text
-          s_('CiStatusText|preparing')
+          s_('CiStatusText|Preparing')
         end
 
         def label

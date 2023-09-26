@@ -17,6 +17,12 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Context, feature_category: :pi
     end
   end
 
+  describe '.new' do
+    it 'returns variables as a Variables::Collection object' do
+      expect(subject.variables.class).to eq(Gitlab::Ci::Variables::Collection)
+    end
+  end
+
   describe '#to_h' do
     it 'returns the context hash' do
       expect(subject.to_h).to eq(ctx)

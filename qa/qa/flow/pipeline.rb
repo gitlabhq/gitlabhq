@@ -6,8 +6,8 @@ module QA
       extend self
 
       # Acceptable statuses:
-      # canceled, created, failed, manual, passed
-      # pending, running, skipped
+      # Canceled, Created, Failed, Manual, Passed
+      # Pending, Running, Skipped
       def visit_latest_pipeline(status: nil, wait: nil, skip_wait: true)
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform do |index|

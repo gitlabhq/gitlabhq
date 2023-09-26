@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Ci::Status::Pipeline::Blocked do
 
   describe '#text' do
     it 'overrides status text' do
-      expect(subject.text).to eq 'blocked'
+      expect(subject.text).to eq 'Blocked'
     end
   end
 

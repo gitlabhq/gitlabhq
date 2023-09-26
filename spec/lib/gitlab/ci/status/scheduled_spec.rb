@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Scheduled, feature_category: :continuous_inte
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'scheduled' }
+    it { expect(subject.text).to eq 'Scheduled' }
   end
 
   describe '#label' do

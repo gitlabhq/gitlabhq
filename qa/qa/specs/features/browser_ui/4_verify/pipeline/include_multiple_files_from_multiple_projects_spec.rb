@@ -24,7 +24,7 @@ module QA
         add_main_ci_file(main_project)
 
         main_project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'passed')
+        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
       end
 
       after do

@@ -116,7 +116,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
         expect(current_url).to match(admin_runner_path(runner))
 
-        expect(find("[data-testid='td-status']")).to have_content "running"
+        expect(find("[data-testid='td-status']")).to have_content "Running"
         expect(find("[data-testid='td-job']")).to have_content "##{job.id}"
       end
 

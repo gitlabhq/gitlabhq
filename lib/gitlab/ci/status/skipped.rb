@@ -5,7 +5,7 @@ module Gitlab
     module Status
       class Skipped < Status::Core
         def text
-          s_('CiStatusText|skipped')
+          s_('CiStatusText|Skipped')
         end
 
         def label

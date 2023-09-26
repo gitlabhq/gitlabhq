@@ -114,7 +114,9 @@ module Gitlab
 
             def content_result
               context.logger.instrument(:config_file_fetch_content_hash) do
-                ::Gitlab::Ci::Config::Yaml::Loader.new(content, inputs: content_inputs).load
+                ::Gitlab::Ci::Config::Yaml::Loader.new(
+                  content, inputs: content_inputs, variables: context.variables
+                ).load
               end
             end
             strong_memoize_attr :content_result

@@ -5,7 +5,7 @@ module Gitlab
     module Status
       class WaitingForResource < Status::Core
         def text
-          s_('CiStatusText|waiting')
+          s_('CiStatusText|Waiting')
         end
 
         def label

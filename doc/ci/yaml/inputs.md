@@ -142,21 +142,43 @@ Details:
 spec:
   inputs:
     test:
-      default: '0123456789'
+      default: 'test $MY_VAR'
 ---
 
 test-job:
-  script: echo $[[ inputs.test | truncate(1,3) ]]
+  script: echo $[[ inputs.test | expand_vars | truncate(5,8) ]]
 ```
 
-In this example:
+In this example, assuming the input uses the default value and `$MY_VAR` is an unmasked project variable with value `my value`:
 
-- The function [`truncate`](#truncate) applies to the value of `inputs.test`.
-- Assuming the value of `inputs.test` is `0123456789`, then the output of `script` would be `echo 123`.
+1. First, the function [`expand_vars`](#expand_vars) expands the value to `test my value`.
+1. Then [`truncate`](#truncate) applies to `test my value` with a character offset of `5` and length `8`.
+1. The output of `script` would be `echo my value`.
 
 ### Predefined interpolation functions
 
+#### `expand_vars`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
+
+Use `expand_vars` to expand [CI/CD variables](../variables/index.md) in the input value.
+
+Only variables you can [use with the `include` keyword](includes.md#use-variables-with-include) and which are
+**not** [masked](../variables/index.md#mask-a-cicd-variable) can be expanded.
+[Nested variable expansion](../variables/where_variables_can_be_used.md#nested-variable-expansion) is not supported.
+
+Example:
+
+```yaml
+$[[ inputs.test | expand_vars ]]
+```
+
+Assuming the value of `inputs.test` is `test $MY_VAR`, and the variable `$MY_VAR` is unmasked
+with a value of `my value`, then the output would be `test my value`.
+
 #### `truncate`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
 
 Use `truncate` to shorten the interpolated value. For example:
 

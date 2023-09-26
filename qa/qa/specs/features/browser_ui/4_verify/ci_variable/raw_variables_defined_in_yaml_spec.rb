@@ -71,7 +71,7 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'passed')
+        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
         Page::Project::Pipeline::Show.perform do |show|
           show.click_job(pipeline_job_name)
         end

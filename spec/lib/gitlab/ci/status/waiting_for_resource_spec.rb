@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::WaitingForResource do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'waiting' }
+    it { expect(subject.text).to eq 'Waiting' }
   end
 
   describe '#label' do

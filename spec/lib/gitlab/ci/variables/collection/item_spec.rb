@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Collection::Item do
+RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :secrets_management do
   let(:variable_key) { 'VAR' }
   let(:variable_value) { 'something' }
   let(:expected_value) { variable_value }
@@ -213,6 +213,25 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item do
         item = described_class.new(**variable)
 
         expect(item.raw?).to eq true
+      end
+    end
+  end
+
+  describe '#masked?' do
+    let(:variable_hash) { { key: variable_key, value: variable_value } }
+    let(:item) { described_class.new(**variable_hash) }
+
+    context 'when :masked is not specified' do
+      it 'returns false' do
+        expect(item.masked?).to eq(false)
+      end
+    end
+
+    context 'when :masked is specified as true' do
+      let(:variable_hash) { { key: variable_key, value: variable_value, masked: true } }
+
+      it 'returns true' do
+        expect(item.masked?).to eq(true)
       end
     end
   end

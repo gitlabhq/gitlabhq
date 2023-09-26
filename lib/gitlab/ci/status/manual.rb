@@ -5,7 +5,7 @@ module Gitlab
     module Status
       class Manual < Status::Core
         def text
-          s_('CiStatusText|manual')
+          s_('CiStatusText|Manual')
         end
 
         def label

@@ -26,7 +26,7 @@ module QA
       context 'when latest pipeline is successful' do
         before do
           add_ci_file(job_name: 'job_1', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         it 'unlocks job artifacts from previous successful pipeline',
@@ -38,7 +38,7 @@ module QA
 
           update_ci_file(job_name: 'job_2', script: 'echo test')
 
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
 
           find_job('job_2').visit!
           Page::Project::Job::Show.perform do |job|
@@ -55,7 +55,7 @@ module QA
       context 'when latest pipeline failed' do
         before do
           add_ci_file(job_name: 'successful_job_1', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         it 'keeps job artifacts from latest failed pipelines and from latest successful pipeline',
@@ -65,10 +65,10 @@ module QA
             type: :bug
           } do
           update_ci_file(job_name: 'failed_job_1', script: 'exit 1')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'failed')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
 
           update_ci_file(job_name: 'failed_job_2', script: 'exit 2')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'failed')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
 
           find_job('failed_job_2').visit!
           Page::Project::Job::Show.perform do |job|
@@ -90,7 +90,7 @@ module QA
       context 'when latest pipeline is blocked' do
         before do
           add_ci_file(job_name: 'successful_job_1', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'passed')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         it 'keeps job artifacts from the latest blocked pipeline and from latest successful pipeline',
@@ -100,10 +100,10 @@ module QA
             type: :bug
           } do
           update_ci_with_manual_job(job_name: 'successful_job_with_manual_1', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'blocked')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Blocked')
 
           update_ci_with_manual_job(job_name: 'successful_job_with_manual_2', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'blocked')
+          Flow::Pipeline.wait_for_latest_pipeline(status: 'Blocked')
 
           find_job('successful_job_with_manual_2').visit!
           Page::Project::Job::Show.perform do |job|

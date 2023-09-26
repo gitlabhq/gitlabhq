@@ -66,7 +66,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         wait_for_requests
 
-        expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'passed')
+        expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Passed')
       end
 
       it 'shows commit`s data', :js do
@@ -93,7 +93,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
 
         within '.js-pipeline-info' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} #{pipeline.status} for #{pipeline.ref}")
+          expect(page).to have_content("Pipeline ##{pipeline.id} Pending for #{pipeline.ref}")
         end
       end
 
@@ -1052,7 +1052,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         find('[data-testid="retry-button-modal"]').click
 
         within '[data-testid="job-header-content"]' do
-          expect(page).to have_content('pending')
+          expect(page).to have_content('Pending')
         end
       end
     end
