@@ -8,7 +8,7 @@ const STATISTIC_ITEMS = {
   issue_event: __('Issue events'),
   label: __('Labels'),
   lfs_object: __('LFS objects'),
-  merge_request_attachment: s__('GithubImporter|Merge request links'),
+  merge_request_attachment: s__('GithubImporter|PR attachments'),
   milestone: __('Milestones'),
   note: __('Notes'),
   note_attachment: s__('GithubImporter|Note links'),

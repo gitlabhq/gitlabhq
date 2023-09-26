@@ -20,6 +20,7 @@ module Types
     field :exists, GraphQL::Types::Boolean, null: false, method: :exists?, calls_gitaly: true,
                                             description: 'Indicates a corresponding Git repository exists on disk.'
     field :paginated_tree, Types::Tree::TreeType.connection_type, null: true, resolver: Resolvers::PaginatedTreeResolver, calls_gitaly: true,
+                                                                  connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension,
                                                                   max_page_size: 100,
                                                                   description: 'Paginated tree of the repository.'
     field :root_ref, GraphQL::Types::String, null: true, calls_gitaly: true,

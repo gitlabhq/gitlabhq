@@ -5,7 +5,7 @@ module Resolvers
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
     type Types::Ci::PipelineType.connection_type, null: true
-    extension Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
+    extras [:lookahead]
 
     authorizes_object!
     authorize :read_pipeline
@@ -39,14 +39,6 @@ module Resolvers
           end
         end
       end
-    end
-
-    # we manage the pagination manually, so opt out of the connection field extension
-    def self.field_options
-      super.merge(
-        connection: false,
-        extras: [:lookahead]
-      )
     end
 
     private

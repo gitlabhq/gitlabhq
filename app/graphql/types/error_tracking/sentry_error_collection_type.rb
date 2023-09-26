@@ -16,7 +16,8 @@ module Types
             resolver: Resolvers::ErrorTracking::SentryErrorStackTraceResolver
       field :errors,
             description: "Collection of Sentry Errors.",
-            resolver: Resolvers::ErrorTracking::SentryErrorsResolver
+            resolver: Resolvers::ErrorTracking::SentryErrorsResolver,
+            connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
       field :external_url,
             GraphQL::Types::String,
             null: true,

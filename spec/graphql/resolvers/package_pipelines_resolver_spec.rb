@@ -10,6 +10,8 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
 
   let(:user) { package.project.first_owner }
 
+  it { expect(described_class.extras).to include(:lookahead) }
+
   describe '#resolve' do
     let(:returned_pipelines) { graphql_dig_at(subject, 'data', 'package', 'pipelines', 'nodes') }
     let(:returned_errors) { graphql_dig_at(subject, 'errors', 'message') }
@@ -154,21 +156,6 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
     def expect_to_contain_exactly(*pipelines)
       entities = pipelines.map { |pipeline| a_graphql_entity_for(pipeline) }
       expect(returned_pipelines).to match_array(entities)
-    end
-  end
-
-  describe '.field options' do
-    let(:field) do
-      field_options = described_class.field_options.merge(
-        owner: resolver_parent,
-        name: 'dummy_field'
-      )
-      ::Types::BaseField.new(**field_options)
-    end
-
-    it 'sets them properly' do
-      expect(field).not_to be_connection
-      expect(field.extras).to match_array([:lookahead])
     end
   end
 end

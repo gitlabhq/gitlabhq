@@ -10,6 +10,7 @@ module Types
 
       field :pipelines,
             resolver: Resolvers::PackagePipelinesResolver,
+            connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension,
             description: <<-DESC
               Pipelines that built the package. Max page size #{Resolvers::PackagePipelinesResolver::MAX_PAGE_SIZE}.
             DESC

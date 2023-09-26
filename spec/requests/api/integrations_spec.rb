@@ -68,6 +68,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         let(:missing_attributes) do
           {
             datadog: %i[archive_trace_events],
+            emails_on_push: %i[branches_to_be_notified],
             hangouts_chat: %i[notify_only_broken_pipelines],
             jira: %i[issues_enabled project_key jira_issue_regex jira_issue_prefix vulnerabilities_enabled vulnerabilities_issuetype],
             mattermost: %i[labels_to_be_notified],
@@ -81,7 +82,9 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         end
 
         it "updates #{integration} settings and returns the correct fields" do
-          supported_attrs = integration_attrs.without(missing_attributes.fetch(integration.to_sym, []))
+          supported_attrs = attributes_for(integration_factory)
+            .without(:active, :type)
+            .without(missing_attributes.fetch(integration.to_sym, []))
 
           put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: supported_attrs
 
@@ -112,6 +115,8 @@ RSpec.describe API::Integrations, feature_category: :integrations do
             end
           end
 
+          integration_attrs = attributes_for(integration_factory).without(:active, :type)
+
           if required_attributes.empty?
             expected_code = :ok
           else
@@ -129,7 +134,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         include_context 'with integration'
 
         before do
-          initialize_integration(integration)
+          create(integration_factory, project: project)
         end
 
         it "deletes #{integration}" do
@@ -144,7 +149,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       describe "GET /projects/:id/#{endpoint}/#{integration.dasherize}" do
         include_context 'with integration'
 
-        let!(:initialized_integration) { initialize_integration(integration, active: true) }
+        let!(:initialized_integration) { create(integration_factory, project: project) }
 
         let_it_be(:project2) do
           create(:project, creator_id: user.id, namespace: user.namespace)

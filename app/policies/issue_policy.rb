@@ -29,6 +29,12 @@ class IssuePolicy < IssuablePolicy
     @subject.work_item_type.widgets.include?(::WorkItems::Widgets::Notes)
   end
 
+  condition(:group_issue, scope: :subject) { subject_container.is_a?(Group) }
+
+  rule { group_issue & can?(:read_group) }.policy do
+    enable :create_note
+  end
+
   rule { ~notes_widget_enabled }.policy do
     prevent :create_note
     prevent :read_note
