@@ -27,6 +27,10 @@ RSpec.describe Gitlab::Ci::Status::WaitingForResource do
     it { expect(subject.group).to eq 'waiting-for-resource' }
   end
 
+  describe '#name' do
+    it { expect(subject.name).to eq 'WAITING_FOR_RESOURCE' }
+  end
+
   describe '#details_path' do
     it { expect(subject.details_path).to be_nil }
   end

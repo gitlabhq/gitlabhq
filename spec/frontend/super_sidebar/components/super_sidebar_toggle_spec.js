@@ -18,13 +18,8 @@ describe('SuperSidebarToggle component', () => {
   const findButton = () => wrapper.findComponent(GlButton);
   const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
 
-  const createWrapper = ({ props = {}, sidebarState = {} } = {}) => {
+  const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(SuperSidebarToggle, {
-      data() {
-        return {
-          ...sidebarState,
-        };
-      },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
@@ -40,18 +35,15 @@ describe('SuperSidebarToggle component', () => {
       expect(findButton().attributes('aria-controls')).toBe('super-sidebar');
     });
 
-    it('has aria-expanded as true when expanded', () => {
-      createWrapper();
+    it('has aria-expanded as true when type is collapse', () => {
+      createWrapper({ type: 'collapse' });
       expect(findButton().attributes('aria-expanded')).toBe('true');
     });
 
-    it.each(['isCollapsed', 'isPeek', 'isHoverPeek'])(
-      'has aria-expanded as false when %s is `true`',
-      (stateProp) => {
-        createWrapper({ sidebarState: { [stateProp]: true } });
-        expect(findButton().attributes('aria-expanded')).toBe('false');
-      },
-    );
+    it('has aria-expanded as false when type is expand', () => {
+      createWrapper();
+      expect(findButton().attributes('aria-expanded')).toBe('false');
+    });
 
     it('has aria-label attribute', () => {
       createWrapper();
@@ -60,13 +52,13 @@ describe('SuperSidebarToggle component', () => {
   });
 
   describe('tooltip', () => {
-    it('displays collapse when expanded', () => {
-      createWrapper();
+    it('displays "Hide sidebar" when type is collapse', () => {
+      createWrapper({ type: 'collapse' });
       expect(getTooltip().title).toBe('Hide sidebar');
     });
 
-    it('displays expand when collapsed', () => {
-      createWrapper({ sidebarState: { isCollapsed: true } });
+    it('displays "Keep sidebar visible" when type is expand', () => {
+      createWrapper();
       expect(getTooltip().title).toBe('Keep sidebar visible');
     });
   });
@@ -88,13 +80,11 @@ describe('SuperSidebarToggle component', () => {
     });
 
     it('collapses the sidebar and focuses the other toggle', async () => {
-      createWrapper();
+      createWrapper({ type: 'collapse' });
       findButton().vm.$emit('click');
       await nextTick();
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(true, true);
-      expect(document.activeElement).toEqual(
-        document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`),
-      );
+      expect(document.activeElement).toEqual(document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`));
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_hide', {
         label: 'nav_toggle',
         property: 'nav_sidebar',
@@ -102,11 +92,13 @@ describe('SuperSidebarToggle component', () => {
     });
 
     it('expands the sidebar and focuses the other toggle', async () => {
-      createWrapper({ sidebarState: { isCollapsed: true } });
+      createWrapper();
       findButton().vm.$emit('click');
       await nextTick();
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false, true);
-      expect(document.activeElement).toEqual(document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`));
+      expect(document.activeElement).toEqual(
+        document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`),
+      );
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_show', {
         label: 'nav_toggle',
         property: 'nav_sidebar',

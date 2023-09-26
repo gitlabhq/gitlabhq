@@ -128,7 +128,7 @@ class Import::FogbugzController < Import::BaseController
       allow_local_network: allow_local_requests?,
       schemes: %w[http https]
     )
-  rescue Gitlab::UrlBlocker::BlockedUrlError => e
+  rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     redirect_to new_import_fogbugz_url, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
   end
 

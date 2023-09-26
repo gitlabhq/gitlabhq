@@ -13,7 +13,7 @@ module RestClient
                                                                     schemes: %w[http https])
 
           self.hostname_override = hostname_override
-        rescue Gitlab::UrlBlocker::BlockedUrlError => e
+        rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
           raise ArgumentError, "URL is blocked: #{e.message}"
         end
 

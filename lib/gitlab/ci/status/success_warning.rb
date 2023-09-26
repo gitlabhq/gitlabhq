@@ -20,6 +20,10 @@ module Gitlab
           'status_warning'
         end
 
+        def name
+          'SUCCESS_WITH_WARNINGS'
+        end
+
         def group
           'success-with-warnings'
         end

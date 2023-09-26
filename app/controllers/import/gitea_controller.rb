@@ -99,7 +99,7 @@ class Import::GiteaController < Import::GithubController
       allow_local_network: allow_local_requests?,
       schemes: %w[http https]
     )
-  rescue Gitlab::UrlBlocker::BlockedUrlError => e
+  rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     session[access_token_key] = nil
 
     redirect_to new_import_url, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }

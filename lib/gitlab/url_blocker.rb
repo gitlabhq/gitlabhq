@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
+#
+# IMPORTANT: With the new development of the 'gitlab-http' gem (https://gitlab.com/gitlab-org/gitlab/-/issues/415686),
+# no additional change should be implemented in this class. This class will be removed after migrating all
+# the usages to the new gem.
+#
+
 require 'resolv'
 require 'ipaddress'
 
 module Gitlab
   class UrlBlocker
-    BlockedUrlError = Class.new(StandardError)
-
     DENY_ALL_REQUESTS_EXCEPT_ALLOWED_DEFAULT = proc { deny_all_requests_except_allowed_app_setting }.freeze
 
     # Result stores the validation result:
@@ -77,7 +81,7 @@ module Gitlab
 
           return Result.new(uri, nil, proxy_in_use) unless enforce_address_info_retrievable?(uri, dns_rebind_protection, deny_all_requests_except_allowed)
 
-          raise BlockedUrlError, 'Host cannot be resolved or invalid'
+          raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, 'Host cannot be resolved or invalid'
         end
 
         ip_address = ip_address(address_info)
@@ -112,7 +116,7 @@ module Gitlab
         validate!(url, **kwargs)
 
         false
-      rescue BlockedUrlError
+      rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError
         true
       end
 
@@ -173,7 +177,7 @@ module Gitlab
       #
       # @param uri [Addressable::URI]
       #
-      # @raise [Gitlab::UrlBlocker::BlockedUrlError, ArgumentError] - BlockedUrlError raised if host is too long.
+      # @raise [Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, ArgumentError] - raised if host is too long.
       #
       # @return [Array<Addrinfo>]
       def get_address_info(uri)
@@ -184,7 +188,7 @@ module Gitlab
         # Addrinfo.getaddrinfo errors if the domain exceeds 1024 characters.
         raise unless error.message.include?('hostname too long')
 
-        raise BlockedUrlError, "Host is too long (maximum is 1024 characters)"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Host is too long (maximum is 1024 characters)"
       end
 
       def enforce_address_info_retrievable?(uri, dns_rebind_protection, deny_all_requests_except_allowed)
@@ -232,7 +236,7 @@ module Gitlab
         netmask = IPAddr.new('100.64.0.0/10')
         return unless addrs_info.any? { |addr| netmask.include?(addr.ip_address) }
 
-        raise BlockedUrlError, "Requests to the shared address space are not allowed"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Requests to the shared address space are not allowed"
       end
 
       def get_port(uri)
@@ -243,7 +247,7 @@ module Gitlab
         uri_str = uri.to_s
         sanitized_uri = ActionController::Base.helpers.sanitize(uri_str, tags: [])
         if sanitized_uri != uri_str
-          raise BlockedUrlError, 'HTML/CSS/JS tags are not allowed'
+          raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, 'HTML/CSS/JS tags are not allowed'
         end
       end
 
@@ -252,7 +256,7 @@ module Gitlab
           raise Addressable::URI::InvalidURIError if multiline_blocked?(parsed_url)
         end
       rescue Addressable::URI::InvalidURIError, URI::InvalidURIError
-        raise BlockedUrlError, 'URI is invalid'
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, 'URI is invalid'
       end
 
       def multiline_blocked?(parsed_url)
@@ -271,12 +275,13 @@ module Gitlab
         return if port >= 1024
         return if ports.include?(port)
 
-        raise BlockedUrlError, "Only allowed ports are #{ports.join(', ')}, and any over 1024"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError,
+          "Only allowed ports are #{ports.join(', ')}, and any over 1024"
       end
 
       def validate_scheme(scheme, schemes)
         if scheme.blank? || (schemes.any? && schemes.exclude?(scheme))
-          raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
+          raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
         end
       end
 
@@ -284,7 +289,7 @@ module Gitlab
         return if value.blank?
         return if /\A\p{Alnum}/.match?(value)
 
-        raise BlockedUrlError, "Username needs to start with an alphanumeric character"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Username needs to start with an alphanumeric character"
       end
 
       def validate_hostname(value)
@@ -292,13 +297,13 @@ module Gitlab
         return if IPAddress.valid?(value)
         return if /\A\p{Alnum}/.match?(value)
 
-        raise BlockedUrlError, "Hostname or IP address invalid"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Hostname or IP address invalid"
       end
 
       def validate_unicode_restriction(uri)
         return if uri.to_s.ascii_only?
 
-        raise BlockedUrlError, "URI must be ascii only #{uri.to_s.dump}"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "URI must be ascii only #{uri.to_s.dump}"
       end
 
       def validate_localhost(addrs_info)
@@ -307,38 +312,39 @@ module Gitlab
 
         return if (local_ips & addrs_info.map(&:ip_address)).empty?
 
-        raise BlockedUrlError, "Requests to localhost are not allowed"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Requests to localhost are not allowed"
       end
 
       def validate_loopback(addrs_info)
         return unless addrs_info.any? { |addr| addr.ipv4_loopback? || addr.ipv6_loopback? }
 
-        raise BlockedUrlError, "Requests to loopback addresses are not allowed"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Requests to loopback addresses are not allowed"
       end
 
       def validate_local_network(addrs_info)
         return unless addrs_info.any? { |addr| addr.ipv4_private? || addr.ipv6_sitelocal? || addr.ipv6_unique_local? }
 
-        raise BlockedUrlError, "Requests to the local network are not allowed"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Requests to the local network are not allowed"
       end
 
       def validate_link_local(addrs_info)
         netmask = IPAddr.new('169.254.0.0/16')
         return unless addrs_info.any? { |addr| addr.ipv6_linklocal? || netmask.include?(addr.ip_address) }
 
-        raise BlockedUrlError, "Requests to the link local network are not allowed"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Requests to the link local network are not allowed"
       end
 
-      # Raises a BlockedUrlError if the instance is configured to deny all requests.
+      # Raises a Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError if the instance is configured to deny all requests.
       #
       # This should only be called after allow list checks have been made.
       def validate_deny_all_requests_except_allowed!(should_deny)
         return unless deny_all_requests_except_allowed?(should_deny)
 
-        raise BlockedUrlError, "Requests to hosts and IP addresses not on the Allow List are denied"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError,
+          "Requests to hosts and IP addresses not on the Allow List are denied"
       end
 
-      # Raises a BlockedUrlError if any IP in `addrs_info` is the limited
+      # Raises a Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError if any IP in `addrs_info` is the limited
       # broadcast address.
       # https://datatracker.ietf.org/doc/html/rfc919#section-7
       def validate_limited_broadcast_address(addrs_info)
@@ -346,7 +352,7 @@ module Gitlab
 
         return if (blocked_ips & addrs_info.map(&:ip_address)).empty?
 
-        raise BlockedUrlError, "Requests to the limited broadcast address are not allowed"
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Requests to the limited broadcast address are not allowed"
       end
 
       def internal?(uri)

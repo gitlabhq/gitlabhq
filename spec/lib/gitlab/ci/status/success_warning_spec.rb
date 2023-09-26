@@ -25,6 +25,10 @@ RSpec.describe Gitlab::Ci::Status::SuccessWarning, feature_category: :continuous
     it { expect(subject.group).to eq 'success-with-warnings' }
   end
 
+  describe '#name' do
+    it { expect(subject.name).to eq 'SUCCESS_WITH_WARNINGS' }
+  end
+
   describe '.matches?' do
     let(:matchable) { double('matchable') }
 

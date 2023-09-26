@@ -126,14 +126,22 @@ Check [`production.log`](../../administration/logs/index.md#productionlog) to se
 
 If that's the case, ensure the [**Due date** field is visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
 
-## `An error occurred while requesting data from Jira` when viewing the Jira issues list in GitLab
+## `An error occurred while requesting data from Jira` when viewing the Jira issue list in GitLab
 
-You might see a `An error occurred while requesting data from Jira` message when you attempt to view the Jira issues list in GitLab.
+When you try to view the Jira issue list in GitLab, you might see this message:
 
-You can see this error when the authentication details in the Jira integration settings are incomplete or incorrect.
+```plaintext
+An error occurred while requesting data from Jira
+```
 
-To attempt to resolve this error, try [configuring the integration](configure.md#configure-the-integration) again. Verify that the
-authentication details are correct, re-enter your API token or password, and save your changes.
+This error occurs when the authentication for the Jira issue integration is not complete or correct.
+
+To resolve this issue, [configure the Jira issue integration](configure.md#configure-the-integration) again.
+Ensure the authentication details are correct, enter your API token or password again, and save your changes.
+
+The Jira issue list does not load if the project key contains a reserved JQL word.
+For more information, see [issue 426176](https://gitlab.com/gitlab-org/gitlab/-/issues/426176).
+Your Jira project key must not have [restricted words and characters](https://confluence.atlassian.com/jirasoftwareserver/advanced-searching-939938733.html#Advancedsearching-restrictionsRestrictedwordsandcharacters).
 
 ## GitLab cannot link to a Jira issue
 

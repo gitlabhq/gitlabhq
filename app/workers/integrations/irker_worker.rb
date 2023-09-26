@@ -58,7 +58,7 @@ module Integrations
           allow_local_network: allow_local_requests?,
           schemes: ['irc'])
         @socket = TCPSocket.new ip_address, irker_port
-      rescue Errno::ECONNREFUSED, Gitlab::UrlBlocker::BlockedUrlError => e
+      rescue Errno::ECONNREFUSED, Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
         logger.fatal "Can't connect to Irker daemon: #{e}"
         return false
       end

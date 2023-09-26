@@ -101,7 +101,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/user.rb'
     - 'app/models/user_highest_role.rb'
     - 'app/models/users/callout.rb'
-    - 'app/models/users/in_product_marketing_email.rb'
     - 'app/models/users/phone_number_validation.rb'
     - 'app/models/users_star_project.rb'
     - 'app/models/zoom_meeting.rb'

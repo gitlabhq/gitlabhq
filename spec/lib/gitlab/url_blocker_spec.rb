@@ -66,7 +66,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
         include_context 'when instance configured to deny all requests'
 
         it 'blocks the request' do
-          expect { subject }.to raise_error(described_class::BlockedUrlError)
+          expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
         end
       end
 
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           let(:arg_value) { proc { true } }
 
           it 'blocks the request' do
-            expect { subject }.to raise_error(described_class::BlockedUrlError)
+            expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
           end
         end
 
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           let(:arg_value) { true }
 
           it 'blocks the request' do
-            expect { subject }.to raise_error(described_class::BlockedUrlError)
+            expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
           end
         end
 
@@ -228,7 +228,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
             let(:lfs_enabled) { false }
 
             it 'raises an error' do
-              expect { subject }.to raise_error(described_class::BlockedUrlError)
+              expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
             end
           end
 
@@ -236,7 +236,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
             let(:lfs_enabled) { true }
 
             it 'raises an error' do
-              expect { subject }.to raise_error(described_class::BlockedUrlError)
+              expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
             end
           end
         end
@@ -251,7 +251,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           end
 
           it 'raises an error' do
-            expect { subject }.to raise_error(described_class::BlockedUrlError)
+            expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
           end
         end
 
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           let(:host) { 'http://127.0.0.1:9000' }
 
           it 'raises an error' do
-            expect { subject }.to raise_error(described_class::BlockedUrlError)
+            expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
           end
         end
       end
@@ -290,7 +290,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
         end
 
         it 'raises an error' do
-          expect { subject }.to raise_error(described_class::BlockedUrlError)
+          expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
         end
 
         context 'with HTTP_PROXY' do
@@ -324,7 +324,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
         let(:import_url) { "https://example#{'a' * 1024}.com" }
 
         it 'raises an error' do
-          expect { subject }.to raise_error(described_class::BlockedUrlError)
+          expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
         end
       end
     end
@@ -346,7 +346,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
         it 'raises an error' do
           stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
 
-          expect { subject }.to raise_error(described_class::BlockedUrlError)
+          expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
         end
       end
     end

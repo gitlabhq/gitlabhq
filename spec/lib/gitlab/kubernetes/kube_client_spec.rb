@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
   describe '#initialize' do
     shared_examples 'local address' do
       it 'blocks local addresses' do
-        expect { client }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+        expect { client }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
       end
 
       context 'when local requests are allowed' do
@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
       let(:api_url) { 'ssh://192.168.1.2' }
 
       it 'raises an error' do
-        expect { client }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+        expect { client }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
       end
     end
 

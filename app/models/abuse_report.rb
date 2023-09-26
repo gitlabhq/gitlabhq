@@ -200,7 +200,7 @@ class AbuseReport < ApplicationRecord
         format(_('contains URLs that exceed the %{limit} character limit'), limit: MAX_CHAR_LIMIT_URL)
       )
     end
-  rescue ::Gitlab::UrlBlocker::BlockedUrlError
+  rescue ::Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError
     errors.add(:links_to_spam, _('only supports valid HTTP(S) URLs'))
   end
 

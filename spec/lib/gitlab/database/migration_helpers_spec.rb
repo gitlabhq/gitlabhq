@@ -1774,6 +1774,35 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#copy_indexes' do
+    context 'when index name is too long' do
+      it 'does not fail' do
+        index = double(:index,
+                       columns: %w(uuid),
+                       name: 'index_vuln_findings_on_uuid_including_vuln_id_1',
+                       using: nil,
+                       where: nil,
+                       opclasses: {},
+                       unique: true,
+                       lengths: [],
+                       orders: [])
+
+        allow(model).to receive(:indexes_for).with(:vulnerability_occurrences, 'uuid')
+          .and_return([index])
+
+        expect(model).to receive(:add_concurrent_index)
+          .with(:vulnerability_occurrences,
+               %w(tmp_undo_cleanup_column_8cbf300838),
+              {
+               unique: true,
+               name: 'idx_copy_191a1af1a0',
+               length: [],
+               order: []
+              })
+
+        model.copy_indexes(:vulnerability_occurrences, :uuid, :tmp_undo_cleanup_column_8cbf300838)
+      end
+    end
+
     context 'using a regular index using a single column' do
       it 'copies the index' do
         index = double(:index,

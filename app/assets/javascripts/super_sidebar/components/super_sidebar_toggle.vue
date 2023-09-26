@@ -14,58 +14,74 @@ export default {
   },
   mixins: [Tracking.mixin()],
   props: {
-    tooltipContainer: {
+    type: {
       type: String,
       required: false,
-      default: null,
-    },
-    tooltipPlacement: {
-      type: String,
-      required: false,
-      default: 'right',
+      default: 'expand',
     },
   },
   i18n: {
-    collapseSidebar: __('Hide sidebar'),
-    expandSidebar: __('Keep sidebar visible'),
     primaryNavigationSidebar: __('Primary navigation sidebar'),
+  },
+  tooltipCollapse: {
+    placement: 'bottom',
+    container: 'super-sidebar',
+    title: __('Hide sidebar'),
+  },
+  tooltipExpand: {
+    placement: 'right',
+    title: __('Keep sidebar visible'),
   },
   data() {
     return sidebarState;
   },
   computed: {
-    canOpen() {
-      return this.isCollapsed || this.isPeek || this.isHoverPeek;
+    isTypeCollapse() {
+      return this.type === 'collapse';
     },
-    tooltipTitle() {
-      return this.canOpen ? this.$options.i18n.expandSidebar : this.$options.i18n.collapseSidebar;
+    isTypeExpand() {
+      return this.type === 'expand';
     },
     tooltip() {
-      return {
-        placement: this.tooltipPlacement,
-        container: this.tooltipContainer,
-        title: this.tooltipTitle,
-      };
+      return this.isTypeExpand ? this.$options.tooltipExpand : this.$options.tooltipCollapse;
     },
     ariaExpanded() {
-      return String(!this.canOpen);
+      return String(this.isTypeCollapse);
     },
+  },
+  mounted() {
+    this.$root.$on('bv::tooltip::show', this.onTooltipShow);
+  },
+  beforeUnmount() {
+    this.$root.$off('bv::tooltip::show', this.onTooltipShow);
   },
   methods: {
     toggle() {
-      this.track(this.canOpen ? 'nav_show' : 'nav_hide', {
+      this.track(this.isTypeExpand ? 'nav_show' : 'nav_hide', {
         label: 'nav_toggle',
         property: 'nav_sidebar',
       });
-      toggleSuperSidebarCollapsed(!this.canOpen, true);
+      toggleSuperSidebarCollapsed(!this.isTypeExpand, true);
       this.focusOtherToggle();
     },
     focusOtherToggle() {
       this.$nextTick(() => {
-        const classSelector = this.canOpen ? JS_TOGGLE_EXPAND_CLASS : JS_TOGGLE_COLLAPSE_CLASS;
+        const classSelector = this.isTypeExpand ? JS_TOGGLE_COLLAPSE_CLASS : JS_TOGGLE_EXPAND_CLASS;
         const otherToggle = document.querySelector(`.${classSelector}`);
         otherToggle?.focus();
       });
+    },
+    onTooltipShow(bvEvent) {
+      if (
+        bvEvent.target !== this.$el ||
+        (this.isTypeCollapse && !this.isCollapsed) ||
+        (this.isTypeExpand && this.isCollapsed) ||
+        this.isPeek ||
+        this.isHoverPeek
+      )
+        return;
+
+      bvEvent.preventDefault();
     },
   },
 };

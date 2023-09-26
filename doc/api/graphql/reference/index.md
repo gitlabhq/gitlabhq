@@ -16106,12 +16106,13 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="detailedstatusaction"></a>`action` | [`StatusAction`](#statusaction) | Action information for the status. This includes method, button title, icon, path, and title. |
 | <a id="detailedstatusdetailspath"></a>`detailsPath` | [`String`](#string) | Path of the details for the status. |
 | <a id="detailedstatusfavicon"></a>`favicon` | [`String`](#string) | Favicon of the status. |
-| <a id="detailedstatusgroup"></a>`group` | [`String`](#string) | Group of the status. |
+| <a id="detailedstatusgroup"></a>`group` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. The `group` attribute is deprecated. Use `name` instead. |
 | <a id="detailedstatushasdetails"></a>`hasDetails` | [`Boolean`](#boolean) | Indicates if the status has further details. |
-| <a id="detailedstatusicon"></a>`icon` | [`String`](#string) | Icon of the status. |
+| <a id="detailedstatusicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. The `icon` attribute is deprecated. Use `name` to identify the status to display instead. |
 | <a id="detailedstatusid"></a>`id` | [`String!`](#string) | ID for a detailed status. |
-| <a id="detailedstatuslabel"></a>`label` | [`String`](#string) | Label of the status. |
-| <a id="detailedstatustext"></a>`text` | [`String`](#string) | Text of the status. |
+| <a id="detailedstatuslabel"></a>`label` | [`String`](#string) | Human-readable label of the status (e.g. success). |
+| <a id="detailedstatusname"></a>`name` | [`String`](#string) | Machine-readable status name (e.g. SUCCESS). |
+| <a id="detailedstatustext"></a>`text` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. The `text` attribute is being deprecated. Use `label` instead. |
 | <a id="detailedstatustooltip"></a>`tooltip` | [`String`](#string) | Tooltip associated with the status. |
 
 ### `DevopsAdoptionEnabledNamespace`

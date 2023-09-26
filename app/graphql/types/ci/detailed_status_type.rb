@@ -16,20 +16,34 @@ module Types
       field :favicon, GraphQL::Types::String, null: true,
                                               description: 'Favicon of the status.'
       field :group, GraphQL::Types::String, null: true,
-                                            description: 'Group of the status.'
+                                            description: 'Group of the status.',
+                                            deprecated: {
+                                              reason: 'The `group` attribute is deprecated. Use `name` instead',
+                                              milestone: '16.4'
+                                            }
       field :has_details, GraphQL::Types::Boolean, null: true,
                                                    description: 'Indicates if the status has further details.',
                                                    method: :has_details?
       field :icon, GraphQL::Types::String, null: true,
-                                           description: 'Icon of the status.'
+                                           description: 'Icon of the status.',
+                                           deprecated: {
+                                             reason: 'The `icon` attribute is deprecated. Use `name` to ' \
+                                                     'identify the status to display instead',
+                                             milestone: '16.4'
+                                           }
       field :id, GraphQL::Types::String, null: false,
                                          description: 'ID for a detailed status.',
                                          extras: [:parent]
       field :label, GraphQL::Types::String, null: true,
-                                            calls_gitaly: true,
-                                            description: 'Label of the status.'
+                                            description: 'Human-readable label of the status (e.g. success).'
+      field :name, GraphQL::Types::String, null: true,
+                                            description: 'Machine-readable status name (e.g. SUCCESS).'
       field :text, GraphQL::Types::String, null: true,
-                                           description: 'Text of the status.'
+                                           description: 'Text of the status.',
+                                           deprecated: {
+                                             reason: 'The `text` attribute is being deprecated. Use `label` instead',
+                                             milestone: '16.4'
+                                           }
       field :tooltip, GraphQL::Types::String, null: true,
                                               description: 'Tooltip associated with the status.',
                                               method: :status_tooltip

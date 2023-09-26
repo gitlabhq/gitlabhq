@@ -35,7 +35,7 @@ module Clusters
 
         def configured?
           kube_client.present? && available?
-        rescue Gitlab::UrlBlocker::BlockedUrlError
+        rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError
           false
         end
 

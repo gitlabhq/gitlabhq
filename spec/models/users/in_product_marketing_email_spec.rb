@@ -15,7 +15,7 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
 
     it { is_expected.to validate_presence_of(:user) }
 
-    context 'for a track+series email' do
+    context 'when track+series email' do
       it { is_expected.to validate_presence_of(:track) }
       it { is_expected.to validate_presence_of(:series) }
 
@@ -25,7 +25,7 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
       }
     end
 
-    context 'for a campaign email' do
+    context 'when campaign email' do
       subject { build(:in_product_marketing_email, :campaign) }
 
       it { is_expected.to validate_presence_of(:campaign) }
@@ -78,12 +78,9 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
     context 'when no track or series for a user exists' do
       let(:track) { :create }
       let(:series) { 0 }
+      let(:other_user) { create(:user) }
 
-      before do
-        @other_user = create(:user)
-      end
-
-      it { expect(without_track_and_series).to eq [@other_user] }
+      it { expect(without_track_and_series).to eq [other_user] }
     end
   end
 
@@ -112,7 +109,9 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
     let_it_be(:user) { create(:user) }
     let_it_be(:in_product_marketing_email) { create(:in_product_marketing_email, series: 0, track: 0, user: user) }
 
-    subject(:for_user_with_track_and_series) { described_class.for_user_with_track_and_series(user, track, series).first }
+    subject(:for_user_with_track_and_series) do
+      described_class.for_user_with_track_and_series(user, track, series).first
+    end
 
     context 'when record for user with given track and series exists' do
       it { is_expected.to eq(in_product_marketing_email) }
@@ -165,7 +164,7 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
         end
       end
 
-      context 'cta_clicked_at is already set' do
+      context 'when cta_clicked_at is already set' do
         it 'does not update' do
           create(:in_product_marketing_email, user: user, track: track, series: series, cta_clicked_at: Time.zone.now)
 

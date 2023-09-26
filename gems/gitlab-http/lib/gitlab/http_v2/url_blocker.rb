@@ -188,7 +188,7 @@ module Gitlab
         #
         # @param uri [Addressable::URI]
         #
-        # @raise [Gitlab::UrlBlocker::BlockedUrlError, ArgumentError] - BlockedUrlError raised if host is too long.
+        # @raise [Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, ArgumentError] raised if host is too long.
         #
         # @return [Array<Addrinfo>]
         def get_address_info(uri)
@@ -271,7 +271,7 @@ module Gitlab
         def multiline_blocked?(parsed_url)
           url = parsed_url.to_s
 
-          return true if url =~ /\n|\r/
+          return true if /\n|\r/.match?(url)
           # Google Cloud Storage uses a multi-line, encoded Signature query string
           return false if %w[http https].include?(parsed_url.scheme&.downcase)
 
@@ -295,7 +295,7 @@ module Gitlab
 
         def validate_user(value)
           return if value.blank?
-          return if value =~ /\A\p{Alnum}/
+          return if /\A\p{Alnum}/.match?(value)
 
           raise BlockedUrlError, "Username needs to start with an alphanumeric character"
         end
@@ -303,7 +303,7 @@ module Gitlab
         def validate_hostname(value)
           return if value.blank?
           return if IPAddress.valid?(value)
-          return if value =~ /\A\p{Alnum}/
+          return if /\A\p{Alnum}/.match?(value)
 
           raise BlockedUrlError, "Hostname or IP address invalid"
         end

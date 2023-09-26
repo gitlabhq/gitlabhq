@@ -5,9 +5,6 @@ Naming/ClassAndModuleCamelCase:
   AllowedNames:
     - HTTP_V2
 
-Performance/RegexpMatch:
-  Enabled: false
-
 Style/SpecialGlobalVars:
   Enabled: false
 

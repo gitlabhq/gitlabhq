@@ -20,6 +20,10 @@ module Gitlab
           'favicon_status_pending'
         end
 
+        def name
+          'WAITING_FOR_RESOURCE'
+        end
+
         def group
           'waiting-for-resource'
         end

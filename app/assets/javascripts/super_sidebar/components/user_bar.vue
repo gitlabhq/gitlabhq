@@ -126,9 +126,8 @@ export default {
       <super-sidebar-toggle
         v-if="hasCollapseButton"
         :class="$options.JS_TOGGLE_COLLAPSE_CLASS"
-        tooltip-placement="bottom"
-        tooltip-container="super-sidebar"
         data-testid="super-sidebar-collapse-button"
+        type="collapse"
       />
       <create-menu
         v-if="sidebarData.is_logged_in && sidebarData.create_new_menu_groups.length > 0"

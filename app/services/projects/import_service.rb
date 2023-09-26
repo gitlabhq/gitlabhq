@@ -29,7 +29,7 @@ module Projects
       after_execute_hook
 
       success
-    rescue Gitlab::UrlBlocker::BlockedUrlError, StandardError => e
+    rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, StandardError => e
       Gitlab::Import::ImportFailureService.track(
         project_id: project.id,
         error_source: self.class.name,
@@ -76,7 +76,7 @@ module Projects
       if project.external_import? && !unknown_url?
         begin
           @resolved_address = get_resolved_address
-        rescue Gitlab::UrlBlocker::BlockedUrlError => e
+        rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
           raise e, s_("ImportProjects|Blocked import URL: %{message}") % { message: e.message }
         end
       end

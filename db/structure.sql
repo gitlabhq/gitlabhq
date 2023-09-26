@@ -298,15 +298,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_1a857e8db6cd() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."uuid_convert_string_to_uuid" := NEW."uuid";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_1bd97da9c1a4() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -25003,7 +24994,6 @@ CREATE TABLE vulnerability_occurrences (
     primary_identifier_id bigint NOT NULL,
     project_fingerprint bytea NOT NULL,
     location_fingerprint bytea NOT NULL,
-    uuid character varying(36) NOT NULL,
     name character varying NOT NULL,
     metadata_version character varying NOT NULL,
     raw_metadata text NOT NULL,
@@ -25014,7 +25004,7 @@ CREATE TABLE vulnerability_occurrences (
     cve text,
     location jsonb,
     detection_method smallint DEFAULT 0 NOT NULL,
-    uuid_convert_string_to_uuid uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL,
+    uuid uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_f602da68dd CHECK ((char_length(cve) <= 48400))
@@ -34251,9 +34241,7 @@ COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-
 
 CREATE INDEX index_vs_code_settings_on_user_id ON vs_code_settings USING btree (user_id);
 
-CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id ON vulnerability_occurrences USING btree (uuid) INCLUDE (vulnerability_id);
-
-CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id_1 ON vulnerability_occurrences USING btree (uuid_convert_string_to_uuid) INCLUDE (vulnerability_id);
+CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id_1 ON vulnerability_occurrences USING btree (uuid) INCLUDE (vulnerability_id);
 
 CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON vulnerability_historical_statistics USING btree (project_id, date);
 
@@ -34373,9 +34361,7 @@ CREATE INDEX index_vulnerability_occurrences_on_project_fingerprint ON vulnerabi
 
 CREATE INDEX index_vulnerability_occurrences_on_scanner_id ON vulnerability_occurrences USING btree (scanner_id);
 
-CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid ON vulnerability_occurrences USING btree (uuid);
-
-CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid_1 ON vulnerability_occurrences USING btree (uuid_convert_string_to_uuid);
+CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid_1 ON vulnerability_occurrences USING btree (uuid);
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
 
@@ -34613,8 +34599,6 @@ CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules U
 
 CREATE INDEX tmp_idx_packages_on_project_id_when_npm_not_pending_destruction ON packages_packages USING btree (project_id) WHERE ((package_type = 2) AND (status <> 4));
 
-CREATE INDEX tmp_idx_vulns_on_converted_uuid ON vulnerability_occurrences USING btree (id, uuid_convert_string_to_uuid) WHERE (uuid_convert_string_to_uuid = '00000000-0000-0000-0000-000000000000'::uuid);
-
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 
 CREATE INDEX tmp_index_cis_vulnerability_reads_on_id ON vulnerability_reads USING btree (id) WHERE (report_type = 7);
@@ -34634,8 +34618,6 @@ CREATE INDEX tmp_index_project_statistics_pipeline_artifacts_size ON project_sta
 CREATE INDEX tmp_index_project_statistics_updated_at ON project_statistics USING btree (project_id, updated_at) WHERE (repository_size > 0);
 
 CREATE INDEX tmp_index_vulnerability_dismissal_info ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
-
-CREATE INDEX tmp_index_vulnerability_occurrences_uuid_cast ON vulnerability_occurrences USING btree (((uuid)::uuid));
 
 CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USING btree (id) WHERE (length(title_html) > 800);
 
@@ -36348,8 +36330,6 @@ CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCIN
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER trigger_07bc3c48f407 BEFORE INSERT OR UPDATE ON ci_stages FOR EACH ROW EXECUTE FUNCTION trigger_07bc3c48f407();
-
-CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION trigger_1a857e8db6cd();
 
 CREATE TRIGGER trigger_1bd97da9c1a4 BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_1bd97da9c1a4();
 

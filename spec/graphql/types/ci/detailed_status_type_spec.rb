@@ -12,7 +12,8 @@ RSpec.describe Types::Ci::DetailedStatusType do
   it 'has all fields' do
     expect(described_class).to have_graphql_fields(:id, :group, :icon, :favicon,
                                                    :details_path, :has_details,
-                                                   :label, :text, :tooltip, :action)
+                                                   :label, :name, :text, :tooltip,
+                                                   :action)
   end
 
   describe 'id field' do

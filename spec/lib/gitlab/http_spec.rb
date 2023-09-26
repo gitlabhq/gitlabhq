@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::HTTP do
+RSpec.describe Gitlab::HTTP, feature_category: :shared do
   include StubRequests
 
   let(:default_options) { described_class::DEFAULT_TIMEOUT_OPTIONS }

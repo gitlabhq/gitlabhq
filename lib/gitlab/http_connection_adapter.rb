@@ -56,7 +56,7 @@ module Gitlab
         allow_object_storage: allow_object_storage?,
         dns_rebind_protection: dns_rebind_protection?,
         schemes: %w[http https])
-    rescue Gitlab::UrlBlocker::BlockedUrlError => e
+    rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
       raise Gitlab::HTTP::BlockedUrlError, "URL is blocked: #{e.message}"
     end
 

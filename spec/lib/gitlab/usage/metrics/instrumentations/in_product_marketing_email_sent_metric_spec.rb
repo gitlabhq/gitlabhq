@@ -8,9 +8,9 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::InProductMarketingEmail
   let(:email_attributes) { { track: 'verify', series: 0 } }
   let(:expected_value) { 2 }
   let(:expected_query) do
-    'SELECT COUNT("in_product_marketing_emails"."id") FROM "in_product_marketing_emails"' \
-    ' WHERE "in_product_marketing_emails"."series" = 0'\
-    ' AND "in_product_marketing_emails"."track" = 1'
+    'SELECT COUNT("in_product_marketing_emails"."id") FROM "in_product_marketing_emails" ' \
+      'WHERE "in_product_marketing_emails"."series" = 0 ' \
+      'AND "in_product_marketing_emails"."track" = 1'
   end
 
   before do

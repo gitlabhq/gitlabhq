@@ -44,16 +44,16 @@ module Users
     INACTIVE_TRACK_NAMES = %w[invite_team experience].freeze
     ACTIVE_TRACKS = tracks.except(*INACTIVE_TRACK_NAMES)
 
-    scope :for_user_with_track_and_series, -> (user, track, series) do
+    scope :for_user_with_track_and_series, ->(user, track, series) do
       where(user: user, track: track, series: series)
     end
 
-    scope :without_track_and_series, -> (track, series) do
+    scope :without_track_and_series, ->(track, series) do
       join_condition = for_user.and(for_track_and_series(track, series))
       users_without_records(join_condition)
     end
 
-    scope :without_campaign, -> (campaign) do
+    scope :without_campaign, ->(campaign) do
       join_condition = for_user.and(for_campaign(campaign))
       users_without_records(join_condition)
     end
