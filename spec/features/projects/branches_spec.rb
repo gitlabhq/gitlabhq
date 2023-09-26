@@ -299,7 +299,7 @@ RSpec.describe 'Branches', feature_category: :groups_and_projects do
 
     it 'shows pipeline status when available' do
       page.within first('.all-branches li') do
-        expect(page).to have_css 'a.ci-status-icon-success'
+        expect(page).to have_css 'a.gl-badge .ci-status-icon-success'
       end
     end
 

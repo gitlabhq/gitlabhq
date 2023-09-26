@@ -150,9 +150,9 @@ describe('CI Badge Link Component', () => {
     expect(findBadge().props('size')).toBe('lg');
   });
 
-  it('should have class `gl-p-2!` when `showText` is false', () => {
+  it('should have class `gl-px-2` when `showText` is false', () => {
     createComponent({ status: statuses.success, size: 'lg', showText: false });
 
-    expect(findBadge().classes()).toContain('gl-p-2!');
+    expect(findBadge().classes()).toContain('gl-px-2');
   });
 });

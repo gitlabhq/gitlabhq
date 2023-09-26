@@ -43,6 +43,10 @@ copy the database across.
 
 ### Existing self-compiled installation
 
+1. [Disable background migrations](../../development/database/batched_background_migrations.md#enable-or-disable-background-migrations)
+
+1. [Ensure all background migrations are finished](../../update/background_migrations.md#check-the-status-of-batched-background-migrations)
+
 1. Stop GitLab, except for PostgreSQL:
 
    ```shell
@@ -66,6 +70,10 @@ copy the database across.
 1. Configure GitLab to [use multiple databases](#set-up-multiple-databases).
 
 ### Existing Linux package installations
+
+1. [Disable background migrations](../../development/database/batched_background_migrations.md#enable-or-disable-background-migrations)
+
+1. [Ensure all background migrations are finished](../../update/background_migrations.md#check-the-status-of-batched-background-migrations)
 
 1. Stop GitLab, except for PostgreSQL:
 
@@ -152,6 +160,8 @@ the other way around.
    sudo service gitlab restart
    ```
 
+1. [Enable background migrations](../../development/database/batched_background_migrations.md#enable-or-disable-background-migrations)
+
 ### Linux package installations
 
 1. For existing installations,
@@ -203,6 +213,8 @@ the other way around.
    ```shell
    sudo gitlab-ctl restart
    ```
+
+1. [Enable background migrations](../../development/database/batched_background_migrations.md#enable-or-disable-background-migrations)
 
 ## Further information
 

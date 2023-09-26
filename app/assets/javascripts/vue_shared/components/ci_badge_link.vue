@@ -59,8 +59,8 @@ export default {
     },
   },
   computed: {
-    isSmallBadgeSize() {
-      return this.size === badgeSizeOptions.sm;
+    isNotLargeBadgeSize() {
+      return this.badgeSize !== badgeSizeOptions.lg;
     },
     title() {
       return !this.showText ? this.status?.text : '';
@@ -121,7 +121,7 @@ export default {
 <template>
   <gl-badge
     v-gl-tooltip
-    :class="{ 'gl-pl-2': isSmallBadgeSize, 'gl-p-2!': !showText }"
+    :class="{ 'gl-px-2': !showText && isNotLargeBadgeSize }"
     :title="title"
     :href="detailsPath"
     :size="size"
