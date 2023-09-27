@@ -172,6 +172,10 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     it 'has preloaded target project' do
       expect(created_object.target_project).to equal(project)
     end
+
+    it 'has MWPS set to false' do
+      expect(created_object.merge_when_pipeline_succeeds).to eq(false)
+    end
   end
 
   context 'issue object' do
@@ -294,6 +298,38 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
 
     it 'has preloaded group' do
       expect(created_object.group).to equal(project.group)
+    end
+  end
+
+  context 'pipeline setup' do
+    let(:relation_sym) { :ci_pipelines }
+    let(:relation_hash) do
+      {
+        "id" => 1,
+        "status" => status
+      }
+    end
+
+    subject { created_object }
+
+    ::Ci::HasStatus::COMPLETED_STATUSES.each do |status|
+      context "when relation_hash has a completed status of #{status}}" do
+        let(:status) { status }
+
+        it "does not change the created object status" do
+          expect(created_object.status).to eq(status)
+        end
+      end
+    end
+
+    ::Ci::HasStatus::CANCELABLE_STATUSES.each do |status|
+      context "when relation_hash has cancelable status of #{status}}" do
+        let(:status) { status }
+
+        it "sets the created object status to canceled" do
+          expect(created_object.status).to eq('canceled')
+        end
+      end
     end
   end
 
