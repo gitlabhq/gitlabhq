@@ -874,7 +874,7 @@ Other issues:
 - The binaries for PostgreSQL 11 and repmgr have been removed. Prior to upgrading, administrators of Linux package
   installations must:
   1. Ensure the installation is using [PostgreSQL 12](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
-  1. If using repmgr, [convert to using patroni](../../administration/postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni).
+  1. If using repmgr, [convert to using Patroni](../../administration/postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni).
 - Two configuration options for Redis were deprecated in GitLab 13 and removed in GitLab 14:
 
   - `redis_slave_role` is replaced with `redis_replica_role`.

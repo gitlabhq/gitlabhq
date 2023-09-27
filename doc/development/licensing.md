@@ -50,7 +50,7 @@ More detailed information on how the gem and its commands work is available in t
 
 ## Getting an unknown or Lead licensed software approved
 
-We sometimes need to use third-party softwares whose license is not part of the Blue Oak Council
+We sometimes need to use third-party software whose license is not part of the Blue Oak Council
 license list, or is marked as Lead-rated in the list. In this case, the use-case needs to be
 legal-approved before the software can be installed. More on this can be [found in the Handbook](https://about.gitlab.com/handbook/legal/product/#using-open-source-software).
 

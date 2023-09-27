@@ -174,15 +174,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: container_repository:delete_container_repository
-  :worker_name: DeleteContainerRepositoryWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: container_repository_delete:container_registry_delete_container_repository
   :worker_name: ContainerRegistry::DeleteContainerRepositoryWorker
   :feature_category: :container_registry

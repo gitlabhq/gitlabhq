@@ -540,7 +540,7 @@ The code snippet above will not work well if there is a model-level uniqueness v
 
 To work around this, we have two options:
 
-- Remove the unqueness validation from the `ActiveRecord` model.
+- Remove the uniqueness validation from the `ActiveRecord` model.
 - Use the [`on` keyword](https://guides.rubyonrails.org/active_record_validations.html#on) and implement context-specific validation.
 
 ### Alternative 2: Check existence and rescue

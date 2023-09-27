@@ -1435,7 +1435,7 @@ different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for
 `/help`, because the GitLab Markdown processor doesn't support iframes. It's
 hidden on the documentation site, but is displayed by `/help`.
-> - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode) of the YouTube embedded player. This mode allows users with resticted cookie preferences to view embedded videos.
+> - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode) of the YouTube embedded player. This mode allows users with restricted cookie preferences to view embedded videos.
 
 ## Alert boxes
 

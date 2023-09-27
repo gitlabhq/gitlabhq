@@ -119,6 +119,12 @@ Lint/EmptyFile:
     - 'ee/db/embedding/seeds.rb'
     - 'ee/db/geo/seeds.rb'
 
+# This file has a lot of these, and how we name classes here is essential for how we
+# implement migration versions
+Naming/ClassAndModuleCamelCase:
+  Exclude:
+    - 'lib/gitlab/database/migration.rb'
+
 # This cop checks whether some constant value isn't a
 # mutable literal (e.g. array or hash).
 Style/MutableConstant:

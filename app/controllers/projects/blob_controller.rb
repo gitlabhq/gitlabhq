@@ -165,7 +165,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     @ref_type = ref_type
 
-    if @ref_type == ExtractsRef::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
+    if @ref_type == ExtractsRef::RefExtractor::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
       branch = @project.repository.find_branch(@ref)
       redirect_to project_blob_path(@project, File.join(branch.target, @path))
     end

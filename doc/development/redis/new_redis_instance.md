@@ -202,44 +202,44 @@ MultiStore implements read and write Redis commands separately.
 - `smembers`
 - `scard`
 
-- 'exists'
-- 'exists?'
-- 'get'
-- 'hexists'
-- 'hget'
-- 'hgetall'
-- 'hlen'
-- 'hmget'
-- 'hscan_each'
-- 'mapped_hmget'
-- 'mget'
-- 'scan_each'
-- 'scard'
-- 'sismember'
-- 'smembers'
-- 'sscan'
-- 'sscan_each'
-- 'ttl'
-- 'zscan_each'
+- `exists`
+- `exists?`
+- `get`
+- `hexists`
+- `hget`
+- `hgetall`
+- `hlen`
+- `hmget`
+- `hscan_each`
+- `mapped_hmget`
+- `mget`
+- `scan_each`
+- `scard`
+- `sismember`
+- `smembers`
+- `sscan`
+- `sscan_each`
+- `ttl`
+- `zscan_each`
 
 ##### Write commands
 
-- 'del'
-- 'eval'
-- 'expire'
-- 'flushdb'
-- 'hdel'
-- 'hset'
-- 'incr'
-- 'incrby'
-- 'mapped_hmset'
-- 'rpush'
-- 'sadd'
-- 'set'
-- 'setex'
-- 'setnx'
-- 'srem'
-- 'unlink'
+- `del`
+- `eval`
+- `expire`
+- `flushdb`
+- `hdel`
+- `hset`
+- `incr`
+- `incrby`
+- `mapped_hmset`
+- `rpush`
+- `sadd`
+- `set`
+- `setex`
+- `setnx`
+- `srem`
+- `unlink`
 
 ##### `pipelined` commands
 

@@ -4,7 +4,6 @@ module Snippets::BlobsActions
   extend ActiveSupport::Concern
 
   include Gitlab::Utils::StrongMemoize
-  include ExtractsRef
   include Snippets::SendBlob
 
   included do
@@ -19,20 +18,14 @@ module Snippets::BlobsActions
 
   private
 
-  def repository_container
-    snippet
-  end
-
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def blob
-    assign_ref_vars
+    ref_extractor = ExtractsRef::RefExtractor.new(snippet, params.permit(:id, :ref, :path, :ref_type))
+    ref_extractor.extract!
+    return unless ref_extractor.commit
 
-    return unless @commit
-
-    @repo.blob_at(@commit.id, @path)
+    snippet.repository.blob_at(ref_extractor.commit.id, ref_extractor.path)
   end
   strong_memoize_attr :blob
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def ensure_blob
     render_404 unless blob

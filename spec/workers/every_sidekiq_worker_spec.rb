@@ -198,7 +198,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Database::LockTablesWorker' => false,
         'Database::BatchedBackgroundMigration::CiExecutionWorker' => 0,
         'Database::BatchedBackgroundMigration::MainExecutionWorker' => 0,
-        'DeleteContainerRepositoryWorker' => 3,
         'DeleteDiffFilesWorker' => 3,
         'DeleteMergedBranchesWorker' => 3,
         'DeleteStoredFilesWorker' => 3,

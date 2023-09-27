@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ExtractsPath do
+RSpec.describe ExtractsPath, feature_category: :source_code_management do
   include described_class
   include RepoHelpers
   include Gitlab::Routing
@@ -215,7 +215,7 @@ RSpec.describe ExtractsPath do
     end
 
     it 'raises an error if there are no matching refs' do
-      expect { extract_ref_without_atom('foo.atom') }.to raise_error(ExtractsRef::InvalidPathError)
+      expect { extract_ref_without_atom('foo.atom') }.to raise_error(ExtractsPath::InvalidPathError)
     end
   end
 end

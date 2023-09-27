@@ -29,6 +29,7 @@ describe('BulkImportsHistoryApp', () => {
       source_full_path: 'top-level-group-12',
       destination_full_path: 'h5bp/top-level-group-12',
       destination_name: 'top-level-group-12',
+      destination_slug: 'top-level-group-12',
       destination_namespace: 'h5bp',
       created_at: '2021-07-08T10:03:44.743Z',
       failures: [],
@@ -40,6 +41,7 @@ describe('BulkImportsHistoryApp', () => {
       entity_type: 'project',
       source_full_path: 'autodevops-demo',
       destination_name: 'autodevops-demo',
+      destination_slug: 'autodevops-demo',
       destination_full_path: 'some-group/autodevops-demo',
       destination_namespace: 'flightjs',
       parent_id: null,
@@ -173,7 +175,7 @@ describe('BulkImportsHistoryApp', () => {
     expect(findLocalStorageSync().props('value')).toBe(NEW_PAGE_SIZE);
   });
 
-  it('renders correct url for destination group when relative_url is empty', async () => {
+  it('renders link to destination_full_path for destination group', async () => {
     createComponent({ shallow: false });
     await axios.waitForAll();
 
@@ -182,14 +184,17 @@ describe('BulkImportsHistoryApp', () => {
     );
   });
 
-  it('renders loading icon when destination namespace is not defined', async () => {
+  it('renders destination as text when destination_full_path is not defined', async () => {
     const RESPONSE = [{ ...DUMMY_RESPONSE[0], destination_full_path: null }];
 
     mock.onGet(API_URL).reply(HTTP_STATUS_OK, RESPONSE, DEFAULT_HEADERS);
     createComponent({ shallow: false });
     await axios.waitForAll();
 
-    expect(wrapper.find('tbody tr').findComponent(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.find('tbody tr a').exists()).toBe(false);
+    expect(wrapper.find('tbody tr span').text()).toBe(
+      `${DUMMY_RESPONSE[0].destination_namespace}/${DUMMY_RESPONSE[0].destination_slug}/`,
+    );
   });
 
   it('adds slash to group urls', async () => {

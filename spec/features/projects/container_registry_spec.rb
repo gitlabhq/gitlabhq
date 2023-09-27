@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Container Registry', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Container Registry', :js, feature_category: :container_registry do
   include_context 'container registry tags'
 
   let(:user) { create(:user) }
@@ -75,7 +75,6 @@ RSpec.describe 'Container Registry', :js, feature_category: :groups_and_projects
       visit_container_registry
 
       expect_any_instance_of(ContainerRepository).to receive(:delete_scheduled!).and_call_original
-      expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async)
 
       find('[title="Remove repository"]').click
       expect(find('.modal .modal-title')).to have_content _('Delete image repository?')

@@ -1,42 +1,45 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'Composer user type' do |user_type, add_member|
+RSpec.shared_context 'Composer user type' do |member_role: nil|
   before do
-    group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
-    project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    if member_role
+      group.send("add_#{member_role}", user)
+      project.send("add_#{member_role}", user)
+    end
   end
 end
 
-RSpec.shared_examples 'Composer package index with version' do |schema_path|
+RSpec.shared_examples 'Composer package index with version' do |schema_path, expected_status|
   it 'returns the package index' do
     subject
 
-    expect(response).to have_gitlab_http_status(status)
+    expect(response).to have_gitlab_http_status(expected_status)
 
-    if status == :success
+    if expected_status == :success
       expect(response).to match_response_schema(schema_path)
       expect(json_response).to eq presenter.root
     end
   end
 end
 
-RSpec.shared_examples 'Composer package index' do |user_type, status, add_member, include_package|
-  include_context 'Composer user type', user_type, add_member do
-    let(:expected_packages) { include_package == :include_package ? [package] : [] }
-    let(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages ) }
+RSpec.shared_examples 'Composer package index' do |member_role:, expected_status:, package_returned:|
+  include_context 'Composer user type', member_role: member_role do
+    let_it_be(:expected_packages) { package_returned ? [package] : [] }
+    let_it_be(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages ) }
 
-    it_behaves_like 'Composer package index with version', 'public_api/v4/packages/composer/index'
+    it_behaves_like 'Composer package index with version', 'public_api/v4/packages/composer/index', expected_status
 
     context 'with version 2' do
+      let_it_be(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages, true ) }
       let(:headers) { super().merge('User-Agent' => 'Composer/2.0.9 (Darwin; 19.6.0; PHP 7.4.8; cURL 7.71.1)') }
 
-      it_behaves_like 'Composer package index with version', 'public_api/v4/packages/composer/index_v2'
+      it_behaves_like 'Composer package index with version', 'public_api/v4/packages/composer/index_v2', expected_status
     end
   end
 end
 
-RSpec.shared_examples 'Composer empty provider index' do |user_type, status, add_member = true|
-  include_context 'Composer user type', user_type, add_member do
+RSpec.shared_examples 'Composer empty provider index' do |member_role:, expected_status:|
+  include_context 'Composer user type', member_role: member_role do
     it 'returns the package index' do
       subject
 
@@ -47,24 +50,24 @@ RSpec.shared_examples 'Composer empty provider index' do |user_type, status, add
   end
 end
 
-RSpec.shared_examples 'Composer provider index' do |user_type, status, add_member = true|
-  include_context 'Composer user type', user_type, add_member do
+RSpec.shared_examples 'Composer provider index' do |member_role:, expected_status:|
+  include_context 'Composer user type', member_role: member_role do
     it 'returns the package index' do
       subject
 
-      expect(response).to have_gitlab_http_status(status)
+      expect(response).to have_gitlab_http_status(expected_status)
       expect(response).to match_response_schema('public_api/v4/packages/composer/provider')
       expect(json_response['providers']).to include(package.name)
     end
   end
 end
 
-RSpec.shared_examples 'Composer package api request' do |user_type, status, add_member = true|
-  include_context 'Composer user type', user_type, add_member do
+RSpec.shared_examples 'Composer package api request' do |member_role:, expected_status:|
+  include_context 'Composer user type', member_role: member_role do
     it 'returns the package index' do
       subject
 
-      expect(response).to have_gitlab_http_status(status)
+      expect(response).to have_gitlab_http_status(expected_status)
       expect(response).to match_response_schema('public_api/v4/packages/composer/package')
       expect(json_response['packages']).to include(package.name)
       expect(json_response['packages'][package.name]).to include(package.version)
@@ -72,18 +75,13 @@ RSpec.shared_examples 'Composer package api request' do |user_type, status, add_
   end
 end
 
-RSpec.shared_examples 'Composer package creation' do |user_type, status, add_member = true|
-  context "for user type #{user_type}" do
-    before do
-      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
-    end
-
+RSpec.shared_examples 'Composer package creation' do |expected_status:, member_role: nil|
+  include_context 'Composer user type', member_role: member_role do
     it 'creates package files' do
       expect { subject }
           .to change { project.packages.composer.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(status)
+      expect(response).to have_gitlab_http_status(expected_status)
     end
 
     it_behaves_like 'a package tracking event', described_class.name, 'push_package'
@@ -100,42 +98,38 @@ RSpec.shared_examples 'Composer package creation' do |user_type, status, add_mem
   end
 end
 
-RSpec.shared_examples 'process Composer api request' do |user_type, status, add_member = true|
-  context "for user type #{user_type}" do
-    before do
-      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
-    end
-
-    it_behaves_like 'returning response status', status
-    it_behaves_like 'bumping the package last downloaded at field' if status == :success
+RSpec.shared_examples 'process Composer api request' do |expected_status:, member_role: nil, **extra|
+  include_context 'Composer user type', member_role: member_role do
+    it_behaves_like 'returning response status', expected_status
+    it_behaves_like 'bumping the package last downloaded at field' if expected_status == :success
   end
 end
 
-RSpec.shared_context 'Composer auth headers' do |user_role, user_token, auth_method = :token|
-  let(:token) { user_token ? personal_access_token.token : 'wrong' }
-
+RSpec.shared_context 'Composer auth headers' do |token_type:, valid_token:, auth_method: :token|
   let(:headers) do
-    if user_role == :anonymous
-      {}
-    elsif auth_method == :token
-      { 'Private-Token' => token }
+    if token_type == :user
+      token = valid_token ? personal_access_token.token : 'wrong'
+      auth_method == :token ? { 'Private-Token' => token } : basic_auth_header(user.username, token)
+    elsif token_type == :job && valid_token
+      auth_method == :token ? { 'Job-Token' => job.token } : job_basic_auth_header(job)
     else
-      basic_auth_header(user.username, token)
+      {} # Anonymous user
     end
   end
 end
 
-RSpec.shared_context 'Composer api project access' do |project_visibility_level, user_role, user_token, auth_method|
-  include_context 'Composer auth headers', user_role, user_token, auth_method do
+RSpec.shared_context 'Composer api project access' do |auth_method:, project_visibility_level:, token_type:,
+                                                       valid_token: true|
+  include_context 'Composer auth headers', auth_method: auth_method, token_type: token_type, valid_token: valid_token do
     before do
       project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
     end
   end
 end
 
-RSpec.shared_context 'Composer api group access' do |project_visibility_level, user_role, user_token|
-  include_context 'Composer auth headers', user_role, user_token do
+RSpec.shared_context 'Composer api group access' do |auth_method:, project_visibility_level:, token_type:,
+                                                     valid_token: true|
+  include_context 'Composer auth headers', auth_method: auth_method, token_type: token_type, valid_token: valid_token do
     before do
       project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
       group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
@@ -148,13 +142,13 @@ RSpec.shared_examples 'rejects Composer access with unknown group id' do
     let(:group) { double(id: non_existing_record_id) }
 
     context 'as anonymous' do
-      it_behaves_like 'process Composer api request', :anonymous, :not_found
+      it_behaves_like 'process Composer api request', expected_status: :unauthorized
     end
 
     context 'as authenticated user' do
       subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
-      it_behaves_like 'process Composer api request', :anonymous, :not_found
+      it_behaves_like 'process Composer api request', expected_status: :not_found
     end
   end
 end
@@ -164,13 +158,13 @@ RSpec.shared_examples 'rejects Composer access with unknown project id' do
     let(:project) { double(id: non_existing_record_id) }
 
     context 'as anonymous' do
-      it_behaves_like 'process Composer api request', :anonymous, :unauthorized
+      it_behaves_like 'process Composer api request', expected_status: :unauthorized
     end
 
     context 'as authenticated user' do
       subject { get api(url), params: params, headers: basic_auth_header(user.username, personal_access_token.token) }
 
-      it_behaves_like 'process Composer api request', :anonymous, :not_found
+      it_behaves_like 'process Composer api request', expected_status: :not_found
     end
   end
 end
@@ -191,7 +185,7 @@ RSpec.shared_examples 'Composer access with deploy tokens' do
       context 'invalid token' do
         let(:headers) { basic_auth_header(deploy_token.username, 'bar') }
 
-        it_behaves_like 'returning response status', :not_found
+        it_behaves_like 'returning response status', :unauthorized
       end
     end
   end

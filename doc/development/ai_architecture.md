@@ -96,7 +96,7 @@ The following table documents functionality that Code Suggestions offers today, 
 | Topic | Details | Where this happens today | Where this will happen going forward |
 | ----- | ------  | --------------           | ------------------                   |
 | Request processing | |                     |                                      |
-|                    | Receives requests from IDEs (VSCode, GitLab WebIDE, MS Visual Studio, IntelliJ, JetBrains, VIM, Emacs, Sublime), including code before and after the cursor | GitLab Rails | GitLab Rails |
+|                    | Receives requests from IDEs (VS Code, GitLab WebIDE, MS Visual Studio, IntelliJ, JetBrains, VIM, Emacs, Sublime), including code before and after the cursor | GitLab Rails | GitLab Rails |
 |                    | Authenticates the current user, verifies they are authorized to use Code Suggestions for this project | GitLab Rails + AI Gateway | GitLab Rails + AI Gateway |
 |                    | Preprocesses the request to add context, such as including imports via TreeSitter | AI Gateway | Undecided |
 |                    | Routes the request to the AI Provider | AI Gateway | AI Gateway |

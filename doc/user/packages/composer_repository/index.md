@@ -134,6 +134,7 @@ Prerequisites:
     with the scope set to, at minimum, `api`.
   - A [deploy token](../../project/deploy_tokens/index.md)
     with the scope set to `read_package_registry`, `write_package_registry`, or both.
+  - A [CI/CD Job token](../../../ci/jobs/ci_job_token.md)
 
 To install a package:
 
@@ -216,6 +217,26 @@ To install a package:
        "<DOMAIN-NAME>": {
          "username": "<deploy_token_username>",
          "token": "<deploy_token>",
+       ...
+     }
+   }
+   ```
+
+   Using a CI/CD job token:
+
+   ```shell
+   composer config gitlab-token.<DOMAIN-NAME> gitlab-ci-token ${CI_JOB_TOKEN}
+   ```
+
+   Result in the `auth.json` file:
+
+   ```json
+   {
+     ...
+     "gitlab-token": {
+       "<DOMAIN-NAME>": {
+         "username": "gitlab-ci-token",
+         "token": "<ci-job-token>",
        ...
      }
    }

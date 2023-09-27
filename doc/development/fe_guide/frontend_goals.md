@@ -16,7 +16,7 @@ Currently, GitLab mostly follows Rails architecture and Rails routing which mean
 - mounting Vue applications if we have any;
 - fetching data for these applications
 
-Ideally, we should reduce the number of times user needs to go through this long process. This would be possible with converting GitLab into a single-page application but this would require significant refactoring and is not an achieavable short/mid-term goal.
+Ideally, we should reduce the number of times user needs to go through this long process. This would be possible with converting GitLab into a single-page application but this would require significant refactoring and is not an achievable short/mid-term goal.
 
 The realistic goal is to move to _multiple SPAs_ experience where we define the _clusters_ of pages that form the user flow, and move this cluster from Rails routing to a single-page application with client-side routing. This way, we can load all the relevant context from HAML only once, and fetch all the additional data from the API depending on the route. An example of a cluster could be the following pages:
 

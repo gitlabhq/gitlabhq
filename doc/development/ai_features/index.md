@@ -80,7 +80,7 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 
 For features that use the embedding database, additional setup is needed.
 
-1. Enable [pgvector](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
+1. Enable [`pgvector`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
 1. Enable the embedding database in GDK
 
    ```shell
@@ -159,7 +159,7 @@ we can add a few selected embeddings to the table from a pre-generated fixture.
 For instance, to test that the question "How can I reset my password" is correctly
 retrieving the relevant embeddings and answered, we can extract the top N closet embeddings
 to the question into a fixture and only restore a small number of embeddings quickly.
-To faciliate an extraction process, a Rake task been written.
+To facilitate an extraction process, a Rake task been written.
 You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
 
 ```shell
@@ -200,6 +200,16 @@ context 'when asking about how to use GitLab', :ai_embedding_fixtures do
 end
 ```
 
+### Tips for local development
+
+1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
+1. Alternatively, bypass Sidekiq entirely and run the chat service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs.
+
+```shell
+export LLM_DEVELOPMENT_SYNC_EXECUTION=1
+gdk start
+```
+
 ### Working with GitLab Duo Chat
 
 View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
@@ -218,7 +228,7 @@ The endpoints are:
 
 These endpoints are only for prototyping, not for rolling features out to customers.
 
-In your local dev environment, you can experiment with these endpoints locally with the feature flag enabled:
+In your local development environment, you can experiment with these endpoints locally with the feature flag enabled:
 
 ```ruby
 Feature.enable(:ai_experimentation_api)
@@ -599,7 +609,7 @@ Gitlab::Llm::Anthropic::Client.new(user)
 
 ### Monitoring Ai Actions
 
-- Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under "SLI Detail: llm_completion".
+- Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under **SLI Detail: `llm_completion`**.
 - Spent tokens, usage of each Ai feature and other statistics can be found on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features).
 
 ### Add Ai Action to GraphQL

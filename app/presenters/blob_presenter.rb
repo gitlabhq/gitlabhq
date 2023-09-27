@@ -193,7 +193,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   def commit_id
     # If `ref_type` is present the commit_id will include the ref qualifier e.g. `refs/heads/`.
     # We only accept/return unqualified refs so we need to remove the qualifier from the `commit_id`.
-    ExtractsRef.unqualify_ref(blob.commit_id, ref_type)
+    ExtractsRef::RefExtractor.unqualify_ref(blob.commit_id, ref_type)
   end
 
   def ref_qualified_path

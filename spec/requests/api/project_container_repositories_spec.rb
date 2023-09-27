@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectContainerRepositories, feature_category: :package_registry do
+RSpec.describe API::ProjectContainerRepositories, feature_category: :container_registry do
   include ExclusiveLeaseHelpers
 
   let_it_be(:project) { create(:project, :private) }
@@ -142,7 +142,6 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :package_reg
           let(:api_user) { maintainer }
 
           it 'marks the repository as delete_scheduled' do
-            expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async)
             expect { subject }.to change { root_repository.reload.status }.from(nil).to('delete_scheduled')
 
             expect(response).to have_gitlab_http_status(:accepted)

@@ -168,13 +168,22 @@ export default {
       }
     },
 
-    getFullDestinationUrl(params) {
+    destinationLinkHref(params) {
       return joinPaths(gon.relative_url_root || '', '/', params.destination_full_path);
     },
 
-    getPresentationUrl(item) {
+    pathWithSuffix(path, item) {
       const suffix = item.entity_type === WORKSPACE_GROUP ? '/' : '';
-      return `${item.destination_full_path}${suffix}`;
+      return `${path}${suffix}`;
+    },
+
+    destinationLinkText(item) {
+      return this.pathWithSuffix(item.destination_full_path, item);
+    },
+
+    destinationText(item) {
+      const fullPath = joinPaths(item.destination_namespace, item.destination_slug);
+      return this.pathWithSuffix(fullPath, item);
     },
 
     getEntityTooltip(item) {
@@ -223,19 +232,21 @@ export default {
         class="gl-w-full"
       >
         <template #cell(destination_name)="{ item }">
-          <template v-if="item.destination_full_path">
-            <gl-icon
-              v-gl-tooltip
-              :name="item.entity_type"
-              :title="getEntityTooltip(item)"
-              :aria-label="getEntityTooltip(item)"
-              class="gl-text-gray-500"
-            />
-            <gl-link :href="getFullDestinationUrl(item)" target="_blank">
-              {{ getPresentationUrl(item) }}
-            </gl-link>
-          </template>
-          <gl-loading-icon v-else inline />
+          <gl-icon
+            v-gl-tooltip
+            :name="item.entity_type"
+            :title="getEntityTooltip(item)"
+            :aria-label="getEntityTooltip(item)"
+            class="gl-text-gray-500"
+          />
+          <gl-link
+            v-if="item.destination_full_path"
+            :href="destinationLinkHref(item)"
+            target="_blank"
+          >
+            {{ destinationLinkText(item) }}
+          </gl-link>
+          <span v-else>{{ destinationText(item) }}</span>
         </template>
         <template #cell(created_at)="{ value }">
           <time-ago :time="value" />

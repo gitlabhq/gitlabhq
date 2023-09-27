@@ -130,6 +130,40 @@ RSpec.describe Gitlab::VersionInfo, feature_category: :shared do
     end
   end
 
+  describe '.parse_from_milestone' do
+    subject(:milestone) { described_class.parse_from_milestone(milestone_str) }
+
+    context 'when the milestone string is valid' do
+      let(:milestone_str) { '14.7' }
+
+      it "creates a #{described_class.class} with patch version zero" do
+        expect(milestone.major).to eq 14
+        expect(milestone.minor).to eq 7
+        expect(milestone.patch).to eq 0
+      end
+    end
+
+    context 'when the milestone string is not valid' do
+      let(:milestone_str) { 'foo' }
+
+      it 'raises InvalidMilestoneError' do
+        expect do
+          milestone
+        end.to raise_error "#{described_class}::InvalidMilestoneError".constantize
+      end
+    end
+
+    context 'when the milestone string is too long' do
+      let(:milestone_str) { 'a' * 129 }
+
+      it 'raises InvalidMilestoneError' do
+        expect do
+          milestone
+        end.to raise_error "#{described_class}::InvalidMilestoneError".constantize
+      end
+    end
+  end
+
   describe '.to_s' do
     it { expect(@v1_0_0.to_s).to eq("1.0.0") }
     it { expect(@v1_0_1_rc1.to_s).to eq("1.0.1-rc1") }

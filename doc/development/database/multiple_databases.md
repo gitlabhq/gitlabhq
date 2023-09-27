@@ -732,7 +732,7 @@ to limit the modes where tests can run, and skip them on any other modes.
 | `skip_if_multiple_databases_are_setup(:ci)` | Only on **single-db**   |
 | `skip_if_multiple_databases_not_setup(:ci)` | On **single-db-ci-connection** and **multiple databases** |
 
-## Testing for multiple databases, including main_clusterwide
+## Testing for multiple databases, including `main_clusterwide`
 
 By default, we do not setup the `main_clusterwide` connection in CI pipelines. However, if you add the label `~"pipeline:run-clusterwide-db"`, the pipelines will run with 3 connections, `main`, `ci` and `main_clusterwide`.
 

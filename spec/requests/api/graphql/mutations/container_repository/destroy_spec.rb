@@ -36,8 +36,6 @@ RSpec.describe 'Destroying a container repository', feature_category: :container
     it 'marks the container repository as delete_scheduled' do
       expect(::Packages::CreateEventService)
           .to receive(:new).with(nil, user, event_name: :delete_repository, scope: :container).and_call_original
-      expect(DeleteContainerRepositoryWorker)
-        .not_to receive(:perform_async)
 
       subject
 
@@ -50,9 +48,6 @@ RSpec.describe 'Destroying a container repository', feature_category: :container
 
   shared_examples 'denying the mutation request' do
     it 'does not destroy the container repository' do
-      expect(DeleteContainerRepositoryWorker)
-        .not_to receive(:perform_async).with(user.id, container_repository.id)
-
       subject
 
       expect(mutation_response).to be_nil

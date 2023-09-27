@@ -154,7 +154,7 @@ Every feature added to custom roles should have minimal abilities. For most feat
 - View-related abilities under `read_*`. For example, viewing a list or detail.
 - Object updates under `admin_*`. For example, updating an object, adding assignees or closing it that object. Usually, a role that enables `admin_` has to have also `read_` abilities enabled. This is defined in `requirement` option in the `ALL_CUSTOMIZABLE_PERMISSIONS` hash on `MemberRole` model.
 
-There might be features that require additional abilities but try to minimalize those. You can always ask members of the Authentication and Authorization group for their opinion or help.
+There might be features that require additional abilities but try to minimize those. You can always ask members of the Authentication and Authorization group for their opinion or help.
 
 This is also where your work should begin. Take all the abilities for the feature you work on, and consolidate those abilities into `read_`, `admin_`, or additional abilities if necessary.
 
@@ -196,7 +196,7 @@ Examples of merge requests adding new abilities to custom roles:
 
 - [Read code](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256)
 - [Read vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114734)
-- [Admin vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) - this is the newest MR implementing a new custom role ability. Some changes from the previous MRs are not neccessary anymore (eg. change of the Preloader query or adding a method to `User` model).
+- [Admin vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) - this is the newest MR implementing a new custom role ability. Some changes from the previous MRs are not necessary anymore (such as a change of the Preloader query or adding a method to `User` model).
 
 You should make sure a new custom roles ability is under a feature flag.
 

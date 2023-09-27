@@ -1237,7 +1237,7 @@ You can download any older version of Firefox from the releases FTP server, <htt
 
 ## Snapshots
 
-[Jest snapshot tests](https://jestjs.io/docs/snapshot-testing) are a useful way to prevent unexpected changes to the HTML output of a given component. They should **only** be used when other testing methods (such as asserting elements with `vue-tests-utils`) do not cover the required usecase. To use them within GitLab, there are a few guidelines that should be highlighted:
+[Jest snapshot tests](https://jestjs.io/docs/snapshot-testing) are a useful way to prevent unexpected changes to the HTML output of a given component. They should **only** be used when other testing methods (such as asserting elements with `vue-tests-utils`) do not cover the required use case. To use them within GitLab, there are a few guidelines that should be highlighted:
 
 - Treat snapshots as code
 - Don't think of a snapshot file as a black box
@@ -1289,10 +1289,10 @@ Find all the details in Jests official documentation [https://jestjs.io/docs/sna
 
 ### Examples
 
-As you can see, the cons of snapshot tests far outweight the pros in general. To illustrate this better, this section will show a few examples of when you might be tempted to
+As you can see, the cons of snapshot tests far outweigh the pros in general. To illustrate this better, this section will show a few examples of when you might be tempted to
 use snapshot testing and why they are not good patterns.
 
-#### Example #1 - Element visiblity
+#### Example #1 - Element visibility
 
 When testing elements visibility, favour using `vue-tests-utils (VTU)` to find a given component and then a basic `.exists()` method call on the VTU wrapper. This provides better readability and more resilient testing. If you look at the examples below, notice how the assertions on the snapshots do not tell you what you are expecting to see. We are relying entirely on `it` description to give us context and on the assumption that the snapshot has captured the desired behavior.
 

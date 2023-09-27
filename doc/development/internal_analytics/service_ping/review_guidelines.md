@@ -66,7 +66,7 @@ are regular backend changes.
   - Check the file location. Consider the time frame, and if the file should be under `ee`.
   - Check the tiers.
 - If a metric was changed or removed: Make sure the MR author notified the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning those groups in a comment on the issue for the MR and all of these groups have acknowledged the removal.
-- Make sure that the new metric is available in Service Ping payload, by running: `Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values).dig(*'key_path'.split('.'))` with `key_path` substituted by the new metric's key_path.
+- Make sure that the new metric is available in Service Ping payload, by running: `Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values).dig(*'key_path'.split('.'))` with `key_path` substituted by the new metric's `key_path`.
 - Metrics instrumentations
   - Recommend using metrics instrumentation for new metrics, [if possible](metrics_instrumentation.md#support-for-instrumentation-classes).
 - Approve the MR, and relabel the MR with `~"analytics instrumentation::approved"`.

@@ -1,32 +1,22 @@
 # frozen_string_literal: true
 
+# TOOD: https://gitlab.com/gitlab-org/gitlab/-/issues/425379
+# WARNING: This module has been deprecated.
+# The module solely exists because ExtractsPath depends on this module (ExtractsPath is the only user.)
+# ExtractsRef::RefExtractor class is a refactored version of this module and provides
+# the same functionalities. You should use the class instead.
+#
 # Module providing methods for dealing with separating a tree-ish string and a
 # file path string when combined in a request parameter
 # Can be extended for different types of repository object, e.g. Project or Snippet
 module ExtractsRef
-  InvalidPathError = Class.new(StandardError)
-  BRANCH_REF_TYPE = 'heads'
-  TAG_REF_TYPE = 'tags'
-  REF_TYPES = [BRANCH_REF_TYPE, TAG_REF_TYPE].freeze
+  InvalidPathError = ExtractsRef::RefExtractor::InvalidPathError
+  BRANCH_REF_TYPE = ExtractsRef::RefExtractor::BRANCH_REF_TYPE
+  TAG_REF_TYPE = ExtractsRef::RefExtractor::TAG_REF_TYPE
+  REF_TYPES = ExtractsRef::RefExtractor::REF_TYPES
 
   def self.ref_type(type)
-    return unless REF_TYPES.include?(type&.downcase)
-
-    type.downcase
-  end
-
-  def self.qualify_ref(ref, type)
-    validated_type = ref_type(type)
-    return ref unless validated_type
-
-    %(refs/#{validated_type}/#{ref})
-  end
-
-  def self.unqualify_ref(ref, type)
-    validated_type = ref_type(type)
-    return ref unless validated_type
-
-    ref.sub(%r{^refs/#{validated_type}/}, '')
+    ExtractsRef::RefExtractor.ref_type(type)
   end
 
   # Given a string containing both a Git tree-ish, such as a branch or tag, and
@@ -91,7 +81,7 @@ module ExtractsRef
     return unless @ref.present?
 
     @commit = if ref_type
-                @fully_qualified_ref = ExtractsRef.qualify_ref(@ref, ref_type)
+                @fully_qualified_ref = ExtractsRef::RefExtractor.qualify_ref(@ref, ref_type)
                 @repo.commit(@fully_qualified_ref)
               else
                 @repo.commit(@ref)

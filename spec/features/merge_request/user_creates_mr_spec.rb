@@ -89,77 +89,34 @@ RSpec.describe 'Merge request > User creates MR', feature_category: :code_review
     end
   end
 
-  context 'with the visible_label_selection_on_metadata feature flag enabled' do
-    before do
-      stub_feature_flags(visible_label_selection_on_metadata: true)
+  context 'non-fork merge request' do
+    include_context 'merge request create context'
+    it_behaves_like 'a creatable merge request with visible selected labels'
+  end
+
+  context 'from a forked project' do
+    let(:canonical_project) { create(:project, :public, :repository) }
+
+    let(:source_project) do
+      fork_project(canonical_project, user,
+        repository: true,
+        namespace: user.namespace)
     end
 
-    context 'non-fork merge request' do
+    context 'to canonical project' do
       include_context 'merge request create context'
       it_behaves_like 'a creatable merge request with visible selected labels'
     end
 
-    context 'from a forked project' do
-      let(:canonical_project) { create(:project, :public, :repository) }
-
-      let(:source_project) do
+    context 'to another forked project' do
+      let(:target_project) do
         fork_project(canonical_project, user,
           repository: true,
           namespace: user.namespace)
       end
 
-      context 'to canonical project' do
-        include_context 'merge request create context'
-        it_behaves_like 'a creatable merge request with visible selected labels'
-      end
-
-      context 'to another forked project' do
-        let(:target_project) do
-          fork_project(canonical_project, user,
-            repository: true,
-            namespace: user.namespace)
-        end
-
-        include_context 'merge request create context'
-        it_behaves_like 'a creatable merge request with visible selected labels'
-      end
-    end
-  end
-
-  context 'with the visible_label_selection_on_metadata feature flag disabled' do
-    before do
-      stub_feature_flags(visible_label_selection_on_metadata: false)
-    end
-
-    context 'non-fork merge request' do
       include_context 'merge request create context'
-      it_behaves_like 'a creatable merge request'
-    end
-
-    context 'from a forked project' do
-      let(:canonical_project) { create(:project, :public, :repository) }
-
-      let(:source_project) do
-        fork_project(canonical_project, user,
-          repository: true,
-          namespace: user.namespace)
-      end
-
-      context 'to canonical project' do
-        include_context 'merge request create context'
-        it_behaves_like 'a creatable merge request'
-      end
-
-      context 'to another forked project' do
-        let(:target_project) do
-          fork_project(canonical_project, user,
-            repository: true,
-            namespace: user.namespace)
-        end
-
-        include_context 'merge request create context'
-        it_behaves_like 'a creatable merge request'
-      end
+      it_behaves_like 'a creatable merge request with visible selected labels'
     end
   end
 

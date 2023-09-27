@@ -1135,7 +1135,7 @@ move or copy a hosted version of the rendered HTML `spec.html` version to anothe
 is a Markdown specification file, in the standard format
 with prose and Markdown + canonical HTML examples.
 
-In the GLFM specification, `spex.txt` only contains the official specifiaction examples from
+In the GLFM specification, `spex.txt` only contains the official specification examples from
 [`glfm_official_specification.md`](#glfm_official_specificationmd). It does not contain
 the internal extension examples from [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd).
 

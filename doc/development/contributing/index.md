@@ -49,7 +49,7 @@ For details, see [the issues workflow](issue_workflow.md).
 To write and test your code, you will use the GitLab Development Kit.
 
 1. [Request access](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks) to the [GitLab Community fork](https://gitlab.com/gitlab-community/meta). Alternatively, you can create your own public fork, but will miss out on the [benefits of the community forks](https://gitlab.com/gitlab-community/meta#why).
-1. Some GitLab projects have a detailed contributing guide located in the README or CONTRIBUTING files in the repo. Reviewing these files before setting up your development environment will help ensure you get off to a good start.
+1. Some GitLab projects have a detailed contributing guide located in the README or CONTRIBUTING files in the repository. Reviewing these files before setting up your development environment will help ensure you get off to a good start.
 1. Do one of the following:
    - To run the development environment locally, download and set up the
      [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).

@@ -27,7 +27,9 @@ On GitLab.com, you cannot override the job timeout for shared runners and must u
 
 To set the maximum job timeout:
 
-1. In a project, go to **Settings > CI/CD > Runners**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
 1. Select your project runner to edit the settings.
 1. Enter a value under **Maximum job timeout**. Must be 10 minutes or more. If not
    defined, the [project's job timeout setting](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
@@ -194,11 +196,13 @@ To change this, you must have the Owner role for the project.
 
 To make a runner pick untagged jobs:
 
-1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
 1. Find the runner you want to pick untagged jobs and make sure it's enabled.
-1. Select the pencil button.
-1. Check the **Run untagged jobs** option.
-1. Select **Save changes** for the changes to take effect.
+1. Select **Edit** (**{pencil}**).
+1. Select the **Run untagged jobs** checkbox.
+1. Select **Save changes**.
 
 NOTE:
 The runner tags list cannot be empty when it's not allowed to pick untagged jobs.
@@ -584,7 +588,7 @@ You can specify the depth of fetching and cloning using `GIT_DEPTH`.
 It can be helpful for repositories with a large number of commits or old, large binaries. The value is
 passed to `git fetch` and `git clone`.
 
-In GitLab 12.0 and later, newly-created projects automatically have a
+Newly-created projects automatically have a
 [default `git depth` value of `50`](../pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
 
 If you use a depth of `1` and have a queue of jobs or retry
@@ -716,7 +720,7 @@ the following stages:
 | Variable                        | Description                                            |
 |---------------------------------|--------------------------------------------------------|
 | `ARTIFACT_DOWNLOAD_ATTEMPTS`    | Number of attempts to download artifacts running a job |
-| `EXECUTOR_JOB_SECTION_ATTEMPTS` | In [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450), the number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
+| `EXECUTOR_JOB_SECTION_ATTEMPTS` | The number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
 | `GET_SOURCES_ATTEMPTS`          | Number of attempts to fetch sources running a job      |
 | `RESTORE_CACHE_ATTEMPTS`        | Number of attempts to restore the cache running a job  |
 
@@ -937,7 +941,7 @@ Prerequisites:
 To automatically rotate runner authentication tokens:
 
 1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**..
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**
 1. Set a **Runners expiration** time for runners, leave empty for no expiration.

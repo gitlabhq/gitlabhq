@@ -13,10 +13,10 @@ class Tree
     @repository = repository
     @sha = sha
     @path = path
-    @ref_type = ExtractsRef.ref_type(ref_type)
+    @ref_type = ExtractsRef::RefExtractor.ref_type(ref_type)
     git_repo = @repository.raw_repository
 
-    ref = ExtractsRef.qualify_ref(@sha, ref_type)
+    ref = ExtractsRef::RefExtractor.qualify_ref(@sha, ref_type)
 
     @entries, @cursor = Gitlab::Git::Tree.where(git_repo, ref, @path, recursive, skip_flat_paths, rescue_not_found,
       pagination_params)

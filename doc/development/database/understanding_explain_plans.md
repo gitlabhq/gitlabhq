@@ -230,7 +230,7 @@ more common ones here.
 
 A full list of all the available nodes and their descriptions can be found in
 the [PostgreSQL source file `plannodes.h`](https://gitlab.com/postgres/postgres/blob/master/src/include/nodes/plannodes.h).
-pgMustard's [EXPLAIN docs](https://www.pgmustard.com/docs/explain) also offer detailed look into nodes and their fields.
+The `pgMustard` [EXPLAIN documentation](https://www.pgmustard.com/docs/explain) also offers detailed look into nodes and their fields.
 
 ### Seq Scan
 

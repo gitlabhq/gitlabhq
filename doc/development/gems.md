@@ -32,7 +32,7 @@ In order to decide whether to extract part of the codebase as a Gem, ask yoursel
 
 If the answer is **Yes** for any of the questions above, you should strongly consider creating a new Gem.
 
-You can always start by creating a new Gem [in the same repo](#in-the-same-repo) and later evaluate whether to migrate it to a separate repository, when it is intended
+You can always start by creating a new Gem [in the same repository](#in-the-same-repo) and later evaluate whether to migrate it to a separate repository, when it is intended
 to be used by a wider community.
 
 WARNING:
@@ -76,9 +76,9 @@ Examples of existing gems:
 **When extracting Gems from existing codebase, put them in `gems/` of the GitLab monorepo**
 
 That gives us the advantages of gems (modular code, quicker to run tests in development).
-and prevents complexity (coordinating changes across repos, new permissions, multiple projects, etc.).
+and prevents complexity (coordinating changes across repositories, new permissions, multiple projects, etc.).
 
-Gems stored in the same repo should be referenced in `Gemfile` with the `path:` syntax.
+Gems stored in the same repository should be referenced in `Gemfile` with the `path:` syntax.
 
 WARNING:
 To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
@@ -188,7 +188,7 @@ and [GitLab CLI](https://gitlab.com/gitlab-org/cli).
 In general, we want to think carefully before doing this as there are
 severe disadvantages.
 
-Gems stored in the external repo MUST be referenced in `Gemfile` with `version` syntax.
+Gems stored in the external repository MUST be referenced in `Gemfile` with `version` syntax.
 They MUST be always published to RubyGems.
 
 ### Examples
@@ -317,7 +317,7 @@ to store them in monorepo:
 
     - We will stop publishing new versions to RubyGems.
     - We will not pull from RubyGems already published versions since there might
-      be applications depedent on those.
+      be applications dependent on those.
     - We will move those gems to `gems/`.
     - Those Gems will be referenced via `path:` in `Gemfile`.
 

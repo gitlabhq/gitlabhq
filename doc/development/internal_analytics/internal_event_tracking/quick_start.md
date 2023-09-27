@@ -111,7 +111,7 @@ InternalEvents.track_event('i_code_review_user_apply_suggestion');
 
 #### Data-track attribute
 
-This attribute ensures that if we want to track GitLab internal events for a button, we do not need to write JavaScript code on Click handler. Instead, we can just add a data-event-tracking attribute with event value and it should work. This can also be used with haml views.
+This attribute ensures that if we want to track GitLab internal events for a button, we do not need to write JavaScript code on Click handler. Instead, we can just add a data-event-tracking attribute with event value and it should work. This can also be used with HAML views.
 
 ```html
   <gl-button

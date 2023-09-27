@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::ContainerRepositories::Destroy do
+RSpec.describe Mutations::ContainerRepositories::Destroy, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:container_repository) { create(:container_repository) }
@@ -23,7 +23,6 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
       it 'marks the repository as delete_scheduled' do
         expect(::Packages::CreateEventService)
           .to receive(:new).with(nil, user, event_name: :delete_repository, scope: :container).and_call_original
-        expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async)
 
         subject
         expect(container_repository.reload.delete_scheduled?).to be true
@@ -32,9 +31,6 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
 
     shared_examples 'denying access to container respository' do
       it 'raises an error' do
-        expect(DeleteContainerRepositoryWorker)
-          .not_to receive(:perform_async).with(user.id, container_repository.id)
-
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end

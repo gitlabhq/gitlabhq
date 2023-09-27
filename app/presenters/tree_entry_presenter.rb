@@ -19,7 +19,7 @@ class TreeEntryPresenter < Gitlab::View::Presenter::Delegated
     # If `ref_type` is present the commit_id will include the ref qualifier e.g. `refs/heads/`.
     # We only accept/return unqualified refs so we need to remove the qualifier from the `commit_id`.
 
-    commit_id = ExtractsRef.unqualify_ref(tree.commit_id, ref_type)
+    commit_id = ExtractsRef::RefExtractor.unqualify_ref(tree.commit_id, ref_type)
 
     File.join(commit_id, tree.path)
   end

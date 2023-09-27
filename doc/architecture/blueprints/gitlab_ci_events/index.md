@@ -46,6 +46,10 @@ Events" blueprint is about making it possible to:
 
 ## Proposal
 
+### Decisions
+
+- [001: Use hierarchical events](decisions/001_hierarchical_events.md)
+
 ### Requirements
 
 Any accepted proposal should take in consideration the following requirements and characteristics:

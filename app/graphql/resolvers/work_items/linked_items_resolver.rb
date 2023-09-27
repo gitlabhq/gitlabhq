@@ -28,7 +28,7 @@ module Resolvers
       private
 
       def related_work_items(type)
-        return [] unless work_item.project.linked_work_items_feature_flag_enabled?
+        return [] unless work_item.resource_parent.linked_work_items_feature_flag_enabled?
 
         work_item.linked_work_items(current_user, preload: { project: [:project_feature, :group] }, link_type: type)
       end

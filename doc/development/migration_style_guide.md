@@ -422,7 +422,7 @@ While the above should be considered a hard rule, it is a best practice to try t
 
 To update a migration timestamp:
 
-1. Migrate down the migration for the `ci` and `main` DBs:
+1. Migrate down the migration for the `ci` and `main` databases:
 
    ```ruby
    rake db:migrate:down:main VERSION=<timestamp>

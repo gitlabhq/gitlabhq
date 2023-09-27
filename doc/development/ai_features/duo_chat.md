@@ -25,27 +25,6 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. Ensure that your current branch is up-to-date with `master`.
 1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
 
-### Tips for local development
-
-1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
-1. Alternatively, bypass Sidekiq entirely and run the chat service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs.
-
-```diff
-diff --git a/ee/app/services/llm/chat_service.rb b/ee/app/services/llm/chat_service.rb
-index 5fa7ae8a2bc1..5fe996ba0345 100644
---- a/ee/app/services/llm/chat_service.rb
-+++ b/ee/app/services/llm/chat_service.rb
-@@ -5,7 +5,7 @@ class ChatService < BaseService
-     private
-
-     def perform
--      worker_perform(user, resource, :chat, options)
-+      worker_perform(user, resource, :chat, options.merge(sync: true))
-     end
-
-     def valid?
-```
-
 ## Working with GitLab Duo Chat
 
 Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the Large Language Model to perform certain tasks.

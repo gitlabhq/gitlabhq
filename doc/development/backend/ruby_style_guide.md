@@ -172,7 +172,7 @@ thoroughly understand the reasons for doing so.
 When adding new lifecycle events for ActiveRecord objects, it is preferable to
 add the logic to a service class instead of a callback.
 
-## Why callbacks shoud be avoided
+## Why callbacks should be avoided
 
 In general, callbacks should be avoided because:
 
