@@ -36,7 +36,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   let_it_be(:candidates) { [candidate0, candidate1] }
 
   describe '#candidates_table_items' do
-    subject { Gitlab::Json.parse(helper.candidates_table_items(candidates)) }
+    subject { Gitlab::Json.parse(helper.candidates_table_items(candidates, project.creator)) }
 
     it 'creates the correct model for the table', :aggregate_failures do
       expected_values = [
@@ -70,6 +70,18 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
 
       it 'has the user property, but is nil' do
         expect(subject[0]['user']).to be_nil
+      end
+    end
+
+    context 'when user is not allowed to read the project' do
+      before do
+        allow(Ability).to receive(:allowed?)
+                            .with(project.creator, :read_build, build)
+                            .and_return(false)
+      end
+
+      it 'does not include ci info' do
+        expect(subject[0]['ci_job']).to be_nil
       end
     end
   end

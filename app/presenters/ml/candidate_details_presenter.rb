@@ -4,8 +4,9 @@ module Ml
   class CandidateDetailsPresenter
     include Rails.application.routes.url_helpers
 
-    def initialize(candidate)
+    def initialize(candidate, include_ci_job = false)
       @candidate = candidate
+      @include_ci_job = include_ci_job
     end
 
     def present
@@ -32,10 +33,10 @@ module Ml
 
     private
 
-    attr_reader :candidate
+    attr_reader :candidate, :include_ci_job
 
     def job_info
-      return unless candidate.from_ci?
+      return unless include_ci_job && candidate.from_ci?
 
       build = candidate.ci_build
 
