@@ -396,11 +396,7 @@ export default {
       </div>
     </gl-alert>
     <gl-loading-icon v-if="loading" class="gl-text-left" size="lg" />
-    <div
-      v-else
-      class="gl-display-flex gl-justify-content-space-between gl-flex-wrap"
-      data-qa-selector="pipeline_details_header"
-    >
+    <div v-else class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
       <div>
         <h3 v-if="name" class="gl-mt-0 gl-mb-3" data-testid="pipeline-name">{{ name }}</h3>
         <h3 v-else class="gl-mt-0 gl-mb-3" data-testid="pipeline-commit-title">

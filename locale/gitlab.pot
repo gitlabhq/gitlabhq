@@ -2333,6 +2333,9 @@ msgstr ""
 msgid "AbuseReport|Go to content"
 msgstr ""
 
+msgid "AbuseReport|Go to epic"
+msgstr ""
+
 msgid "AbuseReport|Go to issue"
 msgstr ""
 
@@ -2397,6 +2400,9 @@ msgid "AbuseReport|Reported comment"
 msgstr ""
 
 msgid "AbuseReport|Reported content"
+msgstr ""
+
+msgid "AbuseReport|Reported epic"
 msgstr ""
 
 msgid "AbuseReport|Reported issue"
@@ -24541,9 +24547,6 @@ msgstr ""
 msgid "InProductMarketing|Blog"
 msgstr ""
 
-msgid "InProductMarketing|Building for iOS? We've got you covered."
-msgstr ""
-
 msgid "InProductMarketing|Built-in security"
 msgstr ""
 
@@ -24556,9 +24559,6 @@ msgstr ""
 msgid "InProductMarketing|Free guest users"
 msgstr ""
 
-msgid "InProductMarketing|Get set up to build for iOS"
-msgstr ""
-
 msgid "InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}."
 msgstr ""
 
@@ -24566,9 +24566,6 @@ msgid "InProductMarketing|If you no longer wish to receive marketing emails from
 msgstr ""
 
 msgid "InProductMarketing|Invite unlimited colleagues"
-msgstr ""
-
-msgid "InProductMarketing|Learn how to build for iOS"
 msgstr ""
 
 msgid "InProductMarketing|No credit card required"
@@ -24589,13 +24586,7 @@ msgstr ""
 msgid "InProductMarketing|Twitter"
 msgstr ""
 
-msgid "InProductMarketing|Want to get your iOS app up and running, including publishing all the way to TestFlight? Follow our guide to set up GitLab and fastlane to publish iOS apps to the App Store."
-msgstr ""
-
 msgid "InProductMarketing|Want to host GitLab on your servers?"
-msgstr ""
-
-msgid "InProductMarketing|Watch iOS building in action."
 msgstr ""
 
 msgid "InProductMarketing|YouTube"
@@ -26186,6 +26177,9 @@ msgstr ""
 msgid "Item with ID: %{id} cannot be added. You don't have permission to perform this action."
 msgstr ""
 
+msgid "Items are already linked"
+msgstr ""
+
 msgid "Iteration"
 msgstr ""
 
@@ -26967,6 +26961,9 @@ msgid "Jobs|Raw text search is not currently supported for the jobs filtered sea
 msgstr ""
 
 msgid "Jobs|Root cause analysis"
+msgstr ""
+
+msgid "Jobs|Stage"
 msgstr ""
 
 msgid "Jobs|There was a problem fetching the failed jobs."
@@ -53543,9 +53540,6 @@ msgstr ""
 msgid "Work item promoted successfully."
 msgstr ""
 
-msgid "Work items are already linked"
-msgstr ""
-
 msgid "WorkItem|%{count} more assignees"
 msgstr ""
 
@@ -53568,6 +53562,9 @@ msgid "WorkItem|Add %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|Add %{workItemType}s"
+msgstr ""
+
+msgid "WorkItem|Add a maximum of 3 items at a time."
 msgstr ""
 
 msgid "WorkItem|Add a title"
@@ -53728,6 +53725,9 @@ msgstr ""
 msgid "WorkItem|Objective"
 msgstr ""
 
+msgid "WorkItem|Only 3 items can be added at a time."
+msgstr ""
+
 msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}."
 msgstr ""
 
@@ -53788,6 +53788,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong when trying to create a child. Please try again."
 msgstr ""
 
+msgid "WorkItem|Something went wrong when trying to link a item. Please try again."
+msgstr ""
+
 msgid "WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again."
 msgstr ""
 
@@ -53836,6 +53839,15 @@ msgstr ""
 msgid "WorkItem|Test case"
 msgstr ""
 
+msgid "WorkItem|The current key result"
+msgstr ""
+
+msgid "WorkItem|The current objective"
+msgstr ""
+
+msgid "WorkItem|The current task"
+msgstr ""
+
 msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access"
 msgstr ""
 
@@ -53864,6 +53876,21 @@ msgid "WorkItem|Work items"
 msgstr ""
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
+msgstr ""
+
+msgid "WorkItem|blocks"
+msgstr ""
+
+msgid "WorkItem|is blocked by"
+msgstr ""
+
+msgid "WorkItem|item"
+msgstr ""
+
+msgid "WorkItem|relates to"
+msgstr ""
+
+msgid "WorkItem|the following item(s)"
 msgstr ""
 
 msgid "Workspaces"

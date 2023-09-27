@@ -3498,7 +3498,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/email/hook/delivery_metrics_observer_spec.rb'
     - 'spec/lib/gitlab/email/hook/disable_email_interceptor_spec.rb'
     - 'spec/lib/gitlab/email/hook/smime_signature_interceptor_spec.rb'
-    - 'spec/lib/gitlab/email/message/build_ios_app_guide_spec.rb'
     - 'spec/lib/gitlab/email/message/in_product_marketing/admin_verify_spec.rb'
     - 'spec/lib/gitlab/email/message/in_product_marketing/base_spec.rb'
     - 'spec/lib/gitlab/email/message/in_product_marketing/create_spec.rb'

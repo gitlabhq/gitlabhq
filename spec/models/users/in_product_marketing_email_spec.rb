@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::InProductMarketingEmail, type: :model do
+RSpec.describe Users::InProductMarketingEmail, type: :model, feature_category: :onboarding do
   let(:track) { :create }
   let(:series) { 0 }
 
@@ -23,28 +23,6 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
         is_expected.to validate_uniqueness_of(:user_id)
           .scoped_to([:track, :series]).with_message('track series email has already been sent')
       }
-    end
-
-    context 'when campaign email' do
-      subject { build(:in_product_marketing_email, :campaign) }
-
-      it { is_expected.to validate_presence_of(:campaign) }
-      it { is_expected.not_to validate_presence_of(:track) }
-      it { is_expected.not_to validate_presence_of(:series) }
-
-      it {
-        is_expected.to validate_uniqueness_of(:user_id)
-          .scoped_to(:campaign).with_message('campaign email has already been sent')
-      }
-
-      it { is_expected.to validate_inclusion_of(:campaign).in_array(described_class::CAMPAIGNS) }
-    end
-
-    context 'when mixing campaign and track+series' do
-      it 'is not valid' do
-        expect(build(:in_product_marketing_email, :campaign, track: :create)).not_to be_valid
-        expect(build(:in_product_marketing_email, :campaign, series: 0)).not_to be_valid
-      end
     end
   end
 
@@ -81,27 +59,6 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
       let(:other_user) { create(:user) }
 
       it { expect(without_track_and_series).to eq [other_user] }
-    end
-  end
-
-  describe '.without_campaign' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:other_user) { create(:user) }
-
-    let(:campaign) { Users::InProductMarketingEmail::BUILD_IOS_APP_GUIDE }
-
-    subject(:without_campaign) { User.merge(described_class.without_campaign(campaign)) }
-
-    context 'when record for campaign already exists' do
-      before do
-        create(:in_product_marketing_email, :campaign, campaign: campaign, user: user)
-      end
-
-      it { is_expected.to match_array [other_user] }
-    end
-
-    context 'when record for campaign does not exist' do
-      it { is_expected.to match_array [user, other_user] }
     end
   end
 

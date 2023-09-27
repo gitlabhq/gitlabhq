@@ -146,6 +146,7 @@ export const workItemQueryResponse = {
         setWorkItemMetadata: false,
         adminParentLink: false,
         createNote: false,
+        adminWorkItemLink: true,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -251,6 +252,7 @@ export const updateWorkItemMutationResponse = {
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -360,6 +362,7 @@ export const convertWorkItemMutationResponse = {
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'gitlab-org/gitlab-test#1',
@@ -579,6 +582,7 @@ export const workItemResponseFactory = ({
   canDelete = false,
   canCreateNote = false,
   adminParentLink = false,
+  canAdminWorkItemLink = true,
   notificationsWidgetPresent = true,
   currentUserTodosWidgetPresent = true,
   awardEmojiWidgetPresent = true,
@@ -636,6 +640,7 @@ export const workItemResponseFactory = ({
         updateWorkItem: canUpdate,
         setWorkItemMetadata: canUpdate,
         adminParentLink,
+        adminWorkItemLink: canAdminWorkItemLink,
         createNote: canCreateNote,
         __typename: 'WorkItemPermissions',
       },
@@ -914,6 +919,7 @@ export const createWorkItemMutationResponse = {
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -996,6 +1002,7 @@ export const workItemHierarchyEmptyResponse = {
               setWorkItemMetadata: false,
               adminParentLink: false,
               createNote: false,
+              adminWorkItemLink: true,
               __typename: 'WorkItemPermissions',
             },
             confidential: false,
@@ -1046,6 +1053,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         setWorkItemMetadata: false,
         adminParentLink: false,
         createNote: false,
+        adminWorkItemLink: true,
         __typename: 'WorkItemPermissions',
       },
       project: {
@@ -1196,6 +1204,7 @@ export const workItemHierarchyResponse = {
               setWorkItemMetadata: true,
               adminParentLink: true,
               createNote: true,
+              adminWorkItemLink: true,
               __typename: 'WorkItemPermissions',
             },
             author: {
@@ -1297,6 +1306,7 @@ export const workItemObjectiveWithChild = {
     setWorkItemMetadata: true,
     adminParentLink: true,
     createNote: true,
+    adminWorkItemLink: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -1368,6 +1378,7 @@ export const workItemHierarchyTreeResponse = {
         setWorkItemMetadata: true,
         adminParentLink: true,
         createNote: true,
+        adminWorkItemLink: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -1449,6 +1460,7 @@ export const changeIndirectWorkItemParentMutationResponse = {
           setWorkItemMetadata: true,
           adminParentLink: true,
           createNote: true,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -1517,6 +1529,7 @@ export const changeWorkItemParentMutationResponse = {
           setWorkItemMetadata: true,
           adminParentLink: true,
           createNote: true,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -1568,6 +1581,7 @@ export const availableWorkItemsResponse = {
         nodes: [
           {
             id: 'gid://gitlab/WorkItem/458',
+            iid: '2',
             title: 'Task 1',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
@@ -1576,6 +1590,7 @@ export const availableWorkItemsResponse = {
           },
           {
             id: 'gid://gitlab/WorkItem/459',
+            iid: '3',
             title: 'Task 2',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
@@ -1584,6 +1599,7 @@ export const availableWorkItemsResponse = {
           },
           {
             id: 'gid://gitlab/WorkItem/460',
+            iid: '4',
             title: 'Task 3',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
@@ -1605,6 +1621,7 @@ export const searchedWorkItemsResponse = {
         nodes: [
           {
             id: 'gid://gitlab/WorkItem/459',
+            iid: '3',
             title: 'Task 2',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
@@ -3434,6 +3451,19 @@ export const getTodosMutationResponse = (state) => {
           state,
         },
         errors: [],
+      },
+    },
+  };
+};
+
+export const linkedWorkItemResponse = (options, errors = []) => {
+  const response = workItemResponseFactory(options);
+  return {
+    data: {
+      workItemAddLinkedItems: {
+        workItem: response.data.workItem,
+        errors,
+        __typename: 'WorkItemAddLinkedItemsPayload',
       },
     },
   };

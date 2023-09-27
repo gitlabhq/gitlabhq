@@ -123,7 +123,7 @@ describe('HeaderActions component', () => {
   const findMobileDropdownItems = () => findMobileDropdown().findAllComponents(GlDropdownItem);
   const findDesktopDropdownItems = () => findDesktopDropdown().findAllComponents(GlDropdownItem);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
-  const findReportAbuseSelectorItem = () => wrapper.find(`[data-testid="report-abuse-item"]`);
+  const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-item"]`);
   const findNotificationWidget = () => wrapper.find(`[data-testid="notification-toggle"]`);
   const findLockIssueWidget = () => wrapper.find(`[data-testid="lock-issue-toggle"]`);
   const findCopyRefenceDropdownItem = () => wrapper.find(`[data-testid="copy-reference"]`);
@@ -490,28 +490,40 @@ describe('HeaderActions component', () => {
     });
   });
 
-  describe('abuse category selector', () => {
+  describe('report abuse to admin button', () => {
     beforeEach(() => {
       wrapper = mountComponent({ props: { isIssueAuthor: false } });
     });
 
-    it("doesn't render", () => {
+    it('renders the button but not the abuse category drawer', () => {
+      expect(findReportAbuseButton().exists()).toBe(true);
       expect(findAbuseCategorySelector().exists()).toEqual(false);
     });
 
-    it('opens the drawer', async () => {
-      findReportAbuseSelectorItem().vm.$emit('click');
+    it('opens the abuse category drawer', async () => {
+      findReportAbuseButton().vm.$emit('click');
 
       await nextTick();
 
       expect(findAbuseCategorySelector().props('showDrawer')).toEqual(true);
     });
 
-    it('closes the drawer', async () => {
-      await findReportAbuseSelectorItem().vm.$emit('click');
-      await findAbuseCategorySelector().vm.$emit('close-drawer');
+    it('closes the abuse category drawer', async () => {
+      await findReportAbuseButton().vm.$emit('click');
+      expect(findAbuseCategorySelector().exists()).toEqual(true);
 
+      await findAbuseCategorySelector().vm.$emit('close-drawer');
       expect(findAbuseCategorySelector().exists()).toEqual(false);
+    });
+
+    describe('when the logged in user is the issue author', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({ props: { isIssueAuthor: true } });
+      });
+
+      it('does not render the button', () => {
+        expect(findReportAbuseButton().exists()).toBe(false);
+      });
     });
   });
 
@@ -694,7 +706,7 @@ describe('HeaderActions component', () => {
           expect(findDesktopDropdown().exists()).toBe(headerActionsVisible);
           expect(findCopyRefenceDropdownItem().exists()).toBe(headerActionsVisible);
           expect(findNotificationWidget().exists()).toBe(false);
-          expect(findReportAbuseSelectorItem().exists()).toBe(false);
+          expect(findReportAbuseButton().exists()).toBe(false);
           expect(findLockIssueWidget().exists()).toBe(false);
         });
       },

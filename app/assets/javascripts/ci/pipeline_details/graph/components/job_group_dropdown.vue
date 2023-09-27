@@ -65,7 +65,7 @@ export default {
   <div
     :id="computedJobId"
     class="ci-job-dropdown-container dropdown dropright"
-    data-qa-selector="job_dropdown_container"
+    data-testid="job-dropdown-container"
   >
     <button
       type="button"
@@ -90,7 +90,7 @@ export default {
 
     <ul
       class="dropdown-menu big-pipeline-graph-dropdown-menu js-grouped-pipeline-dropdown"
-      data-qa-selector="jobs_dropdown_menu"
+      data-testid="jobs-dropdown-menu"
     >
       <li class="scrollable-menu">
         <ul>

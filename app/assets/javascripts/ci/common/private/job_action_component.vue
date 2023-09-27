@@ -120,7 +120,7 @@ export default {
     :class="cssClass"
     :disabled="isDisabled"
     class="js-ci-action gl-ci-action-icon-container ci-action-icon-container ci-action-icon-wrapper gl-display-flex gl-align-items-center gl-justify-content-center"
-    data-testid="ci-action-component"
+    data-testid="ci-action-button"
     @click.stop="onClickAction"
   >
     <div

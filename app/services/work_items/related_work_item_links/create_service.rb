@@ -51,7 +51,7 @@ module WorkItems
 
       override :issuables_already_assigned_message
       def issuables_already_assigned_message
-        _('Work items are already linked')
+        _('Items are already linked')
       end
 
       override :issuables_not_found_message

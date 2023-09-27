@@ -1,12 +1,11 @@
 <script>
 import { GlTable } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import ProjectCell from '~/ci/admin/jobs_table/components/cells/project_cell.vue';
 import RunnerCell from '~/ci/admin/jobs_table/components/cells/runner_cell.vue';
-import { DEFAULT_FIELDS } from '../constants';
+import { JOBS_DEFAULT_FIELDS } from '../constants';
 import ActionsCell from './job_cells/actions_cell.vue';
-import DurationCell from './job_cells/duration_cell.vue';
+import StatusCell from './job_cells/status_cell.vue';
 import JobCell from './job_cells/job_cell.vue';
 import PipelineCell from './job_cells/pipeline_cell.vue';
 
@@ -16,13 +15,12 @@ export default {
   },
   components: {
     ActionsCell,
-    CiBadgeLink,
-    DurationCell,
-    GlTable,
+    StatusCell,
     JobCell,
     PipelineCell,
     ProjectCell,
     RunnerCell,
+    GlTable,
   },
   props: {
     jobs: {
@@ -32,7 +30,7 @@ export default {
     tableFields: {
       type: Array,
       required: false,
-      default: () => DEFAULT_FIELDS,
+      default: () => JOBS_DEFAULT_FIELDS,
     },
     admin: {
       type: Boolean,
@@ -64,7 +62,7 @@ export default {
     </template>
 
     <template #cell(status)="{ item }">
-      <ci-badge-link :status="item.detailedStatus" />
+      <status-cell :job="item" />
     </template>
 
     <template #cell(job)="{ item }">
@@ -75,28 +73,20 @@ export default {
       <pipeline-cell :job="item" />
     </template>
 
+    <template #cell(stage)="{ item }">
+      <div class="gl-text-truncate">
+        <span v-if="item.stage" data-testid="job-stage-name" class="gl-text-secondary">{{
+          item.stage.name
+        }}</span>
+      </div>
+    </template>
+
     <template v-if="admin" #cell(project)="{ item }">
       <project-cell :job="item" />
     </template>
 
     <template v-if="admin" #cell(runner)="{ item }">
       <runner-cell :job="item" />
-    </template>
-
-    <template #cell(stage)="{ item }">
-      <div class="gl-text-truncate">
-        <span v-if="item.stage" data-testid="job-stage-name">{{ item.stage.name }}</span>
-      </div>
-    </template>
-
-    <template #cell(name)="{ item }">
-      <div class="gl-text-truncate">
-        <span data-testid="job-name">{{ item.name }}</span>
-      </div>
-    </template>
-
-    <template #cell(duration)="{ item }">
-      <duration-cell :job="item" />
     </template>
 
     <template #cell(coverage)="{ item }">

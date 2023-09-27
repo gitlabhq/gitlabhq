@@ -12,12 +12,6 @@ module Emails
       'X-Mailgun-Tag' => 'marketing'
     }.freeze
 
-    def build_ios_app_guide_email(recipient_email)
-      @message = ::Gitlab::Email::Message::BuildIosAppGuide.new
-
-      mail_to(to: recipient_email, subject: @message.subject_line)
-    end
-
     private
 
     def mail_to(to:, subject:)

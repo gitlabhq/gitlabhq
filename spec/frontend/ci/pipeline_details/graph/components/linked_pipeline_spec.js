@@ -37,7 +37,7 @@ describe('Linked pipeline', () => {
   const findButton = () => wrapper.findComponent(GlButton);
   const findCancelButton = () => wrapper.findByLabelText('Cancel downstream pipeline');
   const findCardTooltip = () => wrapper.findComponent(GlTooltip);
-  const findDownstreamPipelineTitle = () => wrapper.findByTestId('downstream-title');
+  const findDownstreamPipelineTitle = () => wrapper.findByTestId('downstream-title-content');
   const findExpandButton = () => wrapper.findByTestId('expand-pipeline-button');
   const findLinkedPipeline = () => wrapper.findComponent({ ref: 'linkedPipeline' });
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);

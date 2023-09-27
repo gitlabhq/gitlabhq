@@ -113,7 +113,7 @@ export const I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL = s__(
 );
 
 export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
-  const workItemType = workItemTypeArg || s__('WorkItem|Work item');
+  const workItemType = workItemTypeArg || s__('WorkItem|item');
   return capitalizeFirstCharacter(
     sprintf(msg, {
       workItemType: workItemType.toLocaleLowerCase(),
@@ -186,8 +186,11 @@ export const WORK_ITEM_NAME_TO_ICON_MAP = {
   Issue: 'issue-type-issue',
   Task: 'issue-type-task',
   Objective: 'issue-type-objective',
+  Incident: 'issue-type-incident',
   // eslint-disable-next-line @gitlab/require-i18n-strings
   'Key Result': 'issue-type-keyresult',
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  'Test Case': 'issue-type-test-case',
 };
 
 export const FORM_TYPES = {
@@ -261,4 +264,16 @@ export const LINKED_CATEGORIES_MAP = {
   RELATES_TO: 'relates_to',
   IS_BLOCKED_BY: 'is_blocked_by',
   BLOCKS: 'blocks',
+};
+
+export const LINKED_ITEM_TYPE_VALUE = {
+  RELATED: 'RELATED',
+  BLOCKED_BY: 'BLOCKED_BY',
+  BLOCKS: 'BLOCKS',
+};
+
+export const LINK_ITEM_FORM_HEADER_LABEL = {
+  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: s__('WorkItem|The current objective'),
+  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: s__('WorkItem|The current key result'),
+  [WORK_ITEM_TYPE_VALUE_TASK]: s__('WorkItem|The current task'),
 };

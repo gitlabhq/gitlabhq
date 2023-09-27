@@ -8,6 +8,7 @@ import { WIDGET_TYPE_LINKED_ITEMS, LINKED_CATEGORIES_MAP } from '../../constants
 
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
+import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
 export default {
   components: {
@@ -16,8 +17,14 @@ export default {
     GlButton,
     WidgetWrapper,
     WorkItemRelationshipList,
+    WorkItemAddRelationshipForm,
   },
   props: {
+    workItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     workItemIid: {
       type: String,
       required: true,
@@ -25,6 +32,11 @@ export default {
     workItemFullPath: {
       type: String,
       required: true,
+    },
+    workItemType: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   apollo: {
@@ -74,13 +86,13 @@ export default {
       linksRelatesTo: [],
       linksIsBlockedBy: [],
       linksBlocks: [],
+      isShownLinkItemForm: false,
       widgetName: 'linkeditems',
     };
   },
   computed: {
-    canUpdate() {
-      // This will be false untill we implement remove item mutation
-      return false;
+    canAdminWorkItemLink() {
+      return this.workItem?.userPermissions?.adminWorkItemLink;
     },
     isLoading() {
       return this.$apollo.queries.workItem.loading;
@@ -91,11 +103,22 @@ export default {
     linkedWorkItems() {
       return this.linkedWorkItemsWidget?.linkedItems?.nodes || [];
     },
+    childrenIds() {
+      return this.linkedWorkItems.map((item) => item.workItem.id);
+    },
     linkedWorkItemsCount() {
       return this.linkedWorkItems.length;
     },
     isEmptyRelatedWorkItems() {
-      return !this.error && this.linkedWorkItems.length === 0;
+      return !this.isShownLinkItemForm && !this.error && this.linkedWorkItems.length === 0;
+    },
+  },
+  methods: {
+    showLinkItemForm() {
+      this.isShownLinkItemForm = true;
+    },
+    hideLinkItemForm() {
+      this.isShownLinkItemForm = false;
     },
   },
   i18n: {
@@ -131,12 +154,28 @@ export default {
       </div>
     </template>
     <template #header-right>
-      <gl-button size="small" class="gl-ml-3">
+      <gl-button
+        v-if="canAdminWorkItemLink"
+        data-testid="link-item-add-button"
+        size="small"
+        class="gl-ml-3"
+        @click="showLinkItemForm"
+      >
         <slot name="add-button-text">{{ $options.i18n.addLinkedWorkItemButtonLabel }}</slot>
       </gl-button>
     </template>
     <template #body>
       <div class="gl-new-card-content">
+        <work-item-add-relationship-form
+          v-if="isShownLinkItemForm"
+          :work-item-id="workItemId"
+          :work-item-iid="workItemIid"
+          :work-item-full-path="workItemFullPath"
+          :children-ids="childrenIds"
+          :work-item-type="workItemType"
+          @submitted="hideLinkItemForm"
+          @cancel="hideLinkItemForm"
+        />
         <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
         <template v-else>
           <div v-if="isEmptyRelatedWorkItems" data-testid="links-empty">
@@ -154,7 +193,7 @@ export default {
               :linked-items="linksBlocks"
               :heading="$options.i18n.blockingTitle"
               :work-item-full-path="workItemFullPath"
-              :can-update="canUpdate"
+              :can-update="false"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
             />
             <work-item-relationship-list
@@ -166,7 +205,7 @@ export default {
               :linked-items="linksIsBlockedBy"
               :heading="$options.i18n.blockedByTitle"
               :work-item-full-path="workItemFullPath"
-              :can-update="canUpdate"
+              :can-update="false"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
             />
             <work-item-relationship-list
@@ -174,7 +213,7 @@ export default {
               :linked-items="linksRelatesTo"
               :heading="$options.i18n.relatedToTitle"
               :work-item-full-path="workItemFullPath"
-              :can-update="canUpdate"
+              :can-update="false"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
             />
           </template>

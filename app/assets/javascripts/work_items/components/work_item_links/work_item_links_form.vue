@@ -225,7 +225,6 @@ export default {
       this.error = null;
     },
     addChild() {
-      this.searchStarted = false;
       this.$apollo
         .mutate({
           mutation: updateWorkItemMutation,

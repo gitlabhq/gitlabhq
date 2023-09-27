@@ -312,7 +312,6 @@ export default {
   <div
     :id="computedJobId"
     class="ci-job-component gl-display-flex gl-justify-content-space-between gl-pipeline-job-width"
-    data-qa-selector="job_item_container"
   >
     <component
       :is="nameComponent"
@@ -326,7 +325,6 @@ export default {
       :href="detailsPath"
       class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-w-full"
       :data-testid="testId"
-      data-qa-selector="job_link"
       @click="jobItemClick"
       @mouseout="hideTooltips"
     >
@@ -356,7 +354,6 @@ export default {
       class="gl-mr-1"
       :should-trigger-click="shouldTriggerActionClick"
       :with-confirmation-modal="withConfirmationModal"
-      data-qa-selector="job_action_button"
       @actionButtonClicked="handleConfirmationModalPreferences"
       @pipelineActionRequestComplete="pipelineActionRequestComplete"
       @showActionConfirmationModal="showActionConfirmationModal"

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import DurationCell from '~/ci/jobs_page/components/job_cells/duration_cell.vue';
+import StatusCell from '~/ci/jobs_page/components/job_cells/status_cell.vue';
 
 describe('Duration Cell', () => {
   let wrapper;
@@ -12,7 +12,7 @@ describe('Duration Cell', () => {
 
   const createComponent = (props) => {
     wrapper = extendedWrapper(
-      shallowMount(DurationCell, {
+      shallowMount(StatusCell, {
         propsData: {
           job: {
             ...props,

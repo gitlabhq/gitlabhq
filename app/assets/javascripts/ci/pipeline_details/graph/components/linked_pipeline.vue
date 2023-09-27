@@ -233,7 +233,7 @@ export default {
     ref="linkedPipeline"
     class="gl-h-full gl-display-flex! gl-px-2"
     :class="flexDirection"
-    data-qa-selector="linked_pipeline_container"
+    data-testid="linked-pipeline-container"
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"
   >
@@ -247,11 +247,7 @@ export default {
         <div
           class="gl-display-flex gl-downstream-pipeline-job-width gl-flex-direction-column gl-line-height-normal"
         >
-          <span
-            class="gl-text-truncate"
-            data-testid="downstream-title"
-            data-qa-selector="downstream_title_content"
-          >
+          <span class="gl-text-truncate" data-testid="downstream-title-content">
             {{ downstreamTitle }}
           </span>
           <div class="gl-text-truncate">
@@ -294,7 +290,6 @@ export default {
         :icon="expandedIcon"
         :aria-label="expandBtnText"
         data-testid="expand-pipeline-button"
-        data-qa-selector="expand_linked_pipeline_button"
         @mouseover="setExpandBtnActiveState(true)"
         @mouseout="setExpandBtnActiveState(false)"
         @focus="setExpandBtnActiveState(true)"

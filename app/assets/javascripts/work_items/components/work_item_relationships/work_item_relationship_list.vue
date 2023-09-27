@@ -33,7 +33,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div data-testid="work-item-linked-items-list">
     <h4
       v-if="heading"
       data-testid="work-items-list-heading"

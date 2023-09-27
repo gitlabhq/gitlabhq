@@ -158,6 +158,10 @@ class AbuseReport < ApplicationRecord
     Project.find_by_full_path(route_hash.values_at(:namespace_id, :project_id).join('/'))
   end
 
+  def group
+    Group.find_by_full_path(route_hash[:group_id])
+  end
+
   def route_hash
     match = Rails.application.routes.recognize_path(reported_from_url)
     return {} if match[:unmatched_route].present?

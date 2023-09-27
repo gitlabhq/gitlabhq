@@ -605,8 +605,10 @@ export default {
             />
             <work-item-relationships
               v-if="showWorkItemLinkedItems"
+              :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
               :work-item-full-path="workItem.project.fullPath"
+              :work-item-type="workItem.workItemType.name"
               @showModal="openInModal"
             />
             <work-item-notes

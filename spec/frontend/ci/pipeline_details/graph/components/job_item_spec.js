@@ -27,7 +27,7 @@ describe('pipeline graph job item', () => {
   const findJobWithoutLink = () => wrapper.findByTestId('job-without-link');
   const findJobWithLink = () => wrapper.findByTestId('job-with-link');
   const findActionVueComponent = () => wrapper.findComponent(ActionComponent);
-  const findActionComponent = () => wrapper.findByTestId('ci-action-component');
+  const findActionComponent = () => wrapper.findByTestId('ci-action-button');
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findJobLink = () => wrapper.findByTestId('job-with-link');
   const findModal = () => wrapper.findComponent(GlModal);
