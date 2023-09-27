@@ -701,7 +701,7 @@ module API
         requires :forked_from_id, type: String, desc: 'The ID of the project it was forked from', documentation: { example: 'gitlab' }
       end
       post ":id/fork/:forked_from_id", feature_category: :source_code_management do
-        authorize! :admin_project, user_project
+        authorize! :link_forked_project, user_project
 
         fork_from_project = find_project!(params[:forked_from_id])
 
