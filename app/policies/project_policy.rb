@@ -289,6 +289,7 @@ class ProjectPolicy < BasePolicy
     enable :change_visibility_level
     enable :remove_project
     enable :archive_project
+    enable :link_forked_project
     enable :remove_fork_project
     enable :destroy_merge_request
     enable :destroy_issue
