@@ -146,6 +146,40 @@ triggering the job.
 
 The job token is secured by its short life-time and limited scope. It could possibly be leaked if multiple jobs run on the same machine ([like with the shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)). On Docker Machine runners, configuring [`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section) is recommended to make sure runner machines only ever run one build and are destroyed afterwards. This may impact performance, as provisioning machines takes some time.
 
+## GitLab cluster agent tokens
+
+When [registering a GitLab Agent for Kubernetes](../user/clusters/agent/install/index.md#register-the-agent-with-gitlab), GitLab generates an access token to authenticate the cluster agent with GitLab.
+
+To revoke this cluster agent token, you can use either the:
+
+- [Agents API](../api/cluster_agents.md#revoke-an-agent-token) to revoke the token.
+- [UI](../user/clusters/agent/work_with_agent.md#reset-the-agent-token) to reset the token.
+
+For both methods, you must know the token, agent, and project IDs. To find this information, use the [Rails console](../administration/operations/rails_console.md)
+
+```irb
+# Find token ID
+Clusters::AgentToken.find_by_token('glagent-xxx').id
+
+# Find agent ID
+Clusters::AgentToken.find_by_token('glagent-xxx').agent.id
+=> 1234
+
+# Find project ID
+Clusters::AgentToken.find_by_token('glagent-xxx').agent.project_id
+=> 12345
+```
+
+You can also revoke a token directly in the Rails console:
+
+```irb
+# Revoke token with RevokeService, including generating an audit event
+Clusters::AgentTokens::RevokeService.new(token: Clusters::AgentToken.find_by_token('glagent-xxx'), current_user: User.find_by_username('admin-user')).execute
+
+# Revoke token manually, which does not generate an audit event
+Clusters::AgentToken.find_by_token('glagent-xxx').revoke!
+```
+
 ## Other tokens
 
 ### Feed token

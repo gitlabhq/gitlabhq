@@ -14,14 +14,6 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. [Enable Anthropic API features](index.md#configure-anthropic-access).
 1. [Enable OpenAI support](index.md#configure-openai-access).
 1. [Ensure the embedding database is configured](index.md#set-up-the-embedding-database).
-1. Enable feature specific feature flag.
-
-   ```ruby
-   Feature.enable(:gitlab_duo)
-   Feature.enable(:tanuki_bot)
-   Feature.enable(:ai_redis_cache)
-   ```
-
 1. Ensure that your current branch is up-to-date with `master`.
 1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
 

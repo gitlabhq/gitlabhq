@@ -303,6 +303,7 @@
 {"name":"ice_cube","version":"0.16.4","platform":"ruby","checksum":"da117e5de24bdc33931be629f9b55048641924442c7e9b72fedc05e5592531b7"},
 {"name":"ice_nine","version":"0.11.2","platform":"ruby","checksum":"5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db"},
 {"name":"imagen","version":"0.1.8","platform":"ruby","checksum":"fde7b727d4fe79c6bb5ac46c1f7184bf87a6d54df54d712ad2be039d2f93a162"},
+{"name":"influxdb-client","version":"2.9.0","platform":"ruby","checksum":"b51fadb69e521460bcb6626cd0a9e6c29cd1c8426369c7f0a2b67e93ff9b9f02"},
 {"name":"invisible_captcha","version":"2.1.0","platform":"ruby","checksum":"02b452f3eb1b691d155ba3e8e97e1be0e6b6be62e8bc94957234b9cde0852b1e"},
 {"name":"ipaddr","version":"1.2.5","platform":"ruby","checksum":"4e679c71d6d8ed99f925487082f70f9a958de155591caa0e7f6cef9aa160f17a"},
 {"name":"ipaddress","version":"0.8.3","platform":"ruby","checksum":"85640c4f9194c26937afc8c78e3074a8e7c97d5d1210358d1440f01034d006f5"},

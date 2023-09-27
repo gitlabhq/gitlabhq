@@ -27,6 +27,7 @@ include:
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn"  # Do not use 'bundle exec' here
     - export RSPEC_SKIPPED_TESTS_REPORT_PATH="rspec/skipped_tests-${CI_JOB_ID}.txt"
     - export RSPEC_RETRIED_TESTS_REPORT_PATH="rspec/retried_tests-${CI_JOB_ID}.txt"
+    - tooling/bin/create_job_metrics_file || true
 
 .no-redis-cluster:
   variables:
@@ -92,6 +93,7 @@ include:
         bundle exec slow-test-merge-request-report-note --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --merge_request_iid "$CI_MERGE_REQUEST_IID" --token "${TEST_SLOW_NOTE_PROJECT_TOKEN}";
       fi
     - echo -e "\e[0Ksection_end:`date +%s`:report_results_section\r\e[0K"
+    - tooling/bin/push_job_metrics || true
 
   allow_failure:
     exit_codes: !reference [.rspec-base, variables, SUCCESSFULLY_RETRIED_TEST_EXIT_CODE]

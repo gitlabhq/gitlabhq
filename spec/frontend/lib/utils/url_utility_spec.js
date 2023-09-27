@@ -327,6 +327,26 @@ describe('URL utility', () => {
     });
   });
 
+  describe('getLocationHash', () => {
+    it('gets a default empty value', () => {
+      setWindowLocation(TEST_HOST);
+
+      expect(urlUtils.getLocationHash()).toBeUndefined();
+    });
+
+    it('gets a value', () => {
+      setWindowLocation('#hash-value');
+
+      expect(urlUtils.getLocationHash()).toBe('hash-value');
+    });
+
+    it('gets an empty value when only hash is set', () => {
+      setWindowLocation('#');
+
+      expect(urlUtils.getLocationHash()).toBeUndefined();
+    });
+  });
+
   describe('doesHashExistInUrl', () => {
     beforeEach(() => {
       setWindowLocation('#note_1');

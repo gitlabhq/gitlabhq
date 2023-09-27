@@ -241,7 +241,11 @@ export function removeParams(params, url = window.location.href, skipEncoding = 
   return `${root}${writableQuery}${writableFragment}`;
 }
 
-export const getLocationHash = (hash = window.location.hash) => hash.split('#')[1];
+/**
+ * Returns value after the '#' in the location hash
+ * @returns Current value of the hash, undefined if not set
+ */
+export const getLocationHash = () => window.location.hash?.split('#')[1];
 
 /**
  * Returns a boolean indicating whether the URL hash contains the given string value

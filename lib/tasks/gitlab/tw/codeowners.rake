@@ -73,7 +73,7 @@ namespace :tw do
       CodeOwnerRule.new('Runner', '@fneill'),
       CodeOwnerRule.new('Runner SaaS', '@fneill'),
       CodeOwnerRule.new('Security Policies', '@rdickenson'),
-      CodeOwnerRule.new('Source Code', ->(path) { path.start_with?('/doc/user') ? '@aqualls' : '@msedlakjakubowski' }),
+      CodeOwnerRule.new('Source Code', '@msedlakjakubowski'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Tenant Scale', '@lciutacu'),

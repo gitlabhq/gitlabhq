@@ -424,6 +424,9 @@ group :development, :test do
   gem 'benchmark-ips', '~> 2.11.0', require: false
   gem 'benchmark-memory', '~> 0.1', require: false
 
+  # Profiling data from CI/CD pipelines
+  gem 'influxdb-client', '~> 2.9', require: false
+
   gem 'knapsack', '~> 1.21.1'
   gem 'crystalball', '~> 0.7.0', require: false
 

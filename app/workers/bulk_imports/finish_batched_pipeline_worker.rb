@@ -12,6 +12,8 @@ module BulkImports
     data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
     feature_category :importers
 
+    version 2
+
     def perform(pipeline_tracker_id)
       @tracker = Tracker.find(pipeline_tracker_id)
 
@@ -27,7 +29,9 @@ module BulkImports
       end
 
     ensure
-      ::BulkImports::EntityWorker.perform_async(tracker.entity.id, tracker.stage)
+      # This is needed for in-flight migrations.
+      # It will be remove in https://gitlab.com/gitlab-org/gitlab/-/issues/426299
+      ::BulkImports::EntityWorker.perform_async(tracker.entity.id) if job_version.nil?
     end
 
     private

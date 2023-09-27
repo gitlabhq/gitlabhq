@@ -58,7 +58,6 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. Enable the required general feature flags:
 
    ```ruby
-   Feature.enable(:ai_related_settings)
    Feature.enable(:openai_experimentation)
    ```
 

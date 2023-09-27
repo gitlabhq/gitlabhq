@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/tooling/job_metrics'
+
+unless ENV['CI_JOB_METRICS_ENABLED'] == 'true'
+  puts "[job-metrics] Feature disabled because CI_JOB_METRICS_ENABLED is not set to true."
+  exit 0
+end
+
+puts "[job-metrics] Pushing job metrics file for the CI/CD job."
+Tooling::JobMetrics.new.push_metrics

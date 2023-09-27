@@ -52,18 +52,20 @@ To create an OAuth application:
 
 > Introduced in GitLab 15.7.
 
-You can link self-managed instances after installing the GitLab for Jira Cloud app from the marketplace.
+You can link your self-managed instance after you install the GitLab for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
 
 NOTE:
 With this method, GitLab.com serves as a proxy for Jira traffic from your instance.
 
-If your instance doesn't meet the [prerequisites](#prerequisites) or you don't want to use the official marketplace listing, you can
-[install the app manually](#install-the-gitlab-for-jira-cloud-app-manually).
-
-With this method, it's not possible to create branches from Jira Cloud for self-managed instances.
+When you connect the app, it's not possible to create branches from Jira Cloud for self-managed instances.
 For more information, see [issue 391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432).
-To create branches from Jira Cloud, [install the app manually](#install-the-gitlab-for-jira-cloud-app-manually).
+
+[Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually) if:
+
+- Your instance does not meet the [prerequisites](#prerequisites).
+- You do not want to use the official marketplace listing.
+- You want to create branches from Jira Cloud.
 
 ### Prerequisites
 
@@ -101,17 +103,41 @@ To link your self-managed instance to the GitLab for Jira Cloud app:
 1. Enter your GitLab instance URL.
 1. Select **Save**.
 
+### Check if Jira Cloud is linked
+
+You can use the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to check if Jira Cloud is linked to:
+
+- A specific group:
+
+  ```ruby
+  JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
+  ```
+
+- A specific project:
+
+  ```ruby
+  Project.find_by_full_path('path/to/project').jira_subscription_exists?
+  ```
+
+- Any group:
+
+  ```ruby
+  installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
+  installation.subscriptions
+  ```
+
 ## Install the GitLab for Jira Cloud app manually
 
-If your GitLab instance is self-managed and you don't want to use the official marketplace listing,
-you can install the app manually.
+If you do not want to use the official marketplace listing and want to create branches from Jira Cloud,
+install the GitLab for Jira Cloud app manually.
 
-Each Jira Cloud application must be installed from a single location. Jira fetches
-a [manifest file](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/)
-from the location you provide. The manifest file describes the application to the system. To support
-self-managed GitLab instances with Jira Cloud, you can do one of the following:
+You must install each Jira Cloud app from a single location. Jira fetches a
+[manifest file](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/)
+from the location you provide. The manifest file describes the app to the system.
+To support your self-managed instance with Jira Cloud, do one of the following:
 
-- [Install the application in development mode](#install-the-application-in-development-mode).
+- [Install the app in development mode](#install-the-app-in-development-mode).
 - [Create a marketplace listing](#create-a-marketplace-listing).
 
 ### Prerequisites
@@ -119,41 +145,42 @@ self-managed GitLab instances with Jira Cloud, you can do one of the following:
 - The instance must be publicly available.
 - You must set up [OAuth authentication](#set-up-oauth-authentication).
 
-### Install the application in development mode
+### Install the app in development mode
 
 [Prerequisites](#prerequisites-1)
 
-To configure your Jira instance so you can install applications
-from outside the marketplace:
+To configure your Jira instance so you can install apps from outside the marketplace:
 
 1. Sign in to your Jira instance as an administrator.
-1. Place your Jira instance into
-   [development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-2--enable-development-mode).
-1. Sign in to your GitLab application as a user with administrator access.
-1. Install the GitLab application from your Jira instance as
-   described in the [Atlassian developer guide](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app):
-   1. In your Jira instance, go to **Apps > Manage Apps** and select **Upload app**:
-   1. For **App descriptor URL**, provide the full URL to your manifest file based
-      on your instance configuration. By default, your manifest file is located at `/-/jira_connect/app_descriptor.json`. For example, if your GitLab self-managed instance domain is `app.pet-store.cloud`, your manifest file is located at `https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`.
-   1. Select **Upload**. Jira fetches the content of your `app_descriptor` file and installs
-      it.
-   1. To configure the integration, select **Get started**.
-1. Disable [development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-2--enable-development-mode) on your Jira instance.
+1. [Enable development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)
+   on your Jira instance.
+1. Sign in to GitLab as an administrator.
+1. [Install GitLab from your Jira instance](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app):
+   1. On your Jira instance, go to **Apps > Manage Apps** and select **Upload app**.
+   1. In **App descriptor URL**, provide the full URL to your manifest file based
+      on your instance configuration.
 
-The **GitLab for Jira Cloud** app now displays under **Manage apps**. You can also
-select **Get started** to open the configuration page rendered from your GitLab instance.
+      By default, your manifest file is located at `/-/jira_connect/app_descriptor.json`.
+      For example, if your GitLab self-managed instance domain is `app.pet-store.cloud`,
+      your manifest file is located at `https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`.
+
+   1. Select **Upload**.
+   1. Select **Get started** to configure the integration.
+1. [Disable development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)
+   on your Jira instance.
+
+In **Apps > Manage Apps**, **GitLab for Jira Cloud** now appears.
+You can also select **Get started** to open the configuration page from your GitLab instance.
 
 NOTE:
-If a GitLab update makes changes to the application descriptor, you must uninstall,
-then reinstall the application.
+If a GitLab upgrade makes changes to the app descriptor, you must reinstall the app.
 
 ### Create a marketplace listing
 
 [Prerequisites](#prerequisites-1)
 
-If you don't want to use development mode on your Jira instance, you can create
-your own marketplace listing. This way, your application
-can be installed from the Atlassian Marketplace.
+If you do not want to use development mode, you can create your own marketplace listing
+and install the GitLab for Jira Cloud app from the Atlassian Marketplace.
 
 To create a marketplace listing:
 
@@ -168,7 +195,8 @@ NOTE:
 This method uses [automatic updates](../../integration/jira/connect-app.md#update-the-gitlab-for-jira-cloud-app)
 like the GitLab.com marketplace listing.
 
-For more information about creating a marketplace listing, see the [Atlassian documentation](https://developer.atlassian.com/platform/marketplace/installing-cloud-apps/#creating-the-marketplace-listing).
+For more information about creating a marketplace listing, see the
+[Atlassian documentation](https://developer.atlassian.com/platform/marketplace/installing-cloud-apps/#creating-the-marketplace-listing).
 
 ## Configure your GitLab instance to serve as a proxy
 
@@ -327,26 +355,3 @@ Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remot
 - The authenticated Jira user does not have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access.
 
 To resolve this issue, ensure the authenticated user is a Jira site administrator and try again.
-
-### Check if Jira Cloud is linked
-
-You can use the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session) to check if Jira Cloud is linked to:
-
-- A specified group:
-
-  ```ruby
-  JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
-  ```
-
-- A specified project:
-
-  ```ruby
-  Project.find_by_full_path('path/to/project').jira_subscription_exists?
-  ```
-
-- Any group:
-
-  ```ruby
-  installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
-  installation.subscriptions
-  ```

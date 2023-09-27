@@ -38,38 +38,60 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     end
   end
 
-  shared_examples 'successfully runs the pipeline' do
-    it 'runs the given pipeline successfully' do
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:info)
-          .with(
-            hash_including(
-              'pipeline_name' => 'FakePipeline',
-              'bulk_import_id' => entity.bulk_import_id,
-              'bulk_import_entity_id' => entity.id,
-              'bulk_import_entity_type' => entity.source_type,
-              'source_full_path' => entity.source_full_path
-            )
+  it 'runs the given pipeline successfully' do
+    expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect(logger)
+        .to receive(:info)
+        .with(
+          hash_including(
+            'pipeline_name' => 'FakePipeline',
+            'bulk_import_id' => entity.bulk_import_id,
+            'bulk_import_entity_id' => entity.id,
+            'bulk_import_entity_type' => entity.source_type,
+            'source_full_path' => entity.source_full_path
           )
-      end
+        )
+    end
 
-      expect(BulkImports::EntityWorker)
-        .to receive(:perform_async)
-        .with(entity.id, pipeline_tracker.stage)
+    allow(subject).to receive(:jid).and_return('jid')
 
-      allow(subject).to receive(:jid).and_return('jid')
+    subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+    pipeline_tracker.reload
+
+    expect(pipeline_tracker.status_name).to eq(:finished)
+    expect(pipeline_tracker.jid).to eq('jid')
+  end
+
+  context 'when job version is nil' do
+    before do
+      allow(subject).to receive(:job_version).and_return(nil)
+    end
+
+    it 'runs the given pipeline successfully and enqueues entity worker' do
+      expect(BulkImports::EntityWorker).to receive(:perform_async).with(entity.id)
 
       subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
       pipeline_tracker.reload
 
       expect(pipeline_tracker.status_name).to eq(:finished)
-      expect(pipeline_tracker.jid).to eq('jid')
+    end
+
+    context 'when an error occurs' do
+      it 'enqueues entity worker' do
+        expect_next_instance_of(pipeline_class) do |pipeline|
+          expect(pipeline)
+            .to receive(:run)
+            .and_raise(StandardError, 'Error!')
+        end
+
+        expect(BulkImports::EntityWorker).to receive(:perform_async).with(entity.id)
+
+        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+      end
     end
   end
-
-  it_behaves_like 'successfully runs the pipeline'
 
   context 'when exclusive lease cannot be obtained' do
     it 'does not run the pipeline' do
@@ -132,10 +154,6 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           )
         )
 
-      expect(BulkImports::EntityWorker)
-        .to receive(:perform_async)
-        .with(entity.id, pipeline_tracker.stage)
-
       expect(BulkImports::Failure)
         .to receive(:create)
         .with(
@@ -155,37 +173,6 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
       expect(pipeline_tracker.status_name).to eq(:failed)
       expect(pipeline_tracker.jid).to eq('jid')
-    end
-
-    shared_examples 'successfully runs the pipeline' do
-      it 'runs the given pipeline successfully' do
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-          expect(logger)
-            .to receive(:info)
-            .with(
-              hash_including(
-                'pipeline_name' => 'FakePipeline',
-                'bulk_import_id' => entity.bulk_import_id,
-                'bulk_import_entity_id' => entity.id,
-                'bulk_import_entity_type' => entity.source_type,
-                'source_full_path' => entity.source_full_path
-              )
-            )
-        end
-
-        expect(BulkImports::EntityWorker)
-          .to receive(:perform_async)
-          .with(entity.id, pipeline_tracker.stage)
-
-        allow(subject).to receive(:jid).and_return('jid')
-
-        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-        pipeline_tracker.reload
-
-        expect(pipeline_tracker.status_name).to eq(:finished)
-        expect(pipeline_tracker.jid).to eq('jid')
-      end
     end
 
     context 'when enqueued pipeline cannot be found' do
@@ -211,10 +198,6 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
                 )
               )
           end
-
-          expect(BulkImports::EntityWorker)
-            .to receive(:perform_async)
-            .with(entity.id, pipeline_tracker.stage)
 
           subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
         end

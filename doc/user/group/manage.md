@@ -464,7 +464,7 @@ To enable Code Suggestions for a group:
 
 ## Enable Experiment features **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 
 WARNING:
 [Experiment features](../../policy/experiment-beta-support.md#experiment) may produce unexpected results
@@ -485,7 +485,7 @@ To enable Experiment features for a top-level group:
 
 ## Enable third-party AI features **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 
 WARNING:
 These AI features use [third-party services](../ai_features.md#data-usage)

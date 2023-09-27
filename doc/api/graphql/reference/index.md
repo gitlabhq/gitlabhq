@@ -23020,6 +23020,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before this date. |
 | <a id="projectpipelinesusername"></a>`username` | [`String`](#string) | Filter pipelines by the user that triggered the pipeline. |
 
+##### `Project.productAnalyticsEventsStored`
+
+Count of all events used, filtered optionally by month.
+
+Returns [`Int`](#int).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectproductanalyticseventsstoredmonth"></a>`month` | [`Int`](#int) | Month for the period to return. |
+| <a id="projectproductanalyticseventsstoredyear"></a>`year` | [`Int`](#int) | Year for the period to return. |
+
 ##### `Project.projectMembers`
 
 Members of the project.

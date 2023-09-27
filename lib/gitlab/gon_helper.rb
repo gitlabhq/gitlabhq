@@ -78,7 +78,6 @@ module Gitlab
       push_frontend_feature_flag(:server_side_frecent_namespaces, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:gitlab_duo, current_user)
       push_frontend_feature_flag(:custom_emoji)
     end
 
