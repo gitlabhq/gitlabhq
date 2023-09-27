@@ -539,6 +539,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_release
     enable :destroy_artifacts
     enable :admin_operations
+    enable :admin_sentry
     enable :read_deploy_token
     enable :create_deploy_token
     enable :destroy_deploy_token

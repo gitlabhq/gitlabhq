@@ -5,7 +5,7 @@ module Projects
     class ProjectsController < Projects::ApplicationController
       respond_to :json
 
-      before_action :authorize_read_sentry_issue!
+      before_action :authorize_admin_sentry!
 
       feature_category :error_tracking
       urgency :low

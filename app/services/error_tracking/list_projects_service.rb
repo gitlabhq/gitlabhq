@@ -5,6 +5,8 @@ module ErrorTracking
     private
 
     def perform
+      return error('Access denied', :unauthorized) unless can?(current_user, :admin_sentry, project)
+
       unless project_error_tracking_setting.valid?
         return error(project_error_tracking_setting.errors.full_messages.join(', '), :bad_request)
       end
