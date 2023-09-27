@@ -8,6 +8,8 @@
 module Gitlab
   module Ci
     class YamlProcessor
+      include Gitlab::Utils::StrongMemoize
+
       ValidationError = Class.new(StandardError)
 
       def initialize(config_content, opts = {})
@@ -28,6 +30,8 @@ module Gitlab
           return Result.new(errors: ['Please provide content of .gitlab-ci.yml'])
         end
 
+        verify_project_sha! if verify_project_sha?
+
         @ci_config = Gitlab::Ci::Config.new(@config_content, **@opts)
 
         unless @ci_config.valid?
@@ -46,6 +50,15 @@ module Gitlab
       def project
         @opts[:project]
       end
+
+      def sha
+        @opts[:sha]
+      end
+
+      def verify_project_sha?
+        @opts.delete(:verify_project_sha) || false
+      end
+      strong_memoize_attr :verify_project_sha?
 
       def run_logical_validations!
         @stages = @ci_config.stages
@@ -184,6 +197,24 @@ module Gitlab
 
       def error!(message)
         raise ValidationError, message
+      end
+
+      def verify_project_sha!
+        return unless project && sha && project.repository_exists? && project.commit(sha)
+
+        unless project_ref_contains_sha?
+          error!('Could not validate configuration. Config originates from external project')
+        end
+      end
+
+      def project_ref_contains_sha?
+        # A 5-minute cache TTL is sufficient to prevent Gitaly load issues while also mitigating rare
+        # use cases concerning stale data. For example, when an external commit gets merged into the
+        # project, there may be at most a 5-minute window where the `sha` is still considered external.
+        Rails.cache.fetch(['project', project.id, 'ref/contains/sha', sha], expires_in: 5.minutes) do
+          repo = project.repository
+          repo.branch_names_contains(sha, limit: 1).any? || repo.tag_names_contains(sha, limit: 1).any?
+        end
       end
     end
   end
