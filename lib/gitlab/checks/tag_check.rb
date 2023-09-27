@@ -39,6 +39,10 @@ module Gitlab
       def prohibited_tag_checks
         return if deletion?
 
+        unless Gitlab::GitRefValidator.validate(tag_name)
+          raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_tag_name]
+        end
+
         if tag_name.start_with?("refs/tags/") # rubocop: disable Style/GuardClause
           raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_tag_name]
         end
