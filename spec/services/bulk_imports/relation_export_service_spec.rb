@@ -13,10 +13,12 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
   let_it_be_with_reload(:export) { create(:bulk_import_export, group: group, relation: relation) }
 
   before do
+    FileUtils.mkdir_p(export_path)
+
     group.add_owner(user)
     project.add_maintainer(user)
 
-    allow(export).to receive(:export_path).and_return(export_path)
+    allow(subject).to receive(:export_path).and_return(export_path)
   end
 
   after :all do
@@ -51,6 +53,16 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
       subject.execute
 
       expect(export.upload.export_file).to be_present
+    end
+
+    context 'when relation is empty and there is nothing to export' do
+      let(:relation) { 'milestones' }
+
+      it 'creates empty file on disk' do
+        expect(FileUtils).to receive(:touch).with("#{export_path}/#{relation}.ndjson")
+
+        subject.execute
+      end
     end
 
     context 'when exporting a file relation' do

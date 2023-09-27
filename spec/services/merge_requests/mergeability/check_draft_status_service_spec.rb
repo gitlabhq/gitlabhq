@@ -3,9 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::Mergeability::CheckDraftStatusService, feature_category: :code_review_workflow do
-  subject(:check_draft_status) { described_class.new(merge_request: merge_request, params: {}) }
+  subject(:check_draft_status) { described_class.new(merge_request: merge_request, params: params) }
 
-  let(:merge_request) { build(:merge_request) }
+  let_it_be(:merge_request) { build(:merge_request) }
+
+  let(:params) { { skip_draft_check: skip_check } }
+  let(:skip_check) { false }
 
   describe '#execute' do
     let(:result) { check_draft_status.execute }
@@ -33,8 +36,20 @@ RSpec.describe MergeRequests::Mergeability::CheckDraftStatusService, feature_cat
   end
 
   describe '#skip?' do
-    it 'returns false' do
-      expect(check_draft_status.skip?).to eq false
+    context 'when skip check param is true' do
+      let(:skip_check) { true }
+
+      it 'returns true' do
+        expect(check_draft_status.skip?).to eq true
+      end
+    end
+
+    context 'when skip check param is false' do
+      let(:skip_check) { false }
+
+      it 'returns false' do
+        expect(check_draft_status.skip?).to eq false
+      end
     end
   end
 

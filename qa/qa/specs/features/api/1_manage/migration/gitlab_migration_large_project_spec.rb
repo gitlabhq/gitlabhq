@@ -75,10 +75,20 @@ module QA
 
       # rubocop:disable RSpec/InstanceVariable
       after do |example|
-        next unless defined?(@import_time)
+        unless defined?(@import_time)
+          next save_json(
+            "data",
+            {
+              status: "failed",
+              importer: :gitlab,
+              import_finished: false,
+              import_time: Time.now - @start
+            }
+          )
+        end
 
         # add additional import time metric
-        example.metadata[:custom_test_metrics] = { fields: { import_time: @import_time } }
+        example.metadata[:custom_test_metrics][:fields] = { import_time: @import_time }
         # save data for comparison notification creation
         save_json(
           "data",
@@ -86,6 +96,7 @@ module QA
             status: example.exception ? "failed" : "passed",
             importer: :gitlab,
             import_time: @import_time,
+            import_finished: true,
             errors: import_failures,
             source: {
               name: "GitLab Source",
@@ -126,10 +137,9 @@ module QA
           }
         )
       end
-      # rubocop:enable RSpec/InstanceVariable
 
       it "migrates large gitlab group via api", testcase: "https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358842" do
-        start = Time.now
+        @start = Time.now
 
         # trigger import and log imported group path
         logger.info("== Importing group '#{gitlab_source_group}' in to '#{imported_group.full_path}' ==")
@@ -141,7 +151,7 @@ module QA
         logger.info("== Waiting for import to be finished ==")
         expect_group_import_finished_successfully
 
-        @import_time = Time.now - start
+        @import_time = Time.now - @start
 
         aggregate_failures do
           verify_repository_import
@@ -152,6 +162,7 @@ module QA
           verify_issues_import
         end
       end
+      # rubocop:enable RSpec/InstanceVariable
 
       # Fetch source project objects for comparison
       #

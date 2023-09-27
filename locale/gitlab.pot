@@ -42745,6 +42745,9 @@ msgstr ""
 msgid "SecurityOrchestration|YAML"
 msgstr ""
 
+msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} policies."
+msgstr ""
+
 msgid "SecurityOrchestration|You don't have any security policies yet"
 msgstr ""
 

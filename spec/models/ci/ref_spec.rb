@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Ref do
+RSpec.describe Ci::Ref, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
   it { is_expected.to belong_to(:project) }
@@ -10,13 +10,15 @@ RSpec.describe Ci::Ref do
   describe 'state machine transitions' do
     context 'unlock artifacts transition' do
       let(:ci_ref) { create(:ci_ref) }
-      let(:unlock_artifacts_worker_spy) { class_spy(::Ci::PipelineSuccessUnlockArtifactsWorker) }
+      let(:pipeline_success_unlock_artifacts_worker_spy) { class_spy(::Ci::PipelineSuccessUnlockArtifactsWorker) }
+      let(:unlock_previous_pipelines_worker_spy) { class_spy(::Ci::Refs::UnlockPreviousPipelinesWorker) }
 
       before do
-        stub_const('Ci::PipelineSuccessUnlockArtifactsWorker', unlock_artifacts_worker_spy)
+        stub_const('Ci::PipelineSuccessUnlockArtifactsWorker', pipeline_success_unlock_artifacts_worker_spy)
+        stub_const('Ci::Refs::UnlockPreviousPipelinesWorker', unlock_previous_pipelines_worker_spy)
       end
 
-      context 'pipline is locked' do
+      context 'pipeline is locked' do
         let!(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :artifacts_locked) }
 
         where(:initial_state, :action, :count) do
@@ -41,10 +43,24 @@ RSpec.describe Ci::Ref do
               ci_ref.update!(status: status_value)
             end
 
-            it 'calls unlock artifacts service' do
+            it 'calls pipeline complete unlock artifacts service' do
               ci_ref.send(action)
 
-              expect(unlock_artifacts_worker_spy).to have_received(:perform_async).exactly(count).times
+              expect(unlock_previous_pipelines_worker_spy).to have_received(:perform_async).exactly(count).times
+              expect(pipeline_success_unlock_artifacts_worker_spy).not_to have_received(:perform_async)
+            end
+
+            context 'when ci_unlock_pipelines_queue flag is disabled' do
+              before do
+                stub_feature_flags(ci_unlock_pipelines_queue: false)
+              end
+
+              it 'calls pipeline success unlock artifacts service' do
+                ci_ref.send(action)
+
+                expect(pipeline_success_unlock_artifacts_worker_spy).to have_received(:perform_async).exactly(count).times
+                expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
+              end
             end
           end
         end
@@ -53,10 +69,24 @@ RSpec.describe Ci::Ref do
       context 'pipeline is unlocked' do
         let!(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :unlocked) }
 
-        it 'does not call unlock artifacts service' do
+        it 'does not unlock pipelines' do
           ci_ref.succeed!
 
-          expect(unlock_artifacts_worker_spy).not_to have_received(:perform_async)
+          expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
+          expect(pipeline_success_unlock_artifacts_worker_spy).not_to have_received(:perform_async)
+        end
+
+        context 'when ci_unlock_pipelines_queue flag is disabled' do
+          before do
+            stub_feature_flags(ci_unlock_pipelines_queue: false)
+          end
+
+          it 'does not unlock pipelines' do
+            ci_ref.succeed!
+
+            expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
+            expect(pipeline_success_unlock_artifacts_worker_spy).not_to have_received(:perform_async)
+          end
         end
       end
     end

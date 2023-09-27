@@ -45,6 +45,20 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
       service.execute
     end
 
+    context 'when relation is empty and there is nothing to export' do
+      let_it_be(:export) { create(:bulk_import_export, :batched, project: project, relation: 'milestones') }
+      let_it_be(:batch) { create(:bulk_import_export_batch, export: export) }
+
+      it 'creates empty file on disk' do
+        allow(subject).to receive(:export_path).and_return('foo')
+        allow(FileUtils).to receive(:remove_entry)
+
+        expect(FileUtils).to receive(:touch).with('foo/milestones.ndjson')
+
+        subject.execute
+      end
+    end
+
     context 'when exception occurs' do
       before do
         allow(service).to receive(:gzip).and_raise(StandardError, 'Error!')

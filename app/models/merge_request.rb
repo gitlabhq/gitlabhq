@@ -1231,9 +1231,13 @@ class MergeRequest < ApplicationRecord
     }
   end
 
-  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false, skip_rebase_check: false)
+  def mergeable?(
+    skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false,
+    skip_draft_check: false, skip_rebase_check: false)
+
     return false unless mergeable_state?(
       skip_ci_check: skip_ci_check,
+      skip_draft_check: skip_draft_check,
       skip_discussions_check: skip_discussions_check,
       skip_approved_check: skip_approved_check
     )
@@ -1266,13 +1270,16 @@ class MergeRequest < ApplicationRecord
     mergeable_state_checks + mergeable_git_state_checks
   end
 
-  def mergeable_state?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false)
+  def mergeable_state?(
+    skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false,
+    skip_draft_check: false)
     additional_checks = execute_merge_checks(
       mergeable_state_checks,
       params: {
         skip_ci_check: skip_ci_check,
         skip_discussions_check: skip_discussions_check,
-        skip_approved_check: skip_approved_check
+        skip_approved_check: skip_approved_check,
+        skip_draft_check: skip_draft_check
       }
     )
     additional_checks.success?

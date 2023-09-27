@@ -11,6 +11,7 @@ module Ci
     include Importable
     include Ci::HasRef
     include Ci::TrackEnvironmentUsage
+    include EachBatch
 
     extend ::Gitlab::Utils::Override
 

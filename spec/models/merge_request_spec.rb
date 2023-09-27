@@ -3474,6 +3474,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
       end
+
+      it 'returns true when skipping draft check' do
+        expect(subject.mergeable_state?(skip_draft_check: true)).to be(true)
+      end
     end
 
     context 'when broken' do

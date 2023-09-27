@@ -12,7 +12,7 @@ module MergeRequests
       end
 
       def skip?
-        false
+        params[:skip_draft_check].present?
       end
 
       def cacheable?

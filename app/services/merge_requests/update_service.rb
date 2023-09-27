@@ -185,6 +185,7 @@ module MergeRequests
         # email template itself, see `change_in_merge_request_draft_status_email` template.
         notify_draft_status_changed(merge_request)
         trigger_merge_request_status_updated(merge_request)
+        publish_draft_change_event(merge_request) if Feature.enabled?(:additional_merge_when_checks_ready, project)
       end
 
       if !old_title_draft && new_title_draft
@@ -194,6 +195,14 @@ module MergeRequests
         # Unmarked as Draft
         merge_request_activity_counter.track_unmarked_as_draft_action(user: current_user)
       end
+    end
+
+    def publish_draft_change_event(merge_request)
+      Gitlab::EventStore.publish(
+        MergeRequests::DraftStateChangeEvent.new(
+          data: { current_user_id: current_user.id, merge_request_id: merge_request.id }
+        )
+      )
     end
 
     def notify_draft_status_changed(merge_request)

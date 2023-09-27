@@ -159,6 +159,8 @@
   - 1
 - - ci_runners_process_runner_version_update
   - 1
+- - ci_unlock_pipelines_in_queue
+  - 1
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
 - - cluster_agent

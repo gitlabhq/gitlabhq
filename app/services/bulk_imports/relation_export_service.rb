@@ -18,6 +18,7 @@ module BulkImports
       find_or_create_export! do |export|
         export.remove_existing_upload!
         export_service.execute
+        ensure_export_file_exists!
         compress_exported_relation
         upload_compressed_file(export)
       end
@@ -90,6 +91,16 @@ module BulkImports
       Gitlab::ErrorTracking.track_exception(exception, portable_id: portable.id, portable_type: portable.class.name)
 
       export&.update(status_event: 'fail_op', error: exception.class, batched: false)
+    end
+
+    def exported_filepath
+      File.join(export_path, export_service.exported_filename)
+    end
+
+    # Create empty file on disk
+    # if relation is empty and nothing was exported
+    def ensure_export_file_exists!
+      FileUtils.touch(exported_filepath)
     end
   end
 end

@@ -1139,12 +1139,17 @@ lib/gitlab/checks/**
 /app/workers/authorized_projects_worker.rb
 /app/workers/personal_access_tokens/
 /config/initializers/01_secret_token.rb
+/config/initializers/declarative_policy.rb
+/config/initializers/declarative_policy_cached_attributes.rb
 /config/initializers/devise_dynamic_password_length_validation.rb
 /config/initializers/devise_password_length.rb.example
+/config/initializers/doorkeeper.rb
+/config/initializers/doorkeeper_openid_connect.rb
 /config/initializers/gitlab_shell_secret_token.rb
 /config/initializers/omniauth.rb
 /config/initializers/rails_host_authorization.rb
 /config/initializers/rails_host_authorization_gitpod.rb
+/config/initializers/warden.rb
 /config/initializers/webauthn.rb
 /config/initializers_before_autoloader/100_patch_omniauth_oauth2.rb
 /config/initializers_before_autoloader/100_patch_omniauth_saml.rb
@@ -1182,8 +1187,8 @@ lib/gitlab/checks/**
 /ee/app/models/concerns/password_complexity.rb
 /ee/app/models/ee/personal_access_token.rb
 /ee/app/models/ee/project_authorization.rb
-/ee/app/models/scim_oauth_access_token.rb
 /ee/app/models/members/member_role.rb
+/ee/app/models/scim_oauth_access_token.rb
 /ee/app/serializers/scim_oauth_access_token_entity.rb
 /ee/app/services/arkose/token_verification_service.rb
 /ee/app/services/ee/auth/

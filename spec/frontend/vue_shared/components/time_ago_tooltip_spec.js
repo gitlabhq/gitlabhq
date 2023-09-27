@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlTruncate } from '@gitlab/ui';
 
 import timezoneMock from 'timezone-mock';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
@@ -34,6 +35,14 @@ describe('Time ago with tooltip component', () => {
 
     expect(vm.attributes('title')).toEqual(formatDate(timestamp));
     expect(vm.text()).toEqual(timeAgoTimestamp);
+  });
+
+  it('should render truncated value with gl-truncate as true', () => {
+    buildVm({
+      enableTruncation: true,
+    });
+
+    expect(vm.findComponent(GlTruncate).exists()).toBe(true);
   });
 
   it('should render provided html class', () => {

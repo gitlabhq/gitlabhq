@@ -220,10 +220,20 @@ module QA
       end
 
       after do |example|
-        next unless defined?(@import_time)
+        unless defined?(@import_time)
+          next save_json(
+            "data",
+            {
+              status: "failed",
+              importer: :github,
+              import_finished: false,
+              import_time: Time.now - @start
+            }
+          )
+        end
 
         # add additional import time metric
-        example.metadata[:custom_test_metrics] = { fields: { import_time: @import_time } }
+        example.metadata[:custom_test_metrics][:fields] = { import_time: @import_time }
         # save data for comparison notification creation
         save_json(
           "data",
@@ -231,6 +241,7 @@ module QA
             status: example.exception ? "failed" : "passed",
             importer: :github,
             import_time: @import_time,
+            import_finished: true,
             errors: imported_project.project_import_status[:failed_relations],
             reported_stats: @stats,
             source: {
@@ -279,7 +290,7 @@ module QA
         'imports large Github repo via api',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347668'
       ) do
-        start = Time.now
+        @start = Time.now
 
         # trigger import and log project paths
         logger.info("== Triggering import of project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
@@ -301,7 +312,7 @@ module QA
         logger.info("== Waiting for import to be finished ==")
         expect(import_status).to eventually_eq('finished').within(max_duration: import_max_duration, sleep_interval: 30)
 
-        @import_time = Time.now - start
+        @import_time = Time.now - @start
 
         aggregate_failures do
           verify_repository_import
