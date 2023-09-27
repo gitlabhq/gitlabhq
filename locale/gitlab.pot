@@ -40715,6 +40715,9 @@ msgstr ""
 msgid "Runners|No description"
 msgstr ""
 
+msgid "Runners|No jobs have been run by instance runners in the past 3 hours."
+msgstr ""
+
 msgid "Runners|No results found"
 msgstr ""
 
@@ -41104,6 +41107,9 @@ msgstr ""
 msgid "Runners|Token expiry"
 msgstr ""
 
+msgid "Runners|UTC Time"
+msgstr ""
+
 msgid "Runners|Understand how long it takes for runners to pick up a job. %{linkStart}How is this calculated?%{linkEnd}"
 msgstr ""
 
@@ -41153,6 +41159,9 @@ msgid "Runners|View installation instructions"
 msgstr ""
 
 msgid "Runners|View metrics"
+msgstr ""
+
+msgid "Runners|Wait time (secs)"
 msgstr ""
 
 msgid "Runners|Wait time to pick a job"

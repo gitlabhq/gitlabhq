@@ -142,6 +142,16 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
           .with(described_class::InvalidMethodError, event_name: event_name, kwargs: { project: 'a_string' })
       end
     end
+
+    context 'when send_snowplow_event is false' do
+      it 'logs to Redis and RedisHLL but not Snowplow' do
+        described_class.track_event(event_name, send_snowplow_event: false, user: user, project: project)
+
+        expect_redis_tracking(event_name)
+        expect_redis_hll_tracking(event_name)
+        expect(fake_snowplow).not_to have_received(:event)
+      end
+    end
   end
 
   context 'when unique key is not defined' do

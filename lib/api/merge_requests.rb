@@ -69,7 +69,7 @@ module API
         args[:scope] = args[:scope].underscore if args[:scope]
 
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
-                           .reorder(order_options_with_tie_breaker)
+                           .reorder(order_options_with_tie_breaker(override_created_at: false))
         merge_requests = paginate(merge_requests)
                            .preload(:source_project, :target_project)
 

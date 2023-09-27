@@ -23,7 +23,7 @@ module Tooling
       MSG
 
       CHANGED_USAGE_DATA_MESSAGE = <<~MSG
-        Notice that implementing metrics directly in usage_data.rb has been deprecated. ([Deprecated Usage Metrics](https://docs.gitlab.com/ee/development/service_ping/usage_data.html#usage-data-metrics-guide))
+        Notice that implementing metrics directly in usage_data.rb has been deprecated.
         Please use [Instrumentation Classes](https://docs.gitlab.com/ee/development/service_ping/metrics_instrumentation.html) instead.
       MSG
 

@@ -80,7 +80,7 @@ add_metric('CountIssuesMetric', time_frame: 'all')
 
 Examples:
 
-Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recommend to use [instrumentation classes](metrics_instrumentation.md).
+Examples using `usage_data.rb` have been deprecated. We recommend to use [instrumentation classes](metrics_instrumentation.md).
 
 #### Distinct batch counters
 
@@ -97,7 +97,7 @@ Counting over non-unique columns can lead to performance issues. For more inform
 
 Examples:
 
-Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recommend to use [instrumentation classes](metrics_instrumentation.md).
+Examples using `usage_data.rb` have been deprecated. We recommend to use [instrumentation classes](metrics_instrumentation.md).
 
 #### Sum batch operation
 
@@ -122,7 +122,7 @@ add_metric('CountIssuesWeightAverageMetric')
 
 Examples:
 
-Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recommend to use [instrumentation classes](metrics_instrumentation.md).
+Examples using `usage_data.rb` have been deprecated. We recommend to use [instrumentation classes](metrics_instrumentation.md).
 
 #### Grouping and batch operations
 

@@ -36,13 +36,16 @@ To enable the export of
 1. Select the **Enabled** checkbox.
 1. Select **Save changes**.
 
-## Enable migration of groups and projects by direct transfer
+## Enable migration of groups and projects by direct transfer **(BETA)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
 
-You can enable migration of groups by direct transfer using the UI.
+WARNING:
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+The feature is not ready for production use.
 
-To enable migration of groups by direct transfer:
+Migration of groups and projects by direct transfer is disabled by default.
+To enable migration of groups and projects by direct transfer:
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the left sidebar, select **Search or go to**.

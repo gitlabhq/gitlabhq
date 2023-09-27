@@ -77,6 +77,7 @@ module API
 
         track_event(
           event_name,
+          send_snowplow_event: false,
           user: current_user,
           namespace_id: namespace_id,
           project_id: project_id

@@ -211,7 +211,7 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       context 'with correct params' do
         it 'returns status ok' do
           expect(Gitlab::InternalEvents).to receive(:track_event)
-            .with(known_event, user: user, namespace: namespace, project: project)
+            .with(known_event, send_snowplow_event: false, user: user, namespace: namespace, project: project)
 
           post api(endpoint, user), params: { event: known_event, namespace_id: namespace.id, project_id: project.id }
 
