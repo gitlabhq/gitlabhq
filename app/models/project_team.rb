@@ -120,7 +120,7 @@ class ProjectTeam
   def import(source_project, current_user)
     target_project = project
 
-    source_members = source_project.project_members.to_a
+    source_members = source_members_for_import(source_project)
     target_user_ids = target_project.project_members.pluck_user_ids
 
     importer_access_level = max_member_access(current_user.id)
@@ -242,6 +242,10 @@ class ProjectTeam
 
   def member_user_ids
     Member.on_project_and_ancestors(project).select(:user_id)
+  end
+
+  def source_members_for_import(source_project)
+    source_project.project_members.to_a
   end
 end
 

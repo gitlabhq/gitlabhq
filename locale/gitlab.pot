@@ -55628,6 +55628,9 @@ msgstr[1] ""
 msgid "security Reports|There was an error creating the merge request"
 msgstr ""
 
+msgid "security policy bot users cannot be added to other projects"
+msgstr ""
+
 msgid "selective_code_owner_removals can only be enabled when retain_approvals_on_push is enabled"
 msgstr ""
 
