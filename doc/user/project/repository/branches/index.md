@@ -286,6 +286,51 @@ To do this:
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
 
+## Configure rules for target branches **(PREMIUM ALL)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`.
+On GitLab.com, this feature is not available.
+
+Some projects use multiple long-term branches for development, like `develop` and `qa`.
+In these projects, you might want to keep `main` as the default branch, but expect
+merge requests to target `develop` or `qa` instead. Target branch rules help ensure
+merge requests target the appropriate development branch for your project.
+
+When you create a merge request, the rule checks the name of the branch. If the
+branch name matches the rule, the merge request targets the branch you specify
+in the rule. If the branch name does not match, the merge request targets the
+default branch of the project.
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+To create a target branch rule:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. Select **Add target branch rule**.
+1. For **Rule name**, provide a string or wild card to compare against branch names.
+1. Select the **Target branch** to use when the branch name matches the **Rule name**.
+1. Select **Save**.
+
+## Delete a target branch rule
+
+When you remove a target branch rule, existing merge requests remain unchanged.
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+To do this:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. Select **Delete** on the rule you want to delete.
+
 ## Related topics
 
 - [Protected branches](../../protected_branches.md)

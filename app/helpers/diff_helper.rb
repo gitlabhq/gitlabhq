@@ -270,11 +270,6 @@ module DiffHelper
     toggle_whitespace_link(url, options)
   end
 
-  def diff_merge_request_whitespace_link(project, merge_request, options)
-    url = diffs_project_merge_request_path(project, merge_request, params_with_whitespace)
-    toggle_whitespace_link(url, options)
-  end
-
   def diff_compare_whitespace_link(project, from, to, options)
     url = project_compare_path(project, from, to, params_with_whitespace)
     toggle_whitespace_link(url, options)

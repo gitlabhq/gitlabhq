@@ -83,23 +83,11 @@ NPM_TOKEN=your_token npm publish
 
 Your package should now publish to the Package Registry.
 
-## Publishing a package via a CI/CD pipeline
+## Publishing a package by using a CI/CD pipeline
 
-### Authenticating via the `.npmrc`
+When publishing by using a CI/CD pipeline, you can use the [predefined variables](../../../ci/variables/predefined_variables.md) `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}` to authenticate with your project's Package Registry. We use these variables to create a `.npmrc` file [for authentication](#authenticating-via-the-npmrc) during execution of your CI/CD job.
 
-Create or edit the `.npmrc` file in the same directory as your `package.json` in a GitLab project. Include the following lines in the `.npmrc` file:
-
-```shell
-@scope:registry=https://your_domain_name/api/v4/projects/your_project_id/packages/npm/
-//your_domain_name/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
-```
-
-- Replace `@scope` with the [root level group](#naming-convention) of the project you're publishing to the package to.
-- The `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}` are [predefined variables](../../../ci/variables/predefined_variables.md) that are available in the pipeline and do not need to be replaced.
-
-### Publishing a package via a CI/CD pipeline
-
-In the GitLab project that houses your `.npmrc` and `package.json`, edit or create a `.gitlab-ci.yml` file. For example:
+In the GitLab project containing your `package.json`, edit or create a `.gitlab-ci.yml` file. For example:
 
 ```yaml
 image: node:latest
@@ -107,14 +95,17 @@ image: node:latest
 stages:
   - deploy
 
-deploy:
+publish-npm:
   stage: deploy
   script:
-    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}">.npmrc
+    - echo "@scope:registry=https://${CI_SERVER_HOST}:${CI_SERVER_PORT}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
+    - echo "//${CI_SERVER_HOST}:${CI_SERVER_PORT}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
     - npm publish
 ```
 
-Your package should now publish to the Package Registry when the pipeline runs.
+- Replace `@scope` with the [scope](https://docs.npmjs.com/cli/v10/using-npm/scope) of the package that is being published.
+
+Your package is published to the Package Registry when the `publish-npm` job in your pipeline runs.
 
 ## Install a package
 

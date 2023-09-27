@@ -16,7 +16,7 @@ Service Ping consists of two kinds of data:
 To implement a new metric in Service Ping, follow these steps:
 
 1. [Implement the required counter](#types-of-counters)
-1. [Name and place the metric](metrics_dictionary.md#metric-key_path)
+1. [Name and place the metric](../metrics/metrics_dictionary.md#metric-key_path)
 1. [Test counters manually using your Rails console](#test-counters-manually-using-your-rails-console)
 1. [Generate the SQL query](#generate-the-sql-query)
 1. [Optimize queries with Database Lab](#optimize-queries-with-database-lab)
@@ -654,7 +654,7 @@ For more details, see the [database review guide](../../database_review.md#prepa
 
 ## Add the metric definition
 
-See the [Metrics Dictionary guide](metrics_dictionary.md) for more information.
+See the [Metrics Dictionary guide](../metrics/metrics_dictionary.md) for more information.
 
 ## Create a merge request
 

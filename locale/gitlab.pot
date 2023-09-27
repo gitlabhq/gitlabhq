@@ -4802,9 +4802,6 @@ msgstr ""
 msgid "Allow owners to manage default branch protection per group."
 msgstr ""
 
-msgid "Allow owners to manually add users outside of LDAP"
-msgstr ""
-
 msgid "Allow password authentication for Git over HTTP(S)"
 msgstr ""
 
@@ -13717,9 +13714,6 @@ msgid "Could not revoke personal access token %{personal_access_token_name}."
 msgstr ""
 
 msgid "Could not save configuration. Please refresh the page, or try again later."
-msgstr ""
-
-msgid "Could not update the LDAP settings"
 msgstr ""
 
 msgid "Could not update wiki page"
@@ -27302,13 +27296,7 @@ msgstr ""
 msgid "LDAP Synchronization"
 msgstr ""
 
-msgid "LDAP group settings"
-msgstr ""
-
 msgid "LDAP settings"
-msgstr ""
-
-msgid "LDAP settings updated"
 msgstr ""
 
 msgid "LDAP sync in progress. This could take a few minutes. Refresh the page to see the changes."

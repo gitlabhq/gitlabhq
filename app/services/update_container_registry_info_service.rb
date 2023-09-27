@@ -24,7 +24,8 @@ class UpdateContainerRegistryInfoService
     Gitlab::CurrentSettings.update!(
       container_registry_vendor: info[:vendor] || '',
       container_registry_version: info[:version] || '',
-      container_registry_features: info[:features] || []
+      container_registry_features: info[:features] || [],
+      container_registry_db_enabled: info[:db_enabled] || false
     )
   end
 end

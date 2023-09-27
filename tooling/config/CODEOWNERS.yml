@@ -3,7 +3,7 @@
 # And paste the contents into .gitlab/CODEOWNERS
 
 '[Authentication and Authorization]':
-  '@gitlab-org/manage/authentication-and-authorization/approvers':
+  '@gitlab-org/govern/authentication-and-authorization/approvers':
     allow:
       keywords:
         - 'password'

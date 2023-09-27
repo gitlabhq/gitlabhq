@@ -73,7 +73,9 @@ RSpec.describe HealthController, feature_category: :database do
   end
 
   describe 'GET /-/readiness' do
-    subject { get '/-/readiness', params: params, headers: headers }
+    subject(:request) { get readiness_path, params: params, headers: headers }
+
+    it_behaves_like 'Base action controller'
 
     shared_context 'endpoint responding with readiness data' do
       context 'when requesting instance-checks' do

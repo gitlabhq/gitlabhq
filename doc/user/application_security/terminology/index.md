@@ -35,6 +35,11 @@ The different places in an application that are vulnerable to attack. Secure pro
 search the attack surface during scans. Each product defines the attack surface differently. For
 example, SAST uses files and line numbers, and DAST uses URLs.
 
+## Component
+
+A software component that makes up a portion of a software project. Examples include libraries, drivers, data, and
+[many more](https://cyclonedx.org/docs/1.5/json/#components_items_type).
+
 ## Corpus
 
 The set of meaningful test cases that are generated while the fuzzer is running. Each meaningful
@@ -104,6 +109,12 @@ under development and tracked in issue [267588](https://gitlab.com/gitlab-org/gi
 ## Insignificant finding
 
 A legitimate finding that a particular customer doesn't care about.
+
+## Known affected component
+
+A component that matches the requirements for a vulnerability to be exploitable. For example,
+`packageA@1.0.3` matches the name, package type, and one of the affected versions or version
+ranges of `FAKECVE-2023-0001`.
 
 ## Location fingerprint
 
@@ -216,6 +227,14 @@ table.package-managers-and-types ul {
 ## Pipeline Security tab
 
 A page that displays findings discovered in the associated CI pipeline.
+
+## Possibly affected component
+
+A software component that is possibly affected by vulnerability. For example, when scanning a
+project for known vulnerabilities, components are first evaluated to see if they match the name
+and [package type](https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst).
+During this stage, they're _possibly_ affected by the vulnerability, and are only [known to be affected](#known-affected-component)
+after it's confirmed that they fall in the affected version range.
 
 ## Post-filter
 

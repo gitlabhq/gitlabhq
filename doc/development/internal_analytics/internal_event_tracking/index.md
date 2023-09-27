@@ -13,5 +13,5 @@ This page is a work in progress. For any questions or clarifications, reach out 
 - [Introduction to internal event tracking](introduction.md#internal-event-tracking)
 - [Quick start guide](quick_start.md#quick-start-for-internal-event-tracking)
 - [Event definition guide](event_definition_guide.md#internal-event-tracking-definition-guide)
-- [Metrics dictionary guide](../service_ping/metrics_dictionary.md#metrics-dictionary-guide)
+- [Metrics dictionary guide](../metrics/metrics_dictionary.md#metrics-dictionary-guide)
 - [Architecture](architecture.md#internal-event-tracking-architecture)

@@ -1,16 +1,11 @@
 ---
-stage: Analyze
-group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../metrics/metrics_dictionary.md#performance-indicator-metrics'
+remove_date: '2023-09-25'
 ---
 
-# Performance Indicator Metrics guide
+This document was moved to [another location](../metrics/metrics_lifecycle.md).
 
-This guide describes how to use metrics definitions to define [performance indicator](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/#implementing-product-performance-indicators) metrics.
-
-To use a metric definition to manage a performance indicator:
-
-1. Create a merge request that includes related changes.
-1. Use labels `~"analytics instrumentation"`, `"~Data Warehouse::Impact Check"`.
-1. Update the metric definition `performance_indicator_type` [field](metrics_dictionary.md#metrics-definition-and-validation).
-1. Create an issue in GitLab Product Data Insights project with the [PI Chart Help template](https://gitlab.com/gitlab-data/product-analytics/-/issues/new?issuable_template=PI%20Chart%20Help) to have the new metric visualized.
+<!-- This redirect file can be deleted after <2023-12-25>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

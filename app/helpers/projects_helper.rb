@@ -252,8 +252,6 @@ module ProjectsHelper
   end
 
   def show_mobile_devops_project_promo?(project)
-    return false unless ::Feature.enabled?(:mobile_devops_projects_promo, project)
-
     return false unless (project.project_setting.target_platforms & ::ProjectSetting::ALLOWED_TARGET_PLATFORMS).any?
 
     cookies["hide_mobile_devops_promo_#{project.id}".to_sym].blank?

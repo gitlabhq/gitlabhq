@@ -429,7 +429,7 @@ To add a metric definition for a new template:
    - [`config/metrics/counts_28d/20210216184559_ci_templates_total_unique_counts_monthly.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184559_ci_templates_total_unique_counts_monthly.yml)
 
 1. Use the same event name as above as the last argument in the following command to
-  [add new metric definitions](../internal_analytics/service_ping/metrics_dictionary.md#metrics-added-dynamic-to-service-ping-payload):
+  [add new metric definitions](../internal_analytics/metrics/metrics_dictionary.md#metrics-added-dynamic-to-service-ping-payload):
 
    ```shell
    bundle exec rails generate gitlab:usage_metric_definition:redis_hll ci_templates <template_metric_event_name>
@@ -450,7 +450,7 @@ To add a metric definition for a new template:
    - `data_source:`: Set to `redis_hll`.
    - `description`: Add a short description of what this metric counts, for example: `Count of pipelines using the latest Auto Deploy template`
    - `product_*`: Set to [section, stage, group, and feature category](https://about.gitlab.com/handbook/product/categories/#devops-stages)
-     as per the [metrics dictionary guide](../internal_analytics/service_ping/metrics_dictionary.md#metrics-definition-and-validation).
+     as per the [metrics dictionary guide](../internal_analytics/metrics/metrics_dictionary.md#metrics-definition-and-validation).
      If you are unsure what to use for these keywords, you can ask for help in the merge request.
    - Add the following to the end of each file:
 

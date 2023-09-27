@@ -16,12 +16,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
 
-  ignore_columns %i[
-    dashboard_notification_limit
-    dashboard_enforcement_limit
-    dashboard_limit_new_namespace_creation_enforcement_date
-  ], remove_with: '16.5', remove_after: '2023-08-22'
-
   ignore_column %i[
     relay_state_domain_allowlist
     in_product_marketing_emails_enabled

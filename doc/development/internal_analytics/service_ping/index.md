@@ -31,7 +31,7 @@ We use the following terminology to describe the Service Ping components:
 - **Service Ping**: the process that collects and generates a JSON payload.
 - **Service Data**: the contents of the Service Ping JSON payload. This includes metrics.
 - **Metrics**: primarily made up of row counts for different tables in an instance's database. Each
-  metric has a corresponding [metric definition](metrics_dictionary.md#metrics-definition-and-validation)
+  metric has a corresponding [metric definition](../metrics/metrics_dictionary.md#metrics-definition-and-validation)
   in a YAML file.
 - **MAU**: monthly active users.
 - **WAU**: weekly active users.

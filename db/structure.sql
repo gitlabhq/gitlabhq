@@ -13306,7 +13306,8 @@ CREATE TABLE catalog_resources (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL
+    state smallint DEFAULT 0 NOT NULL,
+    latest_released_at timestamp with time zone
 );
 
 CREATE SEQUENCE catalog_resources_id_seq

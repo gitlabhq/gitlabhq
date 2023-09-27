@@ -3,7 +3,7 @@
 require 'gon'
 require 'fogbugz'
 
-class ApplicationController < ActionController::Base
+class ApplicationController < BaseActionController
   include Gitlab::GonHelper
   include Gitlab::NoCacheHeaders
   include GitlabRoutingHelper

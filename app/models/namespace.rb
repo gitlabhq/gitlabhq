@@ -18,6 +18,9 @@ class Namespace < ApplicationRecord
   include Ci::NamespaceSettings
   include Referable
   include CrossDatabaseIgnoredTables
+  include IgnorableColumns
+
+  ignore_column :unlock_membership_to_ldap, remove_with: '16.7', remove_after: '2023-11-16'
 
   cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 

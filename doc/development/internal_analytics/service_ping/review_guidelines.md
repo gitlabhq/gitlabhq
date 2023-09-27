@@ -51,7 +51,7 @@ are regular backend changes.
 #### The Analytics Instrumentation **reviewer** should
 
 - Perform a first-pass review on the merge request and suggest improvements to the author.
-- Check the [metric's location](metrics_dictionary.md#metric-key_path) in
+- Check the [metric's location](../metrics/metrics_dictionary.md#metric-key_path) in
   the Service Ping JSON payload.
 - Add the `~database` label and ask for a [database review](../../database_review.md) for
   metrics that are based on Database.

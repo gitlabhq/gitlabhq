@@ -72,13 +72,14 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
         expect(application_settings.container_registry_vendor).to be_blank
         expect(application_settings.container_registry_version).to be_blank
         expect(application_settings.container_registry_features).to eq([])
+        expect(application_settings.container_registry_db_enabled).to be_falsey
       end
     end
 
     context 'when able to detect the container registry type' do
       context 'when using the GitLab container registry' do
         it 'updates application settings accordingly' do
-          stub_registry_info(vendor: 'gitlab', version: '2.9.1-gitlab', features: %w[a b c])
+          stub_registry_info(vendor: 'gitlab', version: '2.9.1-gitlab', features: %w[a b c], db_enabled: true)
           stub_supports_gitlab_api(true)
 
           subject
@@ -88,12 +89,13 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
           expect(application_settings.container_registry_version).to eq('2.9.1-gitlab')
           expect(application_settings.container_registry_features)
             .to match_array(%W[a b c #{ContainerRegistry::GitlabApiClient::REGISTRY_GITLAB_V1_API_FEATURE}])
+          expect(application_settings.container_registry_db_enabled).to be_truthy
         end
       end
 
       context 'when using a third-party container registry' do
         it 'updates application settings accordingly' do
-          stub_registry_info(vendor: 'other', version: nil, features: nil)
+          stub_registry_info(vendor: 'other', version: nil, features: nil, db_enabled: false)
           stub_supports_gitlab_api(false)
 
           subject
@@ -102,6 +104,7 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
           expect(application_settings.container_registry_vendor).to eq('other')
           expect(application_settings.container_registry_version).to be_blank
           expect(application_settings.container_registry_features).to eq([])
+          expect(application_settings.container_registry_db_enabled).to be_falsey
         end
       end
     end
