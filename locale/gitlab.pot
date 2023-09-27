@@ -29391,6 +29391,9 @@ msgstr ""
 msgid "Merge request approvals"
 msgstr ""
 
+msgid "Merge request author cannot push to target project"
+msgstr ""
+
 msgid "Merge request change summary"
 msgstr ""
 

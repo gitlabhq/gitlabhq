@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BlobViewer::GitlabCiYml do
+RSpec.describe BlobViewer::GitlabCiYml, feature_category: :source_code_management do
   include FakeBlobHelpers
   include RepoHelpers
 
@@ -13,18 +13,20 @@ RSpec.describe BlobViewer::GitlabCiYml do
   let(:blob) { fake_blob(path: '.gitlab-ci.yml', data: data) }
   let(:sha) { sample_commit.id }
 
-  subject { described_class.new(blob) }
+  subject(:blob_viewer) { described_class.new(blob) }
 
   describe '#validation_message' do
-    it 'calls prepare! on the viewer' do
-      expect(subject).to receive(:prepare!)
+    subject(:validation_message) { blob_viewer.validation_message(project: project, sha: sha, user: user) }
 
-      subject.validation_message(project: project, sha: sha, user: user)
+    it 'calls prepare! on the viewer' do
+      expect(blob_viewer).to receive(:prepare!)
+
+      validation_message
     end
 
     context 'when the configuration is valid' do
       it 'returns nil' do
-        expect(subject.validation_message(project: project, sha: sha, user: user)).to be_nil
+        expect(validation_message).to be_nil
       end
     end
 
@@ -32,7 +34,29 @@ RSpec.describe BlobViewer::GitlabCiYml do
       let(:data) { 'oof' }
 
       it 'returns the error message' do
-        expect(subject.validation_message(project: project, sha: sha, user: user)).to eq('Invalid configuration format')
+        expect(validation_message).to eq('Invalid configuration format')
+      end
+    end
+
+    context 'when the sha is from a fork' do
+      include_context 'when a project repository contains a forked commit'
+
+      let(:sha) { forked_commit_sha }
+
+      context 'when a project ref contains the sha' do
+        before do
+          mock_branch_contains_forked_commit_sha
+        end
+
+        it 'returns nil' do
+          expect(validation_message).to be_nil
+        end
+      end
+
+      context 'when a project ref does not contain the sha' do
+        it 'returns an error' do
+          expect(validation_message).to match(/Could not validate configuration/)
+        end
       end
     end
   end
