@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Stage::ImportIssuesWorker, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::Stage::ImportPullRequestsNotesWorker, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started) }
 
   subject(:worker) { described_class.new }
@@ -12,14 +12,14 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportIssuesWorker, feature_categ
   describe '#perform' do
     context 'when the import succeeds' do
       before do
-        allow_next_instance_of(Gitlab::BitbucketImport::Importers::IssuesImporter) do |importer|
+        allow_next_instance_of(Gitlab::BitbucketImport::Importers::PullRequestsNotesImporter) do |importer|
           allow(importer).to receive(:execute).and_return(Gitlab::JobWaiter.new(2, '123'))
         end
       end
 
       it 'schedules the next stage' do
         expect(Gitlab::BitbucketImport::AdvanceStageWorker).to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, :issues_notes)
+          .with(project.id, { '123' => 2 }, :issues)
 
         worker.perform(project.id)
       end
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportIssuesWorker, feature_categ
 
     context 'when project does not exists' do
       it 'does not call the importer' do
-        expect(Gitlab::BitbucketImport::Importers::IssuesImporter).not_to receive(:new)
+        expect(Gitlab::BitbucketImport::Importers::PullRequestsNotesImporter).not_to receive(:new)
 
         worker.perform(-1)
       end
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportIssuesWorker, feature_categ
       it 'does not call the importer' do
         project = create(:project, :import_canceled)
 
-        expect(Gitlab::BitbucketImport::Importers::IssuesImporter).not_to receive(:new)
+        expect(Gitlab::BitbucketImport::Importers::PullRequestsNotesImporter).not_to receive(:new)
 
         worker.perform(project.id)
       end
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportIssuesWorker, feature_categ
       it 'does not schedule the next stage and raises error' do
         exception = StandardError.new('Error')
 
-        allow_next_instance_of(Gitlab::BitbucketImport::Importers::IssuesImporter) do |importer|
+        allow_next_instance_of(Gitlab::BitbucketImport::Importers::PullRequestsNotesImporter) do |importer|
           allow(importer).to receive(:execute).and_raise(exception)
         end
 

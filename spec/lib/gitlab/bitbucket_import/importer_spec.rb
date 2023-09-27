@@ -112,6 +112,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
     end
 
     let(:pull_request_author) { 'other' }
+    let(:comments) { [@inline_note, @reply] }
 
     let(:author_line) { "*Created by: someuser*\n\n" }
 
@@ -144,8 +145,6 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
         inline?: true,
         has_parent?: true,
         parent_id: 2)
-
-      comments = [@inline_note, @reply]
 
       allow(subject.client).to receive(:repo)
       allow(subject.client).to receive(:pull_requests).and_return([pull_request])
@@ -200,6 +199,12 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
         expect(reply_note.note).to eq(@reply.note)
         expect(reply_note.note).not_to include(author_line)
       end
+    end
+
+    it 'calls RefConverter to convert Bitbucket refs to Gitlab refs' do
+      expect(subject.instance_values['ref_converter']).to receive(:convert_note).twice
+
+      subject.execute
     end
 
     context 'when importing a pull request throws an exception' do
@@ -450,25 +455,32 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
       end
 
       context 'with issue comments' do
+        let(:note) { 'Hello world' }
         let(:inline_note) do
-          instance_double(Bitbucket::Representation::Comment, note: 'Hello world', author: 'someuser', created_at: Time.now, updated_at: Time.now)
+          instance_double(Bitbucket::Representation::Comment, note: note, author: 'someuser', created_at: Time.now, updated_at: Time.now)
         end
 
         before do
           allow_next_instance_of(Bitbucket::Client) do |instance|
             allow(instance).to receive(:issue_comments).and_return([inline_note])
           end
+          allow(importer).to receive(:import_wiki)
         end
 
         it 'imports issue comments' do
-          allow(importer).to receive(:import_wiki)
           importer.execute
 
           comment = project.notes.first
           expect(project.notes.size).to eq(7)
-          expect(comment.note).to include(inline_note.note)
+          expect(comment.note).to include(note)
           expect(comment.note).to include(inline_note.author)
           expect(importer.errors).to be_empty
+        end
+
+        it 'calls RefConverter to convert Bitbucket refs to Gitlab refs' do
+          expect(importer.instance_values['ref_converter']).to receive(:convert_note).exactly(7).times
+
+          importer.execute
         end
       end
 

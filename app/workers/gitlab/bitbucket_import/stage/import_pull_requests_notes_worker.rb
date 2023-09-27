@@ -3,7 +3,7 @@
 module Gitlab
   module BitbucketImport
     module Stage
-      class ImportIssuesWorker # rubocop:disable Scalability/IdempotentWorker
+      class ImportPullRequestsNotesWorker # rubocop:disable Scalability/IdempotentWorker
         include StageMethods
 
         private
@@ -17,12 +17,12 @@ module Gitlab
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },
-            :issues_notes
+            :issues
           )
         end
 
         def importer_class
-          Importers::IssuesImporter
+          Importers::PullRequestsNotesImporter
         end
       end
     end

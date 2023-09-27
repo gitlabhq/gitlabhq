@@ -16,6 +16,7 @@ module Gitlab
         @project = project
         @client = Bitbucket::Client.new(project.import_data.credentials)
         @formatter = Gitlab::ImportFormatter.new
+        @ref_converter = Gitlab::BitbucketImport::RefConverter.new(project)
         @labels = {}
         @errors = []
         @users = {}
@@ -40,6 +41,15 @@ module Gitlab
             raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.full_name}\""
           end
         end
+      end
+
+      def import_pull_request_comments(pull_request, merge_request)
+        comments = client.pull_request_comments(repo, pull_request.iid)
+
+        inline_comments, pr_comments = comments.partition(&:inline?)
+
+        import_inline_comments(inline_comments, pull_request, merge_request)
+        import_standalone_pr_comments(pr_comments, merge_request)
       end
 
       private
@@ -177,7 +187,7 @@ module Gitlab
 
           note = ''
           note += @formatter.author_line(comment.author) unless find_user_id(comment.author)
-          note += comment.note
+          note += @ref_converter.convert_note(comment.note.to_s)
 
           begin
             gitlab_issue.notes.create!(
@@ -240,15 +250,6 @@ module Gitlab
         import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
       rescue StandardError => e
         store_pull_request_error(pull_request, e)
-      end
-
-      def import_pull_request_comments(pull_request, merge_request)
-        comments = client.pull_request_comments(repo, pull_request.iid)
-
-        inline_comments, pr_comments = comments.partition(&:inline?)
-
-        import_inline_comments(inline_comments, pull_request, merge_request)
-        import_standalone_pr_comments(pr_comments, merge_request)
       end
 
       def import_inline_comments(inline_comments, pull_request, merge_request)
@@ -319,8 +320,7 @@ module Gitlab
 
       def comment_note(comment)
         author = @formatter.author_line(comment.author) unless find_user_id(comment.author)
-
-        author.to_s + comment.note.to_s
+        author.to_s + @ref_converter.convert_note(comment.note.to_s)
       end
 
       def log_base_data

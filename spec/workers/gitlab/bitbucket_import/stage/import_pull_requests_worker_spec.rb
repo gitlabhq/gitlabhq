@@ -19,7 +19,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker, feature
 
       it 'schedules the next stage' do
         expect(Gitlab::BitbucketImport::AdvanceStageWorker).to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, :issues)
+          .with(project.id, { '123' => 2 }, :pull_requests_notes)
 
         worker.perform(project.id)
       end

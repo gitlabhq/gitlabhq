@@ -83,13 +83,21 @@
   - 1
 - - bitbucket_import_import_issue
   - 1
+- - bitbucket_import_import_issue_notes
+  - 1
 - - bitbucket_import_import_pull_request
+  - 1
+- - bitbucket_import_import_pull_request_notes
   - 1
 - - bitbucket_import_stage_finish_import
   - 1
 - - bitbucket_import_stage_import_issues
   - 1
+- - bitbucket_import_stage_import_issues_notes
+  - 1
 - - bitbucket_import_stage_import_pull_requests
+  - 1
+- - bitbucket_import_stage_import_pull_requests_notes
   - 1
 - - bitbucket_import_stage_import_repository
   - 1

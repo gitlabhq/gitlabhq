@@ -58,6 +58,10 @@ module Bitbucket
         raw['reviewers']&.pluck('username')
       end
 
+      def merge_commit_sha
+        raw['merge_commit']&.dig('hash')
+      end
+
       def to_hash
         {
           iid: iid,
@@ -74,10 +78,6 @@ module Bitbucket
           target_branch_sha: target_branch_sha,
           reviewers: reviewers
         }
-      end
-
-      def merge_commit_sha
-        raw['merge_commit']&.dig('hash')
       end
 
       private

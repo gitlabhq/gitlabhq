@@ -2361,8 +2361,26 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_import_import_issue_notes
+  :worker_name: Gitlab::BitbucketImport::ImportIssueNotesWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: bitbucket_import_import_pull_request
   :worker_name: Gitlab::BitbucketImport::ImportPullRequestWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_import_pull_request_notes
+  :worker_name: Gitlab::BitbucketImport::ImportPullRequestNotesWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -2388,8 +2406,26 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_import_stage_import_issues_notes
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportIssuesNotesWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: bitbucket_import_stage_import_pull_requests
   :worker_name: Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_stage_import_pull_requests_notes
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportPullRequestsNotesWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low

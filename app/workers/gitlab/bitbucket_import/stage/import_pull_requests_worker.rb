@@ -17,7 +17,7 @@ module Gitlab
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },
-            :issues
+            :pull_requests_notes
           )
         end
 

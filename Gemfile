@@ -269,7 +269,7 @@ gem 'device_detector'
 
 # Redis
 gem 'redis', '~> 4.8.0'
-gem 'connection_pool', '~> 2.0'
+gem 'connection_pool', '~> 2.4'
 
 # Redis session store
 gem 'redis-actionpack', '~> 5.3.0'

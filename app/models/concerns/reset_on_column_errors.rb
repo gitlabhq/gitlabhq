@@ -38,6 +38,10 @@ module ResetOnColumnErrors
     end
   end
 
+  def reset_on_union_error(exception)
+    self.class.reset_on_union_error(exception)
+  end
+
   def reset_on_unknown_attribute_error(exception)
     self.class.do_reset(exception) if self.class.should_reset?
 

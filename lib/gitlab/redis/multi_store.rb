@@ -248,6 +248,19 @@ module Gitlab
         end
       end
 
+      # connection_pool gem calls `#close` method:
+      #
+      # https://github.com/mperham/connection_pool/blob/v2.4.1/lib/connection_pool.rb#L63
+      #
+      # Let's define it explicitly instead of propagating it to method_missing
+      def close
+        if use_primary_and_secondary_stores?
+          [primary_store, secondary_store].map(&:close).first
+        else
+          default_store.close
+        end
+      end
+
       private
 
       # @return [Boolean]

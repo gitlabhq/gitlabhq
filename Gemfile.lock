@@ -376,7 +376,7 @@ GEM
     colored2 (3.1.2)
     commonmarker (0.23.10)
     concurrent-ruby (1.2.2)
-    connection_pool (2.3.0)
+    connection_pool (2.4.1)
     cork (0.3.0)
       colored2 (~> 3.1)
     cose (1.3.0)
@@ -1770,7 +1770,7 @@ DEPENDENCIES
   cloud_profiler_agent (~> 0.0.0)!
   commonmarker (~> 0.23.10)
   concurrent-ruby (~> 1.1)
-  connection_pool (~> 2.0)
+  connection_pool (~> 2.4)
   countries (~> 4.0.0)
   creole (~> 0.5.0)
   crystalball (~> 0.7.0)
