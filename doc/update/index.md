@@ -165,7 +165,7 @@ cannot guarantee that upgrading between major versions is seamless.
 
 A *major* upgrade requires the following steps:
 
-1. Identify a [supported upgrade path](#upgrade-paths).
+1. Identify a [supported upgrade path](#upgrade-paths). The last minor release of the previous major version is always a required stop due to the background migrations being introduced in the last minor version.
 1. Ensure that any [background migrations have been fully completed](background_migrations.md)
    before upgrading to a new major version.
 1. If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md), then
