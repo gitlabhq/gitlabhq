@@ -559,13 +559,16 @@ class Project < ApplicationRecord
     allow_blank: true
   validates :name,
     presence: true,
-    length: { maximum: 255 },
-    format: { with: Gitlab::Regex.project_name_regex,
-              message: Gitlab::Regex.project_name_regex_message }
+    length: { maximum: 255 }
   validates :path,
     presence: true,
     project_path: true,
     length: { maximum: 255 }
+
+  validates :name,
+    format: { with: Gitlab::Regex.project_name_regex,
+              message: Gitlab::Regex.project_name_regex_message },
+    if: :name_changed?
   validates :path,
     format: { with: Gitlab::Regex.oci_repository_path_regex,
               message: Gitlab::Regex.oci_repository_path_regex_message },

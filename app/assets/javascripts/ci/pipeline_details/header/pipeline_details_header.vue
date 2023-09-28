@@ -403,7 +403,7 @@ export default {
           {{ commitTitle }}
         </h3>
         <div>
-          <ci-badge-link :status="detailedStatus" />
+          <ci-badge-link :status="detailedStatus" class="gl-display-inline-block gl-mb-3" />
           <div class="gl-ml-2 gl-mb-3 gl-display-inline-block gl-h-6">
             <gl-link
               v-if="user"
@@ -427,6 +427,8 @@ export default {
                 </gl-link>
               </template>
             </gl-sprintf>
+          </div>
+          <div class="gl-display-inline-block gl-mb-3">
             <clipboard-button
               :text="shortId"
               category="tertiary"
@@ -445,120 +447,124 @@ export default {
         </div>
         <div v-safe-html="refText" class="gl-mb-3" data-testid="pipeline-ref-text"></div>
         <div>
-          <gl-badge
-            v-if="badges.schedule"
-            v-gl-tooltip
-            :title="$options.i18n.scheduleBadgeTooltip"
-            variant="info"
-            size="sm"
-          >
-            {{ $options.i18n.scheduleBadgeText }}
-          </gl-badge>
-          <gl-badge
-            v-if="badges.child"
-            v-gl-tooltip
-            :title="$options.i18n.childBadgeTooltip"
-            variant="info"
-            size="sm"
-          >
-            <gl-sprintf :message="$options.i18n.childBadgeText">
-              <template #link="{ content }">
-                <gl-link :href="paths.triggeredByPath" target="_blank">
-                  {{ content }}
-                </gl-link>
-              </template>
-            </gl-sprintf>
-          </gl-badge>
-          <gl-badge
-            v-if="badges.latest"
-            v-gl-tooltip
-            :title="$options.i18n.latestBadgeTooltip"
-            variant="success"
-            size="sm"
-          >
-            {{ $options.i18n.latestBadgeText }}
-          </gl-badge>
-          <gl-badge
-            v-if="badges.mergeTrainPipeline"
-            v-gl-tooltip
-            :title="$options.i18n.mergeTrainBadgeTooltip"
-            variant="info"
-            size="sm"
-          >
-            {{ $options.i18n.mergeTrainBadgeText }}
-          </gl-badge>
-          <gl-badge
-            v-if="badges.invalid"
-            v-gl-tooltip
-            :title="yamlErrors"
-            variant="danger"
-            size="sm"
-          >
-            {{ $options.i18n.invalidBadgeText }}
-          </gl-badge>
-          <gl-badge
-            v-if="badges.failed"
-            v-gl-tooltip
-            :title="failureReason"
-            variant="danger"
-            size="sm"
-          >
-            {{ $options.i18n.failedBadgeText }}
-          </gl-badge>
-          <gl-badge
-            v-if="badges.autoDevops"
-            v-gl-tooltip
-            :title="$options.i18n.autoDevopsBadgeTooltip"
-            variant="info"
-            size="sm"
-          >
-            {{ $options.i18n.autoDevopsBadgeText }}
-          </gl-badge>
-          <gl-badge
-            v-if="badges.detached"
-            v-gl-tooltip
-            :title="$options.i18n.detachedBadgeTooltip"
-            variant="info"
-            size="sm"
-          >
-            {{ $options.i18n.detachedBadgeText }}
-          </gl-badge>
-          <gl-badge
-            v-if="badges.stuck"
-            v-gl-tooltip
-            :title="$options.i18n.stuckBadgeTooltip"
-            variant="warning"
-            size="sm"
-          >
-            {{ $options.i18n.stuckBadgeText }}
-          </gl-badge>
-          <span
-            v-gl-tooltip
-            :title="$options.i18n.totalJobsTooltip"
-            class="gl-ml-2"
-            data-testid="total-jobs"
-          >
-            <gl-icon name="pipeline" />
-            {{ totalJobsText }}
-          </span>
-          <span
-            v-if="showComputeMinutes"
-            v-gl-tooltip
-            :title="$options.i18n.computeMinutesTooltip"
-            class="gl-ml-2"
-            data-testid="compute-minutes"
-          >
-            <gl-icon name="quota" />
-            {{ computeMinutes }}
-          </span>
-          <span v-if="inProgress" class="gl-ml-2" data-testid="pipeline-running-text">
-            <gl-icon name="timer" />
-            {{ inProgressText }}
-          </span>
-          <span v-if="showDuration" class="gl-ml-2" data-testid="pipeline-duration-text">
-            <gl-icon name="timer" />
-            {{ durationText }}
-          </span>
+          <div class="gl-display-inline-block gl-mb-3">
+            <gl-badge
+              v-if="badges.schedule"
+              v-gl-tooltip
+              :title="$options.i18n.scheduleBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              {{ $options.i18n.scheduleBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.child"
+              v-gl-tooltip
+              :title="$options.i18n.childBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              <gl-sprintf :message="$options.i18n.childBadgeText">
+                <template #link="{ content }">
+                  <gl-link :href="paths.triggeredByPath" target="_blank">
+                    {{ content }}
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+            </gl-badge>
+            <gl-badge
+              v-if="badges.latest"
+              v-gl-tooltip
+              :title="$options.i18n.latestBadgeTooltip"
+              variant="success"
+              size="sm"
+            >
+              {{ $options.i18n.latestBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.mergeTrainPipeline"
+              v-gl-tooltip
+              :title="$options.i18n.mergeTrainBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              {{ $options.i18n.mergeTrainBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.invalid"
+              v-gl-tooltip
+              :title="yamlErrors"
+              variant="danger"
+              size="sm"
+            >
+              {{ $options.i18n.invalidBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.failed"
+              v-gl-tooltip
+              :title="failureReason"
+              variant="danger"
+              size="sm"
+            >
+              {{ $options.i18n.failedBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.autoDevops"
+              v-gl-tooltip
+              :title="$options.i18n.autoDevopsBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              {{ $options.i18n.autoDevopsBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.detached"
+              v-gl-tooltip
+              :title="$options.i18n.detachedBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              {{ $options.i18n.detachedBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.stuck"
+              v-gl-tooltip
+              :title="$options.i18n.stuckBadgeTooltip"
+              variant="warning"
+              size="sm"
+            >
+              {{ $options.i18n.stuckBadgeText }}
+            </gl-badge>
+          </div>
+          <div class="gl-display-inline-block">
+            <span
+              v-gl-tooltip
+              :title="$options.i18n.totalJobsTooltip"
+              class="gl-ml-2"
+              data-testid="total-jobs"
+            >
+              <gl-icon name="pipeline" />
+              {{ totalJobsText }}
+            </span>
+            <span
+              v-if="showComputeMinutes"
+              v-gl-tooltip
+              :title="$options.i18n.computeMinutesTooltip"
+              class="gl-ml-2"
+              data-testid="compute-minutes"
+            >
+              <gl-icon name="quota" />
+              {{ computeMinutes }}
+            </span>
+            <span v-if="inProgress" class="gl-ml-2" data-testid="pipeline-running-text">
+              <gl-icon name="timer" />
+              {{ inProgressText }}
+            </span>
+            <span v-if="showDuration" class="gl-ml-2" data-testid="pipeline-duration-text">
+              <gl-icon name="timer" />
+              {{ durationText }}
+            </span>
+          </div>
         </div>
       </div>
       <div class="gl-mt-5 gl-lg-mt-0 gl-display-flex gl-align-items-flex-start gl-gap-3">

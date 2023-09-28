@@ -18,8 +18,26 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   end
 
   shared_examples 'disabled feature' do
-    it 'returns 404' do
+    before do
       stub_application_setting(bulk_import_enabled: false)
+      stub_feature_flags(override_bulk_import_disabled: false)
+    end
+
+    it_behaves_like '404 response' do
+      let(:message) { '404 Not Found' }
+    end
+
+    it 'enables the feature when override flag is enabled for the user' do
+      stub_feature_flags(override_bulk_import_disabled: user)
+
+      request
+
+      expect(response).not_to have_gitlab_http_status(:not_found)
+    end
+
+    it 'does not enable the feature when override flag is enabled for another user' do
+      other_user = create(:user)
+      stub_feature_flags(override_bulk_import_disabled: other_user)
 
       request
 
@@ -71,7 +89,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
     end
 
-    include_examples 'disabled feature'
+    it_behaves_like 'disabled feature'
   end
 
   describe 'POST /bulk_imports' do
@@ -328,7 +346,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
     end
 
-    include_examples 'disabled feature'
+    it_behaves_like 'disabled feature'
 
     context 'when request exceeds rate limits' do
       it 'prevents user from starting a new migration' do
@@ -352,7 +370,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       expect(json_response.pluck('id')).to contain_exactly(entity_1.id, entity_2.id, entity_3.id)
     end
 
-    include_examples 'disabled feature'
+    it_behaves_like 'disabled feature'
   end
 
   describe 'GET /bulk_imports/:id' do
@@ -365,7 +383,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       expect(json_response['id']).to eq(import_1.id)
     end
 
-    include_examples 'disabled feature'
+    it_behaves_like 'disabled feature'
   end
 
   describe 'GET /bulk_imports/:id/entities' do
@@ -379,7 +397,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       expect(json_response.first['failures'].first['exception_class']).to eq(failure_3.exception_class)
     end
 
-    include_examples 'disabled feature'
+    it_behaves_like 'disabled feature'
   end
 
   describe 'GET /bulk_imports/:id/entities/:entity_id' do
@@ -392,7 +410,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       expect(json_response['id']).to eq(entity_2.id)
     end
 
-    include_examples 'disabled feature'
+    it_behaves_like 'disabled feature'
   end
 
   context 'when user is unauthenticated' do

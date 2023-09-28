@@ -5,16 +5,16 @@ module QA
     module Admin
       class NewSession < Page::Base
         view 'app/views/admin/sessions/_new_base.html.haml' do
-          element :enter_admin_mode_button
-          element :password_field
+          element 'enter-admin-mode-button'
+          element 'password-field'
         end
 
         def set_password(password)
-          fill_element :password_field, password
+          fill_element 'password-field', password
         end
 
         def click_enter_admin_mode
-          click_element :enter_admin_mode_button
+          click_element 'enter-admin-mode-button'
         end
       end
     end

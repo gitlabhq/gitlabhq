@@ -5,9 +5,9 @@
     .form-group
       = f.gitlab_ui_checkbox_component :performance_bar_enabled,
         _("Allow non-administrators access to the performance bar"),
-        checkbox_options: { data: { qa_selector: 'enable_performance_bar_checkbox' } }
+        checkbox_options: { data: { testid: 'enable-performance-bar-checkbox' } }
     .form-group
       = f.label :performance_bar_allowed_group_path, _('Allow access to members of the following group'), class: 'label-bold'
       = f.text_field :performance_bar_allowed_group_path, class: 'form-control gl-form-input', placeholder: 'my-org/my-group', value: @application_setting.performance_bar_allowed_group&.full_path
 
-  = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-changes-button' }

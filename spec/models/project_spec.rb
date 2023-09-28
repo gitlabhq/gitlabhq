@@ -820,6 +820,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
+    describe 'name format validation' do
+      context 'name is unchanged' do
+        let_it_be(:invalid_path_project) do
+          project = create(:project)
+          project.update_attribute(:name, '.invalid_name')
+          project
+        end
+
+        it 'does not raise validation error for name for existing project' do
+          expect { invalid_path_project.update!(description: 'Foo') }.not_to raise_error
+        end
+      end
+
+      %w[. - $].each do |special_character|
+        it "rejects a name starting with '#{special_character}'" do
+          project = build(:project, name: "#{special_character}foo")
+
+          expect(project).not_to be_valid
+        end
+      end
+    end
+
     describe 'path validation' do
       it 'allows paths reserved on the root namespace' do
         project = build(:project, path: 'api')

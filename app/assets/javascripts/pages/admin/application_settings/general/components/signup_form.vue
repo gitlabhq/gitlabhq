@@ -268,7 +268,7 @@ export default {
         name="application_setting[signup_enabled]"
         :help-text="signupEnabledHelpText"
         :label="$options.i18n.signupEnabledLabel"
-        data-qa-selector="signup_enabled_checkbox"
+        data-testid="signup-enabled-checkbox"
       />
 
       <signup-checkbox
@@ -277,7 +277,6 @@ export default {
         name="application_setting[require_admin_approval_after_user_signup]"
         :help-text="requireAdminApprovalHelpText"
         :label="$options.i18n.requireAdminApprovalLabel"
-        data-qa-selector="require_admin_approval_after_user_signup_checkbox"
         data-testid="require-admin-approval-checkbox"
       />
 
@@ -452,7 +451,7 @@ export default {
     </section>
 
     <gl-button
-      data-qa-selector="save_changes_button"
+      data-testid="save-changes-button"
       variant="confirm"
       @click.prevent="submitButtonHandler"
     >
