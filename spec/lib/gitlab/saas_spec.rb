@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'support/helpers/saas_test_helper'
 
-RSpec.describe Gitlab::Saas do
+RSpec.describe Gitlab::Saas, feature_category: :shared do
   include SaasTestHelper
 
   describe '.canary_toggle_com_url' do

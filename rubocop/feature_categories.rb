@@ -3,9 +3,17 @@
 require 'set'
 require 'yaml'
 require 'digest/sha2'
+require 'did_you_mean'
 
 module RuboCop
-  module FeatureCategories
+  class FeatureCategories
+    MSG = 'Please use a valid feature category. %{msg_suggestion}' \
+          'See %{document_link}'
+
+    MSG_DID_YOU_MEAN = 'Did you mean `:%{suggestion}`? '
+
+    MSG_SYMBOL = 'Please use a symbol as value.'
+
     CONFIG_PATH = File.expand_path("../config/feature_categories.yml", __dir__)
 
     # List of feature categories which are not defined in config/feature_categories.yml
@@ -30,6 +38,33 @@ module RuboCop
     # this method to use it.
     def self.config_checksum
       @config_checksum ||= Digest::SHA256.file(CONFIG_PATH).hexdigest
+    end
+
+    attr_reader :categories
+
+    def initialize(categories)
+      @categories = categories
+    end
+
+    def check(value_node:, document_link:)
+      return yield(MSG_SYMBOL) unless value_node.sym_type?
+      return if categories.include?(value_node.value.to_s)
+
+      message = format(
+        MSG,
+        msg_suggestion: suggestion_message(value_node),
+        document_link: document_link)
+
+      yield(message)
+    end
+
+    def suggestion_message(value_node)
+      spell = DidYouMean::SpellChecker.new(dictionary: categories)
+
+      suggestions = spell.correct(value_node.value)
+      return if suggestions.none?
+
+      format(MSG_DID_YOU_MEAN, suggestion: suggestions.first)
     end
   end
 end

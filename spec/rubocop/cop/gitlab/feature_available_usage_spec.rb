@@ -16,6 +16,10 @@ RSpec.describe RuboCop::Cop::Gitlab::FeatureAvailableUsage do
       expect_no_offenses('License.feature_available?(:push_rules)')
     end
 
+    it 'does not flag the use of Gitlab::Saas.feature_available?' do
+      expect_no_offenses('Gitlab::Saas.feature_available?("some/feature")')
+    end
+
     it 'flags the use with a dynamic feature as nil' do
       expect_offense(<<~SOURCE)
         feature_available?(nil)

@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
     it 'flags invalid feature category in top level example group' do
       expect_offense(<<~RUBY, invalid: invalid_category)
         RSpec.describe 'foo', feature_category: :%{invalid}, foo: :bar do
-                                                ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
+                                                ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
         end
       RUBY
     end
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
       expect_offense(<<~RUBY, valid: valid_category, invalid: invalid_category)
         RSpec.describe 'foo', feature_category: :"%{valid}" do
           context 'bar', foo: :bar, feature_category: :%{invalid} do
-                                                      ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
+                                                      ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
           end
         end
       RUBY
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
       expect_offense(<<~RUBY, valid: valid_category, invalid: invalid_category)
         RSpec.describe 'foo', feature_category: :"%{valid}" do
           it 'bar', feature_category: :%{invalid} do
-                                      ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples.
+                                      ^^{invalid} Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
           end
         end
       RUBY

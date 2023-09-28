@@ -1,6 +1,9 @@
 inherit_from:
   - ../config/rubocop.yml
 
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
 Naming/ClassAndModuleCamelCase:
   AllowedNames:
     - HTTP_V2

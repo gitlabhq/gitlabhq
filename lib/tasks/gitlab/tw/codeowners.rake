@@ -28,6 +28,7 @@ namespace :tw do
       CodeOwnerRule.new('Application Performance', '@jglassman1'),
       CodeOwnerRule.new('Authentication and Authorization', '@jglassman1'),
       # CodeOwnerRule.new('Billing and Subscription Management', ''),
+      CodeOwnerRule.new('Code Creation', '@jglassman1'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),

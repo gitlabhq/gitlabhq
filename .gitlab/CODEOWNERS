@@ -586,6 +586,7 @@ lib/gitlab/checks/**
 /doc/api/branches.md @msedlakjakubowski
 /doc/api/bulk_imports.md @eread @ashrafkhamis
 /doc/api/cluster_agents.md @phillipwells
+/doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @msedlakjakubowski
 /doc/api/container_registry.md @marcel.amirault
 /doc/api/custom_attributes.md @msedlakjakubowski
@@ -769,6 +770,7 @@ lib/gitlab/checks/**
 /doc/development/cicd/ @marcel.amirault
 /doc/development/code_intelligence/ @aqualls
 /doc/development/code_owners/ @msedlakjakubowski
+/doc/development/code_suggestions/ @jglassman1
 /doc/development/contributing/ @sselhorn
 /doc/development/database/ @aqualls
 /doc/development/database/filtering_by_label.md @msedlakjakubowski
@@ -905,6 +907,7 @@ lib/gitlab/checks/**
 /doc/user/compliance/ @rdickenson
 /doc/user/compliance/compliance_center/ @eread
 /doc/user/compliance/index.md @eread
+/doc/user/custom_roles.md @jglassman1
 /doc/user/discussions/ @aqualls
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
@@ -972,6 +975,7 @@ lib/gitlab/checks/**
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
+/doc/user/project/repository/code_suggestions/ @jglassman1
 /doc/user/project/repository/file_finder.md @ashrafkhamis
 /doc/user/project/repository/managing_large_repositories.md @eread
 /doc/user/project/repository/web_editor.md @ashrafkhamis

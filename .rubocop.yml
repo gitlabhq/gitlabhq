@@ -958,6 +958,11 @@ Style/ClassAndModuleChildren:
 Fips/OpenSSL:
   Enabled: false
 
+Gemfile/MissingFeatureCategory:
+  Enabled: true
+  Include:
+    - 'Gemfile'
+
 Gemspec/AvoidExecutingGit:
   Enabled: false
 
