@@ -22,12 +22,12 @@ module Banzai
 
           begin
             uri = URI.parse(original_src)
-          rescue StandardError
-            next
-          end
 
-          next if uri.host.nil? && !original_src.start_with?('///')
-          next if asset_host_allowed?(uri.host)
+            next if uri.host.nil? && !original_src.start_with?('///')
+            next if asset_host_allowed?(uri.host)
+          rescue StandardError
+            # Ignored
+          end
 
           element['src'] = asset_proxy_url(original_src)
           element['data-canonical-src'] = original_src

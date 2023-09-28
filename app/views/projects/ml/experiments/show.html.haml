@@ -4,7 +4,7 @@
 - add_page_specific_style 'page_bundles/ml_experiment_tracking'
 
 - experiment = experiment_as_data(@experiment)
-- items = candidates_table_items(@candidates)
+- items = candidates_table_items(@candidates, current_user)
 - metrics = unique_logged_names(@candidates, &:latest_metrics)
 - params = unique_logged_names(@candidates, &:params)
 - page_info = formatted_page_info(@page_info)

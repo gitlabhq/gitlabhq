@@ -778,6 +778,62 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
               end
             end
 
+            context 'when project repository access becomes restricted after being forked' do
+              let!(:fork_owner) { create(:user) }
+              let!(:forked_project) { fork_project(public_project, fork_owner, namespace: fork_owner.namespace, repository: true) }
+              let(:url) { "/projects/#{forked_project.id}/repository/commits" }
+
+              before do
+                # Restrict repository visibility of the public project
+                public_project.merge_requests_access_level = 'private'
+                public_project.builds_access_level = 'private'
+                public_project.repository_access_level = 'private'
+                public_project.save!
+
+                valid_c_params[:start_branch] = 'master'
+                valid_c_params[:branch] = 'patch'
+                valid_c_params[:start_project] = public_project.id
+              end
+
+              after do
+                # Reopen repository visibility of the public project
+                public_project.merge_requests_access_level = 'enabled'
+                public_project.repository_access_level = 'enabled'
+                public_project.builds_access_level = 'enabled'
+                public_project.save!
+              end
+
+              it 'returns a 403' do
+                post api(url, fork_owner), params: valid_c_params
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+              end
+            end
+
+            context 'when fork owner has no more access to a private repository' do
+              let_it_be(:private_project) { create(:project, :private, :repository) }
+              let_it_be(:fork_owner) { create(:user) }
+              let_it_be(:fork_owner_membership) { private_project.add_developer(fork_owner) }
+              let_it_be(:forked_project) { fork_project(private_project, fork_owner, namespace: fork_owner.namespace, repository: true) }
+              let(:url) { "/projects/#{forked_project.id}/repository/commits" }
+
+              before do
+                # Restrict user from repository
+                Members::DestroyService.new(private_project.owner).execute(fork_owner_membership)
+                Sidekiq::Worker.drain_all
+
+                valid_c_params[:start_branch] = 'master'
+                valid_c_params[:branch] = 'patch'
+                valid_c_params[:start_project] = private_project.id
+              end
+
+              it 'returns a 402' do
+                post api(url, fork_owner), params: valid_c_params
+
+                expect(response).to have_gitlab_http_status(:not_found)
+              end
+            end
+
             context 'when the target project is not part of the fork network of start_project' do
               let(:unrelated_project) { create(:project, :public, :repository, creator: guest) }
               let(:url) { "/projects/#{unrelated_project.id}/repository/commits" }

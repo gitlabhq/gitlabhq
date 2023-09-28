@@ -234,4 +234,43 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it { expect(tab_count_display(merge_request, '10')).to eq('10') }
     end
   end
+
+  describe '#allow_collaboration_unavailable_reason' do
+    subject { allow_collaboration_unavailable_reason(merge_request) }
+
+    let(:merge_request) do
+      create(:merge_request, author: author, source_project: project, source_branch: generate(:branch))
+    end
+
+    let_it_be(:public_project) { create(:project, :small_repo, :public) }
+    let(:project) { public_project }
+    let(:forked_project) { fork_project(project) }
+    let(:author) { project.creator }
+
+    context 'when the merge request allows collaboration for the user' do
+      before do
+        allow(merge_request).to receive(:can_allow_collaboration?).with(current_user).and_return(true)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the project is private' do
+      let(:project) { create(:project, :empty_repo, :private) }
+
+      it { is_expected.to eq(_('Not available for private projects')) }
+    end
+
+    context 'when the source branch is protected' do
+      let!(:protected_branch) { create(:protected_branch, project: project, name: merge_request.source_branch) }
+
+      it { is_expected.to eq(_('Not available for protected branches')) }
+    end
+
+    context 'when the merge request author cannot push to the source project' do
+      let(:author) { create(:user) }
+
+      it { is_expected.to eq(_('Merge request author cannot push to target project')) }
+    end
+  end
 end

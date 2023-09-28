@@ -19,7 +19,7 @@ RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integratio
   subject { described_class.new(project, user, params) }
 
   before do
-    project.add_reporter(user)
+    project.add_maintainer(user)
   end
 
   describe '#execute' do
@@ -130,6 +130,16 @@ RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integratio
     context 'with unauthorized user' do
       before do
         project.add_guest(user)
+      end
+
+      it 'returns error' do
+        expect(result).to include(status: :error, message: 'Access denied', http_status: :unauthorized)
+      end
+    end
+
+    context 'with user with insufficient permissions' do
+      before do
+        project.add_developer(user)
       end
 
       it 'returns error' do

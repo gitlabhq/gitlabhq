@@ -283,6 +283,7 @@ class ProjectPolicy < BasePolicy
     enable :change_visibility_level
     enable :remove_project
     enable :archive_project
+    enable :link_forked_project
     enable :remove_fork_project
     enable :destroy_merge_request
     enable :destroy_issue
@@ -539,6 +540,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_release
     enable :destroy_artifacts
     enable :admin_operations
+    enable :admin_sentry
     enable :read_deploy_token
     enable :create_deploy_token
     enable :destroy_deploy_token

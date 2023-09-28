@@ -15,6 +15,12 @@ RSpec.describe Gitlab::Checks::TagCheck, feature_category: :source_code_manageme
     end
 
     context "prohibited tags check" do
+      it 'prohibits tags name that include refs/heads at the head' do
+        allow(subject).to receive(:tag_name).and_return("refs/heads/foo")
+
+        expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "You cannot create a tag with a prohibited pattern.")
+      end
+
       it "prohibits tag names that include refs/tags/ at the head" do
         allow(subject).to receive(:tag_name).and_return("refs/tags/foo")
 

@@ -89,6 +89,33 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :team_plannin
       expect(doc.at_css('img')['data-canonical-src']).to eq src
     end
 
+    it 'replaces by default, even strings that do not look like URLs' do
+      src     = 'oigjsie8787%$**(#(%0'
+      new_src = 'https://assets.example.com/1b893f9a71d66c99437f27e19b9a061a6f5d9391/6f69676a7369653837383725242a2a2823282530'
+      doc     = filter(image(src), @context)
+
+      expect(doc.at_css('img')['src']).to eq new_src
+      expect(doc.at_css('img')['data-canonical-src']).to eq src
+    end
+
+    it 'replaces URL with non-ASCII characters' do
+      src     = 'https://example.com/x?¬'
+      new_src = 'https://assets.example.com/2f29a8c7f13f3ae14dc18c154dbbd657d703e75f/68747470733a2f2f6578616d706c652e636f6d2f783fc2ac'
+      doc     = filter(image(src), @context)
+
+      expect(doc.at_css('img')['src']).to eq new_src
+      expect(doc.at_css('img')['data-canonical-src']).to eq src
+    end
+
+    it 'replaces out-of-spec URL that would still be rendered in the browser' do
+      src     = 'https://example.com/##'
+      new_src = 'https://assets.example.com/d7d0c845cc553d9430804c07e9456545ef3e6fe6/68747470733a2f2f6578616d706c652e636f6d2f2323'
+      doc     = filter(image(src), @context)
+
+      expect(doc.at_css('img')['src']).to eq new_src
+      expect(doc.at_css('img')['data-canonical-src']).to eq src
+    end
+
     it 'skips internal images' do
       src      = "#{Gitlab.config.gitlab.url}/test.png"
       doc      = filter(image(src), @context)
