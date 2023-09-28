@@ -9,14 +9,14 @@
       = render 'shared/milestones/search_form'
       = render 'shared/milestones_sort_dropdown'
       - if can?(current_user, :admin_milestone, @project)
-        = link_button_to new_project_milestone_path(@project), class: 'gl-ml-3', data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone'), variant: :confirm do
+        = link_button_to new_project_milestone_path(@project), class: 'gl-ml-3', data: { testid: "new-project-milestone-link" }, title: _('New milestone'), variant: :confirm do
           = _('New milestone')
 
   - if @milestones.blank?
     = render 'shared/empty_states/milestones_tab' do
       - if can?(current_user, :admin_milestone, @project)
         .text-center
-          = link_button_to new_project_milestone_path(@project), data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone'), variant: :confirm do
+          = link_button_to new_project_milestone_path(@project), data: { testid: "new-project-milestone-link" }, title: _('New milestone'), variant: :confirm do
             = _('New milestone')
 
   - else
@@ -32,5 +32,5 @@
   = render 'shared/empty_states/milestones' do
     - if can?(current_user, :admin_milestone, @project)
       .text-center
-        = link_button_to new_project_milestone_path(@project), data: { qa_selector: "new_project_milestone_link" }, title: _('New milestone'), variant: :confirm do
+        = link_button_to new_project_milestone_path(@project), data: { testid: "new-project-milestone-link" }, title: _('New milestone'), variant: :confirm do
           = _('New milestone')

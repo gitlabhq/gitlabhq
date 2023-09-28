@@ -43,7 +43,7 @@ export default {
       data-track-action="click_edit_button"
       data-track-label="right_sidebar"
       data-track-property="reviewer"
-      data-qa-selector="reviewers_edit_button"
+      data-testid="reviewers-edit-button"
     >
       {{ __('Edit') }}
     </a>

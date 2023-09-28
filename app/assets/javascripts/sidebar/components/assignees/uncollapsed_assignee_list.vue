@@ -92,7 +92,6 @@ export default {
           <div
             class="gl-ml-3 gl-line-height-normal gl-display-grid gl-align-items-center"
             data-testid="username"
-            data-qa-selector="username"
           >
             <user-name-with-status :name="user.name" :availability="userAvailability(user)" />
           </div>
@@ -104,7 +103,6 @@ export default {
         category="tertiary"
         size="small"
         data-testid="user-list-more-button"
-        data-qa-selector="more_assignees_link"
         @click="toggleShowLess"
       >
         <template v-if="showLess">

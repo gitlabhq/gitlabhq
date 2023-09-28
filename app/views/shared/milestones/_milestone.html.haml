@@ -6,7 +6,7 @@
   .row
     .col-md-6
       .gl-mb-2
-        %strong{ data: { qa_selector: "milestone_link", qa_milestone_title: milestone.title } }
+        %strong{ data: { testid: "milestone-link", qa_milestone_title: milestone.title } }
           = link_to truncate(milestone.title, length: 100), milestone_path(milestone)
         - if @group || dashboard
           = " - #{milestone_type}"

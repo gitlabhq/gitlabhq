@@ -9,7 +9,9 @@ module Projects
 
       feature_category :mlops
 
-      def show; end
+      def show
+        @include_ci_info = @candidate.from_ci? && can?(current_user, :read_build, @candidate.ci_build)
+      end
 
       def destroy
         @experiment = @candidate.experiment

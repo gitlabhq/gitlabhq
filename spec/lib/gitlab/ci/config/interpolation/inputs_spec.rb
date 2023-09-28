@@ -57,6 +57,16 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
           { default_boolean_input: { default: true, type: 'boolean' } },
           {},
           { default_boolean_input: true }
+        ],
+        [
+          { test_input: { regex: '^input_value$' } },
+          { test_input: 'input_value' },
+          { test_input: 'input_value' }
+        ],
+        [
+          { test_input: { regex: '^input_value$', default: 'input_value' } },
+          {},
+          { test_input: 'input_value' }
         ]
       ]
     end
@@ -123,6 +133,21 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
           { default_boolean_input: { default: 'string', type: 'boolean' } },
           {},
           ['`default_boolean_input` input: default value is not a boolean']
+        ],
+        [
+          { test_input: { regex: '^input_value$' } },
+          { test_input: 'input' },
+          ['`test_input` input: provided value does not match required RegEx pattern']
+        ],
+        [
+          { test_input: { regex: '^input_value$', default: 'default' } },
+          {},
+          ['`test_input` input: default value does not match required RegEx pattern']
+        ],
+        [
+          { test_input: { regex: '^input_value$', type: 'number' } },
+          { test_input: 999 },
+          ['`test_input` input: RegEx validation can only be used with string inputs']
         ]
       ]
     end

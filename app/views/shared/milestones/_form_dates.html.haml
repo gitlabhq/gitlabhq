@@ -3,12 +3,12 @@
     = f.label :start_date, _('Start Date')
   %div
     .issuable-form-select-holder
-      = f.gitlab_ui_datepicker :start_date, data: { qa_selector: "start_date_field" }, placeholder: _('Select start date'), autocomplete: 'off'
+      = f.gitlab_ui_datepicker :start_date, data: { testid: "start-date-field" }, placeholder: _('Select start date'), autocomplete: 'off'
     %a.gl-white-space-nowrap.gl-pl-4.js-clear-start-date{ href: "#" }= _('Clear start date')
 .gl-form-group
   %div
     = f.label :due_date, _('Due Date')
   %div
     .issuable-form-select-holder
-      = f.gitlab_ui_datepicker :due_date, data: { qa_selector: "due_date_field" }, placeholder: _('Select due date'), autocomplete: 'off'
+      = f.gitlab_ui_datepicker :due_date, data: { testid: "due-date-field" }, placeholder: _('Select due date'), autocomplete: 'off'
     %a.gl-white-space-nowrap.gl-pl-4.js-clear-due-date{ href: "#" }= _('Clear due date')

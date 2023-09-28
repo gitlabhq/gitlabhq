@@ -6,8 +6,9 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  let(:lint) { described_class.new(project: project, current_user: user) }
+  let(:sha) { nil }
   let(:ref) { project.default_branch }
+  let(:lint) { described_class.new(project: project, current_user: user, sha: sha) }
 
   describe '#validate' do
     subject { lint.validate(content, dry_run: dry_run, ref: ref) }
@@ -249,6 +250,59 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
             .and_call_original
 
           subject
+        end
+
+        context 'when sha is provided' do
+          let(:sha) { project.commit.sha }
+
+          it 'runs YamlProcessor with verify_project_sha: true' do
+            expect(Gitlab::Ci::YamlProcessor)
+              .to receive(:new)
+              .with(content, a_hash_including(verify_project_sha: true))
+              .and_call_original
+
+            subject
+          end
+
+          it_behaves_like 'content is valid'
+
+          context 'when the sha is invalid' do
+            let(:sha) { 'invalid-sha' }
+
+            it_behaves_like 'content is valid'
+          end
+
+          context 'when the sha is from a fork' do
+            include_context 'when a project repository contains a forked commit'
+
+            let(:sha) { forked_commit_sha }
+
+            context 'when a project ref contains the sha' do
+              before do
+                mock_branch_contains_forked_commit_sha
+              end
+
+              it_behaves_like 'content is valid'
+            end
+
+            context 'when a project ref does not contain the sha' do
+              it 'returns an error' do
+                expect(subject).not_to be_valid
+                expect(subject.errors).to include(/Could not validate configuration/)
+              end
+            end
+          end
+        end
+
+        context 'when sha is not provided' do
+          it 'runs YamlProcessor with verify_project_sha: false' do
+            expect(Gitlab::Ci::YamlProcessor)
+              .to receive(:new)
+              .with(content, a_hash_including(verify_project_sha: false))
+              .and_call_original
+
+            subject
+          end
         end
       end
 

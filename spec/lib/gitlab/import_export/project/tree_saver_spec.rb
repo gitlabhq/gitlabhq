@@ -127,6 +127,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
           expect(system_notes.size).to eq(1)
           expect(system_notes.first['note']).to eq('merged')
         end
+
+        it 'has no merge_when_pipeline_succeeds' do
+          expect(subject.first['merge_when_pipeline_succeeds']).to be_nil
+        end
       end
 
       context 'with snippets' do
@@ -300,6 +304,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
         let(:relation_name) { :boards }
 
         it { is_expected.not_to be_empty }
+      end
+
+      context 'with pipeline schedules' do
+        let(:relation_name) { :pipeline_schedules }
+
+        it 'has no owner_id' do
+          expect(subject.first['owner_id']).to be_nil
+        end
       end
     end
 
@@ -535,6 +547,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
 
     design = create(:design, :with_file, versions_count: 2, issue: issue)
     create(:diff_note_on_design, noteable: design, project: project, author: user)
+    create(:ci_pipeline_schedule, project: project, owner: user)
 
     project
   end

@@ -5,15 +5,15 @@ module QA
     module Milestone
       class Index < Page::Base
         view 'app/views/shared/milestones/_milestone.html.haml' do
-          element :milestone_link
+          element 'milestone-link'
         end
 
         def click_milestone(milestone)
-          click_element(:milestone_link, milestone_title: milestone.title)
+          click_element('milestone-link', milestone_title: milestone.title)
         end
 
         def has_milestone?(milestone)
-          has_element?(:milestone_link, milestone_title: milestone.title)
+          has_element?('milestone-link', milestone_title: milestone.title)
         end
       end
     end

@@ -14,7 +14,8 @@ module WorkItems
       {
         work_item_type: :work_item_type,
         web_url: { namespace: :route, project: [:project_namespace, { namespace: :route }] },
-        widgets: { work_item_type: :enabled_widget_definitions }
+        widgets: { work_item_type: :enabled_widget_definitions },
+        archived: :project
       }
     end
 

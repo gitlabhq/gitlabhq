@@ -58,6 +58,10 @@ module Types
     field :work_item_type, Types::WorkItems::TypeType, null: false,
                                                        description: 'Type assigned to the work item.'
 
+    field :archived, GraphQL::Types::Boolean, null: false,
+          description: 'Whether the work item belongs to an archived project. Always false for group level work items.',
+          alpha: { milestone: '16.5' }
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 
@@ -69,6 +73,12 @@ module Types
 
     def create_note_email
       object.creatable_note_email_address(context[:current_user])
+    end
+
+    def archived
+      return false if object.project.blank?
+
+      object.project.archived?
     end
   end
 end

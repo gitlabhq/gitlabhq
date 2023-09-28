@@ -19,6 +19,9 @@ module Gitlab
                 review_requests = client.pull_request_review_requests(repo, merge_request.iid)
                 review_requests[:merge_request_id] = merge_request.id
                 review_requests[:merge_request_iid] = merge_request.iid
+
+                Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+
                 yield review_requests
 
                 mark_merge_request_imported(merge_request)
@@ -40,6 +43,10 @@ module Gitlab
 
           def collection_method
             :pull_request_review_requests
+          end
+
+          def object_type
+            :pull_request_review_request
           end
 
           # rubocop:disable CodeReuse/ActiveRecord

@@ -36,7 +36,7 @@ module DropdownsHelper
           output << dropdown_filter(options[:placeholder])
         end
 
-        output << content_tag(:div, data: { qa_selector: "dropdown_list_content" }, class: "dropdown-content #{options[:content_class] if options.key?(:content_class)}") do
+        output << content_tag(:div, data: { testid: "dropdown-list-content" }, class: "dropdown-content #{options[:content_class] if options.key?(:content_class)}") do
           capture(&block) if block && !options.key?(:footer_content)
         end
 

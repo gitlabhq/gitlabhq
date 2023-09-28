@@ -22,14 +22,14 @@
         .js-sidebar-todo-widget-root{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
 
     = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
-      .block.assignee{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { qa_selector: 'assignee_block_container', testid: 'assignee-block-container' } }
+      .block.assignee{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { testid: 'assignee-block-container' } }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
       - if issuable_sidebar[:supports_severity]
         .js-sidebar-severity-widget-root
 
       - if reviewers
-        .block.reviewer{ data: { qa_selector: 'reviewers_block_container' } }
+        .block.reviewer{ data: { testid: 'reviewers-block-container' } }
           = render "shared/issuable/sidebar_reviewers", issuable_sidebar: issuable_sidebar, reviewers: reviewers, signed_in: signed_in
 
       - if issuable_sidebar[:supports_escalation]
@@ -43,7 +43,7 @@
       .js-sidebar-labels-widget-root{ data: sidebar_labels_data(issuable_sidebar, @project) }
 
       - if issuable_sidebar[:supports_milestone]
-        .block.milestone{ data: { qa_selector: 'milestone_block', testid: 'sidebar-milestones' } }
+        .block.milestone{ data: { testid: 'sidebar-milestones' } }
           .js-sidebar-milestone-widget-root{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
       - if in_group_context_with_iterations

@@ -54,6 +54,9 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
         expect(note_attachments_importer).to receive(:execute)
       end
 
+      expect(Gitlab::GithubImport::ObjectCounter)
+        .to receive(:increment).twice.with(project, :pull_request_review_request, :fetched)
+
       importer.sequential_import
     end
 
@@ -71,6 +74,9 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
         ) do |note_attachments_importer|
           expect(note_attachments_importer).to receive(:execute)
         end
+
+        expect(Gitlab::GithubImport::ObjectCounter)
+          .to receive(:increment).once.with(project, :pull_request_review_request, :fetched)
 
         importer.sequential_import
       end
@@ -115,6 +121,9 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
       expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
         .to receive(:perform_in).with(1.second, *expected_worker_payload.second)
 
+      expect(Gitlab::GithubImport::ObjectCounter)
+        .to receive(:increment).twice.with(project, :pull_request_review_request, :fetched)
+
       importer.parallel_import
     end
 
@@ -129,6 +138,9 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
       it "doesn't schedule import this merge request reviewers" do
         expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
           .to receive(:perform_in).with(1.second, *expected_worker_payload.second)
+
+        expect(Gitlab::GithubImport::ObjectCounter)
+          .to receive(:increment).once.with(project, :pull_request_review_request, :fetched)
 
         importer.parallel_import
       end

@@ -108,7 +108,7 @@ export default {
         v-for="label in sortedSelectedLabels"
         :key="label.id"
         class="hide-collapsed"
-        data-qa-selector="selected_label_content"
+        data-testid="selected-label-content"
         :data-qa-label-name="label.title"
         :title="label.title"
         :description="label.description"

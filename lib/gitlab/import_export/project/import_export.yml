@@ -169,7 +169,6 @@ included_attributes:
     - :cron_timezone
     - :description
     - :next_run_at
-    - :owner_id
     - :project_id
     - :ref
     - :updated_at
@@ -373,7 +372,6 @@ included_attributes:
     - :updated_by_id
     - :merge_error
     - :merge_params
-    - :merge_when_pipeline_succeeds
     - :merge_user_id
     - :merge_commit_sha
     - :squash_commit_sha

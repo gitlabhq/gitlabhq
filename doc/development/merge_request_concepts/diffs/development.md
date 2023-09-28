@@ -176,39 +176,222 @@ These flowcharts should help explain the flow from the controllers down to the
 models for different features. This page is not intended to document the entirety
 of options for access and working with diffs, focusing solely on the most common.
 
-### `batch_diffs.json`
+### `diffs_batch.json`
 
 The most common avenue for viewing diffs is the **Changes**
 tab at the top of merge request pages in the GitLab UI. When selected, the
-diffs themselves are loaded via a paginated request to `/-/merge_requests/:id/batch_diffs.json`,
-which is served by [`Projects::MergeRequests::DiffsController#diffs_batch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/projects/merge_requests/diffs_controller.rb):
+diffs themselves are loaded via a paginated request to `/-/merge_requests/:id/diffs_batch.json`,
+which is served by [`Projects::MergeRequests::DiffsController#diffs_batch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/projects/merge_requests/diffs_controller.rb).
 
-<!-- Don't delete the &nbsp; characters below. Mermaid returns a syntax error if they aren't included.-->
+This flowchart shows a basic explanation of how each component is used in a
+`diffs_batch.json` request.
+
+```mermaid
+flowchart TD
+    A[Frontend] --> B[diffs_batch.json]
+    B --> C[Preload diffs and ivars]
+    C -->D[Gitaly]
+    C -->E[(Database)]
+    C --> F[Getting diff file collection]
+    C --> F[Getting diff file collection]
+    F --> G[Calculate unfoldable diff lines]
+    G --> E
+    G --> H{ETag header is not stale}
+    H --> |Yes| I[Return 304]
+    H --> |No| J[Serialize diffs]
+    J --> D
+    J --> E
+    J --> K[(Redis)]
+    J --> L[Return 200 with JSON]
+```
+
+Different cases exist when viewing diffs, though, and the flow for each case differs.
+
+#### Viewing HEAD, latest or specific diff version
+
+The HEAD diff is viewed by default, if it is available. If not, it falls back to
+latest diff version. It's also possible to view a specific diff version. These cases
+have the same flow.
 
 ```mermaid
 sequenceDiagram
+    Frontend-->>+.#diffs_batch: API call
     Note over .#diffs_batch: Preload diffs and ivars
-    .#diffs_batch->>+.#define_diff_vars: &nbsp;
-    .#define_diff_vars ->>+ @merge_request: @merge_request_diffs =
-    Note right of @merge_request: An ordered collection of all diffs in MR
-    @merge_request-->>-.#define_diff_vars:  &nbsp;
-    .#define_diff_vars ->>+ @merge_request: @merge_request_diff =
-    Note right of @merge_request: Most recent merge_request_diff (or commit)
-    @merge_request-->>-.#define_diff_vars:  &nbsp;
-    .#define_diff_vars ->>+ .#define_diff_vars: @compare =
-    Note right of .#define_diff_vars:: param-filtered merge_request_diff(s)
-    .#define_diff_vars -->>- .#diffs_batch:  &nbsp;
-    Note over .#diffs_batch: Preloading complete
-    .#diffs_batch->>+@merge_request: Calculate unfoldable diff lines
-    Note right of @merge_request: note_positions_for_paths.unfoldable
-    @merge_request-->>-.#diffs_batch: &nbsp;
-    Note over .#diffs_batch: Build options hash
-    Note over .#diffs_batch: Build cache_context
-    Note over .#diffs_batch: Unfold files in diff
-    .#diffs_batch->>+Gitlab_Diff_FileCollection_MergeRequestDiffBase: diffs.write_diff
-    Gitlab_Diff_FileCollection_MergeRequestDiffBase->>+Gitlab_Diff_HighlightCache: Highlight diff
-    Gitlab_Diff_HighlightCache -->>-Gitlab_Diff_FileCollection_MergeRequestDiffBase: Return highlighted diff
-    Note over Gitlab_Diff_FileCollection_MergeRequestDiffBase: Cache diff
-    Gitlab_Diff_FileCollection_MergeRequestDiffBase-->>-.#diffs_batch:  &nbsp;
-    Note over .#diffs_batch: render JSON
+    .#diffs_batch-->>+.#define_diff_vars: before_action
+    .#define_diff_vars-->>+MergeRequest: merge_request_head_diff() or merge_request_diff()
+    MergeRequest-->>+MergeRequestDiff: find()
+    MergeRequestDiff-->>-MergeRequest: MergeRequestDiff
+    MergeRequest-->>-.#define_diff_vars: MergeRequestDiff
+    .#define_diff_vars-->>-.#diffs_batch: @compare
+    Note over .#diffs_batch: Getting diff file collection
+    .#diffs_batch-->>+MergeRequestDiff: diffs_in_batch()
+    MergeRequestDiff-->>+Gitlab_Diff_FileCollection_MergeRequestDiffBatch: new()
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>-MergeRequestDiff: diff file collection
+    MergeRequestDiff-->>-.#diffs_batch: diff file collection
+    Note over .#diffs_batch: Calculate unfoldable diff lines
+    .#diffs_batch-->>+MergeRequest: note_positions_for_paths
+    MergeRequest-->>+Gitlab_Diff_PositionCollection: new() then unfoldable()
+    Gitlab_Diff_PositionCollection-->>-MergeRequest: position collection
+    MergeRequest-->>-.#diffs_batch: unfoldable_positions
+    break when ETag header is present and is not stale
+        .#diffs_batch-->>+Frontend: return 304 HTTP
+    end
+    .#diffs_batch->>+Gitlab_Diff_FileCollection_MergeRequestDiffBatch: write_cache()
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch->>+Gitlab_Diff_HighlightCache: write_if_empty()
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch->>+Gitlab_Diff_StatsCache: write_if_empty()
+    Gitlab_Diff_HighlightCache-->>+Redis: cache
+    Gitlab_Diff_StatsCache-->>+Redis: cache
+    Note over .#diffs_batch: Serialize diffs and render JSON
+    .#diffs_batch-->>+PaginatedDiffSerializer: represent()
+    PaginatedDiffSerializer-->>+Gitlab_Diff_FileCollection_MergeRequestDiffBatch: diff_files()
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>+MergeRequestDiff: raw_diffs()
+    MergeRequestDiff-->>+MergeRequestDiffFile: Get all associated records
+    MergeRequestDiffFile-->>-MergeRequestDiff: Gitlab::Git::DiffCollection
+    MergeRequestDiff-->>-Gitlab_Diff_FileCollection_MergeRequestDiffBatch: diff files
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>+Gitlab_Diff_StatsCache: find_by_path()
+    Gitlab_Diff_StatsCache-->>+Redis: Read data from cache
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>+Gitlab_Diff_HighlightCache: decorate()
+    Gitlab_Diff_HighlightCache-->>+Redis: Read data from cache
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>-PaginatedDiffSerializer: diff files
+    PaginatedDiffSerializer-->>-.#diffs_batch: JSON
+    .#diffs_batch-->>+Frontend: return 200 HTTP with JSON
+```
+
+However, if **Show whitespace changes** is not selected when viewing diffs:
+
+- Whitespace changes are ignored.
+- The flow changes, and now involves Gitaly.
+
+```mermaid
+sequenceDiagram
+    Frontend-->>+.#diffs_batch: API call
+    Note over .#diffs_batch: Preload diffs and ivars
+    .#diffs_batch-->>+.#define_diff_vars: before_action
+    .#define_diff_vars-->>+MergeRequest: merge_request_head_diff() or merge_request_diff()
+    MergeRequest-->>+MergeRequestDiff: find()
+    MergeRequestDiff-->>-MergeRequest: MergeRequestDiff
+    MergeRequest-->>-.#define_diff_vars: MergeRequestDiff
+    .#define_diff_vars-->>-.#diffs_batch: @compare
+    Note over .#diffs_batch: Getting diff file collection
+    .#diffs_batch-->>+MergeRequestDiff: diffs_in_batch()
+    MergeRequestDiff-->>+Gitlab_Diff_FileCollection_Compare: new()
+    Gitlab_Diff_FileCollection_Compare-->>-MergeRequestDiff: diff file collection
+    MergeRequestDiff-->>-.#diffs_batch: diff file collection
+    Note over .#diffs_batch: Calculate unfoldable diff lines
+    .#diffs_batch-->>+MergeRequest: note_positions_for_paths
+    MergeRequest-->>+Gitlab_Diff_PositionCollection: new() then unfoldable()
+    Gitlab_Diff_PositionCollection-->>-MergeRequest: position collection
+    MergeRequest-->>-.#diffs_batch: unfoldable_positions
+    break when ETag header is present and is not stale
+        .#diffs_batch-->>+Frontend: return 304 HTTP
+    end
+    opt Cache higlights and stats when viewing HEAD, latest or specific version
+        .#diffs_batch->>+Gitlab_Diff_FileCollection_MergeRequestDiffBatch: write_cache()
+        Gitlab_Diff_FileCollection_MergeRequestDiffBatch->>+Gitlab_Diff_HighlightCache: write_if_empty()
+        Gitlab_Diff_FileCollection_MergeRequestDiffBatch->>+Gitlab_Diff_StatsCache: write_if_empty()
+        Gitlab_Diff_HighlightCache-->>+Redis: cache
+        Gitlab_Diff_StatsCache-->>+Redis: cache
+    end
+    Note over .#diffs_batch: Serialize diffs and render JSON
+    .#diffs_batch-->>+PaginatedDiffSerializer: represent()
+    PaginatedDiffSerializer-->>+Gitlab_Diff_FileCollection_MergeRequestDiffBatch: diff_files()
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>+MergeRequestDiff: raw_diffs()
+    MergeRequestDiff-->>+Repository: diff()
+    Repository-->>+Gitaly: CommitDiff RPC
+    Gitaly-->>-Repository: GitalyClient::DiffStitcher
+    Repository-->>-MergeRequestDiff: Gitlab::Git::DiffCollection
+    MergeRequestDiff-->>-Gitlab_Diff_FileCollection_MergeRequestDiffBatch: diff files
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>+Gitlab_Diff_StatsCache: find_by_path()
+    Gitlab_Diff_StatsCache-->>+Redis: Read data from cache
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>+Gitlab_Diff_HighlightCache: decorate()
+    Gitlab_Diff_HighlightCache-->>+Redis: Read data from cache
+    Gitlab_Diff_FileCollection_MergeRequestDiffBatch-->>-PaginatedDiffSerializer: diff files
+    PaginatedDiffSerializer-->>-.#diffs_batch: JSON
+    .#diffs_batch-->>+Frontend: return 200 HTTP with JSON
+```
+
+#### Compare between merge request diff versions
+
+You can also compare different diff versions when viewing diffs. The flow is different
+from the default flow, as it makes requests to Gitaly to generate a comparison between two
+diff versions. It also doesn't use Redis for highlight and stats caches.
+
+```mermaid
+sequenceDiagram
+    Frontend-->>+.#diffs_batch: API call
+    Note over .#diffs_batch: Preload diffs and ivars
+    .#diffs_batch-->>+.#define_diff_vars: before_action
+    .#define_diff_vars-->>+MergeRequestDiff: compare_with(start_sha)
+    MergeRequestDiff-->>+Compare: new()
+    Compare-->>-MergeRequestDiff: Compare
+    MergeRequestDiff-->>-.#define_diff_vars: Compare
+    .#define_diff_vars-->>-.#diffs_batch: @compare
+    Note over .#diffs_batch: Getting diff file collection
+    .#define_diff_vars-->>+Compare: diffs_in_batch()
+    Compare-->>+Gitlab_Diff_FileCollection_Compare: new()
+    Gitlab_Diff_FileCollection_Compare-->>-Compare: diff file collection
+    Compare-->>-.#define_diff_vars: diff file collection
+    Note over .#diffs_batch: Calculate unfoldable diff lines
+    .#diffs_batch-->>+MergeRequest: note_positions_for_paths
+    MergeRequest-->>+Gitlab_Diff_PositionCollection: new() then unfoldable()
+    Gitlab_Diff_PositionCollection-->>-MergeRequest: position collection
+    MergeRequest-->>-.#diffs_batch: unfoldable_positions
+    break when ETag header is present and is not stale
+        .#diffs_batch-->>+Frontend: return 304 HTTP
+    end
+    Note over .#diffs_batch: Serialize diffs and render JSON
+    .#diffs_batch-->>+PaginatedDiffSerializer: represent()
+    PaginatedDiffSerializer-->>+Gitlab_Diff_FileCollection_Compare: diff_files()
+    Gitlab_Diff_FileCollection_Compare-->>+Compare: raw_diffs()
+    Compare-->>+Repository: diff()
+    Repository-->>+Gitaly: CommitDiff RPC
+    Gitaly-->>-Repository: GitalyClient::DiffStitcher
+    Repository-->>-Compare: Gitlab::Git::DiffCollection
+    Compare-->>-Gitlab_Diff_FileCollection_Compare: diff files
+    Gitlab_Diff_FileCollection_Compare-->>-PaginatedDiffSerializer: diff files
+    PaginatedDiffSerializer-->>-.#diffs_batch: JSON
+    .#diffs_batch-->>+Frontend: return 200 HTTP with JSON
+```
+
+#### Viewing commit diff
+
+Another feature to view merge request diffs is to view diffs of a specific commit. It
+differs from the default flow, and requires Gitaly to get the diff of the specific commit. It
+also doesn't use Redis for the highlight and stats caches.
+
+```mermaid
+sequenceDiagram
+    Frontend-->>+.#diffs_batch: API call
+    Note over .#diffs_batch: Preload diffs and ivars
+    .#diffs_batch-->>+.#define_diff_vars: before_action
+    .#define_diff_vars-->>+Repository: commit()
+    Repository-->>+Gitaly: FindCommit RPC
+    Gitaly-->>-Repository: Gitlab::Git::Commit
+    Repository-->>+Commit: new()
+    Commit-->>-Repository: Commit
+    Repository-->>-.#define_diff_vars: Commit
+    .#define_diff_vars-->>-.#diffs_batch: @compare
+    Note over .#diffs_batch: Getting diff file collection
+    .#define_diff_vars-->>+Commit: diffs_in_batch()
+    Commit-->>+Gitlab_Diff_FileCollection_Commit: new()
+    Gitlab_Diff_FileCollection_Commit-->>-Commit: diff file collection
+    Commit-->>-.#define_diff_vars: diff file collection
+    Note over .#diffs_batch: Calculate unfoldable diff lines
+    .#diffs_batch-->>+MergeRequest: note_positions_for_paths
+    MergeRequest-->>+Gitlab_Diff_PositionCollection: new() then unfoldable()
+    Gitlab_Diff_PositionCollection-->>-MergeRequest: position collection
+    MergeRequest-->>-.#diffs_batch: unfoldable_positions
+    break when ETag header is present and is not stale
+        .#diffs_batch-->>+Frontend: return 304 HTTP
+    end
+    Note over .#diffs_batch: Serialize diffs and render JSON
+    .#diffs_batch-->>+PaginatedDiffSerializer: represent()
+    PaginatedDiffSerializer-->>+Gitlab_Diff_FileCollection_Commit: diff_files()
+    Gitlab_Diff_FileCollection_Commit-->>+Commit: raw_diffs()
+    Commit-->>+Gitaly: CommitDiff RPC
+    Gitaly-->>-Commit: GitalyClient::DiffStitcher
+    Commit-->>-Gitlab_Diff_FileCollection_Commit: Gitlab::Git::DiffCollection
+    Gitlab_Diff_FileCollection_Commit-->>-PaginatedDiffSerializer: diff files
+    PaginatedDiffSerializer-->>-.#diffs_batch: JSON
+    .#diffs_batch-->>+Frontend: return 200 HTTP with JSON
 ```

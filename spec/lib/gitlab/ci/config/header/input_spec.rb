@@ -68,6 +68,12 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
     end
   end
 
+  context 'when the input has RegEx validation' do
+    let(:input_hash) { { regex: '\w+' } }
+
+    it_behaves_like 'a valid input'
+  end
+
   context 'when given an invalid type' do
     let(:input_hash) { { type: 'datetime' } }
     let(:expected_errors) { ['foo input type unknown value: datetime'] }
@@ -87,6 +93,13 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
     let(:input_hash) { {} }
 
     let(:expected_errors) { ['123 key must be an alphanumeric string'] }
+
+    it_behaves_like 'an invalid input'
+  end
+
+  context 'when RegEx validation value is not a string' do
+    let(:input_hash) { { regex: [] } }
+    let(:expected_errors) { ['foo input regex should be a string'] }
 
     it_behaves_like 'an invalid input'
   end

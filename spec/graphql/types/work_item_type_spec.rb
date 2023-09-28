@@ -31,6 +31,7 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       web_url
       create_note_email
       reference
+      archived
     ]
 
     expect(described_class).to have_graphql_fields(*fields)

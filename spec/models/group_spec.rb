@@ -1648,6 +1648,45 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { expect(subject.parent).to be_kind_of(described_class) }
   end
 
+  describe '#member?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      group.add_developer(user)
+    end
+
+    subject { group.member?(user) }
+
+    context 'when user is a developer' do
+      it 'returns true' do
+        expect(group.member?(user)).to be_truthy
+      end
+
+      it 'returns false with maintainer as min_access_level param' do
+        expect(group.member?(user, Gitlab::Access::MAINTAINER)).to be_falsey
+      end
+    end
+
+    context 'in shared group' do
+      let(:shared_group) { create(:group) }
+      let(:member_shared) { create(:user) }
+
+      before do
+        create(:group_group_link, shared_group: group, shared_with_group: shared_group)
+        shared_group.add_developer(member_shared)
+      end
+
+      it 'return true for shared group member' do
+        expect(group.member?(member_shared)).to be_truthy
+      end
+
+      it 'returns false with maintainer as min_access_level param' do
+        expect(group.member?(member_shared, Gitlab::Access::MAINTAINER)).to be_falsey
+      end
+    end
+  end
+
   describe '#max_member_access_for_user' do
     let_it_be(:group_user) { create(:user) }
 

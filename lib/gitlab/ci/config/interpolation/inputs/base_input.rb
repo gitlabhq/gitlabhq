@@ -62,7 +62,15 @@ module Gitlab
               end
 
               # validate provided value
-              error("provided value is not a #{self.class.type_name}") unless valid_value?(actual_value)
+              return error("provided value is not a #{self.class.type_name}") unless valid_value?(actual_value)
+
+              validate_regex!
+            end
+
+            def validate_regex!
+              return unless spec.key?(:regex)
+
+              error('RegEx validation can only be used with string inputs')
             end
 
             def error(message)

@@ -12,8 +12,8 @@ module QA
           end
 
           view 'app/views/protected_branches/shared/_dropdown.html.haml' do
-            element :protected_branch_dropdown
-            element :protected_branch_dropdown_content
+            element 'protected-branch-dropdown'
+            element 'protected-branch-dropdown-content'
           end
 
           view 'app/assets/javascripts/protected_branches/protected_branch_create.js' do
@@ -26,11 +26,11 @@ module QA
           end
 
           def select_branch(branch_name)
-            click_element 'add-protected-branch-button'
-            click_element :protected_branch_dropdown
+            click_element('add-protected-branch-button')
+            click_element('protected-branch-dropdown')
 
-            within_element(:protected_branch_dropdown_content) do
-              click_on branch_name
+            within_element('protected-branch-dropdown-content') do
+              click_on(branch_name)
             end
           end
 

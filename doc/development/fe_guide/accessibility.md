@@ -594,7 +594,7 @@ it 'passes axe automated accessibility testing', :js do
 
   wait_for_requests # ensures page is fully loaded
 
-  expect(page).to be_axe_clean.according_to
+  expect(page).to be_axe_clean
 end
 ```
 

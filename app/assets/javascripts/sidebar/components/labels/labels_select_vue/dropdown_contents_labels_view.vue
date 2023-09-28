@@ -183,7 +183,7 @@ export default {
           ref="searchInput"
           v-model="searchKey"
           :disabled="labelsFetchInProgress"
-          data-qa-selector="dropdown_input_field"
+          data-testid="dropdown-input-field"
         />
       </div>
       <div ref="labelsListContainer" class="dropdown-content" data-testid="dropdown-content">

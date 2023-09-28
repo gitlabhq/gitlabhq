@@ -220,7 +220,7 @@ module API
         if params[:start_project]
           start_project = find_project!(params[:start_project])
 
-          unless user_project.forked_from?(start_project)
+          unless can?(current_user, :read_code, start_project) && user_project.forked_from?(start_project)
             forbidden!("Project is not included in the fork network for #{start_project.full_name}")
           end
         end

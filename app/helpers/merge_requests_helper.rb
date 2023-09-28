@@ -129,6 +129,8 @@ module MergeRequestsHelper
       _('Not available for private projects')
     elsif ProtectedBranch.protected?(merge_request.source_project, merge_request.source_branch)
       _('Not available for protected branches')
+    elsif !merge_request.author.can?(:push_code, merge_request.source_project)
+      _('Merge request author cannot push to target project')
     end
   end
 
