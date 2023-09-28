@@ -482,7 +482,7 @@ specific to the needs of their organization.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
 
-The following custom roles are available:
+The following granular permissions are available. You can add these permissions to any base role, and add them in combination with each other to create a customized role:
 
 - The Guest+1 role, which allows users with the Guest role to view code.
 - In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and change the status of the vulnerabilities.
