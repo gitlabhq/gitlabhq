@@ -135,6 +135,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           expect(pipeline.merge_request.id).to be > 0
           expect(pipeline.merge_request.target_branch).to eq('feature')
           expect(pipeline.merge_request.source_branch).to eq('feature_conflict')
+          expect(pipeline.merge_request.merge_when_pipeline_succeeds).to eq(false)
         end
 
         it 'restores pipelines based on ascending id order' do
@@ -146,6 +147,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
             5f923865dde3436854e9ceb9cdb7815618d4e849
             d2d430676773caa88cdaf7c55944073b2fd5561a
             2ea1f3dec713d940208fb5ce4a38765ecb5d3f73
+            1b6c4f044c63217d1ed06e514c84d22871bed912
+            ded178474ef2ba1f80a9964ba15da3ddb3cf664b
+            fd459e5c514d70dc525c5e70990ca5e0debb3105
           ]
 
           project = Project.find_by_path('project')
@@ -294,6 +298,12 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
         it 'has the correct data for merge request latest_merge_request_diff' do
           MergeRequest.find_each do |merge_request|
             expect(merge_request.latest_merge_request_diff_id).to eq(merge_request.merge_request_diffs.maximum(:id))
+          end
+        end
+
+        it 'sets MWPS to false for all merge requests' do
+          MergeRequest.find_each do |merge_request|
+            expect(merge_request.merge_when_pipeline_succeeds).to eq(false)
           end
         end
 
@@ -545,9 +555,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           end
 
           it 'has the correct number of pipelines and statuses' do
-            expect(@project.ci_pipelines.size).to eq(7)
+            expect(@project.ci_pipelines.size).to eq(10)
 
-            @project.ci_pipelines.order(:id).zip([2, 0, 2, 3, 2, 2, 0])
+            @project.ci_pipelines.order(:id).zip([2, 0, 2, 3, 2, 8, 0, 0, 0, 0])
               .each do |(pipeline, expected_status_size)|
               expect(pipeline.statuses.size).to eq(expected_status_size)
             end
@@ -555,28 +565,58 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
         end
 
         context 'when restoring hierarchy of pipeline, stages and jobs' do
-          it 'restores pipelines' do
-            expect(Ci::Pipeline.all.count).to be 7
+          context 'pipelines' do
+            it 'restores pipelines' do
+              expect(Ci::Pipeline.all.count).to be 10
+            end
+
+            it 'marks cancelable pipelines as canceled' do
+              expect(Ci::Pipeline.where(status: 'canceled').count).to eq 7
+            end
           end
 
-          it 'restores pipeline stages' do
-            expect(Ci::Stage.all.count).to be 6
+          context 'stages' do
+            it 'restores pipeline stages' do
+              expect(Ci::Stage.all.count).to be 7
+            end
+
+            it 'marks cancelable stages as canceled' do
+              expect(Ci::Stage.where(status: 'canceled').count).to eq 6
+            end
+
+            it 'correctly restores association between stage and a pipeline' do
+              expect(Ci::Stage.all).to all(have_attributes(pipeline_id: a_value > 0))
+            end
           end
 
-          it 'correctly restores association between stage and a pipeline' do
-            expect(Ci::Stage.all).to all(have_attributes(pipeline_id: a_value > 0))
+          context 'builds' do
+            it 'restores builds' do
+              expect(Ci::Build.all.count).to be 7
+            end
+
+            it 'marks cancelable builds as canceled' do
+              expect(Ci::Build.where(status: 'canceled').count).to eq 3
+            end
           end
 
-          it 'restores builds' do
-            expect(Ci::Build.all.count).to be 7
+          context 'bridges' do
+            it 'restores bridges' do
+              expect(Ci::Bridge.all.count).to be 5
+            end
+
+            it 'marks cancelable bridges as canceled' do
+              expect(Ci::Bridge.where(status: 'canceled').count).to eq 4
+            end
           end
 
-          it 'restores bridges' do
-            expect(Ci::Bridge.all.count).to be 1
-          end
+          context 'generic commit statuses' do
+            it 'restores generic commit statuses' do
+              expect(GenericCommitStatus.all.count).to be 3
+            end
 
-          it 'restores generic commit statuses' do
-            expect(GenericCommitStatus.all.count).to be 1
+            it 'marks cancelable generic commit statuses as canceled' do
+              expect(GenericCommitStatus.where(status: 'canceled').count).to eq 2
+            end
           end
 
           it 'correctly restores association between a stage and a job' do

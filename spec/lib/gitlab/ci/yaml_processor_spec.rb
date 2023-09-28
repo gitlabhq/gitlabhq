@@ -3607,6 +3607,88 @@ module Gitlab
           end
         end
       end
+
+      describe 'verify project sha', :use_clean_rails_redis_caching do
+        include_context 'when a project repository contains a forked commit'
+
+        let(:config) { YAML.dump(job: { script: 'echo' }) }
+        let(:verify_project_sha) { true }
+        let(:sha) { forked_commit_sha }
+
+        let(:processor) { described_class.new(config, project: project, sha: sha, verify_project_sha: verify_project_sha) }
+
+        subject { processor.execute }
+
+        shared_examples 'when the processor is executed twice consecutively' do |branch_names_contains_sha = false|
+          it 'calls Gitaly only once for each ref type' do
+            expect(repository).to receive(:branch_names_contains).once.and_call_original
+            expect(repository).to receive(:tag_names_contains).once.and_call_original unless branch_names_contains_sha
+
+            2.times { processor.execute }
+          end
+        end
+
+        context 'when a project branch contains the forked commit sha' do
+          before_all do
+            repository.add_branch(project.owner, 'branch1', forked_commit_sha)
+          end
+
+          after(:all) do
+            repository.rm_branch(project.owner, 'branch1')
+          end
+
+          it { is_expected.to be_valid }
+
+          it_behaves_like 'when the processor is executed twice consecutively', true
+        end
+
+        context 'when a project tag contains the forked commit sha' do
+          before_all do
+            repository.add_tag(project.owner, 'tag1', forked_commit_sha)
+          end
+
+          after(:all) do
+            repository.rm_tag(project.owner, 'tag1')
+          end
+
+          it { is_expected.to be_valid }
+
+          it_behaves_like 'when the processor is executed twice consecutively'
+        end
+
+        context 'when a project ref does not contain the forked commit sha' do
+          it 'returns an error' do
+            is_expected.not_to be_valid
+            expect(subject.errors).to include(/Could not validate configuration/)
+          end
+
+          it_behaves_like 'when the processor is executed twice consecutively'
+        end
+
+        context 'when verify_project_sha option is false' do
+          let(:verify_project_sha) { false }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when project is not provided' do
+          let(:project) { nil }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when sha is not provided' do
+          let(:sha) { nil }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when sha is invalid' do
+          let(:sha) { 'invalid-sha' }
+
+          it { is_expected.to be_valid }
+        end
+      end
     end
   end
 end

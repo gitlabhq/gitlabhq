@@ -25,7 +25,9 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
     ]
   end
 
-  subject { Gitlab::Json.parse(described_class.new(candidate).present)['candidate'] }
+  let(:include_ci_job) { true }
+
+  subject { Gitlab::Json.parse(described_class.new(candidate, include_ci_job).present)['candidate'] }
 
   before do
     allow(candidate).to receive(:latest_metrics).and_return(metrics)
@@ -68,6 +70,8 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
       let_it_be(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }
       let_it_be(:build) { candidate.ci_build = build_stubbed(:ci_build, pipeline: pipeline, user: user) }
 
+      let(:can_read_build) { true }
+
       it 'generates the correct ci' do
         expected_info = {
           'path' => "/#{project.full_path}/-/jobs/#{build.id}",
@@ -107,6 +111,14 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
           }
 
           expect(subject.dig('info', 'ci_job', 'merge_request')).to include(expected_info)
+        end
+      end
+
+      context 'when ci job is not to be added' do
+        let(:include_ci_job) { false }
+
+        it 'ci_job is nil' do
+          expect(subject.dig('info', 'ci_job')).to be_nil
         end
       end
     end

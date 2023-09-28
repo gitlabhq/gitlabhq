@@ -28,6 +28,9 @@ module Gitlab
       def initialize(project:, current_user:, sha: nil)
         @project = project
         @current_user = current_user
+        # If the `sha` is not provided, the default is the project's head commit (or nil). In such case, we
+        # don't need to call `YamlProcessor.verify_project_sha!`, which prevents redundant calls to Gitaly.
+        @verify_project_sha = sha.present?
         @sha = sha || project&.repository&.commit&.sha
       end
 
@@ -77,6 +80,7 @@ module Gitlab
           Gitlab::Ci::YamlProcessor.new(content, project: @project,
                                                  user: @current_user,
                                                  sha: @sha,
+                                                 verify_project_sha: @verify_project_sha,
                                                  logger: logger).execute
         end
       end
