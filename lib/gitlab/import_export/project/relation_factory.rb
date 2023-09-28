@@ -99,6 +99,7 @@ module Gitlab
           when :'ProtectedBranch::PushAccessLevel' then setup_protected_branch_access_level
           when :ApprovalProjectRulesProtectedBranch then setup_merge_approval_protected_branch
           when :releases then setup_release
+          when :merge_requests, :MergeRequest, :merge_request then setup_merge_request
           end
 
           update_project_references
@@ -149,22 +150,30 @@ module Gitlab
         end
 
         def setup_pipeline
+          @relation_hash['status'] = transform_status(@relation_hash['status'])
+
           @relation_hash.fetch('stages', []).each do |stage|
+            stage.status = transform_status(stage.status)
+
             # old export files have statuses
-            stage.statuses.each do |status|
-              status.pipeline = imported_object
+            stage.statuses.each do |job|
+              job.status = transform_status(job.status)
+              job.pipeline = imported_object
             end
 
-            stage.builds.each do |status|
-              status.pipeline = imported_object
+            stage.builds.each do |job|
+              job.status = transform_status(job.status)
+              job.pipeline = imported_object
             end
 
-            stage.bridges.each do |status|
-              status.pipeline = imported_object
+            stage.bridges.each do |job|
+              job.status = transform_status(job.status)
+              job.pipeline = imported_object
             end
 
-            stage.generic_commit_statuses.each do |status|
-              status.pipeline = imported_object
+            stage.generic_commit_statuses.each do |job|
+              job.status = transform_status(job.status)
+              job.pipeline = imported_object
             end
           end
         end
@@ -186,6 +195,10 @@ module Gitlab
 
         def setup_pipeline_schedule
           @relation_hash['active'] = false
+        end
+
+        def setup_merge_request
+          @relation_hash['merge_when_pipeline_succeeds'] = false
         end
 
         def setup_protected_branch_access_level
@@ -225,6 +238,12 @@ module Gitlab
 
         def legacy_trigger?
           @relation_name == :'Ci::Trigger' && @relation_hash['owner_id'].nil?
+        end
+
+        def transform_status(status)
+          return 'canceled' if ::Ci::HasStatus::COMPLETED_STATUSES.exclude?(status)
+
+          status
         end
 
         def preload_keys(object, references, value)

@@ -32,7 +32,8 @@ module Ci
         config.content,
         project: project,
         user: current_user,
-        sha: sha
+        sha: sha,
+        verify_project_sha: true
       ).execute
 
       result.valid? ? result.root_variables_with_prefill_data : {}

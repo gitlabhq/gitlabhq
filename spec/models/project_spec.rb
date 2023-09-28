@@ -6405,6 +6405,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let!(:merge_request) do
       create(
         :merge_request,
+        author: author,
+        state_id: state_id,
         target_project: target_project,
         target_branch: 'target-branch',
         source_project: project,
@@ -6412,6 +6414,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         allow_collaboration: true
       )
     end
+
+    let(:author) { project.creator }
+    let(:state_id) { MergeRequest.available_states[:opened] }
 
     before do
       target_project.add_developer(user)
@@ -6422,10 +6427,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project.merge_requests_allowing_push_to_user(user)).to include(merge_request)
       end
 
-      it 'does not include closed merge requests' do
-        merge_request.close
+      context 'when the merge requests are closed' do
+        let(:state_id) { MergeRequest.available_states[:closed] }
 
-        expect(project.merge_requests_allowing_push_to_user(user)).to be_empty
+        it 'does not include closed merge requests' do
+          expect(project.merge_requests_allowing_push_to_user(user)).to be_empty
+        end
       end
 
       it 'does not include merge requests for guest users' do
@@ -6447,16 +6454,38 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     describe '#any_branch_allows_collaboration?' do
-      it 'allows access when there are merge requests open allowing collaboration', :sidekiq_might_not_need_inline do
-        expect(project.any_branch_allows_collaboration?(user))
-          .to be_truthy
-      end
+      context 'when there is an open merge request allowing collaboration' do
+        it 'allows access', :sidekiq_might_not_need_inline do
+          expect(project.any_branch_allows_collaboration?(user))
+            .to be_truthy
+        end
 
-      it 'does not allow access when there are no merge requests open allowing collaboration' do
-        merge_request.close!
+        context 'when the merge request author is not allowed to push_code' do
+          let(:author) { create(:user) }
 
-        expect(project.any_branch_allows_collaboration?(user))
-          .to be_falsey
+          it 'returns false' do
+            expect(project.any_branch_allows_collaboration?(user))
+              .to be_falsey
+          end
+        end
+
+        context 'when the merge request is closed' do
+          let(:state_id) { MergeRequest.available_states[:closed] }
+
+          it 'returns false' do
+            expect(project.any_branch_allows_collaboration?(user))
+              .to be_falsey
+          end
+        end
+
+        context 'when the merge request is merged' do
+          let(:state_id) { MergeRequest.available_states[:merged] }
+
+          it 'returns false' do
+            expect(project.any_branch_allows_collaboration?(user))
+              .to be_falsey
+          end
+        end
       end
     end
 
@@ -6502,6 +6531,15 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           expect { 2.times { described_class.find(project.id).branch_allows_collaboration?(user, 'awesome-feature-1') } }
             .not_to exceed_query_limit(control).with_threshold(2)
+        end
+      end
+
+      context 'when the merge request author is not allowed to push_code' do
+        let(:author) { create(:user) }
+
+        it 'returns false' do
+          expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+            .to be_falsey
         end
       end
     end

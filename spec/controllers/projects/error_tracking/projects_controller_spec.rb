@@ -19,7 +19,7 @@ RSpec.describe Projects::ErrorTracking::ProjectsController do
       let(:user) { create(:user) }
 
       it 'returns 404' do
-        project.add_guest(user)
+        project.add_developer(user)
 
         get :index, params: list_projects_params
 

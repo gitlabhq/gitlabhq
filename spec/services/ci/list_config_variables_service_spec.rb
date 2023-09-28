@@ -32,15 +32,50 @@ RSpec.describe Ci::ListConfigVariablesService,
       }
     end
 
+    let(:expected_result) do
+      {
+        'KEY1' => { value: 'val 1', description: 'description 1' },
+        'KEY2' => { value: 'val 2', description: '' },
+        'KEY3' => { value: 'val 3' },
+        'KEY4' => { value: 'val 4' }
+      }
+    end
+
     before do
       synchronous_reactive_cache(service)
     end
 
-    it 'returns variable list' do
-      expect(result['KEY1']).to eq({ value: 'val 1', description: 'description 1' })
-      expect(result['KEY2']).to eq({ value: 'val 2', description: '' })
-      expect(result['KEY3']).to eq({ value: 'val 3' })
-      expect(result['KEY4']).to eq({ value: 'val 4' })
+    it 'returns variables list' do
+      expect(result).to eq(expected_result)
+    end
+
+    context 'when the ref is a sha from a fork' do
+      include_context 'when a project repository contains a forked commit'
+
+      before do
+        allow_next_instance_of(Gitlab::Ci::ProjectConfig) do |instance|
+          allow(instance).to receive(:exists?).and_return(true)
+          allow(instance).to receive(:content).and_return(YAML.dump(ci_config))
+        end
+      end
+
+      let(:ref) { forked_commit_sha }
+
+      context 'when a project ref contains the sha' do
+        before do
+          mock_branch_contains_forked_commit_sha
+        end
+
+        it 'returns variables list' do
+          expect(result).to eq(expected_result)
+        end
+      end
+
+      context 'when a project ref does not contain the sha' do
+        it 'returns empty response' do
+          expect(result).to eq({})
+        end
+      end
     end
   end
 

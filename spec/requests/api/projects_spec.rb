@@ -3290,6 +3290,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:failed_status_code) { :not_found }
       end
 
+      it 'refreshes the forks count cache' do
+        expect(project_fork_source.forks_count).to be_zero
+      end
+
       context 'user is a developer' do
         before do
           project_fork_target.add_developer(user)
@@ -3302,13 +3306,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
 
-      it 'refreshes the forks count cache' do
-        expect(project_fork_source.forks_count).to be_zero
-      end
-
       context 'user is maintainer' do
         before do
           project_fork_target.add_maintainer(user)
+        end
+
+        it 'denies project to be forked from an existing project' do
+          post api(path, user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'user is owner' do
+        before do
+          project_fork_target.add_owner(user)
         end
 
         context 'and user is a reporter of target group' do
