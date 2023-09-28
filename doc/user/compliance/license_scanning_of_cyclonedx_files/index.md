@@ -184,6 +184,7 @@ To remove the unneeded data:
 1. If there is deprecated data in the database, remove it by running the following commands in order:
 
    ```ruby
+   ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
    PackageMetadata::PackageVersionLicense.delete_all
    PackageMetadata::PackageVersion.delete_all
    ```

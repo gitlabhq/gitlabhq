@@ -121,6 +121,7 @@ module.exports = function storybookWebpackConfig({ config }) {
   config.resolve.alias = {
     ...config.resolve.alias,
     gridstack: require.resolve('gridstack/dist/es5/gridstack.js'),
+    '@cubejs-client/core': require.resolve('@cubejs-client/core/dist/cubejs-client-core.js'),
   };
 
   // Replace any Storybook-defined CSS loaders with our custom one.

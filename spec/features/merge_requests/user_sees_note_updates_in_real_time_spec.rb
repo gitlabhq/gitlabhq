@@ -4,14 +4,12 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request note updates in real time', :js, feature_category: :code_review_workflow do
   include NoteInteractionHelpers
-  include ContentEditorHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
     visit project_merge_request_path(project, merge_request)
-    close_rich_text_promo_popover_if_present
   end
 
   describe 'new notes' do

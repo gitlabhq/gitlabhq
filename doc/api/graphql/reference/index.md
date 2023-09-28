@@ -29015,7 +29015,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumproject_repository_limit_alert_error_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_ERROR_THRESHOLD` | Callout feature name for project_repository_limit_alert_error_threshold. |
 | <a id="usercalloutfeaturenameenumproject_repository_limit_alert_warning_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for project_repository_limit_alert_warning_threshold. |
 | <a id="usercalloutfeaturenameenumregistration_enabled_callout"></a>`REGISTRATION_ENABLED_CALLOUT` | Callout feature name for registration_enabled_callout. |
-| <a id="usercalloutfeaturenameenumrich_text_editor"></a>`RICH_TEXT_EDITOR` | Callout feature name for rich_text_editor. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_devops_alert"></a>`SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
 | <a id="usercalloutfeaturenameenumsecurity_newsletter_callout"></a>`SECURITY_NEWSLETTER_CALLOUT` | Callout feature name for security_newsletter_callout. |

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'merge request edit context' do
-  include ContentEditorHelpers
-
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let!(:milestone)   { create(:milestone, project: target_project) }
@@ -27,6 +25,5 @@ RSpec.shared_context 'merge request edit context' do
 
     sign_in(user)
     visit edit_project_merge_request_path(target_project, merge_request)
-    close_rich_text_promo_popover_if_present
   end
 end

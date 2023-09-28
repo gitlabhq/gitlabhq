@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
   include NoteInteractionHelpers
-  include ContentEditorHelpers
 
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
@@ -12,7 +11,6 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
   describe 'creates' do
     it 'displays the new comment' do
       visit project_issue_path(project, issue)
-      close_rich_text_promo_popover_if_present
 
       note = create(:note, noteable: issue, project: project, note: 'Looks good!')
       wait_for_requests
@@ -31,7 +29,6 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
       before do
         sign_in(user)
         visit project_issue_path(project, issue)
-        close_rich_text_promo_popover_if_present
       end
 
       it 'displays the updated content' do

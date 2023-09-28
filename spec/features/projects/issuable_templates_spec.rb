@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'issuable templates', :js, feature_category: :groups_and_projects do
   include ProjectForksHelper
   include CookieHelper
-  include ContentEditorHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
@@ -37,7 +36,6 @@ RSpec.describe 'issuable templates', :js, feature_category: :groups_and_projects
         message: 'added issue template',
         branch_name: 'master')
       visit project_issue_path project, issue
-      close_rich_text_promo_popover_if_present
       page.find('.js-issuable-edit').click
       fill_in :'issuable-title', with: 'test issue title'
     end
@@ -81,7 +79,6 @@ RSpec.describe 'issuable templates', :js, feature_category: :groups_and_projects
         message: 'added issue template',
         branch_name: 'master')
       visit project_issue_path project, issue
-      close_rich_text_promo_popover_if_present
       page.find('.js-issuable-edit').click
       fill_in :'issuable-title', with: 'test issue title'
       fill_in :'issue-description', with: prior_description
@@ -111,7 +108,6 @@ RSpec.describe 'issuable templates', :js, feature_category: :groups_and_projects
     it 'does not overwrite autosaved description' do
       visit new_project_issue_path project
       wait_for_requests
-      close_rich_text_promo_popover_if_present
 
       assert_template # default template is loaded the first time
 
@@ -145,7 +141,6 @@ RSpec.describe 'issuable templates', :js, feature_category: :groups_and_projects
         message: 'added merge request bug template',
         branch_name: 'master')
       visit edit_project_merge_request_path project, merge_request
-      close_rich_text_promo_popover_if_present
       fill_in :'merge_request[title]', with: 'test merge request title'
     end
 
@@ -205,7 +200,6 @@ RSpec.describe 'issuable templates', :js, feature_category: :groups_and_projects
         message: 'added merge request template',
         branch_name: 'master')
       visit edit_project_merge_request_path project, merge_request
-      close_rich_text_promo_popover_if_present
       fill_in :'merge_request[title]', with: 'test merge request title'
     end
 

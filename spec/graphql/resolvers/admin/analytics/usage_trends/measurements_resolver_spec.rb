@@ -24,7 +24,7 @@ RSpec.describe Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver do
         let(:current_user) { admin_user }
 
         it 'returns the records, latest first' do
-          expect(subject).to eq([project_measurement_new, project_measurement_old])
+          expect(subject.items).to eq([project_measurement_new, project_measurement_old])
         end
       end
 
@@ -54,7 +54,7 @@ RSpec.describe Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver do
           arguments[:recorded_before] = 1.day.ago
         end
 
-        it { is_expected.to match_array([project_measurement_new]) }
+        it { expect(subject.items).to match_array([project_measurement_new]) }
 
         context 'when "incorrect" values are passed' do
           before do
@@ -62,7 +62,7 @@ RSpec.describe Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver do
             arguments[:recorded_before] = 4.days.ago
           end
 
-          it { is_expected.to be_empty }
+          it { expect(subject.items).to be_empty }
         end
       end
     end
@@ -71,7 +71,7 @@ RSpec.describe Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver do
       let_it_be(:pipelines_succeeded_measurement) { create(:usage_trends_measurement, :pipelines_succeeded_count, recorded_at: 2.days.ago) }
       let_it_be(:pipelines_skipped_measurement) { create(:usage_trends_measurement, :pipelines_skipped_count, recorded_at: 2.days.ago) }
 
-      subject { resolve_measurements({ identifier: identifier }, { current_user: current_user }) }
+      subject { resolve_measurements({ identifier: identifier }, { current_user: current_user }).items }
 
       context 'filter for pipelines_succeeded' do
         let(:identifier) { 'pipelines_succeeded' }

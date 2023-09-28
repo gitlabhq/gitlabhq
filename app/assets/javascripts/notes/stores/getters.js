@@ -52,10 +52,7 @@ export const discussions = (state, getters, rootState) => {
   let discussionsInState = clone(state.discussions);
   // NOTE: not testing bc will be removed when backend is finished.
 
-  if (
-    state.noteableData.targetType === 'merge_request' &&
-    window.gon?.features?.mrActivityFilters
-  ) {
+  if (state.noteableData.targetType === 'merge_request') {
     discussionsInState = discussionsInState.reduce((acc, discussion) => {
       if (hideActivity(state.mergeRequestFilters, discussion)) {
         return acc;

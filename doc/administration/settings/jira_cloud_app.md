@@ -22,15 +22,12 @@ For Jira Data Center or Jira Server, use the [Jira DVCS connector](../../integra
 
 ## Set up OAuth authentication
 
-The GitLab for Jira Cloud app is [switching to OAuth authentication](https://gitlab.com/gitlab-org/gitlab/-/issues/387299).
-To enable OAuth authentication, you must create an OAuth application on the GitLab instance.
-
-You must enable OAuth authentication to:
+You must set up OAuth authentication to:
 
 - [Connect the GitLab for Jira Cloud app](#connect-the-gitlab-for-jira-cloud-app).
 - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-To create an OAuth application:
+To create an OAuth application on your self-managed instance:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
@@ -55,11 +52,11 @@ To create an OAuth application:
 You can link your self-managed instance after you install the GitLab for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
 
-NOTE:
-With this method, GitLab.com serves as a proxy for Jira traffic from your instance.
+With this method:
 
-When you connect the app, it's not possible to create branches from Jira Cloud for self-managed instances.
-For more information, see [issue 391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432).
+- GitLab.com serves as a proxy for Jira traffic from your instance.
+- It's not possible to create branches from Jira Cloud.
+  For more information, see [issue 391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432).
 
 [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually) if:
 
@@ -129,12 +126,13 @@ to check if Jira Cloud is linked to:
 
 ## Install the GitLab for Jira Cloud app manually
 
-If you do not want to use the official marketplace listing and want to create branches from Jira Cloud,
+If you do not want to [use the official marketplace listing](#connect-the-gitlab-for-jira-cloud-app),
 install the GitLab for Jira Cloud app manually.
 
 You must install each Jira Cloud app from a single location. Jira fetches a
 [manifest file](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/)
 from the location you provide. The manifest file describes the app to the system.
+
 To support your self-managed instance with Jira Cloud, do one of the following:
 
 - [Install the app in development mode](#install-the-app-in-development-mode).
@@ -172,15 +170,14 @@ To configure your Jira instance so you can install apps from outside the marketp
 In **Apps > Manage Apps**, **GitLab for Jira Cloud** now appears.
 You can also select **Get started** to open the configuration page from your GitLab instance.
 
-NOTE:
 If a GitLab upgrade makes changes to the app descriptor, you must reinstall the app.
 
 ### Create a marketplace listing
 
 [Prerequisites](#prerequisites-1)
 
-If you do not want to use development mode, you can create your own marketplace listing
-and install the GitLab for Jira Cloud app from the Atlassian Marketplace.
+If you do not want to [use development mode](#install-the-app-in-development-mode), you can create your own marketplace listing.
+This way, you can install the GitLab for Jira Cloud app from the Atlassian Marketplace.
 
 To create a marketplace listing:
 
@@ -191,9 +188,8 @@ To create a marketplace listing:
      applications can be viewed and installed by any user.
 1. Generate test license tokens for your application.
 
-NOTE:
-This method uses [automatic updates](../../integration/jira/connect-app.md#update-the-gitlab-for-jira-cloud-app)
-like the GitLab.com marketplace listing.
+Like the GitLab.com marketplace listing, this method uses
+[automatic updates](../../integration/jira/connect-app.md#update-the-gitlab-for-jira-cloud-app).
 
 For more information about creating a marketplace listing, see the
 [Atlassian documentation](https://developer.atlassian.com/platform/marketplace/installing-cloud-apps/#creating-the-marketplace-listing).
@@ -202,7 +198,7 @@ For more information about creating a marketplace listing, see the
 
 A GitLab instance can serve as a proxy for other GitLab instances through the GitLab for Jira Cloud app.
 You might want to use a proxy if you're managing multiple GitLab instances but only want to
-[manually install](#install-the-gitlab-for-jira-cloud-app-manually) the GitLab for Jira Cloud app once.
+[manually install](#install-the-gitlab-for-jira-cloud-app-manually) the app once.
 
 To configure your GitLab instance to serve as a proxy:
 
@@ -214,8 +210,10 @@ To configure your GitLab instance to serve as a proxy:
 1. Select **Save changes**.
 1. [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-Other GitLab instances that use the proxy must configure the **Jira Connect Proxy URL** and the
-[OAuth application](#set-up-oauth-authentication) **Redirect URI** settings to point to the proxy instance.
+Other GitLab instances that use the proxy must configure the following settings to point to the proxy instance:
+
+- [**Jira Connect Proxy URL**](#set-up-your-instance)
+- [**Redirect URI**](#set-up-oauth-authentication)
 
 ## Security considerations
 

@@ -14,6 +14,7 @@ import createBoardMutation from '~/boards/graphql/board_create.mutation.graphql'
 import destroyBoardMutation from '~/boards/graphql/board_destroy.mutation.graphql';
 import updateBoardMutation from '~/boards/graphql/board_update.mutation.graphql';
 import eventHub from '~/boards/eventhub';
+import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -55,12 +56,10 @@ describe('BoardForm', () => {
   const findInput = () => wrapper.find('#board-new-name');
 
   const setBoardMock = jest.fn();
-  const setErrorMock = jest.fn();
 
   const store = new Vuex.Store({
     actions: {
       setBoard: setBoardMock,
-      setError: setErrorMock,
     },
   });
 
@@ -112,6 +111,10 @@ describe('BoardForm', () => {
       attachTo: document.body,
     });
   };
+
+  beforeEach(() => {
+    cacheUpdates.setError = jest.fn();
+  });
 
   describe('when user can not admin the board', () => {
     beforeEach(() => {
@@ -237,7 +240,7 @@ describe('BoardForm', () => {
 
         await waitForPromises();
         expect(setBoardMock).not.toHaveBeenCalled();
-        expect(setErrorMock).toHaveBeenCalled();
+        expect(cacheUpdates.setError).toHaveBeenCalled();
       });
 
       describe('when Apollo boards FF is on', () => {
@@ -353,7 +356,7 @@ describe('BoardForm', () => {
 
       await waitForPromises();
       expect(setBoardMock).not.toHaveBeenCalled();
-      expect(setErrorMock).toHaveBeenCalled();
+      expect(cacheUpdates.setError).toHaveBeenCalled();
     });
 
     describe('when Apollo boards FF is on', () => {
@@ -434,9 +437,11 @@ describe('BoardForm', () => {
 
       await waitForPromises();
       expect(visitUrl).not.toHaveBeenCalled();
-      expect(store.dispatch).toHaveBeenCalledWith('setError', {
-        message: 'Failed to delete board. Please try again.',
-      });
+      expect(cacheUpdates.setError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Failed to delete board. Please try again.',
+        }),
+      );
     });
   });
 });

@@ -59,7 +59,7 @@ module Packages
         # The bulk_insert statement above do not dirty the query cache. To make
         # sure that the results are fresh from the database and not from a stalled
         # and potentially wrong cache, this query has to be done with the query
-        # chache disabled.
+        # cache disabled.
         Packages::Dependency.ids_for_package_names_and_version_patterns(names_and_version_patterns)
       end
     end

@@ -33,7 +33,7 @@ module Types
             null: true,
             authorize: :read_project
 
-      field :tokens, Types::Clusters::AgentTokenType.connection_type,
+      field :tokens,
             description: 'Tokens associated with the cluster agent.',
             null: true,
             resolver: ::Resolvers::Clusters::AgentTokensResolver

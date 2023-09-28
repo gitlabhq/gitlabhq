@@ -6,7 +6,6 @@ module QA
       class Show < Page::Base
         include Page::Component::Note
         include Page::Component::Issuable::Sidebar
-        include Page::Component::RichTextPopover
 
         view 'app/assets/javascripts/batch_comments/components/preview_dropdown.vue' do
           element :review_preview_dropdown
@@ -380,7 +379,6 @@ module QA
         end
 
         def merge_immediately!
-          close_rich_text_promo_popover_if_present
           retry_until(reload: true, sleep_interval: 1, max_attempts: 12) do
             if has_element?(:merge_moment_dropdown)
               click_element(:merge_moment_dropdown, skip_finished_loading_check: true)
@@ -394,7 +392,6 @@ module QA
         end
 
         def try_to_merge!
-          close_rich_text_promo_popover_if_present
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible
           wait_until_ready_to_merge

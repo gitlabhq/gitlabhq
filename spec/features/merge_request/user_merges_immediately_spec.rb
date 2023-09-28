@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge requests > User merges immediately', :js, feature_category: :code_review_workflow do
-  include ContentEditorHelpers
-
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let!(:merge_request) do
@@ -33,7 +31,6 @@ RSpec.describe 'Merge requests > User merges immediately', :js, feature_category
       project.add_maintainer(user)
       sign_in(user)
       visit project_merge_request_path(project, merge_request)
-      close_rich_text_promo_popover_if_present
     end
 
     it 'enables merge immediately' do

@@ -524,7 +524,7 @@ module Types
       complexity: 5,
       resolver: ::Resolvers::TimelogResolver
 
-    field :agent_configurations, ::Types::Kas::AgentConfigurationType.connection_type,
+    field :agent_configurations,
       null: true,
       description: 'Agent configurations defined by the project',
       resolver: ::Resolvers::Kas::AgentConfigurationsResolver

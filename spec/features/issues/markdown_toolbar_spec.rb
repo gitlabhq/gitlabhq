@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue markdown toolbar', :js, feature_category: :team_planning do
-  include ContentEditorHelpers
-
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue)   { create(:issue, project: project) }
   let_it_be(:user)    { create(:user) }
@@ -13,7 +11,6 @@ RSpec.describe 'Issue markdown toolbar', :js, feature_category: :team_planning d
     sign_in(user)
 
     visit project_issue_path(project, issue)
-    close_rich_text_promo_popover_if_present
   end
 
   it "doesn't include first new line when adding bold" do

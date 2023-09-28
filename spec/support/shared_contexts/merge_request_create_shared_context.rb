@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'merge request create context' do
-  include ContentEditorHelpers
-
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:target_project) { create(:project, :public, :repository) }
@@ -25,7 +23,5 @@ RSpec.shared_context 'merge request create context' do
         source_branch: 'fix',
         target_branch: 'master'
       })
-
-    close_rich_text_promo_popover_if_present
   end
 end

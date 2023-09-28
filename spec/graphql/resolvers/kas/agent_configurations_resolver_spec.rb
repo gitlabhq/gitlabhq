@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Resolvers::Kas::AgentConfigurationsResolver do
   include GraphqlHelpers
 
-  it { expect(described_class.type).to eq(Types::Kas::AgentConfigurationType) }
+  it { expect(described_class.type).to eq(Types::Kas::AgentConfigurationType.connection_type) }
   it { expect(described_class.null).to be_truthy }
   it { expect(described_class.field_options).to include(calls_gitaly: true) }
 
@@ -26,7 +26,7 @@ RSpec.describe Resolvers::Kas::AgentConfigurationsResolver do
     end
 
     it 'returns agents configured for the project' do
-      expect(subject).to contain_exactly(agent1, agent2)
+      expect(subject.items).to contain_exactly(agent1, agent2)
     end
 
     context 'an error is returned from the KAS client' do
@@ -44,7 +44,7 @@ RSpec.describe Resolvers::Kas::AgentConfigurationsResolver do
     context 'user does not have permission' do
       let(:user) { create(:user) }
 
-      it { is_expected.to be_empty }
+      it { expect(subject.items).to be_empty }
     end
   end
 end

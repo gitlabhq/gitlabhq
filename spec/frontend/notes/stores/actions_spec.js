@@ -1343,8 +1343,6 @@ describe('Actions Notes Store', () => {
     });
 
     it('dispatches `fetchDiscussionsBatch` action with notes_filter 0 for merge request', () => {
-      window.gon = { features: { mrActivityFilters: true } };
-
       return testAction(
         actions.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
@@ -1397,7 +1395,7 @@ describe('Actions Notes Store', () => {
             type: 'fetchDiscussionsBatch',
             payload: {
               config: {
-                params: { notes_filter: 'test-filter', persist_filter: 'test-persist-filter' },
+                params: { notes_filter: 0, persist_filter: false },
               },
               path: 'test-path',
               perPage: 20,

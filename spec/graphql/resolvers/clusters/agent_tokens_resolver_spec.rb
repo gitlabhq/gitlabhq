@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Resolvers::Clusters::AgentTokensResolver do
   include GraphqlHelpers
 
-  it { expect(described_class.type).to eq(Types::Clusters::AgentTokenType) }
+  it { expect(described_class.type).to eq(Types::Clusters::AgentTokenType.connection_type) }
   it { expect(described_class.null).to be_truthy }
   it { expect(described_class.arguments.keys).to be_empty }
 
@@ -22,7 +22,7 @@ RSpec.describe Resolvers::Clusters::AgentTokensResolver do
     subject { resolve(described_class, obj: agent, ctx: ctx) }
 
     it 'returns active tokens associated with the agent, ordered by last_used_at' do
-      expect(subject).to eq([matching_token2, matching_token1])
+      expect(subject.items).to eq([matching_token2, matching_token1])
     end
 
     context 'user does not have permission' do

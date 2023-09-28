@@ -11,7 +11,6 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
   let_it_be(:task) { create(:work_item, :task, project: project, title: 'Task 1') }
 
   context 'for signed in user' do
-    include ContentEditorHelpers
     before_all do
       project.add_developer(user)
     end
@@ -25,8 +24,6 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
       visit work_items_path
 
       wait_for_requests
-
-      close_rich_text_promo_popover_if_present
     end
 
     it 'are not displayed when issue does not have work item links', :aggregate_failures do

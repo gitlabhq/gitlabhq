@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feature_category: :code_review_workflow do
-  include ContentEditorHelpers
-
   let(:project)       { create(:project, :public, :repository) }
   let(:user)          { project.creator }
   let(:guest)         { create(:user) }
@@ -543,7 +541,5 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
     # Wait for MR widget to load
     wait_for_requests
-
-    close_rich_text_promo_popover_if_present
   end
 end

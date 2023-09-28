@@ -494,19 +494,13 @@ lib/gitlab/checks/**
 /doc/administration/license_file.md @fneill
 /doc/administration/load_balancer.md @axil
 /doc/administration/logs/ @axil
-/doc/administration/logs/index.md @msedlakjakubowski
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @msedlakjakubowski
 /doc/administration/merge_requests_approvals.md @msedlakjakubowski
 /doc/administration/moderate_users.md @jglassman1
 /doc/administration/monitoring/github_imports.md @eread @ashrafkhamis
-/doc/administration/monitoring/health_check.md @msedlakjakubowski
-/doc/administration/monitoring/index.md @msedlakjakubowski
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
-/doc/administration/monitoring/performance/gitlab_configuration.md @msedlakjakubowski
-/doc/administration/monitoring/performance/grafana_configuration.md @msedlakjakubowski
-/doc/administration/monitoring/performance/index.md @jglassman1
-/doc/administration/monitoring/performance/performance_bar.md @jglassman1
+/doc/administration/monitoring/performance/ @jglassman1
 /doc/administration/monitoring/prometheus/gitlab_exporter.md @jglassman1
 /doc/administration/monitoring/prometheus/index.md @axil
 /doc/administration/monitoring/prometheus/pgbouncer_exporter.md @aqualls
@@ -531,7 +525,6 @@ lib/gitlab/checks/**
 /doc/administration/read_only_gitlab.md @axil
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil
-/doc/administration/reply_by_email.md @msedlakjakubowski
 /doc/administration/reply_by_email_postfix_setup.md @axil
 /doc/administration/reporting/ @phillipwells
 /doc/administration/reporting/spamcheck.md @axil
@@ -550,7 +543,6 @@ lib/gitlab/checks/**
 /doc/administration/settings/gitaly_timeouts.md @eread
 /doc/administration/settings/import_and_export_settings.md @eread @ashrafkhamis
 /doc/administration/settings/import_export_rate_limits.md @eread @ashrafkhamis
-/doc/administration/settings/incident_management_rate_limits.md @msedlakjakubowski
 /doc/administration/settings/index.md @msedlakjakubowski
 /doc/administration/settings/instance_template_repository.md @msedlakjakubowski
 /doc/administration/settings/jira_cloud_app.md @eread @ashrafkhamis
@@ -585,7 +577,6 @@ lib/gitlab/checks/**
 /doc/administration/user_settings.md @jglassman1
 /doc/api/access_requests.md @jglassman1
 /doc/api/admin_sidekiq_queues.md @axil
-/doc/api/alert_management_alerts.md @msedlakjakubowski
 /doc/api/api_resources.md @eread @ashrafkhamis
 /doc/api/appearance.md @jglassman1
 /doc/api/applications.md @jglassman1
@@ -671,8 +662,6 @@ lib/gitlab/checks/**
 /doc/api/merge_requests.md @aqualls
 /doc/api/merge_trains.md @marcel.amirault
 /doc/api/metadata.md @phillipwells
-/doc/api/metrics_dashboard_annotations.md @msedlakjakubowski
-/doc/api/metrics_user_starred_dashboards.md @msedlakjakubowski
 /doc/api/milestones.md @msedlakjakubowski
 /doc/api/namespaces.md @jglassman1
 /doc/api/notes.md @msedlakjakubowski
@@ -787,7 +776,6 @@ lib/gitlab/checks/**
 /doc/development/database_review.md @aqualls
 /doc/development/developing_with_solargraph.md @msedlakjakubowski
 /doc/development/development_processes.md @sselhorn
-/doc/development/distributed_tracing.md @msedlakjakubowski
 /doc/development/distribution/ @axil
 /doc/development/documentation/ @sselhorn
 /doc/development/export_csv.md @eread @ashrafkhamis
@@ -823,7 +811,6 @@ lib/gitlab/checks/**
 /doc/development/kubernetes.md @phillipwells
 /doc/development/labels/ @sselhorn
 /doc/development/lfs.md @msedlakjakubowski
-/doc/development/logging.md @msedlakjakubowski
 /doc/development/maintenance_mode.md @axil
 /doc/development/merge_request_concepts/ @aqualls
 /doc/development/merge_request_concepts/rate_limits.md @msedlakjakubowski
@@ -838,7 +825,6 @@ lib/gitlab/checks/**
 /doc/development/permissions/ @jglassman1
 /doc/development/policies.md @jglassman1
 /doc/development/project_templates.md @msedlakjakubowski
-/doc/development/prometheus_metrics.md @msedlakjakubowski
 /doc/development/rails_endpoints/ @msedlakjakubowski
 /doc/development/real_time.md @jglassman1
 /doc/development/rubocop_development_guide.md @sselhorn
@@ -856,7 +842,6 @@ lib/gitlab/checks/**
 /doc/downgrade_ee_to_ce/ @axil
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @aqualls
-/doc/editor_extensions/visual_studio_code/ @ashrafkhamis
 /doc/gitlab-basics/ @msedlakjakubowski
 /doc/install/ @axil
 /doc/install/postgresql_extensions.md @aqualls
@@ -877,9 +862,7 @@ lib/gitlab/checks/**
 /doc/integration/sourcegraph.md @msedlakjakubowski
 /doc/integration/trello_power_up.md @eread @ashrafkhamis
 /doc/integration/vault.md @phillipwells
-/doc/operations/feature_flags.md @phillipwells
-/doc/operations/incident_management/ @msedlakjakubowski
-/doc/operations/index.md @msedlakjakubowski
+/doc/operations/ @phillipwells
 /doc/policy/ @axil
 /doc/raketasks/ @axil
 /doc/raketasks/spdx.md @rdickenson
@@ -888,7 +871,6 @@ lib/gitlab/checks/**
 /doc/security/email_verification.md @phillipwells
 /doc/security/identity_verification.md @phillipwells
 /doc/subscriptions/ @fneill
-/doc/topics/authentication/ @jglassman1
 /doc/topics/autodevops/ @phillipwells
 /doc/topics/data_seeder.md @sselhorn
 /doc/topics/git/ @msedlakjakubowski
@@ -923,7 +905,6 @@ lib/gitlab/checks/**
 /doc/user/compliance/ @rdickenson
 /doc/user/compliance/compliance_center/ @eread
 /doc/user/compliance/index.md @eread
-/doc/user/crm/ @msedlakjakubowski
 /doc/user/discussions/ @aqualls
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1

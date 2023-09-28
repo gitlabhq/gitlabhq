@@ -80,9 +80,6 @@ msgstr ""
 msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
-msgid "### Rich text editor"
-msgstr ""
-
 msgid "##### ERROR ##### You have used %{usage_percentage} of the storage quota for %{namespace_name} (%{current_size} of %{size_limit}). %{namespace_name} is now read-only. Projects under this namespace are locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
 msgstr ""
 
@@ -49845,9 +49842,6 @@ msgstr ""
 msgid "Tracing|Operation"
 msgstr ""
 
-msgid "Tracing|Period"
-msgstr ""
-
 msgid "Tracing|Service"
 msgstr ""
 
@@ -49858,6 +49852,9 @@ msgid "Tracing|Span ID"
 msgstr ""
 
 msgid "Tracing|Status Code"
+msgstr ""
+
+msgid "Tracing|Time Range"
 msgstr ""
 
 msgid "Tracing|Toggle children spans"
@@ -50093,13 +50090,7 @@ msgstr ""
 msgid "Try grouping with different labels"
 msgstr ""
 
-msgid "Try out **styling** _your_ content right here or read the [direction](%{directionUrl})."
-msgstr ""
-
 msgid "Try out GitLab Pipelines"
-msgstr ""
-
-msgid "Try the rich text editor now"
 msgstr ""
 
 msgid "Try the troubleshooting steps here."
@@ -51192,9 +51183,6 @@ msgid "Use the link below to confirm your email address (%{email})"
 msgstr ""
 
 msgid "Use the link below to confirm your email address."
-msgstr ""
-
-msgid "Use the new rich text editor to see your text and tables fully formatted as you type. No need to remember any formatting syntax, or switch between preview and editing modes!"
 msgstr ""
 
 msgid "Use the public cloud instance URL (%{kroki_public_url}) or %{install_link_start}install Kroki%{install_link_end} on your own infrastructure and use your own instance URL."
@@ -54077,9 +54065,6 @@ msgid "Write milestone description..."
 msgstr ""
 
 msgid "Write your release notes or drag your files here…"
-msgstr ""
-
-msgid "Writing just got easier"
 msgstr ""
 
 msgid "Wrong extern UID provided. Make sure Auth0 is configured correctly."

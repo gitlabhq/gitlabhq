@@ -6,7 +6,6 @@
 
 RSpec.shared_examples 'User updates wiki page' do
   include WikiHelpers
-  include ContentEditorHelpers
 
   let(:diagramsnet_url) { 'https://embed.diagrams.net' }
 
@@ -23,7 +22,6 @@ RSpec.shared_examples 'User updates wiki page' do
       wait_for_svg_to_be_loaded(example)
 
       click_link "Create your first page"
-      close_rich_text_promo_popover_if_present
     end
 
     it 'redirects back to the home edit page' do
@@ -70,7 +68,6 @@ RSpec.shared_examples 'User updates wiki page' do
       visit(wiki_path(wiki))
 
       click_link('Edit')
-      close_rich_text_promo_popover_if_present
     end
 
     it 'updates a page', :js do
@@ -164,7 +161,6 @@ RSpec.shared_examples 'User updates wiki page' do
 
     before do
       visit wiki_page_path(wiki, wiki_page, action: :edit)
-      close_rich_text_promo_popover_if_present
     end
 
     it 'moves the page to the root folder', :js do
@@ -235,7 +231,6 @@ RSpec.shared_examples 'User updates wiki page' do
       stub_application_setting(wiki_page_max_content_bytes: 10)
 
       visit wiki_page_path(wiki_page.wiki, wiki_page, action: :edit)
-      close_rich_text_promo_popover_if_present
     end
 
     it 'allows changing the title if the content does not change', :js do

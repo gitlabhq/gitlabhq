@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
-  include ContentEditorHelpers
 
   let!(:user) { create(:user, :no_super_sidebar) }
   let!(:grandparent) { create(:group) }
@@ -161,7 +160,6 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   context 'when creating new issuable' do
     before do
       visit new_project_issue_path(project_1)
-      close_rich_text_promo_popover_if_present
     end
 
     it 'is able to assign ancestor group labels' do
@@ -198,7 +196,6 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
         project_1.add_developer(user)
 
         visit project_issue_path(project_1, issue)
-        close_rich_text_promo_popover_if_present
       end
 
       it_behaves_like 'assigning labels from sidebar'

@@ -359,7 +359,7 @@ module.exports = {
         use: [],
       },
       {
-        test: /(@cubejs-client\/vue).*\.(js)?$/,
+        test: /(@cubejs-client\/(vue|core)).*\.(js)?$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },

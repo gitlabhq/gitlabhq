@@ -73,13 +73,11 @@ module QA
         end
 
         def collapse_replies
-          close_rich_text_promo_popover_if_present
           click_element :collapse_replies_button
         end
 
         # Attachment option should be an absolute path
         def comment(text, attachment: nil, filter: :all_activities)
-          close_rich_text_promo_popover_if_present
           method("select_#{filter}_filter").call
           fill_element :comment_field, "#{text}\n"
 
@@ -150,7 +148,6 @@ module QA
 
         def start_discussion(text)
           fill_element :comment_field, text
-          close_rich_text_promo_popover_if_present
           within_element(:comment_button) { click_button(class: 'gl-new-dropdown-toggle') }
           click_element :discussion_menu_item
           click_element :comment_button

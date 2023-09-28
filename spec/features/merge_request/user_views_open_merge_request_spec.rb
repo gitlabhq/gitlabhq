@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'User views an open merge request', feature_category: :code_review_workflow do
-  include ContentEditorHelpers
-
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project, description: '# Description header')
   end
@@ -55,7 +53,6 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
         sign_in(user)
 
         visit(edit_project_merge_request_path(project, merge_request))
-        close_rich_text_promo_popover_if_present
       end
 
       it 'renders empty description preview' do

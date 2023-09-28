@@ -2,7 +2,6 @@
 
 RSpec.shared_examples 'close quick action' do |issuable_type|
   include Features::NotesHelpers
-  include ContentEditorHelpers
 
   before do
     project.add_maintainer(maintainer)
@@ -77,7 +76,6 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
   context "preview of note on #{issuable_type}", :js do
     it 'explains close quick action' do
       visit public_send("project_#{issuable_type}_path", project, issuable)
-      close_rich_text_promo_popover_if_present
 
       preview_note("this is done, close\n/close") do
         expect(page).not_to have_content '/close'

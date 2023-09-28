@@ -271,7 +271,7 @@ You can remove the user cap, so there is no limit on the number of members you c
 
 Prerequisite:
 
-- You must be assigned the Owner role) for the group.
+- You must be assigned the Owner role for the group.
 
 To remove the user cap:
 

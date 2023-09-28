@@ -6,7 +6,6 @@
 
 RSpec.shared_examples 'User views a wiki page' do
   include WikiHelpers
-  include ContentEditorHelpers
 
   let(:path) { 'image.png' }
   let(:wiki_page) do
@@ -270,7 +269,6 @@ RSpec.shared_examples 'User views a wiki page' do
     wait_for_svg_to_be_loaded
 
     click_link "Create your first page"
-    close_rich_text_promo_popover_if_present
 
     expect(page).to have_content('Create New Page')
   end

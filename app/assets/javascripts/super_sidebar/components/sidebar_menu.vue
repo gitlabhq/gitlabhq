@@ -21,7 +21,10 @@ export default {
     return {
       pinnedItemIds: this.changedPinnedItemIds,
       panelSupportsPins: this.supportsPins,
-      panelType: this.panelType,
+      // We can't use this.panelType due to bug in vue-apollo when
+      // provide is called in beforeCreate
+      // See https://github.com/vuejs/vue-apollo/pull/1153 for details
+      panelType: this.$options.propsData.panelType,
     };
   },
   props: {

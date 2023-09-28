@@ -6,7 +6,7 @@ RSpec.describe Resolvers::ProjectsResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
-    subject { resolve(described_class, obj: nil, args: filters, ctx: { current_user: current_user }) }
+    subject { resolve(described_class, obj: nil, args: filters, ctx: { current_user: current_user }).items }
 
     let_it_be(:group) { create(:group, name: 'public-group') }
     let_it_be(:private_group) { create(:group, name: 'private-group') }
