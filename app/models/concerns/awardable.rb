@@ -13,26 +13,26 @@ module Awardable
   end
 
   class_methods do
-    def awarded(user, name = nil)
+    def awarded(user, name = nil, base_class_name = base_class.name, awardable_id_column = :id)
       award_emoji_table = Arel::Table.new('award_emoji')
       inner_query = award_emoji_table
                 .project('true')
                 .where(award_emoji_table[:user_id].eq(user.id))
-                .where(award_emoji_table[:awardable_type].eq(base_class.name))
-                .where(award_emoji_table[:awardable_id].eq(self.arel_table[:id]))
+                .where(award_emoji_table[:awardable_type].eq(base_class_name))
+                .where(award_emoji_table[:awardable_id].eq(self.arel_table[awardable_id_column]))
 
       inner_query = inner_query.where(award_emoji_table[:name].eq(name)) if name.present?
 
       where(inner_query.exists)
     end
 
-    def not_awarded(user, name = nil)
+    def not_awarded(user, name = nil, base_class_name = base_class.name, awardable_id_column = :id)
       award_emoji_table = Arel::Table.new('award_emoji')
       inner_query = award_emoji_table
                 .project('true')
                 .where(award_emoji_table[:user_id].eq(user.id))
-                .where(award_emoji_table[:awardable_type].eq(base_class.name))
-                .where(award_emoji_table[:awardable_id].eq(self.arel_table[:id]))
+                .where(award_emoji_table[:awardable_type].eq(base_class_name))
+        .where(award_emoji_table[:awardable_id].eq(self.arel_table[awardable_id_column]))
 
       inner_query = inner_query.where(award_emoji_table[:name].eq(name)) if name.present?
 
@@ -52,14 +52,14 @@ module Awardable
     end
 
     # Order votes by emoji, optional sort order param `descending` defaults to true
-    def order_votes(emoji_name, direction)
+    def order_votes(emoji_name, direction, base_class_name = base_class.name, awardable_id_column = :id)
       awardable_table = self.arel_table
       awards_table = AwardEmoji.arel_table
 
       join_clause = awardable_table
         .join(awards_table, Arel::Nodes::OuterJoin)
-        .on(awards_table[:awardable_id].eq(awardable_table[:id])
-              .and(awards_table[:awardable_type].eq(base_class.name).and(awards_table[:name].eq(emoji_name))))
+        .on(awards_table[:awardable_id].eq(awardable_table[awardable_id_column])
+              .and(awards_table[:awardable_type].eq(base_class_name).and(awards_table[:name].eq(emoji_name))))
         .join_sources
 
       joins(join_clause).group(awardable_table[:id]).reorder(

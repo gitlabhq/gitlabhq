@@ -11,7 +11,9 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
     }
   end
 
-  subject { described_class.new(params) }
+  let(:request_params) { described_class.new(params) }
+
+  subject { request_params }
 
   before do
     root_group.add_owner(user)
@@ -114,18 +116,40 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
   end
 
   describe 'use_aggregated_data_collector param' do
-    subject(:value) { described_class.new(params).to_data_collector_params[:use_aggregated_data_collector] }
+    subject(:value) { request_params.to_data_collector_params[:use_aggregated_data_collector] }
 
     it { is_expected.to eq(false) }
   end
 
   describe 'feature availablity data attributes' do
-    subject(:value) { described_class.new(params).to_data_attributes }
+    subject(:value) { request_params.to_data_attributes }
 
     it 'disables all paid features' do
       is_expected.to match(a_hash_including(enable_tasks_by_type_chart: 'false',
         enable_customizable_stages: 'false',
         enable_projects_filter: 'false'))
+    end
+  end
+
+  describe '#to_data_collector_params' do
+    context 'when adding licensed parameters' do
+      subject(:data_collector_params) { request_params.to_data_collector_params }
+
+      before do
+        params.merge!(
+          weight: 1,
+          epic_id: 2,
+          iteration_id: 3,
+          my_reaction_emoji: 'tumbsup'
+        )
+      end
+
+      it 'excludes the attributes from the data collector params' do
+        expect(data_collector_params).to exclude(:weight)
+        expect(data_collector_params).to exclude(:epic_id)
+        expect(data_collector_params).to exclude(:iteration_id)
+        expect(data_collector_params).to exclude(:my_reaction_emoji)
+      end
     end
   end
 end

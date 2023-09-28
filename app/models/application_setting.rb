@@ -803,7 +803,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   # Restricting the validation to `on: :update` only to avoid cyclical dependencies with
   # License <--> ApplicationSetting. This method calls a license check when we create
   # ApplicationSetting from defaults which in turn depends on ApplicationSetting record.
-  # The currect default is defined in the `defaults` method so we don't need to validate
+  # The correct default is defined in the `defaults` method so we don't need to validate
   # it here.
   validates :disable_feed_token,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }, on: :update

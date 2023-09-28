@@ -738,7 +738,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_00 FOR VALUES WITH (modulus 32, remainder 0);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_01 (
     stage_event_hash_id bigint NOT NULL,
@@ -753,7 +752,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_01 FOR VALUES WITH (modulus 32, remainder 1);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_02 (
     stage_event_hash_id bigint NOT NULL,
@@ -768,7 +766,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_02 FOR VALUES WITH (modulus 32, remainder 2);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_03 (
     stage_event_hash_id bigint NOT NULL,
@@ -783,7 +780,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_03 FOR VALUES WITH (modulus 32, remainder 3);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_04 (
     stage_event_hash_id bigint NOT NULL,
@@ -798,7 +794,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_04 FOR VALUES WITH (modulus 32, remainder 4);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_05 (
     stage_event_hash_id bigint NOT NULL,
@@ -813,7 +808,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_05 FOR VALUES WITH (modulus 32, remainder 5);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_06 (
     stage_event_hash_id bigint NOT NULL,
@@ -828,7 +822,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_06 FOR VALUES WITH (modulus 32, remainder 6);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_07 (
     stage_event_hash_id bigint NOT NULL,
@@ -843,7 +836,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_07 FOR VALUES WITH (modulus 32, remainder 7);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_08 (
     stage_event_hash_id bigint NOT NULL,
@@ -858,7 +850,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_08 FOR VALUES WITH (modulus 32, remainder 8);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_09 (
     stage_event_hash_id bigint NOT NULL,
@@ -873,7 +864,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_09 FOR VALUES WITH (modulus 32, remainder 9);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_10 (
     stage_event_hash_id bigint NOT NULL,
@@ -888,7 +878,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_10 FOR VALUES WITH (modulus 32, remainder 10);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_11 (
     stage_event_hash_id bigint NOT NULL,
@@ -903,7 +892,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_11 FOR VALUES WITH (modulus 32, remainder 11);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_12 (
     stage_event_hash_id bigint NOT NULL,
@@ -918,7 +906,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_12 FOR VALUES WITH (modulus 32, remainder 12);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_13 (
     stage_event_hash_id bigint NOT NULL,
@@ -933,7 +920,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_13 FOR VALUES WITH (modulus 32, remainder 13);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_14 (
     stage_event_hash_id bigint NOT NULL,
@@ -948,7 +934,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_14 FOR VALUES WITH (modulus 32, remainder 14);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_15 (
     stage_event_hash_id bigint NOT NULL,
@@ -963,7 +948,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_15 FOR VALUES WITH (modulus 32, remainder 15);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_16 (
     stage_event_hash_id bigint NOT NULL,
@@ -978,7 +962,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_16 FOR VALUES WITH (modulus 32, remainder 16);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_17 (
     stage_event_hash_id bigint NOT NULL,
@@ -993,7 +976,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_17 FOR VALUES WITH (modulus 32, remainder 17);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_18 (
     stage_event_hash_id bigint NOT NULL,
@@ -1008,7 +990,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_18 FOR VALUES WITH (modulus 32, remainder 18);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_19 (
     stage_event_hash_id bigint NOT NULL,
@@ -1023,7 +1004,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_19 FOR VALUES WITH (modulus 32, remainder 19);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_20 (
     stage_event_hash_id bigint NOT NULL,
@@ -1038,7 +1018,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_20 FOR VALUES WITH (modulus 32, remainder 20);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_21 (
     stage_event_hash_id bigint NOT NULL,
@@ -1053,7 +1032,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_21 FOR VALUES WITH (modulus 32, remainder 21);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_22 (
     stage_event_hash_id bigint NOT NULL,
@@ -1068,7 +1046,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_22 FOR VALUES WITH (modulus 32, remainder 22);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_23 (
     stage_event_hash_id bigint NOT NULL,
@@ -1083,7 +1060,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_23 FOR VALUES WITH (modulus 32, remainder 23);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_24 (
     stage_event_hash_id bigint NOT NULL,
@@ -1098,7 +1074,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_24 FOR VALUES WITH (modulus 32, remainder 24);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_25 (
     stage_event_hash_id bigint NOT NULL,
@@ -1113,7 +1088,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_25 FOR VALUES WITH (modulus 32, remainder 25);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_26 (
     stage_event_hash_id bigint NOT NULL,
@@ -1128,7 +1102,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_26 FOR VALUES WITH (modulus 32, remainder 26);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_27 (
     stage_event_hash_id bigint NOT NULL,
@@ -1143,7 +1116,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_27 FOR VALUES WITH (modulus 32, remainder 27);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_28 (
     stage_event_hash_id bigint NOT NULL,
@@ -1158,7 +1130,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_28 FOR VALUES WITH (modulus 32, remainder 28);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_29 (
     stage_event_hash_id bigint NOT NULL,
@@ -1173,7 +1144,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_29 FOR VALUES WITH (modulus 32, remainder 29);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_30 (
     stage_event_hash_id bigint NOT NULL,
@@ -1188,7 +1158,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_30 FOR VALUES WITH (modulus 32, remainder 30);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_31 (
     stage_event_hash_id bigint NOT NULL,
@@ -1203,7 +1172,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_issue_stage_even
     weight integer,
     sprint_id bigint
 );
-ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_31 FOR VALUES WITH (modulus 32, remainder 31);
 
 CREATE TABLE analytics_cycle_analytics_merge_request_stage_events (
     stage_event_hash_id bigint NOT NULL,
@@ -1229,7 +1197,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_00 FOR VALUES WITH (modulus 32, remainder 0);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_01 (
     stage_event_hash_id bigint NOT NULL,
@@ -1242,7 +1209,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_01 FOR VALUES WITH (modulus 32, remainder 1);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_02 (
     stage_event_hash_id bigint NOT NULL,
@@ -1255,7 +1221,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_02 FOR VALUES WITH (modulus 32, remainder 2);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_03 (
     stage_event_hash_id bigint NOT NULL,
@@ -1268,7 +1233,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_03 FOR VALUES WITH (modulus 32, remainder 3);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_04 (
     stage_event_hash_id bigint NOT NULL,
@@ -1281,7 +1245,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_04 FOR VALUES WITH (modulus 32, remainder 4);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_05 (
     stage_event_hash_id bigint NOT NULL,
@@ -1294,7 +1257,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_05 FOR VALUES WITH (modulus 32, remainder 5);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_06 (
     stage_event_hash_id bigint NOT NULL,
@@ -1307,7 +1269,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_06 FOR VALUES WITH (modulus 32, remainder 6);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_07 (
     stage_event_hash_id bigint NOT NULL,
@@ -1320,7 +1281,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_07 FOR VALUES WITH (modulus 32, remainder 7);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_08 (
     stage_event_hash_id bigint NOT NULL,
@@ -1333,7 +1293,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_08 FOR VALUES WITH (modulus 32, remainder 8);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_09 (
     stage_event_hash_id bigint NOT NULL,
@@ -1346,7 +1305,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_09 FOR VALUES WITH (modulus 32, remainder 9);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_10 (
     stage_event_hash_id bigint NOT NULL,
@@ -1359,7 +1317,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_10 FOR VALUES WITH (modulus 32, remainder 10);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_11 (
     stage_event_hash_id bigint NOT NULL,
@@ -1372,7 +1329,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_11 FOR VALUES WITH (modulus 32, remainder 11);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_12 (
     stage_event_hash_id bigint NOT NULL,
@@ -1385,7 +1341,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_12 FOR VALUES WITH (modulus 32, remainder 12);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_13 (
     stage_event_hash_id bigint NOT NULL,
@@ -1398,7 +1353,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_13 FOR VALUES WITH (modulus 32, remainder 13);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_14 (
     stage_event_hash_id bigint NOT NULL,
@@ -1411,7 +1365,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_14 FOR VALUES WITH (modulus 32, remainder 14);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_15 (
     stage_event_hash_id bigint NOT NULL,
@@ -1424,7 +1377,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_15 FOR VALUES WITH (modulus 32, remainder 15);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_16 (
     stage_event_hash_id bigint NOT NULL,
@@ -1437,7 +1389,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_16 FOR VALUES WITH (modulus 32, remainder 16);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_17 (
     stage_event_hash_id bigint NOT NULL,
@@ -1450,7 +1401,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_17 FOR VALUES WITH (modulus 32, remainder 17);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_18 (
     stage_event_hash_id bigint NOT NULL,
@@ -1463,7 +1413,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_18 FOR VALUES WITH (modulus 32, remainder 18);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_19 (
     stage_event_hash_id bigint NOT NULL,
@@ -1476,7 +1425,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_19 FOR VALUES WITH (modulus 32, remainder 19);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_20 (
     stage_event_hash_id bigint NOT NULL,
@@ -1489,7 +1437,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_20 FOR VALUES WITH (modulus 32, remainder 20);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_21 (
     stage_event_hash_id bigint NOT NULL,
@@ -1502,7 +1449,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_21 FOR VALUES WITH (modulus 32, remainder 21);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_22 (
     stage_event_hash_id bigint NOT NULL,
@@ -1515,7 +1461,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_22 FOR VALUES WITH (modulus 32, remainder 22);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_23 (
     stage_event_hash_id bigint NOT NULL,
@@ -1528,7 +1473,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_23 FOR VALUES WITH (modulus 32, remainder 23);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_24 (
     stage_event_hash_id bigint NOT NULL,
@@ -1541,7 +1485,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_24 FOR VALUES WITH (modulus 32, remainder 24);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_25 (
     stage_event_hash_id bigint NOT NULL,
@@ -1554,7 +1497,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_25 FOR VALUES WITH (modulus 32, remainder 25);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_26 (
     stage_event_hash_id bigint NOT NULL,
@@ -1567,7 +1509,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_26 FOR VALUES WITH (modulus 32, remainder 26);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_27 (
     stage_event_hash_id bigint NOT NULL,
@@ -1580,7 +1521,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_27 FOR VALUES WITH (modulus 32, remainder 27);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_28 (
     stage_event_hash_id bigint NOT NULL,
@@ -1593,7 +1533,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_28 FOR VALUES WITH (modulus 32, remainder 28);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_29 (
     stage_event_hash_id bigint NOT NULL,
@@ -1606,7 +1545,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_29 FOR VALUES WITH (modulus 32, remainder 29);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_30 (
     stage_event_hash_id bigint NOT NULL,
@@ -1619,7 +1557,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_30 FOR VALUES WITH (modulus 32, remainder 30);
 
 CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31 (
     stage_event_hash_id bigint NOT NULL,
@@ -1632,7 +1569,6 @@ CREATE TABLE gitlab_partitions_static.analytics_cycle_analytics_merge_request_st
     end_event_timestamp timestamp with time zone,
     state_id smallint DEFAULT 1 NOT NULL
 );
-ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31 FOR VALUES WITH (modulus 32, remainder 31);
 
 CREATE TABLE issue_search_data (
     project_id bigint NOT NULL,
@@ -1652,7 +1588,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_00 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_00 FOR VALUES WITH (modulus 64, remainder 0);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_01 (
     project_id bigint NOT NULL,
@@ -1662,7 +1597,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_01 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_01 FOR VALUES WITH (modulus 64, remainder 1);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_02 (
     project_id bigint NOT NULL,
@@ -1672,7 +1606,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_02 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_02 FOR VALUES WITH (modulus 64, remainder 2);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_03 (
     project_id bigint NOT NULL,
@@ -1682,7 +1615,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_03 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_03 FOR VALUES WITH (modulus 64, remainder 3);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_04 (
     project_id bigint NOT NULL,
@@ -1692,7 +1624,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_04 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_04 FOR VALUES WITH (modulus 64, remainder 4);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_05 (
     project_id bigint NOT NULL,
@@ -1702,7 +1633,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_05 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_05 FOR VALUES WITH (modulus 64, remainder 5);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_06 (
     project_id bigint NOT NULL,
@@ -1712,7 +1642,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_06 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_06 FOR VALUES WITH (modulus 64, remainder 6);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_07 (
     project_id bigint NOT NULL,
@@ -1722,7 +1651,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_07 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_07 FOR VALUES WITH (modulus 64, remainder 7);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_08 (
     project_id bigint NOT NULL,
@@ -1732,7 +1660,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_08 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_08 FOR VALUES WITH (modulus 64, remainder 8);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_09 (
     project_id bigint NOT NULL,
@@ -1742,7 +1669,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_09 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_09 FOR VALUES WITH (modulus 64, remainder 9);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_10 (
     project_id bigint NOT NULL,
@@ -1752,7 +1678,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_10 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_10 FOR VALUES WITH (modulus 64, remainder 10);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_11 (
     project_id bigint NOT NULL,
@@ -1762,7 +1687,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_11 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_11 FOR VALUES WITH (modulus 64, remainder 11);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_12 (
     project_id bigint NOT NULL,
@@ -1772,7 +1696,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_12 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_12 FOR VALUES WITH (modulus 64, remainder 12);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_13 (
     project_id bigint NOT NULL,
@@ -1782,7 +1705,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_13 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_13 FOR VALUES WITH (modulus 64, remainder 13);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_14 (
     project_id bigint NOT NULL,
@@ -1792,7 +1714,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_14 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_14 FOR VALUES WITH (modulus 64, remainder 14);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_15 (
     project_id bigint NOT NULL,
@@ -1802,7 +1723,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_15 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_15 FOR VALUES WITH (modulus 64, remainder 15);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_16 (
     project_id bigint NOT NULL,
@@ -1812,7 +1732,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_16 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_16 FOR VALUES WITH (modulus 64, remainder 16);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_17 (
     project_id bigint NOT NULL,
@@ -1822,7 +1741,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_17 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_17 FOR VALUES WITH (modulus 64, remainder 17);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_18 (
     project_id bigint NOT NULL,
@@ -1832,7 +1750,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_18 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_18 FOR VALUES WITH (modulus 64, remainder 18);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_19 (
     project_id bigint NOT NULL,
@@ -1842,7 +1759,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_19 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_19 FOR VALUES WITH (modulus 64, remainder 19);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_20 (
     project_id bigint NOT NULL,
@@ -1852,7 +1768,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_20 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_20 FOR VALUES WITH (modulus 64, remainder 20);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_21 (
     project_id bigint NOT NULL,
@@ -1862,7 +1777,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_21 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_21 FOR VALUES WITH (modulus 64, remainder 21);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_22 (
     project_id bigint NOT NULL,
@@ -1872,7 +1786,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_22 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_22 FOR VALUES WITH (modulus 64, remainder 22);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_23 (
     project_id bigint NOT NULL,
@@ -1882,7 +1795,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_23 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_23 FOR VALUES WITH (modulus 64, remainder 23);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_24 (
     project_id bigint NOT NULL,
@@ -1892,7 +1804,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_24 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_24 FOR VALUES WITH (modulus 64, remainder 24);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_25 (
     project_id bigint NOT NULL,
@@ -1902,7 +1813,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_25 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_25 FOR VALUES WITH (modulus 64, remainder 25);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_26 (
     project_id bigint NOT NULL,
@@ -1912,7 +1822,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_26 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_26 FOR VALUES WITH (modulus 64, remainder 26);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_27 (
     project_id bigint NOT NULL,
@@ -1922,7 +1831,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_27 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_27 FOR VALUES WITH (modulus 64, remainder 27);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_28 (
     project_id bigint NOT NULL,
@@ -1932,7 +1840,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_28 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_28 FOR VALUES WITH (modulus 64, remainder 28);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_29 (
     project_id bigint NOT NULL,
@@ -1942,7 +1849,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_29 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_29 FOR VALUES WITH (modulus 64, remainder 29);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_30 (
     project_id bigint NOT NULL,
@@ -1952,7 +1858,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_30 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_30 FOR VALUES WITH (modulus 64, remainder 30);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_31 (
     project_id bigint NOT NULL,
@@ -1962,7 +1867,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_31 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_31 FOR VALUES WITH (modulus 64, remainder 31);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_32 (
     project_id bigint NOT NULL,
@@ -1972,7 +1876,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_32 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_32 FOR VALUES WITH (modulus 64, remainder 32);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_33 (
     project_id bigint NOT NULL,
@@ -1982,7 +1885,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_33 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_33 FOR VALUES WITH (modulus 64, remainder 33);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_34 (
     project_id bigint NOT NULL,
@@ -1992,7 +1894,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_34 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_34 FOR VALUES WITH (modulus 64, remainder 34);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_35 (
     project_id bigint NOT NULL,
@@ -2002,7 +1903,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_35 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_35 FOR VALUES WITH (modulus 64, remainder 35);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_36 (
     project_id bigint NOT NULL,
@@ -2012,7 +1912,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_36 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_36 FOR VALUES WITH (modulus 64, remainder 36);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_37 (
     project_id bigint NOT NULL,
@@ -2022,7 +1921,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_37 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_37 FOR VALUES WITH (modulus 64, remainder 37);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_38 (
     project_id bigint NOT NULL,
@@ -2032,7 +1930,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_38 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_38 FOR VALUES WITH (modulus 64, remainder 38);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_39 (
     project_id bigint NOT NULL,
@@ -2042,7 +1939,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_39 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_39 FOR VALUES WITH (modulus 64, remainder 39);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_40 (
     project_id bigint NOT NULL,
@@ -2052,7 +1948,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_40 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_40 FOR VALUES WITH (modulus 64, remainder 40);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_41 (
     project_id bigint NOT NULL,
@@ -2062,7 +1957,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_41 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_41 FOR VALUES WITH (modulus 64, remainder 41);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_42 (
     project_id bigint NOT NULL,
@@ -2072,7 +1966,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_42 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_42 FOR VALUES WITH (modulus 64, remainder 42);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_43 (
     project_id bigint NOT NULL,
@@ -2082,7 +1975,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_43 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_43 FOR VALUES WITH (modulus 64, remainder 43);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_44 (
     project_id bigint NOT NULL,
@@ -2092,7 +1984,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_44 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_44 FOR VALUES WITH (modulus 64, remainder 44);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_45 (
     project_id bigint NOT NULL,
@@ -2102,7 +1993,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_45 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_45 FOR VALUES WITH (modulus 64, remainder 45);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_46 (
     project_id bigint NOT NULL,
@@ -2112,7 +2002,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_46 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_46 FOR VALUES WITH (modulus 64, remainder 46);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_47 (
     project_id bigint NOT NULL,
@@ -2122,7 +2011,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_47 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_47 FOR VALUES WITH (modulus 64, remainder 47);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_48 (
     project_id bigint NOT NULL,
@@ -2132,7 +2020,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_48 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_48 FOR VALUES WITH (modulus 64, remainder 48);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_49 (
     project_id bigint NOT NULL,
@@ -2142,7 +2029,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_49 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_49 FOR VALUES WITH (modulus 64, remainder 49);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_50 (
     project_id bigint NOT NULL,
@@ -2152,7 +2038,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_50 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_50 FOR VALUES WITH (modulus 64, remainder 50);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_51 (
     project_id bigint NOT NULL,
@@ -2162,7 +2047,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_51 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_51 FOR VALUES WITH (modulus 64, remainder 51);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_52 (
     project_id bigint NOT NULL,
@@ -2172,7 +2056,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_52 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_52 FOR VALUES WITH (modulus 64, remainder 52);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_53 (
     project_id bigint NOT NULL,
@@ -2182,7 +2065,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_53 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_53 FOR VALUES WITH (modulus 64, remainder 53);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_54 (
     project_id bigint NOT NULL,
@@ -2192,7 +2074,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_54 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_54 FOR VALUES WITH (modulus 64, remainder 54);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_55 (
     project_id bigint NOT NULL,
@@ -2202,7 +2083,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_55 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_55 FOR VALUES WITH (modulus 64, remainder 55);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_56 (
     project_id bigint NOT NULL,
@@ -2212,7 +2092,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_56 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_56 FOR VALUES WITH (modulus 64, remainder 56);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_57 (
     project_id bigint NOT NULL,
@@ -2222,7 +2101,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_57 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_57 FOR VALUES WITH (modulus 64, remainder 57);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_58 (
     project_id bigint NOT NULL,
@@ -2232,7 +2110,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_58 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_58 FOR VALUES WITH (modulus 64, remainder 58);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_59 (
     project_id bigint NOT NULL,
@@ -2242,7 +2119,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_59 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_59 FOR VALUES WITH (modulus 64, remainder 59);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_60 (
     project_id bigint NOT NULL,
@@ -2252,7 +2128,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_60 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_60 FOR VALUES WITH (modulus 64, remainder 60);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_61 (
     project_id bigint NOT NULL,
@@ -2262,7 +2137,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_61 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_61 FOR VALUES WITH (modulus 64, remainder 61);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_62 (
     project_id bigint NOT NULL,
@@ -2272,7 +2146,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_62 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_62 FOR VALUES WITH (modulus 64, remainder 62);
 
 CREATE TABLE gitlab_partitions_static.issue_search_data_63 (
     project_id bigint NOT NULL,
@@ -2282,7 +2155,6 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_63 (
     search_vector tsvector,
     namespace_id bigint
 );
-ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_63 FOR VALUES WITH (modulus 64, remainder 63);
 
 CREATE TABLE product_analytics_events_experimental (
     id bigint NOT NULL,
@@ -2557,7 +2429,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_00 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_00 FOR VALUES WITH (modulus 64, remainder 0);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_01 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -2690,7 +2561,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_01 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_01 FOR VALUES WITH (modulus 64, remainder 1);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_02 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -2823,7 +2693,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_02 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_02 FOR VALUES WITH (modulus 64, remainder 2);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_03 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -2956,7 +2825,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_03 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_03 FOR VALUES WITH (modulus 64, remainder 3);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_04 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -3089,7 +2957,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_04 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_04 FOR VALUES WITH (modulus 64, remainder 4);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_05 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -3222,7 +3089,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_05 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_05 FOR VALUES WITH (modulus 64, remainder 5);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_06 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -3355,7 +3221,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_06 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_06 FOR VALUES WITH (modulus 64, remainder 6);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_07 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -3488,7 +3353,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_07 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_07 FOR VALUES WITH (modulus 64, remainder 7);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_08 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -3621,7 +3485,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_08 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_08 FOR VALUES WITH (modulus 64, remainder 8);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_09 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -3754,7 +3617,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_09 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_09 FOR VALUES WITH (modulus 64, remainder 9);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_10 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -3887,7 +3749,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_10 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_10 FOR VALUES WITH (modulus 64, remainder 10);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_11 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -4020,7 +3881,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_11 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_11 FOR VALUES WITH (modulus 64, remainder 11);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_12 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -4153,7 +4013,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_12 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_12 FOR VALUES WITH (modulus 64, remainder 12);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_13 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -4286,7 +4145,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_13 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_13 FOR VALUES WITH (modulus 64, remainder 13);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_14 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -4419,7 +4277,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_14 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_14 FOR VALUES WITH (modulus 64, remainder 14);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_15 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -4552,7 +4409,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_15 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_15 FOR VALUES WITH (modulus 64, remainder 15);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_16 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -4685,7 +4541,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_16 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_16 FOR VALUES WITH (modulus 64, remainder 16);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_17 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -4818,7 +4673,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_17 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_17 FOR VALUES WITH (modulus 64, remainder 17);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_18 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -4951,7 +4805,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_18 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_18 FOR VALUES WITH (modulus 64, remainder 18);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_19 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -5084,7 +4937,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_19 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_19 FOR VALUES WITH (modulus 64, remainder 19);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_20 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -5217,7 +5069,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_20 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_20 FOR VALUES WITH (modulus 64, remainder 20);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_21 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -5350,7 +5201,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_21 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_21 FOR VALUES WITH (modulus 64, remainder 21);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_22 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -5483,7 +5333,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_22 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_22 FOR VALUES WITH (modulus 64, remainder 22);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_23 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -5616,7 +5465,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_23 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_23 FOR VALUES WITH (modulus 64, remainder 23);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_24 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -5749,7 +5597,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_24 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_24 FOR VALUES WITH (modulus 64, remainder 24);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_25 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -5882,7 +5729,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_25 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_25 FOR VALUES WITH (modulus 64, remainder 25);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_26 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -6015,7 +5861,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_26 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_26 FOR VALUES WITH (modulus 64, remainder 26);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_27 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -6148,7 +5993,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_27 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_27 FOR VALUES WITH (modulus 64, remainder 27);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_28 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -6281,7 +6125,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_28 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_28 FOR VALUES WITH (modulus 64, remainder 28);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_29 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -6414,7 +6257,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_29 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_29 FOR VALUES WITH (modulus 64, remainder 29);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_30 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -6547,7 +6389,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_30 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_30 FOR VALUES WITH (modulus 64, remainder 30);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_31 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -6680,7 +6521,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_31 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_31 FOR VALUES WITH (modulus 64, remainder 31);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_32 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -6813,7 +6653,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_32 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_32 FOR VALUES WITH (modulus 64, remainder 32);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_33 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -6946,7 +6785,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_33 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_33 FOR VALUES WITH (modulus 64, remainder 33);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_34 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -7079,7 +6917,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_34 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_34 FOR VALUES WITH (modulus 64, remainder 34);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_35 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -7212,7 +7049,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_35 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_35 FOR VALUES WITH (modulus 64, remainder 35);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_36 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -7345,7 +7181,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_36 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_36 FOR VALUES WITH (modulus 64, remainder 36);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_37 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -7478,7 +7313,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_37 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_37 FOR VALUES WITH (modulus 64, remainder 37);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_38 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -7611,7 +7445,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_38 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_38 FOR VALUES WITH (modulus 64, remainder 38);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_39 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -7744,7 +7577,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_39 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_39 FOR VALUES WITH (modulus 64, remainder 39);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_40 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -7877,7 +7709,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_40 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_40 FOR VALUES WITH (modulus 64, remainder 40);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_41 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -8010,7 +7841,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_41 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_41 FOR VALUES WITH (modulus 64, remainder 41);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_42 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -8143,7 +7973,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_42 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_42 FOR VALUES WITH (modulus 64, remainder 42);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_43 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -8276,7 +8105,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_43 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_43 FOR VALUES WITH (modulus 64, remainder 43);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_44 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -8409,7 +8237,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_44 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_44 FOR VALUES WITH (modulus 64, remainder 44);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_45 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -8542,7 +8369,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_45 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_45 FOR VALUES WITH (modulus 64, remainder 45);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_46 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -8675,7 +8501,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_46 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_46 FOR VALUES WITH (modulus 64, remainder 46);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_47 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -8808,7 +8633,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_47 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_47 FOR VALUES WITH (modulus 64, remainder 47);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_48 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -8941,7 +8765,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_48 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_48 FOR VALUES WITH (modulus 64, remainder 48);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_49 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -9074,7 +8897,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_49 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_49 FOR VALUES WITH (modulus 64, remainder 49);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_50 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -9207,7 +9029,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_50 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_50 FOR VALUES WITH (modulus 64, remainder 50);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_51 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -9340,7 +9161,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_51 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_51 FOR VALUES WITH (modulus 64, remainder 51);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_52 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -9473,7 +9293,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_52 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_52 FOR VALUES WITH (modulus 64, remainder 52);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_53 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -9606,7 +9425,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_53 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_53 FOR VALUES WITH (modulus 64, remainder 53);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_54 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -9739,7 +9557,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_54 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_54 FOR VALUES WITH (modulus 64, remainder 54);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_55 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -9872,7 +9689,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_55 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_55 FOR VALUES WITH (modulus 64, remainder 55);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_56 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -10005,7 +9821,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_56 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_56 FOR VALUES WITH (modulus 64, remainder 56);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_57 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -10138,7 +9953,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_57 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_57 FOR VALUES WITH (modulus 64, remainder 57);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_58 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -10271,7 +10085,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_58 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_58 FOR VALUES WITH (modulus 64, remainder 58);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_59 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -10404,7 +10217,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_59 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_59 FOR VALUES WITH (modulus 64, remainder 59);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_60 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -10537,7 +10349,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_60 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_60 FOR VALUES WITH (modulus 64, remainder 60);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_61 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -10670,7 +10481,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_61 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_61 FOR VALUES WITH (modulus 64, remainder 61);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_62 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -10803,7 +10613,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_62 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62 FOR VALUES WITH (modulus 64, remainder 62);
 
 CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_63 (
     id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
@@ -10936,7 +10745,6 @@ CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_63 (
     event_fingerprint character varying(128),
     true_tstamp timestamp with time zone
 );
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63 FOR VALUES WITH (modulus 64, remainder 63);
 
 CREATE TABLE abuse_events (
     id bigint NOT NULL,
@@ -13531,7 +13339,6 @@ CREATE TABLE ci_builds (
     partition_id bigint NOT NULL,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
-ALTER TABLE ONLY p_ci_builds ATTACH PARTITION ci_builds FOR VALUES IN ('100');
 
 CREATE SEQUENCE ci_builds_id_seq
     START WITH 1
@@ -13589,7 +13396,6 @@ CREATE TABLE ci_builds_metadata (
     partition_id bigint NOT NULL,
     debug_trace_enabled boolean DEFAULT false NOT NULL
 );
-ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
 
 CREATE TABLE ci_builds_runner_session (
     id bigint NOT NULL,
@@ -25593,6 +25399,394 @@ CREATE SEQUENCE zoom_meetings_id_seq
     CACHE 1;
 
 ALTER SEQUENCE zoom_meetings_id_seq OWNED BY zoom_meetings.id;
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_00 FOR VALUES WITH (modulus 32, remainder 0);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_01 FOR VALUES WITH (modulus 32, remainder 1);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_02 FOR VALUES WITH (modulus 32, remainder 2);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_03 FOR VALUES WITH (modulus 32, remainder 3);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_04 FOR VALUES WITH (modulus 32, remainder 4);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_05 FOR VALUES WITH (modulus 32, remainder 5);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_06 FOR VALUES WITH (modulus 32, remainder 6);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_07 FOR VALUES WITH (modulus 32, remainder 7);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_08 FOR VALUES WITH (modulus 32, remainder 8);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_09 FOR VALUES WITH (modulus 32, remainder 9);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_10 FOR VALUES WITH (modulus 32, remainder 10);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_11 FOR VALUES WITH (modulus 32, remainder 11);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_12 FOR VALUES WITH (modulus 32, remainder 12);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_13 FOR VALUES WITH (modulus 32, remainder 13);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_14 FOR VALUES WITH (modulus 32, remainder 14);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_15 FOR VALUES WITH (modulus 32, remainder 15);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_16 FOR VALUES WITH (modulus 32, remainder 16);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_17 FOR VALUES WITH (modulus 32, remainder 17);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_18 FOR VALUES WITH (modulus 32, remainder 18);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_19 FOR VALUES WITH (modulus 32, remainder 19);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_20 FOR VALUES WITH (modulus 32, remainder 20);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_21 FOR VALUES WITH (modulus 32, remainder 21);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_22 FOR VALUES WITH (modulus 32, remainder 22);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_23 FOR VALUES WITH (modulus 32, remainder 23);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_24 FOR VALUES WITH (modulus 32, remainder 24);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_25 FOR VALUES WITH (modulus 32, remainder 25);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_26 FOR VALUES WITH (modulus 32, remainder 26);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_27 FOR VALUES WITH (modulus 32, remainder 27);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_28 FOR VALUES WITH (modulus 32, remainder 28);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_29 FOR VALUES WITH (modulus 32, remainder 29);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_30 FOR VALUES WITH (modulus 32, remainder 30);
+
+ALTER TABLE ONLY analytics_cycle_analytics_issue_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_31 FOR VALUES WITH (modulus 32, remainder 31);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_00 FOR VALUES WITH (modulus 32, remainder 0);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_01 FOR VALUES WITH (modulus 32, remainder 1);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_02 FOR VALUES WITH (modulus 32, remainder 2);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_03 FOR VALUES WITH (modulus 32, remainder 3);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_04 FOR VALUES WITH (modulus 32, remainder 4);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_05 FOR VALUES WITH (modulus 32, remainder 5);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_06 FOR VALUES WITH (modulus 32, remainder 6);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_07 FOR VALUES WITH (modulus 32, remainder 7);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_08 FOR VALUES WITH (modulus 32, remainder 8);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_09 FOR VALUES WITH (modulus 32, remainder 9);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_10 FOR VALUES WITH (modulus 32, remainder 10);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_11 FOR VALUES WITH (modulus 32, remainder 11);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_12 FOR VALUES WITH (modulus 32, remainder 12);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_13 FOR VALUES WITH (modulus 32, remainder 13);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_14 FOR VALUES WITH (modulus 32, remainder 14);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_15 FOR VALUES WITH (modulus 32, remainder 15);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_16 FOR VALUES WITH (modulus 32, remainder 16);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_17 FOR VALUES WITH (modulus 32, remainder 17);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_18 FOR VALUES WITH (modulus 32, remainder 18);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_19 FOR VALUES WITH (modulus 32, remainder 19);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_20 FOR VALUES WITH (modulus 32, remainder 20);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_21 FOR VALUES WITH (modulus 32, remainder 21);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_22 FOR VALUES WITH (modulus 32, remainder 22);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_23 FOR VALUES WITH (modulus 32, remainder 23);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_24 FOR VALUES WITH (modulus 32, remainder 24);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_25 FOR VALUES WITH (modulus 32, remainder 25);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_26 FOR VALUES WITH (modulus 32, remainder 26);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_27 FOR VALUES WITH (modulus 32, remainder 27);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_28 FOR VALUES WITH (modulus 32, remainder 28);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_29 FOR VALUES WITH (modulus 32, remainder 29);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_30 FOR VALUES WITH (modulus 32, remainder 30);
+
+ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31 FOR VALUES WITH (modulus 32, remainder 31);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_00 FOR VALUES WITH (modulus 64, remainder 0);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_01 FOR VALUES WITH (modulus 64, remainder 1);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_02 FOR VALUES WITH (modulus 64, remainder 2);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_03 FOR VALUES WITH (modulus 64, remainder 3);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_04 FOR VALUES WITH (modulus 64, remainder 4);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_05 FOR VALUES WITH (modulus 64, remainder 5);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_06 FOR VALUES WITH (modulus 64, remainder 6);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_07 FOR VALUES WITH (modulus 64, remainder 7);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_08 FOR VALUES WITH (modulus 64, remainder 8);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_09 FOR VALUES WITH (modulus 64, remainder 9);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_10 FOR VALUES WITH (modulus 64, remainder 10);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_11 FOR VALUES WITH (modulus 64, remainder 11);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_12 FOR VALUES WITH (modulus 64, remainder 12);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_13 FOR VALUES WITH (modulus 64, remainder 13);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_14 FOR VALUES WITH (modulus 64, remainder 14);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_15 FOR VALUES WITH (modulus 64, remainder 15);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_16 FOR VALUES WITH (modulus 64, remainder 16);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_17 FOR VALUES WITH (modulus 64, remainder 17);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_18 FOR VALUES WITH (modulus 64, remainder 18);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_19 FOR VALUES WITH (modulus 64, remainder 19);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_20 FOR VALUES WITH (modulus 64, remainder 20);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_21 FOR VALUES WITH (modulus 64, remainder 21);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_22 FOR VALUES WITH (modulus 64, remainder 22);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_23 FOR VALUES WITH (modulus 64, remainder 23);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_24 FOR VALUES WITH (modulus 64, remainder 24);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_25 FOR VALUES WITH (modulus 64, remainder 25);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_26 FOR VALUES WITH (modulus 64, remainder 26);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_27 FOR VALUES WITH (modulus 64, remainder 27);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_28 FOR VALUES WITH (modulus 64, remainder 28);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_29 FOR VALUES WITH (modulus 64, remainder 29);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_30 FOR VALUES WITH (modulus 64, remainder 30);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_31 FOR VALUES WITH (modulus 64, remainder 31);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_32 FOR VALUES WITH (modulus 64, remainder 32);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_33 FOR VALUES WITH (modulus 64, remainder 33);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_34 FOR VALUES WITH (modulus 64, remainder 34);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_35 FOR VALUES WITH (modulus 64, remainder 35);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_36 FOR VALUES WITH (modulus 64, remainder 36);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_37 FOR VALUES WITH (modulus 64, remainder 37);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_38 FOR VALUES WITH (modulus 64, remainder 38);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_39 FOR VALUES WITH (modulus 64, remainder 39);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_40 FOR VALUES WITH (modulus 64, remainder 40);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_41 FOR VALUES WITH (modulus 64, remainder 41);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_42 FOR VALUES WITH (modulus 64, remainder 42);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_43 FOR VALUES WITH (modulus 64, remainder 43);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_44 FOR VALUES WITH (modulus 64, remainder 44);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_45 FOR VALUES WITH (modulus 64, remainder 45);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_46 FOR VALUES WITH (modulus 64, remainder 46);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_47 FOR VALUES WITH (modulus 64, remainder 47);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_48 FOR VALUES WITH (modulus 64, remainder 48);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_49 FOR VALUES WITH (modulus 64, remainder 49);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_50 FOR VALUES WITH (modulus 64, remainder 50);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_51 FOR VALUES WITH (modulus 64, remainder 51);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_52 FOR VALUES WITH (modulus 64, remainder 52);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_53 FOR VALUES WITH (modulus 64, remainder 53);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_54 FOR VALUES WITH (modulus 64, remainder 54);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_55 FOR VALUES WITH (modulus 64, remainder 55);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_56 FOR VALUES WITH (modulus 64, remainder 56);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_57 FOR VALUES WITH (modulus 64, remainder 57);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_58 FOR VALUES WITH (modulus 64, remainder 58);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_59 FOR VALUES WITH (modulus 64, remainder 59);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_60 FOR VALUES WITH (modulus 64, remainder 60);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_61 FOR VALUES WITH (modulus 64, remainder 61);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_62 FOR VALUES WITH (modulus 64, remainder 62);
+
+ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_63 FOR VALUES WITH (modulus 64, remainder 63);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_00 FOR VALUES WITH (modulus 64, remainder 0);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_01 FOR VALUES WITH (modulus 64, remainder 1);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_02 FOR VALUES WITH (modulus 64, remainder 2);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_03 FOR VALUES WITH (modulus 64, remainder 3);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_04 FOR VALUES WITH (modulus 64, remainder 4);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_05 FOR VALUES WITH (modulus 64, remainder 5);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_06 FOR VALUES WITH (modulus 64, remainder 6);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_07 FOR VALUES WITH (modulus 64, remainder 7);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_08 FOR VALUES WITH (modulus 64, remainder 8);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_09 FOR VALUES WITH (modulus 64, remainder 9);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_10 FOR VALUES WITH (modulus 64, remainder 10);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_11 FOR VALUES WITH (modulus 64, remainder 11);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_12 FOR VALUES WITH (modulus 64, remainder 12);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_13 FOR VALUES WITH (modulus 64, remainder 13);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_14 FOR VALUES WITH (modulus 64, remainder 14);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_15 FOR VALUES WITH (modulus 64, remainder 15);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_16 FOR VALUES WITH (modulus 64, remainder 16);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_17 FOR VALUES WITH (modulus 64, remainder 17);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_18 FOR VALUES WITH (modulus 64, remainder 18);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_19 FOR VALUES WITH (modulus 64, remainder 19);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_20 FOR VALUES WITH (modulus 64, remainder 20);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_21 FOR VALUES WITH (modulus 64, remainder 21);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_22 FOR VALUES WITH (modulus 64, remainder 22);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_23 FOR VALUES WITH (modulus 64, remainder 23);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_24 FOR VALUES WITH (modulus 64, remainder 24);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_25 FOR VALUES WITH (modulus 64, remainder 25);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_26 FOR VALUES WITH (modulus 64, remainder 26);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_27 FOR VALUES WITH (modulus 64, remainder 27);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_28 FOR VALUES WITH (modulus 64, remainder 28);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_29 FOR VALUES WITH (modulus 64, remainder 29);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_30 FOR VALUES WITH (modulus 64, remainder 30);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_31 FOR VALUES WITH (modulus 64, remainder 31);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_32 FOR VALUES WITH (modulus 64, remainder 32);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_33 FOR VALUES WITH (modulus 64, remainder 33);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_34 FOR VALUES WITH (modulus 64, remainder 34);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_35 FOR VALUES WITH (modulus 64, remainder 35);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_36 FOR VALUES WITH (modulus 64, remainder 36);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_37 FOR VALUES WITH (modulus 64, remainder 37);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_38 FOR VALUES WITH (modulus 64, remainder 38);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_39 FOR VALUES WITH (modulus 64, remainder 39);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_40 FOR VALUES WITH (modulus 64, remainder 40);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_41 FOR VALUES WITH (modulus 64, remainder 41);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_42 FOR VALUES WITH (modulus 64, remainder 42);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_43 FOR VALUES WITH (modulus 64, remainder 43);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_44 FOR VALUES WITH (modulus 64, remainder 44);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_45 FOR VALUES WITH (modulus 64, remainder 45);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_46 FOR VALUES WITH (modulus 64, remainder 46);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_47 FOR VALUES WITH (modulus 64, remainder 47);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_48 FOR VALUES WITH (modulus 64, remainder 48);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_49 FOR VALUES WITH (modulus 64, remainder 49);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_50 FOR VALUES WITH (modulus 64, remainder 50);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_51 FOR VALUES WITH (modulus 64, remainder 51);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_52 FOR VALUES WITH (modulus 64, remainder 52);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_53 FOR VALUES WITH (modulus 64, remainder 53);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_54 FOR VALUES WITH (modulus 64, remainder 54);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_55 FOR VALUES WITH (modulus 64, remainder 55);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_56 FOR VALUES WITH (modulus 64, remainder 56);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_57 FOR VALUES WITH (modulus 64, remainder 57);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_58 FOR VALUES WITH (modulus 64, remainder 58);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_59 FOR VALUES WITH (modulus 64, remainder 59);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_60 FOR VALUES WITH (modulus 64, remainder 60);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_61 FOR VALUES WITH (modulus 64, remainder 61);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62 FOR VALUES WITH (modulus 64, remainder 62);
+
+ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63 FOR VALUES WITH (modulus 64, remainder 63);
+
+ALTER TABLE ONLY p_ci_builds ATTACH PARTITION ci_builds FOR VALUES IN ('100');
+
+ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
 
 ALTER TABLE ONLY abuse_events ALTER COLUMN id SET DEFAULT nextval('abuse_events_id_seq'::regclass);
 

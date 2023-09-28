@@ -2240,7 +2240,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when the Slack app setting is not enabled' do
       before do
         stub_application_setting(slack_app_enabled: false)
-        allow(Rails.env).to receive(:test?).and_return(false, true)
+        allow(Rails.env).to receive(:test?).and_return(false)
       end
 
       it 'includes all projects' do

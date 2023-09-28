@@ -22,6 +22,10 @@ module Gitlab
           :page,
           :stage_id,
           :end_event_filter,
+          :weight,
+          :epic_id,
+          :my_reaction_emoji,
+          :iteration_id,
           label_name: [].freeze,
           assignee_username: [].freeze,
           project_ids: [].freeze
@@ -46,6 +50,10 @@ module Gitlab
         attribute :page
         attribute :stage_id
         attribute :end_event_filter
+        attribute :weight
+        attribute :epic_id
+        attribute :my_reaction_emoji
+        attribute :iteration_id
 
         FINDER_PARAM_NAMES.each do |param_name|
           attribute param_name

@@ -3148,7 +3148,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/not_equals_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/null_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/or_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/pattern_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/string_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/variable_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/lexer_spec.rb'

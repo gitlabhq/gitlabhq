@@ -301,6 +301,8 @@ class GraphqlController < ApplicationController
   end
 
   def introspection_query_can_use_cache?
+    return false if Gitlab.dev_or_test_env?
+
     CACHED_INTROSPECTION_QUERY_STRING == graphql_query_object.query_string.squish
   end
 
