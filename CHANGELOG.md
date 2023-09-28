@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.2.8 (2023-09-28)
+
+### Security (16 changes)
+
+- [Mark any CI builds that are not complete as canceled when imported](gitlab-org/security/gitlab@ae16595db5d0c1f4669040a356d8dc613c35ff14) ([merge request](gitlab-org/security/gitlab!3599))
+- [Destroy group service accounts when removing group](gitlab-org/security/gitlab@ab56ecd47acae8f5b0f58925e44f6a7e0937bf4a) ([merge request](gitlab-org/security/gitlab!3556))
+- [Fix SSO Enforcement for shared groups and projects](gitlab-org/security/gitlab@cb41d035283f8ad3e02d843e617e7661fa9e3968) ([merge request](gitlab-org/security/gitlab!3527))
+- [Prevents Ci::Build data from being rendered](gitlab-org/security/gitlab@deca1f1f2aee142fde32d7f02669dd095e274af1) ([merge request](gitlab-org/security/gitlab!3541))
+- [Update dependency auto-deploy-image to v2.55.0](gitlab-org/security/gitlab@e589a2f2058ff795db8a6e162629ff76d00d2518) ([merge request](gitlab-org/security/gitlab!3521))
+- [Allow only one membership for security policy bots](gitlab-org/security/gitlab@e1389066bb60e235e571452a1bff760269c247b1) ([merge request](gitlab-org/security/gitlab!3613))
+- [Reset all approvals when target branch changes](gitlab-org/security/gitlab@5ce09536df6a9f948b933f642a5eb1aa0f379ab3) ([merge request](gitlab-org/security/gitlab!3609))
+- [Default to using the asset proxy](gitlab-org/security/gitlab@6d9eaada9b648e412a0dd1d810a092560684ccaf) ([merge request](gitlab-org/security/gitlab!3581))
+- [Restrict Project Fork Linking to Owners and Admins](gitlab-org/security/gitlab@ca181bb33cabd382f57c113e70859e4d639de385) ([merge request](gitlab-org/security/gitlab!3566))
+- [Prevent math hijacking page elements](gitlab-org/security/gitlab@0098092a595b724e38a7168dd398fa9328609124) ([merge request](gitlab-org/security/gitlab!3589))
+- [Delete of member branch protection rules cascadingly](gitlab-org/security/gitlab@ea978fe670879993a72660e9064d732cfbac0653) ([merge request](gitlab-org/security/gitlab!3595))
+- [Prevent collaboration across forks when author cannot push](gitlab-org/security/gitlab@eaf98fbdbd1830136ed34fce865d4ee2c91ddf89) ([merge request](gitlab-org/security/gitlab!3531))
+- [Allow Maintainer+ to list Sentry projects](gitlab-org/security/gitlab@4693c68c69e9ba5ac9d0443bddfe72ac146ad19d) ([merge request](gitlab-org/security/gitlab!3555))
+- [Fix leaking source code of restricted project through a fork](gitlab-org/security/gitlab@cf47393248616c66ac08dfb4a70d4fef8fff6258) ([merge request](gitlab-org/security/gitlab!3490))
+- [Prevent leaking CI variables via fork MRs](gitlab-org/security/gitlab@cf26a2658fdc2caf1b33ddf37404563a381b8eaa) ([merge request](gitlab-org/security/gitlab!3560))
+- [Pipelines will have no access to protected vars and may fail with tags](gitlab-org/security/gitlab@5332c47bb113c03e2606434024bceef368401e62) ([merge request](gitlab-org/security/gitlab!3545))
+
 ## 16.2.7 (2023-09-18)
 
 ### Security (1 change)
