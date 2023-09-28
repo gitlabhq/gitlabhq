@@ -330,10 +330,6 @@ RSpec.configure do |config|
       stub_feature_flags(disable_anonymous_project_search: false)
       stub_feature_flags(disable_cancel_redundant_pipelines_service: false)
 
-      # Specs should not get a CAPTCHA challenge by default, this makes the sign-in flow simpler in
-      # most cases. We do test the CAPTCHA flow in the appropriate specs.
-      stub_feature_flags(arkose_labs_login_challenge: false)
-
       # Specs should not require email verification by default, this makes the sign-in flow simpler in
       # most cases. We do test the email verification flow in the appropriate specs.
       stub_feature_flags(require_email_verification: false)

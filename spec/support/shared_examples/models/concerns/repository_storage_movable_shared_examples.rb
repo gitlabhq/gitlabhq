@@ -71,13 +71,20 @@ RSpec.shared_examples 'handles repository moves' do
         end
 
         context 'when the transition fails' do
-          it 'does not trigger the corresponding repository storage worker and adds an error' do
+          before do
             allow(storage_move.container).to receive(:set_repository_read_only!).and_raise(StandardError, 'foobar')
+          end
+
+          it 'does not trigger the corresponding repository storage worker and adds an error' do
             expect(repository_storage_worker).not_to receive(:perform_async)
-
             storage_move.schedule!
-
             expect(storage_move.errors[error_key]).to include('foobar')
+          end
+
+          it 'sets the state to failed' do
+            expect(storage_move).to receive(:do_fail!).and_call_original
+            storage_move.schedule!
+            expect(storage_move.state_name).to eq(:failed)
           end
         end
       end

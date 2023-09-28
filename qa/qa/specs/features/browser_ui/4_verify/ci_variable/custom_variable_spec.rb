@@ -60,9 +60,9 @@ module QA
 
         Page::Project::Pipeline::Show.perform do |show|
           Support::Waiter.wait_until { show.passed? }
-        end
 
-        create(:job, id: project.job_by_name(pipeline_job_name)[:id], name: pipeline_job_name, project: project).visit!
+          show.click_job(pipeline_job_name)
+        end
 
         Page::Project::Job::Show.perform do |show|
           expect(show.output).to have_content(variable_custom_value)

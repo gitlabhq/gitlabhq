@@ -12567,9 +12567,11 @@ CREATE TABLE batched_background_migrations (
     on_hold_until timestamp with time zone,
     gitlab_schema text NOT NULL,
     finished_at timestamp with time zone,
+    queued_migration_version text,
     CONSTRAINT check_0406d9776f CHECK ((char_length(gitlab_schema) <= 255)),
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),
+    CONSTRAINT check_713f147aea CHECK ((char_length(queued_migration_version) <= 14)),
     CONSTRAINT check_batch_size_in_range CHECK ((batch_size >= sub_batch_size)),
     CONSTRAINT check_e6c75b1e29 CHECK ((char_length(job_class_name) <= 100)),
     CONSTRAINT check_fe10674721 CHECK ((char_length(batch_class_name) <= 100)),
@@ -34844,6 +34846,8 @@ CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite 
 CREATE UNIQUE INDEX unique_amazon_s3_configurations_namespace_id_and_bucket_name ON audit_events_amazon_s3_configurations USING btree (namespace_id, bucket_name);
 
 CREATE UNIQUE INDEX unique_amazon_s3_configurations_namespace_id_and_name ON audit_events_amazon_s3_configurations USING btree (namespace_id, name);
+
+CREATE UNIQUE INDEX unique_batched_background_migrations_queued_migration_version ON batched_background_migrations USING btree (queued_migration_version);
 
 CREATE UNIQUE INDEX unique_ci_builds_token_encrypted_and_partition_id ON ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
 

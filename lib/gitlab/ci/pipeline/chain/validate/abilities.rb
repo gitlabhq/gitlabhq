@@ -19,7 +19,7 @@ module Gitlab
               end
 
               if project.import_in_progress?
-                return error('Import in progress')
+                return error('You cannot run pipelines before project import is complete.')
               end
 
               unless allowed_to_create_pipeline?

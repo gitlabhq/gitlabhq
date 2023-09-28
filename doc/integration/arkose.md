@@ -13,11 +13,7 @@ Arkose Protect on GitLab.com. While this feature is theoretically usable in self
 is not recommended at the moment.
 
 GitLab integrates [Arkose Protect](https://www.arkoselabs.com/arkose-protect/) to guard against
-credential stuffing and bots in the sign-in form. GitLab triggers Arkose Protect if the user:
-
-- Has never signed in before.
-- Has failed to sign in twice in a row.
-- Has not signed in during the past three months.
+malicious users from creating accounts.
 
 ## How does it work?
 
@@ -31,7 +27,7 @@ sequenceDiagram
     participant U as User
     participant G as GitLab
     participant A as Arkose Labs
-    U->>G: User loads form <br />(POST /api/:version/users/captcha_check)
+    U->>G: User loads signup form
     G->>A: Sends device fingerprint and telemetry
     A->>U: Returns Session token and decision on if to challenge
     opt Requires Challenge
@@ -52,21 +48,6 @@ sequenceDiagram
 
 Depending on the risk score received, a user might be required to perform up to three stages of [identity verification](../security/identity_verification.md) to register an account.
 
-## How do we treat malicious sign-in attempts?
-
-Users are not denied access if Arkose Protect considers they are malicious. However,
-their risk score is exposed in the administrator console so that we can make more informed decisions when it
-comes to manually blocking users. When we decide to block a user, feedback is sent to ArkoseLabs to
-improve their risk prediction model.
-
-NOTE:
-Enabling the `arkose_labs_prevent_login` feature flag results in sessions with a `High` risk
-score being denied access. So far, we have kept this feature flag disabled to evaluate Arkose Protect
-predictions and to make sure we are not preventing legitimate users from signing in.
-
-That said, we have seen that interactive challenges are effective in preventing some malicious
-sign-in attempts as not completing them prevents attackers from moving on to the next sign-in step.
-
 ## Configuration
 
 To enable Arkose Protect:
@@ -76,15 +57,9 @@ To enable Arkose Protect:
 1. Enable the ArkoseLabs login challenge. Run the following commands in the Rails console, replacing `<your_public_api_key>` and `<your_private_api_key>` with your own API keys.
 
    ```ruby
-   Feature.enable(:arkose_labs_login_challenge)
+   Feature.enable(:arkose_labs_signup_challenge)
    ApplicationSetting.current.update(arkose_labs_public_api_key: '<your_public_api_key>')
    ApplicationSetting.current.update(arkose_labs_private_api_key: '<your_private_api_key>')
-   ```
-
-1. Optional. To prevent high risk sessions from signing, enable the `arkose_labs_prevent_login` feature flag. Run the following command in the Rails console:
-
-   ```ruby
-   Feature.enable(:arkose_labs_prevent_login)
    ```
 
 ## Triage and debug ArkoseLabs issues

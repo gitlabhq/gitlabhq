@@ -263,7 +263,7 @@ export default {
         <gl-button
           v-if="enablePreview"
           data-testid="preview-toggle"
-          value="preview"
+          :value="previewMarkdown ? 'preview' : 'edit'"
           :label="$options.i18n.previewTabTitle"
           class="js-md-preview-button gl-flex-direction-row-reverse gl-align-items-center gl-font-weight-normal! gl-mr-2"
           size="small"

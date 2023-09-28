@@ -81,15 +81,10 @@ log_formatter do |str|
   json_formatter.call(str)
 end
 
-lowlevel_error_handler do |ex, env|
-  if Raven.configuration.capture_allowed?
-    Raven.capture_exception(ex, tags: { 'handler': 'puma_low_level' }, extra: { puma_env: env })
-  end
+require_relative "/home/git/gitlab/lib/gitlab/puma/error_handler"
 
-  if Sentry.configuration.sending_allowed?
-    Sentry.capture_exception(ex, tags: { 'handler': 'puma_low_level' }, extra: { puma_env: env })
-  end
+error_handler = Gitlab::Puma::ErrorHandler.new(ENV['RAILS_ENV'] == 'production')
 
-  # note the below is just a Rack response
-  [500, {}, ["An error has occurred and reported in the system's low-level error handler."]]
+lowlevel_error_handler do |ex, env, status_code|
+  error_handler.execute(ex, env, status_code)
 end

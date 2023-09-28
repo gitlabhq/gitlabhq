@@ -40,7 +40,7 @@ module Gitlab
         private
 
         def puma_stats
-          Puma.stats
+          ::Puma.stats
         rescue NoMethodError
           Gitlab::AppLogger.info "PumaSampler: stats are not available yet, waiting for Puma to boot"
           nil

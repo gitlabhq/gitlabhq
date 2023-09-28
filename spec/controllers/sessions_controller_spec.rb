@@ -195,10 +195,6 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       context 'with reCAPTCHA' do
-        before do
-          stub_feature_flags(arkose_labs_login_challenge: false)
-        end
-
         def unsuccesful_login(user_params, sesion_params: {})
           # Without this, `verify_recaptcha` arbitrarily returns true in test env
           Recaptcha.configuration.skip_verify_env.delete('test')

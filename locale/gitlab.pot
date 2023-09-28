@@ -12105,9 +12105,6 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
-msgid "Complete verification to sign in."
-msgstr ""
-
 msgid "Complete verification to sign up."
 msgstr ""
 
@@ -43804,9 +43801,6 @@ msgid "Session ID"
 msgstr ""
 
 msgid "Session duration (minutes)"
-msgstr ""
-
-msgid "Session|Unable to verify the user. An error occurred when loading the user verification challenge. Refresh to try again."
 msgstr ""
 
 msgid "Set %{epic_ref} as the parent epic."

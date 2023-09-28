@@ -4,3 +4,4 @@ description: # Please capture what <%= class_name %> does
 feature_category: <%= feature_category %>
 introduced_by_url: # URL of the MR (or issue/commit) that introduced the migration
 milestone: <%= current_milestone %>
+queued_migration_version: <%= migration_number %>

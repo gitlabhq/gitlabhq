@@ -3,8 +3,8 @@ status: proposed
 creation-date: "2023-06-05"
 authors: [ "@msaleiko" ]
 coach: "@stanhu"
-approvers: [ "@kbychu", "@bmarnane" ]
-owning-stage: "~devops::monitor"
+approvers: [ ]
+owning-stage: ""
 participating-stages: [ "~group::incubation" ]
 ---
 
@@ -162,8 +162,8 @@ The current setup limits us and only allows to fetch two email addresses. To pub
 
 ## Additional resources
 
-- [Draft issue for this blueprint](https://gitlab.com/gitlab-org/gitlab/-/issues/393157)
+- [Meta issue for this design document](https://gitlab.com/gitlab-org/gitlab/-/issues/393157)
 
 ## Timeline
 
-- 2023-XX-XX: The initial version of the blueprint has been merged.
+- 2023-09-26: The initial version of the blueprint has been merged.

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Manage runners
+# Manage runners **(FREE ALL)**
 
 GitLab Runner has the following types of runners, which are available based on who you want to have access:
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers do
+RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, feature_category: :database do
   let(:migration_class) do
     Class.new(ActiveRecord::Migration[6.1])
       .include(described_class)
@@ -70,39 +70,54 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
       end
     end
 
-    it 'creates the database record for the migration' do
-      expect(Gitlab::Database::PgClass).to receive(:for_table).with(:projects).and_return(pgclass_info)
+    context "when the migration doesn't exist already" do
+      before do
+        allow(Gitlab::Database::PgClass).to receive(:for_table).with(:projects).and_return(pgclass_info)
+      end
 
-      expect do
+      subject(:enqueue_batched_background_migration) do
         migration.queue_batched_background_migration(
           job_class.name,
           :projects,
           :id,
           job_interval: 5.minutes,
+          queued_migration_version: format("%.14d", 123),
           batch_min_value: 5,
           batch_max_value: 1000,
           batch_class_name: 'MyBatchClass',
           batch_size: 100,
           max_batch_size: 10000,
           sub_batch_size: 10,
-          gitlab_schema: :gitlab_ci)
-      end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+          gitlab_schema: :gitlab_ci
+        )
+      end
 
-      expect(Gitlab::Database::BackgroundMigration::BatchedMigration.last).to have_attributes(
-        job_class_name: 'MyJobClass',
-        table_name: 'projects',
-        column_name: 'id',
-        interval: 300,
-        min_value: 5,
-        max_value: 1000,
-        batch_class_name: 'MyBatchClass',
-        batch_size: 100,
-        max_batch_size: 10000,
-        sub_batch_size: 10,
-        job_arguments: %w[],
-        status_name: :active,
-        total_tuple_count: pgclass_info.cardinality_estimate,
-        gitlab_schema: 'gitlab_ci')
+      it 'enqueues exactly one batched migration' do
+        expect { enqueue_batched_background_migration }
+          .to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+      end
+
+      it 'creates the database record for the migration' do
+        batched_background_migration = enqueue_batched_background_migration
+
+        expect(batched_background_migration.reload).to have_attributes(
+          job_class_name: 'MyJobClass',
+          table_name: 'projects',
+          column_name: 'id',
+          interval: 300,
+          min_value: 5,
+          max_value: 1000,
+          batch_class_name: 'MyBatchClass',
+          batch_size: 100,
+          max_batch_size: 10000,
+          sub_batch_size: 10,
+          job_arguments: %w[],
+          status_name: :active,
+          total_tuple_count: pgclass_info.cardinality_estimate,
+          gitlab_schema: 'gitlab_ci',
+          queued_migration_version: format("%.14d", 123)
+        )
+      end
     end
 
     context 'when the job interval is lower than the minimum' do

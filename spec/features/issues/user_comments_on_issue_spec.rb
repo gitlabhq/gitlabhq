@@ -52,6 +52,17 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
 
       expect(find_highlighted_autocomplete_item).to have_content('/label')
     end
+
+    it "switches back to edit mode if a comment is submitted in preview mode" do
+      fill_in 'Comment', with: 'just a regular comment'
+      click_button 'Preview'
+
+      expect(page).to have_content('Continue editing')
+
+      click_button 'Comment'
+
+      expect(page).not_to have_content('Continue editing')
+    end
   end
 
   context "when editing comments" do

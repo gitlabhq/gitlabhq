@@ -4,3 +4,4 @@ description: # Please capture what MyBatchedMigration does
 feature_category: database
 introduced_by_url: # URL of the MR \(or issue/commit\) that introduced the migration
 milestone: [0-9\.]+
+queued_migration_version: [0-9]+

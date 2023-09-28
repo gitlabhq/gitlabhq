@@ -111,9 +111,7 @@ class Integration < ApplicationRecord
   validate :validate_belongs_to_project_or_group
 
   scope :external_issue_trackers, -> { where(category: 'issue_tracker').active }
-  # TODO: Will be modified in 15.0
-  # Details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74501#note_744393645
-  scope :third_party_wikis, -> { where(type: %w[Integrations::Confluence Integrations::Shimo]).active }
+  scope :third_party_wikis, -> { where(category: 'third_party_wiki').active }
   scope :by_name, ->(name) { by_type(integration_name_to_type(name)) }
   scope :external_wikis, -> { by_name(:external_wiki).active }
   scope :active, -> { where(active: true) }
