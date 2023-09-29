@@ -220,6 +220,7 @@ export default {
       <gl-empty-state
         v-else-if="hasNoDependentJobs"
         :svg-path="emptyDagSvgPath"
+        :svg-height="null"
         :title="$options.emptyStateTexts.title"
       >
         <template #description>

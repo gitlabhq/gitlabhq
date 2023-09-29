@@ -29,6 +29,7 @@ export default {
     :title="$options.i18n.title"
     :description="$options.i18n.description"
     :svg-path="emptyStateSvgPath"
+    :svg-height="null"
     :primary-button-link="pipelineEditorPath"
     :primary-button-text="$options.i18n.buttonText"
     data-testid="jobs-empty-state"

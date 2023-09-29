@@ -86,6 +86,7 @@ export default {
     v-else
     :title="$options.i18n.withoutLinks.title"
     :svg-path="emptySubgroupIllustration"
+    :svg-height="null"
     :description="$options.i18n.withoutLinks.description"
   />
 </template>

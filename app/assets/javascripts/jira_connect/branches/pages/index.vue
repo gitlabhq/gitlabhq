@@ -56,6 +56,7 @@ export default {
       :title="$options.i18n.I18N_NEW_BRANCH_SUCCESS_TITLE"
       :description="$options.i18n.I18N_NEW_BRANCH_SUCCESS_MESSAGE"
       :svg-path="successStateSvgPath"
+      :svg-height="null"
     />
   </div>
 </template>

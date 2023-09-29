@@ -5475,7 +5475,7 @@ msgstr ""
 msgid "Analytics|Enter a dashboard title"
 msgstr ""
 
-msgid "Analytics|Enter a visualization name"
+msgid "Analytics|Enter a visualization title"
 msgstr ""
 
 msgid "Analytics|Error while saving dashboard"
@@ -5497,9 +5497,6 @@ msgid "Analytics|Language"
 msgstr ""
 
 msgid "Analytics|Line Chart"
-msgstr ""
-
-msgid "Analytics|New analytics visualization name"
 msgstr ""
 
 msgid "Analytics|New dashboard"
@@ -5605,6 +5602,9 @@ msgid "Analytics|Visualization Type"
 msgstr ""
 
 msgid "Analytics|Visualization designer"
+msgstr ""
+
+msgid "Analytics|Visualization title"
 msgstr ""
 
 msgid "Analytics|Visualization was saved successfully"

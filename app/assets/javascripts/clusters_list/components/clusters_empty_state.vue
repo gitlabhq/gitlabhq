@@ -22,7 +22,11 @@ export default {
 
 <template>
   <div>
-    <gl-empty-state :svg-path="clustersEmptyStateImage" :svg-height="100">
+    <gl-empty-state
+      :svg-path="clustersEmptyStateImage"
+      :svg-height="100"
+      data-testid="clusters-empty-state"
+    >
       <template #title>
         <p>
           <gl-sprintf :message="$options.i18n.introText">

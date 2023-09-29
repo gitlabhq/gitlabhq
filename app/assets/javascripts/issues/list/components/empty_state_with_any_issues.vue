@@ -29,6 +29,7 @@ export default {
     :title="$options.i18n.noSearchResultsTitle"
     :svg-path="emptyStateSvgPath"
     :svg-height="150"
+    data-testid="issuable-empty-state"
   >
     <template #actions>
       <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
@@ -42,6 +43,8 @@ export default {
     :description="$options.i18n.noOpenIssuesDescription"
     :title="$options.i18n.noOpenIssuesTitle"
     :svg-path="emptyStateSvgPath"
+    :svg-height="null"
+    data-testid="issuable-empty-state"
   >
     <template #actions>
       <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
@@ -55,5 +58,6 @@ export default {
     :title="$options.i18n.noClosedIssuesTitle"
     :svg-path="emptyStateSvgPath"
     :svg-height="150"
+    data-testid="issuable-empty-state"
   />
 </template>

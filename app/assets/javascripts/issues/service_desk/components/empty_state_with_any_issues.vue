@@ -55,5 +55,6 @@ export default {
     :title="content.title"
     :svg-path="emptyStateSvgPath"
     :svg-height="content.svgHeight"
+    data-testid="issuable-empty-state"
   />
 </template>

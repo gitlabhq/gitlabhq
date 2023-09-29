@@ -414,72 +414,36 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     subject { post api(url), headers: headers, params: params }
 
     shared_examples 'composer package publish' do
-      context 'with valid project' do
-        context 'with basic auth' do
-          where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
-            'PUBLIC'  | :developer | :user | true  | 'Composer package creation'    | :created
-            'PUBLIC'  | :developer | :user | false | 'process Composer api request' | :unauthorized
-            'PUBLIC'  | :developer | :job  | true  | 'Composer package creation'    | :created
-            'PUBLIC'  | :guest     | :user | true  | 'process Composer api request' | :forbidden
-            'PUBLIC'  | :guest     | :user | false | 'process Composer api request' | :unauthorized
-            'PUBLIC'  | :guest     | :job  | true  | 'process Composer api request' | :forbidden
-            'PUBLIC'  | nil        | :user | true  | 'process Composer api request' | :forbidden
-            'PUBLIC'  | nil        | :user | false | 'process Composer api request' | :unauthorized
-            'PUBLIC'  | nil        | :job  | true  | 'process Composer api request' | :forbidden
-            'PUBLIC'  | nil        | nil   | nil   | 'process Composer api request' | :unauthorized # Anonymous User
-            'PRIVATE' | :developer | :user | true  | 'Composer package creation'    | :created
-            'PRIVATE' | :developer | :user | false | 'process Composer api request' | :unauthorized
-            'PRIVATE' | :developer | :job  | true  | 'Composer package creation'    | :created
-            'PRIVATE' | :guest     | :user | true  | 'process Composer api request' | :forbidden
-            'PRIVATE' | :guest     | :user | false | 'process Composer api request' | :unauthorized
-            'PRIVATE' | :guest     | :job  | true  | 'process Composer api request' | :forbidden
-            'PRIVATE' | nil        | :user | true  | 'process Composer api request' | :not_found
-            'PRIVATE' | nil        | :user | false | 'process Composer api request' | :unauthorized
-            'PRIVATE' | nil        | :job  | true  | 'process Composer api request' | :not_found
-            'PRIVATE' | nil        | nil   | nil   | 'process Composer api request' | :unauthorized # Anonymous User
-          end
-
-          with_them do
-            include_context 'Composer api project access', auth_method: :basic, project_visibility_level: params[:project_visibility_level], token_type: params[:token_type], valid_token: params[:valid_token] do
-              it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
-            end
-          end
-        end
-
-        context 'with token auth' do
-          where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
-            'PUBLIC'  | :developer | :user | true  | 'Composer package creation'    | :created
-            'PUBLIC'  | :developer | :user | false | 'process Composer api request' | :unauthorized
-            'PUBLIC'  | :developer | :job  | true  | 'process Composer api request' | :unauthorized # Anonymous User - fallback
-            'PUBLIC'  | :guest     | :user | true  | 'process Composer api request' | :forbidden
-            'PUBLIC'  | :guest     | :user | false | 'process Composer api request' | :unauthorized
-            'PUBLIC'  | :guest     | :job  | true  | 'process Composer api request' | :unauthorized # Anonymous User - fallback
-            'PUBLIC'  | nil        | :user | true  | 'process Composer api request' | :forbidden
-            'PUBLIC'  | nil        | :user | false | 'process Composer api request' | :unauthorized
-            'PUBLIC'  | nil        | :job  | true  | 'process Composer api request' | :unauthorized # Anonymous User - fallback
-            'PUBLIC'  | nil        | nil   | nil   | 'process Composer api request' | :unauthorized # Anonymous User
-            'PRIVATE' | :developer | :user | true  | 'Composer package creation'    | :created
-            'PRIVATE' | :developer | :user | false | 'process Composer api request' | :unauthorized
-            'PRIVATE' | :developer | :job  | true  | 'process Composer api request' | :unauthorized
-            'PRIVATE' | :guest     | :user | true  | 'process Composer api request' | :forbidden
-            'PRIVATE' | :guest     | :user | false | 'process Composer api request' | :unauthorized
-            'PRIVATE' | :guest     | :job  | true  | 'process Composer api request' | :unauthorized
-            'PRIVATE' | nil        | :user | true  | 'process Composer api request' | :not_found
-            'PRIVATE' | nil        | :user | false | 'process Composer api request' | :unauthorized
-            'PRIVATE' | nil        | :job  | true  | 'process Composer api request' | :unauthorized
-            'PRIVATE' | nil        | nil   | nil   | 'process Composer api request' | :unauthorized # Anonymous User
-          end
-
-          with_them do
-            include_context 'Composer api project access', auth_method: :token, project_visibility_level: params[:project_visibility_level], token_type: params[:token_type], valid_token: params[:valid_token] do
-              it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
-            end
-          end
-        end
-
-        it_behaves_like 'Composer publish with deploy tokens'
+      where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
+        'PUBLIC'  | :developer | :user | true  | 'Composer package creation'    | :created
+        'PUBLIC'  | :developer | :user | false | 'process Composer api request' | :unauthorized
+        'PUBLIC'  | :developer | :job  | true  | 'Composer package creation'    | :created
+        'PUBLIC'  | :guest     | :user | true  | 'process Composer api request' | :forbidden
+        'PUBLIC'  | :guest     | :user | false | 'process Composer api request' | :unauthorized
+        'PUBLIC'  | :guest     | :job  | true  | 'process Composer api request' | :forbidden
+        'PUBLIC'  | nil        | :user | true  | 'process Composer api request' | :forbidden
+        'PUBLIC'  | nil        | :user | false | 'process Composer api request' | :unauthorized
+        'PUBLIC'  | nil        | :job  | true  | 'process Composer api request' | :forbidden
+        'PUBLIC'  | nil        | nil   | nil   | 'process Composer api request' | :unauthorized # Anonymous User
+        'PRIVATE' | :developer | :user | true  | 'Composer package creation'    | :created
+        'PRIVATE' | :developer | :user | false | 'process Composer api request' | :unauthorized
+        'PRIVATE' | :developer | :job  | true  | 'Composer package creation'    | :created
+        'PRIVATE' | :guest     | :user | true  | 'process Composer api request' | :forbidden
+        'PRIVATE' | :guest     | :user | false | 'process Composer api request' | :unauthorized
+        'PRIVATE' | :guest     | :job  | true  | 'process Composer api request' | :forbidden
+        'PRIVATE' | nil        | :user | true  | 'process Composer api request' | :not_found
+        'PRIVATE' | nil        | :user | false | 'process Composer api request' | :unauthorized
+        'PRIVATE' | nil        | :job  | true  | 'process Composer api request' | :not_found
+        'PRIVATE' | nil        | nil   | nil   | 'process Composer api request' | :unauthorized # Anonymous User
       end
 
+      with_them do
+        include_context 'Composer api project access', auth_method: :token, project_visibility_level: params[:project_visibility_level], token_type: params[:token_type], valid_token: params[:valid_token] do
+          it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
+        end
+      end
+
+      it_behaves_like 'Composer publish with deploy tokens'
       it_behaves_like 'rejects Composer access with unknown project id'
     end
 

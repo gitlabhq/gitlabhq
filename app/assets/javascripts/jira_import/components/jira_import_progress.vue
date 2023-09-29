@@ -56,6 +56,7 @@ export default {
 <template>
   <gl-empty-state
     :svg-path="illustration"
+    :svg-height="null"
     :title="__('Import in progress')"
     :primary-button-text="__('View issues')"
     :primary-button-link="issuesLink"

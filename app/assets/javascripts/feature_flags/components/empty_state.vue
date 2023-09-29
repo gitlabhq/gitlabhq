@@ -74,6 +74,7 @@ export default {
       :title="errorTitle"
       :description="s__('FeatureFlags|Try again in a few moments or contact your support team.')"
       :svg-path="errorStateSvgPath"
+      :svg-height="null"
       data-testid="error-state"
     />
 

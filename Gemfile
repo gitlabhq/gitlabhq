@@ -452,7 +452,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 4.0.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'gitlab-dangerfiles', '~> 4.1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 end
 
 group :development, :test, :coverage do

@@ -500,6 +500,7 @@ export default {
         <gl-empty-state
           :title="emptyStateData.title"
           :svg-path="emptyListSvgPath"
+          :svg-height="null"
           :description="emptyStateData.description"
           :primary-button-link="emptyStateData.btnLink"
           :primary-button-text="emptyStateData.btnText"

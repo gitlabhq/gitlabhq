@@ -195,6 +195,7 @@ export default {
       :title="emptyStateTitleText"
       :description="emptyStateMessage"
       :svg-path="noDataSvgPath"
+      :svg-height="null"
     />
     <gl-table
       v-else

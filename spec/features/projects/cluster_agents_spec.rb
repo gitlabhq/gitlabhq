@@ -27,7 +27,7 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :groups_and_projects do
     end
 
     it 'displays empty state', :aggregate_failures do
-      expect(page).to have_selector('.empty-state')
+      expect(page).to have_selector('[data-testid="cluster-agent-empty-state"]')
     end
   end
 

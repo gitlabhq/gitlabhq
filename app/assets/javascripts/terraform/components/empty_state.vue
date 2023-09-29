@@ -32,13 +32,14 @@ export default {
 </script>
 
 <template>
-  <gl-empty-state :svg-path="image" :title="$options.i18n.title">
+  <gl-empty-state :svg-path="image" :svg-height="null" :title="$options.i18n.title">
     <template #actions>
-      <gl-button variant="confirm" :href="$options.docsUrl">
+      <gl-button variant="confirm" :href="$options.docsUrl" class="gl-mx-2 gl-mb-3">
         {{ $options.i18n.buttonDoc }}</gl-button
       >
       <gl-button
         v-gl-modal-directive="$options.COMMAND_MODAL_ID"
+        class="gl-mx-2 gl-mb-3"
         data-testid="terraform-state-copy-init-command"
         icon="copy-to-clipboard"
         >{{ $options.i18n.buttonCopy }}</gl-button

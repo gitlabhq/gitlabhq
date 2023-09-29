@@ -447,15 +447,15 @@ The labels higher in the list get higher priority.
 To learn what happens when you sort by priority or label priority, see
 [Sorting and ordering issue lists](issues/sorting_issue_lists.md).
 
-## Lock labels when a merge request is merged **(BETA)**
+## Lock labels when a merge request is merged **(FREE SAAS BETA)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [Beta](../../policy/experiment-beta-support.md).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group or per project, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`.
-On GitLab.com, this feature is only available for use by GitLab Inc.
+On self-managed GitLab, this feature is not available.
+On GitLab.com, this feature is only available for use by GitLab Inc. To make it available per group or per project, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`.
 
-To comply with certain auditing requirements, you can set labels to be locked.
+To comply with certain auditing requirements, you can set a label to be locked.
 When a merge request with locked labels gets merged, nobody can remove them from the MR.
 
 When you add locked labels to issues or epics, they behave like regular labels.

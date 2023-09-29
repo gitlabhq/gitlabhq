@@ -72,6 +72,7 @@ export default {
       :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
       :primary-button-link="$options.constants.CREATE_EXPERIMENT_HELP_PATH"
       :svg-path="emptyStateSvgPath"
+      :svg-height="null"
       :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
       class="gl-py-8"
     />

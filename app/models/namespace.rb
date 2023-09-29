@@ -95,7 +95,7 @@ class Namespace < ApplicationRecord
     length: { maximum: 255 }
   validates :name, uniqueness: { scope: [:type, :parent_id] }, if: -> { parent_id.present? }
 
-  validates :description, length: { maximum: 255 }
+  validates :description, length: { maximum: 2000 }
 
   validates :path,
     presence: true,

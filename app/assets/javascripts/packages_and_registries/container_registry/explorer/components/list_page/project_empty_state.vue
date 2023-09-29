@@ -41,6 +41,7 @@ export default {
   <gl-empty-state
     :title="s__('ContainerRegistry|There are no container images stored for this project')"
     :svg-path="config.noContainersImage"
+    :svg-height="null"
   >
     <template #description>
       <p>

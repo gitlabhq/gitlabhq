@@ -5,7 +5,7 @@
 - is_closed_state = params[:state] == 'closed'
 - can_create_merge_request = merge_request_source_project_for_project(@project)
 
-.row.empty-state.merge-requests
+.row.empty-state.merge-requests{ data: { testid: 'issuable-empty-state' } }
   .col-12
     .svg-content.svg-150
       = image_tag 'illustrations/empty-state/empty-merge-requests-md.svg', { auto_dark: true }

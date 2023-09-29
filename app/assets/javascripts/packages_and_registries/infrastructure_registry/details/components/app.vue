@@ -146,6 +146,7 @@ export default {
     :title="s__('PackageRegistry|Unable to load package')"
     :description="s__('PackageRegistry|There was a problem fetching the details for this package.')"
     :svg-path="svgPath"
+    :svg-height="null"
   />
 
   <div v-else class="packages-app">

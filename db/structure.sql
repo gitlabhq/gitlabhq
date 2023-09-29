@@ -11996,6 +11996,7 @@ CREATE TABLE approval_merge_request_rules (
     vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL,
     security_orchestration_policy_configuration_id bigint,
     scan_result_policy_id bigint,
+    applicable_post_merge boolean,
     CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255))
 );
 

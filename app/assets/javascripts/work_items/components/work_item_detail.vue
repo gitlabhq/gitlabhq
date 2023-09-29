@@ -631,6 +631,7 @@ export default {
               :title="$options.i18n.fetchErrorTitle"
               :description="error"
               :svg-path="noAccessSvgPath"
+              :svg-height="null"
             />
           </section>
           <aside

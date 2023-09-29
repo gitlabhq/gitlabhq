@@ -34,7 +34,11 @@ export default {
 </script>
 <template>
   <div>
-    <gl-empty-state :title="$options.i18n.emptyState.title" :svg-path="emptyAlertSvgPath">
+    <gl-empty-state
+      :title="$options.i18n.emptyState.title"
+      :svg-path="emptyAlertSvgPath"
+      :svg-height="null"
+    >
       <template #description>
         <div class="gl-display-block">
           <span>{{ $options.i18n.emptyState.info }}</span>

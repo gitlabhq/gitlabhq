@@ -62,6 +62,7 @@ export default {
       v-else-if="hasNoTags"
       :title="emptyStateTitle"
       :svg-path="noContainersImage"
+      :svg-height="null"
       :description="emptyStateDescription"
       class="gl-mx-auto gl-my-0"
     />

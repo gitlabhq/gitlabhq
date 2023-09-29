@@ -231,6 +231,7 @@ export default {
         v-if="hasNoTags"
         :title="emptyStateTitle"
         :svg-path="config.noContainersImage"
+        :svg-height="null"
         :description="emptyStateDescription"
         class="gl-mx-auto gl-my-0"
       />
