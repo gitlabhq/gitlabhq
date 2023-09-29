@@ -195,27 +195,6 @@ module ProjectsHelper
       { branch_name: tag.strong(truncate(sanitize(branch_name))), link_to_autodeploy_doc: link_to_autodeploy_doc }
   end
 
-  def project_list_cache_key(project, pipeline_status: true)
-    key = [
-      project.star_count,
-      project.route.cache_key,
-      project.cache_key,
-      project.last_activity_date,
-      controller.controller_name,
-      controller.action_name,
-      Gitlab::CurrentSettings.cache_key,
-      "cross-project:#{can?(current_user, :read_cross_project)}",
-      max_project_member_access_cache_key(project),
-      pipeline_status,
-      Gitlab::I18n.locale,
-      'v2.6'
-    ]
-
-    key << pipeline_status_cache_key(project.pipeline_status) if pipeline_status && project.pipeline_status.has_status?
-
-    key
-  end
-
   def load_pipeline_status(projects)
     Gitlab::Cache::Ci::ProjectPipelineStatus
       .load_in_batch_for_projects(projects)
@@ -371,18 +350,6 @@ module ProjectsHelper
     false
   end
 
-  def grafana_integration_url
-    @project.grafana_integration&.grafana_url
-  end
-
-  def grafana_integration_masked_token
-    @project.grafana_integration&.masked_token
-  end
-
-  def grafana_integration_enabled?
-    @project.grafana_integration&.enabled?
-  end
-
   def project_license_name(project)
     key = "project:#{project.id}:license_name"
 
@@ -475,10 +442,6 @@ module ProjectsHelper
 
   def import_from_bitbucket_message
     configure_oauth_import_message('Bitbucket', help_page_path("integration/bitbucket"))
-  end
-
-  def import_from_gitlab_message
-    configure_oauth_import_message('GitLab.com', help_page_path("integration/gitlab"))
   end
 
   def show_inactive_project_deletion_banner?(project)
@@ -670,30 +633,6 @@ module ProjectsHelper
     else
       'ssh'
     end
-  end
-
-  def project_last_activity(project)
-    if project.last_activity_at
-      time_ago_with_tooltip(project.last_activity_at, placement: 'bottom', html_class: 'last_activity_time_ago')
-    else
-      s_("ProjectLastActivity|Never")
-    end
-  end
-
-  def project_status_css_class(status)
-    case status
-    when "started"
-      "table-active"
-    when "failed"
-      "table-danger"
-    when "finished"
-      "table-success"
-    end
-  end
-
-  def readme_cache_key
-    sha = @project.commit.try(:sha) || 'nil'
-    [@project.full_path, sha, "readme"].join('-')
   end
 
   def current_ref

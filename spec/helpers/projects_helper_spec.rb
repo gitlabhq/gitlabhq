@@ -77,14 +77,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe "#project_status_css_class" do
-    it "returns appropriate class" do
-      expect(project_status_css_class("started")).to eq("table-active")
-      expect(project_status_css_class("failed")).to eq("table-danger")
-      expect(project_status_css_class("finished")).to eq("table-success")
-    end
-  end
-
   describe "can_change_visibility_level?" do
     let_it_be(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
 
@@ -123,82 +115,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       allow(project.group).to receive(:emails_disabled?).and_return(true)
 
       expect(helper.can_disable_emails?(project, project.owner)).to be_falsey
-    end
-  end
-
-  describe "readme_cache_key" do
-    let(:project) { project_with_repo }
-
-    it "returns a valid cach key" do
-      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-#{project.commit.id}-readme")
-    end
-
-    it "returns a valid cache key if HEAD does not exist" do
-      allow(project).to receive(:commit) { nil }
-
-      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-nil-readme")
-    end
-  end
-
-  describe "#project_list_cache_key", :clean_gitlab_redis_cache do
-    let(:project) { project_with_repo }
-
-    before do
-      allow(helper).to receive(:can?).with(user, :read_cross_project) { true }
-      allow(user).to receive(:max_member_access_for_project).and_return(40)
-      allow(Gitlab::I18n).to receive(:locale).and_return('es')
-    end
-
-    it "includes the route" do
-      expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
-    end
-
-    it "includes the project" do
-      expect(helper.project_list_cache_key(project)).to include(project.cache_key)
-    end
-
-    it "includes the last activity date" do
-      expect(helper.project_list_cache_key(project)).to include(project.last_activity_date)
-    end
-
-    it "includes the controller name" do
-      expect(helper.controller).to receive(:controller_name).and_return("testcontroller")
-
-      expect(helper.project_list_cache_key(project)).to include("testcontroller")
-    end
-
-    it "includes the controller action" do
-      expect(helper.controller).to receive(:action_name).and_return("testaction")
-
-      expect(helper.project_list_cache_key(project)).to include("testaction")
-    end
-
-    it "includes the application settings" do
-      settings = Gitlab::CurrentSettings.current_application_settings
-
-      expect(helper.project_list_cache_key(project)).to include(settings.cache_key)
-    end
-
-    it "includes a version" do
-      expect(helper.project_list_cache_key(project).last).to start_with('v')
-    end
-
-    it 'includes whether or not the user can read cross project' do
-      expect(helper.project_list_cache_key(project)).to include('cross-project:true')
-    end
-
-    it "includes the pipeline status when there is a status" do
-      create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
-
-      expect(helper.project_list_cache_key(project)).to include("pipeline-status/#{project.commit.sha}-success")
-    end
-
-    it "includes the user locale" do
-      expect(helper.project_list_cache_key(project)).to include('es')
-    end
-
-    it "includes the user max member access" do
-      expect(helper.project_list_cache_key(project)).to include('access:40')
     end
   end
 
@@ -804,42 +720,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#grafana_integration_url' do
-    subject { helper.grafana_integration_url }
-
-    it { is_expected.to eq(nil) }
-
-    context 'grafana integration exists' do
-      let!(:grafana_integration) { create(:grafana_integration, project: project) }
-
-      it { is_expected.to eq(grafana_integration.grafana_url) }
-    end
-  end
-
-  describe '#grafana_integration_token' do
-    subject { helper.grafana_integration_masked_token }
-
-    it { is_expected.to eq(nil) }
-
-    context 'grafana integration exists' do
-      let!(:grafana_integration) { create(:grafana_integration, project: project) }
-
-      it { is_expected.to eq(grafana_integration.masked_token) }
-    end
-  end
-
-  describe '#grafana_integration_enabled?' do
-    subject { helper.grafana_integration_enabled? }
-
-    it { is_expected.to eq(nil) }
-
-    context 'grafana integration exists' do
-      let!(:grafana_integration) { create(:grafana_integration, project: project) }
-
-      it { is_expected.to eq(grafana_integration.enabled) }
-    end
-  end
-
   describe '#project_license_name(project)', :request_store do
     let_it_be(:repository) { project.repository }
 
@@ -1191,14 +1071,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     let(:import_method) { 'Bitbucket' }
 
     subject { helper.import_from_bitbucket_message }
-
-    it_behaves_like 'configure import method modal'
-  end
-
-  describe '#import_from_gitlab_message' do
-    let(:import_method) { 'GitLab.com' }
-
-    subject { helper.import_from_gitlab_message }
 
     it_behaves_like 'configure import method modal'
   end

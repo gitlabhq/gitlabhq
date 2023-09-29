@@ -78,6 +78,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       post :toggle_subscription, on: :member
     end
 
+    resources :custom_emoji, only: [:index, :new], action: :index
+
     resources :packages, only: [:index, :show]
 
     resources :milestones, constraints: { id: %r{[^/]+} } do

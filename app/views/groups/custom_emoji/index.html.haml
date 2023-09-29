@@ -1,0 +1,8 @@
+- page_title _('Custom emoji')
+
+#js-custom-emojis-root.row.gl-mt-5{ data: { base_path: group_custom_emoji_index_path(@group), group_path: @group.full_path } }
+  .col-12
+    %h4.gl-mt-0
+      = page_title
+    %p= _('Custom emoji will be available to use in every project in the group.')
+    = gl_loading_icon(size: 'lg')

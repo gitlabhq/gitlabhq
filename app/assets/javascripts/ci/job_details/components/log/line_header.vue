@@ -62,7 +62,7 @@ export default {
 
 <template>
   <div
-    class="log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start gl-relative"
+    class="js-log-line log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start gl-relative"
     :class="{ 'gl-bg-gray-700': isHighlighted || applyHashHighlight }"
     role="button"
     @click="handleOnClick"

@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlIcon, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
+import { GlIcon, GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { findLastIndex } from 'lodash';
 import VirtualList from 'vue-virtual-scroll-list';
 import { CATEGORY_NAMES, getEmojiCategoryMap, state } from '~/emoji';
@@ -13,10 +13,16 @@ export default {
   components: {
     GlIcon,
     GlDropdown,
+    GlDropdownItem,
     GlSearchBoxByType,
     VirtualList,
     Category,
     EmojiList,
+  },
+  inject: {
+    newCustomEmojiPath: {
+      default: '',
+    },
   },
   props: {
     toggleClass: {
@@ -167,6 +173,11 @@ export default {
           </virtual-list>
         </template>
       </emoji-list>
+      <template v-if="newCustomEmojiPath" #footer>
+        <gl-dropdown-item :href="newCustomEmojiPath">
+          {{ __('Create new emoji') }}
+        </gl-dropdown-item>
+      </template>
     </gl-dropdown>
   </div>
 </template>

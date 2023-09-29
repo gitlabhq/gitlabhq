@@ -95,12 +95,11 @@ module Gitlab
     end
 
     def self.use_cluster_shared_state?
-      Gitlab::SafeRequestStore[:use_cluster_shared_state] ||=
-        Feature.enabled?(:use_cluster_shared_state_for_exclusive_lease)
+      Feature.enabled?(:use_cluster_shared_state_for_exclusive_lease, Feature.current_request)
     end
 
     def self.use_double_lock?
-      Gitlab::SafeRequestStore[:use_double_lock] ||= Feature.enabled?(:enable_exclusive_lease_double_lock_rw)
+      Feature.enabled?(:enable_exclusive_lease_double_lock_rw, Feature.current_request)
     end
 
     def initialize(key, uuid: nil, timeout:)

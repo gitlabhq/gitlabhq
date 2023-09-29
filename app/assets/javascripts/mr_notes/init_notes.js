@@ -44,6 +44,7 @@ export default () => {
       reportAbusePath: notesDataset.reportAbusePath,
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
       mrFilter: true,
+      newCustomEmojiPath: notesDataset.newCustomEmojiPath,
     },
     data() {
       const noteableData = JSON.parse(notesDataset.noteableData);

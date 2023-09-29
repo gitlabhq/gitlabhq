@@ -71,7 +71,7 @@ import { InternalEvents } from '~/tracking';
 mixins: [InternalEvents.mixin()]
 ...
 ...
-this.track_event('action')
+this.trackEvent('action')
 ```
 
 You can use [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123901/diffs) as an example. It migrates the `devops_adoption_app` component to use Internal Events Tracking.

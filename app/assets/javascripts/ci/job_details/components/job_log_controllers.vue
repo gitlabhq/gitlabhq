@@ -146,7 +146,7 @@ export default {
 
         // BE returns zero based index, we need to add one to match the line numbers in the DOM
         const firstSearchResult = `#L${this.searchResults[0].lineNumber + 1}`;
-        const logLine = document.querySelector(`.log-line ${firstSearchResult}`);
+        const logLine = document.querySelector(`.js-log-line ${firstSearchResult}`);
 
         if (logLine) {
           setTimeout(() => scrollToElement(logLine));

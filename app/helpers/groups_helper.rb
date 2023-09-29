@@ -197,6 +197,14 @@ module GroupsHelper
     end
   end
 
+  def new_custom_emoji_path(group)
+    return unless Feature.enabled?(:custom_emoji)
+    return unless group
+    return unless can?(current_user, :create_custom_emoji, group)
+
+    new_group_custom_emoji_path(group)
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

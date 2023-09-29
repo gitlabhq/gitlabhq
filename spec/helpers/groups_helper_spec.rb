@@ -555,4 +555,44 @@ RSpec.describe GroupsHelper do
       it { is_expected.to contain_exactly([_("Only HTTP(S)"), "http"]) }
     end
   end
+
+  describe '#new_custom_emoji_path' do
+    subject { helper.new_custom_emoji_path(group) }
+
+    let_it_be(:group) { create(:group) }
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(custom_emoji: false)
+      end
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'with feature flag enabled' do
+      context 'with nil group' do
+        let(:group) { nil }
+
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'with current_user who has no permissions' do
+        before do
+          allow(helper).to receive(:current_user).and_return(create(:user))
+        end
+
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'with current_user who has permissions' do
+        before do
+          user = create(:user)
+          group.add_owner(user)
+          allow(helper).to receive(:current_user).and_return(user)
+        end
+
+        it { is_expected.to eq(new_group_custom_emoji_path(group)) }
+      end
+    end
+  end
 end

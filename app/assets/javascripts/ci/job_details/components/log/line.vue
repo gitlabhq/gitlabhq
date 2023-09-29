@@ -66,7 +66,11 @@ export default {
     return h(
       'div',
       {
-        class: ['js-line', 'log-line', { 'gl-bg-gray-700': isHighlighted || applyHashHighlight }],
+        class: [
+          'js-log-line',
+          'log-line',
+          { 'gl-bg-gray-700': isHighlighted || applyHashHighlight },
+        ],
       },
       [
         h(LineNumber, {

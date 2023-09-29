@@ -93,7 +93,7 @@ export default {
               this.$emit('saved');
               this.updateCommentTemplate = { name: '', content: '' };
               this.showValidation = false;
-              this.track_event('i_code_review_saved_replies_create');
+              this.trackEvent('i_code_review_saved_replies_create');
             }
           },
         })

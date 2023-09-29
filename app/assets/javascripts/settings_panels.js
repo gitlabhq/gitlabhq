@@ -52,7 +52,7 @@ export function initTrackProductAnalyticsExpanded() {
   const $analyticsSection = $('#js-product-analytics-settings');
   $analyticsSection.on('click.toggleSection', '.js-settings-toggle', () => {
     if (isExpanded($analyticsSection)) {
-      InternalEvents.track_event('user_viewed_cluster_configuration');
+      InternalEvents.trackEvent('user_viewed_cluster_configuration');
     }
   });
 }

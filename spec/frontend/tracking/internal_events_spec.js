@@ -26,18 +26,18 @@ Tracker.enabled = jest.fn();
 const event = 'TestEvent';
 
 describe('InternalEvents', () => {
-  describe('track_event', () => {
-    it('track_event calls API.trackInternalEvent with correct arguments', () => {
-      InternalEvents.track_event(event);
+  describe('trackEvent', () => {
+    it('trackEvent calls API.trackInternalEvent with correct arguments', () => {
+      InternalEvents.trackEvent(event);
 
       expect(API.trackInternalEvent).toHaveBeenCalledTimes(1);
       expect(API.trackInternalEvent).toHaveBeenCalledWith(event);
     });
 
-    it('track_event calls tracking.event functions with correct arguments', () => {
+    it('trackEvent calls tracking.event functions with correct arguments', () => {
       const trackingSpy = mockTracking(GITLAB_INTERNAL_EVENT_CATEGORY, undefined, jest.spyOn);
 
-      InternalEvents.track_event(event, { context: extraContext });
+      InternalEvents.trackEvent(event, { context: extraContext });
 
       expect(trackingSpy).toHaveBeenCalledTimes(1);
       expect(trackingSpy).toHaveBeenCalledWith(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
@@ -66,10 +66,10 @@ describe('InternalEvents', () => {
   `,
       methods: {
         handleButton1Click() {
-          this.track_event(event);
+          this.trackEvent(event);
         },
         handleButton2Click() {
-          this.track_event(event, extraContext);
+          this.trackEvent(event, extraContext);
         },
       },
       mixins: [InternalEvents.mixin()],
@@ -79,8 +79,8 @@ describe('InternalEvents', () => {
       wrapper = shallowMountExtended(Component);
     });
 
-    it('this.track_event function calls InternalEvent`s track function with an event', async () => {
-      const trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
+    it('this.trackEvent function calls InternalEvent`s track function with an event', async () => {
+      const trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
 
       await wrapper.findByTestId('button1').trigger('click');
 
@@ -88,9 +88,9 @@ describe('InternalEvents', () => {
       expect(trackEventSpy).toHaveBeenCalledWith(event, {});
     });
 
-    it("this.track_event function calls InternalEvent's track function with an event and data", async () => {
+    it("this.trackEvent function calls InternalEvent's track function with an event and data", async () => {
       const data = extraContext;
-      const trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
+      const trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
 
       await wrapper.findByTestId('button2').trigger('click');
 
@@ -147,7 +147,7 @@ describe('InternalEvents', () => {
     describe('tracking', () => {
       let trackEventSpy;
       beforeEach(() => {
-        trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
+        trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
       });
 
       it('should track event if action exists', () => {

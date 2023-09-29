@@ -17,7 +17,7 @@ const InternalEvents = {
    * @param {string} event
    * @param {object} data
    */
-  track_event(event, data = {}) {
+  trackEvent(event, data = {}) {
     const { context, ...rest } = data;
 
     const defaultContext = {
@@ -42,8 +42,8 @@ const InternalEvents = {
   mixin() {
     return {
       methods: {
-        track_event(event, data = {}) {
-          InternalEvents.track_event(event, data);
+        trackEvent(event, data = {}) {
+          InternalEvents.trackEvent(event, data);
         },
       },
     };
@@ -62,7 +62,7 @@ const InternalEvents = {
     // eslint-disable-next-line no-param-reassign
     parent.internalEventsTrackingBound = true;
 
-    const handler = { name: 'click', func: (e) => InternalEventHandler(e, this.track_event) };
+    const handler = { name: 'click', func: (e) => InternalEventHandler(e, this.trackEvent) };
     parent.addEventListener(handler.name, handler.func);
     return handler;
   },
@@ -81,7 +81,7 @@ const InternalEvents = {
     loadEvents.forEach((element) => {
       const action = createInternalEventPayload(element);
       if (action) {
-        this.track_event(action);
+        this.trackEvent(action);
       }
     });
 

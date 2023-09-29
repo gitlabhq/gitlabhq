@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Quick start for Internal Event Tracking
 
-In an effort to provide a more efficient, scalable, and unified tracking API, GitLab is deprecating existing RedisHLL and Snowplow tracking. Instead, we're implementing a new `track_event` method.
+In an effort to provide a more efficient, scalable, and unified tracking API, GitLab is deprecating existing RedisHLL and Snowplow tracking. Instead, we're implementing a new `track_event` (Backend) and `trackEvent`(Frontend) method.
 With this approach, we can update both RedisHLL counters and send Snowplow events without worrying about the underlying implementation.
 
 In order to instrument your code with Internal Events Tracking need three things:
@@ -79,13 +79,13 @@ To implement Vue component tracking:
    };
    ```
 
-1. Call the `track_event` method. Tracking options can be passed as the second parameter:
+1. Call the `trackEvent` method. Tracking options can be passed as the second parameter:
 
    ```javascript
-   this.track_event('i_code_review_user_apply_suggestion');
+   this.trackEvent('i_code_review_user_apply_suggestion');
    ```
 
-   Or use the `track_event` method in the template:
+   Or use the `trackEvent` method in the template:
 
    ```html
    <template>
@@ -94,7 +94,7 @@ To implement Vue component tracking:
 
        <div v-if="expanded">
          <p>Hello world!</p>
-         <button @click="track_event('i_code_review_user_apply_suggestion')">Track another event</button>
+         <button @click="trackEvent('i_code_review_user_apply_suggestion')">Track another event</button>
        </div>
      </div>
    </template>
@@ -106,7 +106,7 @@ For tracking events directly from arbitrary frontend JavaScript code, a module f
 
 ```javascript
 import { InternalEvents } from '~/tracking';
-InternalEvents.track_event('i_code_review_user_apply_suggestion');
+InternalEvents.trackEvent('i_code_review_user_apply_suggestion');
 ```
 
 #### Data-track attribute

@@ -16,7 +16,7 @@
       = edited_time_ago_with_tooltip(issuable, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
     .js-issue-widgets
-      = render 'projects/issues/emoji_block', issuable: issuable, api_awards_path: api_awards_path
+      = render 'projects/issues/emoji_block', issuable: issuable, api_awards_path: api_awards_path, new_custom_emoji_path: new_custom_emoji_path(@project.group)
 
   .js-issue-widgets
     = render 'projects/issues/sentry_stack_trace', issuable: issuable

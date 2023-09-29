@@ -64,8 +64,8 @@ export default {
       const savedReply = this.savedReplies.find((r) => r.id === id);
       if (savedReply) {
         this.$emit('select', savedReply.content);
-        this.track_event(TRACKING_SAVED_REPLIES_USE);
-        this.track_event(
+        this.trackEvent(TRACKING_SAVED_REPLIES_USE);
+        this.trackEvent(
           isInMr ? TRACKING_SAVED_REPLIES_USE_IN_MR : TRACKING_SAVED_REPLIES_USE_IN_OTHER,
         );
       }

@@ -62,6 +62,7 @@ export default ({ editorAiActions = [] } = {}) => {
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
       resourceGlobalId: convertToGraphQLId(noteableData.noteableType, noteableData.id),
       editorAiActions: editorAiActions.map((factory) => factory(noteableData)),
+      newCustomEmojiPath: notesDataset.newCustomEmojiPath,
     },
     data() {
       return {

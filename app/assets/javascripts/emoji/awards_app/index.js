@@ -9,7 +9,7 @@ export default (el) => {
   if (!el) return null;
 
   const {
-    dataset: { path },
+    dataset: { path, newCustomEmojiPath },
   } = el;
   const canAwardEmoji = parseBoolean(el.dataset.canAwardEmoji);
 
@@ -17,6 +17,9 @@ export default (el) => {
     el,
     name: 'AwardsListRoot',
     store: createstore(),
+    provide: {
+      newCustomEmojiPath,
+    },
     computed: {
       ...mapState(['currentUserId', 'canAwardEmoji', 'awards']),
     },

@@ -202,6 +202,9 @@ export default {
     isDisabled() {
       return !this.updatedNoteBody.length || this.isSubmitting;
     },
+    isInternalNote() {
+      return this.discussionNote.internal || this.discussion.confidential;
+    },
     discussionNote() {
       const discussionNote = this.discussion.id
         ? this.getDiscussionLastNote(this.discussion)
@@ -355,10 +358,7 @@ export default {
     </div>
     <div class="flash-container timeline-content"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
-      <comment-field-layout
-        :noteable-data="getNoteableData"
-        :is-internal-note="discussionNote.internal"
-      >
+      <comment-field-layout :noteable-data="getNoteableData" :is-internal-note="isInternalNote">
         <markdown-editor
           ref="markdownEditor"
           :enable-content-editor="enableContentEditor"

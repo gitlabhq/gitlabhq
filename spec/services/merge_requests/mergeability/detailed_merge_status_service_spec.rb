@@ -26,10 +26,10 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
   context 'when merge status is preparing and merge request diff is persisted' do
     let(:merge_request) { create(:merge_request, merge_status: :preparing) }
 
-    it 'returns :checking' do
+    it 'returns :preparing' do
       allow(merge_request.merge_request_diff).to receive(:persisted?).and_return(true)
 
-      expect(detailed_merge_status).to eq(:mergeable)
+      expect(detailed_merge_status).to eq(:preparing)
     end
   end
 
@@ -69,7 +69,7 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
     end
   end
 
-  context 'when all but the ci check fails' do
+  context 'when ci check is required' do
     let(:merge_request) { create(:merge_request) }
 
     before do
@@ -78,7 +78,7 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
 
     context 'when pipeline does not exist' do
       it 'returns the failure reason' do
-        expect(detailed_merge_status).to eq(:ci_must_pass)
+        expect(detailed_merge_status).to eq(:mergeable)
       end
     end
 

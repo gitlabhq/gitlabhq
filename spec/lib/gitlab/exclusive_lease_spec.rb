@@ -347,7 +347,6 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
 
         # simulates transition
         stub_feature_flags({ flag => true })
-        Gitlab::SafeRequestStore.clear!
 
         expect(lease.ttl).not_to eq(nil)
         expect(lease.exists?).to be_truthy
@@ -362,12 +361,11 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
 
         # simulates transition
         stub_feature_flags({ flag => true })
-        Gitlab::SafeRequestStore.clear!
 
         expect(lease.renew).to be_truthy
       end
 
-      it 'retains renew behaviour' do
+      it 'retains cancel behaviour' do
         lease = described_class.new(unique_key, timeout: 3600)
         uuid = lease.try_obtain
         lease.cancel
@@ -377,7 +375,6 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
 
         # simulates transition
         stub_feature_flags({ flag => true })
-        Gitlab::SafeRequestStore.clear!
 
         expect(lease.try_obtain).to be_falsey
         lease.cancel
@@ -402,6 +399,191 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
       end
 
       it_behaves_like 'retains behaviours across transitions', :use_cluster_shared_state_for_exclusive_lease
+    end
+  end
+
+  describe 'using current_request actor' do
+    shared_context 'when double lock is enabled for the current request' do
+      before do
+        stub_feature_flags(
+          enable_exclusive_lease_double_lock_rw: Feature.current_request,
+          use_cluster_shared_state_for_exclusive_lease: false
+        )
+      end
+    end
+
+    shared_context 'when cutting over to ClusterSharedState for the current request' do
+      before do
+        stub_feature_flags(
+          enable_exclusive_lease_double_lock_rw: true,
+          use_cluster_shared_state_for_exclusive_lease: Feature.current_request
+        )
+      end
+    end
+
+    describe '#try_obtain' do
+      let(:lease) { described_class.new(unique_key, timeout: 3600) }
+
+      shared_examples 'acquires both locks' do
+        it do
+          Gitlab::Redis::SharedState.with { |r| expect(r).to receive(:set).and_call_original }
+          Gitlab::Redis::ClusterSharedState.with { |r| expect(r).to receive(:set).and_call_original }
+
+          expect(lease.try_obtain).to be_truthy
+        end
+      end
+
+      shared_examples 'only acquires one lock' do
+        it do
+          used_store.with { |r| expect(r).to receive(:set).and_call_original }
+          unused_store.with { |r| expect(r).not_to receive(:set) }
+
+          expect(lease.try_obtain).to be_truthy
+        end
+      end
+
+      context 'when double lock is enabled for the current request' do
+        include_context 'when double lock is enabled for the current request'
+        it_behaves_like 'acquires both locks'
+
+        context 'for a different request' do
+          before do
+            stub_with_new_feature_current_request
+          end
+
+          let(:used_store) { Gitlab::Redis::SharedState }
+          let(:unused_store) { Gitlab::Redis::ClusterSharedState }
+
+          it_behaves_like 'only acquires one lock'
+        end
+      end
+
+      context 'when cutting over to ClusterSharedState for the current request' do
+        include_context 'when cutting over to ClusterSharedState for the current request'
+
+        let(:used_store) { Gitlab::Redis::ClusterSharedState }
+        let(:unused_store) { Gitlab::Redis::SharedState }
+
+        it_behaves_like 'only acquires one lock'
+
+        context 'for a different request' do
+          before do
+            stub_with_new_feature_current_request
+          end
+
+          it_behaves_like 'acquires both locks'
+        end
+      end
+    end
+
+    describe '.with_write_redis' do
+      shared_examples 'writes to both stores in order' do
+        it do
+          first_store.with { |r| expect(r).to receive(:eval).ordered }
+          second_store.with { |r| expect(r).to receive(:eval).ordered }
+
+          described_class.with_write_redis { |r| r.eval(described_class::LUA_CANCEL_SCRIPT) }
+        end
+      end
+
+      shared_examples 'only writes to one store' do
+        it do
+          used_store.with { |r| expect(r).to receive(:eval) }
+          unused_store.with { |r| expect(r).not_to receive(:eval) }
+
+          described_class.with_write_redis { |r| r.eval(described_class::LUA_CANCEL_SCRIPT) }
+        end
+      end
+
+      context 'when double lock is enabled for the current request' do
+        include_context 'when double lock is enabled for the current request'
+        let(:first_store) { Gitlab::Redis::SharedState }
+        let(:second_store) { Gitlab::Redis::ClusterSharedState }
+
+        it_behaves_like 'writes to both stores in order'
+
+        context 'for a different request' do
+          before do
+            stub_with_new_feature_current_request
+          end
+
+          let(:used_store) { Gitlab::Redis::SharedState }
+          let(:unused_store) { Gitlab::Redis::ClusterSharedState }
+
+          it_behaves_like 'only writes to one store'
+        end
+      end
+
+      context 'when cutting over to ClusterSharedState for the current request' do
+        include_context 'when cutting over to ClusterSharedState for the current request'
+        let(:first_store) { Gitlab::Redis::ClusterSharedState }
+        let(:second_store) { Gitlab::Redis::SharedState }
+
+        it_behaves_like 'writes to both stores in order'
+
+        context 'for a different request' do
+          before do
+            stub_with_new_feature_current_request
+          end
+
+          let(:first_store) { Gitlab::Redis::SharedState }
+          let(:second_store) { Gitlab::Redis::ClusterSharedState }
+
+          it_behaves_like 'writes to both stores in order'
+        end
+      end
+    end
+
+    describe '.with_read_redis' do
+      shared_examples 'reads from both stores' do
+        it do
+          Gitlab::Redis::SharedState.with { |r| expect(r).to receive(:get) }
+          Gitlab::Redis::ClusterSharedState.with { |r| expect(r).to receive(:get) }
+
+          described_class.with_read_redis { |r| r.get(described_class.redis_shared_state_key("foobar")) }
+        end
+      end
+
+      shared_examples 'only reads from one store' do
+        it do
+          used_store.with { |r| expect(r).to receive(:get) }
+          unused_store.with { |r| expect(r).not_to receive(:get) }
+
+          described_class.with_read_redis { |r| r.get(described_class.redis_shared_state_key("foobar")) }
+        end
+      end
+
+      context 'when double lock is enabled for the current request' do
+        include_context 'when double lock is enabled for the current request'
+        it_behaves_like 'reads from both stores'
+
+        context 'for a different request' do
+          before do
+            stub_with_new_feature_current_request
+          end
+
+          let(:used_store) { Gitlab::Redis::SharedState }
+          let(:unused_store) { Gitlab::Redis::ClusterSharedState }
+
+          it_behaves_like 'only reads from one store'
+        end
+      end
+
+      context 'when cutting over to ClusterSharedState for the current request' do
+        include_context 'when cutting over to ClusterSharedState for the current request'
+        let(:used_store) { Gitlab::Redis::ClusterSharedState }
+        let(:unused_store) { Gitlab::Redis::SharedState }
+
+        it_behaves_like 'only reads from one store'
+
+        context 'for a different request' do
+          before do
+            stub_with_new_feature_current_request
+          end
+
+          it_behaves_like 'reads from both stores'
+        end
+      end
     end
   end
 end
