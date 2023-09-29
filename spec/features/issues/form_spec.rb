@@ -575,7 +575,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
     end
 
     context 'labels', :js do
-      it 'creates project label from dropdown' do
+      it 'creates project label from dropdown', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416585' do
         find('[data-testid="labels-select-dropdown-contents"] button').click
 
         wait_for_all_requests
