@@ -49573,6 +49573,9 @@ msgstr ""
 msgid "Todos|requested a review"
 msgstr ""
 
+msgid "Todos|requested an OKR update for %{what}"
+msgstr ""
+
 msgid "Todos|reviewed your merge request"
 msgstr ""
 

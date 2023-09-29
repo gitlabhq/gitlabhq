@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlSearchBoxByClick } from '@gitlab/ui';
-import { mergeUrlParams, visitUrl } from '~/lib/utils/url_utility';
+import { mergeUrlParams, visitUrl, getParameterValues } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
 export default {
@@ -21,7 +21,7 @@ export default {
   // own attributes, also in created()
   data() {
     return {
-      searchTerm: '',
+      searchTerm: getParameterValues('search')[0] || '',
     };
   },
   computed: {

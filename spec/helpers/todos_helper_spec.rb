@@ -401,6 +401,15 @@ RSpec.describe TodosHelper do
         end
       end
     end
+
+    context 'okr checkin reminder' do
+      it 'returns okr checkin reminder message' do
+        alert_todo.action = Todo::OKR_CHECKIN_REQUESTED
+        expect(helper.todo_action_name(alert_todo)).to eq(
+          format(s_("Todos|requested an OKR update for %{what}"), what: alert_todo.target.title)
+        )
+      end
+    end
   end
 
   describe '#todo_due_date' do

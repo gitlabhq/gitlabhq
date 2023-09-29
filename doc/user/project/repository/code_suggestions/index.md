@@ -60,23 +60,27 @@ Editor support for languages is documented in the following table.
 
 | Language         | VS Code                | JetBrains IDEs         | Visual Studio          | Neovim |
 |------------------|------------------------|------------------------|------------------------|--------|
-| C++              | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes |
+| C++              | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | C#               | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| Go               | **{check-circle}** Yes | **{check-circle}** Yes (IDEA Ultimate / GoLand) | **{check-circle}** Yes | **{check-circle}** Yes |
-| Google SQL       | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes |
+| Go               | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| Google SQL       | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Java             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | JavaScript       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Kotlin           | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| PHP              | **{check-circle}** Yes | **{check-circle}** Yes (IDEA Ultimate) | **{check-circle}** Yes | **{check-circle}** Yes |
+| PHP              | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Python           | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| Ruby             | **{check-circle}** Yes | **{check-circle}** Yes (IDEA Ultimate / RubyMine) | **{check-circle}** Yes | **{check-circle}** Yes |
+| Ruby             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Rust             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Scala            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Swift            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | TypeScript       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Google Cloud     | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No |
 | Kubernetes Resource Model (KRM) | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No |
-| Terraform        | **{check-circle}** Yes (Requires third-party extension providing Terraform support) | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes (Requires third-party extension providing the `terraform` file type) |
+| Terraform        | **{check-circle}** Yes (Requires third-party extension providing Terraform support) | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes (Requires third-party extension providing the `terraform` file type) |
+
+NOTE:
+Some languages are not supported in all JetBrains IDEs, or may require additional
+plugin support. Refer to the JetBrains documentation for specifics on your IDE.
 
 ## Supported editor extensions
 

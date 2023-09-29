@@ -25,6 +25,7 @@ class Todo < ApplicationRecord
   REVIEW_REQUESTED    = 9
   MEMBER_ACCESS_REQUESTED = 10
   REVIEW_SUBMITTED = 11 # This is an EE-only feature
+  OKR_CHECKIN_REQUESTED = 12 # This is an EE-only feature
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -37,7 +38,8 @@ class Todo < ApplicationRecord
     DIRECTLY_ADDRESSED => :directly_addressed,
     MERGE_TRAIN_REMOVED => :merge_train_removed,
     MEMBER_ACCESS_REQUESTED => :member_access_requested,
-    REVIEW_SUBMITTED => :review_submitted
+    REVIEW_SUBMITTED => :review_submitted,
+    OKR_CHECKIN_REQUESTED => :okr_checkin_requested
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze

@@ -31,6 +31,9 @@ module TodosHelper
       s_("Todos|has requested access to %{what} %{which}"), what: _(todo.member_access_type), which: _(todo.target.name)
     )
     when Todo::REVIEW_SUBMITTED then s_('Todos|reviewed your merge request')
+    when Todo::OKR_CHECKIN_REQUESTED then format(
+      s_("Todos|requested an OKR update for %{what}"), what: todo.target.title
+    )
     end
   end
 

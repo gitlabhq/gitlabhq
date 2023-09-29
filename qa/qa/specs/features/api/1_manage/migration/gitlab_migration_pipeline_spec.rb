@@ -10,7 +10,9 @@ module QA
 
         let(:source_pipelines) do
           source_project.pipelines.map do |pipeline|
-            pipeline.except(:id, :web_url, :project_id)
+            # source project creates pipelines in pending status to not rely on pipeline actually finishing
+            # by default, in the imported project status is converted to canceled
+            pipeline.except(:id, :web_url, :project_id).merge({ status: "canceled" })
           end
         end
 

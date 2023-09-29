@@ -67,7 +67,7 @@ state of the approvals for a certain merge request like:
 - Knowing how many approvals were given or still required.
 
 It gets the approval rules data from the project (`ApprovalProjectRule`) or the
-merge request (`ApprovalMergeRequestRule`) and wrap it as `ApprovalWrappedRule`.
+merge request (`ApprovalMergeRequestRule`) and wraps it as `ApprovalWrappedRule`.
 
 ### `ApprovalProjectRule`
 
@@ -83,7 +83,7 @@ erDiagram
 
 A record is created/updated/deleted when an approval rule is added/edited/removed
 via project settings or the [project level approvals API](../../api/merge_request_approvals.md#project-level-mr-approvals).
-The `ApprovalState` model get these records when approval rules are not
+The `ApprovalState` model gets these records when approval rules are not
 overwritten.
 
 The `protected_branches` attribute is set and used when a rule is scoped to
@@ -164,7 +164,7 @@ This is used for the following:
 
 This controller is defined in `app/controllers/projects/merge_requests/creations_controller.rb`.
 
-The `create` action of this controller is used when create merge request form is
+The `create` action of this controller is used when the create merge request form is
 submitted. It accepts the `approval_rules_attributes` parameter for creating/updating/deleting
 `ApprovalMergeRequestRule` records. It passes the parameter along when it executes
 `MergeRequests::CreateService`.
@@ -173,7 +173,7 @@ submitted. It accepts the `approval_rules_attributes` parameter for creating/upd
 
 This controller is defined in `app/controllers/projects/merge_requests_controller.rb`.
 
-The `update` action of this controller is used when edit merge request form is
+The `update` action of this controller is used when the edit merge request form is
 submitted. It's like `Projects::MergeRequests::CreationsController` but it executes
 `MergeRequests::UpdateService` instead.
 
@@ -182,7 +182,7 @@ submitted. It's like `Projects::MergeRequests::CreationsController` but it execu
 This API is defined in `ee/lib/api/merge_request_approvals.rb`.
 
 The [Approvals API endpoint](../../api/merge_request_approvals.md#get-configuration-1)
-is requested when merge request page loads.
+is requested when a merge request page loads.
 
 The `/projects/:id/merge_requests/:merge_request_iid/approval_settings` is a
 private API endpoint used for the following:
@@ -190,8 +190,8 @@ private API endpoint used for the following:
 - Listing the approval rules on edit merge request form.
 - Listing the approval rules on the merge request page.
 
-When approving/unapproving MR via UI and API, the [Approve Merge Request](../../api/merge_request_approvals.md#approve-merge-request)
-API endpoint and the [Unapprove Merge Request](../../api/merge_request_approvals.md#unapprove-merge-request)
+When approving/unapproving an MR via UI and API, the [Approve Merge Request](../../api/merge_request_approvals.md#approve-merge-request)
+API endpoint or the [Unapprove Merge Request](../../api/merge_request_approvals.md#unapprove-merge-request)
 API endpoint are requested. They execute `MergeRequests::ApprovalService` and
 `MergeRequests::RemoveApprovalService` accordingly.
 
@@ -214,9 +214,9 @@ This service is defined in `ee/app/services/approval_rules/params_filtering_serv
 It is called only when `MergeRequests::CreateService` and
 `MergeRequests::UpdateService` are executed.
 
-It is responsible for parsing `approval_rules_attributes` parameter to:
+It is responsible for parsing the `approval_rules_attributes` parameter to:
 
-- Remove it when user can't update approval rules.
+- Remove it when a user can't update approval rules.
 - Filter the user IDs whether they are members of the project or not.
 - Filter the group IDs whether they are visible to user.
 - Identify the `any_approver` rule.
@@ -249,7 +249,7 @@ graph LR
   ApprovalProjectRule --> db[(Database)]
 ```
 
-When updating, same flow is followed but it starts at `Projects::MergeRequestsController`
+When updating, the same flow is followed but it starts at `Projects::MergeRequestsController`
 and executes `MergeRequests::UpdateService` instead.
 
 ### Viewing the merge request approval rules on an MR page
@@ -277,10 +277,10 @@ graph LR
   Approval --> db[(Database)]
 ```
 
-When unapproving, same flow is followed but the `MergeRequests::RemoveApprovalService`
+When unapproving, the same flow is followed but the `MergeRequests::RemoveApprovalService`
 is executed instead.
 
 ## TODO
 
 1. Add information related to other rule types, such as `code_owner` and `report_approver`.
-1. Add information about side effects of approving/unapproving merge request.
+1. Add information about side effects of approving/unapproving a merge request.

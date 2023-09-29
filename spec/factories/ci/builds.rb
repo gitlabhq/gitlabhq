@@ -30,6 +30,15 @@ FactoryBot.define do
 
     ref { pipeline.ref }
 
+    runner_manager { nil }
+
+    after(:build) do |build, evaluator|
+      if evaluator.runner_manager
+        build.runner = evaluator.runner_manager.runner
+        create(:ci_runner_machine_build, build: build, runner_manager: evaluator.runner_manager)
+      end
+    end
+
     trait :with_token do
       transient do
         generate_token { true }

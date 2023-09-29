@@ -74,9 +74,6 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         fill_in 'delete_branch_input', with: 'fix'
         click_button 'Yes, delete protected branch'
 
-        find('input[data-testid="branch-search"]').set('fix')
-        find('input[data-testid="branch-search"]').native.send_keys(:enter)
-
         expect(page).to have_content('No branches to show')
       end
     end

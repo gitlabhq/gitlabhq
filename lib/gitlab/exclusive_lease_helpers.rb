@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  # This module provides helper methods which are intregrated with GitLab::ExclusiveLease
+  # This module provides helper methods which are integrated with GitLab::ExclusiveLease
   module ExclusiveLeaseHelpers
     FailedToObtainLockError = Class.new(StandardError)
 

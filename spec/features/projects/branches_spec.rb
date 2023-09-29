@@ -206,7 +206,7 @@ RSpec.describe 'Branches', feature_category: :groups_and_projects do
         page.refresh
 
         search_for_branch('fix')
-
+        clear_search_input
         expect(page).not_to have_content('fix')
         expect(all('.all-branches', wait: false).last).to have_selector('li', count: 0)
       end
@@ -374,6 +374,10 @@ RSpec.describe 'Branches', feature_category: :groups_and_projects do
     branch_search = find('input[data-testid="branch-search"]')
     branch_search.set(name)
     branch_search.native.send_keys(:enter)
+  end
+
+  def clear_search_input
+    find('input[data-testid="branch-search"]').set('')
   end
 
   def delete_branch_and_confirm
