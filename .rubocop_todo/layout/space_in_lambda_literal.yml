@@ -49,7 +49,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/group.rb'
     - 'app/models/group_group_link.rb'
     - 'app/models/incident_management/timeline_event_tag.rb'
-    - 'app/models/integration.rb'
     - 'app/models/integrations/base_chat_notification.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/internal_id.rb'

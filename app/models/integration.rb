@@ -47,6 +47,9 @@ class Integration < ApplicationRecord
     Integrations::BaseThirdPartyWiki
   ].freeze
 
+  BASE_ATTRIBUTES = %w[id instance project_id group_id created_at updated_at
+    encrypted_properties encrypted_properties_iv properties].freeze
+
   SECTION_TYPE_CONFIGURATION = 'configuration'
   SECTION_TYPE_CONNECTION = 'connection'
   SECTION_TYPE_TRIGGER = 'trigger'
@@ -116,11 +119,13 @@ class Integration < ApplicationRecord
   scope :external_wikis, -> { by_name(:external_wiki).active }
   scope :active, -> { where(active: true) }
   scope :by_type, ->(type) { where(type: type) } # INTERNAL USE ONLY: use by_name instead
-  scope :by_active_flag, -> (flag) { where(active: flag) }
-  scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
+  scope :by_active_flag, ->(flag) { where(active: flag) }
+  scope :inherit_from_id, ->(id) { where(inherit_from_id: id) }
   scope :with_default_settings, -> { where.not(inherit_from_id: nil) }
   scope :with_custom_settings, -> { where(inherit_from_id: nil) }
-  scope :for_group, -> (group) { where(group_id: group, type: available_integration_types(include_project_specific: false)) }
+  scope :for_group, ->(group) {
+                      where(group_id: group, type: available_integration_types(include_project_specific: false))
+                    }
   scope :for_instance, -> { where(instance: true, type: available_integration_types(include_project_specific: false)) }
 
   scope :push_hooks, -> { where(push_events: true, active: true) }
@@ -243,7 +248,7 @@ class Integration < ApplicationRecord
   end
 
   def self.event_names
-    self.supported_events.map { |event| IntegrationsHelper.integration_event_field_name(event) }
+    supported_events.map { |event| IntegrationsHelper.integration_event_field_name(event) }
   end
 
   def self.supported_events
@@ -404,7 +409,7 @@ class Integration < ApplicationRecord
     from_union([active.where(instance: true), active.where(group_id: group_ids, inherit_from_id: nil)])
       .order(order)
       .group_by(&:type)
-      .count { |type, parents| build_from_integration(parents.first, association => owner.id).save }
+      .count { |_type, parents| build_from_integration(parents.first, association => owner.id).save }
   end
 
   def self.inherited_descendants_from_self_or_ancestors_from(integration)
@@ -413,9 +418,10 @@ class Integration < ApplicationRecord
         .or(where(type: integration.type, instance: true)).select(:id)
 
     from_union([
-                 where(type: integration.type, inherit_from_id: inherit_from_ids, group: integration.group.descendants),
-                 where(type: integration.type, inherit_from_id: inherit_from_ids, project: Project.in_namespace(integration.group.self_and_descendants))
-               ])
+      where(type: integration.type, inherit_from_id: inherit_from_ids, group: integration.group.descendants),
+      where(type: integration.type, inherit_from_id: inherit_from_ids,
+        project: Project.in_namespace(integration.group.self_and_descendants))
+    ])
   end
 
   def activated?
@@ -488,10 +494,9 @@ class Integration < ApplicationRecord
   def to_database_hash
     column = self.class.attribute_aliases.fetch('type', 'type')
 
-    as_json(
-      except: %w[id instance project_id group_id created_at updated_at]
-    ).merge(column => type)
-     .merge(reencrypt_properties)
+    attributes_for_database.except(*BASE_ATTRIBUTES)
+    .merge(column => type)
+    .merge(reencrypt_properties)
   end
 
   def reencrypt_properties

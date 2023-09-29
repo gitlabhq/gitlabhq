@@ -34,7 +34,6 @@ Lint/UnusedBlockArgument:
     - 'app/models/concerns/avatarable.rb'
     - 'app/models/concerns/mentionable.rb'
     - 'app/models/customer_relations/organization.rb'
-    - 'app/models/integration.rb'
     - 'app/models/merge_request.rb'
     - 'app/models/project.rb'
     - 'app/models/projects/build_artifacts_size_refresh.rb'

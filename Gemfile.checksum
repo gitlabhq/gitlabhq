@@ -68,7 +68,7 @@
 {"name":"byebug","version":"11.1.3","platform":"ruby","checksum":"2485944d2bb21283c593d562f9ae1019bf80002143cc3a255aaffd4e9cf4a35b"},
 {"name":"capybara","version":"3.39.2","platform":"ruby","checksum":"d6f0ca5f30897e64789428d4b047a0df105815a302069913578ac35d5ca99884"},
 {"name":"capybara-screenshot","version":"1.0.26","platform":"ruby","checksum":"816b9370a07752097c82a05f568aaf5d3b7f45c3db5d3aab2014071e1b3c0c77"},
-{"name":"carrierwave","version":"1.3.3","platform":"ruby","checksum":"0f0244de2ece54c80745b755993bd26cf47d4650823e5f89c115dbc9d73a13f1"},
+{"name":"carrierwave","version":"1.3.4","platform":"ruby","checksum":"81772dabd1830edbd7f4526d2ae2c79f974f1d48900c3f03f7ecb7c657463a21"},
 {"name":"cbor","version":"0.5.9.6","platform":"ruby","checksum":"434a147658dd1df24ec9e7b3297c1fd4f8a691c97d0e688b3049df8e728b2114"},
 {"name":"character_set","version":"1.4.1","platform":"java","checksum":"38b632136b40e02fecba2898497b07ac640cc121f17ac536eaf19873d50053d0"},
 {"name":"character_set","version":"1.4.1","platform":"ruby","checksum":"f71b1ac35b21c4c6f9f26b8a67c7eec8e10bdf0da17488ac7f8fae756d9f8062"},

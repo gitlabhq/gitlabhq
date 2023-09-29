@@ -7,7 +7,6 @@ Layout/FirstArrayElementIndentation:
     - 'app/helpers/search_helper.rb'
     - 'app/models/container_repository.rb'
     - 'app/models/group.rb'
-    - 'app/models/integration.rb'
     - 'app/models/user.rb'
     - 'app/services/labels/transfer_service.rb'
     - 'ee/app/finders/autocomplete/project_invited_groups_finder.rb'

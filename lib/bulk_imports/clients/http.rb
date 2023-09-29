@@ -138,7 +138,6 @@ module BulkImports
 
       def default_options
         {
-          headers: { 'Content-Type' => 'application/json' },
           query: request_query,
           follow_redirects: true,
           resend_on_redirect: false,

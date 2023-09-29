@@ -25,7 +25,6 @@ Layout/ArrayAlignment:
     - 'app/models/deploy_token.rb'
     - 'app/models/dev_ops_report/metric.rb'
     - 'app/models/group.rb'
-    - 'app/models/integration.rb'
     - 'app/models/integrations/hangouts_chat.rb'
     - 'app/models/integrations/microsoft_teams.rb'
     - 'app/models/integrations/pumble.rb'

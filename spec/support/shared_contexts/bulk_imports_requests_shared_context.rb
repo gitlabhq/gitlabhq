@@ -23,7 +23,6 @@ RSpec.shared_context 'bulk imports requests context' do |url|
         headers: { 'Content-Type' => 'application/json' })
 
     stub_request(:get, "https://gitlab.example.com/api/v4/groups?min_access_level=50&page=1&per_page=20&private_token=demo-pat&search=test&top_level_only=true")
-      .with(headers: request_headers)
       .to_return(
         status: 200,
         body: [{

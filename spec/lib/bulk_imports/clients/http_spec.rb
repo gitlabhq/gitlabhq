@@ -72,9 +72,6 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
               per_page: described_class::DEFAULT_PER_PAGE,
               private_token: token
             },
-            headers: {
-              'Content-Type' => 'application/json'
-            },
             follow_redirects: true,
             resend_on_redirect: false,
             limit: 2
@@ -119,7 +116,6 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
       def stub_http_get(path, query, response)
         uri = "http://gitlab.example/api/v4/#{path}"
         params = {
-          headers: { "Content-Type" => "application/json" },
           query: { private_token: token },
           follow_redirects: true,
           resend_on_redirect: false,
@@ -140,9 +136,6 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
               page: described_class::DEFAULT_PAGE,
               per_page: described_class::DEFAULT_PER_PAGE,
               private_token: token
-            },
-            headers: {
-              'Content-Type' => 'application/json'
             },
             follow_redirects: true,
             resend_on_redirect: false,
@@ -171,9 +164,6 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
           'http://gitlab.example/api/v4/resource',
           hash_including(
             body: {},
-            headers: {
-              'Content-Type' => 'application/json'
-            },
             query: {
               page: described_class::DEFAULT_PAGE,
               per_page: described_class::DEFAULT_PER_PAGE,
@@ -196,9 +186,6 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
         [
           'http://gitlab.example/api/v4/resource',
           hash_including(
-            headers: {
-              'Content-Type' => 'application/json'
-            },
             query: {
               page: described_class::DEFAULT_PAGE,
               per_page: described_class::DEFAULT_PER_PAGE,
@@ -219,9 +206,6 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
         'http://gitlab.example/api/v4/resource',
         hash_including(
           stream_body: true,
-          headers: {
-            'Content-Type' => 'application/json'
-          },
           query: {
             page: described_class::DEFAULT_PAGE,
             per_page: described_class::DEFAULT_PER_PAGE,

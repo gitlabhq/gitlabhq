@@ -26,7 +26,10 @@ Scan execution policies are enforced for all applicable projects, even those wit
 CI/CD configuration file or where AutoDevOps is disabled. Security policies create the file
 implicitly so that the policies can be enforced. This ensures policies enabling execution of
 secret detection, static analysis, or other scanners that do not require a build in the
-project, are still able to execute and be enforced.
+project, are still able to execute and be enforced. 
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
 
 In the event of a job name collision, GitLab appends a hyphen and a number to the job name. GitLab
 increments the number until the name no longer conflicts with existing job names. If you create a
