@@ -8,7 +8,7 @@ RSpec.describe WorkItems::Widgets::LabelsService::UpdateService, feature_categor
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
   let_it_be(:label3) { create(:label, project: project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user).tap { |user| project.add_reporter(user) } }
 
   let(:work_item) { create(:work_item, project: project, labels: [label1, label2]) }
   let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Labels) } }
@@ -25,6 +25,14 @@ RSpec.describe WorkItems::Widgets::LabelsService::UpdateService, feature_categor
             remove_label_ids: match_array([label2.id])
           }
         )
+      end
+
+      context "and user doesn't have permissions to update labels" do
+        let_it_be(:current_user) { create(:user) }
+
+        it 'removes label params' do
+          expect(service.prepare_update_params(params: params)).to be_nil
+        end
       end
     end
 

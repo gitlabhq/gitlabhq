@@ -2345,6 +2345,9 @@ In this example, a new pipeline causes a running pipeline to be:
   like a build job. Deployment jobs usually shouldn't be cancelled, to prevent partial deployments.
 - To completely cancel a running pipeline, all jobs must have `interruptible: true`,
   or `interruptible: false` jobs must not have started.
+- Running jobs are only cancelled if the newer pipeline has new changes.
+  For example, a running job is not be cancelled if you run a new pipeline for the same
+  commit by selecting **Run pipeline** in the UI.
 
 ### `needs`
 

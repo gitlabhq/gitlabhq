@@ -8,6 +8,7 @@ module WorkItems
           return widget.work_item.assign_attributes({ start_date: nil, due_date: nil }) if new_type_excludes_widget?
 
           return if params.blank?
+          return unless has_permission?(:set_work_item_metadata)
 
           widget.work_item.assign_attributes(params.slice(:start_date, :due_date))
         end

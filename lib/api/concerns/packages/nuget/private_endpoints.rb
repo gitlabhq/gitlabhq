@@ -20,41 +20,6 @@ module API
           NON_NEGATIVE_INTEGER_REGEX = %r{\A(0|[1-9]\d*)\z}
 
           included do
-            helpers do
-              def find_packages(package_name)
-                packages = package_finder(package_name).execute
-
-                not_found!('Packages') unless packages.exists?
-
-                packages
-              end
-
-              def find_package(package_name, package_version)
-                package = package_finder(package_name, package_version).execute
-                                                                       .first
-
-                not_found!('Package') unless package
-
-                package
-              end
-
-              def package_finder(package_name, package_version = nil)
-                ::Packages::Nuget::PackageFinder.new(
-                  current_user,
-                  project_or_group,
-                  package_name: package_name,
-                  package_version: package_version,
-                  client_version: headers['X-Nuget-Client-Version']
-                )
-              end
-
-              def search_packages(_search_term, search_options)
-                ::Packages::Nuget::SearchService
-                  .new(current_user, project_or_group, params[:q], search_options)
-                  .execute
-              end
-            end
-
             # https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
             params do
               requires :package_name, type: String, desc: 'The NuGet package name',

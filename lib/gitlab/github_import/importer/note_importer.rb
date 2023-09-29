@@ -25,6 +25,7 @@ module Gitlab
             noteable_type: note.noteable_type,
             noteable_id: noteable_id,
             project_id: project.id,
+            namespace_id: project.project_namespace_id,
             author_id: author_id,
             note: note_body(author_found),
             discussion_id: note.discussion_id,
@@ -36,8 +37,8 @@ module Gitlab
           note = Note.new(attributes.merge(importing: true))
           note.validate!
 
-          # We're using bulk_insert here so we can bypass any validations and
-          # callbacks. Running these would result in a lot of unnecessary SQL
+          # We're using bulk_insert here so we can bypass any callbacks.
+          # Running these would result in a lot of unnecessary SQL
           # queries being executed when importing large projects.
           # Note: if you're going to replace `legacy_bulk_insert` with something that trigger callback
           # to generate HTML version - you also need to regenerate it in

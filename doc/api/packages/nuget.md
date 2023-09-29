@@ -115,7 +115,7 @@ Upload a NuGet package file:
 
 - For NuGet v2 feed:
 
-    ```shell
+  ```shell
   curl --request PUT \
       --form 'package=@path/to/mynugetpkg.1.3.0.17.nupkg' \
       --user <username>:<personal_access_token> \
@@ -424,6 +424,37 @@ Example response:
   ]
 }
 ```
+
+## Delete service
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+
+Delete a NuGet package:
+
+```plaintext
+DELETE projects/:id/packages/nuget/:package_name/:package_version
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `id`              | string | yes      | The ID or full path of the project. |
+| `package_name`    | string | yes      | The name of the package. |
+| `package_version` | string | yes      | The version of the package. |
+
+```shell
+curl --request DELETE \
+     --user <username>:<personal_access_token> \
+     "https://gitlab.example.com/api/v4/projects/1/packages/nuget/MyNuGetPkg/1.3.0.17"
+```
+
+Possible request responses:
+
+| Status | Description |
+| ------ | ----------- |
+| `204`  | Package deleted |
+| `401`  | Unauthorized |
+| `403`  | Forbidden |
+| `404`  | Not found |
 
 ## V2 Feed Metadata Endpoints
 

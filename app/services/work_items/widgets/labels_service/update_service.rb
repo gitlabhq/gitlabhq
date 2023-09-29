@@ -11,6 +11,7 @@ module WorkItems
           end
 
           return if params.blank?
+          return unless has_permission?(:set_work_item_metadata)
 
           service_params.merge!(params.slice(:add_label_ids, :remove_label_ids))
         end

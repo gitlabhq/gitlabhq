@@ -143,6 +143,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           expect(note.noteable_type).to eq('MergeRequest')
           expect(note.noteable_id).to eq(merge_request.id)
           expect(note.project_id).to eq(project.id)
+          expect(note.namespace_id).to eq(project.project_namespace_id)
           expect(note.author_id).to eq(user.id)
           expect(note.system).to eq(false)
           expect(note.discussion_id).to eq(discussion_id)

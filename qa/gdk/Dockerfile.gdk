@@ -97,8 +97,9 @@ RUN set -eux; \
     (cd gitlab && git init . && git add --all && git commit --quiet -m "Init repository") &> /dev/null; \
     gdk config set gitaly.skip_setup true \
     && gdk config set workhorse.skip_setup true \
-    && gdk config set gitlab_shell.skip_setup true; \
-    make redis/redis.conf all \
+    && gdk config set gitlab_shell.skip_setup true \
+    && cp .tool-versions ./gitlab/ \
+    && make redis/redis.conf all \
     && gdk kill
 
 ENTRYPOINT [ "/home/gdk/entrypoint" ]

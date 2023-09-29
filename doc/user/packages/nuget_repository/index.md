@@ -541,6 +541,36 @@ For example:
 choco upgrade MyPackage -Source gitlab -Version 1.0.3
 ```
 
+## Delete a package
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+
+WARNING:
+Deleting a package is a permanent action that cannot be undone.
+
+Prerequisites:
+
+- You must have the [Maintainer](../../../user/permissions.md#project-members-permissions) role or higher in the project.
+- You must have both the package name and version.
+
+To delete a package with the NuGet CLI:
+
+```shell
+nuget delete <package_id> <package_version> -Source <source_name> -ApiKey <gitlab_personal_access_token, deploy_token or job token>
+```
+
+In this command:
+
+- `<package_id>` is the package ID.
+- `<package_version>` is the package version.
+- `<source_name>` is the source name.
+
+For example:
+
+```shell
+nuget delete MyPackage 1.0.0 -Source gitlab -ApiKey <gitlab_personal_access_token, deploy_token or job token>
+```
+
 ## Symbol packages
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.
@@ -561,6 +591,8 @@ for further updates.
 
 ## Supported CLI commands
 
+> `nuget delete` and `dotnet nuget delete` commands [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+
 The GitLab NuGet repository supports the following commands for the NuGet CLI (`nuget`) and the .NET
 CLI (`dotnet`):
 
@@ -568,6 +600,8 @@ CLI (`dotnet`):
 - `dotnet nuget push`: Upload a package to the registry.
 - `nuget install`: Install a package from the registry.
 - `dotnet add`: Install a package from the registry.
+- `nuget delete`: Delete a package from the registry.
+- `dotnet nuget delete`: Delete a package from the registry.
 
 ## Example project
 

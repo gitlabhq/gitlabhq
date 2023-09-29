@@ -1025,7 +1025,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when updating notifications subscription' do
-      let_it_be(:current_user) { reporter }
+      let_it_be(:current_user) { guest }
       let(:input) { { 'notificationsWidget' => { 'subscribed' => desired_state } } }
 
       let(:fields) do
@@ -1059,7 +1059,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             update_work_item
             subscription.reload
           end.to change(subscription, :subscribed).to(desired_state)
-            .and(change { work_item.reload.subscribed?(reporter, project) }.to(desired_state))
+            .and(change { work_item.reload.subscribed?(guest, project) }.to(desired_state))
 
           expect(response).to have_gitlab_http_status(:success)
           expect(mutation_response['workItem']['widgets']).to include(
@@ -1159,7 +1159,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when updating currentUserTodos' do
-      let_it_be(:current_user) { reporter }
+      let_it_be(:current_user) { guest }
 
       let(:fields) do
         <<~FIELDS
@@ -1185,7 +1185,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       context 'when adding a new todo' do
         let(:input) { { 'currentUserTodosWidget' => { 'action' => 'ADD' } } }
 
-        context 'when user has access to the work item' do
+        context 'when user can create todos' do
           it 'adds a new todo for the user on the work item' do
             expect { update_work_item }.to change { current_user.todos.count }.by(1)
 
@@ -1202,6 +1202,17 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
                 }
               }
             )
+          end
+
+          context 'when a base attribute is present' do
+            before do
+              input.merge!('title' => 'new title')
+            end
+
+            it_behaves_like 'a mutation that returns top-level errors', errors: [
+              'The resource that you are attempting to access does not exist or you don\'t have permission to ' \
+              'perform this action'
+            ]
           end
         end
 

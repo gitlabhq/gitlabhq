@@ -77,7 +77,7 @@ RSpec.describe Types::Ci::JobBaseField, feature_category: :runner_fleet do
       end
 
       context 'with field resolver' do
-        let(:resolver) { Class.new }
+        let(:resolver) { Class.new(Resolvers::BaseResolver) }
         let(:args) { { resolver_class: resolver } }
 
         it 'only tests the resolver authorization if it authorizes_object?' do
@@ -86,7 +86,7 @@ RSpec.describe Types::Ci::JobBaseField, feature_category: :runner_fleet do
 
         context 'when resolver authorizes object' do
           let(:resolver) do
-            Class.new do
+            Class.new(Resolvers::BaseResolver) do
               include Gitlab::Graphql::Authorize::AuthorizeResource
 
               authorizes_object!

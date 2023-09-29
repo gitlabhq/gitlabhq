@@ -31,7 +31,7 @@ RSpec.describe Types::BaseField, feature_category: :api do
     end
 
     it 'only tests the resolver authorization if it authorizes_object?' do
-      resolver = Class.new
+      resolver = Class.new(Resolvers::BaseResolver)
 
       field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
                                   resolver_class: resolver)
@@ -40,7 +40,7 @@ RSpec.describe Types::BaseField, feature_category: :api do
     end
 
     it 'tests the resolver authorization, if provided' do
-      resolver = Class.new do
+      resolver = Class.new(Resolvers::BaseResolver) do
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         authorizes_object!
@@ -55,7 +55,7 @@ RSpec.describe Types::BaseField, feature_category: :api do
     end
 
     it 'tests field authorization before resolver authorization, when field auth fails' do
-      resolver = Class.new do
+      resolver = Class.new(Resolvers::BaseResolver) do
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         authorizes_object!
@@ -72,7 +72,7 @@ RSpec.describe Types::BaseField, feature_category: :api do
     end
 
     it 'tests field authorization before resolver authorization, when field auth succeeds' do
-      resolver = Class.new do
+      resolver = Class.new(Resolvers::BaseResolver) do
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         authorizes_object!
@@ -91,7 +91,7 @@ RSpec.describe Types::BaseField, feature_category: :api do
 
   context 'when considering complexity' do
     let(:resolver) do
-      Class.new(described_class) do
+      Class.new(Resolvers::BaseResolver) do
         def self.resolver_complexity(args, child_complexity:)
           2 if args[:foo]
         end

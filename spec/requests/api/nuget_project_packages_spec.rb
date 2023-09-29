@@ -6,7 +6,6 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
 
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
   let_it_be(:package_name) { 'Dummy.Package' }
@@ -15,11 +14,9 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
   let(:target_type) { 'projects' }
   let(:snowplow_gitlab_standard_context) { snowplow_context }
 
-  def snowplow_context(user_role: :developer)
-    if user_role == :anonymous
-      { project: target, namespace: target.namespace, property: 'i_package_nuget_user' }
-    else
-      { project: target, namespace: target.namespace, property: 'i_package_nuget_user', user: user }
+  def snowplow_context(user_role: :developer, event_user: user)
+    { project: target, namespace: target.namespace, property: 'i_package_nuget_user' }.tap do |context|
+      context[:user] = event_user unless user_role == :anonymous
     end
   end
 
@@ -316,6 +313,97 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
   describe 'PUT /api/v4/projects/:id/packages/nuget/symbolpackage' do
     it_behaves_like 'nuget upload endpoint', symbol_package: true do
       let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage" }
+    end
+  end
+
+  describe 'DELETE /api/v4/projects/:id/packages/nuget/*package_name/*package_version' do
+    let_it_be(:package) { create(:nuget_package, project: project, name: package_name) }
+
+    let(:url) { "/projects/#{target.id}/packages/nuget/#{package_name}/#{package.version}" }
+
+    subject { delete api(url), headers: headers }
+
+    it { is_expected.to have_request_urgency(:low) }
+
+    context 'with valid target' do
+      where(:auth, :visibility, :user_role, :shared_examples_name, :expected_status) do
+        nil    | :public   | :anonymous    | 'rejects nuget packages access' | :unauthorized
+        nil    | :private  | :anonymous    | 'rejects nuget packages access' | :unauthorized
+        nil    | :internal | :anonymous    | 'rejects nuget packages access' | :unauthorized
+
+        :personal_access_token | :public   | :guest      | 'rejects nuget packages access' | :forbidden
+        :personal_access_token | :public   | :developer  | 'rejects nuget packages access' | :forbidden
+        :personal_access_token | :public   | :maintainer | 'process nuget delete request'  | :no_content
+        :personal_access_token | :private  | :guest      | 'rejects nuget packages access' | :forbidden
+        :personal_access_token | :private  | :developer  | 'rejects nuget packages access' | :forbidden
+        :personal_access_token | :private  | :maintainer | 'process nuget delete request'  | :no_content
+        :personal_access_token | :internal | :guest      | 'rejects nuget packages access' | :forbidden
+        :personal_access_token | :internal | :developer  | 'rejects nuget packages access' | :forbidden
+        :personal_access_token | :internal | :maintainer | 'process nuget delete request'  | :no_content
+
+        :job_token | :public   | :guest      | 'rejects nuget packages access' | :forbidden
+        :job_token | :public   | :developer  | 'rejects nuget packages access' | :forbidden
+        :job_token | :public   | :maintainer | 'process nuget delete request'  | :no_content
+        :job_token | :private  | :guest      | 'rejects nuget packages access' | :forbidden
+        :job_token | :private  | :developer  | 'rejects nuget packages access' | :forbidden
+        :job_token | :private  | :maintainer | 'process nuget delete request'  | :no_content
+        :job_token | :internal | :guest      | 'rejects nuget packages access' | :forbidden
+        :job_token | :internal | :developer  | 'rejects nuget packages access' | :forbidden
+        :job_token | :internal | :maintainer | 'process nuget delete request'  | :no_content
+
+        :deploy_token | :public   | nil | 'process nuget delete request'  | :no_content
+        :deploy_token | :private  | nil | 'process nuget delete request'  | :no_content
+        :deploy_token | :internal | nil | 'process nuget delete request'  | :no_content
+
+        :api_key | :public   | :guest      | 'rejects nuget packages access' | :forbidden
+        :api_key | :public   | :developer  | 'rejects nuget packages access' | :forbidden
+        :api_key | :public   | :maintainer | 'process nuget delete request'  | :no_content
+        :api_key | :private  | :guest      | 'rejects nuget packages access' | :forbidden
+        :api_key | :private  | :developer  | 'rejects nuget packages access' | :forbidden
+        :api_key | :private  | :maintainer | 'process nuget delete request'  | :no_content
+        :api_key | :internal | :guest      | 'rejects nuget packages access' | :forbidden
+        :api_key | :internal | :developer  | 'rejects nuget packages access' | :forbidden
+        :api_key | :internal | :maintainer | 'process nuget delete request'  | :no_content
+      end
+
+      with_them do
+        let(:snowplow_gitlab_standard_context) do
+          snowplow_context(user_role: user_role, event_user: auth == :deploy_token ? deploy_token : user)
+        end
+
+        let(:headers) do
+          case auth
+          when :personal_access_token
+            basic_auth_header(user.username, personal_access_token.token)
+          when :job_token
+            basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token)
+          when :deploy_token
+            basic_auth_header(deploy_token.username, deploy_token.token)
+          when :api_key
+            { 'X-NuGet-ApiKey' => personal_access_token.token }
+          else
+            {}
+          end
+        end
+
+        before do
+          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility.to_s.upcase, false))
+        end
+
+        it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status]
+      end
+    end
+
+    it_behaves_like 'rejects nuget access with unknown target id'
+
+    it_behaves_like 'rejects nuget access with invalid target id'
+
+    ['%20', '..%2F..', '../..'].each do |value|
+      context "with invalid package name #{value}" do
+        let(:package_name) { value }
+
+        it_behaves_like 'returning response status', :bad_request
+      end
     end
   end
 
