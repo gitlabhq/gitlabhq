@@ -171,6 +171,8 @@
   - 1
 - - compliance_management_merge_requests_compliance_violations
   - 1
+- - compliance_management_pending_status_check
+  - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals
   - 1
 - - compliance_management_standards_gitlab_base

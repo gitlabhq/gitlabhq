@@ -42,13 +42,11 @@ To implement an ActivityPub actor, you must:
 All requests are made using
 `application/ld+json; profile="https://www.w3.org/ns/activitystreams"` as `Accept` HTTP header.
 
-The actors we're implementing for the social features:
+The actors we've implemented for the social features:
 
 - [Releases](releases.md)
-- [Topics](topic.md)
-- [Projects](project.md)
-- [Groups](group.md)
-- [Users](user.md)
+
+For more information on planned actors, see [epic 11247](https://gitlab.com/groups/gitlab-org/-/epics/11247).
 
 ## Profile page
 

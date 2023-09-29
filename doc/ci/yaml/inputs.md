@@ -104,21 +104,37 @@ include:
       stage: my-stage
 ```
 
-You can also include the same file multiple times, with different inputs.
-For example:
+### Include the same file multiple times
+
+You can include the same file multiple times, with different inputs. However, if multiple jobs
+with the same name are added to one pipeline, each additional job overwrites the previous job
+with the same name. You must ensure the configuration prevents duplicate job names.
+
+For example, including the same configuration multiple times with different inputs:
 
 ```yaml
 include:
   - local: path/to/my-super-linter.yml
     inputs:
       type: docs
-      job-name: lint-docs
       lint-path: "doc/"
   - local: path/to/my-super-linter.yml
     inputs:
       type: yaml
-      job-name: lint-yaml
       lint-path: "data/yaml/"
+```
+
+The configuration in `path/to/my-super-linter.yml` ensures the job has a unique name
+each time it is included:
+
+```yaml
+spec:
+  inputs:
+    type:
+    lint-path:
+---
+"run-$[[ inputs.type ]]-lint":
+  script: ./lint --$[[ inputs.type ]] --path=$[[ inputs.lint-path ]]
 ```
 
 ## Specify functions to manipulate input values

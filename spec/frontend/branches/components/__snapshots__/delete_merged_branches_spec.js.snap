@@ -13,7 +13,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
     size="medium"
     textsronly="true"
     toggleid="dropdown-toggle-btn-25"
-    toggletext=""
+    toggletext="More actions"
     variant="default"
   >
     <ul

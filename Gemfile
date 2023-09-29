@@ -208,7 +208,6 @@ gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup' # rubocop:todo Gemfile
 gem 'commonmarker', '~> 0.23.10' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'kramdown', '~> 2.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'RedCloth', '~> 4.3.2' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'rdoc', '~> 6.3.2' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'org-ruby', '~> 0.9.12' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'creole', '~> 0.5.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'wikicloth', '0.8.1' # rubocop:todo Gemfile/MissingFeatureCategory

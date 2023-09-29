@@ -15,7 +15,7 @@
         %h5.m-0.dropdown-bold-header= _('Download source code')
         .dropdown-menu-content
           = render 'projects/buttons/download_links', project: project, ref: ref, archive_prefix: archive_prefix, path: nil
-      #js-directory-downloads{ data: { links: directory_download_links(project, ref, archive_prefix).to_json } }
+      .js-directory-downloads{ data: { links: directory_download_links(project, ref, archive_prefix).to_json } }
       - if pipeline && pipeline.latest_builds_with_artifacts.any?
         %section.border-top.pt-1.mt-1
           %h5.m-0.dropdown-bold-header= _('Download artifacts')

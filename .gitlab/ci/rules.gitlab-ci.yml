@@ -325,7 +325,7 @@
   - "config.ru"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
+  - "{,ee/,jh/}{bin,config,db,generator_templates,lib,gems}/**/*"
   - "{,ee/,jh/}spec/**/*"
   # CI changes
   - ".gitlab-ci.yml"
@@ -764,8 +764,6 @@
       changes: *backend-patterns
     - <<: *if-merge-request
       changes: *backstage-patterns
-    - <<: *if-merge-request
-      changes: ["**/*click_house*"]
 
 .rails:rules:ee-and-foss-integration:predictive:
   rules:
@@ -1995,8 +1993,6 @@
       changes: *backend-patterns
     - <<: *if-default-refs
       changes: *backstage-patterns
-    - <<: *if-merge-request
-      changes: ["**/*click_house*"]
 
 .rails:rules:ee-and-foss-integration:
   rules:
@@ -2302,8 +2298,7 @@
 .rails:rules:clickhouse-changes:
   rules:
     - <<: *if-merge-request
-      changes: ["**/*click_house*"]
-    - <<: *if-merge-request-labels-run-all-rspec
+      changes: *backend-patterns
 
 #########################
 # Static analysis rules #

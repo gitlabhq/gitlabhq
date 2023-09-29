@@ -20,11 +20,12 @@ under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists
 ## Limitations on project and group names
 
 - Project or group names must start with a letter, digit, emoji, or "_".
-- Project or group names can only contain letters, digits, emoji, "_", ".", "+", dashes, or spaces.
+- Project names can only contain letters, digits, emoji, "_", ".", "+", dashes, or spaces.
+- Group names can only contain letters, digits, emoji, "_", ".", parenthesis, dashes, or spaces.
 - Project or group slugs must start with a letter or digit.
-- Project or group slugs can only contain letters, digits, '_', '.', '+', or dashes.
+- Project or group slugs can only contain letters, digits, '_', '.', or dashes.
 - Project or group slugs must not contain consecutive special characters.
-- Project or group slugs cannot end with a special character.
+- Project or group slugs cannot start or end with a special character.
 - Project or group slugs cannot end in `.git` or `.atom`.
 
 ## Reserved project names

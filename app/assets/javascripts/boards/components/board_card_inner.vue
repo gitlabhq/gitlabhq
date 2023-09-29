@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -21,6 +21,7 @@ import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/i
 import { ListType } from '../constants';
 import eventHub from '../eventhub';
 import { setError } from '../graphql/cache_updates';
+import isShowingLabelsQuery from '../graphql/client/is_showing_labels.query.graphql';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 
@@ -86,8 +87,13 @@ export default {
       maxCounter: 99,
     };
   },
+  apollo: {
+    isShowingLabels: {
+      query: isShowingLabelsQuery,
+      update: (data) => data.isShowingLabels,
+    },
+  },
   computed: {
-    ...mapState(['isShowingLabels']),
     isLoading() {
       return this.item.isLoading || this.item.iid === '-1';
     },

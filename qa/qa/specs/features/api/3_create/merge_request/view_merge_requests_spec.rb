@@ -4,7 +4,11 @@ require 'net/http'
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Merge Requests', :reliable, product_group: :code_review do
+    describe 'Merge Requests', product_group: :code_review,
+      quarantine: {
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/426722',
+        type: :stale
+      } do
       let(:address) { Runtime::Address.new(:gitlab, path) }
 
       context 'with a malformed URL' do

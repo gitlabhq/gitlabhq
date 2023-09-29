@@ -29,6 +29,10 @@ RSpec.describe "User views branches", :js, feature_category: :groups_and_project
       it "does not show the \"More actions\" dropdown" do
         expect(page).not_to have_selector('[data-testid="branch-more-actions"]')
       end
+
+      it "passes axe automated accessibility testing" do
+        expect(page).to be_axe_clean.within('#content-body')
+      end
     end
 
     describe 'non-default branch' do
@@ -44,6 +48,10 @@ RSpec.describe "User views branches", :js, feature_category: :groups_and_project
 
       it "shows the \"More actions\" dropdown" do
         expect(page).to have_button('More actions')
+      end
+
+      it "passes axe automated accessibility testing" do
+        expect(page).to be_axe_clean.within('#content-body')
       end
     end
   end

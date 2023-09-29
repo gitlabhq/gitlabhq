@@ -1,15 +1,18 @@
 <script>
-import { GlDropdown, GlFormGroup, GlPopover } from '@gitlab/ui';
+import { GlButton, GlTruncate, GlIcon, GlFormGroup, GlPopover } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { __, s__ } from '~/locale';
+import { ESC_KEY } from '~/lib/utils/keys';
 
 import TagSearch from './tag_search.vue';
 import TagCreate from './tag_create.vue';
 
 export default {
   components: {
-    GlDropdown,
+    GlTruncate,
+    GlButton,
+    GlIcon,
     GlFormGroup,
     GlPopover,
     TagSearch,
@@ -74,6 +77,13 @@ export default {
     },
     hidePopover() {
       this.show = false;
+      // gl-button doesn't expose focus method, but we can find button element by id
+      document.getElementById(this.id)?.focus();
+    },
+    onPopoverKeyUp(e) {
+      if (e.code === ESC_KEY) {
+        this.hidePopover();
+      }
     },
   },
   i18n: {
@@ -97,15 +107,12 @@ export default {
       :invalid-feedback="tagFeedback"
       optional
     >
-      <gl-dropdown
-        :id="id"
-        :variant="buttonVariant"
-        :text="buttonText"
-        :toggle-class="['gl-text-gray-900!']"
-        category="secondary"
-        class="gl-w-30"
-        @show.prevent="showPopover"
-      />
+      <gl-button :id="id" class="gl-w-30 gl-px-0!" @click="showPopover">
+        <span class="gl-w-28 gl-display-flex gl-justify-content-space-between">
+          <gl-truncate :text="buttonText" class="gl-max-w-26" />
+          <gl-icon class="gl-button-icon gl-new-dropdown-chevron" name="chevron-down" />
+        </span>
+      </gl-button>
       <gl-popover
         :show="show"
         :target="id"
@@ -118,7 +125,7 @@ export default {
         @close-button-clicked="hidePopover"
         @hide.once="markInputAsDirty"
       >
-        <div class="gl-border-t-solid gl-border-t-1 gl-border-gray-200">
+        <div class="gl-border-t-solid gl-border-t-1 gl-border-gray-200" @keyup="onPopoverKeyUp">
           <tag-create
             v-if="isCreating"
             v-model="newTagName"

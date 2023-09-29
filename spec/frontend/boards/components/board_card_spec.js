@@ -9,6 +9,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { inactiveId } from '~/boards/constants';
+import isShowingLabelsQuery from '~/boards/graphql/client/is_showing_labels.query.graphql';
 import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
 
 describe('Board card', () => {
@@ -50,6 +51,13 @@ describe('Board card', () => {
     stubs = { BoardCardInner },
     item = mockIssue,
   } = {}) => {
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: isShowingLabelsQuery,
+      data: {
+        isShowingLabels: true,
+      },
+    });
+
     wrapper = shallowMountExtended(BoardCard, {
       apolloProvider: mockApollo,
       stubs: {
@@ -99,7 +107,7 @@ describe('Board card', () => {
 
   describe('when GlLabel is clicked in BoardCardInner', () => {
     it('doesnt call toggleBoardItem', () => {
-      createStore({ initialState: { isShowingLabels: true } });
+      createStore();
       mountComponent();
 
       wrapper.findComponent(GlLabel).trigger('mouseup');

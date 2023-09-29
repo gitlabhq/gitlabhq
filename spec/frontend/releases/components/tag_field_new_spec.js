@@ -1,4 +1,4 @@
-import { GlFormGroup, GlDropdown, GlPopover } from '@gitlab/ui';
+import { GlFormGroup, GlTruncate, GlPopover } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
@@ -60,7 +60,7 @@ describe('releases/components/tag_field_new', () => {
   afterEach(() => mock.restore());
 
   const findTagNameFormGroup = () => wrapper.findComponent(GlFormGroup);
-  const findTagNameInput = () => wrapper.findComponent(GlDropdown);
+  const findTagNameInputText = () => wrapper.findComponent(GlTruncate);
   const findTagNamePopover = () => wrapper.findComponent(GlPopover);
   const findTagNameSearch = () => wrapper.findComponent(TagSearch);
   const findTagNameCreate = () => wrapper.findComponent(TagCreate);
@@ -99,9 +99,10 @@ describe('releases/components/tag_field_new', () => {
         it("updates the store's release.tagName property", async () => {
           findTagNameCreate().vm.$emit('change', NONEXISTENT_TAG_NAME);
           await findTagNameCreate().vm.$emit('create');
-
           expect(store.state.editNew.release.tagName).toBe(NONEXISTENT_TAG_NAME);
-          expect(findTagNameInput().props('text')).toBe(NONEXISTENT_TAG_NAME);
+
+          const text = findTagNameInputText();
+          expect(text.props('text')).toBe(NONEXISTENT_TAG_NAME);
         });
       });
 
@@ -114,8 +115,10 @@ describe('releases/components/tag_field_new', () => {
         });
 
         it("updates the store's release.tagName property", () => {
+          const buttonText = findTagNameInputText();
           expect(store.state.editNew.release.tagName).toBe(updatedTagName);
-          expect(findTagNameInput().props('text')).toBe(updatedTagName);
+
+          expect(buttonText.props('text')).toBe(updatedTagName);
         });
 
         it('hides the "Create from" field', () => {

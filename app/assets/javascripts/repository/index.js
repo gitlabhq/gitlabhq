@@ -256,7 +256,7 @@ export default function setupVueRepositoryList() {
 
   initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link'), router });
 
-  const directoryDownloadLinks = document.getElementById('js-directory-downloads');
+  const directoryDownloadLinks = document.querySelector('.js-directory-downloads');
 
   if (directoryDownloadLinks) {
     // eslint-disable-next-line no-new

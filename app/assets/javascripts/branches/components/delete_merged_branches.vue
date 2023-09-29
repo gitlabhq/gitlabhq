@@ -1,5 +1,12 @@
 <script>
-import { GlDisclosureDropdown, GlButton, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlButton,
+  GlFormInput,
+  GlModal,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { sprintf, s__, __ } from '~/locale';
 
@@ -22,6 +29,7 @@ export const i18n = {
     'Branches|Plese type the following to confirm: %{codeStart}delete%{codeEnd}.',
   ),
   cancelButtonText: __('Cancel'),
+  actionsToggleText: __('More actions'),
 };
 
 export default {
@@ -32,6 +40,9 @@ export default {
     GlModal,
     GlFormInput,
     GlSprintf,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     formPath: {
@@ -96,6 +107,10 @@ export default {
 <template>
   <div>
     <gl-disclosure-dropdown
+      v-gl-tooltip.hover.top="{
+        title: $options.i18n.actionsToggleText,
+        boundary: 'viewport',
+      }"
       :toggle-text="$options.i18n.actionsToggleText"
       text-sr-only
       icon="ellipsis_v"

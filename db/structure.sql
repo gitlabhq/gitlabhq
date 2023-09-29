@@ -31057,6 +31057,8 @@ CREATE INDEX idx_projects_on_repository_storage_last_repository_updated_at ON pr
 
 CREATE UNIQUE INDEX idx_protected_branch_id_external_approval_rule_id ON external_approval_rules_protected_branches USING btree (protected_branch_id, external_approval_rule_id);
 
+CREATE INDEX idx_reminder_frequency_on_work_item_progresses ON work_item_progresses USING btree (reminder_frequency);
+
 CREATE INDEX idx_repository_states_on_last_repository_verification_ran_at ON project_repository_states USING btree (project_id, last_repository_verification_ran_at) WHERE ((repository_verification_checksum IS NOT NULL) AND (last_repository_verification_failure IS NULL));
 
 CREATE INDEX idx_repository_states_on_last_wiki_verification_ran_at ON project_repository_states USING btree (project_id, last_wiki_verification_ran_at) WHERE ((wiki_verification_checksum IS NOT NULL) AND (last_wiki_verification_failure IS NULL));

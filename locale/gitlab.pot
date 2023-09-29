@@ -40364,6 +40364,12 @@ msgid_plural "Runners|%{highlightStart}%{duration}%{highlightEnd} seconds"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runners|%{installLinkStart}Upgrade GitLab Runner%{installLinkEnd} to match your GitLab version. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
+msgstr ""
+
+msgid "Runners|%{installLinkStart}Upgrade GitLab Runner%{installLinkEnd} to match your GitLab version. This upgrade is highly recommended for this runner and may contain security or compatibilty fixes. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
+msgstr ""
+
 msgid "Runners|%{linkStart}Create a new runner%{linkEnd} to get started."
 msgstr ""
 
