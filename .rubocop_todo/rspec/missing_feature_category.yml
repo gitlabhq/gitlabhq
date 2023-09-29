@@ -2470,8 +2470,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/helpers/breadcrumbs_helper_spec.rb'
     - 'spec/helpers/button_helper_spec.rb'
     - 'spec/helpers/calendar_helper_spec.rb'
-    - 'spec/helpers/ci/builds_helper_spec.rb'
-    - 'spec/helpers/ci/jobs_helper_spec.rb'
     - 'spec/helpers/ci/pipeline_editor_helper_spec.rb'
     - 'spec/helpers/ci/pipelines_helper_spec.rb'
     - 'spec/helpers/ci/secure_files_helper_spec.rb'

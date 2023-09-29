@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
   include RoutesHelpers
   include ProjectForksHelper
   include ::ExclusiveLeaseHelpers

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildsHelper do
+RSpec.describe Ci::BuildsHelper, feature_category: :continuous_integration do
   describe '#sidebar_build_class' do
     using RSpec::Parameterized::TableSyntax
 
@@ -22,22 +22,6 @@ RSpec.describe Ci::BuildsHelper do
       it 'builds sidebar html class' do
         expect(subject).to eq(expected_result)
       end
-    end
-  end
-
-  describe '#javascript_build_options' do
-    subject { helper.javascript_build_options }
-
-    it 'returns build options' do
-      project = assign_project
-      ci_build = assign_build
-
-      expect(subject).to eq({
-        page_path: project_job_path(project, ci_build),
-        build_status: ci_build.status,
-        build_stage: ci_build.stage_name,
-        log_state: ''
-      })
     end
   end
 

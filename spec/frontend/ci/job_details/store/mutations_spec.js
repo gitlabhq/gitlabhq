@@ -12,11 +12,17 @@ describe('Jobs Store Mutations', () => {
     stateCopy = state();
   });
 
-  describe('SET_JOB_ENDPOINT', () => {
+  describe('SET_JOB_LOG_OPTIONS', () => {
     it('should set jobEndpoint', () => {
-      mutations[types.SET_JOB_ENDPOINT](stateCopy, 'job/21312321.json');
+      mutations[types.SET_JOB_LOG_OPTIONS](stateCopy, {
+        endpoint: '/group1/project1/-/jobs/99.json',
+        pagePath: '/group1/project1/-/jobs/99',
+      });
 
-      expect(stateCopy.jobEndpoint).toEqual('job/21312321.json');
+      expect(stateCopy).toMatchObject({
+        jobLogEndpoint: '/group1/project1/-/jobs/99',
+        jobEndpoint: '/group1/project1/-/jobs/99.json',
+      });
     });
   });
 
@@ -39,13 +45,13 @@ describe('Jobs Store Mutations', () => {
   describe('RECEIVE_JOB_LOG_SUCCESS', () => {
     describe('when job log has state', () => {
       it('sets jobLogState', () => {
-        const stateLog =
+        const logState =
           'eyJvZmZzZXQiOjczNDQ1MSwibl9vcGVuX3RhZ3MiOjAsImZnX2NvbG9yIjpudWxsLCJiZ19jb2xvciI6bnVsbCwic3R5bGVfbWFzayI6MH0=';
         mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
-          state: stateLog,
+          state: logState,
         });
 
-        expect(stateCopy.jobLogState).toEqual(stateLog);
+        expect(stateCopy.jobLogState).toEqual(logState);
       });
     });
 

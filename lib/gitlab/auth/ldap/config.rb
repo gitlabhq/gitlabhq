@@ -94,7 +94,7 @@ module Gitlab
         def omniauth_options
           opts = base_options.merge(
             base: base,
-            encryption: options['encryption'],
+            encryption: encryption,
             filter: omniauth_user_filter,
             name_proc: name_proc,
             disable_verify_certificates: !options['verify_certificates'],
@@ -188,6 +188,10 @@ module Gitlab
           options['sync_name']
         end
 
+        def encryption
+          options['encryption'] || 'plain'
+        end
+
         def name_proc
           if allow_username_or_email_login
             proc { |name| name.gsub(/@.*\z/, '') }
@@ -235,7 +239,7 @@ module Gitlab
         end
 
         def translate_method
-          NET_LDAP_ENCRYPTION_METHOD[options['encryption']&.to_sym]
+          NET_LDAP_ENCRYPTION_METHOD[encryption.to_sym]
         end
 
         def tls_options

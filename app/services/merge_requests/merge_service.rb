@@ -181,3 +181,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::MergeService.prepend_mod

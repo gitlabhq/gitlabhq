@@ -31,7 +31,14 @@ module API
       params :optional_params_ee do
       end
 
+      params :optional_merge_params_ee do
+      end
+
       params :optional_merge_requests_search_params do
+      end
+
+      def ci_params
+        {}
       end
     end
 
@@ -231,6 +238,10 @@ module API
           optional :squash, type: Grape::API::Boolean, desc: 'Squash commits into a single commit when merging.'
 
           use :optional_params_ee
+        end
+
+        params :optional_merge_params do
+          use :optional_merge_params_ee
         end
       end
 
@@ -642,6 +653,8 @@ module API
                                                 desc: 'If `true`, the merge request is merged when the pipeline succeeds.'
         optional :sha, type: String, desc: 'If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.'
         optional :squash, type: Grape::API::Boolean, desc: 'If `true`, the commits are squashed into a single commit on merge.'
+
+        use :optional_merge_params
       end
       put ':id/merge_requests/:merge_request_iid/merge', feature_category: :code_review_workflow, urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/4796')
@@ -670,7 +683,7 @@ module API
           squash_commit_message: params[:squash_commit_message],
           should_remove_source_branch: params[:should_remove_source_branch],
           sha: params[:sha] || merge_request.diff_head_sha
-        ).compact
+        ).merge(ci_params).compact
 
         if immediately_mergeable
           ::MergeRequests::MergeService

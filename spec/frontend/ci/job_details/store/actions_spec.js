@@ -2,7 +2,6 @@ import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import {
-  setJobEndpoint,
   setJobLogOptions,
   clearEtagPoll,
   stopPolling,
@@ -39,25 +38,21 @@ describe('Job State actions', () => {
     mockedState = state();
   });
 
-  describe('setJobEndpoint', () => {
-    it('should commit SET_JOB_ENDPOINT mutation', () => {
-      return testAction(
-        setJobEndpoint,
-        'job/872324.json',
-        mockedState,
-        [{ type: types.SET_JOB_ENDPOINT, payload: 'job/872324.json' }],
-        [],
-      );
-    });
-  });
-
   describe('setJobLogOptions', () => {
     it('should commit SET_JOB_LOG_OPTIONS mutation', () => {
       return testAction(
         setJobLogOptions,
-        { pagePath: 'job/872324/trace.json' },
+        { endpoint: '/group1/project1/-/jobs/99.json', pagePath: '/group1/project1/-/jobs/99' },
         mockedState,
-        [{ type: types.SET_JOB_LOG_OPTIONS, payload: { pagePath: 'job/872324/trace.json' } }],
+        [
+          {
+            type: types.SET_JOB_LOG_OPTIONS,
+            payload: {
+              endpoint: '/group1/project1/-/jobs/99.json',
+              pagePath: '/group1/project1/-/jobs/99',
+            },
+          },
+        ],
         [],
       );
     });

@@ -878,7 +878,7 @@ Gitlab.ee do
   Settings.cron_jobs['okr_checkin_reminder_emails']['cron'] ||= "0 1 * * *"
   Settings.cron_jobs['okr_checkin_reminder_emails']['job_class'] = 'Okrs::CheckinReminderEmailsCronWorker'
   Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker'] ||= {}
-  Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['cron'] ||= '*/6 * * * *'
+  Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['job_class'] = 'Ci::ScheduleUnlockPipelinesInQueueCronWorker'
 
   Gitlab.com do

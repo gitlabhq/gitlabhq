@@ -15,17 +15,15 @@ import { __ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import * as types from './mutation_types';
 
-export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {
-  dispatch('setJobEndpoint', endpoint);
+export const init = ({ dispatch }, { endpoint, pagePath }) => {
   dispatch('setJobLogOptions', {
-    logState,
+    endpoint,
     pagePath,
   });
 
   return dispatch('fetchJob');
 };
 
-export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);
 export const setJobLogOptions = ({ commit }, options) => commit(types.SET_JOB_LOG_OPTIONS, options);
 
 export const hideSidebar = ({ commit }) => commit(types.HIDE_SIDEBAR);

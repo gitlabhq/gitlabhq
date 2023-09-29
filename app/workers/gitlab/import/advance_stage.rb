@@ -121,6 +121,7 @@ module Gitlab
       end
 
       def timeout_reached?(timeout_timer)
+        timeout_timer = Time.zone.parse(timeout_timer) if timeout_timer.is_a?(String)
         Time.zone.now > timeout_timer + TIMEOUT_DURATION
       end
 

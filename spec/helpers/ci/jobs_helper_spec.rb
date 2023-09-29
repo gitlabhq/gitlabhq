@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobsHelper do
+RSpec.describe Ci::JobsHelper, feature_category: :continuous_integration do
   describe 'job helper functions' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:job) { create(:ci_build, project: project) }
@@ -20,20 +20,13 @@ RSpec.describe Ci::JobsHelper do
     it 'returns jobs data' do
       expect(helper.jobs_data(project, job)).to include({
         "endpoint" => "/#{project.full_path}/-/jobs/#{job.id}.json",
+        "page_path" => "/#{project.full_path}/-/jobs/#{job.id}",
         "project_path" => project.full_path,
         "artifact_help_url" => "/help/user/gitlab_com/index.md#gitlab-cicd",
         "deployment_help_url" => "/help/user/project/clusters/deploy_to_cluster.md#troubleshooting",
         "runner_settings_url" => "/#{project.full_path}/-/runners#js-runners-settings",
-        "page_path" => "/#{project.full_path}/-/jobs/#{job.id}",
         "build_status" => "pending",
         "build_stage" => "test",
-        "log_state" => "",
-        "build_options" => {
-          build_stage: "test",
-          build_status: "pending",
-          log_state: "",
-          page_path: "/#{project.full_path}/-/jobs/#{job.id}"
-        },
         "retry_outdated_job_docs_url" => "/help/ci/pipelines/settings#retry-outdated-jobs"
       })
     end

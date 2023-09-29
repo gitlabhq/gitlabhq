@@ -88,6 +88,16 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
         end
       end
 
+      it 'converts string timeout argument to time' do
+        freeze_time do
+          expect_next_instance_of(described_class) do |klass|
+            expect(klass).to receive(:handle_timeout)
+          end
+
+          worker.perform(project.id, { '123' => 2 }, next_stage, 3.hours.ago.to_s, 2)
+        end
+      end
+
       context 'with an optimistic strategy' do
         before do
           project.create_or_update_import_data(data: { timeout_strategy: "optimistic" })
