@@ -570,6 +570,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '.by_merged_commit_sha' do
+    it 'returns merge requests that match the given merged commit' do
+      mr = create(:merge_request, :merged, merged_commit_sha: '123abc')
+
+      create(:merge_request, :merged, merged_commit_sha: '123def')
+
+      expect(described_class.by_merged_commit_sha('123abc')).to eq([mr])
+    end
+  end
+
   describe '.by_merge_commit_sha' do
     it 'returns merge requests that match the given merge commit' do
       mr = create(:merge_request, :merged, merge_commit_sha: '123abc')
@@ -591,16 +601,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '.by_merge_or_squash_commit_sha' do
-    subject { described_class.by_merge_or_squash_commit_sha([sha1, sha2]) }
+  describe '.by_merged_or_merge_or_squash_commit_sha' do
+    subject { described_class.by_merged_or_merge_or_squash_commit_sha([sha1, sha2, sha3]) }
 
     let(:sha1) { '123abc' }
     let(:sha2) { '456abc' }
+    let(:sha3) { '111111' }
     let(:mr1) { create(:merge_request, :merged, squash_commit_sha: sha1) }
     let(:mr2) { create(:merge_request, :merged, merge_commit_sha: sha2) }
+    let(:mr3) { create(:merge_request, :merged, merged_commit_sha: sha3) }
 
-    it 'returns merge requests that match the given squash and merge commits' do
-      is_expected.to include(mr1, mr2)
+    it 'returns merge requests that match the given squash, merge and merged commits' do
+      is_expected.to include(mr1, mr2, mr3)
     end
   end
 
@@ -639,6 +651,13 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'when commit is a merge commit' do
       let!(:merge_request) { create(:merge_request, :merged, merge_commit_sha: sha) }
+      let(:sha) { '123abc' }
+
+      it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is a rebased fast-forward commit' do
+      let!(:merge_request) { create(:merge_request, :merged, merged_commit_sha: sha) }
       let(:sha) { '123abc' }
 
       it { is_expected.to eq([merge_request]) }

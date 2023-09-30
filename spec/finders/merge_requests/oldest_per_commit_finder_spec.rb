@@ -117,6 +117,27 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
         .to eq(sha1 => mr, sha2 => mr)
     end
 
+    it 'includes a merge request for fast-forward merged MR' do
+      project = create(:project)
+      sha = Digest::SHA1.hexdigest('foo')
+      # When there is only a merged_commit_sha, then it means the MR was
+      # fast-forward merged without a squash, but possibly including a rebase.
+      mr = create(
+        :merge_request,
+        :merged,
+        target_project: project,
+        merged_commit_sha: sha
+      )
+
+      commits = [double(:commit1, id: sha)]
+
+      expect(MergeRequestDiffCommit)
+        .not_to receive(:oldest_merge_request_id_per_commit)
+
+      expect(described_class.new(project).execute(commits))
+        .to eq(sha => mr)
+    end
+
     it 'includes the oldest merge request when a merge commit is present in a newer merge request' do
       project = create(:project)
       sha = Digest::SHA1.hexdigest('foo')
