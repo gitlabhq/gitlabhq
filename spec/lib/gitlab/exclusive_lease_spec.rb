@@ -424,9 +424,13 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
     describe '#try_obtain' do
       let(:lease) { described_class.new(unique_key, timeout: 3600) }
 
+      before do
+        allow(lease).to receive(:same_store).and_return(false)
+      end
+
       shared_examples 'acquires both locks' do
         it do
-          Gitlab::Redis::SharedState.with { |r| expect(r).to receive(:set).and_call_original }
+          Gitlab::Redis::SharedState.with { |r| expect(r).to receive(:set).and_return(true) }
           Gitlab::Redis::ClusterSharedState.with { |r| expect(r).to receive(:set).and_call_original }
 
           expect(lease.try_obtain).to be_truthy

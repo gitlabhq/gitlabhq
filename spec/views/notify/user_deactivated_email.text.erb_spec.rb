@@ -30,18 +30,6 @@ RSpec.describe 'notify/user_deactivated_email.text.erb', feature_category: :user
         expect(rendered).to have_content(/So long and thanks for all the fish!$/)
       end
     end
-
-    context 'when additional text feature flag is disabled' do
-      before do
-        stub_feature_flags(deactivation_email_additional_text: false)
-      end
-
-      it 'does not display the additional text' do
-        render
-
-        expect(rendered).to have_content(/Please contact your GitLab administrator if you think this is an error\.$/)
-      end
-    end
   end
 
   context 'when additional text setting is not set' do

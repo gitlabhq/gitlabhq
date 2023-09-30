@@ -281,6 +281,7 @@ InitializerConnections.raise_if_new_database_connection do
     draw :explore
     draw :admin
     draw :dashboard
+    draw :identity_verification
     draw :user
     draw :project
     draw :unmatched_project
