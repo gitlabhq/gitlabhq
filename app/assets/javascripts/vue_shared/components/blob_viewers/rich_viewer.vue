@@ -41,7 +41,6 @@ export default {
   mounted() {
     this.renderRemainingMarkup();
     handleBlobRichViewer(this.$refs.content, this.type);
-    handleLocationHash();
   },
   methods: {
     optimizeMarkupRendering() {
@@ -76,8 +75,7 @@ export default {
        * */
 
       if (!this.isMarkup || !this.remainingContent.length) {
-        this.$emit(CONTENT_LOADED_EVENT);
-        this.isLoading = false;
+        this.onContentLoaded();
         return;
       }
 
@@ -89,10 +87,14 @@ export default {
         setTimeout(() => {
           fileContent.append(...content);
           if (nextChunkEnd < this.remainingContent.length) return;
-          this.$emit(CONTENT_LOADED_EVENT);
-          this.isLoading = false;
+          this.onContentLoaded();
         }, i);
       }
+    },
+    onContentLoaded() {
+      this.$emit(CONTENT_LOADED_EVENT);
+      handleLocationHash();
+      this.isLoading = false;
     },
   },
   safeHtmlConfig: {
