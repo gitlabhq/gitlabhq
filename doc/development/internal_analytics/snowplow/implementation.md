@@ -453,7 +453,7 @@ To develop and test a Snowplow event, there are several tools to test frontend a
 
 Before you test frontend events in development, you must:
 
-1. [Enable Snowplow tracking in the Admin Area](index.md#enable-snowplow-tracking).
+1. [Setup Snowplow locally](../internal_event_instrumentation/local_setup_and_debugging.md).
 1. Turn off ad blockers that could prevent Snowplow JavaScript from loading in your environment.
 1. Turn off "Do Not Track" (DNT) in your browser.
 

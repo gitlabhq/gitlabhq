@@ -692,6 +692,9 @@ Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['job_class'
 Settings.cron_jobs['ensure_merge_requests_prepared_worker'] ||= {}
 Settings.cron_jobs['ensure_merge_requests_prepared_worker']['cron'] ||= '*/30 * * * *'
 Settings.cron_jobs['ensure_merge_requests_prepared_worker']['job_class'] ||= 'MergeRequests::EnsurePreparedWorker'
+Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker'] ||= {}
+Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['cron'] ||= '*/10 * * * *'
+Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['job_class'] ||= 'Pages::DeactivatedDeploymentsDeleteCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

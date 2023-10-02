@@ -118,10 +118,10 @@ export const getIncrementalLineNumber = (acc) => {
  * @param Array accumulator
  * @returns Array parsed log lines
  */
-export const logLinesParser = (lines = [], accumulator = [], hash = '') =>
+export const logLinesParser = (lines = [], prevLogLines = [], hash = '') =>
   lines.reduce(
     (acc, line, index) => {
-      const lineNumber = accumulator.length > 0 ? getIncrementalLineNumber(acc) : index;
+      const lineNumber = acc.length > 0 ? getIncrementalLineNumber(acc) : index;
 
       const last = acc[acc.length - 1];
 
@@ -142,7 +142,7 @@ export const logLinesParser = (lines = [], accumulator = [], hash = '') =>
 
       return acc;
     },
-    [...accumulator],
+    [...prevLogLines],
   );
 
 /**

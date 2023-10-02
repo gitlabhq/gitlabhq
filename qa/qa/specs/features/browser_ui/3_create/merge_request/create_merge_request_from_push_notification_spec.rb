@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Create a new merge request from the event notification after a push', :reliable,
+    describe 'new merge request from the event notification', :reliable,
       product_group: :code_review do
       let(:branch_name) { "merge-request-test-#{SecureRandom.hex(8)}" }
       let(:title) { "Merge from push event notification test #{SecureRandom.hex(8)}" }
@@ -13,7 +13,7 @@ module QA
       end
 
       it(
-        'creates a merge request after a push via the git CLI',
+        'after a push via the git CLI creates a merge request',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360489'
       ) do
         Resource::Repository::ProjectPush.fabricate! do |push|
@@ -34,7 +34,7 @@ module QA
       end
 
       it(
-        'creates a merge request after a push via the API',
+        'after a push via the API creates a merge request',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360490'
       ) do
         commit = Resource::Repository::Commit.fabricate_via_api! do |resource|

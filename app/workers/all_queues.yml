@@ -651,6 +651,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:pages_deactivated_deployments_delete_cron
+  :worker_name: Pages::DeactivatedDeploymentsDeleteCronWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:pages_domain_removal_cron
   :worker_name: PagesDomainRemovalCronWorker
   :feature_category: :pages

@@ -22,15 +22,42 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
 
-1. It is recommended you use an application setting. This enables
-   granular settings so that each SaaS instance can switch things according to
-   their need.
-1. If application setting is not possible, helpers such as `Gitlab.com?` can be
-   used. However, this comes with drawbacks as listed in the epic to
-   [remove these helpers](https://gitlab.com/groups/gitlab-org/-/epics/7374).
-   1. Consider performance and availability impact on other SaaS instances. For example,
-      [GitLab JH overrides](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/lib/jh/gitlab/saas.rb)
-      SaaS helpers, so that it returns true for `Gitlab.com?`.
+In general, features should be provided for [both SaaS and self-managed deployments](https://about.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
+However, there are cases when a feature should only be available on SaaS and this guide will help show how that is
+accomplished.
+
+It is recommended you use `Gitlab::Saas.feature_available?`. This enables
+context rich definitions around the reason the feature is SaaS only.
+
+### Implementing a SaaS only feature with `Gitlab::Saas.feature_available?`
+
+1. See the [namespacing concepts guide](software_design.md#use-namespaces-to-define-bounded-contexts)
+   for help in naming a new SaaS only feature.
+1. Add the new feature to `FEATURE` in `ee/lib/ee/gitlab/saas.rb`.
+
+   ```ruby
+   FEATURES = %w[purchases/additional_minutes some_domain/new_feature_name].freeze
+   ```
+
+1. Use the new feature in code with `Gitlab::Saas.feature_available?('some_domain/new_feature_name')`.
+
+### Opting out of a SaaS only feature on another SaaS instance (JiHu)
+
+Prepend the `ee/lib/ee/gitlab/saas.rb` module and override the `Gitlab::Saas.feature_available?` method.
+
+```ruby
+JH_DISABLED_FEATURES = %w[some_domain/new_feature_name].freeze
+
+override :feature_available?
+def feature_available?(feature)
+  super && JH_DISABLED_FEATURES.exclude?(feature)
+end
+```
+
+### Do not use SaaS only features for functionality in CE
+
+`Gitlab::Saas.feature_vailable?` must not appear in CE.
+See [extending CE with EE guide](#extend-ce-features-with-ee-backend-code).
 
 ### Simulate a SaaS instance
 

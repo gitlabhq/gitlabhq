@@ -51,7 +51,7 @@ module QA
       end
 
       shared_examples 'copying snippet file contents' do |snippet_type, testcase|
-        it "copies file contents of a multi-file #{snippet_type} to a comment and verifies them", testcase: testcase do
+        it "copies a multi-file #{snippet_type} to a comment and verifies them", testcase: testcase do
           send(snippet_type).visit!
 
           files.each do |files|

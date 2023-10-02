@@ -33419,6 +33419,8 @@ CREATE INDEX index_pages_deployment_states_pending_verification ON pages_deploym
 
 CREATE INDEX index_pages_deployments_on_ci_build_id ON pages_deployments USING btree (ci_build_id);
 
+CREATE INDEX index_pages_deployments_on_deleted_at ON pages_deployments USING btree (deleted_at) WHERE (deleted_at IS NOT NULL);
+
 CREATE INDEX index_pages_deployments_on_file_store_and_id ON pages_deployments USING btree (file_store, id);
 
 CREATE INDEX index_pages_deployments_on_project_id ON pages_deployments USING btree (project_id);

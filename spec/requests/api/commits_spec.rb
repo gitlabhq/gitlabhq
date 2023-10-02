@@ -823,7 +823,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
                 valid_c_params[:start_project] = private_project.id
               end
 
-              it 'returns a 402' do
+              it 'returns a 404' do
                 post api(url, fork_owner), params: valid_c_params
 
                 expect(response).to have_gitlab_http_status(:not_found)

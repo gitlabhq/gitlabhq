@@ -26,6 +26,7 @@ const projects = [
     avatarUrl: null,
   },
 ];
+const groupNamespace = 'gitlab-org';
 
 const defaultMocks = {
   $apollo: {
@@ -46,7 +47,7 @@ describe('ProjectsDropdownFilter component', () => {
       mocks: { ...defaultMocks },
       propsData: {
         groupId: 1,
-        groupNamespace: 'gitlab-org',
+        groupNamespace,
         ...props,
       },
       stubs: {
@@ -93,33 +94,49 @@ describe('ProjectsDropdownFilter component', () => {
   const findSelectedButtonAvatarItemAtIndex = (index) =>
     findSelectedDropdownAtIndex(index).find('img.gl-avatar');
 
-  describe('queryParams are applied when fetching data', () => {
+  describe('when fetching data', () => {
+    const mockQueryParams = {
+      first: 50,
+      includeSubgroups: true,
+    };
+
+    const mockVariables = {
+      groupFullPath: groupNamespace,
+      ...mockQueryParams,
+    };
+
     beforeEach(() => {
       createComponent({
         props: {
-          queryParams: {
-            first: 50,
-            includeSubgroups: true,
-          },
+          queryParams: mockQueryParams,
+        },
+      });
+
+      spyQuery.mockClear();
+    });
+
+    it('should apply the correct queryParams when making an API call', async () => {
+      findDropdown().vm.$emit('search', 'gitlab');
+
+      await waitForPromises();
+
+      expect(spyQuery).toHaveBeenCalledTimes(1);
+
+      expect(spyQuery).toHaveBeenLastCalledWith({
+        query: getProjects,
+        variables: {
+          search: 'gitlab',
+          ...mockVariables,
         },
       });
     });
 
-    it('applies the correct queryParams when making an api call', async () => {
-      findDropdown().vm.$emit('search', 'gitlab');
+    it('should not make an API call when search query is below minimum search length', async () => {
+      findDropdown().vm.$emit('search', 'hi');
 
-      expect(spyQuery).toHaveBeenCalledTimes(1);
+      await waitForPromises();
 
-      await nextTick();
-      expect(spyQuery).toHaveBeenCalledWith({
-        query: getProjects,
-        variables: {
-          search: 'gitlab',
-          groupFullPath: wrapper.vm.groupNamespace,
-          first: 50,
-          includeSubgroups: true,
-        },
-      });
+      expect(spyQuery).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -227,6 +244,31 @@ describe('ProjectsDropdownFilter component', () => {
       expect(
         wrapper.findAll('[role="group"]').at(0).findAllComponents(GlListboxItem).at(0).text(),
       ).toContain(projects[0].name);
+    });
+  });
+
+  describe('with an array of projects passed to `defaultProjects` and a search term', () => {
+    const { name: searchQuery } = projects[2];
+
+    beforeEach(async () => {
+      createComponent({
+        mountFn: mountExtended,
+        props: {
+          defaultProjects: [projects[0], projects[1]],
+          multiSelect: true,
+        },
+      });
+
+      await waitForPromises();
+
+      findDropdown().vm.$emit('search', searchQuery);
+    });
+
+    it('should add search result to selected projects when selected', async () => {
+      await selectDropdownItemAtIndex([0, 1, 2]);
+
+      expect(findSelectedDropdownItems()).toHaveLength(3);
+      expect(findDropdownButton().text()).toBe('3 projects selected');
     });
   });
 

@@ -262,14 +262,16 @@ first check that the resource group is working correctly:
 1. Select **View job currently using resource**.
 1. Check the job status:
    - If the status is `running` or `pending`, the feature is working correctly. Wait until the job finishes and releases the resource.
-   - If the status is not `running` or `pending`, the feature might not be working correctly.
+   - If the status is `created` and the [process mode](#process-modes) is either **Oldest first** or **Newest first**, the feature is working correctly.
+     Visit the pipeline page of the job and check which upstream stage or job is blocking the execution.
+   - If none of the above conditions are met, the feature might not be working correctly.
      [Open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) with the following information:
      - The job ID.
      - The job status.
      - How often the problem occurs.
      - Steps to reproduce the problem.
 
-You can also get job information from the GraphQL API. You should use the GraphQL API if you use pipeline-level concurrency control with cross-project/parent-child pipelines because the trigger jobs are not accessible from the UI.
+You can also get job information from the GraphQL API. You should use the GraphQL API if you use [pipeline-level concurrency control with cross-project/parent-child pipelines](#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines) because the trigger jobs are not accessible from the UI.
 
 To get job information from the GraphQL API:
 

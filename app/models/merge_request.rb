@@ -1723,7 +1723,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_terraform_reports?
-    actual_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:terraform))
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
   end
 
   def compare_accessibility_reports

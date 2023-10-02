@@ -1171,6 +1171,7 @@ lib/gitlab/checks/**
 /ee/app/helpers/ee/access_tokens_helper.rb
 /ee/app/helpers/ee/auth_helper.rb
 /ee/app/helpers/ee/personal_access_tokens_helper.rb
+/ee/app/models/auth/
 /ee/app/models/concerns/identity_verifiable.rb
 /ee/app/models/concerns/password_complexity.rb
 /ee/app/models/ee/personal_access_token.rb

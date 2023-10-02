@@ -19,33 +19,6 @@ Snowplow is an enterprise-grade marketing and Analytics Instrumentation platform
 
 ![Snowplow flow](../../img/snowplow_flow.png)
 
-## Enable Snowplow tracking
-
-Tracking can be enabled at:
-
-- The instance level, which enables tracking on both the frontend and backend layers.
-- The user level. User tracking can be disabled on a per user basis.
-  GitLab respects the [Do Not Track](https://www.eff.org/issues/do-not-track) standard, so any user who has enabled the Do Not Track option in their browser is not tracked at a user level.
-
-Snowplow tracking is configured to send data for GitLab.com to a collector configured by GitLab. By default, self-managed
-instances do not have a collector configured and do not collect data via Snowplow.
-
-You can configure your self-managed GitLab instance to use a custom Snowplow collector.
-
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Snowplow**.
-1. Select **Enable Snowplow tracking** and enter your Snowplow configuration information. For example:
-
-   | Name               | Value                         |
-   |--------------------|-------------------------------|
-   | Collector hostname | `your-snowplow-collector.net` |
-   | App ID             | `gitlab`                      |
-   | Cookie domain      | `.your-gitlab-instance.com`   |
-
-1. Select **Save changes**.
-
 ## Snowplow request flow
 
 The following example shows a basic request/response flow between the following components:

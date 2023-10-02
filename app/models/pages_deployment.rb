@@ -21,6 +21,7 @@ class PagesDeployment < ApplicationRecord
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
   scope :project_id_in, ->(ids) { where(project_id: ids) }
   scope :active, -> { where(deleted_at: nil) }
+  scope :deactivated, -> { where('deleted_at < ?', Time.now.utc) }
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }

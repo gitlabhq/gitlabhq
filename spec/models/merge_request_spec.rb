@@ -2435,6 +2435,19 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.has_terraform_reports?).to be_falsey
       end
     end
+
+    context 'when head pipeline is not finished and has terraform reports' do
+      before do
+        stub_feature_flags(mr_show_reports_immediately: false)
+      end
+
+      it 'returns true' do
+        merge_request = create(:merge_request, :with_terraform_reports)
+        merge_request.actual_head_pipeline.update!(status: :running)
+
+        expect(merge_request.has_terraform_reports?).to be_truthy
+      end
+    end
   end
 
   describe '#has_sast_reports?' do

@@ -109,11 +109,6 @@ module Projects
       PagesDeployment.deactivate_deployments_older_than(
         deployment,
         time: OLD_DEPLOYMENTS_DESTRUCTION_DELAY.from_now)
-
-      DestroyPagesDeploymentsWorker.perform_in(
-        OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
-        project.id,
-        deployment.id)
     end
 
     def register_attempt

@@ -1,12 +1,14 @@
 <script>
 import { GlButton, GlIcon, GlAvatar, GlCollapsibleListbox, GlTruncate } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, unionBy } from 'lodash';
 import { filterBySearchTerm } from '~/analytics/shared/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { n__, s__, __ } from '~/locale';
 import getProjects from '../graphql/projects.query.graphql';
+
+const MIN_SEARCH_CHARS = 3;
 
 const sortByProjectName = (projects = []) => projects.sort((a, b) => a.name.localeCompare(b.name));
 const mapItemToListboxFormat = (item) => ({ ...item, value: item.id, text: item.name });
@@ -98,10 +100,6 @@ export default {
     availableProjects() {
       return filterBySearchTerm(this.projects, this.searchTerm);
     },
-    noResultsAvailable() {
-      const { loading, availableProjects } = this;
-      return !loading && !availableProjects.length;
-    },
     selectedItems() {
       return sortByProjectName(this.selectedProjects);
     },
@@ -152,6 +150,9 @@ export default {
     singleSelectedProject(selectedObj, isMarking) {
       return isMarking ? [selectedObj] : [];
     },
+    getSelectedProjects(projects, selectedProjectIds) {
+      return projects.filter(({ id }) => selectedProjectIds.includes(id));
+    },
     setSelectedProjects(payload) {
       this.selectedProjects = this.multiSelect
         ? payload
@@ -163,8 +164,10 @@ export default {
       this.handleUpdatedSelectedProjects();
     },
     onMultiSelectClick(projectIds) {
-      const projects = this.availableProjects.filter(({ id }) => projectIds.includes(id));
-      this.setSelectedProjects(projects);
+      const newlySelectedProjects = this.getSelectedProjects(this.availableProjects, projectIds);
+      const selectedProjects = this.getSelectedProjects(this.selectedProjects, projectIds);
+
+      this.setSelectedProjects(unionBy(newlySelectedProjects, selectedProjects, 'id'));
       this.isDirty = true;
     },
     onSelected(payload) {
@@ -219,7 +222,12 @@ export default {
       return getIdFromGraphQLId(project.id);
     },
     setSearchTerm(val) {
-      this.searchTerm = val;
+      if (val && val.length >= MIN_SEARCH_CHARS) {
+        this.searchTerm = val;
+        return;
+      }
+
+      this.searchTerm = '';
     },
   },
   AVATAR_SHAPE_OPTION_RECT,

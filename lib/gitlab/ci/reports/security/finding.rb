@@ -30,12 +30,13 @@ module Gitlab
           attr_reader :project_id
           attr_reader :original_data
           attr_reader :found_by_pipeline
+          attr_reader :cvss
 
           delegate :file_path, :start_line, :end_line, to: :location
 
           alias_method :cve, :compare_key
 
-          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil) # rubocop:disable Metrics/ParameterLists
+          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil, cvss: []) # rubocop:disable Metrics/ParameterLists
             @compare_key = compare_key
             @confidence = confidence
             @identifiers = identifiers
@@ -57,6 +58,7 @@ module Gitlab
             @project_id = project_id
             @vulnerability_finding_signatures_enabled = vulnerability_finding_signatures_enabled
             @found_by_pipeline = found_by_pipeline
+            @cvss = cvss
 
             @project_fingerprint = generate_project_fingerprint
           end

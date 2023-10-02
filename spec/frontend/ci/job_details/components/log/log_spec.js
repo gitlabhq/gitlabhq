@@ -7,7 +7,7 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import Log from '~/ci/job_details/components/log/log.vue';
 import LogLineHeader from '~/ci/job_details/components/log/line_header.vue';
 import { logLinesParser } from '~/ci/job_details/store/utils';
-import { jobLog } from './mock_data';
+import { mockJobLog, mockJobLogLineCount } from './mock_data';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
@@ -39,7 +39,7 @@ describe('Job Log', () => {
     };
 
     state = {
-      jobLog: logLinesParser(jobLog),
+      jobLog: logLinesParser(mockJobLog),
       jobLogEndpoint: 'jobs/id',
     };
 
@@ -57,15 +57,18 @@ describe('Job Log', () => {
       createComponent();
     });
 
-    it('renders a line number for each open line', () => {
-      expect(wrapper.find('#L1').text()).toBe('1');
-      expect(wrapper.find('#L2').text()).toBe('2');
-      expect(wrapper.find('#L3').text()).toBe('3');
-    });
+    it.each([...Array(mockJobLogLineCount).keys()])(
+      'renders a line number for each line %d',
+      (index) => {
+        const lineNumber = wrapper
+          .findAll('.js-log-line')
+          .at(index)
+          .find(`#L${index + 1}`);
 
-    it('links to the provided path and correct line number', () => {
-      expect(wrapper.find('#L1').attributes('href')).toBe(`${state.jobLogEndpoint}#L1`);
-    });
+        expect(lineNumber.text()).toBe(`${index + 1}`);
+        expect(lineNumber.attributes('href')).toBe(`${state.jobLogEndpoint}#L${index + 1}`);
+      },
+    );
   });
 
   describe('collapsible sections', () => {
@@ -103,7 +106,7 @@ describe('Job Log', () => {
 
         await waitForPromises();
 
-        expect(wrapper.find('#L6').exists()).toBe(false);
+        expect(wrapper.find('#L9').exists()).toBe(false);
         expect(scrollToElement).not.toHaveBeenCalled();
       });
     });
@@ -116,19 +119,19 @@ describe('Job Log', () => {
       it('scrolls to line number', async () => {
         createComponent();
 
-        state.jobLog = logLinesParser(jobLog, [], '#L6');
+        state.jobLog = logLinesParser(mockJobLog, [], '#L6');
         await waitForPromises();
 
         expect(scrollToElement).toHaveBeenCalledTimes(1);
 
-        state.jobLog = logLinesParser(jobLog, [], '#L7');
+        state.jobLog = logLinesParser(mockJobLog, [], '#L7');
         await waitForPromises();
 
         expect(scrollToElement).toHaveBeenCalledTimes(1);
       });
 
       it('line number within collapsed section is visible', () => {
-        state.jobLog = logLinesParser(jobLog, [], '#L6');
+        state.jobLog = logLinesParser(mockJobLog, [], '#L6');
 
         createComponent();
 

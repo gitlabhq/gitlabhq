@@ -237,7 +237,8 @@ The following is example content of the Service Ping payload.
   },
   "container_registry_server": {
     "vendor": "gitlab",
-    "version": "2.9.1-gitlab"
+    "version": "2.9.1-gitlab",
+    "db_enabled": false
   },
   "database": {
     "adapter": "postgresql",
