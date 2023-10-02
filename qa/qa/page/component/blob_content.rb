@@ -10,20 +10,20 @@ module QA
           super
 
           base.view 'app/assets/javascripts/blob/components/blob_header_filepath.vue' do
-            element :file_title_content
+            element 'file-title-content'
           end
 
           base.view 'app/assets/javascripts/blob/components/blob_content.vue' do
-            element :blob_viewer_file_content
+            element 'blob-viewer-file-content'
           end
 
           base.view 'app/assets/javascripts/blob/components/blob_header_default_actions.vue' do
-            element :default_actions_container
-            element :copy_contents_button
+            element 'default-actions-container'
+            element 'copy-contents-button'
           end
 
           base.view 'app/assets/javascripts/vue_shared/components/source_viewer/source_viewer.vue' do
-            element :blob_viewer_file_content
+            element 'blob-viewer-file-content'
           end
         end
 
@@ -36,30 +36,30 @@ module QA
         end
 
         def has_file_name?(file_name, file_number = nil)
-          within_file_by_number(:file_title_content, file_number) { has_text?(file_name) }
+          within_file_by_number('file-title-content', file_number) { has_text?(file_name) }
         end
 
         def has_no_file_name?(file_name)
-          within_element(:file_title_content) do
+          within_element('file-title-content') do
             has_no_text?(file_name)
           end
         end
 
         def has_file_content?(file_content, file_number = nil)
-          within_file_by_number(:blob_viewer_file_content, file_number) { has_text?(file_content) }
+          within_file_by_number('blob-viewer-file-content', file_number) { has_text?(file_content) }
         end
 
         def has_no_file_content?(file_content)
-          within_element(:blob_viewer_file_content) do
+          within_element('blob-viewer-file-content') do
             has_no_text?(file_content)
           end
         end
 
         def has_normalized_ws_text?(text, wait: Capybara.default_max_wait_time)
-          if has_element?(:blob_viewer_file_content, wait: 1)
+          if has_element?('blob-viewer-file-content', wait: 1)
             # The blob viewer renders line numbers and whitespace in a way that doesn't match the source file
             # This isn't a visual validation test, so we ignore line numbers and whitespace
-            find_element(:blob_viewer_file_content, wait: 0).text.gsub(/^\d+\s|\s*/, '')
+            find_element('blob-viewer-file-content', wait: 0).text.gsub(/^\d+\s|\s*/, '')
               .start_with?(text.gsub(/\s*/, ''))
           else
             has_text?(text.gsub(/\s+/, " "), wait: wait)
@@ -67,7 +67,7 @@ module QA
         end
 
         def click_copy_file_contents(file_number = nil)
-          within_file_by_number(:default_actions_container, file_number) { click_element(:copy_contents_button) }
+          within_file_by_number('default-actions-container', file_number) { click_element('copy-contents-button') }
         end
 
         private

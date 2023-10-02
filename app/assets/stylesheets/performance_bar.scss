@@ -10,8 +10,9 @@
 
   height: $performance-bar-height;
   background: $black;
+  font-size: $gl-font-size-small;
   line-height: $performance-bar-height;
-  color: $gray-100;
+  color: $gray-50;
 
   select {
     width: 200px;
@@ -24,7 +25,11 @@
   select,
   input {
     color: inherit;
-    background-color: inherit;
+    background-color: rgba($white, 0.2);
+
+    &::placeholder {
+      color: rgba($white, 0.7);
+    }
   }
 
   option {
@@ -88,11 +93,26 @@
   }
 
   .view {
-    margin-right: 15px;
     flex-shrink: 0;
 
     &:last-child {
       margin-right: 0;
+    }
+  }
+
+  .view-performance-container,
+  .view-reports-container {
+    margin-right: $gl-padding-24;
+
+    .view:not(:first-child) {
+      margin-right: 0;
+
+      &::before {
+        content: '•';
+        opacity: .5;
+        display: inline-block;
+        margin: 0 $gl-padding-8;
+      }
     }
   }
 

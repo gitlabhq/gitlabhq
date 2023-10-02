@@ -68,14 +68,14 @@ export default {
         <embed-dropdown
           v-if="embeddable"
           :url="snippet.webUrl"
-          data-qa-selector="snippet_embed_dropdown"
+          data-testid="snippet-embed-dropdown"
         />
         <clone-dropdown-button
           v-if="canBeCloned"
           class="gl-ml-3"
           :ssh-link="snippet.sshUrlToRepo"
           :http-link="snippet.httpUrlToRepo"
-          data-qa-selector="clone_button"
+          data-testid="clone-button"
         />
       </div>
       <gl-alert v-if="hasUnretrievableBlobs" variant="danger" class="gl-mb-3" :dismissible="false">

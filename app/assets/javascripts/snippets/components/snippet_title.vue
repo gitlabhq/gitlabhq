@@ -20,7 +20,7 @@ export default {
 </script>
 <template>
   <div class="snippet-header limited-header-width">
-    <h2 class="snippet-title gl-mt-0 mb-3" data-qa-selector="snippet_title_content">
+    <h2 class="snippet-title gl-mt-0 mb-3" data-testid="snippet-title-content">
       {{ snippet.title }}
     </h2>
 

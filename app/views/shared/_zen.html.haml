@@ -2,7 +2,7 @@
 - current_text ||= nil
 - supports_autocomplete = local_assigns.fetch(:supports_autocomplete, true)
 - supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
-- qa_selector = local_assigns.fetch(:qa_selector, '')
+- testid = local_assigns.fetch(:testid, '')
 - autofocus = local_assigns.fetch(:autofocus, false)
 
 .zen-backdrop
@@ -14,9 +14,9 @@
       dir: 'auto',
       data: { supports_quick_actions: supports_quick_actions,
         supports_autocomplete: supports_autocomplete,
-        qa_selector: qa_selector,
+        testid: testid,
         autofocus: autofocus }
   - else
-    = text_area_tag attr, current_text, data: { qa_selector: qa_selector }, class: classes, placeholder: placeholder
+    = text_area_tag attr, current_text, data: { testid: testid }, class: classes, placeholder: placeholder
   %a.zen-control.zen-control-leave.js-zen-leave.gl-text-gray-500{ href: "#" }
     = sprite_icon('minimize')

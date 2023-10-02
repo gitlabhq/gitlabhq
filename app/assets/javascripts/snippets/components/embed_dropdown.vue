@@ -53,7 +53,7 @@ export default {
               :aria-label="$options.MSG_COPY"
               :data-clipboard-text="value"
               icon="copy-to-clipboard"
-              data-qa-selector="copy_button"
+              data-testid="copy-button"
               :data-qa-action="name"
             />
           </template>

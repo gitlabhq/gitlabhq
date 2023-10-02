@@ -894,6 +894,10 @@ Gitlab.ee do
     Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
     Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"
     Settings.cron_jobs['click_house_events_sync_worker']['job_class'] = 'ClickHouse::EventsSyncWorker'
+    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker'] ||= {}
+    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['cron'] ||= '*/3 * * * *'
+    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [0, 1]
+    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['job_class'] = 'ClickHouse::CiFinishedBuildsSyncCronWorker'
   end
 end
 

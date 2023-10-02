@@ -481,7 +481,7 @@ $count-arrow-border: #dce0e5;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
-$performance-bar-height: 35px;
+$performance-bar-height: 40px;
 $system-header-height: 16px;
 $system-footer-height: $system-header-height;
 $mr-sticky-header-height: 72px;
@@ -834,7 +834,7 @@ Performance Bar
 */
 $perf-bar-production: $gray-950;
 $perf-bar-staging: $indigo-950;
-$perf-bar-development: $red-950;
+$perf-bar-development: $red-900;
 $perf-bar-bucket-bg: $black;
 $perf-bar-bucket-box-shadow-from: rgba($white, 0.2);
 $perf-bar-bucket-box-shadow-to: rgba($black, 0.25);

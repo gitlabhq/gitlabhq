@@ -331,7 +331,7 @@ describe('Snippet header component', () => {
       expect(findDeleteModal().props().visible).toBe(true);
 
       // Click delete button in delete modal
-      document.querySelector('[data-testid="delete-snippet"').click();
+      document.querySelector('[data-testid="delete-snippet-button"').click();
       await waitForPromises();
     };
 

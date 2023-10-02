@@ -66,25 +66,25 @@ All Work Item types share the same pool of predefined widgets and are customized
 
 ### Work Item widget types (updating)
 
-| Widget  | Description | feature flag  |
-|---|---|---|
-| [WorkItemWidgetAssignees](../../../api/graphql/reference/index.md#workitemwidgetassignees) | List of work item assignees | |
-| [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | Emoji reactions added to work item, including support for upvote/downvote counts | |
-| [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | User todo state of work item | |
-| [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | Description of work item, including support for edited state, timestamp, and author | |
-| [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | Health status assignment support for work item | |
-| [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | Hierarchy of work items, including support for boolean representing presence of children. **Note:** Hierarchy is currently available only for OKRs. | `okrs_mvc` |
-| [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | Iteration assignment support for work item | |
-| [WorkItemWidgetLabels](../../../api/graphql/reference/index.md#workitemwidgetlabels) | List of labels added to work items, including support for checking whether scoped labels are supported |
-| [WorkItemWidgetLinkedItems](../../../api/graphql/reference/index.md#workitemwidgetlinkeditems) | List of work items added as related to a given work item, with possible relationship types being `relates_to`, `blocks`, and `blocked_by`. Includes support for individual counts of blocked status, blocked by, blocking, and related to. | `linked_work_items` |
-| [WorkItemWidgetMilestone](../../../api/graphql/reference/index.md#workitemwidgetmilestone) | Milestone assignment support for work item | |
-| [WorkItemWidgetNotes](../../../api/graphql/reference/index.md#workitemwidgetnotes) | List of discussions within a work item | |
-| [WorkItemWidgetNotifications](../../../api/graphql/reference/index.md#workitemwidgetnotifications) | Notifications subscription status of a work item for current user | |
-| [WorkItemWidgetProgress](../../../api/graphql/reference/index.md#workitemwidgetprogress) | Progress value of a work item. **Note:** Progress is currently available only for OKRs. | `okrs_mvc` |
-| [WorkItemWidgetStartAndDueDate](../../../api/graphql/reference/index.md#workitemwidgetstartandduedate) | Set start and due dates for a work item | |
-| [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | Status of a work item when type is Requirement, with possible status types being `unverified`, `satisfied`, or `failed` | |
-| [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | Test reports associated with a work item | |
-| [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | Set weight of a work item | |
+| Widget  | Description | Feature flag | Write permission | GraphQL Subscription Support |
+|---|---|---|---|---|
+| [WorkItemWidgetAssignees](../../../api/graphql/reference/index.md#workitemwidgetassignees) | List of work item assignees | |`Guest`|Yes|
+| [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | Emoji reactions added to work item, including support for upvote/downvote counts | |Anyone who can view|No|
+| [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | User todo state of work item | |Anyone who can view|No|
+| [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | Description of work item, including support for edited state, timestamp, and author | |`Reporter`|No|
+| [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | Health status assignment support for work item | |`Reporter`|No|
+| [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | Hierarchy of work items, including support for boolean representing presence of children. **Note:** Hierarchy is currently available only for OKRs. | `okrs_mvc` |`Guest`|No|
+| [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | Iteration assignment support for work item | |`Reporter`|No|
+| [WorkItemWidgetLabels](../../../api/graphql/reference/index.md#workitemwidgetlabels) | List of labels added to work items, including support for checking whether scoped labels are supported | |`Reporter`|Yes|
+| [WorkItemWidgetLinkedItems](../../../api/graphql/reference/index.md#workitemwidgetlinkeditems) | List of work items added as related to a given work item, with possible relationship types being `relates_to`, `blocks`, and `blocked_by`. Includes support for individual counts of blocked status, blocked by, blocking, and related to. | `linked_work_items`|`Guest`|No|
+| [WorkItemWidgetMilestone](../../../api/graphql/reference/index.md#workitemwidgetmilestone) | Milestone assignment support for work item | |`Reporter`|No|
+| [WorkItemWidgetNotes](../../../api/graphql/reference/index.md#workitemwidgetnotes) | List of discussions within a work item | |`Guest`|Yes|
+| [WorkItemWidgetNotifications](../../../api/graphql/reference/index.md#workitemwidgetnotifications) | Notifications subscription status of a work item for current user | |Anyone who can view|No|
+| [WorkItemWidgetProgress](../../../api/graphql/reference/index.md#workitemwidgetprogress) | Progress value of a work item. **Note:** Progress is currently available only for OKRs. | `okrs_mvc` |`Reporter`|No|
+| [WorkItemWidgetStartAndDueDate](../../../api/graphql/reference/index.md#workitemwidgetstartandduedate) | Set start and due dates for a work item | |`Reporter`|No|
+| [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | Status of a work item when type is Requirement, with possible status types being `unverified`, `satisfied`, or `failed` | | |No|
+| [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | Test reports associated with a work item | | | |
+| [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | Set weight of a work item | |`Reporter`|No|
 
 ### Work item relationships
 

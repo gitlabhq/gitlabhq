@@ -98,7 +98,7 @@ export default {
         :file-name="blob.name"
         :type="activeViewer.fileType"
         :hide-line-numbers="hideLineNumbers"
-        data-qa-selector="blob_viewer_file_content"
+        data-testid="blob-viewer-file-content"
         @richContentLoaded="richContentLoaded = true"
       />
     </template>

@@ -282,9 +282,9 @@ RSpec.describe 'GraphQL', feature_category: :shared do
         it 'does not authenticate user' do
           post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
-          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:unauthorized)
 
-          expect(graphql_data['echo']).to eq('nil says: Hello world')
+          expect_graphql_errors_to_include('Invalid token')
         end
       end
 
@@ -308,9 +308,9 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
           post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
-          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:unauthorized)
 
-          expect(graphql_data['echo']).to eq('nil says: Hello world')
+          expect_graphql_errors_to_include('Invalid token')
         end
       end
     end

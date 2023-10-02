@@ -30,7 +30,7 @@ module QA
 
           base.view 'app/views/shared/_zen.html.haml' do
             # This 'element' is here only to ensure the changes in the view source aren't mistakenly changed
-            element :_, "qa_selector = local_assigns.fetch(:qa_selector, '')" # rubocop:disable QA/ElementWithPattern
+            element :_, "testid = local_assigns.fetch(:testid, '')" # rubocop:disable QA/ElementWithPattern
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_visibility_edit.vue' do

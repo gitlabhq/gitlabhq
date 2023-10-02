@@ -317,6 +317,73 @@ RSpec.describe GraphqlController, feature_category: :integrations do
 
       subject { post :execute, params: { query: query, access_token: token.token } }
 
+      shared_examples 'invalid token' do
+        it 'returns 401 with invalid token message' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect_graphql_errors_to_include('Invalid token')
+        end
+      end
+
+      context 'with an invalid token' do
+        context 'with auth header' do
+          subject do
+            request.headers[header] = 'invalid'
+            post :execute, params: { query: query, user: nil }
+          end
+
+          context 'with private-token' do
+            let(:header) { 'Private-Token' }
+
+            it_behaves_like 'invalid token'
+          end
+
+          context 'with job-token' do
+            let(:header) { 'Job-Token' }
+
+            it_behaves_like 'invalid token'
+          end
+
+          context 'with deploy-token' do
+            let(:header) { 'Deploy-Token' }
+
+            it_behaves_like 'invalid token'
+          end
+        end
+
+        context 'with authorization bearer (oauth token)' do
+          subject do
+            request.headers['Authorization'] = 'Bearer invalid'
+            post :execute, params: { query: query, user: nil }
+          end
+
+          it_behaves_like 'invalid token'
+        end
+
+        context 'with auth param' do
+          subject { post :execute, params: { query: query, user: nil }.merge(header) }
+
+          context 'with private_token' do
+            let(:header) { { private_token: 'invalid' } }
+
+            it_behaves_like 'invalid token'
+          end
+
+          context 'with job_token' do
+            let(:header) { { job_token: 'invalid' } }
+
+            it_behaves_like 'invalid token'
+          end
+
+          context 'with token' do
+            let(:header) { { token: 'invalid' } }
+
+            it_behaves_like 'invalid token'
+          end
+        end
+      end
+
       context 'when the user is a project bot' do
         let(:user) { create(:user, :project_bot, last_activity_on: last_activity_on) }
 

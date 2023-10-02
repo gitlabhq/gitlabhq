@@ -11179,6 +11179,12 @@ CREATE SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq
 
 ALTER SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq OWNED BY analytics_cycle_analytics_stage_event_hashes.id;
 
+CREATE TABLE analytics_cycle_analytics_value_stream_settings (
+    value_stream_id bigint NOT NULL,
+    project_ids_filter bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT chk_rails_a91b547c97 CHECK ((cardinality(project_ids_filter) <= 100))
+);
+
 CREATE TABLE analytics_dashboards_pointers (
     id bigint NOT NULL,
     namespace_id bigint,
@@ -27605,6 +27611,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_value_streams
 ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes
     ADD CONSTRAINT analytics_cycle_analytics_stage_event_hashes_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY analytics_cycle_analytics_value_stream_settings
+    ADD CONSTRAINT analytics_cycle_analytics_value_stream_settings_pkey PRIMARY KEY (value_stream_id);
+
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT analytics_dashboards_pointers_pkey PRIMARY KEY (id);
 
@@ -38165,6 +38174,9 @@ ALTER TABLE ONLY batched_background_migration_jobs
 
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_rails_43241e8d29 FOREIGN KEY (strategy_id) REFERENCES operations_strategies(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_cycle_analytics_value_stream_settings
+    ADD CONSTRAINT fk_rails_4360d37256 FOREIGN KEY (value_stream_id) REFERENCES analytics_cycle_analytics_group_value_streams(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_rails_4378a2e8d7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

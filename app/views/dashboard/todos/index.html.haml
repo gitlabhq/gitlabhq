@@ -5,6 +5,9 @@
 = render_if_exists 'dashboard/todos/saml_reauth_notice'
 - add_page_specific_style 'page_bundles/todos'
 - add_page_specific_style 'page_bundles/issuable'
+- filter_by_done = params[:state] == 'done'
+- open_todo_count = !filter_by_done ? @allowed_todos.count : todos_pending_count
+- done_todo_count = filter_by_done ? @allowed_todos.count : todos_done_count
 
 .page-title-holder.d-flex.align-items-center
   %h1.page-title.gl-font-size-h-display= _("To-Do List")
@@ -14,10 +17,10 @@
     = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
       = gl_tab_link_to todos_filter_path(state: 'pending'), item_active: params[:state].blank? || params[:state] == 'pending', class: "js-todos-pending" do
         = _("To Do")
-        = gl_tab_counter_badge(number_with_delimiter(todos_pending_count), { class: 'js-todos-badge' })
-      = gl_tab_link_to todos_filter_path(state: 'done'), item_active: params[:state] == 'done', class: "js-todos-done" do
+        = gl_tab_counter_badge(number_with_delimiter(open_todo_count), { class: 'js-todos-badge' })
+      = gl_tab_link_to todos_filter_path(state: 'done'), item_active: filter_by_done, class: "js-todos-done" do
         = _("Done")
-        = gl_tab_counter_badge(number_with_delimiter(todos_done_count), { class: 'js-todos-badge' })
+        = gl_tab_counter_badge(number_with_delimiter(done_todo_count), { class: 'js-todos-badge' })
 
     .nav-controls
       - if @allowed_todos.any?(&:pending?)

@@ -1,5 +1,10 @@
 <script>
+import { GlFormSelect } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlFormSelect,
+  },
   props: {
     currentRequest: {
       type: Object,
@@ -23,8 +28,8 @@ export default {
 };
 </script>
 <template>
-  <div id="peek-request-selector" data-qa-selector="request_dropdown" class="view">
-    <select v-model="currentRequestId">
+  <div id="peek-request-selector" data-qa-selector="request_dropdown" class="view gl-mr-5">
+    <gl-form-select v-model="currentRequestId" class="gl-px-3! gl-py-2!">
       <option
         v-for="request in requests"
         :key="request.id"
@@ -33,6 +38,6 @@ export default {
       >
         {{ request.displayName }}
       </option>
-    </select>
+    </gl-form-select>
   </div>
 </template>

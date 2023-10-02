@@ -35,7 +35,7 @@ describe('Blob Header Default Actions', () => {
   });
 
   describe('renders', () => {
-    const findCopyButton = () => wrapper.findByTestId('copyContentsButton');
+    const findCopyButton = () => wrapper.findByTestId('copy-contents-button');
     const findViewRawButton = () => wrapper.findByTestId('viewRawButton');
 
     it('gl-button-group component', () => {

@@ -28931,6 +28931,9 @@ msgstr ""
 msgid "Maximum project import requests per minute"
 msgstr ""
 
+msgid "Maximum projects allowed in the filter is %{count}"
+msgstr ""
+
 msgid "Maximum push size"
 msgstr ""
 
@@ -33936,6 +33939,12 @@ msgstr ""
 msgid "PerformanceBar|Bullet notifications"
 msgstr ""
 
+msgid "PerformanceBar|CPU"
+msgstr ""
+
+msgid "PerformanceBar|CPU flamegraph"
+msgstr ""
+
 msgid "PerformanceBar|ClickHouse queries"
 msgstr ""
 
@@ -33943,6 +33952,12 @@ msgid "PerformanceBar|DOM Content Loaded"
 msgstr ""
 
 msgid "PerformanceBar|Download"
+msgstr ""
+
+msgid "PerformanceBar|Download memory report"
+msgstr ""
+
+msgid "PerformanceBar|Download report"
 msgstr ""
 
 msgid "PerformanceBar|Elasticsearch calls"
@@ -33964,6 +33979,12 @@ msgid "PerformanceBar|Memory"
 msgstr ""
 
 msgid "PerformanceBar|Memory report"
+msgstr ""
+
+msgid "PerformanceBar|Object"
+msgstr ""
+
+msgid "PerformanceBar|Object flamegraph"
 msgstr ""
 
 msgid "PerformanceBar|Redis calls"
@@ -33990,16 +34011,16 @@ msgstr ""
 msgid "PerformanceBar|Trace"
 msgstr ""
 
+msgid "PerformanceBar|Wall"
+msgstr ""
+
+msgid "PerformanceBar|Wall flamegraph"
+msgstr ""
+
 msgid "PerformanceBar|Zoekt calls"
 msgstr ""
 
-msgid "PerformanceBar|cpu"
-msgstr ""
-
-msgid "PerformanceBar|object"
-msgstr ""
-
-msgid "PerformanceBar|wall"
+msgid "PerformanceBar|flamegraph"
 msgstr ""
 
 msgid "Period in seconds"

@@ -27,7 +27,7 @@ export default {
       type: String,
       required: true,
     },
-    qaSelector: {
+    testId: {
       type: String,
       required: true,
     },
@@ -45,7 +45,7 @@ export default {
             :title="$options.copyURLTooltip"
             :aria-label="$options.copyURLTooltip"
             :data-clipboard-text="link"
-            :data-qa-selector="qaSelector"
+            :data-testid="testId"
             icon="copy-to-clipboard"
             class="gl-display-inline-flex"
           />

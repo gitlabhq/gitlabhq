@@ -255,6 +255,12 @@ class GraphqlController < ApplicationController
   end
 
   def authorize_access_api!
+    if current_user.nil? &&
+        request_authenticator.authentication_token_present? &&
+        Feature.enabled?(:invalid_graphql_auth_401)
+      render_error('Invalid token', status: :unauthorized)
+    end
+
     return if can?(current_user, :access_api)
 
     render_error('API not accessible for user', status: :forbidden)

@@ -216,7 +216,7 @@ export default {
     <div class="detail-page-header-body">
       <div
         class="snippet-box has-tooltip d-flex align-items-center gl-mr-2 mb-1"
-        data-qa-selector="snippet_container"
+        data-testid="snippet-container"
         :title="snippetVisibilityLevelDescription"
         data-container="body"
       >
@@ -267,7 +267,7 @@ export default {
               :category="action.category"
               :class="action.cssClass"
               :href="action.href"
-              data-qa-selector="snippet_action_button"
+              data-testid="snippet-action-button"
               :data-qa-action="action.text"
               @click="action.click ? action.click() : undefined"
               >{{ action.text }}</gl-button
@@ -321,8 +321,7 @@ export default {
           variant="danger"
           category="primary"
           :disabled="isLoading"
-          data-qa-selector="delete_snippet_button"
-          data-testid="delete-snippet"
+          data-testid="delete-snippet-button"
           @click="deleteSnippet"
         >
           <gl-loading-icon v-if="isLoading" size="sm" inline />

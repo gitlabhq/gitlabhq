@@ -188,4 +188,47 @@ RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :team_pl
       end
     end
   end
+
+  describe 'todos tab count' do
+    context 'when filtering by open todos' do
+      it 'includes all open todos' do
+        expect(find('.js-todos-pending .gl-badge')).to have_content('3')
+      end
+
+      it 'only counts open todos that match when filtered by project' do
+        click_button 'Project'
+
+        within '.dropdown-menu-project' do
+          fill_in 'Search projects', with: project_1.full_name
+          click_link project_1.full_name
+        end
+
+        expect(find('.js-todos-pending .gl-badge')).to have_content('1')
+      end
+    end
+
+    context 'when filtering by done todos' do
+      before do
+        create(:todo, user: user_1, author: user_2, project: project_1, target: issue1, action: 1, state: :done)
+        create(:todo, user: user_1, author: user_1, project: project_2, target: merge_request, action: 2, state: :done)
+
+        visit dashboard_todos_path(state: 'done')
+      end
+
+      it 'includes all done todos' do
+        expect(find('.js-todos-done .gl-badge')).to have_content('2')
+      end
+
+      it 'only counts done todos that match when filtered by project' do
+        click_button 'Project'
+
+        within '.dropdown-menu-project' do
+          fill_in 'Search projects', with: project_1.full_name
+          click_link project_1.full_name
+        end
+
+        expect(find('.js-todos-done .gl-badge')).to have_content('1')
+      end
+    end
+  end
 end
