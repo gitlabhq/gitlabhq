@@ -2,9 +2,9 @@
 status: proposed
 creation-date: "2023-03-15"
 authors: [ "@furkanayhan" ]
-owners: [ "@furkanayhan" ]
+owners: [ "@fabiopitino" ]
 coach: "@grzesiek"
-approvers: [ "@jreporter", "@cheryl.li" ]
+approvers: [ "@fabiopitino", "@jreporter", "@cheryl.li" ]
 owning-stage: "~devops::verify"
 participating-stages: [ "~devops::package", "~devops::deploy" ]
 ---
