@@ -38,6 +38,7 @@ module Members
 
       result
     rescue BlankInvitesError, TooManyInvitesError, MembershipLockedError => e
+      Gitlab::ErrorTracking.log_exception(e, class: self.class.to_s, user_id: current_user.id)
       error(e.message)
     end
 

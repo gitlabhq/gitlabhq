@@ -33121,8 +33121,6 @@ CREATE UNIQUE INDEX index_namespaces_on_push_rule_id ON namespaces USING btree (
 
 CREATE INDEX index_namespaces_on_require_two_factor_authentication ON namespaces USING btree (require_two_factor_authentication);
 
-CREATE UNIQUE INDEX index_namespaces_on_runners_token ON namespaces USING btree (runners_token);
-
 CREATE UNIQUE INDEX index_namespaces_on_runners_token_encrypted ON namespaces USING btree (runners_token_encrypted);
 
 CREATE INDEX index_namespaces_on_shared_and_extra_runners_minutes_limit ON namespaces USING btree (shared_runners_minutes_limit, extra_shared_runners_minutes_limit);

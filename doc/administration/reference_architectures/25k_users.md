@@ -39,7 +39,7 @@ full list of reference architectures, see
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
     - Redis is primarily single threaded. It's strongly recommended separating out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
@@ -846,11 +846,15 @@ to be used with GitLab. The following IPs will be used as an example:
 - `10.6.0.62`: Redis - Persistent Replica 1
 - `10.6.0.63`: Redis - Persistent Replica 2
 
-### Provide your own Redis instance
+### Provide your own Redis instances
 
-You can optionally use a third party external service for Redis as long as it meets the [requirements](../../install/requirements.md#redis).
+You can optionally use a [third party external service for the Redis Cache and Persistence instances](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
-A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work. However, note that the Redis Cluster mode specifically isn't supported by GitLab. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
+- Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
+- The Redis Cache instance should be configured accordingly to be an [Least Recently Used cache](../redis/replication_and_failover_external.md#setting-the-redis-cache-instance-as-an-lru) (LRU).
+
+For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
 
 ### Configure the Redis Cache cluster
 
@@ -2288,7 +2292,7 @@ services where applicable):
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
     - Redis is primarily single threaded. It's strongly recommended separating out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.

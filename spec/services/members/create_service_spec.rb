@@ -167,12 +167,15 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     let(:user_id) { '' }
 
     it 'does not add a member' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:log_exception)
+              .with(an_instance_of(described_class::BlankInvitesError), class: described_class.to_s, user_id: user.id)
       expect(Gitlab::EventStore)
         .not_to receive(:publish)
         .with(an_instance_of(Members::MembersAddedEvent))
 
       expect(execute_service[:status]).to eq(:error)
-      expect(execute_service[:message]).to be_present
+      expect(execute_service[:message]).to eq(s_('AddMember|No users specified.'))
       expect(source.users).not_to include member
       expect(Onboarding::Progress.completed?(source.namespace, :user_added)).to be(false)
     end
@@ -182,6 +185,10 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     let(:user_id) { 1.upto(101).to_a.join(',') }
 
     it 'limits the number of users to 100' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:log_exception)
+              .with(an_instance_of(described_class::TooManyInvitesError), class: described_class.to_s, user_id: user.id)
+
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to be_present
       expect(source.users).not_to include member

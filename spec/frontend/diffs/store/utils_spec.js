@@ -927,19 +927,21 @@ describe('DiffsStoreUtils', () => {
 
   describe('parseUrlHashAsFileHash', () => {
     it.each`
-      input                                          | currentDiffId | resultId
-      ${'#note_12345'}                               | ${'1A2B3C'}   | ${'1A2B3C'}
-      ${'note_12345'}                                | ${'1A2B3C'}   | ${'1A2B3C'}
-      ${'#note_12345'}                               | ${undefined}  | ${null}
-      ${'note_12345'}                                | ${undefined}  | ${null}
-      ${'#diff-content-12345'}                       | ${undefined}  | ${'12345'}
-      ${'diff-content-12345'}                        | ${undefined}  | ${'12345'}
-      ${'#diff-content-12345'}                       | ${'98765'}    | ${'12345'}
-      ${'diff-content-12345'}                        | ${'98765'}    | ${'12345'}
-      ${'#e334a2a10f036c00151a04cea7938a5d4213a818'} | ${undefined}  | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
-      ${'e334a2a10f036c00151a04cea7938a5d4213a818'}  | ${undefined}  | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
-      ${'#Z334a2a10f036c00151a04cea7938a5d4213a818'} | ${undefined}  | ${null}
-      ${'Z334a2a10f036c00151a04cea7938a5d4213a818'}  | ${undefined}  | ${null}
+      input                                               | currentDiffId | resultId
+      ${'#note_12345'}                                    | ${'1A2B3C'}   | ${'1A2B3C'}
+      ${'note_12345'}                                     | ${'1A2B3C'}   | ${'1A2B3C'}
+      ${'#note_12345'}                                    | ${undefined}  | ${null}
+      ${'note_12345'}                                     | ${undefined}  | ${null}
+      ${'#diff-content-12345'}                            | ${undefined}  | ${'12345'}
+      ${'diff-content-12345'}                             | ${undefined}  | ${'12345'}
+      ${'#diff-content-12345'}                            | ${'98765'}    | ${'12345'}
+      ${'diff-content-12345'}                             | ${'98765'}    | ${'12345'}
+      ${'#e334a2a10f036c00151a04cea7938a5d4213a818'}      | ${undefined}  | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
+      ${'e334a2a10f036c00151a04cea7938a5d4213a818'}       | ${undefined}  | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
+      ${'#Z334a2a10f036c00151a04cea7938a5d4213a818'}      | ${undefined}  | ${null}
+      ${'Z334a2a10f036c00151a04cea7938a5d4213a818'}       | ${undefined}  | ${null}
+      ${'#e334a2a10f036c00151a04cea7938a5d4213a818_0_42'} | ${undefined}  | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
+      ${'e334a2a10f036c00151a04cea7938a5d4213a818_0_42'}  | ${undefined}  | ${'e334a2a10f036c00151a04cea7938a5d4213a818'}
     `('returns $resultId for $input and $currentDiffId', ({ input, currentDiffId, resultId }) => {
       expect(utils.parseUrlHashAsFileHash(input, currentDiffId)).toBe(resultId);
     });

@@ -341,6 +341,12 @@ If you choose to use a third party external service:
 1. However, if [Database Load Balancing](../postgresql/database_load_balancing.md) via Read Replicas is desired for further improved performance it's recommended to follow the node count for the Reference Architecture.
 1. If [GitLab Geo](../geo/index.md) is to be used the service will need to support Cross Region replication
 
+### Recommendation notes for the Redis services
+
+[When selecting to use an external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider), it should run a standard, performant, and supported version.
+
+Redis is primarily single threaded. For the 10,000 user and above Reference Architectures, separate out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
+
 #### Unsupported database services
 
 Several database cloud provider services are known not to support the above or have been found to have other issues and aren't recommended:

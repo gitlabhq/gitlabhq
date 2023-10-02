@@ -135,6 +135,7 @@ export default {
     :tracking="$options.tracking"
     :loading="isLoading"
     class="block confidentiality"
+    data-testid="sidebar-confidentiality"
   >
     <template #collapsed>
       <div>

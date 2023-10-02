@@ -22,7 +22,7 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 | [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | Generate a description for the merge request based on the contents of the template. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [Test generation](project/merge_requests/ai_in_merge_requests.md#generate-suggested-tests-in-merge-requests) | Automates repetitive tasks and helps catch bugs early. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
-| [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Helps you discover or recall Git commands when and where you need them. | OpenAI | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Helps you discover or recall Git commands when and where you need them. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | **Root cause analysis** | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | Generate issue descriptions. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
 
@@ -36,8 +36,8 @@ In addition, all features built on large language models (LLM) from Google, Anth
 
 Code Suggestions currently has its own settings:
 
-- View [how to enable for self-managed](project/repository/code_suggestions/saas.md#enable-code-suggestions).
-- View [how to enable for SaaS](project/repository/code_suggestions/self_managed.md#enable-code-suggestions-on-self-managed-gitlab).
+- View [how to enable for self-managed](project/repository/code_suggestions/self_managed.md#enable-code-suggestions-on-self-managed-gitlab).
+- View [how to enable for SaaS](project/repository/code_suggestions/saas.md#enable-code-suggestions).
 
 The use of Code Suggestions is also subject to the [Testing Terms of Use](https://about.gitlab.com/handbook/legal/testing-agreement/).
 

@@ -332,9 +332,12 @@ to be used with GitLab.
 
 ### Provide your own Redis instance
 
-You can optionally use a third party external service for Redis as long as it meets the [requirements](../../install/requirements.md#redis).
+You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
-A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work. However, note that the Redis Cluster mode specifically isn't supported by GitLab. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
+- Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
+
+For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
 
 ### Standalone Redis using the Linux package
 

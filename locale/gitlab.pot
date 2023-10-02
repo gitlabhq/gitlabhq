@@ -40667,9 +40667,6 @@ msgstr ""
 msgid "Runners|How do runners pick up jobs?"
 msgstr ""
 
-msgid "Runners|How do we upgrade GitLab runner?"
-msgstr ""
-
 msgid "Runners|IP Address"
 msgstr ""
 
@@ -41177,9 +41174,6 @@ msgid "Runners|Unselect all"
 msgstr ""
 
 msgid "Runners|Up to date"
-msgstr ""
-
-msgid "Runners|Upgrade GitLab Runner to match the version of GitLab you're running. Both %{linkStart}major and minor versions%{linkEnd} should match."
 msgstr ""
 
 msgid "Runners|Upgrade Status"
