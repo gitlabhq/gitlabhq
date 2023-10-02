@@ -15,7 +15,8 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - k8s_api_proxy_requests_unique_agents_via_ci_access
-performance_indicator_type: []
+performance_indicator_type:
+- smau
 distribution:
 - ce
 - ee

@@ -20,6 +20,18 @@ module QA
             page.find('.explorer-folders-view', visible: true).right_click
           end
 
+          def open_file_from_explorer(file_name)
+            click_element("div[aria-label='#{file_name}']")
+          end
+
+          def click_inside_editor_frame
+            click_element('.monaco-editor')
+          end
+
+          def within_file_editor(&block)
+            within_element('.monaco-editor', &block)
+          end
+
           def has_new_folder_menu_item?
             page.has_css?('[aria-label="New Folder..."]', visible: true)
           end
@@ -178,6 +190,28 @@ module QA
                 click_upload_menu_item
                 enter_file_input(file_path)
               end
+            end
+          end
+
+          def add_file_content(prompt_data)
+            click_inside_editor_frame
+            within_file_editor do
+              send_keys(:enter, :enter, prompt_data)
+            end
+          end
+
+          def verify_prompt_appears_and_accept(pattern)
+            within_file_editor do
+              Support::Waiter.wait_until(max_duration: 30) do
+                page.text.match?(pattern)
+              end
+              send_keys(:tab)
+            end
+          end
+
+          def validate_prompt(pattern)
+            within_file_editor do
+              page.text.match?(pattern)
             end
           end
         end
