@@ -823,6 +823,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:admin_mode) { true }
         let(:projects) { Project.all }
       end
+
+      it 'returns a project with user namespace that has a missing owner' do
+        project.namespace.update_column(:owner_id, non_existing_record_id)
+        project.route.update_column(:name, nil)
+
+        get api(path, admin, admin_mode: true), params: { search: project.path }
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project_response = json_response.find { |p| p['id'] == project.id }
+        expect(project_response).to be_present
+        expect(project_response['path']).to eq(project.path)
+
+        namespace_response = project_response['namespace']
+        expect(project_response['web_url']).to include(namespace_response['web_url'])
+      end
     end
 
     context 'with default created_at desc order' do

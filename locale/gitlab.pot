@@ -18726,7 +18726,13 @@ msgstr ""
 msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
 msgstr ""
 
+msgid "Epics|Learn more about linking child issues and epics"
+msgstr ""
+
 msgid "Epics|Leave empty to inherit from milestone dates"
+msgstr ""
+
+msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
 msgstr ""
 
 msgid "Epics|Remove epic"

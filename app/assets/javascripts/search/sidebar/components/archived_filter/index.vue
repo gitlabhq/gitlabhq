@@ -20,9 +20,9 @@ export default {
         return [parseBoolean(this.urlQuery?.include_archived)];
       },
       set(value) {
-        const newValue = value?.pop() ?? false;
-        this.setQuery({ key: archivedFilterData.filterParam, value: newValue?.toString() });
-        this.trackSelectCheckbox(newValue);
+        const includeArchived = [...value].pop() ?? false;
+        this.setQuery({ key: archivedFilterData.filterParam, value: includeArchived?.toString() });
+        this.trackSelectCheckbox(includeArchived);
       },
     },
   },

@@ -833,6 +833,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '#human_name' do
     it { expect(namespace.human_name).to eq(namespace.owner_name) }
+
+    context 'when the owner is missing' do
+      before do
+        namespace.update_column(:owner_id, non_existing_record_id)
+      end
+
+      it { expect(namespace.human_name).to eq(namespace.path) }
+    end
   end
 
   describe '#any_project_has_container_registry_tags?' do
@@ -1192,70 +1200,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     it 'only contains root namespaces' do
       is_expected.to contain_exactly(group.id, namespace.id)
-    end
-  end
-
-  describe '#move_dir', :request_store do
-    context 'hashed storage' do
-      let_it_be(:namespace) { create(:namespace) }
-      let_it_be(:project) { create(:project_empty_repo, namespace: namespace) }
-
-      context 'when any project has container images' do
-        let(:container_repository) { create(:container_repository) }
-
-        before do
-          stub_container_registry_config(enabled: true)
-          stub_container_registry_tags(repository: :any, tags: ['tag'])
-
-          create(:project, namespace: namespace, container_repositories: [container_repository])
-
-          allow(namespace).to receive(:path_was).and_return(namespace.path)
-          allow(namespace).to receive(:path).and_return('new_path')
-          allow(namespace).to receive(:first_project_with_container_registry_tags).and_return(project)
-        end
-
-        it 'raises an error about not movable project' do
-          expect { namespace.move_dir }.to raise_error(
-            Gitlab::UpdatePathError, /Namespace .* cannot be moved/
-          )
-        end
-      end
-
-      it "repository directory remains unchanged if path changed" do
-        before_disk_path = project.disk_path
-        namespace.update!(path: namespace.full_path + '_new')
-
-        expect(before_disk_path).to eq(project.disk_path)
-        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
-      end
-    end
-
-    context 'for each project inside the namespace' do
-      let!(:parent) { create(:group, name: 'mygroup', path: 'mygroup') }
-      let!(:subgroup) { create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent) }
-      let!(:project_in_parent_group) { create(:project, :legacy_storage, :repository, namespace: parent, name: 'foo1') }
-      let!(:hashed_project_in_subgroup) { create(:project, :repository, namespace: subgroup, name: 'foo2') }
-      let!(:legacy_project_in_subgroup) { create(:project, :legacy_storage, :repository, namespace: subgroup, name: 'foo3') }
-
-      it 'updates project full path in .git/config' do
-        parent.update!(path: 'mygroup_new')
-
-        expect(project_in_parent_group.reload.repository.full_path).to eq "mygroup_new/#{project_in_parent_group.path}"
-        expect(hashed_project_in_subgroup.reload.repository.full_path).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
-        expect(legacy_project_in_subgroup.reload.repository.full_path).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
-      end
-
-      it 'updates the project storage location' do
-        repository_project_in_parent_group = project_in_parent_group.project_repository
-        repository_hashed_project_in_subgroup = hashed_project_in_subgroup.project_repository
-        repository_legacy_project_in_subgroup = legacy_project_in_subgroup.project_repository
-
-        parent.update!(path: 'mygroup_moved')
-
-        expect(repository_project_in_parent_group.reload.disk_path).to eq "mygroup_moved/#{project_in_parent_group.path}"
-        expect(repository_hashed_project_in_subgroup.reload.disk_path).to eq hashed_project_in_subgroup.disk_path
-        expect(repository_legacy_project_in_subgroup.reload.disk_path).to eq "mygroup_moved/mysubgroup/#{legacy_project_in_subgroup.path}"
-      end
     end
   end
 

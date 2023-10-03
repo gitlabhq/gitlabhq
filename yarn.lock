@@ -1038,10 +1038,10 @@
     url-search-params-polyfill "^7.0.0"
     uuid "^8.3.2"
 
-"@cubejs-client/vue@^0.33.59":
-  version "0.33.59"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.33.59.tgz#ffb96c70ac34f0ed8263a7a4b90f1cbfcc3c4468"
-  integrity sha512-u6dXsPUamWAs5riDDYdnN9ULy/k44+QVzxeHW5uJC2Fi3FIIZbysc09XEzh92RS2yV5m5LL+YK/ZyBGpEnOWSA==
+"@cubejs-client/vue@^0.33.65":
+  version "0.33.65"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.33.65.tgz#1b1f371393173c2cb2fe23a1be4e8d91bf240083"
+  integrity sha512-vzFxMGlYrBxa+7fIEqG17mZqqKPSE83a+I1incb67ICqabN1lG8yw23Es/sl+mkM50/UprKF3kM48vfpyBK0KQ==
   dependencies:
     "@cubejs-client/core" "^0.33.59"
     core-js "^3.6.5"
@@ -9458,10 +9458,10 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-mermaid@10.3.1:
-  version "10.3.1"
-  resolved "https://registry.yarnpkg.com/mermaid/-/mermaid-10.3.1.tgz#2f3c7e9f6bd7a8da2bef71cce2a542c8eba2a62e"
-  integrity sha512-hkenh7WkuRWPcob3oJtrN3W+yzrrIYuWF1OIfk/d0xGE8UWlvDhfexaHmDwwe8DKQgqMLI8DWEPwGprxkumjuw==
+mermaid@10.5.0:
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/mermaid/-/mermaid-10.5.0.tgz#e90512a65b5c6e29bd86cd04ce45aa31da2be76d"
+  integrity sha512-9l0o1uUod78D3/FVYPGSsgV+Z0tSnzLBDiC9rVzvelPxuO80HbN1oDr9ofpPETQy9XpypPQa26fr09VzEPfvWA==
   dependencies:
     "@braintree/sanitize-url" "^6.0.1"
     "@types/d3-scale" "^4.0.3"

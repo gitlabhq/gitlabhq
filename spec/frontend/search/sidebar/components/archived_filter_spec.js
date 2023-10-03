@@ -12,9 +12,14 @@ Vue.use(Vuex);
 describe('ArchivedFilter', () => {
   let wrapper;
 
+  const defaultActions = {
+    setQuery: jest.fn(),
+  };
+
   const createComponent = (state) => {
     const store = new Vuex.Store({
       state,
+      actions: defaultActions,
     });
 
     wrapper = shallowMount(ArchivedFilter, {
@@ -68,6 +73,22 @@ describe('ArchivedFilter', () => {
 
     it('renders the component', () => {
       expect(findCheckboxFilter().attributes('checked')).toBe(checkboxState);
+    });
+  });
+
+  describe('selectedFilter logic', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('correctly executes setQuery without mutating the input', () => {
+      const selectedFilter = [false];
+      findCheckboxFilter().vm.$emit('input', selectedFilter);
+      expect(defaultActions.setQuery).toHaveBeenCalledWith(expect.any(Object), {
+        key: 'include_archived',
+        value: 'false',
+      });
+      expect(selectedFilter).toEqual([false]);
     });
   });
 });

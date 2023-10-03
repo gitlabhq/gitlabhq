@@ -15,13 +15,13 @@ module Gitlab
     # We url decode the path to avoid passing invalid paths forward in url encoded format.
     # Also see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24223#note_284122580
     # It also checks for backslash '\', which is sometimes a File::ALT_SEPARATOR.
-    def check_path_traversal!(path)
+    def check_path_traversal!(path, skip_decoding: false)
       return unless path
 
       path = path.to_s if path.is_a?(Gitlab::HashedPath)
       raise PathTraversalAttackError, 'Invalid path' unless path.is_a?(String)
 
-      path = ::Gitlab::Utils.decode_path(path)
+      path = ::Gitlab::Utils.decode_path(path) unless skip_decoding
 
       if path.match?(PATH_TRAVERSAL_REGEX)
         logger.warn(message: "Potential path traversal attempt detected", path: path.to_s)

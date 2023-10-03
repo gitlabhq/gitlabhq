@@ -218,6 +218,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. You have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or you have decided that this does not apply.
 1. You have properly separated EE content from FOSS, or this MR is FOSS only.
     - [Where should EE code go?](ee_features.md)
+1. If this MR can impact EE and FOSS in different ways, you have considered [running the CI pipelines in a FOSS context](ee_features.md#run-ci-pipelines-in-a-foss-context).
 1. You have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
 1. If a test passes with warnings and the failed job includes the text `Flaky test '<path/to/test>' was found in the list of files changed by this MR.`, you have fixed this test, or provided evidence explaining why this flaky test can be ignored.
 

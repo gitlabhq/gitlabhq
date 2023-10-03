@@ -15,7 +15,7 @@ module Gitlab
     Error = Class.new(StandardError)
 
     PERMITTED_ACTIONS = %w[
-      mv_repository remove_repository add_namespace rm_namespace mv_namespace
+      mv_repository remove_repository add_namespace mv_namespace
       repository_exists?
     ].freeze
 
@@ -103,8 +103,8 @@ module Gitlab
       false
     end
 
-    # Removes a repository from file system, using rm_diretory which is an alias
-    # for rm_namespace. Given the underlying implementation removes the name
+    # Removes a repository from file system.
+    # Given the underlying implementation removes the name
     # passed as second argument on the passed storage.
     #
     # @example Remove a repository
@@ -143,23 +143,6 @@ module Gitlab
     rescue GRPC::InvalidArgument => e
       raise ArgumentError, e.message
     end
-
-    # Remove directory from repositories storage
-    # Every repository inside this directory will be removed too
-    #
-    # @example Remove namespace directory
-    #   rm_namespace("default", "gitlab")
-    #
-    # @param [String] storage project's storage path
-    # @param [String] name namespace name
-    #
-    # @deprecated
-    def rm_namespace(storage, name)
-      Gitlab::GitalyClient::NamespaceService.new(storage).remove(name)
-    rescue GRPC::InvalidArgument => e
-      raise ArgumentError, e.message
-    end
-    alias_method :rm_directory, :rm_namespace
 
     # Move namespace directory inside repositories storage
     #

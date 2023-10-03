@@ -460,9 +460,7 @@ docker run -d --name service-mysql mysql:latest
 docker run -d --name service-postgres postgres:latest
 ```
 
-This creates two service containers, named `service-mysql` and
-`service-postgres` which use the latest MySQL and PostgreSQL images
-respectively. They both run in the background (`-d`).
+The previous commands create two service containers. The service container named `service-mysql` uses the latest MySQL image. The one named `service-postgres` uses the latest PostgreSQL image. Both service containers run in the background (`-d`).
 
 Finally, create a build container by executing the `build_script` file we
 created earlier:

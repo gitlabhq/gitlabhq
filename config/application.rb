@@ -80,6 +80,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/same_site_cookies')
     require_dependency Rails.root.join('lib/gitlab/middleware/handle_ip_spoof_attack_error')
     require_dependency Rails.root.join('lib/gitlab/middleware/handle_malformed_strings')
+    require_dependency Rails.root.join('lib/gitlab/middleware/path_traversal_check')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
@@ -430,6 +431,8 @@ module Gitlab
     config.middleware.insert_before ActionDispatch::RemoteIp, ::Gitlab::Middleware::HandleIpSpoofAttackError
 
     config.middleware.insert_after Rails::Rack::Logger, ::Gitlab::Middleware::HandleMalformedStrings
+
+    config.middleware.insert_after ::Gitlab::Middleware::HandleMalformedStrings, ::Gitlab::Middleware::PathTraversalCheck
 
     config.middleware.insert_after Rack::Sendfile, ::Gitlab::Middleware::RackMultipartTempfileFactory
 

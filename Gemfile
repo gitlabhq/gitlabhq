@@ -616,7 +616,7 @@ gem 'cvss-suite', '~> 3.0.1', require: 'cvss_suite' # rubocop:todo Gemfile/Missi
 gem 'arr-pm', '~> 0.0.12' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Remote Development
-gem 'devfile', '~> 0.0.22.pre.alpha1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'devfile', '~> 0.0.23.pre.alpha1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0' # rubocop:todo Gemfile/MissingFeatureCategory

@@ -151,17 +151,6 @@ RSpec.describe Gitlab::Shell do
       end
     end
 
-    describe '#remove' do
-      it 'removes the namespace' do
-        Gitlab::GitalyClient::NamespaceService.allow do
-          subject.add_namespace(storage, "mepmep")
-          subject.rm_namespace(storage, "mepmep")
-
-          expect(Gitlab::GitalyClient::NamespaceService.new(storage).exists?("mepmep")).to be(false)
-        end
-      end
-    end
-
     describe '#mv_namespace' do
       it 'renames the namespace' do
         Gitlab::GitalyClient::NamespaceService.allow do

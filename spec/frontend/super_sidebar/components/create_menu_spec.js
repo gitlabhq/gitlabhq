@@ -47,7 +47,7 @@ describe('CreateMenu component', () => {
       createWrapper();
 
       expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
-        crossAxis: -179,
+        crossAxis: -177,
         mainAxis: 4,
       });
     });
@@ -98,7 +98,7 @@ describe('CreateMenu component', () => {
     createWrapper({ provide: { isImpersonating: true } });
 
     expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
-      crossAxis: -147,
+      crossAxis: -143,
       mainAxis: 4,
     });
   });

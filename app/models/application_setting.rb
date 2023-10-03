@@ -799,6 +799,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :vertex_ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   # Restricting the validation to `on: :update` only to avoid cyclical dependencies with
   # License <--> ApplicationSetting. This method calls a license check when we create

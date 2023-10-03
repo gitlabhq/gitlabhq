@@ -13,7 +13,7 @@ module API
 
       expose :web_url, documentation: { type: 'string', example: 'https://example.com/group/my_project' } do |namespace|
         if namespace.user_namespace?
-          Gitlab::Routing.url_helpers.user_url(namespace.owner)
+          Gitlab::Routing.url_helpers.user_url(namespace.owner || namespace.route.path)
         else
           namespace.web_url
         end

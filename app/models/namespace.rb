@@ -6,7 +6,6 @@ class Namespace < ApplicationRecord
   include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
-  include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
   include FeatureGate
   include FromUnion
@@ -153,15 +152,12 @@ class Namespace < ApplicationRecord
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
-  after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
 
   after_save :reload_namespace_details
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
-
-  # Legacy Storage specific hooks
 
   after_commit :expire_child_caches, on: :update, if: -> {
     Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
@@ -312,7 +308,7 @@ class Namespace < ApplicationRecord
   end
 
   def human_name
-    owner_name
+    owner_name || path
   end
 
   def any_project_has_container_registry_tags?

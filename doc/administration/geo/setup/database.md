@@ -911,13 +911,20 @@ For each node running a Patroni instance on the secondary site:
 
    - If you are configuring a Patroni standby cluster on a site that previously had a working Patroni cluster:
 
-     ```shell
-     gitlab-ctl stop patroni
-     rm -rf /var/opt/gitlab/postgresql/data
-     /opt/gitlab/embedded/bin/patronictl -c /var/opt/gitlab/patroni/patroni.yaml remove postgresql-ha
-     gitlab-ctl reconfigure
-     gitlab-ctl start patroni
-     ```
+     1. Stop Patroni on all nodes that are managed by Patroni, including cascade replicas:
+
+        ```shell
+        gitlab-ctl stop patroni
+        ```
+
+     1. Run the following on the leader Patroni node to recreate the standby cluster:
+
+        ```shell
+        rm -rf /var/opt/gitlab/postgresql/data
+        /opt/gitlab/embedded/bin/patronictl -c /var/opt/gitlab/patroni/patroni.yaml remove postgresql-ha
+        gitlab-ctl reconfigure
+        gitlab-ctl start patroni
+        ```
 
 ### Migrating a single tracking database node to Patroni
 

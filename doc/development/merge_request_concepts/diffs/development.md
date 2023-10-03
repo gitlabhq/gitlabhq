@@ -395,3 +395,58 @@ sequenceDiagram
     PaginatedDiffSerializer-->>-.#diffs_batch: JSON
     .#diffs_batch-->>+Frontend: return 200 HTTP with JSON
 ```
+
+### `diffs.json`
+
+It's also possible to view diffs while creating a merge request by scrolling
+down to the bottom of the new merge request page and clicking **Changes** tab.
+It doesn't use the `diffs_batch.json` endpoint as the merge request record isn't
+created at that point yet. It uses the `diffs.json` instead.
+
+This flowchart shows a basic explanation of how each component is used in a
+`diffs.json` request.
+
+```mermaid
+flowchart TD
+    A[Frontend] --> B[diffs.json]
+    B --> C[Build merge request]
+    C --> D[Get diffs]
+    D --> E[Render view with diffs]
+    E --> G[Gitaly]
+    E --> F[Respond with JSON with the rendered view]
+```
+
+This sequence diagram shows a more detailed explanation of this flow.
+
+```mermaid
+sequenceDiagram
+    Frontend-->>+.#diffs: API call
+    Note over .#diffs: Build merge request
+    .#diffs-->>+MergeRequests_BuildService: execute
+    MergeRequests_BuildService-->>+Compare: new()
+    Compare-->>-MergeRequests_BuildService: Compare
+    MergeRequests_BuildService-->>+Compare: commits()
+    Compare-->>+Gitaly: ListCommits RPC
+    Gitaly-->-Compare: Commits
+    Compare-->>-MergeRequests_BuildService: Commits
+    MergeRequests_BuildService-->>-.#diffs: MergeRequest
+    Note over .#diffs: Get diffs
+    .#diffs-->>+MergeRequest: diffs()
+    MergeRequest-->>+Compare: diffs()
+    Compare-->>+Gitlab_Diff_FileCollection_Compare: new()
+    Gitlab_Diff_FileCollection_Compare-->>-Compare: diff file collection
+    Compare-->>-MergeRequest: diff file collection
+    MergeRequest-->>-.#diffs: @diffs =
+    Note over .#diffs: Render view with diffs
+    .#diffs-->>+HAML: view_to_html_string('projects/merge_requests/creations/_diffs', diffs: @diffs)
+    HAML-->>+Gitlab_Diff_FileCollection_Compare: diff_files()
+    Gitlab_Diff_FileCollection_Compare-->>+Compare: raw_diffs()
+    Compare-->>+Repository: diff()
+    Repository-->>+Gitaly: CommitDiff RPC
+    Gitaly-->>-Repository: GitalyClient::DiffStitcher
+    Repository-->>-Compare: Gitlab::Git::DiffCollection
+    Compare-->>-Gitlab_Diff_FileCollection_Compare: diff files
+    Gitlab_Diff_FileCollection_Compare-->>-HAML: diff files
+    HAML-->>-.#diffs: rendered view
+    .#diffs-->>-Frontend: Respond with JSON with rendered view
+```

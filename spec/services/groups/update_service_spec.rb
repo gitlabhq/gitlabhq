@@ -491,30 +491,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     it 'returns true' do
       expect(service.execute).to eq(true)
     end
-
-    context 'error moving group' do
-      before do
-        allow(internal_group).to receive(:move_dir).and_raise(Gitlab::UpdatePathError)
-      end
-
-      it 'does not raise an error' do
-        expect { service.execute }.not_to raise_error
-      end
-
-      it 'returns false' do
-        expect(service.execute).to eq(false)
-      end
-
-      it 'has the right error' do
-        service.execute
-
-        expect(internal_group.errors.full_messages.first).to eq('Gitlab::UpdatePathError')
-      end
-
-      it "hasn't changed the path" do
-        expect { service.execute }.not_to change { internal_group.reload.path }
-      end
-    end
   end
 
   context 'for a subgroup' do

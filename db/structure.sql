@@ -11856,6 +11856,8 @@ CREATE TABLE application_settings (
     search_rate_limit_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     snowplow_database_collector_hostname text,
     container_registry_db_enabled boolean DEFAULT false NOT NULL,
+    encrypted_vertex_ai_access_token bytea,
+    encrypted_vertex_ai_access_token_iv bytea,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -37026,7 +37028,7 @@ ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ci_pipelines
-    ADD CONSTRAINT fk_67e4288f3a FOREIGN KEY (auto_canceled_by_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE SET NULL NOT VALID;
+    ADD CONSTRAINT fk_67e4288f3a FOREIGN KEY (auto_canceled_by_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
