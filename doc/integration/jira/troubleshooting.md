@@ -181,6 +181,40 @@ The Jira issue list does not load if the project key contains a reserved JQL wor
 For more information, see [issue 426176](https://gitlab.com/gitlab-org/gitlab/-/issues/426176).
 Your Jira project key must not have [restricted words and characters](https://confluence.atlassian.com/jirasoftwareserver/advanced-searching-939938733.html#Advancedsearching-restrictionsRestrictedwordsandcharacters).
 
+## Jira credentials not allowed to access the data
+
+When you try to view the Jira issue list in GitLab, you might see this message:
+
+```plaintext
+The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.
+```
+
+This error occurs when the Jira credentials cannot access the Jira project key
+you specified in the [Jira issue integration](configure.md#configure-the-integration).
+To resolve this issue, ensure the Jira user you configured in the Jira issue integration
+has permission to view issues associated with the specified Jira project key.
+
+To verify the Jira user has this permission, do one of the following:
+
+- In your browser, sign into Jira with the user you configured in the Jira issue integration. Because the Jira API supports
+  [cookie-based authentication](https://developer.atlassian.com/server/jira/platform/security-overview/#cookie-based-authentication),
+  you can see if any issues are returned in the browser:
+
+  ```plaintext
+  https://<ATLASSIAN_SUBDOMAIN>.atlassian.net/rest/api/2/search?jql=project=<JIRA PROJECT KEY>
+  ```
+
+- Use `curl` for HTTP basic authentication to access the API and see if any issues are returned:
+
+  ```shell
+  curl --verbose --user "$USER:$API_TOKEN" "https://$ATLASSIAN_SUBDOMAIN.atlassian.net/rest/api/2/search?jql=project=$JIRA_PROJECT_KEY" | jq
+  ```
+
+Both methods should return a JSON response:
+
+- `total` gives a count of the issues that match the Jira project key.
+- `issues` contains an array of the issues that match the Jira project key.
+
 ## GitLab cannot link to a Jira issue
 
 When you mention a Jira issue ID in GitLab, the issue link might be missing.

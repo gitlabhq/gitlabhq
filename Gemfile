@@ -55,7 +55,6 @@ gem 'pg', '~> 1.5.4' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'neighbor', '~> 0.2.3' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'rugged', '~> 1.6' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'grape-path-helpers', '~> 1.7.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'faraday', '~> 1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'marginalia', '~> 1.11.1' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -131,18 +130,19 @@ gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap' # rubocop:todo 
 gem 'net-ldap', '~> 0.17.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # API
-gem 'grape', '~> 1.7.1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'grape-entity', '~> 0.10.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'grape', '~> 1.7.1', feature_category: :api
+gem 'grape-entity', '~> 0.10.0', feature_category: :api
+gem 'grape-swagger', '~> 1.6.1', group: [:development, :test], feature_category: :api
+gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test], feature_category: :api
+gem 'grape-path-helpers', '~> 1.7.1', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'grape-swagger', '~> 1.6.1', group: [:development, :test] # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test] # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GraphQL API
-gem 'graphql', '~> 1.13.19' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'graphiql-rails', '~> 1.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'apollo_upload_server', '~> 2.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'graphql-docs', '~> 2.1.0', group: [:development, :test] # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'graphlient', '~> 0.5.0' # Used by BulkImport feature (group::import) # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'graphql', '~> 1.13.19', feature_category: :api
+gem 'graphql-docs', '~> 2.1.0', group: [:development, :test], feature_category: :api
+gem 'graphiql-rails', '~> 1.8.0', feature_category: :api
+gem 'apollo_upload_server', '~> 2.1.0', feature_category: :api
+gem 'graphlient', '~> 0.5.0', feature_category: :importers # Used by BulkImport feature (group::import)
 
 # Generate Fake data
 gem 'ffaker', '~> 2.10' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -554,7 +554,7 @@ gem 'gitlab-experiment', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategor
 
 # Structured logging
 gem 'lograge', '~> 0.5' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'grape_logging', '~> 1.8' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'grape_logging', '~> 1.8', feature_category: :api
 
 # DNS Lookup
 gem 'gitlab-net-dns', '~> 0.9.2' # rubocop:todo Gemfile/MissingFeatureCategory

@@ -146,7 +146,7 @@ export default {
     <gl-button
       v-gl-tooltip.viewport
       v-gl-modal="modalId"
-      class="gl-text-white! gl-mr-2"
+      class="gl-mr-2"
       :title="header"
       variant="link"
     >

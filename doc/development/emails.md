@@ -15,6 +15,8 @@ both backward and forward compatibility. Adhere to the Sidekiq steps for
 
 The same applies to a new mailer method, or a new mailer. If you introduce either,
 follow the steps for [adding new workers](sidekiq/compatibility_across_updates.md#adding-new-workers).
+This includes wrapping the new method with a [feature flag](feature_flags/index.md)
+so the new mailer can be disabled if a problem arises after deployment.
 
 In the following example from [`NotificationService`](https://gitlab.com/gitlab-org/gitlab/-/blob/33ccb22e4fc271dbaac94b003a7a1a2915a13441/app/services/notification_service.rb#L74)
 adding or removing an argument in this mailer's definition may cause problems

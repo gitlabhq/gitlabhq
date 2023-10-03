@@ -54,13 +54,15 @@ module Packages
           update_linked_package
         end
 
-        update_package(target_package)
+        build_infos = package_to_destroy&.build_infos || []
+
+        update_package(target_package, build_infos)
         ::Packages::UpdatePackageFileService.new(@package_file, package_id: target_package.id, file_name: package_filename)
                                             .execute
         package_to_destroy&.destroy!
       end
 
-      def update_package(package)
+      def update_package(package, build_infos)
         return if symbol_package?
 
         ::Packages::Nuget::SyncMetadatumService
@@ -71,6 +73,7 @@ module Packages
           .new(package, package_tags)
           .execute
 
+        package.build_infos << build_infos if build_infos.any?
       rescue StandardError => e
         raise InvalidMetadataError, e.message
       end
@@ -79,18 +82,6 @@ module Packages
         fields = [package_name, package_version, package_description]
         fields << package_authors unless symbol_package?
         fields.all?(&:present?)
-      end
-
-      def link_to_existing_package
-        package_to_destroy = @package_file.package
-        # Updating package_id updates the path where the file is stored.
-        # We must pass the file again so that CarrierWave can handle the update
-        @package_file.update!(
-          package_id: existing_package.id,
-          file: @package_file.file
-        )
-        package_to_destroy.destroy!
-        existing_package
       end
 
       def update_linked_package
@@ -106,12 +97,15 @@ module Packages
       end
 
       def existing_package
-        @package_file.project.packages
-                             .nuget
-                             .with_name(package_name)
-                             .with_version(package_version)
-                             .not_pending_destruction
-                             .first
+        ::Packages::Nuget::PackageFinder
+          .new(
+            nil,
+            @package_file.project,
+            package_name: package_name,
+            package_version: package_version
+          )
+          .execute
+          .first
       end
       strong_memoize_attr :existing_package
 

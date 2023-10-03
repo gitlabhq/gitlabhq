@@ -10,7 +10,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
-import isShowingLabelsQuery from '~/boards/graphql/client/is_showing_labels.query.graphql';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';

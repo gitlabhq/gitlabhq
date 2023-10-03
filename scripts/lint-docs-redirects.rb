@@ -9,6 +9,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'cgi'
+require 'yaml'
 
 class LintDocsRedirect
   COLOR_CODE_RED = "\e[31m"
@@ -26,6 +27,7 @@ class LintDocsRedirect
     abort_unless_merge_request_iid_exists
 
     check_renamed_deleted_files
+    check_for_circular_redirects
   end
 
   private
@@ -165,12 +167,16 @@ class LintDocsRedirect
     end
   end
 
+  def doc_file?(file)
+    file['old_path'].start_with?('doc/') && file['old_path'].end_with?('.md')
+  end
+
   def renamed_doc_file?(file)
-    file['renamed_file'] == true && file['old_path'].start_with?('doc')
+    file['renamed_file'] == true && doc_file?(file)
   end
 
   def deleted_doc_file?(file)
-    file['deleted_file'] == true && file['old_path'].start_with?('doc')
+    file['deleted_file'] == true && doc_file?(file)
   end
 
   # Create a list of hashes of the renamed documentation files
@@ -196,6 +202,48 @@ class LintDocsRedirect
       puts
 
       check_for_missing_nav_entry(file)
+    end
+  end
+
+  # Search for '+redirect_to' in the diff to find the new value. It should
+  # return a string of "+redirect_to: 'file.md'", in which case, delete the
+  # '+' prefix. If not found, skip and go to next file.
+  def redirect_to(diff_file)
+    redirect_to = diff_file["diff"]
+                    .lines
+                    .find { |e| e.include?('+redirect_to') }
+                    &.delete_prefix('+')
+
+    return if redirect_to.nil?
+
+    YAML.safe_load(redirect_to)['redirect_to']
+  end
+
+  def all_doc_files
+    merge_request_diff.select do |file|
+      doc_file?(file)
+    end
+  end
+
+  # Check if a page redirects to itself
+  def check_for_circular_redirects
+    all_doc_files.each do |file|
+      next if redirect_to(file).nil?
+
+      basename = File.basename(file['old_path'])
+
+      # Fail if the 'redirect_to' value is the same as the file's basename.
+      next unless redirect_to(file) == basename
+
+      warn <<~WARNING
+        #{COLOR_CODE_RED}✖ ERROR: Circular redirect detected. The 'redirect_to' value points to the same file.#{COLOR_CODE_RESET}
+      WARNING
+
+      puts
+      puts "File        : #{file['old_path']}"
+      puts "Redirect to : #{redirect_to(file)}"
+
+      abort
     end
   end
 end

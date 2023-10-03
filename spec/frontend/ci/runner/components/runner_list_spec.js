@@ -1,14 +1,11 @@
 import { GlTableLite, GlSkeletonLoader } from '@gitlab/ui';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import {
-  extendedWrapper,
-  shallowMountExtended,
-  mountExtended,
-} from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createLocalState } from '~/ci/runner/graphql/list/local_state';
+import { stubComponent } from 'helpers/stub_component';
 
 import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerBulkDelete from '~/ci/runner/components/runner_bulk_delete.vue';
@@ -29,14 +26,11 @@ describe('RunnerList', () => {
   const findHeaders = () => wrapper.findAll('th');
   const findRows = () => wrapper.findAll('[data-testid^="runner-row-"]');
   const findCell = ({ row = 0, fieldKey }) =>
-    extendedWrapper(findRows().at(row).find(`[data-testid="td-${fieldKey}"]`));
+    findRows().at(row).find(`[data-testid="td-${fieldKey}"]`);
   const findRunnerBulkDelete = () => wrapper.findComponent(RunnerBulkDelete);
   const findRunnerBulkDeleteCheckbox = () => wrapper.findComponent(RunnerBulkDeleteCheckbox);
 
-  const createComponent = (
-    { props = {}, provide = {}, ...options } = {},
-    mountFn = shallowMountExtended,
-  ) => {
+  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMountExtended) => {
     ({ cacheConfig, localMutations } = createLocalState());
 
     wrapper = mountFn(RunnerList, {
@@ -49,7 +43,6 @@ describe('RunnerList', () => {
         localMutations,
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
-        ...provide,
       },
       ...options,
     });
@@ -81,7 +74,11 @@ describe('RunnerList', () => {
   });
 
   it('Sets runner id as a row key', () => {
-    createComponent();
+    createComponent({
+      stubs: {
+        GlTableLite: stubComponent(GlTableLite),
+      },
+    });
 
     expect(findTable().attributes('primary-key')).toBe('id');
   });
@@ -220,7 +217,12 @@ describe('RunnerList', () => {
 
   describe('When data is loading', () => {
     it('shows a busy state', () => {
-      createComponent({ props: { runners: [], loading: true } });
+      createComponent({
+        props: { runners: [], loading: true },
+        stubs: {
+          GlTableLite: stubComponent(GlTableLite),
+        },
+      });
 
       expect(findTable().classes('gl-opacity-6')).toBe(true);
     });

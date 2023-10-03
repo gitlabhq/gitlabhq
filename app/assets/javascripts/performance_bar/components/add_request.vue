@@ -41,7 +41,7 @@ export default {
     <gl-form class="gl-display-flex gl-align-items-center" @submit.prevent>
       <gl-button
         v-gl-tooltip.viewport
-        class="gl-text-white! gl-mr-2"
+        class="gl-mr-2"
         category="tertiary"
         variant="link"
         icon="plus"

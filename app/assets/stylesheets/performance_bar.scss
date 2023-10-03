@@ -36,6 +36,11 @@
     color: initial;
   }
 
+  .gl-link,
+  .gl-button {
+    color: $white;
+  }
+
   &.disabled {
     display: none;
   }
@@ -50,6 +55,10 @@
 
   &.development {
     background-color: $perf-bar-development;
+
+    .gl-dark & {
+      background-color: $red-950;
+    }
   }
 
   // UI Elements

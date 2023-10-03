@@ -109,6 +109,9 @@ export default {
     },
   },
   computed: {
+    isLoading() {
+      return this.$apollo.queries.workItem.loading;
+    },
     signedIn() {
       return Boolean(window.gon.current_user_id);
     },
@@ -248,7 +251,7 @@ export default {
   <li :class="timelineEntryClass">
     <work-item-note-signed-out v-if="!signedIn" />
     <work-item-comment-locked
-      v-else-if="!canCreateNote"
+      v-else-if="!isLoading && !canCreateNote"
       :work-item-type="workItemType"
       :is-project-archived="isProjectArchived"
     />

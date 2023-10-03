@@ -33996,6 +33996,9 @@ msgstr ""
 msgid "PerformanceBar|SQL queries"
 msgstr ""
 
+msgid "PerformanceBar|Show stats"
+msgstr ""
+
 msgid "PerformanceBar|Sort by duration"
 msgstr ""
 
@@ -35766,9 +35769,6 @@ msgstr ""
 msgid "ProductAnalytics|All Events Compared"
 msgstr ""
 
-msgid "ProductAnalytics|All Features"
-msgstr ""
-
 msgid "ProductAnalytics|All Pages"
 msgstr ""
 
@@ -35811,9 +35811,6 @@ msgstr ""
 msgid "ProductAnalytics|Compares click events against each other"
 msgstr ""
 
-msgid "ProductAnalytics|Compares feature usage of all features against each other"
-msgstr ""
-
 msgid "ProductAnalytics|Compares page views of all pages against each other"
 msgstr ""
 
@@ -35839,9 +35836,6 @@ msgid "ProductAnalytics|Events grouped by %{granularity}"
 msgstr ""
 
 msgid "ProductAnalytics|Events over time"
-msgstr ""
-
-msgid "ProductAnalytics|Feature Usages"
 msgstr ""
 
 msgid "ProductAnalytics|For more information, see the %{linkStart}docs%{linkEnd}."
@@ -35929,9 +35923,6 @@ msgid "ProductAnalytics|This might take a while, feel free to navigate away from
 msgstr ""
 
 msgid "ProductAnalytics|To instrument your application, select one of the options below. After an option has been instrumented and data is being collected, this page will progress to the next step."
-msgstr ""
-
-msgid "ProductAnalytics|Track specific features"
 msgstr ""
 
 msgid "ProductAnalytics|Unique Users"
@@ -49839,7 +49830,7 @@ msgstr ""
 msgid "Tracing|Last 1 hour"
 msgstr ""
 
-msgid "Tracing|Last 1 minute"
+msgid "Tracing|Last 12 hours"
 msgstr ""
 
 msgid "Tracing|Last 14 days"
@@ -49855,6 +49846,12 @@ msgid "Tracing|Last 30 days"
 msgstr ""
 
 msgid "Tracing|Last 30 minutes"
+msgstr ""
+
+msgid "Tracing|Last 4 hours"
+msgstr ""
+
+msgid "Tracing|Last 5 minutes"
 msgstr ""
 
 msgid "Tracing|Last 7 days"

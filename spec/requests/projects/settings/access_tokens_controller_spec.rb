@@ -117,23 +117,5 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
     it 'sets available scopes' do
       expect(assigns(:scopes)).to include(Gitlab::Auth::K8S_PROXY_SCOPE)
     end
-
-    context 'with feature flag k8s_proxy_pat disabled' do
-      before do
-        stub_feature_flags(k8s_proxy_pat: false)
-        get project_settings_access_tokens_path(resource)
-      end
-
-      it 'includes details of the active project access tokens' do
-        active_access_tokens =
-          ::ProjectAccessTokenSerializer.new.represent(resource_access_tokens.reverse, project: resource)
-
-        expect(assigns(:active_access_tokens).to_json).to eq(active_access_tokens.to_json)
-      end
-
-      it 'sets available scopes' do
-        expect(assigns(:scopes)).not_to include(Gitlab::Auth::K8S_PROXY_SCOPE)
-      end
-    end
   end
 end

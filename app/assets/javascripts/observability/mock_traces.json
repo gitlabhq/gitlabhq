@@ -10,36 +10,6 @@
       "duration_nano": 42628000,
       "spans": [
         {
-          "timestamp": "2023-09-21T06:40:27.068451Z",
-          "span_id": "DAF025F127D669B6",
-          "trace_id": "5301d339-c552-d9e3-6827-9cd032519b36",
-          "service_name": "gitlab-crm",
-          "operation": "OrganizationsController#destroy",
-          "duration_nano": 42628000,
-          "parent_span_id": "",
-          "statusCode": "STATUS_CODE_UNSET"
-        },
-        {
-          "timestamp": "2023-09-21T06:40:27.095691Z",
-          "span_id": "4F303F47649FFE54",
-          "trace_id": "5301d339-c552-d9e3-6827-9cd032519b36",
-          "service_name": "gitlab-crm-fake-service-1",
-          "operation": "gitlabcrm_development",
-          "duration_nano": 644000,
-          "parent_span_id": "DAF025F127D669B6",
-          "statusCode": "STATUS_CODE_UNSET"
-        },
-        {
-          "timestamp": "2023-09-21T06:40:27.096565Z",
-          "span_id": "D0AF2785B748B412",
-          "trace_id": "5301d339-c552-d9e3-6827-9cd032519b36",
-          "service_name": "gitlab-crm",
-          "operation": "EXECUTE gitlabcrm_development",
-          "duration_nano": 553000,
-          "parent_span_id": "DAF025F127D669B6",
-          "statusCode": "STATUS_CODE_UNSET"
-        },
-        {
           "timestamp": "2023-09-21T06:40:27.097963Z",
           "span_id": "7064343591DE5A0A",
           "trace_id": "5301d339-c552-d9e3-6827-9cd032519b36",
@@ -57,6 +27,16 @@
           "operation": "EXECUTE gitlabcrm_development",
           "duration_nano": 1099000,
           "parent_span_id": "7064343591DE5A0A",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-09-21T06:40:27.068451Z",
+          "span_id": "DAF025F127D669B6",
+          "trace_id": "5301d339-c552-d9e3-6827-9cd032519b36",
+          "service_name": "gitlab-crm",
+          "operation": "OrganizationsController#destroy",
+          "duration_nano": 42628000,
+          "parent_span_id": "",
           "statusCode": "STATUS_CODE_UNSET"
         },
         {
@@ -127,6 +107,26 @@
           "operation": "COMMIT gitlabcrm_development",
           "duration_nano": 782000,
           "parent_span_id": "DCF7DCAC40CE76F9",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-09-21T06:40:27.095691Z",
+          "span_id": "4F303F47649FFE54",
+          "trace_id": "5301d339-c552-d9e3-6827-9cd032519b36",
+          "service_name": "gitlab-crm-fake-service-1",
+          "operation": "gitlabcrm_development",
+          "duration_nano": 644000,
+          "parent_span_id": "DAF025F127D669B6",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-09-21T06:40:27.096565Z",
+          "span_id": "D0AF2785B748B412",
+          "trace_id": "5301d339-c552-d9e3-6827-9cd032519b36",
+          "service_name": "gitlab-crm",
+          "operation": "EXECUTE gitlabcrm_development",
+          "duration_nano": 553000,
+          "parent_span_id": "DAF025F127D669B6",
           "statusCode": "STATUS_CODE_UNSET"
         }
       ],

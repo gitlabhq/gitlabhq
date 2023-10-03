@@ -637,6 +637,20 @@ settings for the group using either the GitLab UI or GraphQL API.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Offset pagination for `/users` REST API endpoint is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/426547).
+</div>
+
+Offset pagination for the `/users` REST API is deprecated in GitLab 16.5, and will be removed in GitLab 17.0. Use [keyset pagination](https://docs.gitlab.com/ee/api/rest/index.html#keyset-based-pagination) instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Old versions of JSON web tokens are deprecated
 
 <div class="deprecation-notes">

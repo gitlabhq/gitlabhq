@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::BuildInfo, type: :model do
+RSpec.describe Packages::BuildInfo, type: :model, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:package) }
     it { is_expected.to belong_to(:pipeline) }

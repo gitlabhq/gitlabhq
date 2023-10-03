@@ -16,6 +16,15 @@ Statistics include:
 - Storage usage that exceeds the storage quota.
 - Available purchased storage.
 
+Storage and network usage are calculated with the binary measurement system (1024 unit multiples).
+Storage usage is displayed in kibibytes (KiB), mebibytes (MiB),
+or gibibytes (GiB). 1 KiB is 2^10 bytes (1024 bytes),
+1 MiB is 2^20 bytes (1024 kibibytes), 1 GiB is 2^30 bytes (1024 mebibytes).
+
+NOTE:
+Storage usage labels are being transitioned from `KB` to `KiB`, `MB` to `MiB`, and `GB` to `GiB`. During this transition,
+you might see references to `KB`, `MB`, and `GB` in the UI and documentation.
+
 ## View storage usage
 
 Prerequisites:

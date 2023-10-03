@@ -13,7 +13,7 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
-import { badgeState } from '~/merge_requests/components/merge_request_status_badge.vue';
+import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

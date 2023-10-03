@@ -85,7 +85,8 @@ The user authorization step is automatically skipped for this application.
 
 ## View all authorized applications
 
-> `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
+> - `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
+> - Feature flag `k8s_proxy_pat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518) in GitLab 16.5.
 
 To see all the application you've authorized with your GitLab credentials:
 

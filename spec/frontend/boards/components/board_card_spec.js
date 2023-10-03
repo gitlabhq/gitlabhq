@@ -9,7 +9,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { inactiveId } from '~/boards/constants';
-import isShowingLabelsQuery from '~/boards/graphql/client/is_showing_labels.query.graphql';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
 
 describe('Board card', () => {

@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { defaultDataIdFromObject } from '@apollo/client/core';
 import { concatPagination } from '@apollo/client/utilities';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
-import isShowingLabelsQuery from '~/boards/graphql/client/is_showing_labels.query.graphql';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';

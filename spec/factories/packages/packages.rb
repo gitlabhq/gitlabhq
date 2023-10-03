@@ -214,6 +214,12 @@ FactoryBot.define do
           create :package_file, :snupkg, package: package, file_name: "#{package.name}.#{package.version}.snupkg"
         end
       end
+
+      trait :with_build do
+        after :create do |package|
+          create(:package_build_info, package: package)
+        end
+      end
     end
 
     factory :pypi_package do

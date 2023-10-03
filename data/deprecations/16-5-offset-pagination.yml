@@ -1,0 +1,9 @@
+- title: "Offset pagination for `/users` REST API endpoint is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "16.5"  # (required) The milestone when this feature was first announced as deprecated.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: hsutor  # (required) GitLab username of the person reporting the change
+  stage: govern  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426547  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Offset pagination for the `/users` REST API is deprecated in GitLab 16.5, and will be removed in GitLab 17.0. Use [keyset pagination](https://docs.gitlab.com/ee/api/rest/index.html#keyset-based-pagination) instead.
