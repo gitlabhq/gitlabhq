@@ -7,7 +7,7 @@ module QA
         module Modal
           class CreateNewFile < Page::Base
             view 'app/assets/javascripts/ide/components/new_dropdown/modal.vue' do
-              element :file_name_field, required: true
+              element 'file-name-field', required: true
               element :new_file_modal, required: true
               element :template_list_content
             end

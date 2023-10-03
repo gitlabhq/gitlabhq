@@ -8,7 +8,7 @@ module QA
         include QA::Page::Component::ConfirmModal
 
         view 'app/views/groups/_home_panel.html.haml' do
-          element :new_project_button
+          element 'new-project-button'
           element :new_subgroup_button
           element :group_id_content
         end
@@ -23,7 +23,7 @@ module QA
         end
 
         def has_new_project_and_new_subgroup_buttons?
-          has_element?(:new_project_button)
+          has_element?('new_project_button')
           has_element?(:new_subgroup_button)
         end
 
@@ -36,7 +36,7 @@ module QA
         end
 
         def go_to_new_project
-          click_element :new_project_button
+          click_element 'new-project-button'
         end
 
         def group_id

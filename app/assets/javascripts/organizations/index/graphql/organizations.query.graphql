@@ -1,0 +1,14 @@
+query getCurrentUserOrganizations {
+  currentUser {
+    id
+    organizations @client {
+      nodes {
+        id
+        name
+        description
+        avatarUrl
+        webUrl
+      }
+    }
+  }
+}

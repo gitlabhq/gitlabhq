@@ -9,7 +9,7 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
   describe '#generate!' do
     let!(:rspec_files) { Tempfile.new(['rspec_files_path', '.txt']) }
     let(:rspec_files_content) do
-      "spec/migrations/a_spec.rb spec/migrations/b_spec.rb " \
+      "spec/migrations/a_spec.rb spec/migrations/b_spec.rb spec/migrations/c_spec.rb spec/migrations/d_spec.rb " \
         "spec/lib/gitlab/background_migration/a_spec.rb spec/lib/gitlab/background_migration/b_spec.rb " \
         "spec/models/a_spec.rb spec/models/b_spec.rb " \
         "spec/controllers/a_spec.rb spec/controllers/b_spec.rb " \
@@ -63,8 +63,13 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
     let(:knapsack_report_content) do
       <<~JSON
       {
-        "spec/migrations/a_spec.rb": 360.3,
-        "spec/migrations/b_spec.rb": 180.1,
+        "spec/migrations/a_spec.rb": 620.3,
+        "spec/migrations/b_spec.rb": 610.1,
+        "spec/migrations/c_spec.rb": 20.1,
+        "spec/migrations/d_spec.rb": 20.1,
+        "spec/migrations/e_spec.rb": 20.1,
+        "spec/migrations/f_spec.rb": 20.1,
+        "spec/migrations/g_spec.rb": 20.1,
         "spec/lib/gitlab/background_migration/a_spec.rb": 60.5,
         "spec/lib/gitlab/background_migration/b_spec.rb": 180.3,
         "spec/models/a_spec.rb": 360.2,
@@ -123,7 +128,7 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
 
           expect(File.read("#{pipeline_template.path}.yml"))
             .to eq(
-              "rspec migration:\n  parallel: 2\nrspec background_migration:\n  parallel: 2\n" \
+              "rspec migration:\n  parallel: 4\nrspec background_migration:\n  parallel: 2\n" \
               "rspec unit:\n  parallel: 2\nrspec integration:\n  parallel: 2\n" \
               "rspec system:\n  parallel: 2"
             )
@@ -164,10 +169,25 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
 
         expect(File.read("#{pipeline_template.path}.yml"))
           .to eq(
-            "rspec migration:\n  parallel: 2\nrspec background_migration:\n" \
+            "rspec migration:\n  parallel: 4\nrspec background_migration:\n" \
             "rspec unit:\n  parallel: 2\nrspec integration:\n" \
             "rspec system:\n  parallel: 2"
           )
+      end
+
+      context 'and RSpec files have a high duration' do
+        let(:rspec_files_content) do
+          "spec/migrations/a_spec.rb spec/migrations/b_spec.rb"
+        end
+
+        it 'generates the pipeline config with parallelization based on Knapsack' do
+          subject.generate!
+
+          expect(File.read("#{pipeline_template.path}.yml"))
+            .to eq(
+              "rspec migration:\n  parallel: 2"
+            )
+        end
       end
 
       context 'and Knapsack report does not contain valid JSON' do

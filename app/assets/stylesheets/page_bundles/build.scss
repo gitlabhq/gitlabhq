@@ -102,7 +102,7 @@
   .sidebar-container {
     @include gl-sticky;
     top: #{$top-bar-height - 1px};
-    max-height: calc(100vh - #{$top-bar-height - 1px});
+    max-height: calc(100vh - #{$top-bar-height - 1px} - var(--performance-bar-height));
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;

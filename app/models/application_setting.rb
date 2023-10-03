@@ -30,7 +30,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     jitsu_project_xid
     jitsu_administrator_email
   ], remove_with: '16.5', remove_after: '2023-09-22'
-  ignore_columns %i[ai_access_token ai_access_token_iv], remove_with: '16.6', remove_after: '2023-10-22'
+  ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.6', remove_after: '2023-10-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

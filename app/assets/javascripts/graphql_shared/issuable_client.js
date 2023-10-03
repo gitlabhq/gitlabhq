@@ -87,14 +87,6 @@ export const config = {
                 const incomingWidget = incoming.find(
                   (w) => w.type && w.type === existingWidget.type,
                 );
-                // We don't want to override existing notes or award emojis with empty widget on work item updates
-                if (
-                  (incomingWidget?.type === WIDGET_TYPE_NOTES ||
-                    incomingWidget?.type === WIDGET_TYPE_AWARD_EMOJI) &&
-                  !context.variables.pageSize
-                ) {
-                  return existingWidget;
-                }
 
                 // we want to concat next page of awardEmoji to the existing ones
                 if (incomingWidget?.type === WIDGET_TYPE_AWARD_EMOJI && context.variables.after) {
@@ -126,7 +118,7 @@ export const config = {
                   };
                 }
 
-                return incomingWidget || existingWidget;
+                return { ...existingWidget, ...incomingWidget };
               });
             },
           },

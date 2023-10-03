@@ -44,8 +44,8 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
           />
           <span
             class="font-weight-bold js-visibility-option ml-1"
-            data-qa-selector="visibility_content"
             data-qa-visibility="Private"
+            data-testid="visibility-content"
           >
             Private
           </span>
@@ -64,8 +64,8 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
           />
           <span
             class="font-weight-bold js-visibility-option ml-1"
-            data-qa-selector="visibility_content"
             data-qa-visibility="Internal"
+            data-testid="visibility-content"
           >
             Internal
           </span>
@@ -84,8 +84,8 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
           />
           <span
             class="font-weight-bold js-visibility-option ml-1"
-            data-qa-selector="visibility_content"
             data-qa-visibility="Public"
+            data-testid="visibility-content"
           >
             Public
           </span>

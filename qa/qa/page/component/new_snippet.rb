@@ -10,22 +10,22 @@ module QA
           super
 
           base.view 'app/assets/javascripts/snippets/components/edit.vue' do
-            element :snippet_title_field, required: true
-            element :submit_button
+            element 'snippet-title-input-field', required: true
+            element 'submit-button'
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_description_edit.vue' do
-            element :snippet_description_field
-            element :description_placeholder, required: true
+            element 'snippet-description-field'
+            element 'description-placeholder', required: true
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_blob_edit.vue' do
-            element :file_name_field
-            element :file_holder_container
+            element 'file-name-field'
+            element 'file-holder-container'
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_blob_actions_edit.vue' do
-            element :add_file_button
+            element 'add-button'
           end
 
           base.view 'app/views/shared/_zen.html.haml' do
@@ -34,36 +34,36 @@ module QA
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_visibility_edit.vue' do
-            element :visibility_content
+            element 'visibility-content'
           end
         end
 
         def fill_title(title)
-          fill_element :snippet_title_field, title
+          fill_element 'snippet-title-input-field', title
         end
 
         def fill_description(description)
-          click_element :description_placeholder
-          fill_element :snippet_description_field, description
+          click_element 'description-placeholder'
+          fill_element 'snippet-description-field', description
         end
 
         def set_visibility(visibility)
-          click_element(:visibility_content, visibility: visibility)
+          click_element('visibility-content', visibility: visibility)
         end
 
         def fill_file_name(name, file_number = nil)
           if file_number
-            within_element_by_index(:file_holder_container, file_number - 1) do
-              fill_element(:file_name_field, name)
+            within_element_by_index('file-holder-container', file_number - 1) do
+              fill_element('file-name-field', name)
             end
           else
-            fill_element(:file_name_field, name)
+            fill_element('file-name-field', name)
           end
         end
 
         def fill_file_content(content, file_number = nil)
           if file_number
-            within_element_by_index(:file_holder_container, file_number - 1) do
+            within_element_by_index('file-holder-container', file_number - 1) do
               text_area.set(content)
             end
           else
@@ -72,13 +72,13 @@ module QA
         end
 
         def click_add_file
-          click_element(:add_file_button)
+          click_element('add-button')
         end
 
         def click_create_snippet_button
-          click_element_coordinates(:submit_button)
+          click_element_coordinates('submit-button')
           wait_until(reload: false) do
-            has_no_element?(:snippet_title_field)
+            has_no_element?('snippet-title-input-field')
           end
         end
 

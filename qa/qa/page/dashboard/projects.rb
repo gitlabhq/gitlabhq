@@ -5,34 +5,34 @@ module QA
     module Dashboard
       class Projects < Page::Base
         view 'app/views/shared/projects/_search_form.html.haml' do
-          element :project_filter_form_container, required: true
+          element 'project-filter-form-container', required: true
         end
 
         view 'app/views/shared/projects/_project.html.haml' do
-          element :project_content
-          element :user_role_content
+          element 'project-content'
+          element 'user-role-content'
         end
 
         view 'app/views/dashboard/_projects_head.html.haml' do
-          element :new_project_button
+          element 'new-project-button'
         end
 
         view 'app/views/dashboard/projects/_blank_state_welcome.html.haml' do
-          element :new_project_button
+          element 'new-project-button'
         end
 
         view 'app/views/dashboard/projects/_blank_state_admin_welcome.html.haml' do
-          element :new_project_button
+          element 'new-project-button'
         end
 
         def has_project_with_access_role?(project_name, access_role)
-          within_element(:project_content, text: project_name) do
-            has_element?(:user_role_content, text: access_role)
+          within_element('project-content', text: project_name) do
+            has_element?('user-role-content', text: access_role)
           end
         end
 
         def filter_by_name(name)
-          within_element(:project_filter_form_container) do
+          within_element('project-filter-form-container') do
             fill_in :name, with: name
           end
         end
@@ -44,7 +44,7 @@ module QA
         end
 
         def click_new_project_button
-          click_element(:new_project_button, Page::Project::New)
+          click_element('new-project-button', Page::Project::New)
         end
 
         def self.path
@@ -52,7 +52,7 @@ module QA
         end
 
         def clear_project_filter
-          fill_element(:project_filter_form_container, "")
+          fill_element('project-filter-form-container', "")
         end
       end
     end

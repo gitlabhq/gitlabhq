@@ -20,6 +20,13 @@ module Organizations
       shared_groups_and_projects_app_data.to_json
     end
 
+    def organization_index_app_data
+      {
+        new_organization_url: new_organization_path,
+        organizations_empty_state_svg_path: image_path('illustrations/empty-state/empty-organizations-md.svg')
+      }
+    end
+
     private
 
     def shared_groups_and_projects_app_data

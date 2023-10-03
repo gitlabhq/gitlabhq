@@ -4,8 +4,11 @@ export const newCandidate = () => ({
     { name: 'MaxDepth', value: '3' },
   ],
   metrics: [
-    { name: 'AUC', value: '.55' },
-    { name: 'Accuracy', value: '.99' },
+    { name: 'AUC', value: '.55', step: 0 },
+    { name: 'Accuracy', value: '.99', step: 1 },
+    { name: 'Accuracy', value: '.98', step: 2 },
+    { name: 'Accuracy', value: '.97', step: 3 },
+    { name: 'F1', value: '.1', step: 3 },
   ],
   metadata: [
     { name: 'FileName', value: 'test.py' },

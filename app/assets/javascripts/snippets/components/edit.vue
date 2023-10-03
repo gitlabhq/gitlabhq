@@ -232,8 +232,7 @@ export default {
         <gl-form-input
           id="snippet-title"
           v-model="snippet.title"
-          data-testid="snippet-title-input"
-          data-qa-selector="snippet_title_field"
+          data-testid="snippet-title-input-field"
           :autofocus="true"
         />
       </gl-form-group>
@@ -261,7 +260,7 @@ export default {
             category="primary"
             type="submit"
             variant="confirm"
-            data-qa-selector="submit_button"
+            data-testid="submit-button"
             :disabled="isUpdating"
             >{{ saveButtonLabel }}</gl-button
           >

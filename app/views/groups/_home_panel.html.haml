@@ -35,7 +35,7 @@
 
         - if can_create_projects
           .gl-sm-w-auto.gl-w-full
-            = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), variant: :confirm, button_options: { data: { qa_selector: 'new_project_button' }, class: 'gl-sm-w-auto gl-w-full' }) do
+            = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), variant: :confirm, button_options: { data: { testid: 'new-project-button' }, class: 'gl-sm-w-auto gl-w-full' }) do
               = _('New project')
 
   - if @group.description.present?

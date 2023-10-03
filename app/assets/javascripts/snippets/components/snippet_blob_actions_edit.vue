@@ -157,10 +157,9 @@ export default {
     </gl-form-group>
     <gl-button
       :disabled="!canAdd"
-      data-testid="add_button"
+      data-testid="add-button"
       class="gl-my-3"
       variant="dashed"
-      data-qa-selector="add_file_button"
       @click="addBlob"
       >{{ addLabel }}</gl-button
     >

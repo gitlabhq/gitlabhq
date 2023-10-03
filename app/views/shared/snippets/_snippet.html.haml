@@ -1,13 +1,13 @@
 - link_project = local_assigns.fetch(:link_project, false)
 - notes_count = @noteable_meta_data[snippet.id].user_notes_count
 
-%li.snippet-row.py-3{ data: { qa_selector: 'snippet_link', qa_snippet_title: snippet.title } }
+%li.snippet-row.py-3{ data: { testid: 'snippet-link', qa_snippet_title: snippet.title } }
   = render Pajamas::AvatarComponent.new(snippet.author, size: 48, alt: "", class: 'gl-display-none gl-sm-display-block gl-float-left gl-mr-3')
 
   = link_to gitlab_snippet_path(snippet), class: "title" do
     = snippet.title
 
-  %ul.controls{ data: { qa_selector: 'snippet_file_count_content', qa_snippet_files: snippet.statistics&.file_count } }
+  %ul.controls{ data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
     %li
       = snippet_file_count(snippet)
     %li
@@ -15,7 +15,7 @@
         = sprite_icon('comments', css_class: 'gl-vertical-align-text-bottom')
         = notes_count
     %li
-      %span.sr-only{ data: { qa_selector: 'snippet_visibility_content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
+      %span.sr-only{ data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
         = visibility_level_label(snippet.visibility_level)
       = visibility_level_icon(snippet.visibility_level)
 

@@ -267,13 +267,13 @@ module QA
 
           def create_first_file(file_name)
             click_element(:first_file_button, Page::Component::WebIDE::Modal::CreateNewFile)
-            fill_element(:file_name_field, file_name)
+            fill_element('file-name-field', file_name)
             click_button('Create file')
           end
 
           def add_file(file_name, file_text)
             click_element(:new_file_button, Page::Component::WebIDE::Modal::CreateNewFile)
-            fill_element(:file_name_field, file_name)
+            fill_element('file-name-field', file_name)
             click_button('Create file')
             wait_until(reload: false) { has_file?(file_name) }
             within_element(:editor_container) do
@@ -283,7 +283,7 @@ module QA
 
           def add_directory(directory_name)
             click_element(:new_directory_button, Page::Component::WebIDE::Modal::CreateNewFile)
-            fill_element(:file_name_field, directory_name)
+            fill_element('file-name-field', directory_name)
             click_button('Create directory')
             wait_until(reload: false) { has_file?(directory_name) }
           end
@@ -292,7 +292,7 @@ module QA
             click_element('file-row-name-container', file_name: file_name)
             click_element(:dropdown_button)
             click_element(:rename_move_button, Page::Component::WebIDE::Modal::CreateNewFile)
-            fill_element(:file_name_field, new_file_name)
+            fill_element('file-name-field', new_file_name)
             click_button('Rename file')
           end
 

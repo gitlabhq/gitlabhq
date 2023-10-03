@@ -16,7 +16,7 @@ module QA
         end
 
         view 'app/views/shared/projects/_project.html.haml' do
-          element :project_content
+          element 'project-content'
         end
 
         def switch_to_code

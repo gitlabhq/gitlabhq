@@ -7,7 +7,7 @@
   .page-title-controls.gl-display-flex.gl-align-items-center.gl-gap-5
     = link_to _("Explore projects"), explore_projects_path
     - if current_user.can_create_project?
-      = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { qa_selector: 'new_project_button' } }) do
+      = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { testid: 'new-project-button' } }) do
         = _("New project")
 
 .top-area

@@ -442,6 +442,11 @@ msgid_plural "%d tags per image name"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d template found"
+msgid_plural "%d templates found"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d unresolved thread"
 msgid_plural "%d unresolved threads"
 msgstr[0] ""
@@ -3596,7 +3601,7 @@ msgstr ""
 msgid "AdminSettings|New CI/CD variables in projects and groups default to protected."
 msgstr ""
 
-msgid "AdminSettings|No required pipeline"
+msgid "AdminSettings|No required configuration"
 msgstr ""
 
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
@@ -3753,6 +3758,9 @@ msgid "AdminSettings|You can enable Registration Features because Service Ping i
 msgstr ""
 
 msgid "AdminSettings|You can't delete projects before the warning email is sent."
+msgstr ""
+
+msgid "AdminSettings|templates found"
 msgstr ""
 
 msgid "AdminStatistics|Active Users"
@@ -9008,9 +9016,6 @@ msgid "ByAuthor|by"
 msgstr ""
 
 msgid "CHANGELOG"
-msgstr ""
-
-msgid "CI"
 msgstr ""
 
 msgid "CI Lint"
@@ -28364,6 +28369,9 @@ msgstr ""
 msgid "MD5"
 msgstr ""
 
+msgid "MLExperimentTracking|CI Info"
+msgstr ""
+
 msgid "MLExperimentTracking|Delete candidate?"
 msgstr ""
 
@@ -30220,6 +30228,9 @@ msgstr ""
 msgid "MlExperimentTracking|CI Job"
 msgstr ""
 
+msgid "MlExperimentTracking|Candidate not linked to a CI build"
+msgstr ""
+
 msgid "MlExperimentTracking|Candidate removed"
 msgstr ""
 
@@ -30292,6 +30303,9 @@ msgstr ""
 msgid "MlExperimentTracking|Model experiments"
 msgstr ""
 
+msgid "MlExperimentTracking|Model performance"
+msgstr ""
+
 msgid "MlExperimentTracking|Model registry"
 msgstr ""
 
@@ -30305,6 +30319,15 @@ msgid "MlExperimentTracking|No candidates"
 msgstr ""
 
 msgid "MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client."
+msgstr ""
+
+msgid "MlExperimentTracking|No logged metadata"
+msgstr ""
+
+msgid "MlExperimentTracking|No logged metrics"
+msgstr ""
+
+msgid "MlExperimentTracking|No logged parameters"
 msgstr ""
 
 msgid "MlExperimentTracking|No name"
@@ -32968,13 +32991,22 @@ msgstr ""
 msgid "Organization|An error occurred loading the projects. Please refresh the page to try again."
 msgstr ""
 
+msgid "Organization|An error occurred loading user organizations. Please refresh the page to try again."
+msgstr ""
+
 msgid "Organization|Copy organization ID"
+msgstr ""
+
+msgid "Organization|Create an organization to contain all of your groups and projects."
 msgstr ""
 
 msgid "Organization|Frequently visited groups"
 msgstr ""
 
 msgid "Organization|Frequently visited projects"
+msgstr ""
+
+msgid "Organization|Get started with organizations"
 msgstr ""
 
 msgid "Organization|Manage"
@@ -45743,6 +45775,9 @@ msgid "StatusPage|your status page frontend."
 msgstr ""
 
 msgid "Step %{currentStep} of %{stepCount}"
+msgstr ""
+
+msgid "Step %{step}"
 msgstr ""
 
 msgid "Step 1."

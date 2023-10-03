@@ -23,7 +23,7 @@ module QA
           # This can cause webdriver to miss the hit so we wait for the svg to load (implicitly with has_element?)
           # before clicking the button.
           within_element(:label_svg_content) do
-            has_element?(:js_lazy_loaded_content)
+            has_element?('js-lazy-loaded-content')
           end
 
           click_element :create_new_label_button

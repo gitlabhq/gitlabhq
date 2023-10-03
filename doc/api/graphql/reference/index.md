@@ -14126,6 +14126,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourceforkscount"></a>`forksCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Number of times the catalog resource has been forked. |
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. ID of the catalog resource. |
+| <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Release date of the catalog resource's latest version. |
 | <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`Release`](#release) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Latest version of the catalog resource. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Name of the catalog resource. |
 | <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Count of open issues that belong to the the catalog resource. |
@@ -26964,6 +26965,8 @@ Values for sorting catalog resources.
 | ----- | ----------- |
 | <a id="cicatalogresourcesortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
 | <a id="cicatalogresourcesortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="cicatalogresourcesortlatest_released_at_asc"></a>`LATEST_RELEASED_AT_ASC` | Latest release date by ascending order. |
+| <a id="cicatalogresourcesortlatest_released_at_desc"></a>`LATEST_RELEASED_AT_DESC` | Latest release date by descending order. |
 | <a id="cicatalogresourcesortname_asc"></a>`NAME_ASC` | Name by ascending order. |
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
 | <a id="cicatalogresourcesortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |

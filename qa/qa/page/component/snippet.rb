@@ -201,7 +201,7 @@ module QA
           click_element('comment-button')
 
           unless has_element?('note-author-content')
-            raise ElementNotFound, "Comment did not appear as expected"
+            raise QA::Page::Base::ElementNotFound, "Comment did not appear as expected"
           end
         end
 
@@ -233,7 +233,7 @@ module QA
           click_element('save-comment-button')
 
           unless has_element?('note-author-content')
-            raise ElementNotFound, "Comment did not appear as expected"
+            raise QA::Page::Base::ElementNotFound, "Comment did not appear as expected"
           end
         end
 
@@ -243,7 +243,7 @@ module QA
           click_confirmation_ok_button
 
           unless has_no_element?('note-content', text: comment)
-            raise ElementNotFound, "Comment was not removed as expected"
+            raise QA::Page::Base::ElementNotFound, "Comment was not removed as expected"
           end
         end
 
@@ -265,7 +265,7 @@ module QA
           click_element('comment-button')
 
           unless has_element?('note-author-content')
-            raise ElementNotFound, "Comment did not appear as expected"
+            raise QA::Page::Base::ElementNotFound, "Comment did not appear as expected"
           end
         end
 

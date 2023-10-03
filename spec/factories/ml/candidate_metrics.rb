@@ -6,7 +6,7 @@ FactoryBot.define do
 
     sequence(:name) { |n| "metric#{n}" }
     value { 2.0 }
-    step { 1 }
+    step { 0 }
     tracked_at { 1234 }
   end
 end

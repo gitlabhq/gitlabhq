@@ -9,15 +9,15 @@ module QA
           include Page::Component::BlobContent
 
           view 'app/views/shared/snippets/_snippet.html.haml' do
-            element :snippet_link
+            element 'snippet-link'
           end
 
           def has_project_snippet?(title)
-            has_element?(:snippet_link, snippet_title: title)
+            has_element?('snippet-link', snippet_title: title)
           end
 
           def click_snippet_link(title)
-            within_element(:snippet_link, text: title) do
+            within_element('snippet-link', text: title) do
               click_link(title)
             end
           end

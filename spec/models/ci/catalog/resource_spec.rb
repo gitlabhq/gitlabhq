@@ -3,16 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
+  let_it_be(:today) { Time.zone.now }
+  let_it_be(:yesterday) { today - 1.day }
+  let_it_be(:tomorrow) { today + 1.day }
+
   let_it_be(:project) { create(:project, name: 'A') }
   let_it_be(:project_2) { build(:project, name: 'Z') }
   let_it_be(:project_3) { build(:project, name: 'L') }
-  let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
-  let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2) }
-  let_it_be(:resource_3) { create(:ci_catalog_resource, project: project_3) }
+  let_it_be(:resource) { create(:ci_catalog_resource, project: project, latest_released_at: tomorrow) }
+  let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2, latest_released_at: today) }
+  let_it_be(:resource_3) { create(:ci_catalog_resource, project: project_3, latest_released_at: nil) }
 
-  let_it_be(:release1) { create(:release, project: project, released_at: Time.zone.now - 2.days) }
-  let_it_be(:release2) { create(:release, project: project, released_at: Time.zone.now - 1.day) }
-  let_it_be(:release3) { create(:release, project: project, released_at: Time.zone.now) }
+  let_it_be(:release1) { create(:release, project: project, released_at: yesterday) }
+  let_it_be(:release2) { create(:release, project: project, released_at: today) }
+  let_it_be(:release3) { create(:release, project: project, released_at: tomorrow) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
@@ -55,6 +59,22 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       ordered_resources = described_class.order_by_name_asc
 
       expect(ordered_resources.pluck(:name)).to eq(%w[A L Z])
+    end
+  end
+
+  describe '.order_by_latest_released_at_desc' do
+    it 'returns catalog resources sorted by latest_released_at descending with nulls last' do
+      ordered_resources = described_class.order_by_latest_released_at_desc
+
+      expect(ordered_resources).to eq([resource, resource_2, resource_3])
+    end
+  end
+
+  describe '.order_by_latest_released_at_asc' do
+    it 'returns catalog resources sorted by latest_released_at ascending with nulls last' do
+      ordered_resources = described_class.order_by_latest_released_at_asc
+
+      expect(ordered_resources).to eq([resource_2, resource, resource_3])
     end
   end
 

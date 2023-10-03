@@ -111,7 +111,7 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_catego
 
       context "when distribution is specified as an array" do
         before do
-          subject_experiment.rollout(described_class, distribution: [0, 32, 25, 43])
+          subject_experiment.rollout(described_class, distribution: [32, 25, 43])
         end
 
         it "rolls out with the expected distribution" do
@@ -119,19 +119,19 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_catego
 
           100.times { |i| run_cycle(subject_experiment, value: i) }
 
-          expect(counts).to eq(control: 2, variant1: 37, variant2: 24, variant3: 37)
+          expect(counts).to eq(variant1: 39, variant2: 24, variant3: 37)
         end
       end
 
       context "when distribution is specified as a hash" do
         before do
-          subject_experiment.rollout(described_class, distribution: { control: 0, variant1: 90, variant2: 10 })
+          subject_experiment.rollout(described_class, distribution: { variant1: 90, variant2: 10 })
         end
 
         it "rolls out with the expected distribution" do
           100.times { |i| run_cycle(subject_experiment, value: i) }
 
-          expect(counts).to eq(control: 2, variant1: 93, variant2: 5)
+          expect(counts).to eq(variant1: 95, variant2: 5)
         end
       end
 

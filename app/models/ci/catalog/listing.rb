@@ -18,6 +18,8 @@ module Ci
         case sort.to_s
         when 'name_desc' then all_resources.order_by_name_desc
         when 'name_asc' then all_resources.order_by_name_asc
+        when 'latest_released_at_desc' then all_resources.order_by_latest_released_at_desc
+        when 'latest_released_at_asc' then all_resources.order_by_latest_released_at_asc
         else
           all_resources.order_by_created_at_desc
         end

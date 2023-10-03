@@ -13,6 +13,8 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
   let_it_be(:metrics) do
     [
       build_stubbed(:ml_candidate_metrics, name: 'metric1', value: 0.1, candidate: candidate),
+      build_stubbed(:ml_candidate_metrics, name: 'metric1', value: 0.2, step: 1, candidate: candidate),
+      build_stubbed(:ml_candidate_metrics, name: 'metric1', value: 0.3, step: 2, candidate: candidate),
       build_stubbed(:ml_candidate_metrics, name: 'metric2', value: 0.2, candidate: candidate),
       build_stubbed(:ml_candidate_metrics, name: 'metric3', value: 0.3, candidate: candidate)
     ]
@@ -30,7 +32,7 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
   subject { Gitlab::Json.parse(described_class.new(candidate, include_ci_job).present)['candidate'] }
 
   before do
-    allow(candidate).to receive(:latest_metrics).and_return(metrics)
+    allow(candidate).to receive(:metrics).and_return(metrics)
     allow(candidate).to receive(:params).and_return(params)
   end
 
@@ -45,9 +47,11 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
 
       it 'generates the correct metrics' do
         expect(subject['metrics']).to include(
-          hash_including('name' => 'metric1', 'value' => 0.1),
-          hash_including('name' => 'metric2', 'value' => 0.2),
-          hash_including('name' => 'metric3', 'value' => 0.3)
+          hash_including('name' => 'metric1', 'value' => 0.1, 'step' => 0),
+          hash_including('name' => 'metric1', 'value' => 0.2, 'step' => 1),
+          hash_including('name' => 'metric1', 'value' => 0.3, 'step' => 2),
+          hash_including('name' => 'metric2', 'value' => 0.2, 'step' => 0),
+          hash_including('name' => 'metric3', 'value' => 0.3, 'step' => 0)
         )
       end
 

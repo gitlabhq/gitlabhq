@@ -4,10 +4,32 @@
 // https://gitlab.com/gitlab-org/gitlab/-/issues/420777
 // https://gitlab.com/gitlab-org/gitlab/-/issues/421441
 
-export const organization = {
-  id: 'gid://gitlab/Organization/1',
-  __typename: 'Organization',
-};
+export const organizations = [
+  {
+    id: 'gid://gitlab/Organization/1',
+    name: 'My First Organization',
+    description: 'This is where an organization can be explained in detail',
+    avatarUrl: null,
+    webUrl: null,
+    __typename: 'Organization',
+  },
+  {
+    id: 'gid://gitlab/Organization/2',
+    name: 'Vegetation Co.',
+    description: 'Lorem ipsum dolor sit amet',
+    avatarUrl: null,
+    webUrl: null,
+    __typename: 'Organization',
+  },
+  {
+    id: 'gid://gitlab/Organization/3',
+    name: 'Dude where is my car?',
+    description: 'Bacon ipsum dolor amet short ribs',
+    avatarUrl: null,
+    webUrl: null,
+    __typename: 'Organization',
+  },
+];
 
 export const organizationProjects = {
   nodes: [

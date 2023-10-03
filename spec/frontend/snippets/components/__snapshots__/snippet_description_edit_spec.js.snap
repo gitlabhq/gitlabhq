@@ -17,7 +17,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
     >
       <gl-form-input-stub
         class="form-control"
-        data-qa-selector="description_placeholder"
+        data-testid="description-placeholder"
         placeholder="Describe what your snippet does or how to use it…"
       />
     </div>
@@ -46,8 +46,8 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
             <textarea
               aria-label="Description"
               class="js-autosize js-gfm-input js-gfm-input-initialized markdown-area note-textarea"
-              data-qa-selector="snippet_description_field"
               data-supports-quick-actions="false"
+              data-testid="snippet-description-field"
               dir="auto"
               id="reference-0"
               placeholder="Write a comment or drag your files here…"
