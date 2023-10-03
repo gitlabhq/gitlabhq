@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import PipelineArtifacts from '~/ci/pipelines_page/components/pipelines_artifacts.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
@@ -21,7 +21,7 @@ import { MT_MERGE_STRATEGY } from '../constants';
 export default {
   name: 'MRWidgetPipeline',
   components: {
-    CiIcon,
+    CiBadgeLink,
     GlLink,
     GlLoadingIcon,
     GlIcon,
@@ -194,9 +194,13 @@ export default {
       </p>
     </template>
     <template v-else-if="hasPipeline">
-      <a :href="status.details_path" class="gl-align-self-start gl-mt-2 gl-mr-3">
-        <ci-icon :status="status" :size="24" class="gl-display-flex" />
-      </a>
+      <ci-badge-link
+        :status="status"
+        :href="status.details_path"
+        size="md"
+        :show-text="false"
+        class="gl-align-self-start gl-mt-2 gl-mr-3"
+      />
       <div class="ci-widget-container d-flex">
         <div class="ci-widget-content">
           <div class="media-body">

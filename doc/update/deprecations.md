@@ -1114,6 +1114,32 @@ Previous work helped [align the vulnerabilities calls for pipeline security tabs
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.8">
+
+## GitLab 16.8
+
+<div class="deprecation " data-milestone="16.8">
+
+### openSUSE Leap 15.4 packages
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">16.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8212).
+</div>
+
+Support and security updates for openSUSE Leap 15.4 is [ending November 2023](https://en.opensuse.org/Lifetime#openSUSE_Leap).
+
+GitLab 15.4 provided packages for openSUSE Leap 15.5. GitLab 15.8 and later will not provide packages for openSUSE Leap 15.4.
+
+To prepare for GitLab 15.8 and later, you should:
+
+1. Move instances from openSUSE Leap 15.4 to openSUSE Leap 15.5.
+1. Switch from the openSUSE Leap 15.4 GitLab-provided packages to the openSUSE Leap 15.5 GitLab-provided packages.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.6">
 
 ## GitLab 16.6

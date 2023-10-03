@@ -322,3 +322,49 @@ end
 ```
 
 Real example of [similar refactoring](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92985).
+
+## Design software around use-cases, not entities
+
+Rails, through the power of Active Record, encourages developers to design entity-centric software.
+Controllers and API endpoints tend to represent CRUD operations for both entities and service objects.
+New database columns tend to be added to existing entity tables despite referring to different use-cases.
+
+This anti-pattern often manifests itself in one or more of the following:
+
+- [Different preconditions](https://gitlab.com/gitlab-org/gitlab/-/blob/d5e0068910b948fd9c921dbcbb0091b5d22e70c9/app/services/groups/update_service.rb#L20-24)
+  checked for different use cases.
+- [Different permissions](https://gitlab.com/gitlab-org/gitlab/-/blob/1d6cdee835a65f948343a1e4c1abed697db85d9f/ee/app/services/ee/groups/update_service.rb#L47-52)
+  checked in the same abstraction (service object, controller, serializer).
+- [Different side-effects](https://gitlab.com/gitlab-org/gitlab/-/blob/94922d5555ce5eca8a66687fecac9a0000b08597/app/services/projects/update_service.rb#L124-138)
+  executed in the same abstraction for various implicit use-cases. For example, "if field X changed, do Y".
+
+### Anti-pattern example
+
+We have `Groups::UpdateService` which is entity-centric and reused for radically different
+use cases:
+
+- Update group description, which requires group admin access.
+- Set namespace-level limit for [compute quota](../ci/pipelines/cicd_minutes.md), like `shared_runners_minutes_limit`
+  which requires instance admin access.
+
+These 2 different use cases support different sets of parameters. It's not likely or expected that
+an instance administrator updates `shared_runners_minutes_limit` and also the group description. Similarly, it's not expected
+for a user to change branch protection rules and shared runners settings at the same time.
+These represent different use cases, coming from different domains.
+
+### Solution
+
+Design around use cases instead of entities. If the personas, use case and intention is different, create a
+separate abstraction:
+
+- A different endpoint (controller, GraphQL, or REST) nested to the specific domain of the use case.
+- A different service object that embeds the specific permissions and a cohesive set of parameters.
+  For example, `Groups::UpdateService` for group admins to update generic group settings.
+  `Ci::Minutes::UpdateLimitService` would be for instance admins and would have a completely
+  different set of permissions, expectations, parameters, and side-effects.
+
+Ultimately, this requires leveraging the principles in [Taming Omniscient classes](#taming-omniscient-classes).
+We want to achieve loose coupling and high cohesion by avoiding the coupling of unrelated use case logic into a single, less-cohesive class.
+The result is a more secure system because permissions are consistently applied to the whole action.
+Similarly we don't inadvertently expose admin-level data if defined in a separate model or table.
+We can have a single permission check before reading or writing data that consistently belongs to the same use case.

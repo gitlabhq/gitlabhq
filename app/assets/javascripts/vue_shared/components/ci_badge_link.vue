@@ -57,17 +57,27 @@ export default {
         return badgeSizeOptions[value] !== undefined;
       },
     },
+    showTooltip: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    useLink: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
   },
   computed: {
     isNotLargeBadgeSize() {
-      return this.badgeSize !== badgeSizeOptions.lg;
+      return this.size !== badgeSizeOptions.lg;
     },
     title() {
-      return !this.showText ? this.status?.text : '';
+      return this.showTooltip && !this.showText ? this.status?.text : '';
     },
     detailsPath() {
       // For now, this can either come from graphQL with camelCase or REST API in snake_case
-      return this.status.detailsPath || this.status.details_path;
+      return this.useLink && (this.status.detailsPath || this.status.details_path);
     },
     badgeStyles() {
       switch (this.status.icon) {

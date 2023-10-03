@@ -158,7 +158,7 @@ export default {
         <a :href="status.detailsPath" class="gl-mr-auto">
           <ci-badge-link
             :status="status"
-            badge-size="md"
+            size="md"
             :show-text="false"
             data-testid="pipeline-status-icon"
           />

@@ -189,6 +189,7 @@ variables:
     CS_IMAGE: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<image>:<tag>
     CS_REGISTRY_USER: AWS
     CS_REGISTRY_PASSWORD: "$AWS_ECR_PASSWORD"
+    AWS_DEFAULT_REGION: <region>
 ```
 
 Authenticating to a remote registry is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
@@ -782,6 +783,21 @@ To prevent the error, ensure the Docker version that the runner is using is
 ### Getting warning message `gl-container-scanning-report.json: no matching files`
 
 For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
+
+### `unexpected status code 401 Unauthorized: Not Authorized` when scanning an image from AWS ECR
+
+This might happen when AWS region is not configured and the scanner cannot retrieve an authorization token. When you set `SECURE_LOG_LEVEL` to `debug` you will see a log message like below:
+
+```shell
+[35mDEBUG[0m failed to get authorization token: MissingRegion: could not find region configuration
+```
+
+To resolve this, add the `AWS_DEFAULT_REGION` to your CI/CD variables:
+
+```yaml
+variables:
+  AWS_DEFAULT_REGION: <AWS_REGION_FOR_ECR>
+```
 
 ## Changes
 

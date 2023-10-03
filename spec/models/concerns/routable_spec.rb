@@ -9,12 +9,6 @@ RSpec.shared_examples 'routable resource' do
       expect(described_class.find_by_full_path(record.full_path.upcase)).to eq(record)
     end
 
-    it 'checks if `optimize_find_routable` is enabled only once' do
-      expect(Routable).to receive(:optimize_routable_enabled?).and_call_original
-
-      described_class.find_by_full_path(record.full_path)
-    end
-
     it 'returns nil for unknown paths' do
       expect(described_class.find_by_full_path('unknown')).to be_nil
     end
@@ -68,40 +62,6 @@ RSpec.shared_examples 'routable resource' do
   end
 
   it_behaves_like '.find_by_full_path', :aggregate_failures
-
-  context 'when the `optimize_find_routable` feature flag is enabled for the current request', :request_store do
-    before do
-      stub_feature_flags(optimize_find_routable: Feature.current_request)
-    end
-
-    it_behaves_like '.find_by_full_path', :aggregate_failures
-
-    context 'for a different request' do
-      before do
-        stub_with_new_feature_current_request
-      end
-
-      it_behaves_like '.find_by_full_path', :aggregate_failures, has_cross_join: true
-    end
-  end
-
-  context 'when the `optimize_find_routable` feature flag is turned OFF' do
-    before do
-      stub_feature_flags(optimize_find_routable: false)
-    end
-
-    it_behaves_like '.find_by_full_path', :aggregate_failures, has_cross_join: true
-
-    it 'includes route information when loading a record' do
-      control_count = ActiveRecord::QueryRecorder.new do
-        described_class.find_by_full_path(record.full_path)
-      end.count
-
-      expect do
-        described_class.find_by_full_path(record.full_path).route
-      end.not_to exceed_all_query_limit(control_count)
-    end
-  end
 end
 
 RSpec.shared_examples 'routable resource with parent' do
@@ -301,22 +261,6 @@ RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache
     expect do
       described_class.create!(project: nil, parent: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, path: 'foo', name: 'foo')
     end.not_to change { Route.count }
-  end
-end
-
-RSpec.describe Routable, feature_category: :groups_and_projects do
-  describe '.optimize_routable_enabled?' do
-    subject { described_class.optimize_routable_enabled? }
-
-    it { is_expected.to eq(true) }
-
-    context 'when the `optimize_find_routable` feature flag is turned OFF' do
-      before do
-        stub_feature_flags(optimize_find_routable: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
   end
 end
 

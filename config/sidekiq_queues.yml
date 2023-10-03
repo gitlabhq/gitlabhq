@@ -301,6 +301,8 @@
   - 1
 - - gitlab_shell
   - 2
+- - gitlab_subscriptions_add_on_purchases_bulk_refresh_user_assignments
+  - 1
 - - gitlab_subscriptions_add_on_purchases_cleanup_user_add_on_assignment
   - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments

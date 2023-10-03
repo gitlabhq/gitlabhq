@@ -67,7 +67,7 @@ export default {
       v-else
       :status="pipelineStatus"
       :details-path="pipelineStatus.detailsPath"
-      badge-size="md"
+      size="md"
       :show-text="false"
     />
   </div>

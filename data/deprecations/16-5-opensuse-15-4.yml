@@ -1,0 +1,17 @@
+- title: "openSUSE Leap 15.4 packages"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  removal_milestone: "16.8"  # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "16.5"  # (required) The milestone when this feature was first announced as deprecated.
+  breaking_change: false  # (required) Change to false if this is not a breaking change.
+  reporter: twk3  # (required) GitLab username of the person reporting the change
+  stage: enablement  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8212  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Support and security updates for openSUSE Leap 15.4 is [ending November 2023](https://en.opensuse.org/Lifetime#openSUSE_Leap).
+
+    GitLab 15.4 provided packages for openSUSE Leap 15.5. GitLab 15.8 and later will not provide packages for openSUSE Leap 15.4.
+
+    To prepare for GitLab 15.8 and later, you should:
+
+    1. Move instances from openSUSE Leap 15.4 to openSUSE Leap 15.5.
+    1. Switch from the openSUSE Leap 15.4 GitLab-provided packages to the openSUSE Leap 15.5 GitLab-provided packages.
+  documentation_url: https://docs.gitlab.com/ee/administration/package_information/supported_os.html

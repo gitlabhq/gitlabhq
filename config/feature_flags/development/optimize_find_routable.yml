@@ -1,8 +1,0 @@
----
-name: optimize_find_routable
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132324
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425859
-milestone: '16.5'
-type: development
-group: group::tenant scale
-default_enabled: false
