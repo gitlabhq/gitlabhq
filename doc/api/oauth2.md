@@ -400,12 +400,7 @@ The following is an example response:
 
 ### Deprecated fields
 
-The fields `scopes` and `expires_in_seconds` are included in the response.
-
-These fields are aliases for `scope` and `expires_in` respectively, and have been included to
-prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#from-4x-to-5x).
-
-Don't rely on these fields as they are slated for removal in a later release.
+The fields `scopes` and `expires_in_seconds` are included in the response but are now deprecated. The `scopes` field is an alias for `scope`, and the `expires_in_seconds` field is an alias for `expires_in`. For more information, see [Doorkeeper API changes](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#api-changes-5).
 
 ## Revoke a token
 

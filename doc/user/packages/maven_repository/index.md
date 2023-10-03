@@ -317,6 +317,10 @@ To publish a package by using Gradle:
 
 ## Publish a package
 
+WARNING:
+Using the `DeployAtEnd` option can cause an upload to be rejected with `400 bad request {"message":"Validation failed: Name has already been taken"}`. For more details,
+see [issue 424238](https://gitlab.com/gitlab-org/gitlab/-/issues/424238).
+
 After you have set up the [authentication](#authenticate-to-the-package-registry)
 and [chosen an endpoint for publishing](#naming-convention),
 publish a Maven package to your project.

@@ -15707,6 +15707,18 @@ Represents the Geo replication and verification state of a dependency_proxy_mani
 | <a id="dependencyproxymanifestregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DependencyProxyManifestRegistry. |
 
+### `DependencyProxyPackagesSetting`
+
+Project-level Dependency Proxy for packages settings.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxypackagessettingenabled"></a>`enabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Indicates whether the dependency proxy for packages is enabled for the project. |
+| <a id="dependencyproxypackagessettingmavenexternalregistryurl"></a>`mavenExternalRegistryUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. URL for the external Maven packages registry. |
+| <a id="dependencyproxypackagessettingmavenexternalregistryusername"></a>`mavenExternalRegistryUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Username for the external Maven packages registry. |
+
 ### `DependencyProxySetting`
 
 Group-level Dependency Proxy settings.
@@ -21929,6 +21941,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
+| <a id="projectdependencyproxypackagessetting"></a>`dependencyProxyPackagesSetting` **{warning-solid}** | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Packages Dependency Proxy settings for the project. Requires the packages and dependency proxy to be enabled in the config. Requires the packages feature to be enabled at the project level. Returns `null` if `packages_dependency_proxy_maven` feature flag is disabled. |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
