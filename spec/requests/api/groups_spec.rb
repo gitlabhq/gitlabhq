@@ -1249,19 +1249,23 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           expect(json_response.length).to eq(6)
         end
 
-        it 'avoids N+1 queries', :aggregate_failures, :use_sql_query_cache, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383788' do
-          get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
-          expect(respone).to have_gitlab_http_status(:ok)
+        it 'avoids N+1 queries', :aggregate_failures do
+          get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true } # warm-up
+
+          expect(response).to have_gitlab_http_status(:ok)
 
           control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
           end
 
-          create_list(:project, 2, :public, namespace: group1)
+          create(:project, :public, namespace: group1)
 
+          # threshold number 2 is the additional number of queries which are getting executed.
+          # with this we are allowing some N+1 that may already exist but is not obvious.
+          # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132246#note_1581106553
           expect do
             get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
-          end.not_to exceed_all_query_limit(control.count)
+          end.to issue_same_number_of_queries_as(control).with_threshold(2)
         end
       end
 

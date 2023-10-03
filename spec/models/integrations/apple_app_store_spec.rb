@@ -13,8 +13,7 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
       it { is_expected.to validate_presence_of :app_store_key_id }
       it { is_expected.to validate_presence_of :app_store_private_key }
       it { is_expected.to validate_presence_of :app_store_private_key_file_name }
-      it { is_expected.to allow_value(true, false).for(:app_store_protected_refs) }
-      it { is_expected.not_to allow_value(nil).for(:app_store_protected_refs) }
+      it { is_expected.to validate_inclusion_of(:app_store_protected_refs).in_array([true, false]) }
       it { is_expected.to allow_value('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee').for(:app_store_issuer_id) }
       it { is_expected.not_to allow_value('abcde').for(:app_store_issuer_id) }
       it { is_expected.to allow_value(File.read('spec/fixtures/ssl_key.pem')).for(:app_store_private_key) }

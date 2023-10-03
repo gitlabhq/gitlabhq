@@ -117,12 +117,12 @@ module QA
         end
 
         view 'app/views/projects/merge_requests/_description.html.haml' do
-          element :description_content
+          element 'description-content'
         end
 
         view 'app/views/projects/merge_requests/_mr_title.html.haml' do
-          element :edit_title_button
-          element :title_content, required: true
+          element 'edit-title-button'
+          element 'title-content', required: true
         end
 
         view 'app/views/projects/merge_requests/_page.html.haml' do
@@ -136,8 +136,8 @@ module QA
         end
 
         view 'app/views/shared/_broadcast_message.html.haml' do
-          element :broadcast_notification_container
-          element :close_button
+          element 'broadcast-notification-container'
+          element 'close-button'
         end
 
         view 'app/assets/javascripts/ci/jobs_page/components/job_cells/job_cell.vue' do
@@ -163,9 +163,9 @@ module QA
         def submit_pending_reviews
           # On test environments we have a broadcast message that can cover the buttons
 
-          if has_element?(:broadcast_notification_container, wait: 5)
-            within_element(:broadcast_notification_container) do
-              click_element(:close_button)
+          if has_element?('broadcast-notification-container', wait: 5)
+            within_element('broadcast-notification-container') do
+              click_element('close-button')
             end
           end
 
@@ -218,7 +218,7 @@ module QA
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element(:edit_title_button, skip_finished_loading_check: true))
+          click_by_javascript(find_element('edit-title-button', skip_finished_loading_check: true))
         end
 
         def fast_forward_not_possible?
@@ -275,11 +275,11 @@ module QA
         end
 
         def has_title?(title)
-          has_element?(:title_content, text: title)
+          has_element?('title-content', text: title)
         end
 
         def has_description?(description)
-          has_element?(:description_content, text: description)
+          has_element?('description-content', text: description)
         end
 
         def mark_to_squash

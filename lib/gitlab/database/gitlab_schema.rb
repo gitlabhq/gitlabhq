@@ -87,24 +87,37 @@ module Gitlab
         # rubocop:enable Gitlab/DocUrl
       end
 
-      private_class_method def self.cross_access_allowed?(type, table_schemas)
+      def self.cross_joins_allowed?(table_schemas, all_tables)
+        return true unless table_schemas.many?
+
         table_schemas.any? do |schema|
-          extra_schemas = table_schemas - [schema]
-          extra_schemas -= Gitlab::Database.all_gitlab_schemas[schema]&.public_send(type) || [] # rubocop:disable GitlabSecurity/PublicSend
-          extra_schemas.empty?
+          schema_info = Gitlab::Database.all_gitlab_schemas[schema]
+          next false unless schema_info
+
+          schema_info.allow_cross_joins?(table_schemas, all_tables)
         end
       end
 
-      def self.cross_joins_allowed?(table_schemas)
-        table_schemas.empty? || self.cross_access_allowed?(:allow_cross_joins, table_schemas)
+      def self.cross_transactions_allowed?(table_schemas, all_tables)
+        return true unless table_schemas.many?
+
+        table_schemas.any? do |schema|
+          schema_info = Gitlab::Database.all_gitlab_schemas[schema]
+          next false unless schema_info
+
+          schema_info.allow_cross_transactions?(table_schemas, all_tables)
+        end
       end
 
-      def self.cross_transactions_allowed?(table_schemas)
-        table_schemas.empty? || self.cross_access_allowed?(:allow_cross_transactions, table_schemas)
-      end
+      def self.cross_foreign_key_allowed?(table_schemas, all_tables)
+        return true if table_schemas.one?
 
-      def self.cross_foreign_key_allowed?(table_schemas)
-        self.cross_access_allowed?(:allow_cross_foreign_keys, table_schemas)
+        table_schemas.any? do |schema|
+          schema_info = Gitlab::Database.all_gitlab_schemas[schema]
+          next false unless schema_info
+
+          schema_info.allow_cross_foreign_keys?(table_schemas, all_tables)
+        end
       end
 
       def self.dictionary_paths

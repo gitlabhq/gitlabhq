@@ -7,8 +7,8 @@ module QA
       module WebIDE
         class VSCode < Page::Base
           view 'app/views/shared/_broadcast_message.html.haml' do
-            element :broadcast_notification_container
-            element :close_button
+            element 'broadcast-notification-container'
+            element 'close-button'
           end
 
           def has_file_explorer?
@@ -116,9 +116,9 @@ module QA
           def wait_for_ide_to_load
             page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
             # On test environments we have a broadcast message that can cover the buttons
-            if has_element?(:broadcast_notification_container, wait: 5)
-              within_element(:broadcast_notification_container) do
-                click_element(:close_button)
+            if has_element?('broadcast-notification-container', wait: 5)
+              within_element('broadcast-notification-container') do
+                click_element('close-button')
               end
             end
 

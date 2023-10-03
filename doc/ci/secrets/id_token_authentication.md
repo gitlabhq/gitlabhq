@@ -183,23 +183,6 @@ job_with_secrets:
     - access-second-db.sh --token $SECOND_DB_PASSWORD
 ```
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-### Enable automatic ID token authentication (deprecated)
-
-WARNING:
-This setting was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/391886) in GitLab 16.0.
-ID token authentication is now always available, and JSON Web Token access is always limited.
-
-To enable automatic ID token authentication:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
-1. Expand **Token Access**.
-1. Turn on the **Limit JSON Web Token (JWT) access** toggle.
-
-<!--- end_remove -->
-
 ## Troubleshooting
 
 ### `400: missing token` status code

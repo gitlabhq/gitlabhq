@@ -49,8 +49,7 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
 
     describe 'pass_user_identities_to_ci_jwt' do
-      it { is_expected.to allow_value(true, false).for(:pass_user_identities_to_ci_jwt) }
-      it { is_expected.not_to allow_value(nil).for(:pass_user_identities_to_ci_jwt) }
+      it { is_expected.to validate_inclusion_of(:pass_user_identities_to_ci_jwt).in_array([true, false]) }
       it { is_expected.not_to allow_value("").for(:pass_user_identities_to_ci_jwt) }
     end
 

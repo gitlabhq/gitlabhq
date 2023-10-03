@@ -14,7 +14,7 @@
 
   .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "gl-md-display-flex! #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
     .detail-page-header-body
-      %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block{ data: { qa_selector: 'title_content' } }
+      %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block{ data: { testid: 'title-content' } }
         = markdown_field(@merge_request, :title)
 
       - unless hide_gutter_toggle
@@ -24,7 +24,7 @@
 
     .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
       - if can_update_merge_request
-        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: {class: "gl-display-none gl-md-display-block js-issuable-edit", data: { qa_selector: "edit_title_button" }}) do
+        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: {class: "gl-display-none gl-md-display-block js-issuable-edit", data: { testid: "edit-title-button" }}) do
           = _('Edit')
 
       - if @merge_request.source_project

@@ -37,4 +37,4 @@
           = _("Interested parties can even contribute by pushing commits if they want to.")
         - if button_path
           .text-center
-            = link_button_to _('New merge request'), button_path, title: _('New merge request'), id: 'new_merge_request_link', data: { qa_selector: "new_merge_request_button" }, variant: :confirm
+            = link_button_to _('New merge request'), button_path, title: _('New merge request'), id: 'new_merge_request_link', data: { testid: "new-merge-request-button" }, variant: :confirm
