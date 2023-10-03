@@ -140,7 +140,8 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
           weight: 1,
           epic_id: 2,
           iteration_id: 3,
-          my_reaction_emoji: 'tumbsup'
+          my_reaction_emoji: 'thumbsup',
+          not: { assignee_username: 'test' }
         )
       end
 
@@ -149,6 +150,7 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
         expect(data_collector_params).to exclude(:epic_id)
         expect(data_collector_params).to exclude(:iteration_id)
         expect(data_collector_params).to exclude(:my_reaction_emoji)
+        expect(data_collector_params).to exclude(:not)
       end
     end
   end

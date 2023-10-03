@@ -4,15 +4,12 @@ module Analytics
   module CycleAnalytics
     class IssueStageEvent < ApplicationRecord
       include StageEventModel
-      include Awardable
       extend SuppressCompositePrimaryKeyWarning
 
       validates(*%i[stage_event_hash_id issue_id group_id project_id start_event_timestamp], presence: true)
 
       alias_attribute :state, :state_id
       enum state: Issue.available_states, _suffix: true
-
-      has_one :epic_issue, primary_key: 'issue_id', foreign_key: 'issue_id' # rubocop: disable Rails/InverseOf
 
       scope :assigned_to, ->(user) do
         assignees_class = IssueAssignee
@@ -60,3 +57,4 @@ module Analytics
     end
   end
 end
+Analytics::CycleAnalytics::IssueStageEvent.prepend_mod_with('Analytics::CycleAnalytics::IssueStageEvent')

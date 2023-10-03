@@ -51,6 +51,7 @@ module Resolvers
     def default_value_for(first:, last:, after:, before:)
       Gitlab::Graphql::Pagination::ActiveRecordArrayConnection.new(
         [],
+        context: context,
         first: first,
         last: last,
         after: after,

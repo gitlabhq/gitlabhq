@@ -1454,29 +1454,6 @@ end
 
 Here is an [example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62195) illustrating how to use our new helper.
 
-### Renaming reserved paths
-
-When a new route for projects is introduced, it could conflict with any
-existing records. The path for these records should be renamed, and the
-related data should be moved on disk.
-
-Since we had to do this a few times already, there are now some helpers to help
-with this.
-
-To use this you can include `Gitlab::Database::RenameReservedPathsMigration::V1`
-in your migration. This provides 3 methods which you can pass one or more
-paths that need to be rejected.
-
-- **`rename_root_paths`**: Renames the path of all _namespaces_ with the
-given name that don't have a `parent_id`.
-- **`rename_child_paths`**: Renames the path of all _namespaces_ with the
-given name that have a `parent_id`.
-- **`rename_wildcard_paths`**: Renames the path of all _projects_, and all
-_namespaces_ that have a `project_id`.
-
-The `path` column for these rows are renamed to their previous value followed
-by an integer. For example: `users` would turn into `users0`
-
 ## Using application code in migrations (discouraged)
 
 The use of application code (including models) in migrations is generally

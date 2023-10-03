@@ -195,6 +195,10 @@ class Environment < ApplicationRecord
       transition %i[available stopping] => :stopped
     end
 
+    event :recover_stuck_stopping do
+      transition stopping: :available
+    end
+
     state :available
     state :stopping
     state :stopped

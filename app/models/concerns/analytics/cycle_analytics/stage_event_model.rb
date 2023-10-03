@@ -16,6 +16,7 @@ module Analytics
         scope :start_event_timestamp_before, -> (date) { where(arel_table[:start_event_timestamp].lteq(date)) }
         scope :authored, ->(user) { where(author_id: user) }
         scope :with_milestone_id, ->(milestone_id) { where(milestone_id: milestone_id) }
+        scope :without_milestone_id, -> (milestone_id) { where('milestone_id <> ? or milestone_id IS NULL', milestone_id) }
         scope :end_event_is_not_happened_yet, -> { where(end_event_timestamp: nil) }
         scope :order_by_end_event, -> (direction) do
           # ORDER BY end_event_timestamp, merge_request_id/issue_id, start_event_timestamp

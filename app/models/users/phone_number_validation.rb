@@ -2,8 +2,12 @@
 
 module Users
   class PhoneNumberValidation < ApplicationRecord
+    include IgnorableColumns
+
     self.primary_key = :user_id
     self.table_name = 'user_phone_number_validations'
+
+    ignore_column :verification_attempts, remove_with: '16.7', remove_after: '2023-11-17'
 
     belongs_to :user, foreign_key: :user_id
     belongs_to :banned_user, class_name: '::Users::BannedUser', foreign_key: :user_id

@@ -1,7 +1,6 @@
 ---
 table_name: users
 classes:
-- Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::User
 - TmpUser
 - User
 feature_categories:

@@ -12,6 +12,24 @@ module Gitlab
         MAX_RANGE_DAYS = 180.days.freeze
         DEFAULT_DATE_RANGE = 29.days # 30 including Date.today
 
+        NEGATABLE_PARAMS = [
+          :assignee_username,
+          :author_username,
+          :epic_id,
+          :iteration_id,
+          :label_name,
+          :milestone_title,
+          :my_reaction_emoji,
+          :weight
+        ].freeze
+
+        LICENSED_PARAMS = [
+          :weight,
+          :epic_id,
+          :my_reaction_emoji,
+          :iteration_id
+        ].freeze
+
         STRONG_PARAMS_DEFINITION = [
           :created_before,
           :created_after,
@@ -22,13 +40,11 @@ module Gitlab
           :page,
           :stage_id,
           :end_event_filter,
-          :weight,
-          :epic_id,
-          :my_reaction_emoji,
-          :iteration_id,
+          *LICENSED_PARAMS,
           label_name: [].freeze,
           assignee_username: [].freeze,
-          project_ids: [].freeze
+          project_ids: [].freeze,
+          not: NEGATABLE_PARAMS
         ].freeze
 
         FINDER_PARAM_NAMES = [
@@ -54,6 +70,7 @@ module Gitlab
         attribute :epic_id
         attribute :my_reaction_emoji
         attribute :iteration_id
+        attribute :not, default: -> { {} }
 
         FINDER_PARAM_NAMES.each do |param_name|
           attribute param_name

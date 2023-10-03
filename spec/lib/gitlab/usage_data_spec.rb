@@ -293,17 +293,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           bulk_imports: {
             gitlab_v1: 2
           },
-          project_imports: {
-            bitbucket: 2,
-            bitbucket_server: 2,
-            git: 2,
-            gitea: 2,
-            github: 2,
-            gitlab_migration: 2,
-            gitlab_project: 2,
-            manifest: 2,
-            total: 16
-          },
           issue_imports: {
             jira: 2,
             fogbugz: 2,
@@ -319,17 +308,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         {
           bulk_imports: {
             gitlab_v1: 1
-          },
-          project_imports: {
-            bitbucket: 1,
-            bitbucket_server: 1,
-            git: 1,
-            gitea: 1,
-            github: 1,
-            gitlab_migration: 1,
-            gitlab_project: 1,
-            manifest: 1,
-            total: 8
           },
           issue_imports: {
             jira: 1,

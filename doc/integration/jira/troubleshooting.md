@@ -65,10 +65,12 @@ There is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/341571)
 where the Jira integration sometimes does not work for a project that has been imported.
 As a workaround, disable the integration and then re-enable it.
 
-## Bulk change all Jira integrations to Jira group-level or instance-level values
+## Bulk change all Jira integrations to Jira instance-level or group-level values
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+### Change all projects instance wide
 
 To change all Jira projects to use instance-level integration settings:
 
@@ -98,6 +100,42 @@ To change all Jira projects to use instance-level integration settings:
      ```
 
 1. Modify and save the instance-level integration from the UI to propagate the changes to all group-level and project-level integrations.
+
+### Change all projects in a group
+
+To change all Jira projects in a group (and its subgroups) to use group-level integration settings:
+
+- In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run the following:
+
+  ```ruby
+  def reset_integration(target)
+    integration = target.integrations.find_by(type: Integrations::Jira)
+
+    return if integration.nil? # Skip if the project has no Jira integration
+    return unless integration.inherit_from_id.nil? # Skip integrations that are already inheriting
+
+    default_integration = Integration.default_integration(integration.type, target)
+
+    integration.inherit_from_id = default_integration.id
+
+    if integration.save(context: :manual_change)
+      BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+    end
+  end
+
+  parent_group = Group.find_by_full_path('top-level-group') # Add the full path of your top-level group
+  current_user = User.find_by_username('admin-user') # Add the username of a user with administrator access
+
+  groups = GroupsFinder.new(current_user, { parent: parent_group, include_parent_descendants: true }).execute
+
+  groups.find_each do |group|
+    reset_integration(group)
+
+    group.projects.find_each do |project|
+      reset_integration(project)
+    end
+  end
+  ```
 
 ## Bulk update the service integration password for all projects
 

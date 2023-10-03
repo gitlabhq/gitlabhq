@@ -15,6 +15,10 @@ FactoryBot.define do
       state { :stopped }
     end
 
+    trait :stopping do
+      state { :stopping }
+    end
+
     trait :production do
       name { 'production' }
     end

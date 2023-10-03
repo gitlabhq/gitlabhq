@@ -11,9 +11,7 @@ module Resolvers
 
     # Return at most 500 pipelines for each MR.
     # Merge requests generally have many fewer pipelines than this.
-    def self.field_options
-      super.merge(max_page_size: 500)
-    end
+    max_page_size 500
 
     def resolve(**args)
       return unless project

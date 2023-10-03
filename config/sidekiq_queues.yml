@@ -271,6 +271,8 @@
   - 1
 - - environments_canary_ingress_update
   - 1
+- - environments_stop_job_failed
+  - 1
 - - environments_stop_job_success
   - 1
 - - epics

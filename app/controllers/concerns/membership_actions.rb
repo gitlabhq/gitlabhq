@@ -156,7 +156,8 @@ module MembershipActions
       [:inherited]
     else
       if Feature.enabled?(:webui_members_inherited_users, current_user)
-        [:inherited, :direct, :shared_from_groups, (:invited_groups if params[:project_id])].compact
+        project_relations = [:invited_groups, :shared_into_ancestors]
+        [:inherited, :direct, :shared_from_groups, *(project_relations if params[:project_id])]
       else
         [:inherited, :direct]
       end
