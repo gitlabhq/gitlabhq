@@ -388,8 +388,8 @@ gem 'prometheus-client-mmap', '~> 0.28', require: 'prometheus/client' # rubocop:
 gem 'warning', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 group :development do
-  gem 'lefthook', '~> 1.4.7', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'rubocop' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'lefthook', '~> 1.4.7', require: false, feature_category: :tooling
+  gem 'rubocop', feature_category: :tooling
   gem 'solargraph', '~> 0.47.2', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
   gem 'letter_opener_web', '~> 2.0.0' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -435,8 +435,9 @@ group :development, :test do
   # Profiling data from CI/CD pipelines
   gem 'influxdb-client', '~> 2.9', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'knapsack', '~> 1.21.1' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'crystalball', '~> 0.7.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'knapsack', '~> 1.21.1', feature_category: :tooling
+  gem 'crystalball', '~> 0.7.0', require: false, feature_category: :tooling
+  gem 'test_file_finder', '~> 0.1.3', feature_category: :tooling
 
   gem 'simple_po_parser', '~> 1.1.6', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -444,22 +445,20 @@ group :development, :test do
 
   gem 'parallel', '~> 1.19', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'test_file_finder', '~> 0.1.3' # rubocop:todo Gemfile/MissingFeatureCategory
-
   gem 'sigdump', '~> 0.2.4', require: 'sigdump/setup' # rubocop:todo Gemfile/MissingFeatureCategory
 
   gem 'pact', '~> 1.63' # rubocop:todo Gemfile/MissingFeatureCategory
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 4.1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'gitlab-dangerfiles', '~> 4.1.0', require: false, feature_category: :tooling
 end
 
 group :development, :test, :coverage do
-  gem 'simplecov', '~> 0.21', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'simplecov-lcov', '~> 0.8.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'simplecov-cobertura', '~> 2.1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'undercover', '~> 0.4.4', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'simplecov', '~> 0.21', require: false, feature_category: :tooling
+  gem 'simplecov-lcov', '~> 0.8.0', require: false, feature_category: :tooling
+  gem 'simplecov-cobertura', '~> 2.1.0', require: false, feature_category: :tooling
+  gem 'undercover', '~> 0.4.4', require: false, feature_category: :tooling
 end
 
 # Gems required in omnibus-gitlab pipeline
@@ -475,10 +474,10 @@ end
 
 group :test do
   gem 'fuubar', '~> 2.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'rspec-retry', '~> 0.6.2' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'rspec_profiling', '~> 0.0.6' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'rspec-benchmark', '~> 0.6.0' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'rspec-parameterized', '~> 1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'rspec-retry', '~> 0.6.2', feature_category: :tooling
+  gem 'rspec_profiling', '~> 0.0.6', feature_category: :tooling
+  gem 'rspec-benchmark', '~> 0.6.0', feature_category: :tooling
+  gem 'rspec-parameterized', '~> 1.0', require: false, feature_category: :tooling
 
   gem 'capybara', '~> 3.39', '>= 3.39.2' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'capybara-screenshot', '~> 1.0.26' # rubocop:todo Gemfile/MissingFeatureCategory

@@ -117,7 +117,7 @@ export default {
         'aria-label': __('Reply to comment'),
         placeholder: this.$options.i18n.bodyPlaceholder,
         class: 'note-textarea js-gfm-input js-note-text markdown-area js-vue-issue-note-form',
-        'data-qa-selector': 'reply_field',
+        'data-testid': 'reply-field',
       },
     };
   },
@@ -439,7 +439,7 @@ export default {
               :disabled="isDisabled"
               category="primary"
               variant="confirm"
-              data-qa-selector="reply_comment_button"
+              data-testid="reply-comment-button"
               class="gl-sm-mr-3 gl-xs-mb-3 js-vue-issue-save js-comment-button"
               @click="handleUpdate()"
             >

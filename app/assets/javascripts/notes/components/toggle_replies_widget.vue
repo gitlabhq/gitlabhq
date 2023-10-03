@@ -84,12 +84,7 @@ export default {
         :tooltip-text="author.name"
         tooltip-placement="bottom"
       />
-      <gl-button
-        class="gl-mr-2"
-        variant="link"
-        data-qa-selector="expand_replies_button"
-        @click="toggle"
-      >
+      <gl-button class="gl-mr-2" variant="link" data-testid="expand-replies-button" @click="toggle">
         {{ n__('%d reply', '%d replies', replies.length) }}
       </gl-button>
       <gl-sprintf :message="$options.i18n.lastReplyBy">
@@ -111,7 +106,7 @@ export default {
       v-else
       class="gl-text-body! gl-text-decoration-none!"
       variant="link"
-      data-qa-selector="collapse_replies_button"
+      data-testid="collapse-replies-button"
       @click="toggle"
     >
       {{ $options.i18n.collapseReplies }}

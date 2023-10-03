@@ -337,7 +337,7 @@ export default {
       icon="pencil"
       category="tertiary"
       class="note-action-button js-note-edit gl-display-none gl-sm-display-block"
-      data-qa-selector="note_edit_button"
+      data-testid="note-edit-button"
       @click="onEdit"
     />
     <gl-button

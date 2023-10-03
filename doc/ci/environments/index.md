@@ -623,6 +623,11 @@ To configure multiple **parallel** stop actions on an environment, specify the
 
 When an environment is stopped, the matching `on_stop` actions from only successful deployment jobs are run in parallel, in no particular order.
 
+NOTE:
+All `on_stop` actions for an environment must belong to the same pipeline. To use multiple `on_stop` actions in
+[downstream pipelines](../pipelines/downstream_pipelines.md), you must configure the environment actions in
+the parent pipeline. For more information, see [downstream pipelines for deployments](../pipelines/downstream_pipelines.md#advanced-example).
+
 In the following example, for the `test` environment there are two deployment jobs:
 
 - `deploy-to-cloud-a`

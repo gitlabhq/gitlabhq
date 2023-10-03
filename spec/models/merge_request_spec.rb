@@ -4590,7 +4590,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     describe '#unlock_mr' do
       subject { create(:merge_request, state: 'locked', source_project: project, merge_jid: 123) }
 
-      it 'updates merge request head pipeline and sets merge_jid to nil', :sidekiq_might_not_need_inline do
+      it 'updates merge request head pipeline and sets merge_jid to nil', :sidekiq_inline do
         pipeline = create(:ci_empty_pipeline, project: subject.project, ref: subject.source_branch, sha: subject.source_branch_sha)
 
         subject.unlock_mr

@@ -5,7 +5,7 @@ group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Storage management automation **(FREE ALL)**
+# Automate storage management **(FREE ALL)**
 
 This page describes how to automate storage analysis and cleanup to manage your storage usage
 with the GitLab REST API.
@@ -86,9 +86,9 @@ For more information about other API client libraries, see [Third-party clients]
 NOTE:
 Use [GitLab Duo Code Suggestions](project/repository/code_suggestions/index.md) to write code more efficiently.
 
-## Strategies for storage analysis
+## Storage analysis
 
-### Identify the storage types
+### Identify storage types
 
 The [projects API endpoint](../api/projects.md#list-all-projects) provides statistics for projects
 in your GitLab instance. To use the projects API endpoint, set the `statistics` key to boolean `true`.
@@ -179,7 +179,7 @@ Project Developer Evangelism and Technical Marketing at GitLab  / playground / A
 }
 ```
 
-### Analyzing multiple subgroups and projects
+### Analyze storage in projects and groups
 
 You can automate analysis of multiple projects and groups. For example, you can start at the top namespace level,
 and recursively analyze all subgroups and projects. You can also analyze different storage types.
@@ -317,45 +317,15 @@ The script outputs the project job artifacts in a JSON formatted list:
 ]
 ```
 
-### Helper functions
-
-You might need to convert timestamp seconds into a duration format, or print raw bytes in a more
-representative format. You can use the following helper functions to transform values for improved
-readability:
-
-```shell
-# Current Unix timestamp
-date +%s
-
-# Convert `created_at` date time with timezone to Unix timestamp
-date -d '2023-08-08T18:59:47.581Z' +%s
-```
-
-Example with Python that uses the `python-gitlab` API library:
-
-```python
-def render_size_mb(v):
-    return "%.4f" % (v / 1024 / 1024)
-
-def render_age_time(v):
-    return str(datetime.timedelta(seconds = v))
-
-# Convert `created_at` date time with timezone to Unix timestamp
-def calculate_age(created_at_datetime):
-    created_at_ts = datetime.datetime.strptime(created_at_datetime, '%Y-%m-%dT%H:%M:%S.%fZ')
-    now = datetime.datetime.now()
-    return (now - created_at_ts).total_seconds()
-```
-
-## Managing storage in CI/CD pipelines
-
-WARNING:
-Deleting job log and artifacts is a destructive action that cannot be reverted. Use with caution. Deleting certain files, including report artifacts, job logs, and metadata files, affects GitLab features that use these files as data sources.
+## Manage CI/CD pipeline storage
 
 Job artifacts consume most of the pipeline storage, and job logs can also generate several hundreds of kilobytes.
 You should delete the unnecessary job artifacts first and then clean up job logs after analysis.
 
-### Analyze pipeline storage
+WARNING:
+Deleting job log and artifacts is a destructive action that cannot be reverted. Use with caution. Deleting certain files, including report artifacts, job logs, and metadata files, affects GitLab features that use these files as data sources.
+
+### List job artifacts
 
 To analyze pipeline storage, you can use the [Job API endpoint](../api/jobs.md#list-project-jobs) to retrieve a list of
 job artifacts. The endpoint returns the job artifacts `file_type` key in the `artifacts` attribute.
@@ -462,7 +432,7 @@ $ python3 get_all_projects_top_level_namespace_storage_analysis_cleanup_example.
 | [gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297945 | job.log | trace | 0.0030 |
 ```
 
-### Delete job artifacts
+### Delete job artifacts in bulk
 
 You can use a Python script to filter the types of job artifacts to delete in bulk.
 
@@ -521,7 +491,7 @@ When the collection loops remove the object locks, the script deletes the job ar
     # Print collection summary (removed for readability)
 ```
 
-#### Delete all job artifacts for a project
+### Delete all job artifacts for a project
 
 If you do not need the project's [job artifacts](../ci/jobs/job_artifacts.md), you can
 use the following command to delete all job artifacts. This action cannot be reverted.
@@ -595,7 +565,87 @@ that delete the job artifact:
 
 Support for creating a retention policy for job logs is proposed in [issue 374717](https://gitlab.com/gitlab-org/gitlab/-/issues/374717).
 
-### Inventory of job artifacts expiry settings
+### Delete old pipelines
+
+Pipelines do not add to the overall storage consumption, but if required you can delete them with the following methods.
+
+Automatic deletion of old pipelines is proposed in [issue 338480](https://gitlab.com/gitlab-org/gitlab/-/issues/338480).
+
+Example with the GitLab CLI:
+
+```shell
+export GL_PROJECT_ID=48349590
+
+glab api --method GET projects/$GL_PROJECT_ID/pipelines | jq --compact-output '.[]' | jq --compact-output '.id,.created_at'
+960031926
+"2023-08-08T22:09:52.745Z"
+959884072
+"2023-08-08T18:59:47.581Z"
+
+glab api --method DELETE projects/$GL_PROJECT_ID/pipelines/960031926
+
+glab api --method GET projects/$GL_PROJECT_ID/pipelines | jq --compact-output '.[]' | jq --compact-output '.id,.created_at'
+959884072
+"2023-08-08T18:59:47.581Z"
+```
+
+The `created_at` key must be converted from a timestamp to Unix epoch time,
+for example with `date -d '2023-08-08T18:59:47.581Z' +%s`. In the next step, the
+age can be calculated with the difference between now, and the pipeline creation
+date. If the age is larger than the threshold, the pipeline should be deleted.
+
+The following example uses a Bash script that expects `jq` and the GitLab CLI installed, and authorized, and the exported environment variable `GL_PROJECT_ID`.
+
+The full script `get_cicd_pipelines_compare_age_threshold_example.sh` is located in the [GitLab API with Linux Shell](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-linux-shell) project.
+
+```shell
+#/bin/bash
+
+CREATED_AT_ARR=$(glab api --method GET projects/$GL_PROJECT_ID/pipelines | jq --compact-output '.[]' | jq --compact-output '.created_at' | jq --raw-output @sh)
+
+for row in ${CREATED_AT_ARR[@]}
+do
+    stripped=$(echo $row | xargs echo)
+    #echo $stripped #DEBUG
+
+    CREATED_AT_TS=$(date -d "$stripped" +%s)
+    NOW=$(date +%s)
+
+    AGE=$(($NOW-$CREATED_AT_TS))
+    AGE_THRESHOLD=$((90*24*60*60)) # 90 days
+
+    if [ $AGE -gt $AGE_THRESHOLD ];
+    then
+        echo "Pipeline age $AGE older than threshold $AGE_THRESHOLD, should be deleted."
+        # TODO call glab to delete the pipeline. Needs an ID collected from the glab call above.
+    else
+        echo "Pipeline age $AGE not older than threshold $AGE_THRESHOLD. Ignore."
+    fi
+done
+```
+
+You can use the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/pipelines_and_jobs.html#project-pipelines) and
+the `created_at` attribute to implement a similar algorithm that compares the job artifact age:
+
+```python
+        # ...
+
+        for pipeline in project.pipelines.list(iterator=True):
+            pipeline_obj = project.pipelines.get(pipeline.id)
+            print("DEBUG: {p}".format(p=json.dumps(pipeline_obj.attributes, indent=4)))
+
+            created_at = datetime.datetime.strptime(pipeline.created_at, '%Y-%m-%dT%H:%M:%S.%fZ')
+            now = datetime.datetime.now()
+            age = (now - created_at).total_seconds()
+
+            threshold_age = 90 * 24 * 60 * 60
+
+            if (float(age) > float(threshold_age)):
+                print("Deleting pipeline", pipeline.id)
+                pipeline_obj.delete()
+```
+
+### List expiry settings for job artifacts
 
 To manage artifact storage, you can update or configure when an artifact expires.
 The expiry setting for artifacts are configured in each job configuration in the `.gitlab-ci.yml`.
@@ -708,9 +758,9 @@ glab api --method GET projects/$GL_PROJECT_ID/search --field "scope=blobs" --fie
 
 For more information about the inventory approach, see [How GitLab can help mitigate deletion of open source container images on Docker Hub](https://about.gitlab.com/blog/2023/03/16/how-gitlab-can-help-mitigate-deletion-open-source-images-docker-hub/).
 
-### Set the default expiry for job artifacts in projects
+### Set default expiry for job artifacts
 
-Define the default expiry for job artifacts in your `.gitlab-ci.yml` configuration:
+To set the default expiry for job artifacts in a project, specify the `expire_in` value in the `.gitlab-ci.yml` file:
 
 ```yaml
 default:
@@ -718,91 +768,13 @@ default:
         expire_in: 1 week
 ```
 
-### Delete old pipelines
+## Manage Container Registries storage
 
-Pipelines do not add to the overall storage consumption, but if you want to delete them you can use the following methods.
+Container registries are available [in a project](../api/container_registry.md#within-a-project) or [in a group](../api/container_registry.md#within-a-group). You can analyze both locations to implement a cleanup strategy.
 
-Example with the GitLab CLI:
+### List container registries
 
-```shell
-export GL_PROJECT_ID=48349590
-
-glab api --method GET projects/$GL_PROJECT_ID/pipelines | jq --compact-output '.[]' | jq --compact-output '.id,.created_at'
-960031926
-"2023-08-08T22:09:52.745Z"
-959884072
-"2023-08-08T18:59:47.581Z"
-
-glab api --method DELETE projects/$GL_PROJECT_ID/pipelines/960031926
-
-glab api --method GET projects/$GL_PROJECT_ID/pipelines | jq --compact-output '.[]' | jq --compact-output '.id,.created_at'
-959884072
-"2023-08-08T18:59:47.581Z"
-```
-
-The `created_at` key must be converted from a timestamp to Unix epoch time,
-for example with `date -d '2023-08-08T18:59:47.581Z' +%s`. In the next step, the
-age can be calculated with the difference between now, and the pipeline creation
-date. If the age is larger than the threshold, the pipeline should be deleted.
-
-The following example uses a Bash script that expects `jq` and the GitLab CLI installed, and authorized, and the exported environment variable `GL_PROJECT_ID`.
-
-The full script `get_cicd_pipelines_compare_age_threshold_example.sh` is located in the [GitLab API with Linux Shell](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-linux-shell) project.
-
-```shell
-#/bin/bash
-
-CREATED_AT_ARR=$(glab api --method GET projects/$GL_PROJECT_ID/pipelines | jq --compact-output '.[]' | jq --compact-output '.created_at' | jq --raw-output @sh)
-
-for row in ${CREATED_AT_ARR[@]}
-do
-    stripped=$(echo $row | xargs echo)
-    #echo $stripped #DEBUG
-
-    CREATED_AT_TS=$(date -d "$stripped" +%s)
-    NOW=$(date +%s)
-
-    AGE=$(($NOW-$CREATED_AT_TS))
-    AGE_THRESHOLD=$((90*24*60*60)) # 90 days
-
-    if [ $AGE -gt $AGE_THRESHOLD ];
-    then
-        echo "Pipeline age $AGE older than threshold $AGE_THRESHOLD, should be deleted."
-        # TODO call glab to delete the pipeline. Needs an ID collected from the glab call above.
-    else
-        echo "Pipeline age $AGE not older than threshold $AGE_THRESHOLD. Ignore."
-    fi
-done
-```
-
-You can use the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/pipelines_and_jobs.html#project-pipelines) and
-the `created_at` attribute to implement a similar algorithm that compares the job artifact age:
-
-```python
-        # ...
-
-        for pipeline in project.pipelines.list(iterator=True):
-            pipeline_obj = project.pipelines.get(pipeline.id)
-            print("DEBUG: {p}".format(p=json.dumps(pipeline_obj.attributes, indent=4)))
-
-            created_at = datetime.datetime.strptime(pipeline.created_at, '%Y-%m-%dT%H:%M:%S.%fZ')
-            now = datetime.datetime.now()
-            age = (now - created_at).total_seconds()
-
-            threshold_age = 90 * 24 * 60 * 60
-
-            if (float(age) > float(threshold_age)):
-                print("Deleting pipeline", pipeline.id)
-                pipeline_obj.delete()
-```
-
-Automatic deletion of old pipelines is proposed in [issue 338480](https://gitlab.com/gitlab-org/gitlab/-/issues/338480).
-
-## Manage storage for Container Registries
-
-Container registries are available [in a project](../api/container_registry.md#within-a-project) or [in a group](../api/container_registry.md#within-a-group). Both locations require analysis and cleanup strategies.
-
-To analyze and cleanup Container Registries in a project:
+To list Container Registries in a project:
 
 ::Tabs
 
@@ -848,8 +820,6 @@ glab api --method GET projects/$GL_PROJECT_ID/registry/repositories/4435617/tags
 
 A similar automation shell script is created in the [delete old pipelines](#delete-old-pipelines) section.
 
-The `python-gitlab` API library provides bulk deletion interfaces explained in the next section.
-
 ### Delete container images in bulk
 
 When you [delete container image tags in bulk](../api/container_registry.md#delete-registry-repository-tags-in-bulk),
@@ -862,7 +832,7 @@ you can configure:
 WARNING:
 On GitLab.com, due to the scale of the Container Registry, the number of tags deleted by this API is limited.
 If your Container Registry has a large number of tags to delete, only some of them are deleted. You might need
-to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#cleanup-policy-for-containers) instead.
+to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
 
 The following example uses the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/repository_tags.html) to fetch a list of tags, and calls the `delete_in_bulk()` method with filter parameters.
 
@@ -880,14 +850,16 @@ The following example uses the [`python-gitlab` API library](https://python-gitl
             repository.tags.delete_in_bulk(name_regex_delete="v.+", keep_n=2)
 ```
 
-### Cleanup policy for containers
+### Create a cleanup policy for containers
 
-Use the project REST API endpoint to [create cleanup policies](packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api). The following example uses the GitLab CLI to create a cleanup policy.
+Use the project REST API endpoint to [create cleanup policies](packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api) for containers. After you set the cleanup policy, all container images that match your specifications are deleted automatically. You do not need additional API automation scripts.
 
-To send the attributes as a body parameter, you must:
+To send the attributes as a body parameter:
 
 - Use the `--input -` parameter to read from the standard input.
 - Set the `Content-Type` header.
+
+The following example uses the GitLab CLI to create a cleanup policy:
 
 ```shell
 export GL_PROJECT_ID=48057080
@@ -908,13 +880,11 @@ echo '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":tr
 
 ```
 
-After you set up the cleanup policy, all container images that match your specifications are deleted automatically. You do not need additional API automation scripts.
-
 ### Optimize container images
 
 You can optimize container images to reduce the image size and overall storage consumption in the container registry. Learn more in the [pipeline efficiency documentation](../ci/pipelines/pipeline_efficiency.md#optimize-docker-images).
 
-## Manage storage for Package Registry
+## Manage Package Registry storage
 
 Package registries are available [in a project](../api/packages.md#within-a-project) or [in a group](../api/packages.md#within-a-group).
 
@@ -1034,12 +1004,35 @@ Package size 20.0033 > threshold 10.0000, deleting package.
 
 Review the [cleanup policy](packages/dependency_proxy/reduce_dependency_proxy_storage.md#cleanup-policies) and how to [purge the cache using the API](packages/dependency_proxy/reduce_dependency_proxy_storage.md#use-the-api-to-clear-the-cache)
 
-## Community resources
+## Improve output readability
 
-These resources are not officially supported. Ensure to test scripts and tutorials before running destructive cleanup commands that may not be reverted.
+You might need to convert timestamp seconds into a duration format, or print raw bytes in a more
+representative format. You can use the following helper functions to transform values for improved
+readability:
 
-- Forum topic: [Storage management automation resources](https://forum.gitlab.com/t/storage-management-automation-resources/)
-- Script: [GitLab Storage Analyzer](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-storage-analyzer), unofficial project by the [GitLab Developer Evangelism team](https://gitlab.com/gitlab-de/). You find similar code examples in this documentation how-to here.
+```shell
+# Current Unix timestamp
+date +%s
+
+# Convert `created_at` date time with timezone to Unix timestamp
+date -d '2023-08-08T18:59:47.581Z' +%s
+```
+
+Example with Python that uses the `python-gitlab` API library:
+
+```python
+def render_size_mb(v):
+    return "%.4f" % (v / 1024 / 1024)
+
+def render_age_time(v):
+    return str(datetime.timedelta(seconds = v))
+
+# Convert `created_at` date time with timezone to Unix timestamp
+def calculate_age(created_at_datetime):
+    created_at_ts = datetime.datetime.strptime(created_at_datetime, '%Y-%m-%dT%H:%M:%S.%fZ')
+    now = datetime.datetime.now()
+    return (now - created_at_ts).total_seconds()
+```
 
 ## Testing for storage management automation
 
@@ -1190,3 +1183,10 @@ Use the following projects to test storage usage with [cost factors for forks](u
 
 - Fork [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) into a new namespace or group (includes LFS, Git repository).
 - Fork [`gitlab-com/www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-comgitlab-com/www-gitlab-com) into a new namespace or group.
+
+## Community resources
+
+The following resources are not officially supported. Ensure to test scripts and tutorials before running destructive cleanup commands that may not be reverted.
+
+- Forum topic: [Storage management automation resources](https://forum.gitlab.com/t/storage-management-automation-resources/)
+- Script: [GitLab Storage Analyzer](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-storage-analyzer), unofficial project by the [GitLab Developer Evangelism team](https://gitlab.com/gitlab-de/). You find similar code examples in this documentation how-to here.

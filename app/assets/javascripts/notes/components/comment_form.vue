@@ -69,7 +69,7 @@ export default {
         id: 'note-body',
         name: 'note[note]',
         class: 'js-note-text note-textarea js-gfm-input markdown-area',
-        'data-qa-selector': 'comment_field',
+        'data-testid': 'comment-field',
       },
     };
   },

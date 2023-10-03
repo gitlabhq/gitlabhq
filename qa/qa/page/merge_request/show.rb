@@ -192,7 +192,7 @@ module QA
           click_element(:diff_comment_button)
           click_element(:dismiss_suggestion_popover_button) if has_element?(:dismiss_suggestion_popover_button, wait: 1)
 
-          fill_element(:reply_field, text)
+          fill_element('reply-field', text)
         end
 
         def click_discussions_tab
@@ -444,9 +444,9 @@ module QA
           find("a[data-linenumber='#{line}']").hover
           click_element(:diff_comment_button)
           click_element(:suggestion_button)
-          initial_content = find_element(:reply_field).value
-          fill_element(:reply_field, '')
-          fill_element(:reply_field, initial_content.gsub(/(```suggestion:-0\+0\n).*(\n```)/, "\\1#{suggestion}\\2"))
+          initial_content = find_element('reply-field').value
+          fill_element('reply-field', '')
+          fill_element('reply-field', initial_content.gsub(/(```suggestion:-0\+0\n).*(\n```)/, "\\1#{suggestion}\\2"))
           click_element(:comment_now_button)
           wait_for_requests
         end

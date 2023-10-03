@@ -99,9 +99,10 @@ module QA
       let(:github_client) do
         Octokit::Client.new(
           access_token: ENV['QA_LARGE_IMPORT_GH_TOKEN'] || Runtime::Env.github_access_token,
-          auto_paginate: true,
+          per_page: 100,
           middleware: Faraday::RackBuilder.new do |builder|
             builder.use(Faraday::Retry::Middleware, exceptions: [Octokit::InternalServerError, Octokit::ServerError])
+            builder.use(Faraday::Response::RaiseError) # faraday retry swallows errors, so it needs to be re-raised
           end
         )
       end
@@ -110,96 +111,51 @@ module QA
 
       let(:gh_branches) do
         logger.info("= Fetching branches =")
-        github_client.branches(github_repo).map(&:name)
+        with_paginated_request { github_client.branches(github_repo) }.map(&:name)
       end
 
       let(:gh_commits) do
         logger.info("= Fetching commits =")
-        github_client.commits(github_repo).map(&:sha)
+        with_paginated_request { github_client.commits(github_repo) }.map(&:sha)
       end
 
       let(:gh_labels) do
         logger.info("= Fetching labels =")
-        github_client.labels(github_repo).map { |label| { name: label.name, color: "##{label.color}" } }
+        with_paginated_request { github_client.labels(github_repo) }.map do |label|
+          { name: label.name, color: "##{label.color}" }
+        end
       end
 
       let(:gh_milestones) do
         logger.info("= Fetching milestones =")
-        github_client
-          .list_milestones(github_repo, state: 'all')
-          .map { |ms| { title: ms.title, description: ms.description } }
-      end
-
-      let(:gh_prs) do
-        gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
-          id = pr.number
-          hash[id] = {
-            url: pr.html_url,
-            title: pr.title,
-            body: pr.body || '',
-            comments: [*gh_pr_comments[id], *gh_issue_comments[id]].compact,
-            events: gh_pr_events[id].reject { |event| unsupported_events.include?(event) }
-          }
-        end
-      end
-
-      let(:gh_issues) do
-        gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
-          id = issue.number
-          hash[id] = {
-            url: issue.html_url,
-            title: issue.title,
-            body: issue.body || '',
-            comments: gh_issue_comments[id],
-            events: gh_issue_events[id].reject { |event| unsupported_events.include?(event) }
-          }
+        with_paginated_request { github_client.list_milestones(github_repo, state: 'all') }.map do |ms|
+          { title: ms.title, description: ms.description }
         end
       end
 
       let(:gh_all_issues) do
         logger.info("= Fetching issues and prs =")
-        github_client.list_issues(github_repo, state: 'all')
+        with_paginated_request { github_client.list_issues(github_repo, state: 'all') }
       end
 
-      let(:gh_all_events) do
-        logger.info("- Fetching issue and pr events -")
-        github_client.repository_issue_events(github_repo).map do |event|
-          { name: event[:event], **(event[:issue] || {}) } # some events don't have issue object at all
-        end
-      end
-
-      let(:gh_issue_events) do
-        gh_all_events.each_with_object(Hash.new { |h, k| h[k] = [] }) do |event, hash|
-          next if event[:pull_request] || !event[:number]
-
-          hash[event[:number]] << event[:name]
-        end
-      end
-
-      let(:gh_pr_events) do
-        gh_all_events.each_with_object(Hash.new { |h, k| h[k] = [] }) do |event, hash|
-          next unless event[:pull_request]
-
-          hash[event[:number]] << event[:name]
-        end
-      end
-
+      # rubocop:disable Layout/LineLength
       let(:gh_issue_comments) do
         logger.info("- Fetching issue comments -")
-        github_client.issues_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
+        with_paginated_request { github_client.issues_comments(github_repo) }.each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
           hash[id_from_url(c.html_url)] << c.body&.gsub(gh_link_pattern, dummy_url)
         end
       end
 
       let(:gh_pr_comments) do
         logger.info("- Fetching pr comments -")
-        github_client.pull_requests_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
+        with_paginated_request { github_client.pull_requests_comments(github_repo) }.each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
           hash[id_from_url(c.html_url)] << c.body
             # some suggestions can contain extra whitespaces which gitlab will remove
             &.gsub(/suggestion\s+\r/, "suggestion\r")
             &.gsub(gh_link_pattern, dummy_url)
         end
       end
+      # rubocop:enable Layout/LineLength
 
       let(:imported_project) do
         Resource::ProjectImportedFromGithub.fabricate_via_api! do |project|
@@ -334,8 +290,8 @@ module QA
         gh_commits
         gh_labels
         gh_milestones
-        gh_prs
         gh_issues
+        gh_prs
       end
 
       # Verify repository imported correctly
@@ -383,7 +339,67 @@ module QA
         @issue_diff = verify_mrs_or_issues('issue')
       end
 
+      # This has no real effect, mostly used to group the methods that are used directly from spec body and helpers
+      #
       private
+
+      # Github prs
+      #
+      # Instance variable is used because parallel doesn't play nice with memoized rspec vars
+      #
+      # @return [Hash]
+      def gh_prs
+        @gh_prs ||= begin
+          prs = gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
+            id = pr.number
+            hash[id] = {
+              url: pr.html_url,
+              title: pr.title,
+              body: pr.body || '',
+              comments: [*gh_pr_comments[id], *gh_issue_comments[id]].compact
+            }
+          end
+          logger.info("- Fetching pr events 8 parallel threads -")
+          Parallel.map(prs, in_threads: 8) do |id, pr|
+            logger.debug("Fetching events for pr !#{id}")
+            [id, pr.merge({ events: fetch_github_events(id) })]
+          end.to_h
+        end
+      end
+
+      # Github issues
+      #
+      # Instance variable is used because parallel doesn't play nice with memoized rspec vars
+      #
+      # @return [Hash]
+      def gh_issues
+        @gh_issues ||= begin
+          issues = gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
+            id = issue.number
+            hash[id] = {
+              url: issue.html_url,
+              title: issue.title,
+              body: issue.body || '',
+              comments: gh_issue_comments[id]
+            }
+          end
+          logger.info("- Fetching issue events in 8 parallel threads -")
+          Parallel.map(issues, in_threads: 8) do |id, issue|
+            logger.debug("Fetching events for issue !#{id}")
+            [id, issue.merge({ events: fetch_github_events(id) })]
+          end.to_h
+        end
+      end
+
+      # Fetch github events for issue/pr
+      #
+      # @param [Integer] id
+      # @return [Array]
+      def fetch_github_events(id)
+        with_paginated_request { github_client.issue_events(github_repo, id) }
+          .map { |event| event[:event] }
+          .reject { |event| unsupported_events.include?(event) }
+      end
 
       # Verify imported mrs or issues and return missing items
       #
@@ -514,7 +530,7 @@ module QA
           logger.debug("= Fetching merge requests =")
           imported_mrs = imported_project.merge_requests(**api_request_params)
 
-          logger.debug("= Fetching merge request comments =")
+          logger.debug("- Fetching merge request comments #{Etc.nprocessors} parallel threads -")
           Parallel.map(imported_mrs, in_threads: Etc.nprocessors) do |mr|
             resource = Resource::MergeRequest.init do |resource|
               resource.project = imported_project
@@ -522,7 +538,6 @@ module QA
               resource.api_client = api_client
             end
 
-            logger.debug("Fetching events and comments for mr '!#{mr[:iid]}'")
             comments = resource.comments(**api_request_params)
             label_events = resource.label_events(**api_request_params)
             state_events = resource.state_events(**api_request_params)
@@ -547,11 +562,10 @@ module QA
           logger.debug("= Fetching issues =")
           imported_issues = imported_project.issues(**api_request_params)
 
-          logger.debug("= Fetching issue comments =")
+          logger.debug("- Fetching issue comments #{Etc.nprocessors} parallel threads -")
           Parallel.map(imported_issues, in_threads: Etc.nprocessors) do |issue|
             resource = build(:issue, project: imported_project, iid: issue[:iid], api_client: api_client)
 
-            logger.debug("Fetching events and comments for issue '!#{issue[:iid]}'")
             comments = resource.comments(**api_request_params)
             label_events = resource.label_events(**api_request_params)
             state_events = resource.state_events(**api_request_params)
@@ -638,6 +652,40 @@ module QA
       # @return [Integer]
       def id_from_url(url)
         url.match(%r{(?<type>issues|pull)/(?<id>\d+)})&.named_captures&.fetch("id", nil).to_i
+      end
+
+      # Custom pagination for github requests
+      #
+      # Default autopagination doesn't work correctly with rate limit
+      #
+      # @return [Array]
+      def with_paginated_request(&block)
+        resources = with_rate_limit(&block)
+
+        loop do
+          next_link = github_client.last_response.rels[:next]&.href
+          break unless next_link
+
+          logger.debug("Fetching resources from next page: '#{next_link}'")
+          resources.concat(with_rate_limit { github_client.get(next_link) })
+        end
+
+        resources
+      end
+
+      # Handle rate limit
+      #
+      # @return [Array]
+      def with_rate_limit
+        yield
+      rescue Faraday::ForbiddenError => e
+        raise e unless e.response[:status] == 403
+
+        wait = github_client.rate_limit.resets_in + 5
+        logger.warn("GitHub rate api rate limit reached, resuming in '#{wait}' seconds")
+        sleep(wait)
+
+        retry
       end
     end
   end

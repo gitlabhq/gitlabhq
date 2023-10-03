@@ -49,7 +49,7 @@ export default {
 <template>
   <div class="discussion-with-resolve-btn clearfix">
     <reply-placeholder
-      data-qa-selector="discussion_reply_tab"
+      data-testid="discussion-reply-tab"
       :placeholder-text="__('Reply…')"
       @focus="$emit('showReplyForm')"
     />
@@ -58,7 +58,6 @@ export default {
       <div class="btn-group">
         <resolve-discussion-button
           v-if="discussion.resolvable"
-          data-qa-selector="resolve_discussion_button"
           data-testid="resolve-discussion-button"
           :is-resolving="isResolving"
           :button-title="resolveButtonTitle"

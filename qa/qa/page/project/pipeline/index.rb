@@ -30,10 +30,14 @@ module QA
           # If no status provided, wait for pipeline to complete
           def wait_for_latest_pipeline(status: nil, wait: nil, reload: false)
             wait ||= Support::Repeater::DEFAULT_MAX_WAIT_TIME
-            finished_status = %w[Passed Failed Canceled Skipped Manual]
+            finished_status = %w[passed failed canceled skipped manual]
 
             wait_until(max_duration: wait, reload: reload, sleep_interval: 1, message: "Wait for latest pipeline") do
-              status ? latest_pipeline_status == status : finished_status.include?(latest_pipeline_status)
+              if status
+                latest_pipeline_status.casecmp(status) == 0
+              else
+                finished_status.include?(latest_pipeline_status.downcase)
+              end
             end
           end
 

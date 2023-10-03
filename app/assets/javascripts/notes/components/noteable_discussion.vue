@@ -310,7 +310,7 @@ export default {
         :data-discussion-resolvable="discussion.resolvable"
         :data-discussion-resolved="discussion.resolved"
         class="discussion js-discussion-container"
-        data-qa-selector="discussion_content"
+        data-testid="discussion-content"
       >
         <diff-discussion-header v-if="shouldRenderDiffs" :discussion="discussion" />
         <div v-if="!shouldHideDiscussionBody" class="discussion-body">

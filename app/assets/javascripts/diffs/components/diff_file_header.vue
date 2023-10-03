@@ -491,7 +491,7 @@ export default {
             <gl-dropdown-item
               v-if="diffHasDiscussions(diffFile)"
               ref="toggleDiscussionsButton"
-              data-qa-selector="toggle_comments_button"
+              data-testid="toggle-comments-button"
               @click="toggleFileDiscussionWrappers(diffFile)"
             >
               <template v-if="diffHasExpandedDiscussions(diffFile)">

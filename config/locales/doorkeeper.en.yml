@@ -131,6 +131,8 @@ en:
         Grants create access to the runners.
       k8s_proxy:
         Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+      ai_features:
+        Grants access to GitLab Duo related API endpoints.
     flash:
       applications:
         create:
