@@ -1,0 +1,6 @@
+mutation removeLinkedItems($input: WorkItemRemoveLinkedItemsInput!) {
+  workItemRemoveLinkedItems(input: $input) {
+    errors
+    message
+  }
+}

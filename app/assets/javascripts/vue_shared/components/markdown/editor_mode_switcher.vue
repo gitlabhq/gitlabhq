@@ -30,7 +30,7 @@ export default {
     <gl-button
       :id="$options.richTextEditorButtonId"
       class="btn btn-default btn-sm gl-button btn-default-tertiary gl-font-sm! gl-text-secondary! gl-px-4!"
-      data-qa-selector="editing_mode_switcher"
+      data-testid="editing-mode-switcher"
       @click="$emit('switch')"
       >{{ text }}</gl-button
     >

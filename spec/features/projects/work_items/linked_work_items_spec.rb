@@ -82,5 +82,33 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
         expect(find('.work-items-list')).to have_content('Task 1')
       end
     end
+
+    it 'removes a linked item', :aggregate_failures do
+      page.within('.work-item-relationships') do
+        click_button 'Add'
+
+        within_testid('link-work-item-form') do
+          expect(page).to have_button('Add', disabled: true)
+          find_by_testid('work-item-token-select-input').set(task.title)
+          wait_for_all_requests
+          click_button task.title
+
+          expect(page).to have_button('Add', disabled: false)
+
+          click_button 'Add'
+
+          wait_for_all_requests
+        end
+
+        expect(find('.work-items-list')).to have_content('Task 1')
+
+        find_by_testid('links-menu').click
+        click_button 'Remove'
+
+        wait_for_all_requests
+
+        expect(page).not_to have_content('Task 1')
+      end
+    end
   end
 end

@@ -3484,6 +3484,18 @@ export const linkedWorkItemResponse = (options, errors = []) => {
   };
 };
 
+export const removeLinkedWorkItemResponse = (message, errors = []) => {
+  return {
+    data: {
+      workItemRemoveLinkedItems: {
+        errors,
+        message,
+        __typename: 'WorkItemRemoveLinkedItemsPayload',
+      },
+    },
+  };
+};
+
 export const groupWorkItemsQueryResponse = {
   data: {
     group: {

@@ -12,12 +12,14 @@ import WorkItemRelationshipList from '~/work_items/components/work_item_relation
 import WorkItemAddRelationshipForm from '~/work_items/components/work_item_relationships/work_item_add_relationship_form.vue';
 import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.mutation.graphql';
 
 import {
   groupWorkItemByIidResponseFactory,
   workItemByIidResponseFactory,
   mockLinkedItems,
   mockBlockingLinkedItem,
+  removeLinkedWorkItemResponse,
 } from '../../mock_data';
 
 describe('WorkItemRelationships', () => {
@@ -30,17 +32,30 @@ describe('WorkItemRelationships', () => {
   const groupWorkItemsQueryHandler = jest
     .fn()
     .mockResolvedValue(groupWorkItemByIidResponseFactory());
+  const removeLinkedWorkItemSuccessMutationHandler = jest
+    .fn()
+    .mockResolvedValue(removeLinkedWorkItemResponse('Successfully unlinked IDs: 2.'));
+  const removeLinkedWorkItemErrorMutationHandler = jest
+    .fn()
+    .mockResolvedValue(removeLinkedWorkItemResponse(null, ['Linked item removal failed']));
+  const $toast = {
+    show: jest.fn(),
+  };
 
   const createComponent = async ({
     workItemQueryHandler = emptyLinkedWorkItemsQueryHandler,
     workItemType = 'Task',
     isGroup = false,
+    removeLinkedWorkItemMutationHandler = removeLinkedWorkItemSuccessMutationHandler,
   } = {}) => {
+    const mockApollo = createMockApollo([
+      [workItemByIidQuery, workItemQueryHandler],
+      [removeLinkedItemsMutation, removeLinkedWorkItemMutationHandler],
+      [groupWorkItemByIidQuery, groupWorkItemsQueryHandler],
+    ]);
+
     wrapper = shallowMountExtended(WorkItemRelationships, {
-      apolloProvider: createMockApollo([
-        [workItemByIidQuery, workItemQueryHandler],
-        [groupWorkItemByIidQuery, groupWorkItemsQueryHandler],
-      ]),
+      apolloProvider: mockApollo,
       propsData: {
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemIid: '1',
@@ -49,6 +64,9 @@ describe('WorkItemRelationships', () => {
       },
       provide: {
         isGroup,
+      },
+      mocks: {
+        $toast,
       },
     });
 
@@ -59,6 +77,7 @@ describe('WorkItemRelationships', () => {
   const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
   const findEmptyRelatedMessageContainer = () => wrapper.findByTestId('links-empty');
   const findLinkedItemsCountContainer = () => wrapper.findByTestId('linked-items-count');
+  const findLinkedItemsHelpLink = () => wrapper.findByTestId('help-link');
   const findAllWorkItemRelationshipListComponents = () =>
     wrapper.findAllComponents(WorkItemRelationshipList);
   const findAddButton = () => wrapper.findByTestId('link-item-add-button');
@@ -77,6 +96,9 @@ describe('WorkItemRelationships', () => {
     expect(findEmptyRelatedMessageContainer().exists()).toBe(true);
     expect(findAddButton().exists()).toBe(true);
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
+    expect(findLinkedItemsHelpLink().attributes('href')).toBe(
+      '/help/user/okrs.md#linked-items-in-okrs',
+    );
   });
 
   it('renders blocking linked item lists', async () => {
@@ -158,4 +180,55 @@ describe('WorkItemRelationships', () => {
       expect(groupWorkItemsQueryHandler).toHaveBeenCalled();
     });
   });
+
+  it('removes linked item and shows toast message when removeLinkedItem event is emitted', async () => {
+    await createComponent({
+      workItemQueryHandler: jest
+        .fn()
+        .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
+    });
+
+    expect(findLinkedItemsCountContainer().text()).toBe('3');
+
+    await findAllWorkItemRelationshipListComponents()
+      .at(0)
+      .vm.$emit('removeLinkedItem', { id: 'gid://gitlab/WorkItem/2' });
+
+    await waitForPromises();
+
+    expect(removeLinkedWorkItemSuccessMutationHandler).toHaveBeenCalledWith({
+      input: {
+        id: 'gid://gitlab/WorkItem/1',
+        workItemsIds: ['gid://gitlab/WorkItem/2'],
+      },
+    });
+
+    expect($toast.show).toHaveBeenCalledWith('Linked item removed');
+
+    expect(findLinkedItemsCountContainer().text()).toBe('2');
+  });
+
+  it.each`
+    errorType                              | mutationMock                                               | errorMessage
+    ${'an error in the mutation response'} | ${removeLinkedWorkItemErrorMutationHandler}                | ${'Linked item removal failed'}
+    ${'a network error'}                   | ${jest.fn().mockRejectedValue(new Error('Network Error'))} | ${'Something went wrong when removing item. Please refresh this page.'}
+  `(
+    'shows an error message when there is $errorType while removing items',
+    async ({ mutationMock, errorMessage }) => {
+      await createComponent({
+        workItemQueryHandler: jest
+          .fn()
+          .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
+        removeLinkedWorkItemMutationHandler: mutationMock,
+      });
+
+      await findAllWorkItemRelationshipListComponents()
+        .at(0)
+        .vm.$emit('removeLinkedItem', { id: 'gid://gitlab/WorkItem/2' });
+
+      await waitForPromises();
+
+      expect(findWidgetWrapper().props('error')).toBe(errorMessage);
+    },
+  );
 });

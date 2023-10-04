@@ -15,7 +15,7 @@ module API
             current_user: options[:current_user]
           )
         else
-          wiki_page.content
+          wiki_page.raw_content
         end
       end
 

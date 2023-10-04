@@ -1,10 +1,13 @@
 <script>
-import { GlLoadingIcon, GlIcon, GlButton } from '@gitlab/ui';
+import { produce } from 'immer';
+import { GlLoadingIcon, GlIcon, GlButton, GlLink } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import { WIDGET_TYPE_LINKED_ITEMS, LINKED_CATEGORIES_MAP } from '../../constants';
 
 import WidgetWrapper from '../widget_wrapper.vue';
@@ -12,10 +15,12 @@ import WorkItemRelationshipList from './work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
 export default {
+  helpPath: helpPagePath('/user/okrs.md#linked-items-in-okrs'),
   components: {
     GlLoadingIcon,
     GlIcon,
     GlButton,
+    GlLink,
     WidgetWrapper,
     WorkItemRelationshipList,
     WorkItemAddRelationshipForm,
@@ -124,12 +129,71 @@ export default {
     hideLinkItemForm() {
       this.isShownLinkItemForm = false;
     },
+    async removeLinkedItem(linkedItem) {
+      try {
+        const {
+          data: {
+            workItemRemoveLinkedItems: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: removeLinkedItemsMutation,
+          variables: {
+            input: {
+              id: this.workItemId,
+              workItemsIds: [linkedItem.id],
+            },
+          },
+          update: (cache, { data: { workItemRemoveLinkedItems } }) => {
+            const errorMessages = workItemRemoveLinkedItems?.errors;
+            if (errorMessages && errorMessages.length > 0) {
+              [this.error] = errorMessages;
+              return;
+            }
+            const queryArgs = {
+              query: workItemByIidQuery,
+              variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
+            };
+            const sourceData = cache.readQuery(queryArgs);
+
+            if (!sourceData) {
+              return;
+            }
+
+            cache.writeQuery({
+              ...queryArgs,
+              data: produce(sourceData, (draftState) => {
+                const linkedItems =
+                  draftState.workspace.workItems.nodes[0].widgets?.find(
+                    (widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS,
+                  )?.linkedItems?.nodes || [];
+                const index = linkedItems.findIndex((item) => {
+                  return item.workItem.id === linkedItem.id;
+                });
+                linkedItems.splice(index, 1);
+              }),
+            });
+          },
+        });
+
+        if (errors.length > 0) {
+          [this.error] = errors;
+          return;
+        }
+
+        this.$toast.show(s__('WorkItem|Linked item removed'));
+      } catch {
+        this.error = this.$options.i18n.removeLinkedItemErrorMessage;
+      }
+    },
   },
   i18n: {
     title: s__('WorkItem|Linked Items'),
-    fetchError: s__('WorkItem|Something went wrong when fetching tasks. Please refresh this page.'),
+    fetchError: s__('WorkItem|Something went wrong when fetching items. Please refresh this page.'),
     emptyStateMessage: s__(
-      "WorkItem|Link work items together to show that they're related or that one is blocking others.",
+      "WorkItem|Link items together to show that they're related or that one is blocking others.",
+    ),
+    removeLinkedItemErrorMessage: s__(
+      'WorkItem|Something went wrong when removing item. Please refresh this page.',
     ),
     addChildButtonLabel: s__('WorkItem|Add'),
     relatedToTitle: s__('WorkItem|Related to'),
@@ -182,9 +246,12 @@ export default {
         />
         <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
         <template v-else>
-          <div v-if="isEmptyRelatedWorkItems" data-testid="links-empty">
+          <div v-if="!isShownLinkItemForm && isEmptyRelatedWorkItems" data-testid="links-empty">
             <p class="gl-new-card-empty">
               {{ $options.i18n.emptyStateMessage }}
+              <gl-link :href="$options.helpPath" data-testid="help-link">
+                {{ __('Learn more.') }}
+              </gl-link>
             </p>
           </div>
           <template v-else>
@@ -197,8 +264,9 @@ export default {
               :linked-items="linksBlocks"
               :heading="$options.i18n.blockingTitle"
               :work-item-full-path="workItemFullPath"
-              :can-update="false"
+              :can-update="canAdminWorkItemLink"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
+              @removeLinkedItem="removeLinkedItem"
             />
             <work-item-relationship-list
               v-if="linksIsBlockedBy.length"
@@ -209,16 +277,18 @@ export default {
               :linked-items="linksIsBlockedBy"
               :heading="$options.i18n.blockedByTitle"
               :work-item-full-path="workItemFullPath"
-              :can-update="false"
+              :can-update="canAdminWorkItemLink"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
+              @removeLinkedItem="removeLinkedItem"
             />
             <work-item-relationship-list
               v-if="linksRelatesTo.length"
               :linked-items="linksRelatesTo"
               :heading="$options.i18n.relatedToTitle"
               :work-item-full-path="workItemFullPath"
-              :can-update="false"
+              :can-update="canAdminWorkItemLink"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
+              @removeLinkedItem="removeLinkedItem"
             />
           </template>
         </template>

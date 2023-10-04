@@ -1,4 +1,4 @@
-- page_info = { last_commit_sha: @page.last_commit_sha, persisted: @page.persisted?, title: @page.title, content: @page.content || '', format: @page.format.to_s, uploads_path: uploads_path, path: wiki_page_path(@wiki, @page), wiki_path: wiki_path(@wiki), help_path: help_page_path('user/project/wiki/index'), markdown_help_path: help_page_path('user/markdown'), markdown_preview_path: wiki_page_path(@wiki, @page, action: :preview_markdown), create_path: wiki_path(@wiki, action: :create) }
+- page_info = { last_commit_sha: @page.last_commit_sha, persisted: @page.persisted?, title: @page.title, content: @page.raw_content || '', format: @page.format.to_s, uploads_path: uploads_path, path: wiki_page_path(@wiki, @page), wiki_path: wiki_path(@wiki), help_path: help_page_path('user/project/wiki/index'), markdown_help_path: help_page_path('user/markdown'), markdown_preview_path: wiki_page_path(@wiki, @page, action: :preview_markdown), create_path: wiki_path(@wiki, action: :create) }
 
 .gl-mt-3
   = form_errors(@page, truncate: :title)

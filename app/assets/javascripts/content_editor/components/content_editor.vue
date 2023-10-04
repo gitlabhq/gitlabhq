@@ -238,11 +238,7 @@ export default {
         @keydown="$emit('keydown', $event)"
       />
       <content-editor-alert />
-      <div
-        data-testid="content-editor"
-        data-qa-selector="content_editor_container"
-        :class="{ 'is-focused': focused }"
-      >
+      <div data-testid="content-editor" :class="{ 'is-focused': focused }">
         <formatting-toolbar
           ref="toolbar"
           :supports-quick-actions="supportsQuickActions"

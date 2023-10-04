@@ -268,7 +268,6 @@ export default {
           class="issue-title-text"
           dir="auto"
           :href="webUrl"
-          data-qa-selector="issuable_title_link"
           data-testid="issuable-title-link"
           v-bind="issuableTitleProps"
           @click="handleIssuableItemClick"

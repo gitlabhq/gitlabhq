@@ -14,6 +14,7 @@ module QA
     describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:github_repo) { ENV['QA_LARGE_IMPORT_REPO'] || 'rspec/rspec-core' }
       let(:import_max_duration) { ENV['QA_LARGE_IMPORT_DURATION']&.to_i || 7200 }
+      let(:api_parallel_threads) { ENV['QA_LARGE_IMPORT_GH_API_PARALLEL']&.to_i || Etc.nprocessors }
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
       let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address.chomp("/") }
@@ -359,11 +360,8 @@ module QA
               comments: [*gh_pr_comments[id], *gh_issue_comments[id]].compact
             }
           end
-          logger.info("- Fetching pr events 8 parallel threads -")
-          Parallel.map(prs, in_threads: 8) do |id, pr|
-            logger.debug("Fetching events for pr !#{id}")
-            [id, pr.merge({ events: fetch_github_events(id) })]
-          end.to_h
+
+          fetch_github_events(prs, "pr")
         end
       end
 
@@ -383,22 +381,26 @@ module QA
               comments: gh_issue_comments[id]
             }
           end
-          logger.info("- Fetching issue events in 8 parallel threads -")
-          Parallel.map(issues, in_threads: 8) do |id, issue|
-            logger.debug("Fetching events for issue !#{id}")
-            [id, issue.merge({ events: fetch_github_events(id) })]
-          end.to_h
+
+          fetch_github_events(issues, "issue")
         end
       end
 
-      # Fetch github events for issue/pr
+      # Fetch github events and add to issue object
       #
-      # @param [Integer] id
-      # @return [Array]
-      def fetch_github_events(id)
-        with_paginated_request { github_client.issue_events(github_repo, id) }
-          .map { |event| event[:event] }
-          .reject { |event| unsupported_events.include?(event) }
+      # @param [Hash] issuables
+      # @param [String] type
+      # @return [Hash]
+      def fetch_github_events(issuables, type)
+        logger.info("- Fetching #{type} events in #{api_parallel_threads} parallel threads -")
+        Parallel.map(issuables, in_threads: 8) do |id, issuable|
+          logger.debug("[tid: #{current_thread}] Fetching events for #{type} !#{id}")
+          events = with_paginated_request { github_client.issue_events(github_repo, id) }
+            .map { |event| event[:event] }
+            .reject { |event| unsupported_events.include?(event) }
+
+          [id, issuable.merge({ events: events })]
+        end.to_h
       end
 
       # Verify imported mrs or issues and return missing items
@@ -530,8 +532,8 @@ module QA
           logger.debug("= Fetching merge requests =")
           imported_mrs = imported_project.merge_requests(**api_request_params)
 
-          logger.debug("- Fetching merge request comments #{Etc.nprocessors} parallel threads -")
-          Parallel.map(imported_mrs, in_threads: Etc.nprocessors) do |mr|
+          logger.debug("- Fetching merge request comments #{api_parallel_threads} parallel threads -")
+          Parallel.map(imported_mrs, in_threads: api_parallel_threads) do |mr|
             resource = Resource::MergeRequest.init do |resource|
               resource.project = imported_project
               resource.iid = mr[:iid]
@@ -562,8 +564,8 @@ module QA
           logger.debug("= Fetching issues =")
           imported_issues = imported_project.issues(**api_request_params)
 
-          logger.debug("- Fetching issue comments #{Etc.nprocessors} parallel threads -")
-          Parallel.map(imported_issues, in_threads: Etc.nprocessors) do |issue|
+          logger.debug("- Fetching issue comments #{api_parallel_threads} parallel threads -")
+          Parallel.map(imported_issues, in_threads: api_parallel_threads) do |issue|
             resource = build(:issue, project: imported_project, iid: issue[:iid], api_client: api_client)
 
             comments = resource.comments(**api_request_params)
@@ -666,7 +668,7 @@ module QA
           next_link = github_client.last_response.rels[:next]&.href
           break unless next_link
 
-          logger.debug("Fetching resources from next page: '#{next_link}'")
+          logger.debug("[tid: #{current_thread}] Fetching resources from next page: '#{next_link}'")
           resources.concat(with_rate_limit { github_client.get(next_link) })
         end
 
@@ -682,10 +684,18 @@ module QA
         raise e unless e.response[:status] == 403
 
         wait = github_client.rate_limit.resets_in + 5
-        logger.warn("GitHub rate api rate limit reached, resuming in '#{wait}' seconds")
+        logger.warn("[tid: #{current_thread}] GitHub rate api rate limit reached, resuming in '#{wait}' seconds")
+        logger.debug("[tid: #{current_thread}] #{JSON.parse(e.response[:body])['message']}")
         sleep(wait)
 
         retry
+      end
+
+      # Get current thread id for better logging
+      #
+      # @return [Integer]
+      def current_thread
+        Thread.current.object_id
       end
     end
   end

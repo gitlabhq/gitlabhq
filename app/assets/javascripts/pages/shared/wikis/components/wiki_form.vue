@@ -317,7 +317,7 @@ export default {
             name="wiki[title]"
             type="text"
             class="form-control"
-            data-qa-selector="wiki_title_textbox"
+            data-testid="wiki-title-textbox"
             :required="true"
             :autofocus="!pageInfo.persisted"
             :placeholder="$options.i18n.title.placeholder"
@@ -397,7 +397,7 @@ export default {
             name="wiki[message]"
             type="text"
             class="form-control"
-            data-qa-selector="wiki_message_textbox"
+            data-testid="wiki-message-textbox"
             :placeholder="$options.i18n.commitMessage.label"
           />
         </gl-form-group>
@@ -409,7 +409,6 @@ export default {
         category="primary"
         variant="confirm"
         type="submit"
-        data-qa-selector="wiki_submit_button"
         data-testid="wiki-submit-button"
         :disabled="disableSubmitButton"
         >{{ submitButtonText }}</gl-button

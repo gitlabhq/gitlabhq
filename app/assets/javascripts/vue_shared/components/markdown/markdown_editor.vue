@@ -292,7 +292,7 @@ export default {
           class="note-textarea js-gfm-input markdown-area"
           dir="auto"
           :data-supports-quick-actions="supportsQuickActions"
-          :data-qa-selector="formFieldProps['data-qa-selector'] || 'markdown_editor_form_field'"
+          :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
           :disabled="disabled"
           @input="updateMarkdownFromMarkdownField"
           @keydown="$emit('keydown', $event)"
@@ -323,7 +323,7 @@ export default {
       <input
         v-bind="formFieldProps"
         :value="markdown"
-        data-qa-selector="markdown_editor_form_field"
+        data-testid="markdown-editor-form-field"
         type="hidden"
       />
     </div>

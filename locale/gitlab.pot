@@ -53784,10 +53784,13 @@ msgstr ""
 msgid "WorkItem|Key result"
 msgstr ""
 
-msgid "WorkItem|Link work items together to show that they're related or that one is blocking others."
+msgid "WorkItem|Link items together to show that they're related or that one is blocking others."
 msgstr ""
 
 msgid "WorkItem|Linked Items"
+msgstr ""
+
+msgid "WorkItem|Linked item removed"
 msgstr ""
 
 msgid "WorkItem|Mark as done"
@@ -53874,6 +53877,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong when deleting the task. Please try again."
 msgstr ""
 
+msgid "WorkItem|Something went wrong when fetching items. Please refresh this page."
+msgstr ""
+
 msgid "WorkItem|Something went wrong when fetching iterations. Please try again."
 msgstr ""
 
@@ -53887,6 +53893,9 @@ msgid "WorkItem|Something went wrong when fetching work item types. Please try a
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work items. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong when removing item. Please refresh this page."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when trying to add a child. Please try again."

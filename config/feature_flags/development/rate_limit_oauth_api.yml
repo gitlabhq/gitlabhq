@@ -1,0 +1,8 @@
+---
+name: rate_limit_oauth_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133109
+rollout_issue_url:
+milestone: '16.5'
+type: development
+group: group::authentication and authorization
+default_enabled: false

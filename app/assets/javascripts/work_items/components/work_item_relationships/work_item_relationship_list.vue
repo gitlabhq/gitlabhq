@@ -53,6 +53,7 @@ export default {
             :can-update="canUpdate"
             :child-path="linkedItemPath(workItemFullPath, linkedItem.workItem.iid)"
             @click="$emit('showModal', { event: $event, child: linkedItem.workItem })"
+            @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
           />
         </li>
       </ul>

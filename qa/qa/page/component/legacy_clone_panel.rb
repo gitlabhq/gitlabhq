@@ -10,9 +10,9 @@ module QA
           super
 
           base.view 'app/views/shared/_clone_panel.html.haml' do
-            element :clone_dropdown
-            element :clone_dropdown_content
-            element :clone_url_content
+            element 'clone-dropdown'
+            element 'clone-dropdown-content'
+            element 'clone-url-content'
           end
         end
 
@@ -28,16 +28,16 @@ module QA
         end
 
         def repository_location
-          Git::Location.new(find_element(:clone_url_content).value)
+          Git::Location.new(find_element('clone-url-content').value)
         end
 
         private
 
         def choose_repository_clone(kind, detect_text)
           wait_until(reload: false) do
-            click_element :clone_dropdown
+            click_element 'clone-dropdown'
 
-            within_element(:clone_dropdown_content) do
+            within_element('clone-dropdown-content') do
               click_link(kind)
             end
 

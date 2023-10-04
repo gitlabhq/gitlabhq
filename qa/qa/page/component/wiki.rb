@@ -10,25 +10,25 @@ module QA
           super
 
           base.view 'app/views/shared/wikis/show.html.haml' do
-            element :wiki_page_title
-            element :edit_page_button
+            element 'wiki-page-title'
+            element 'wiki-edit-button'
           end
 
           base.view 'app/views/shared/wikis/_wiki_content.html.haml' do
-            element :wiki_page_content
+            element 'wiki-page-content'
           end
 
           base.view 'app/views/shared/wikis/_main_links.html.haml' do
-            element :new_page_button
-            element :page_history_button
+            element 'new-page-button'
+            element 'page-history-button'
           end
 
           base.view 'app/views/shared/empty_states/_wikis.html.haml' do
-            element :create_first_page_link
+            element 'create-first-page-link'
           end
 
           base.view 'app/views/shared/empty_states/_wikis_layout.html.haml' do
-            element :svg_content
+            element 'svg-content'
           end
         end
 
@@ -37,49 +37,49 @@ module QA
           # "Create your first page" button shifts up a bit. This can cause
           # webdriver to miss the hit so we wait for the svg to load before
           # clicking the button.
-          within_element(:svg_content) do
+          within_element('svg-content') do
             has_element?('js-lazy-loaded-content')
           end
 
-          click_element(:create_first_page_link)
+          click_element('create-first-page-link')
         end
 
         def click_new_page
-          click_element(:new_page_button)
+          click_element('new-page-button')
         end
 
         def click_page_history
-          click_element(:page_history_button)
+          click_element('page-history-button')
         end
 
         def click_edit
-          click_element(:edit_page_button)
+          click_element('wiki-edit-button')
         end
 
         def has_title?(title)
-          has_element?(:wiki_page_title, title)
+          has_element?('wiki-page-title', title)
         end
 
         def has_content?(content)
-          has_element?(:wiki_page_content, content)
+          has_element?('wiki-page-content', content)
         end
 
         def has_no_content?(content)
-          has_no_element?(:wiki_page_content, content)
+          has_no_element?('wiki-page-content', content)
         end
 
         def has_no_page?
-          has_element?(:create_first_page_link)
+          has_element?('create-first-page-link')
         end
 
         def has_heading?(heading_type, text)
-          within_element(:wiki_page_content) do
+          within_element('wiki-page-content') do
             has_css?(heading_type, text: text)
           end
         end
 
         def has_image?(image_file_name)
-          within_element(:wiki_page_content) do
+          within_element('wiki-page-content') do
             has_css?("img[src$='#{image_file_name}']")
           end
         end

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlForm, GlFormRadioGroup, GlAlert } from '@gitlab/ui';
-import { s__ } from '~/locale';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -61,12 +60,12 @@ describe('WorkItemAddRelationshipForm', () => {
   it('renders link work item form with default values', () => {
     expect(findLinkWorkItemForm().exists()).toBe(true);
     expect(findRadioGroup().props('options')).toEqual([
-      { text: s__('WorkItem|relates to'), value: LINKED_ITEM_TYPE_VALUE.RELATED },
-      { text: s__('WorkItem|blocks'), value: LINKED_ITEM_TYPE_VALUE.BLOCKS },
-      { text: s__('WorkItem|is blocked by'), value: LINKED_ITEM_TYPE_VALUE.BLOCKED_BY },
+      { text: 'relates to', value: LINKED_ITEM_TYPE_VALUE.RELATED },
+      { text: 'blocks', value: LINKED_ITEM_TYPE_VALUE.BLOCKS },
+      { text: 'is blocked by', value: LINKED_ITEM_TYPE_VALUE.BLOCKED_BY },
     ]);
     expect(findLinkWorkItemButton().attributes('disabled')).toBe('true');
-    expect(findMaxWorkItemNote().text()).toBe(s__('WorkItem|Add a maximum of 3 items at a time.'));
+    expect(findMaxWorkItemNote().text()).toBe('Add a maximum of 3 items at a time.');
   });
 
   it('renders work item token input with default props', () => {

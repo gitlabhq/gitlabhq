@@ -36,14 +36,15 @@ RSpec.describe 'admin/sessions/new.html.haml' do
   context 'omniauth authentication enabled' do
     before do
       allow(view).to receive(:omniauth_enabled?).and_return(true)
-      allow(view).to receive(:button_based_providers_enabled?).and_return(true)
+      allow(view).to receive(:password_authentication_enabled_for_web?).and_return(true)
     end
 
     it 'shows omniauth form' do
       render
 
       expect(rendered).not_to have_content _('No authentication methods configured.')
-      expect(rendered).to have_content _('or')
+      expect(rendered).to have_css('.omniauth-divider')
+      expect(rendered).to have_content(_('or sign in with'))
       expect(rendered).to have_css('.omniauth-container')
     end
   end

@@ -1980,3 +1980,44 @@ It renders as:
    ```
 
 ::EndTabs
+
+### Changes for a version upgrade
+
+To document upgrade notes and changes, create a new page for each major version of GitLab.
+For an example, see [GitLab 16 changes](../../../update/versions/gitlab_16_changes.md).
+Use the following template to add information to the page.
+
+```markdown
+# GitLab X changes **(FREE SELF)**
+
+This page contains upgrade information for minor and patch versions of GitLab X. Review these instructions for:
+
+- Your installation type.
+- All versions between your current version and your target version.
+
+For more information about upgrading GitLab Helm Chart, see [the release notes for X.0](https://docs.gitlab.com/charts/releases/X_0.html).
+
+## X.Y.1 (add the latest version at the top of the page)
+
+- General upgrade notes and issues.
+- ...
+
+### Linux package installations
+
+- Information specific to Linux package installations.
+- ...
+
+### Self-compiled installations
+
+- Information specific to self-compiled installations.
+- ...
+
+### Geo installations **(PREMIUM SELF)**
+
+ - Information specific to Geo.
+ - ...
+
+## X.Y.0
+
+ ...
+```

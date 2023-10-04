@@ -58,7 +58,7 @@ export default {
       name="content_editor_image"
       class="gl-display-none"
       :aria-label="$options.i18n.inputLabel"
-      data-qa-selector="file_upload_field"
+      data-testid="file-upload-field"
       @change="onFileSelect"
     />
   </span>

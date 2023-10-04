@@ -51,3 +51,4 @@ module Analytics
     end
   end
 end
+Analytics::CycleAnalytics::ValueStream.prepend_mod_with('Analytics::CycleAnalytics::ValueStream')

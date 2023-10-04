@@ -27,6 +27,14 @@ RSpec.describe Resolvers::UserNotesCountResolver do
         it 'returns the number of non-system notes for the issue' do
           expect(subject).to eq(2)
         end
+
+        context 'when not logged in' do
+          let(:user) { nil }
+
+          it 'returns the number of non-system notes for the issue' do
+            expect(subject).to eq(2)
+          end
+        end
       end
 
       context 'when a user has permission to view notes' do
@@ -64,6 +72,14 @@ RSpec.describe Resolvers::UserNotesCountResolver do
 
         it 'returns the number of non-system notes for the merge request' do
           expect(subject).to eq(2)
+        end
+
+        context 'when not logged in' do
+          let(:user) { nil }
+
+          it 'returns the number of non-system notes for the merge request' do
+            expect(subject).to eq(2)
+          end
         end
       end
 

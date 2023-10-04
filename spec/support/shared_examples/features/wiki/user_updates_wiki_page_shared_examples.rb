@@ -45,7 +45,7 @@ RSpec.shared_examples 'User updates wiki page' do
 
       first(:link, text: 'three').click
 
-      expect(find('[data-testid="wiki_page_title"]')).to have_content('three')
+      expect(find('[data-testid="wiki-page-title"]')).to have_content('three')
 
       click_on('Edit')
 

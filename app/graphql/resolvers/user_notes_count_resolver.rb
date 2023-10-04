@@ -20,7 +20,7 @@ module Resolvers
 
     def authorized_resource?(object)
       ability = "read_#{object.class.name.underscore}".to_sym
-      context[:current_user].present? && Ability.allowed?(context[:current_user], ability, object)
+      Ability.allowed?(context[:current_user], ability, object)
     end
   end
 end

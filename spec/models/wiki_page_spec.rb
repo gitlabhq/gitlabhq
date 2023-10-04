@@ -394,6 +394,22 @@ RSpec.describe WikiPage, feature_category: :wiki do
         expect { subject.create(title: '') }.not_to change { wiki.list_pages.length }
       end
     end
+
+    context "with front matter context" do
+      let(:attributes) do
+        {
+          title: SecureRandom.hex,
+          content: "---\nxxx: abc\n---\nHome Page",
+          format: "markdown",
+          message: 'Custom Commit Message'
+        }
+      end
+
+      it 'create the page with front matter' do
+        subject.create(attributes)
+        expect(wiki.find_page(title).front_matter).to eq({ xxx: "abc" })
+      end
+    end
   end
 
   describe "dot in the title" do
