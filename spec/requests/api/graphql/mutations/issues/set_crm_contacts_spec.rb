@@ -61,6 +61,17 @@ RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
         expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes))
           .to match_array(expected_contacts(mutation_contacts))
       end
+
+      context 'with an empty list of contacts' do
+        let(:mutation_contacts) { [] }
+
+        it 'removes all contacts' do
+          post_graphql_mutation(mutation, current_user: user)
+
+          expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes))
+            .to be_empty
+        end
+      end
     end
 
     context 'append' do

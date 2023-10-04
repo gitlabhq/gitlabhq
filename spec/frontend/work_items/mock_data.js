@@ -833,6 +833,21 @@ export const workItemByIidResponseFactory = (options) => {
   };
 };
 
+export const groupWorkItemByIidResponseFactory = (options) => {
+  const response = workItemResponseFactory(options);
+  return {
+    data: {
+      workspace: {
+        __typename: 'Group',
+        id: 'gid://gitlab/Group/1',
+        workItems: {
+          nodes: [response.data.workItem],
+        },
+      },
+    },
+  };
+};
+
 export const updateWorkItemMutationResponseFactory = (options) => {
   const response = workItemResponseFactory(options);
   return {

@@ -28,12 +28,14 @@ import WorkItemStateToggleButton from '~/work_items/components/work_item_state_t
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
+import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 
 import {
+  groupWorkItemByIidResponseFactory,
   mockParent,
   workItemByIidResponseFactory,
   objectiveType,
@@ -49,6 +51,10 @@ describe('WorkItemDetail component', () => {
   Vue.use(VueApollo);
 
   const workItemQueryResponse = workItemByIidResponseFactory({ canUpdate: true, canDelete: true });
+  const groupWorkItemQueryResponse = groupWorkItemByIidResponseFactory({
+    canUpdate: true,
+    canDelete: true,
+  });
   const workItemQueryResponseWithCannotUpdate = workItemByIidResponseFactory({
     canUpdate: false,
     canDelete: false,
@@ -59,6 +65,7 @@ describe('WorkItemDetail component', () => {
     canDelete: true,
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const groupSuccessHandler = jest.fn().mockResolvedValue(groupWorkItemQueryResponse);
   const showModalHandler = jest.fn();
   const { id } = workItemQueryResponse.data.workspace.workItems.nodes[0];
   const workItemUpdatedSubscriptionHandler = jest
@@ -92,6 +99,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
   const createComponent = ({
+    isGroup = false,
     isModal = false,
     updateInProgress = false,
     workItemIid = '1',
@@ -101,14 +109,13 @@ describe('WorkItemDetail component', () => {
     workItemsMvc2Enabled = false,
     linkedWorkItemsEnabled = false,
   } = {}) => {
-    const handlers = [
-      [workItemByIidQuery, handler],
-      [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
-      confidentialityMock,
-    ];
-
     wrapper = shallowMountExtended(WorkItemDetail, {
-      apolloProvider: createMockApollo(handlers),
+      apolloProvider: createMockApollo([
+        [workItemByIidQuery, handler],
+        [groupWorkItemByIidQuery, groupSuccessHandler],
+        [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
+        confidentialityMock,
+      ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
         isModal,
@@ -131,6 +138,7 @@ describe('WorkItemDetail component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         fullPath: 'group/project',
+        isGroup,
         reportAbusePath: '/report/abuse/path',
       },
       stubs: {
@@ -484,25 +492,64 @@ describe('WorkItemDetail component', () => {
     expect(findAlert().text()).toBe(updateError);
   });
 
-  it('calls the work item query', async () => {
-    createComponent();
-    await waitForPromises();
+  describe('when project context', () => {
+    it('calls the project work item query', async () => {
+      createComponent();
+      await waitForPromises();
 
-    expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+      expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+    });
+
+    it('skips calling the group work item query', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(groupSuccessHandler).not.toHaveBeenCalled();
+    });
+
+    it('skips calling the project work item query when there is no workItemIid', async () => {
+      createComponent({ workItemIid: null });
+      await waitForPromises();
+
+      expect(successHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls the project work item query when isModal=true', async () => {
+      createComponent({ isModal: true });
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+    });
   });
 
-  it('skips the work item query when there is no workItemIid', async () => {
-    createComponent({ workItemIid: null });
-    await waitForPromises();
+  describe('when group context', () => {
+    it('skips calling the project work item query', async () => {
+      createComponent({ isGroup: true });
+      await waitForPromises();
 
-    expect(successHandler).not.toHaveBeenCalled();
-  });
+      expect(successHandler).not.toHaveBeenCalled();
+    });
 
-  it('calls the work item query when isModal=true', async () => {
-    createComponent({ isModal: true });
-    await waitForPromises();
+    it('calls the group work item query', async () => {
+      createComponent({ isGroup: true });
+      await waitForPromises();
 
-    expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+      expect(groupSuccessHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+    });
+
+    it('skips calling the group work item query when there is no workItemIid', async () => {
+      createComponent({ isGroup: true, workItemIid: null });
+      await waitForPromises();
+
+      expect(groupSuccessHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls the group work item query when isModal=true', async () => {
+      createComponent({ isGroup: true, isModal: true });
+      await waitForPromises();
+
+      expect(groupSuccessHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+    });
   });
 
   describe('hierarchy widget', () => {

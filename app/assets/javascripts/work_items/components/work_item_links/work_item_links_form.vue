@@ -37,7 +37,7 @@ export default {
     GlTooltip,
     WorkItemTokenInput,
   },
-  inject: ['fullPath', 'hasIterationsFeature'],
+  inject: ['fullPath', 'hasIterationsFeature', 'isGroup'],
   props: {
     issuableGid: {
       type: String,
@@ -260,7 +260,13 @@ export default {
             input: this.workItemInput,
           },
           update: (cache, { data }) =>
-            addHierarchyChild(cache, this.fullPath, this.workItemIid, data.workItemCreate.workItem),
+            addHierarchyChild({
+              cache,
+              fullPath: this.fullPath,
+              iid: this.workItemIid,
+              isGroup: this.isGroup,
+              workItem: data.workItemCreate.workItem,
+            }),
         })
         .then(({ data }) => {
           if (data.workItemCreate?.errors?.length) {

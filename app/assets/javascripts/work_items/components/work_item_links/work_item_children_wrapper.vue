@@ -13,6 +13,7 @@ import { findHierarchyWidgets } from '../../utils';
 import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
+import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WorkItemLinkChild from './work_item_link_child.vue';
 
@@ -20,7 +21,7 @@ export default {
   components: {
     WorkItemLinkChild,
   },
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemType: {
       type: String,
@@ -83,7 +84,14 @@ export default {
         const { data } = await this.$apollo.mutate({
           mutation: updateWorkItemMutation,
           variables: { input: { id: child.id, hierarchyWidget: { parentId: null } } },
-          update: (cache) => removeHierarchyChild(cache, this.fullPath, this.workItemIid, child),
+          update: (cache) =>
+            removeHierarchyChild({
+              cache,
+              fullPath: this.fullPath,
+              iid: this.workItemIid,
+              isGroup: this.isGroup,
+              workItem: child,
+            }),
         });
 
         if (data.workItemUpdate.errors.length) {
@@ -109,7 +117,14 @@ export default {
         const { data } = await this.$apollo.mutate({
           mutation: updateWorkItemMutation,
           variables: { input: { id: child.id, hierarchyWidget: { parentId: this.workItemId } } },
-          update: (cache) => addHierarchyChild(cache, this.fullPath, this.workItemIid, child),
+          update: (cache) =>
+            addHierarchyChild({
+              cache,
+              fullPath: this.fullPath,
+              iid: this.workItemIid,
+              isGroup: this.isGroup,
+              workItem: child,
+            }),
         });
 
         if (data.workItemUpdate.errors.length) {
@@ -124,7 +139,7 @@ export default {
     },
     addWorkItemQuery({ iid }) {
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query: workItemByIidQuery,
+        query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
         variables: {
           fullPath: this.fullPath,
           iid,
@@ -206,7 +221,7 @@ export default {
           update: (store) => {
             store.updateQuery(
               {
-                query: workItemByIidQuery,
+                query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
                 variables: { fullPath: this.fullPath, iid: this.workItemIid },
               },
               (sourceData) =>

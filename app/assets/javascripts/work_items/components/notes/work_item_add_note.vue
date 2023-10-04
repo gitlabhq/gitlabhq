@@ -5,6 +5,7 @@ import { ASC } from '~/notes/constants';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
+import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
@@ -21,7 +22,7 @@ export default {
     WorkItemCommentForm,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -90,7 +91,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

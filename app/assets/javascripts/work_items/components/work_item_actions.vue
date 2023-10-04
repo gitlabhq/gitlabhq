@@ -15,7 +15,8 @@ import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
+import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
 import {
   sprintfWorkItem,
@@ -70,7 +71,7 @@ export default {
   copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   deleteActionTestId: TEST_ID_DELETE_ACTION,
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -256,7 +257,7 @@ export default {
     },
     updateWorkItemNotificationsWidgetCache({ cache, issue }) {
       const query = {
-        query: workItemByIidQuery,
+        query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
         variables: { fullPath: this.fullPath, iid: this.workItemIid },
       };
       // Read the work item object

@@ -38,6 +38,11 @@ On self-managed GitLab instances:
 - Administrators can [assign more compute minutes](#set-the-compute-quota-for-a-specific-namespace)
   if a namespace uses all its monthly quota.
 
+[Trigger jobs](../../ci/yaml/index.md#trigger) do not execute on runners, so they do not
+consume compute minutes, even when using [`strategy:depend`](../yaml/index.md#triggerstrategy)
+to wait for the [downstream pipeline](../pipelines/downstream_pipelines.md) status.
+The triggered downstream pipeline consumes compute minutes the same as other pipelines.
+
 [Project runners](../runners/runners_scope.md#project-runners) are not subject to a compute quota.
 
 ## Set the compute quota for all namespaces

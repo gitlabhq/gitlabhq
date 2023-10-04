@@ -22882,7 +22882,7 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
-msgid "GroupSettings| %{link_start}What are Experiment features?%{link_end}"
+msgid "GroupSettings| %{link_start}What do Experiment and Beta mean?%{link_end}"
 msgstr ""
 
 msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}."
@@ -22960,7 +22960,7 @@ msgstr ""
 msgid "GroupSettings|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
-msgid "GroupSettings|Experiment features"
+msgid "GroupSettings|Experiment and Beta features"
 msgstr ""
 
 msgid "GroupSettings|Export group"
@@ -23041,7 +23041,7 @@ msgstr ""
 msgid "GroupSettings|There was a problem updating the pipeline settings: %{error_messages}."
 msgstr ""
 
-msgid "GroupSettings|These features can cause performance and stability issues and may change over time."
+msgid "GroupSettings|These features are being developed and might be unstable."
 msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
@@ -23056,7 +23056,7 @@ msgstr ""
 msgid "GroupSettings|Transfer group"
 msgstr ""
 
-msgid "GroupSettings|Use Experiment features"
+msgid "GroupSettings|Use Experiment and Beta features"
 msgstr ""
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"

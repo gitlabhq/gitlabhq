@@ -7,5 +7,5 @@
         = _('Unfollow')
   - else
     = form_tag user_follow_path(@user, :json), class: link_classes do
-      = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-w-full', data: { qa_selector: 'follow_user_link', track_action: 'click_button', track_label: 'follow_from_profile' } }) do
+      = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-w-full', data: { testid: 'follow-user-link', track_action: 'click_button', track_label: 'follow_from_profile' } }) do
         = _('Follow')

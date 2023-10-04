@@ -18,6 +18,7 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 import { FORM_TYPES, WIDGET_ICONS, WORK_ITEM_STATUS_TEXT } from '../../constants';
 import { findHierarchyWidgetChildren } from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
+import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
@@ -39,7 +40,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['fullPath', 'reportAbusePath'],
+  inject: ['fullPath', 'isGroup', 'reportAbusePath'],
   props: {
     issuableId: {
       type: Number,
@@ -52,7 +53,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,
@@ -171,7 +174,13 @@ export default {
     },
     handleWorkItemDeleted(child) {
       const { defaultClient: cache } = this.$apollo.provider.clients;
-      removeHierarchyChild(cache, this.fullPath, this.iid, child);
+      removeHierarchyChild({
+        cache,
+        fullPath: this.fullPath,
+        iid: this.iid,
+        isGroup: this.isGroup,
+        workItem: child,
+      });
       this.$toast.show(s__('WorkItem|Task deleted'));
     },
     updateWorkItemIdUrlQuery({ iid } = {}) {

@@ -106,7 +106,7 @@ describe('Jobs Store Mutations', () => {
               {
                 offset: 1,
                 content: [{ text: 'Running with gitlab-runner 11.12.1 (5a147c92)' }],
-                lineNumber: 0,
+                lineNumber: 1,
               },
             ]);
           });
@@ -127,7 +127,7 @@ describe('Jobs Store Mutations', () => {
               {
                 offset: 0,
                 content: [{ text: 'Running with gitlab-runner 11.11.1 (5a147c92)' }],
-                lineNumber: 0,
+                lineNumber: 1,
               },
             ]);
           });

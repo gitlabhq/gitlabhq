@@ -19,20 +19,17 @@ export const parseLine = (line = {}, lineNumber) => ({
  * @param Number lineNumber
  */
 export const parseHeaderLine = (line = {}, lineNumber, hash) => {
+  let isClosed = parseBoolean(line.section_options?.collapsed);
+
   // if a hash is present in the URL then we ensure
   // all sections are visible so we can scroll to the hash
   // in the DOM
   if (hash) {
-    return {
-      isClosed: false,
-      isHeader: true,
-      line: parseLine(line, lineNumber),
-      lines: [],
-    };
+    isClosed = false;
   }
 
   return {
-    isClosed: parseBoolean(line.section_options?.collapsed),
+    isClosed,
     isHeader: true,
     line: parseLine(line, lineNumber),
     lines: [],
@@ -80,27 +77,28 @@ export const isCollapsibleSection = (acc = [], last = {}, section = {}) =>
   section.section === last.line.section;
 
 /**
- * Returns the lineNumber of the last line in
- * a parsed log
+ * Returns the next line number in the parsed log
  *
  * @param Array acc
  * @returns Number
  */
-export const getIncrementalLineNumber = (acc) => {
-  let lineNumberValue;
-  const lastIndex = acc.length - 1;
-  const lastElement = acc[lastIndex];
+export const getNextLineNumber = (acc) => {
+  if (!acc?.length) {
+    return 1;
+  }
+
+  const lastElement = acc[acc.length - 1];
   const nestedLines = lastElement.lines;
 
   if (lastElement.isHeader && !nestedLines.length && lastElement.line) {
-    lineNumberValue = lastElement.line.lineNumber;
-  } else if (lastElement.isHeader && nestedLines.length) {
-    lineNumberValue = nestedLines[nestedLines.length - 1].lineNumber;
-  } else {
-    lineNumberValue = lastElement.lineNumber;
+    return lastElement.line.lineNumber + 1;
   }
 
-  return lineNumberValue === 0 ? 1 : lineNumberValue + 1;
+  if (lastElement.isHeader && nestedLines.length) {
+    return nestedLines[nestedLines.length - 1].lineNumber + 1;
+  }
+
+  return lastElement.lineNumber + 1;
 };
 
 /**
@@ -119,31 +117,28 @@ export const getIncrementalLineNumber = (acc) => {
  * @returns Array parsed log lines
  */
 export const logLinesParser = (lines = [], prevLogLines = [], hash = '') =>
-  lines.reduce(
-    (acc, line, index) => {
-      const lineNumber = acc.length > 0 ? getIncrementalLineNumber(acc) : index;
+  lines.reduce((acc, line) => {
+    const lineNumber = getNextLineNumber(acc);
 
-      const last = acc[acc.length - 1];
+    const last = acc[acc.length - 1];
 
-      // If the object is an header, we parse it into another structure
-      if (line.section_header) {
-        acc.push(parseHeaderLine(line, lineNumber, hash));
-      } else if (isCollapsibleSection(acc, last, line)) {
-        // if the object belongs to a nested section, we append it to the new `lines` array of the
-        // previously formatted header
-        last.lines.push(parseLine(line, lineNumber));
-      } else if (line.section_duration) {
-        // if the line has section_duration, we look for the correct header to add it
-        addDurationToHeader(acc, line);
-      } else {
-        // otherwise it's a regular line
-        acc.push(parseLine(line, lineNumber));
-      }
+    // If the object is an header, we parse it into another structure
+    if (line.section_header) {
+      acc.push(parseHeaderLine(line, lineNumber, hash));
+    } else if (isCollapsibleSection(acc, last, line)) {
+      // if the object belongs to a nested section, we append it to the new `lines` array of the
+      // previously formatted header
+      last.lines.push(parseLine(line, lineNumber));
+    } else if (line.section_duration) {
+      // if the line has section_duration, we look for the correct header to add it
+      addDurationToHeader(acc, line);
+    } else {
+      // otherwise it's a regular line
+      acc.push(parseLine(line, lineNumber));
+    }
 
-      return acc;
-    },
-    [...prevLogLines],
-  );
+    return acc;
+  }, prevLogLines);
 
 /**
  * Finds the repeated offset, removes the old one

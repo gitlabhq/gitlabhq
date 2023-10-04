@@ -109,7 +109,6 @@ export default {
     no-caret
     placement="right"
     data-testid="user-action-dropdown"
-    data-qa-selector="user_action_dropdown"
   >
     <disable-two-factor-dropdown-item
       v-if="permissions.canDisableTwoFactor"

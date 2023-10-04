@@ -31,7 +31,7 @@ describe('Job Log Collapsible Section', () => {
     });
 
     it('renders clickable header line', () => {
-      expect(findLogLineHeader().text()).toBe('2 foo');
+      expect(findLogLineHeader().text()).toBe('1 foo');
       expect(findLogLineHeader().attributes('role')).toBe('button');
     });
 

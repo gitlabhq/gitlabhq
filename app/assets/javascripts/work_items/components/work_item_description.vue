@@ -10,6 +10,7 @@ import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { autocompleteDataSources, markdownPreviewPath } from '../utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
@@ -25,7 +26,7 @@ export default {
     WorkItemDescriptionRendered,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -55,7 +56,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

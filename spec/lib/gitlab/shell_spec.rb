@@ -125,16 +125,6 @@ RSpec.describe Gitlab::Shell do
 
     let(:storage) { Gitlab.config.repositories.storages.each_key.first }
 
-    describe '#add_namespace' do
-      it 'creates a namespace' do
-        Gitlab::GitalyClient::NamespaceService.allow do
-          subject.add_namespace(storage, "mepmep")
-
-          expect(Gitlab::GitalyClient::NamespaceService.new(storage).exists?("mepmep")).to be(true)
-        end
-      end
-    end
-
     describe '#repository_exists?' do
       context 'when the repository does not exist' do
         it 'returns false' do
@@ -147,18 +137,6 @@ RSpec.describe Gitlab::Shell do
           project = create(:project, :repository, :legacy_storage)
 
           expect(subject.repository_exists?(storage, project.repository.disk_path + ".git")).to be(true)
-        end
-      end
-    end
-
-    describe '#mv_namespace' do
-      it 'renames the namespace' do
-        Gitlab::GitalyClient::NamespaceService.allow do
-          subject.add_namespace(storage, "mepmep")
-          subject.mv_namespace(storage, "mepmep", "2mep")
-
-          expect(Gitlab::GitalyClient::NamespaceService.new(storage).exists?("mepmep")).to be(false)
-          expect(Gitlab::GitalyClient::NamespaceService.new(storage).exists?("2mep")).to be(true)
         end
       end
     end

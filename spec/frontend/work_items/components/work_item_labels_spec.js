@@ -7,10 +7,12 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import labelSearchQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS } from '~/work_items/constants';
 import {
+  groupWorkItemByIidResponseFactory,
   projectLabelsResponse,
   mockLabels,
   workItemByIidResponseFactory,
@@ -32,6 +34,9 @@ describe('WorkItemLabels component', () => {
   const workItemQuerySuccess = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ labels: null }));
+  const groupWorkItemQuerySuccess = jest
+    .fn()
+    .mockResolvedValue(groupWorkItemByIidResponseFactory({ labels: null }));
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
   const successUpdateWorkItemMutationHandler = jest
     .fn()
@@ -40,6 +45,7 @@ describe('WorkItemLabels component', () => {
 
   const createComponent = ({
     canUpdate = true,
+    isGroup = false,
     workItemQueryHandler = workItemQuerySuccess,
     searchQueryHandler = successSearchQueryHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
@@ -48,11 +54,13 @@ describe('WorkItemLabels component', () => {
     wrapper = mountExtended(WorkItemLabels, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
+        [groupWorkItemByIidQuery, groupWorkItemQuerySuccess],
         [labelSearchQuery, searchQueryHandler],
         [updateWorkItemMutation, updateWorkItemMutationHandler],
       ]),
       provide: {
         fullPath: 'test-project-path',
+        isGroup,
       },
       propsData: {
         workItemId,
@@ -244,17 +252,49 @@ describe('WorkItemLabels component', () => {
     });
   });
 
-  it('calls the work item query', async () => {
-    createComponent();
-    await waitForPromises();
+  describe('when project context', () => {
+    it('calls the project work item query', async () => {
+      createComponent();
+      await waitForPromises();
 
-    expect(workItemQuerySuccess).toHaveBeenCalled();
+      expect(workItemQuerySuccess).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work item query', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
+    });
+
+    it('skips calling the project work item query when missing workItemIid', async () => {
+      createComponent({ workItemIid: '' });
+      await waitForPromises();
+
+      expect(workItemQuerySuccess).not.toHaveBeenCalled();
+    });
   });
 
-  it('skips calling the work item query when missing workItemIid', async () => {
-    createComponent({ workItemIid: '' });
-    await waitForPromises();
+  describe('when group context', () => {
+    it('skips calling the project work item query', async () => {
+      createComponent({ isGroup: true });
+      await waitForPromises();
 
-    expect(workItemQuerySuccess).not.toHaveBeenCalled();
+      expect(workItemQuerySuccess).not.toHaveBeenCalled();
+    });
+
+    it('calls the group work item query', async () => {
+      createComponent({ isGroup: true });
+      await waitForPromises();
+
+      expect(groupWorkItemQuerySuccess).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work item query when missing workItemIid', async () => {
+      createComponent({ isGroup: true, workItemIid: '' });
+      await waitForPromises();
+
+      expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
+    });
   });
 });

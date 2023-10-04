@@ -695,7 +695,6 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_note
     enable :read_pipeline
-    enable :read_pipeline_schedule
     enable :read_environment
     enable :read_deployment
     enable :read_commit_status
@@ -712,7 +711,10 @@ class ProjectPolicy < BasePolicy
     enable :read_issue
   end
 
-  rule { can?(:public_access) & public_builds }.enable :read_ci_cd_analytics
+  rule { can?(:public_access) & public_builds }.policy do
+    enable :read_ci_cd_analytics
+    enable :read_pipeline_schedule
+  end
 
   rule { public_builds }.policy do
     enable :read_build

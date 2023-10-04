@@ -18,11 +18,11 @@ module QA
         end
 
         view 'app/assets/javascripts/repository/components/table/row.vue' do
-          element :file_name_link
+          element 'file-name-link'
         end
 
         view 'app/assets/javascripts/repository/components/table/index.vue' do
-          element :file_tree_table
+          element 'file-tree-table'
         end
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
@@ -102,15 +102,15 @@ module QA
         end
 
         def click_file(filename)
-          within_element(:file_tree_table) do
-            click_element(:file_name_link, text: filename)
+          within_element('file-tree-table') do
+            click_element('file-name-link', text: filename)
           end
         end
 
         def click_commit(commit_msg)
           wait_for_requests
 
-          within_element(:file_tree_table) do
+          within_element('file-tree-table') do
             click_on commit_msg
           end
         end
@@ -120,16 +120,16 @@ module QA
         end
 
         def has_file?(name)
-          return false unless has_element?(:file_tree_table)
+          return false unless has_element?('file-tree-table')
 
-          within_element(:file_tree_table) do
-            has_element?(:file_name_link, text: name)
+          within_element('file-tree-table') do
+            has_element?('file-name-link', text: name)
           end
         end
 
         def has_no_file?(name)
-          within_element(:file_tree_table) do
-            has_no_element?(:file_name_link, text: name)
+          within_element('file-tree-table') do
+            has_no_element?('file-name-link', text: name)
           end
         end
 

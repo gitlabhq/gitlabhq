@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
+import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { findHierarchyWidgetChildren } from '~/work_items/utils';
 
@@ -127,8 +128,11 @@ export const updateCacheAfterRemovingAwardEmojiFromNote = (currentNotes, note) =
   });
 };
 
-export const addHierarchyChild = (cache, fullPath, iid, workItem) => {
-  const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
+export const addHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) => {
+  const queryArgs = {
+    query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+    variables: { fullPath, iid },
+  };
   const sourceData = cache.readQuery(queryArgs);
 
   if (!sourceData) {
@@ -143,8 +147,11 @@ export const addHierarchyChild = (cache, fullPath, iid, workItem) => {
   });
 };
 
-export const removeHierarchyChild = (cache, fullPath, iid, workItem) => {
-  const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
+export const removeHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) => {
+  const queryArgs = {
+    query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+    variables: { fullPath, iid },
+  };
   const sourceData = cache.readQuery(queryArgs);
 
   if (!sourceData) {

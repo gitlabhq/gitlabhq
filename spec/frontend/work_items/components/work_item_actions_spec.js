@@ -132,6 +132,7 @@ describe('WorkItemActions component', () => {
       },
       provide: {
         fullPath: mockFullPath,
+        isGroup: false,
         glFeatures: { workItemsMvc2: true },
       },
       mocks: {

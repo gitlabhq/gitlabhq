@@ -46,7 +46,7 @@ export default {
   },
   mounted() {
     const hash = getLocationHash();
-    const lineToMatch = `L${this.line.lineNumber + 1}`;
+    const lineToMatch = `L${this.line.lineNumber}`;
 
     if (hash === lineToMatch) {
       this.applyHashHighlight = true;

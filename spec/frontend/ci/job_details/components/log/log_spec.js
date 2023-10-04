@@ -151,7 +151,7 @@ describe('Job Log', () => {
             ],
             section: 'prepare-executor',
             section_header: true,
-            lineNumber: 2,
+            lineNumber: 3,
           },
         ];
 

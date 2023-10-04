@@ -96,13 +96,21 @@ of each ref do not expire and are not deleted.
 
 ## Error message `This job could not start because it could not retrieve the needed artifacts.`
 
-A job configured with the [`needs:artifacts`](../yaml/index.md#needsartifacts) keyword
-fails to start and returns this error message if:
+A job fails to start and returns this error message if it can't fetch the artifacts
+it expects. This error is returned when:
 
-- The job's dependencies cannot be found.
+- The job's dependencies are not found. By default, jobs in later stages fetch artifacts
+  from jobs in all earlier stages, so the earlier jobs are all considered dependent.
+  If the job uses the [`dependencies`](../yaml/index.md#dependencies) keyword, only
+  the listed jobs are dependent.
+- The artifacts are already expired. You can set a longer expiry with [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in).
 - The job cannot access the relevant resources due to insufficient permissions.
 
-The troubleshooting steps to follow differ based on the syntax the job uses:
+See these additional troubleshooting steps if the job uses the [`needs:artifacts`](../yaml/index.md#needsartifacts):
+keyword with:
+
+- [`needs:project`](#for-a-job-configured-with-needsproject)
+- [`needs:pipeline:job`](#for-a-job-configured-with-needspipelinejob)
 
 - [`needs:project`](#for-a-job-configured-with-needsproject)
 - [`needs:pipeline:job`](#for-a-job-configured-with-needspipelinejob)

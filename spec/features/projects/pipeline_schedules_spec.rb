@@ -93,7 +93,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         wait_for_requests
       end
 
-      describe 'The view' do
+      describe 'the view' do
         it 'displays the required information description' do
           page.within('[data-testid="pipeline-schedule-table-row"]') do
             expect(page).to have_content('pipeline schedule')
@@ -280,36 +280,47 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     end
   end
 
-  context 'logged in as non-member' do
-    before do
-      gitlab_sign_in(user)
-    end
-
+  shared_examples 'when not logged in' do
     describe 'GET /projects/pipeline_schedules' do
-      before do
-        visit_pipelines_schedules
-      end
-
-      describe 'The view' do
+      describe 'the view' do
         it 'does not show create schedule button' do
+          visit_pipelines_schedules
+
           expect(page).not_to have_link('New schedule')
+        end
+
+        context 'when project is public' do
+          let_it_be(:project) { create(:project, :repository, :public, public_builds: true) }
+
+          it 'shows Pipelines Schedules page' do
+            visit_pipelines_schedules
+
+            expect(page).to have_link('New schedule')
+          end
+
+          context 'when public pipelines are disabled' do
+            before do
+              project.update!(public_builds: false)
+              visit_pipelines_schedules
+            end
+
+            it 'shows Not Found page' do
+              expect(page).to have_content('Page Not Found')
+            end
+          end
         end
       end
     end
   end
 
-  context 'not logged in' do
-    describe 'GET /projects/pipeline_schedules' do
-      before do
-        visit_pipelines_schedules
-      end
+  it_behaves_like 'when not logged in'
 
-      describe 'The view' do
-        it 'does not show create schedule button' do
-          expect(page).not_to have_link('New schedule')
-        end
-      end
+  context 'logged in as non-member' do
+    before do
+      gitlab_sign_in(user)
     end
+
+    it_behaves_like 'when not logged in'
   end
 
   def visit_new_pipeline_schedule

@@ -119,9 +119,9 @@ RSpec.describe RuboCop::CheckGracefulTask do
     end
 
     context 'with args' do
-      let(:args) { %w[a.rb Lint/EmptyFile b.rb Lint/Syntax] }
+      let(:args) { %w[Lint/EmptyFile Lint/Syntax] }
 
-      it_behaves_like 'rubocop scan', rubocop_args: %w[--only Lint/EmptyFile,Lint/Syntax a.rb b.rb]
+      it_behaves_like 'rubocop scan', rubocop_args: %w[--only Lint/EmptyFile,Lint/Syntax]
 
       it 'does not notify slack' do
         expect(Gitlab::Popen).not_to receive(:popen)

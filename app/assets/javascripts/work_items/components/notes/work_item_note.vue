@@ -3,7 +3,6 @@ import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
-import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import Tracking from '~/tracking';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import { renderMarkdown } from '~/notes/utils';
@@ -11,15 +10,17 @@ import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import EditedAt from '~/issues/show/components/edited.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
-import NoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../../constants';
+import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
+import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNoteMutation from '../../graphql/notes/update_work_item_note.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import { isAssigneesWidget } from '../../utils';
 import WorkItemCommentForm from './work_item_comment_form.vue';
+import NoteActions from './work_item_note_actions.vue';
 import WorkItemNoteAwardsList from './work_item_note_awards_list.vue';
+import NoteBody from './work_item_note_body.vue';
 
 export default {
   name: 'WorkItemNoteThread',
@@ -35,7 +36,7 @@ export default {
     EditedAt,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -169,7 +170,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

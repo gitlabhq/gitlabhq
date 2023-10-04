@@ -60,6 +60,10 @@ module Integrations
       super - ['deployment']
     end
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/telegram.svg')
+    end
+
     private
 
     def set_webhook

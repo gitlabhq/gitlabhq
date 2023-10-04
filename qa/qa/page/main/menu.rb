@@ -22,7 +22,7 @@ module QA
         end
 
         view 'app/assets/javascripts/super_sidebar/components/user_name_group.vue' do
-          element :user_profile_link
+          element 'user-profile-link'
         end
 
         view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
@@ -115,10 +115,10 @@ module QA
           return false unless has_personal_area?
 
           within_user_menu do
-            has_element?(:user_profile_link, text: /#{user.username}/)
+            has_element?('user-profile-link', text: /#{user.username}/)
           end
           # we need to close user menu because plain user link check will leave it open
-          click_element :user_avatar_content if has_element?(:user_profile_link, wait: 0)
+          click_element :user_avatar_content if has_element?('user-profile-link', wait: 0)
         end
 
         def not_signed_in?
@@ -159,7 +159,7 @@ module QA
 
         def click_user_profile_link
           within_user_menu do
-            click_element(:user_profile_link)
+            click_element('user-profile-link')
           end
         end
 
@@ -189,7 +189,7 @@ module QA
 
         def within_user_menu(&block)
           within_element(:navbar) do
-            click_element :user_avatar_content unless has_element?(:user_profile_link, wait: 1)
+            click_element :user_avatar_content unless has_element?('user-profile-link', wait: 1)
 
             within_element('user-dropdown', &block)
           end

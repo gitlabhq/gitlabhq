@@ -54,6 +54,7 @@ describe('WorkItemChildrenWrapper', () => {
       apolloProvider: mockApollo,
       provide: {
         fullPath: 'test/project',
+        isGroup: false,
       },
       propsData: {
         workItemType,

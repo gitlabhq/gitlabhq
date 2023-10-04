@@ -1,3 +1,3 @@
-import { initWorkItemsRoot } from '~/work_items/index';
+import { initWorkItemsRoot } from '~/work_items';
 
 initWorkItemsRoot();

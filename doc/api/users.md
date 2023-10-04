@@ -2126,6 +2126,47 @@ Example response:
 }
 ```
 
+## Create a personal access token with limited scopes for the currently authenticated user **(FREE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5 with a flag named `user_pat_rest_api`.
+
+Use this API to create a new personal access token for the currently authenticated user.
+For security purposes, the scopes are limited to only `k8s_proxy` and by default the token will expire by
+the end of the day it was created at.
+Token values are returned once so, make sure you save it as you can't access it again.
+
+```plaintext
+POST /user/personal_access_tokens
+```
+
+| Attribute    | Type   | Required | Description                                                                                                                                                                                                                                                                                           |
+|--------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`       | string | yes      | Name of the personal access token                                                                                                                                                                                                                                                                     |
+| `scopes`     | array  | yes      | Array of scopes of the personal access token. Possible values are `k8s_proxy`                                                                                                                                                                                                                         |
+| `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is at the end of the current day. The expiration is subject to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "scopes[]=k8s_proxy" "https://gitlab.example.com/api/v4/user/personal_access_tokens"
+```
+
+Example response:
+
+```json
+{
+    "id": 3,
+    "name": "mytoken",
+    "revoked": false,
+    "created_at": "2020-10-14T11:58:53.526Z",
+    "scopes": [
+        "k8s_proxy"
+    ],
+    "user_id": 42,
+    "active": true,
+    "expires_at": "2020-10-15",
+    "token": "ggbfKkC4n-Lujy8jwCR2"
+}
+```
+
 ## Get user activities **(FREE SELF)**
 
 Pre-requisite:

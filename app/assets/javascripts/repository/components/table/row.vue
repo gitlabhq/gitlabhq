@@ -219,7 +219,7 @@ export default {
           'is-submodule': isSubmodule,
         }"
         class="tree-item-link str-truncated"
-        data-qa-selector="file_name_link"
+        data-testid="file-name-link"
       >
         <file-icon
           :file-name="fullPath"

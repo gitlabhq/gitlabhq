@@ -869,7 +869,7 @@ Make sure to prepare for this task by having a
    bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
    ```
 
-1. Enable replication and refreshing again after indexing (only if you previously disabled it):
+1. Enable replication and refreshing again after indexing (only if you previously increased the `refresh_interval`):
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \

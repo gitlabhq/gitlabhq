@@ -18,8 +18,6 @@ class GitlabShellWorker # rubocop:disable Scalability/IdempotentWorker
       raise(ArgumentError, "#{action} not allowed for #{self.class.name}")
     end
 
-    Gitlab::GitalyClient::NamespaceService.allow do
-      gitlab_shell.public_send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend
-    end
+    gitlab_shell.public_send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend
   end
 end

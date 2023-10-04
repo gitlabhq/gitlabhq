@@ -172,7 +172,7 @@ export const collapsibleSectionClosed = {
       offset: 80,
       content: [{ text: 'this is a collapsible nested section' }],
       section: 'prepare-script',
-      lineNumber: 3,
+      lineNumber: 2,
     },
   ],
 };
@@ -193,7 +193,7 @@ export const collapsibleSectionOpened = {
       offset: 80,
       content: [{ text: 'this is a collapsible nested section' }],
       section: 'prepare-script',
-      lineNumber: 3,
+      lineNumber: 2,
     },
   ],
 };

@@ -5,7 +5,7 @@ module QA
     module User
       class Show < Page::Base
         view 'app/views/users/_follow_user.html.haml' do
-          element :follow_user_link
+          element 'follow-user-link'
         end
 
         view 'app/views/shared/users/_user.html.haml' do
@@ -13,11 +13,11 @@ module QA
         end
 
         view 'app/views/users/_overview.html.haml' do
-          element :user_activity_content
+          element 'user-activity-content'
         end
 
         def click_follow_user_link
-          click_element(:follow_user_link)
+          click_element('follow-user-link')
         end
 
         def click_following_tab
@@ -29,7 +29,7 @@ module QA
         end
 
         def has_activity?(activity)
-          within_element(:user_activity_content) do
+          within_element('user-activity-content') do
             has_text?(activity)
           end
         end

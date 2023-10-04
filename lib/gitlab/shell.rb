@@ -15,8 +15,7 @@ module Gitlab
     Error = Class.new(StandardError)
 
     PERMITTED_ACTIONS = %w[
-      mv_repository remove_repository add_namespace mv_namespace
-      repository_exists?
+      mv_repository remove_repository repository_exists?
     ].freeze
 
     class << self
@@ -123,41 +122,6 @@ module Gitlab
     rescue StandardError => e
       Gitlab::AppLogger.warn("Repository does not exist: #{e} at: #{disk_path}.git")
       Gitlab::ErrorTracking.track_exception(e, path: disk_path, storage: storage)
-
-      false
-    end
-
-    # Add empty directory for storing repositories
-    #
-    # @example Add new namespace directory
-    #   add_namespace("default", "gitlab")
-    #
-    # @param [String] storage project's storage path
-    # @param [String] name namespace name
-    #
-    # @deprecated
-    def add_namespace(storage, name)
-      Gitlab::GitalyClient.allow_n_plus_1_calls do
-        Gitlab::GitalyClient::NamespaceService.new(storage).add(name)
-      end
-    rescue GRPC::InvalidArgument => e
-      raise ArgumentError, e.message
-    end
-
-    # Move namespace directory inside repositories storage
-    #
-    # @example Move/rename a namespace directory
-    #   mv_namespace("/path/to/storage", "gitlab", "gitlabhq")
-    #
-    # @param [String] storage project's storage path
-    # @param [String] old_name current namespace name
-    # @param [String] new_name new namespace name
-    #
-    # @deprecated
-    def mv_namespace(storage, old_name, new_name)
-      Gitlab::GitalyClient::NamespaceService.new(storage).rename(old_name, new_name)
-    rescue GRPC::InvalidArgument => e
-      Gitlab::ErrorTracking.track_exception(e, old_name: old_name, new_name: new_name, storage: storage)
 
       false
     end

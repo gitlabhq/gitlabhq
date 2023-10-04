@@ -5,7 +5,7 @@ describe('Job Log Line Number', () => {
   let wrapper;
 
   const data = {
-    lineNumber: 0,
+    lineNumber: 1,
     path: '/jashkenas/underscore/-/jobs/335',
   };
 

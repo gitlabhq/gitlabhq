@@ -898,6 +898,11 @@ job:
   - Select **Keep** on the job page.
   - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of
     `expire_in` to `never`.
+- If the expiry time is too short, jobs in later stages of a long pipeline might try to fetch
+  expired artifacts from earlier jobs. If the artifacts are expired, jobs that try to fetch
+  them fail with a [`could not retrieve the needed artifacts` error](../jobs/job_artifacts_troubleshooting.md#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts).
+  Set the expiry time to be longer, or use [`dependencies`](#dependencies) in later jobs
+  to ensure they don't try to fetch expired artifacts.
 
 #### `artifacts:expose_as`
 
@@ -1619,10 +1624,11 @@ to select a specific site profile and scanner profile.
 
 ### `dependencies`
 
-Use the `dependencies` keyword to define a list of jobs to fetch [artifacts](#artifacts) from.
-You can also set a job to download no artifacts at all.
+Use the `dependencies` keyword to define a list of specific jobs to fetch [artifacts](#artifacts)
+from. When `dependencies` is not defined in a job, all jobs in earlier stages are considered dependent
+and the job fetches all artifacts from those jobs.
 
-If you do not use `dependencies`, all artifacts from previous stages are passed to each job.
+You can also set a job to download no artifacts at all.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 

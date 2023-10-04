@@ -6,7 +6,7 @@ import {
   addDurationToHeader,
   isCollapsibleSection,
   findOffsetAndRemove,
-  getIncrementalLineNumber,
+  getNextLineNumber,
 } from '~/ci/job_details/store/utils';
 import {
   mockJobLog,
@@ -192,14 +192,14 @@ describe('Jobs Store Utils', () => {
 
     describe('regular line', () => {
       it('adds a lineNumber property with correct index', () => {
-        expect(result[0].lineNumber).toEqual(0);
-        expect(result[1].lineNumber).toEqual(1);
-        expect(result[2].line.lineNumber).toEqual(2);
-        expect(result[2].lines[0].lineNumber).toEqual(3);
-        expect(result[2].lines[1].lineNumber).toEqual(4);
-        expect(result[3].line.lineNumber).toEqual(5);
-        expect(result[3].lines[0].lineNumber).toEqual(6);
-        expect(result[3].lines[1].lineNumber).toEqual(7);
+        expect(result[0].lineNumber).toEqual(1);
+        expect(result[1].lineNumber).toEqual(2);
+        expect(result[2].line.lineNumber).toEqual(3);
+        expect(result[2].lines[0].lineNumber).toEqual(4);
+        expect(result[2].lines[1].lineNumber).toEqual(5);
+        expect(result[3].line.lineNumber).toEqual(6);
+        expect(result[3].lines[0].lineNumber).toEqual(7);
+        expect(result[3].lines[1].lineNumber).toEqual(8);
       });
     });
 
@@ -326,17 +326,24 @@ describe('Jobs Store Utils', () => {
     });
   });
 
-  describe('getIncrementalLineNumber', () => {
-    describe('when last line is 0', () => {
+  describe('getNextLineNumber', () => {
+    describe('when there is no previous log', () => {
+      it('returns 1', () => {
+        expect(getNextLineNumber([])).toEqual(1);
+        expect(getNextLineNumber(undefined)).toEqual(1);
+      });
+    });
+
+    describe('when last line is 1', () => {
       it('returns 1', () => {
         const log = [
           {
             content: [],
-            lineNumber: 0,
+            lineNumber: 1,
           },
         ];
 
-        expect(getIncrementalLineNumber(log)).toEqual(1);
+        expect(getNextLineNumber(log)).toEqual(2);
       });
     });
 
@@ -353,7 +360,7 @@ describe('Jobs Store Utils', () => {
           },
         ];
 
-        expect(getIncrementalLineNumber(log)).toEqual(102);
+        expect(getNextLineNumber(log)).toEqual(102);
       });
     });
 
@@ -374,7 +381,7 @@ describe('Jobs Store Utils', () => {
           },
         ];
 
-        expect(getIncrementalLineNumber(log)).toEqual(102);
+        expect(getNextLineNumber(log)).toEqual(102);
       });
     });
 
@@ -401,7 +408,7 @@ describe('Jobs Store Utils', () => {
           },
         ];
 
-        expect(getIncrementalLineNumber(log)).toEqual(104);
+        expect(getNextLineNumber(log)).toEqual(104);
       });
     });
   });
@@ -420,7 +427,7 @@ describe('Jobs Store Utils', () => {
                 text: 'Downloading',
               },
             ],
-            lineNumber: 0,
+            lineNumber: 1,
           },
           {
             offset: 2,
@@ -429,7 +436,7 @@ describe('Jobs Store Utils', () => {
                 text: 'log line',
               },
             ],
-            lineNumber: 1,
+            lineNumber: 2,
           },
         ]);
       });
@@ -448,7 +455,7 @@ describe('Jobs Store Utils', () => {
                 text: 'log line',
               },
             ],
-            lineNumber: 0,
+            lineNumber: 1,
           },
         ]);
       });
@@ -472,7 +479,7 @@ describe('Jobs Store Utils', () => {
                 },
               ],
               section: 'section',
-              lineNumber: 0,
+              lineNumber: 1,
             },
             lines: [],
           },
@@ -498,7 +505,7 @@ describe('Jobs Store Utils', () => {
                 },
               ],
               section: 'section',
-              lineNumber: 0,
+              lineNumber: 1,
             },
             lines: [
               {
@@ -509,7 +516,7 @@ describe('Jobs Store Utils', () => {
                   },
                 ],
                 section: 'section',
-                lineNumber: 1,
+                lineNumber: 2,
               },
             ],
           },

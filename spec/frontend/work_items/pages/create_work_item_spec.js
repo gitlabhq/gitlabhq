@@ -65,6 +65,7 @@ describe('Create work item component', () => {
       },
       provide: {
         fullPath: 'full-path',
+        isGroup: false,
       },
     });
   };

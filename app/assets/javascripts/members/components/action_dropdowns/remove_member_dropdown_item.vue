@@ -77,7 +77,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown-item
-    data-qa-selector="delete_member_dropdown_item"
+    data-testid="delete-member-dropdown-item"
     @action="showRemoveMemberModal(modalData)"
   >
     <template #list-item>

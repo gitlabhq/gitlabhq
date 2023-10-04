@@ -7,12 +7,18 @@ import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { workItemByIidResponseFactory, mockAssignees } from '../mock_data';
+import {
+  groupWorkItemByIidResponseFactory,
+  mockAssignees,
+  workItemByIidResponseFactory,
+} from '../mock_data';
 
 describe('WorkItemCreatedUpdated component', () => {
   let wrapper;
   let successHandler;
+  let groupSuccessHandler;
 
   Vue.use(VueApollo);
 
@@ -30,19 +36,26 @@ describe('WorkItemCreatedUpdated component', () => {
     updatedAt,
     confidential = false,
     updateInProgress = false,
+    isGroup = false,
   } = {}) => {
-    const workItemQueryResponse = workItemByIidResponseFactory({
+    const workItemQueryResponse = workItemByIidResponseFactory({ author, updatedAt, confidential });
+    const groupWorkItemQueryResponse = groupWorkItemByIidResponseFactory({
       author,
       updatedAt,
       confidential,
     });
 
     successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+    groupSuccessHandler = jest.fn().mockResolvedValue(groupWorkItemQueryResponse);
 
     wrapper = shallowMount(WorkItemCreatedUpdated, {
-      apolloProvider: createMockApollo([[workItemByIidQuery, successHandler]]),
+      apolloProvider: createMockApollo([
+        [workItemByIidQuery, successHandler],
+        [groupWorkItemByIidQuery, groupSuccessHandler],
+      ]),
       provide: {
         fullPath: '/some/project',
+        isGroup,
       },
       propsData: { workItemIid, updateInProgress },
       stubs: {
@@ -54,10 +67,44 @@ describe('WorkItemCreatedUpdated component', () => {
     await waitForPromises();
   };
 
-  it('skips the work item query when workItemIid is not defined', async () => {
-    await createComponent({ workItemIid: null });
+  describe('when project context', () => {
+    it('calls the project work item query', async () => {
+      await createComponent();
 
-    expect(successHandler).not.toHaveBeenCalled();
+      expect(successHandler).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work item query', async () => {
+      await createComponent();
+
+      expect(groupSuccessHandler).not.toHaveBeenCalled();
+    });
+
+    it('skips calling the project work item query when workItemIid is not defined', async () => {
+      await createComponent({ workItemIid: null });
+
+      expect(successHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when group context', () => {
+    it('skips calling the project work item query', async () => {
+      await createComponent({ isGroup: true });
+
+      expect(successHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls the group work item query', async () => {
+      await createComponent({ isGroup: true });
+
+      expect(groupSuccessHandler).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work item query when workItemIid is not defined', async () => {
+      await createComponent({ isGroup: true, workItemIid: null });
+
+      expect(groupSuccessHandler).not.toHaveBeenCalled();
+    });
   });
 
   it('shows work item type metadata with type and icon', async () => {

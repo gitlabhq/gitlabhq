@@ -56,7 +56,7 @@ export default {
 
     if (window.location.hash) {
       const hash = getLocationHash();
-      const lineToMatch = `L${line.lineNumber + 1}`;
+      const lineToMatch = `L${line.lineNumber}`;
 
       if (hash === lineToMatch) {
         applyHashHighlight = true;

@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlIcon, GlButton } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
 
+import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import { WIDGET_TYPE_LINKED_ITEMS, LINKED_CATEGORIES_MAP } from '../../constants';
 
@@ -19,6 +20,7 @@ export default {
     WorkItemRelationshipList,
     WorkItemAddRelationshipForm,
   },
+  inject: ['isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -41,7 +43,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.workItemFullPath,

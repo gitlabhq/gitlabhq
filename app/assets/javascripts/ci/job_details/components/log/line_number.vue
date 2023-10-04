@@ -14,8 +14,7 @@ export default {
   render(h, { props }) {
     const { lineNumber, path } = props;
 
-    const parsedLineNumber = lineNumber + 1;
-    const lineId = `L${parsedLineNumber}`;
+    const lineId = `L${lineNumber}`;
     const lineHref = `${path}#${lineId}`;
 
     return h(
@@ -27,7 +26,7 @@ export default {
           href: lineHref,
         },
       },
-      parsedLineNumber,
+      lineNumber,
     );
   },
 };
