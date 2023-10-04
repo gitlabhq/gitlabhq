@@ -334,6 +334,45 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       end
     end
 
+    describe '/set_parent' do
+      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
+      let_it_be(:note_text) { "/set_parent #{parent.to_reference}" }
+      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+      shared_examples 'sets work item parent' do
+        it 'leaves the note empty' do
+          expect(execute(note)).to be_empty
+        end
+
+        it 'sets work item parent' do
+          execute(note)
+
+          expect(parent.valid?).to be_truthy
+          expect(noteable.work_item_parent).to eq(parent)
+        end
+      end
+
+      context 'when using work item reference' do
+        let_it_be(:note_text) { "/set_parent #{project.full_path}#{parent.to_reference}" }
+
+        it_behaves_like 'sets work item parent'
+      end
+
+      context 'when using work item iid' do
+        let_it_be(:note_text) { "/set_parent #{parent.to_reference}" }
+
+        it_behaves_like 'sets work item parent'
+      end
+
+      context 'when using work item URL' do
+        let_it_be(:url) { "#{Gitlab.config.gitlab.url}/#{project.full_path}/work_items/#{parent.iid}" }
+        let_it_be(:note_text) { "/set_parent #{url}" }
+
+        it_behaves_like 'sets work item parent'
+      end
+    end
+
     describe '/promote_to' do
       shared_examples 'promotes work item' do |from:, to:|
         it 'leaves the note empty' do

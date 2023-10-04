@@ -36,6 +36,7 @@ export default {
   },
   data() {
     return {
+      customEnvScope: null,
       isDropdownShown: false,
       selectedEnvironment: '',
       searchTerm: '',
@@ -68,13 +69,20 @@ export default {
         filtered = uniq([...filtered, '*']);
       }
 
+      // add custom env scope if it matches the search term
+      if (this.customEnvScope && this.customEnvScope.startsWith(this.searchTerm)) {
+        filtered = uniq([...filtered, this.customEnvScope]);
+      }
+
       return filtered.sort().map((environment) => ({
         value: environment,
         text: environment,
       }));
     },
     shouldRenderCreateButton() {
-      return this.searchTerm && !this.environments.includes(this.searchTerm);
+      return (
+        this.searchTerm && ![...this.environments, this.customEnvScope].includes(this.searchTerm)
+      );
     },
     shouldRenderDivider() {
       return (
@@ -98,7 +106,7 @@ export default {
       this.selectedEnvironment = selected;
     },
     createEnvironmentScope() {
-      this.$emit('create-environment-scope', this.searchTerm);
+      this.customEnvScope = this.searchTerm;
       this.selectEnvironment(this.searchTerm);
     },
     toggleDropdownShown(isShown) {

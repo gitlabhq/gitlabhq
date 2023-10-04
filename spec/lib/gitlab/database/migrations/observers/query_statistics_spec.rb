@@ -41,7 +41,13 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryStatistics do
     let(:result) { double }
     let(:pgss_query) do
       <<~SQL
-        SELECT query, calls, total_time, max_time, mean_time, rows
+        SELECT
+          query,
+          calls,
+          total_exec_time + total_plan_time AS total_time,
+          max_exec_time + max_plan_time AS max_time,
+          mean_exec_time + mean_plan_time AS mean_time,
+          "rows"
         FROM pg_stat_statements
         WHERE pg_get_userbyid(userid) = current_user
         ORDER BY total_time DESC

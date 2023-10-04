@@ -16,17 +16,6 @@ module Gitlab
 
     attr_reader :deploy_key
 
-    def protected_tag_accessible_to?(ref, action:)
-      if Feature.enabled?(:deploy_key_for_protected_tags, project)
-        super
-      else
-        assert_project!
-        # a deploy key can always push a protected tag
-        # (which is not always the case when pushing to a protected branch)
-        true
-      end
-    end
-
     def can_collaborate?(_ref)
       assert_project!
 

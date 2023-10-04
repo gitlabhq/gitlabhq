@@ -164,7 +164,6 @@ project_setting:
     - selective_code_owner_removals
     - show_diff_preview_in_email
     - suggested_reviewers_enabled
-    - jitsu_key
     - mirror_branch_regex
     - allow_pipeline_trigger_approve_deployment
     - pages_unique_domain_enabled

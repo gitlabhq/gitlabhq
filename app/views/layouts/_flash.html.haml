@@ -15,3 +15,4 @@
     - elsif value
       = render Pajamas::AlertComponent.new(variant: type_to_variant[key], dismissible: closable.include?(key), alert_options: {class: "flash-#{key}", data: { testid: "alert-#{type_to_variant[key]}" }}) do |c|
         = c.with_body { value }
+  #js-global-alerts

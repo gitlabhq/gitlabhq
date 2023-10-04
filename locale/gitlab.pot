@@ -9557,7 +9557,13 @@ msgstr ""
 msgid "Change title"
 msgstr ""
 
+msgid "Change work item parent"
+msgstr ""
+
 msgid "Change work item type"
+msgstr ""
+
+msgid "Change work item's parent to %{parent_ref}."
 msgstr ""
 
 msgid "Change your password"
@@ -10242,9 +10248,6 @@ msgstr ""
 msgid "CiStatusText|Warning"
 msgstr ""
 
-msgid "CiVariables|Add Variable"
-msgstr ""
-
 msgid "CiVariables|Add variable"
 msgstr ""
 
@@ -10263,7 +10266,7 @@ msgstr ""
 msgid "CiVariables|Do you want to delete the variable %{key}?"
 msgstr ""
 
-msgid "CiVariables|Edit Variable"
+msgid "CiVariables|Edit variable"
 msgstr ""
 
 msgid "CiVariables|Environments"
@@ -53630,6 +53633,9 @@ msgid "Work in progress (open and unassigned)"
 msgstr ""
 
 msgid "Work in progress limit"
+msgstr ""
+
+msgid "Work item parent set successfully"
 msgstr ""
 
 msgid "Work item promoted successfully."

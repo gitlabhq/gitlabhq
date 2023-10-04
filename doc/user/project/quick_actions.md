@@ -162,6 +162,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/relabel ~label1 ~label2`                                    | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Replace current labels with those specified. |
 | `/remove_due_date`                                            | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Remove due date. |
 | `/reopen`                                                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Reopen. |
+| `/set_parent <work_item>`                                     | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Set parent work item to `<work_item>`. The `<work_item>` value should be in the format of `#iid`, `group/project#iid`, or a URL to a work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420798) in GitLab 16.5. |
 | `/shrug <comment>`                                            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Append the comment with `¯\＿(ツ)＿/¯`. |
 | `/subscribe`                                                  | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Subscribe to notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 |
 | `/tableflip <comment>`                                        | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Append the comment with `(╯°□°)╯︵ ┻━┻`. |

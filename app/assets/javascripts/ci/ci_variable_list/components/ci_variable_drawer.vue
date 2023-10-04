@@ -11,9 +11,11 @@ import {
   GlFormTextarea,
   GlIcon,
   GlLink,
+  GlModal,
+  GlModalDirective,
   GlSprintf,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -36,10 +38,11 @@ import { awsTokenList } from './ci_variable_autocomplete_tokens';
 const trackingMixin = Tracking.mixin({ label: DRAWER_EVENT_LABEL });
 
 export const i18n = {
-  addVariable: s__('CiVariables|Add Variable'),
+  addVariable: s__('CiVariables|Add variable'),
   cancel: __('Cancel'),
   defaultScope: allEnvironments.text,
-  editVariable: s__('CiVariables|Edit Variable'),
+  deleteVariable: s__('CiVariables|Delete variable'),
+  editVariable: s__('CiVariables|Edit variable'),
   environments: __('Environments'),
   environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
   expandedField: s__('CiVariables|Expand variable reference'),
@@ -51,6 +54,7 @@ export const i18n = {
   maskedDescription: s__(
     'CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements.',
   ),
+  modalDeleteMessage: s__('CiVariables|Do you want to delete the variable %{key}?'),
   protectedField: s__('CiVariables|Protect variable'),
   protectedDescription: s__(
     'CiVariables|Export variable to pipelines running on protected branches and tags only.',
@@ -86,7 +90,11 @@ export default {
     GlFormTextarea,
     GlIcon,
     GlLink,
+    GlModal,
     GlSprintf,
+  },
+  directives: {
+    GlModalDirective,
   },
   mixins: [trackingMixin],
   inject: ['environmentScopeLink', 'isProtectedByDefault', 'maskableRawRegex', 'maskableRegex'],
@@ -170,6 +178,9 @@ export default {
     modalActionText() {
       return this.isEditing ? this.$options.i18n.editVariable : this.$options.i18n.addVariable;
     },
+    removeVariableMessage() {
+      return sprintf(this.$options.i18n.modalDeleteMessage, { key: this.variable.key });
+    },
   },
   watch: {
     variable: {
@@ -187,6 +198,13 @@ export default {
   methods: {
     close() {
       this.$emit('close-form');
+    },
+    deleteVariable() {
+      this.$emit('delete-variable', this.variable);
+      this.close();
+    },
+    setEnvironmentScope(scope) {
+      this.variable = { ...this.variable, environmentScope: scope };
     },
     getTrackingErrorProperty() {
       if (this.isValueEmpty) {
@@ -225,164 +243,206 @@ export default {
   }),
   i18n,
   variableOptions,
+  deleteModal: {
+    actionPrimary: {
+      text: __('Delete'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionSecondary: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
 };
 </script>
 <template>
-  <gl-drawer
-    open
-    data-testid="ci-variable-drawer"
-    :header-height="getDrawerHeaderHeight"
-    :z-index="$options.DRAWER_Z_INDEX"
-    @close="close"
-  >
-    <template #title>
-      <h2 class="gl-m-0">{{ modalActionText }}</h2>
-    </template>
-    <gl-form-group
-      :label="$options.i18n.type"
-      label-for="ci-variable-type"
-      class="gl-border-none"
-      :class="{
-        'gl-mb-n5': !hideEnvironmentScope,
-        'gl-mb-n1': hideEnvironmentScope,
-      }"
+  <div>
+    <gl-drawer
+      open
+      data-testid="ci-variable-drawer"
+      :header-height="getDrawerHeaderHeight"
+      :z-index="$options.DRAWER_Z_INDEX"
+      @close="close"
     >
-      <gl-form-select
-        id="ci-variable-type"
-        v-model="variable.variableType"
-        :options="$options.variableOptions"
-      />
-    </gl-form-group>
-    <gl-form-group
-      v-if="!hideEnvironmentScope"
-      class="gl-border-none gl-mb-n5"
-      label-for="ci-variable-env"
-      data-testid="environment-scope"
-    >
-      <template #label>
-        <div class="gl-display-flex gl-align-items-center">
-          <span class="gl-mr-2">
-            {{ $options.i18n.environments }}
-          </span>
-          <gl-link
-            class="gl-display-flex"
-            :title="$options.i18n.environmentScopeLinkTitle"
-            :href="environmentScopeLink"
-            target="_blank"
-            data-testid="environment-scope-link"
-          >
-            <gl-icon name="question-o" :size="14" />
-          </gl-link>
-        </div>
+      <template #title>
+        <h2 class="gl-m-0">{{ modalActionText }}</h2>
       </template>
-      <ci-environments-dropdown
-        v-if="areScopedVariablesAvailable"
-        class="gl-mb-5"
-        has-env-scope-query
-        :are-environments-loading="areEnvironmentsLoading"
-        :environments="environments"
-        :selected-environment-scope="variable.environmentScope"
-      />
-      <gl-form-input
-        v-else
-        :value="$options.i18n.defaultScope"
-        class="gl-w-full gl-mb-5"
-        readonly
-      />
-    </gl-form-group>
-    <gl-form-group class="gl-border-none gl-mb-n8">
-      <template #label>
-        <div class="gl-display-flex gl-align-items-center gl-mb-n3">
-          <span class="gl-mr-2">
-            {{ $options.i18n.flags }}
-          </span>
-          <gl-link
-            class="gl-display-flex"
-            :title="$options.i18n.flagsLinkTitle"
-            :href="$options.flagLink"
-            target="_blank"
-          >
-            <gl-icon name="question-o" :size="14" />
-          </gl-link>
-        </div>
-      </template>
-      <gl-form-checkbox v-model="variable.protected" data-testid="ci-variable-protected-checkbox">
-        {{ $options.i18n.protectedField }}
-        <p class="gl-text-secondary">
-          {{ $options.i18n.protectedDescription }}
-        </p>
-      </gl-form-checkbox>
-      <gl-form-checkbox v-model="variable.masked" data-testid="ci-variable-masked-checkbox">
-        {{ $options.i18n.maskedField }}
-        <p class="gl-text-secondary">{{ $options.i18n.maskedDescription }}</p>
-      </gl-form-checkbox>
-      <gl-form-checkbox
-        data-testid="ci-variable-expanded-checkbox"
-        :checked="isExpanded"
-        @change="setRaw"
+      <gl-form-group
+        :label="$options.i18n.type"
+        label-for="ci-variable-type"
+        class="gl-border-none"
+        :class="{
+          'gl-mb-n5': !hideEnvironmentScope,
+          'gl-mb-n1': hideEnvironmentScope,
+        }"
       >
-        {{ $options.i18n.expandedField }}
-        <p class="gl-text-secondary">
-          <gl-sprintf :message="$options.i18n.expandedDescription" class="gl-text-secondary">
-            <template #code="{ content }">
-              <code>{{ content }}</code>
-            </template>
-          </gl-sprintf>
-        </p>
-      </gl-form-checkbox>
-    </gl-form-group>
-    <gl-form-combobox
-      v-model="variable.key"
-      :token-list="$options.awsTokenList"
-      :label-text="$options.i18n.key"
-      class="gl-border-none gl-pb-0! gl-mb-n5"
-      data-testid="ci-variable-key"
-      data-qa-selector="ci_variable_key_field"
-    />
-    <gl-form-group
-      :label="$options.i18n.value"
-      label-for="ci-variable-value"
-      class="gl-border-none gl-mb-n2"
-      data-testid="ci-variable-value-label"
-      :invalid-feedback="maskedReqsNotMetText"
-      :state="isValueValid"
-    >
-      <gl-form-textarea
-        id="ci-variable-value"
-        v-model="variable.value"
-        class="gl-border-none gl-font-monospace!"
-        rows="3"
-        max-rows="10"
-        data-testid="ci-variable-value"
-        data-qa-selector="ci_variable_value_field"
-        spellcheck="false"
+        <gl-form-select
+          id="ci-variable-type"
+          v-model="variable.variableType"
+          :options="$options.variableOptions"
+        />
+      </gl-form-group>
+      <gl-form-group
+        v-if="!hideEnvironmentScope"
+        class="gl-border-none gl-mb-n5"
+        label-for="ci-variable-env"
+        data-testid="environment-scope"
+      >
+        <template #label>
+          <div class="gl-display-flex gl-align-items-center">
+            <span class="gl-mr-2">
+              {{ $options.i18n.environments }}
+            </span>
+            <gl-link
+              class="gl-display-flex"
+              :title="$options.i18n.environmentScopeLinkTitle"
+              :href="environmentScopeLink"
+              target="_blank"
+              data-testid="environment-scope-link"
+            >
+              <gl-icon name="question-o" :size="14" />
+            </gl-link>
+          </div>
+        </template>
+        <ci-environments-dropdown
+          v-if="areScopedVariablesAvailable"
+          class="gl-mb-5"
+          has-env-scope-query
+          :are-environments-loading="areEnvironmentsLoading"
+          :environments="environments"
+          :selected-environment-scope="variable.environmentScope"
+          @select-environment="setEnvironmentScope"
+          @search-environment-scope="$emit('search-environment-scope', $event)"
+        />
+        <gl-form-input
+          v-else
+          :value="$options.i18n.defaultScope"
+          class="gl-w-full gl-mb-5"
+          readonly
+        />
+      </gl-form-group>
+      <gl-form-group class="gl-border-none gl-mb-n8">
+        <template #label>
+          <div class="gl-display-flex gl-align-items-center gl-mb-n3">
+            <span class="gl-mr-2">
+              {{ $options.i18n.flags }}
+            </span>
+            <gl-link
+              class="gl-display-flex"
+              :title="$options.i18n.flagsLinkTitle"
+              :href="$options.flagLink"
+              target="_blank"
+            >
+              <gl-icon name="question-o" :size="14" />
+            </gl-link>
+          </div>
+        </template>
+        <gl-form-checkbox v-model="variable.protected" data-testid="ci-variable-protected-checkbox">
+          {{ $options.i18n.protectedField }}
+          <p class="gl-text-secondary">
+            {{ $options.i18n.protectedDescription }}
+          </p>
+        </gl-form-checkbox>
+        <gl-form-checkbox v-model="variable.masked" data-testid="ci-variable-masked-checkbox">
+          {{ $options.i18n.maskedField }}
+          <p class="gl-text-secondary">{{ $options.i18n.maskedDescription }}</p>
+        </gl-form-checkbox>
+        <gl-form-checkbox
+          data-testid="ci-variable-expanded-checkbox"
+          :checked="isExpanded"
+          @change="setRaw"
+        >
+          {{ $options.i18n.expandedField }}
+          <p class="gl-text-secondary">
+            <gl-sprintf :message="$options.i18n.expandedDescription" class="gl-text-secondary">
+              <template #code="{ content }">
+                <code>{{ content }}</code>
+              </template>
+            </gl-sprintf>
+          </p>
+        </gl-form-checkbox>
+      </gl-form-group>
+      <gl-form-combobox
+        v-model="variable.key"
+        :token-list="$options.awsTokenList"
+        :label-text="$options.i18n.key"
+        class="gl-border-none gl-pb-0! gl-mb-n5"
+        data-testid="ci-variable-key"
+        data-qa-selector="ci_variable_key_field"
       />
-      <p v-if="variable.raw" class="gl-mt-2 gl-mb-0 text-secondary" data-testid="raw-variable-tip">
-        {{ $options.i18n.valueFeedback.rawHelpText }}
-      </p>
-    </gl-form-group>
-    <gl-alert
-      v-if="hasVariableReference"
-      :title="$options.i18n.variableReferenceTitle"
-      :dismissible="false"
-      variant="warning"
-      class="gl-mx-4 gl-pl-9! gl-border-bottom-0"
-      data-testid="has-variable-reference-alert"
+      <gl-form-group
+        :label="$options.i18n.value"
+        label-for="ci-variable-value"
+        class="gl-border-none gl-mb-n2"
+        data-testid="ci-variable-value-label"
+        :invalid-feedback="maskedReqsNotMetText"
+        :state="isValueValid"
+      >
+        <gl-form-textarea
+          id="ci-variable-value"
+          v-model="variable.value"
+          class="gl-border-none gl-font-monospace!"
+          rows="3"
+          max-rows="10"
+          data-testid="ci-variable-value"
+          data-qa-selector="ci_variable_value_field"
+          spellcheck="false"
+        />
+        <p
+          v-if="variable.raw"
+          class="gl-mt-2 gl-mb-0 text-secondary"
+          data-testid="raw-variable-tip"
+        >
+          {{ $options.i18n.valueFeedback.rawHelpText }}
+        </p>
+      </gl-form-group>
+      <gl-alert
+        v-if="hasVariableReference"
+        :title="$options.i18n.variableReferenceTitle"
+        :dismissible="false"
+        variant="warning"
+        class="gl-mx-4 gl-pl-9! gl-border-bottom-0"
+        data-testid="has-variable-reference-alert"
+      >
+        {{ $options.i18n.variableReferenceDescription }}
+      </gl-alert>
+      <div class="gl-display-flex gl-justify-content-end">
+        <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
+          >{{ $options.i18n.cancel }}
+        </gl-button>
+        <gl-button
+          v-if="isEditing"
+          v-gl-modal-directive="`delete-variable-${variable.key}`"
+          variant="danger"
+          category="secondary"
+          class="gl-mr-3"
+          data-testid="ci-variable-delete-btn"
+          >{{ $options.i18n.deleteVariable }}</gl-button
+        >
+        <gl-button
+          category="primary"
+          variant="confirm"
+          :disabled="!canSubmit"
+          data-testid="ci-variable-confirm-btn"
+          @click="submit"
+          >{{ modalActionText }}
+        </gl-button>
+      </div>
+    </gl-drawer>
+    <gl-modal
+      ref="modal"
+      :modal-id="`delete-variable-${variable.key}`"
+      :title="$options.i18n.deleteVariable"
+      :action-primary="$options.deleteModal.actionPrimary"
+      :action-secondary="$options.deleteModal.actionSecondary"
+      data-testid="ci-variable-drawer-confirm-delete-modal"
+      @primary="deleteVariable"
     >
-      {{ $options.i18n.variableReferenceDescription }}
-    </gl-alert>
-    <div class="gl-display-flex gl-justify-content-end">
-      <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
-        >{{ $options.i18n.cancel }}
-      </gl-button>
-      <gl-button
-        category="primary"
-        variant="confirm"
-        :disabled="!canSubmit"
-        data-testid="ci-variable-confirm-btn"
-        @click="submit"
-        >{{ modalActionText }}
-      </gl-button>
-    </div>
-  </gl-drawer>
+      {{ removeVariableMessage }}
+    </gl-modal>
+  </div>
 </template>

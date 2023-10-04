@@ -23,16 +23,6 @@ RSpec.describe Gitlab::DeployKeyAccess, feature_category: :source_code_managemen
       it 'returns false' do
         expect(access.can_create_tag?('v0.1.2')).to be_falsey
       end
-
-      context 'when deploy_key_for_protected_tags FF is disabled' do
-        before do
-          stub_feature_flags(deploy_key_for_protected_tags: false)
-        end
-
-        it 'allows to push the tag' do
-          expect(access.can_create_tag?('v0.1.2')).to be_truthy
-        end
-      end
     end
 
     context 'push tag that matches a protected tag pattern via a deploy key' do

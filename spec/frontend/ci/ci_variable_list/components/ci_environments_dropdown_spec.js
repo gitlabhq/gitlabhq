@@ -1,10 +1,4 @@
-import {
-  GlListboxItem,
-  GlCollapsibleListbox,
-  GlDropdownDivider,
-  GlDropdownItem,
-  GlIcon,
-} from '@gitlab/ui';
+import { GlListboxItem, GlCollapsibleListbox, GlDropdownDivider, GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { allEnvironments, ENVIRONMENT_QUERY_LIMIT } from '~/ci/ci_variable_list/constants';
 import CiEnvironmentsDropdown from '~/ci/ci_variable_list/components/ci_environments_dropdown.vue';
@@ -25,7 +19,7 @@ describe('Ci environments dropdown', () => {
   const findActiveIconByIndex = (index) => findListboxItemByIndex(index).findComponent(GlIcon);
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findListboxText = () => findListbox().props('toggleText');
-  const findCreateWildcardButton = () => wrapper.findComponent(GlDropdownItem);
+  const findCreateWildcardButton = () => wrapper.findByTestId('create-wildcard-button');
   const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
   const findMaxEnvNote = () => wrapper.findByTestId('max-envs-notice');
 
@@ -188,16 +182,35 @@ describe('Ci environments dropdown', () => {
       });
     });
 
-    describe('when creating a new environment from a search term', () => {
-      const search = 'new-env';
+    describe('when creating a new environment scope from a search term', () => {
+      const searchTerm = 'new-env';
       beforeEach(() => {
-        createComponent({ searchTerm: search });
+        createComponent({ searchTerm, props: { hasEnvScopeQuery: true } });
       });
 
-      it('emits create-environment-scope', () => {
-        findCreateWildcardButton().vm.$emit('click');
+      it('sets new environment scope as the selected environment scope', async () => {
+        findCreateWildcardButton().trigger('click');
 
-        expect(wrapper.emitted('create-environment-scope')).toEqual([[search]]);
+        await findListbox().vm.$emit('search', searchTerm);
+
+        expect(findListbox().props('selected')).toBe(searchTerm);
+      });
+
+      it('includes new environment scope in search if it matches search term', async () => {
+        findCreateWildcardButton().trigger('click');
+
+        await findListbox().vm.$emit('search', searchTerm);
+
+        expect(findAllListboxItems()).toHaveLength(envs.length + 1);
+        expect(findListboxItemByIndex(1).text()).toBe(searchTerm);
+      });
+
+      it('excludes new environment scope in search if it does not match the search term', async () => {
+        findCreateWildcardButton().trigger('click');
+
+        await findListbox().vm.$emit('search', 'not-new-env');
+
+        expect(findAllListboxItems()).toHaveLength(envs.length);
       });
     });
   });

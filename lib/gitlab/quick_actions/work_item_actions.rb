@@ -27,6 +27,18 @@ module Gitlab
         command :promote_to do |type_name|
           @execution_message[:promote_to] = update_type(type_name, :promote_to)
         end
+
+        desc { _('Change work item parent') }
+        explanation do |parent_param|
+          format(_("Change work item's parent to %{parent_ref}."), parent_ref: parent_param)
+        end
+        types WorkItem
+        params 'Parent #iid, reference or URL'
+        condition { supports_parent? && can_admin_link? }
+        command :set_parent do |parent_param|
+          @updates[:set_parent] = extract_work_item(parent_param)
+          @execution_message[:set_parent] = success_msg[:set_parent]
+        end
       end
 
       private
@@ -50,6 +62,16 @@ module Gitlab
         return error_msg(:forbidden) unless current_user.can?(:"create_#{type.base_type}", quick_action_target)
 
         nil
+      end
+
+      def extract_work_item(params)
+        return if params.nil?
+
+        issuable_type = params.include?('work_items') ? :work_item : :issue
+        issuable = extract_references(params, issuable_type).first
+        return unless issuable
+
+        WorkItem.find(issuable.id)
       end
 
       def validate_promote_to(type)
@@ -78,8 +100,8 @@ module Gitlab
       def error_msg(reason, action: 'convert')
         message = {
           not_found: 'Provided type is not supported',
-          same_type: 'Types are the same',
-          forbidden: 'You have insufficient permissions'
+          forbidden: 'You have insufficient permissions',
+          same_type: 'Types are the same'
         }.freeze
 
         format(_("Failed to %{action} this work item: %{reason}."), { action: action, reason: message[reason] })
@@ -88,8 +110,17 @@ module Gitlab
       def success_msg
         {
           type: _('Type changed successfully.'),
-          promote_to: _("Work item promoted successfully.")
+          promote_to: _("Work item promoted successfully."),
+          set_parent: _('Work item parent set successfully')
         }
+      end
+
+      def supports_parent?
+        ::WorkItems::HierarchyRestriction.find_by_child_type_id(quick_action_target.work_item_type_id).present?
+      end
+
+      def can_admin_link?
+        current_user.can?(:admin_issue_link, quick_action_target)
       end
     end
   end

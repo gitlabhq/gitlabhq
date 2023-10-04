@@ -1,3 +1,5 @@
+import { getGlobalAlerts, setGlobalAlerts } from './global_alerts';
+
 export const DASH_SCOPE = '-';
 
 export const PATH_SEPARATOR = '/';
@@ -719,6 +721,20 @@ export function visitUrl(destination, external = false) {
   } else {
     window.location.assign(url);
   }
+}
+
+/**
+ * Navigates to a URL and display alerts.
+ *
+ * If destination is a querystring, it will be automatically transformed into a fully qualified URL.
+ * If the URL is not a safe URL (see isSafeURL implementation), this function will log an exception into Sentry.
+ *
+ * @param {*} destination - url to navigate to. This can be a fully qualified URL or a querystring.
+ * @param {{id: String, title?: String, message: String, variant: String, dismissible?: Boolean, persistOnPages?: String[]}[]} alerts - Alerts to display
+ */
+export function visitUrlWithAlerts(destination, alerts) {
+  setGlobalAlerts([...getGlobalAlerts(), ...alerts]);
+  visitUrl(destination);
 }
 
 export function refreshCurrentPage() {

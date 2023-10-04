@@ -211,9 +211,6 @@ export default {
     addVariable() {
       this.$emit('add-variable', this.variable);
     },
-    createEnvironmentScope(env) {
-      this.newEnvironments.push(env);
-    },
     deleteVariable() {
       this.$emit('delete-variable', this.variable);
     },
@@ -411,7 +408,6 @@ export default {
               :selected-environment-scope="variable.environmentScope"
               :environments="environmentsList"
               @select-environment="setEnvironmentScope"
-              @create-environment-scope="createEnvironmentScope"
               @search-environment-scope="$emit('search-environment-scope', $event)"
             />
 

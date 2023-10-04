@@ -1,7 +1,19 @@
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as urlUtils from '~/lib/utils/url_utility';
+import { setGlobalAlerts } from '~/lib/utils/global_alerts';
 import { safeUrls, unsafeUrls } from './mock_data';
+
+jest.mock('~/lib/utils/global_alerts', () => ({
+  getGlobalAlerts: jest.fn().mockImplementation(() => [
+    {
+      id: 'foo',
+      message: 'Foo',
+      variant: 'success',
+    },
+  ]),
+  setGlobalAlerts: jest.fn(),
+}));
 
 const shas = {
   valid: [
@@ -479,6 +491,48 @@ describe('URL utility', () => {
 
       expect(otherWindow.opener).toBe(null);
       expect(otherWindow.location.assign).toHaveBeenCalledWith(mockUrl);
+    });
+  });
+
+  describe('visitUrlWithAlerts', () => {
+    let originalLocation;
+
+    beforeAll(() => {
+      originalLocation = window.location;
+
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: {
+          assign: jest.fn(),
+          protocol: 'http:',
+          host: TEST_HOST,
+        },
+      });
+    });
+
+    afterAll(() => {
+      window.location = originalLocation;
+    });
+
+    it('sets alerts and then visits url', () => {
+      const url = '/foo/bar';
+      const alert = {
+        id: 'bar',
+        message: 'Bar',
+        variant: 'danger',
+      };
+
+      urlUtils.visitUrlWithAlerts(url, [alert]);
+
+      expect(setGlobalAlerts).toHaveBeenCalledWith([
+        {
+          id: 'foo',
+          message: 'Foo',
+          variant: 'success',
+        },
+        alert,
+      ]);
+      expect(window.location.assign).toHaveBeenCalledWith(url);
     });
   });
 

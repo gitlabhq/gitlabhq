@@ -2478,6 +2478,26 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     end
 
     it_behaves_like 'quick actions that change work item type'
+
+    context '/set_parent command' do
+      let_it_be(:parent) { create(:work_item, :issue, project: project) }
+      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:parent_ref) { parent.to_reference(project) }
+
+      let(:content) { "/set_parent #{parent_ref}" }
+
+      it 'returns success message' do
+        _, _, message = service.execute(content, work_item)
+
+        expect(message).to eq('Work item parent set successfully')
+      end
+
+      it 'sets correct update params' do
+        _, updates, _ = service.execute(content, work_item)
+
+        expect(updates).to eq(set_parent: parent)
+      end
+    end
   end
 
   describe '#explain' do
@@ -3020,6 +3040,55 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, explanations = service.explain(content, incident)
           expect(explanations).to be_empty
         end
+      end
+    end
+
+    describe '/set_parent command' do
+      let_it_be(:parent) { create(:work_item, :issue, project: project) }
+      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:parent_ref) { parent.to_reference(project) }
+
+      let(:command) { "/set_parent #{parent_ref}" }
+
+      shared_examples 'command is available' do
+        it 'explanation contains correct message' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations)
+            .to contain_exactly("Change work item's parent to #{parent_ref}.")
+        end
+
+        it 'contains command' do
+          expect(service.available_commands(work_item)).to include(a_hash_including(name: :set_parent))
+        end
+      end
+
+      shared_examples 'command is not available' do
+        it 'explanation is empty' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations).to eq([])
+        end
+
+        it 'does not contain command' do
+          expect(service.available_commands(work_item)).not_to include(a_hash_including(name: :set_parent))
+        end
+      end
+
+      context 'when user can admin link' do
+        it_behaves_like 'command is available'
+
+        context 'when work item type does not support a parent' do
+          let_it_be(:work_item) { build(:work_item, :incident, project: project) }
+
+          it_behaves_like 'command is not available'
+        end
+      end
+
+      context 'when user cannot admin link' do
+        subject(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'command is not available'
       end
     end
   end

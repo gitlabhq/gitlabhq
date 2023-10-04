@@ -31385,8 +31385,6 @@ CREATE INDEX index_boards_on_project_id ON boards USING btree (project_id);
 
 CREATE INDEX index_broadcast_message_on_ends_at_and_broadcast_type_and_id ON broadcast_messages USING btree (ends_at, broadcast_type, id);
 
-CREATE INDEX index_btree_namespaces_traversal_ids ON namespaces USING btree (traversal_ids);
-
 CREATE INDEX index_bulk_import_batch_trackers_on_tracker_id ON bulk_import_batch_trackers USING btree (tracker_id);
 
 CREATE INDEX index_bulk_import_configurations_on_bulk_import_id ON bulk_import_configurations USING btree (bulk_import_id);
