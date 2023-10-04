@@ -19,16 +19,10 @@ module QA
         let(:directory_name) { 'first_directory' }
 
         before do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.add_files(
-              [
-                {
-                  file_path: 'first_directory/test_file.txt',
-                  content: "Test file content"
-                }
-              ])
-          end
+          create(:commit, project: project, actions: [
+            { action: 'create', file_path: 'first_directory/test_file.txt', content: 'Test file content' }
+          ])
+
           project.visit!
         end
 

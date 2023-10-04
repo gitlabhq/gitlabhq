@@ -17,10 +17,9 @@ module QA
           settings.enable_ff_only
         end
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = merge_request.project
-          commit.add_files([{ file_path: 'other.txt', content: 'New file added!' }])
-        end
+        create(:commit, project: merge_request.project, actions: [
+          { action: 'create', file_path: 'other.txt', content: 'New file added!' }
+        ])
 
         merge_request.visit!
 

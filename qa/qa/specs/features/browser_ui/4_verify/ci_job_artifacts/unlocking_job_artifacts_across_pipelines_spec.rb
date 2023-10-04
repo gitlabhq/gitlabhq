@@ -128,11 +128,9 @@ module QA
         ci_file = ci_file_with_job_artifact(job_name, script)
         original_pipeline_count = pipeline_count
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = "Set job #{job_name} script #{script}"
-          commit.add_files([ci_file])
-        end
+        create(:commit, project: project, commit_message: "Set job #{job_name} script #{script}", actions: [
+          { action: 'create', **ci_file }
+        ])
 
         wait_for_new_pipeline(original_pipeline_count)
       end
@@ -141,11 +139,9 @@ module QA
         ci_file = ci_file_with_job_artifact(job_name, script)
         original_pipeline_count = pipeline_count
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = "Set job #{job_name} script #{script}"
-          commit.update_files([ci_file])
-        end
+        create(:commit, project: project, commit_message: "Set job #{job_name} script #{script}", actions: [
+          { action: 'update', **ci_file }
+        ])
 
         wait_for_new_pipeline(original_pipeline_count)
       end
@@ -154,11 +150,9 @@ module QA
         ci_file = ci_file_with_manual_job(job_name, script)
         original_pipeline_count = pipeline_count
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = "Set job #{job_name} script #{script}"
-          commit.update_files([ci_file])
-        end
+        create(:commit, project: project, commit_message: "Set job #{job_name} script #{script}", actions: [
+          { action: 'update', **ci_file }
+        ])
 
         wait_for_new_pipeline(original_pipeline_count)
       end

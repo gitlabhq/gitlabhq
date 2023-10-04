@@ -46,15 +46,12 @@ module QA
       private
 
       def add_ci_file(project, file)
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add config file'
-          commit.add_files([file])
-        end
+        create(:commit, project: project, commit_message: 'Add config file', actions: [file])
       end
 
       def upstream_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             build:
@@ -77,6 +74,7 @@ module QA
 
       def downstream_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             downstream_test:

@@ -30,7 +30,7 @@ module Integrations
 
         [{
           text: format(description_message),
-          color: color
+          color: attachment_color
         }]
       end
 
@@ -38,17 +38,7 @@ module Integrations
         {}
       end
 
-      private
-
-      def message
-        if running?
-          "Starting deploy to #{strip_markup(environment)}"
-        else
-          "Deploy to #{strip_markup(environment)} #{humanized_status}"
-        end
-      end
-
-      def color
+      def attachment_color
         case status
         when 'success'
           'good'
@@ -58,6 +48,16 @@ module Integrations
           'danger'
         else
           '#334455'
+        end
+      end
+
+      private
+
+      def message
+        if running?
+          "Starting deploy to #{strip_markup(environment)}"
+        else
+          "Deploy to #{strip_markup(environment)} #{humanized_status}"
         end
       end
 

@@ -245,16 +245,10 @@ module QA
       def update_parent_child_ci_files(parent_job_name:, parent_script:, child_job_name:, child_script:)
         original_pipeline_count = pipeline_count
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Update parent and child pipelines CI files.'
-          commit.update_files(
-            [
-              parent_ci_file(parent_job_name, parent_script),
-              child_ci_file(child_job_name, child_script)
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Update parent and child pipelines CI files.', actions: [
+          { action: 'update', **parent_ci_file(parent_job_name, parent_script) },
+          { action: 'update', **child_ci_file(child_job_name, child_script) }
+        ])
 
         wait_for_pipeline_creation(original_pipeline_count)
       end
@@ -262,16 +256,10 @@ module QA
       def add_parent_child_ci_files(parent_job_name:, parent_script:, child_job_name:, child_script:)
         original_pipeline_count = pipeline_count
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add parent and child pipelines CI files.'
-          commit.add_files(
-            [
-              parent_ci_file(parent_job_name, parent_script),
-              child_ci_file(child_job_name, child_script)
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add parent and child pipelines CI files.', actions: [
+          { action: 'create', **parent_ci_file(parent_job_name, parent_script) },
+          { action: 'create', **child_ci_file(child_job_name, child_script) }
+        ])
 
         wait_for_pipeline_creation(original_pipeline_count)
       end

@@ -16,27 +16,22 @@ module QA
       end
 
       let!(:commit) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  variables:
-                    FOO:
-                      value: "Default Foo"
-                      description: "This is a description for the foo variable"
-                  #{pipeline_job_name}:
-                    tags:
-                      - #{executor}
-                    script: echo "$FOO"
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              variables:
+                FOO:
+                  value: "Default Foo"
+                  description: "This is a description for the foo variable"
+              #{pipeline_job_name}:
+                tags:
+                  - #{executor}
+                script: echo "$FOO"
+            YAML
+          }
+        ])
       end
 
       before do

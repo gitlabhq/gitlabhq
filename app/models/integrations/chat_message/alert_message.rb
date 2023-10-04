@@ -34,11 +34,11 @@ module Integrations
         "Alert firing in #{strip_markup(project_name)}"
       end
 
-      private
-
       def attachment_color
         "#C95823"
       end
+
+      private
 
       def attachment_fields
         [

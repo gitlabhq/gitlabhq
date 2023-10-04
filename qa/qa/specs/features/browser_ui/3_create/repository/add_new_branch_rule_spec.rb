@@ -11,13 +11,12 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.branch = branch_name
-          commit.start_branch = project.default_branch
-          commit.commit_message = 'First commit'
-          commit.add_files([{ file_path: 'new_file.rb', content: '# new content' }])
-        end
+        create(:commit,
+          project: project, branch: branch_name,
+          start_branch: project.default_branch,
+          commit_message: 'First commit', actions: [
+            { action: 'create', file_path: 'new_file.rb', content: '# new content' }
+          ])
       end
 
       it 'adds a new branch rule', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/397587' do

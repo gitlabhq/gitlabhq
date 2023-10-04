@@ -39,16 +39,11 @@ module QA
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            conan_yaml = ERB.new(read_fixture('package_managers/conan', 'conan_upload_install_package.yaml.erb')).result(binding)
+          conan_yaml = ERB.new(read_fixture('package_managers/conan', 'conan_upload_install_package.yaml.erb')).result(binding)
 
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([{
-                                  file_path: '.gitlab-ci.yml',
-                                  content: conan_yaml
-                              }])
-          end
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: conan_yaml }
+          ])
         end
 
         project.visit!

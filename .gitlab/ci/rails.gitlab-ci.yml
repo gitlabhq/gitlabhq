@@ -524,9 +524,9 @@ rspec:feature-flags:
     - source scripts/utils.sh
   script:
     - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
-        run_timed_command "scripts/used-feature-flags" || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
+        run_timed_command "scripts/feature_flags/used-feature-flags" || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
       else
-        run_timed_command "scripts/used-feature-flags";
+        run_timed_command "scripts/feature_flags/used-feature-flags";
       fi
 
 rspec:flaky-tests-report:

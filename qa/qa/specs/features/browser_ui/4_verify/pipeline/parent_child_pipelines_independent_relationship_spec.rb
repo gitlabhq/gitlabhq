@@ -44,6 +44,7 @@ module QA
 
       def success_child_ci_file
         {
+          action: 'create',
           file_path: '.child-ci.yml',
           content: <<~YAML
             child_job:
@@ -57,6 +58,7 @@ module QA
 
       def fail_child_ci_file
         {
+          action: 'create',
           file_path: '.child-ci.yml',
           content: <<~YAML
             child_job:
@@ -70,6 +72,7 @@ module QA
 
       def parent_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             stages:
@@ -91,16 +94,10 @@ module QA
       end
 
       def add_ci_files(child_ci_file)
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add parent and child pipelines CI files.'
-          commit.add_files(
-            [
-              child_ci_file,
-              parent_ci_file
-            ]
-          )
-        end.project.visit!
+        create(:commit,
+          project: project,
+          commit_message: 'Add parent and child pipelines CI files.',
+          actions: [child_ci_file, parent_ci_file]).project.visit!
       end
     end
   end

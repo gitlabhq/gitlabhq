@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Oauth::TokensController, feature_category: :system_access do
   describe 'POST /oauth/token' do
-    context 'for resource owner password credential flow' do
+    context 'for resource owner password credential flow', :aggregate_failures do
       let_it_be(:password) { User.random_password }
 
       def authenticate(with_password)
@@ -33,6 +33,19 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
 
       context 'when the user has two factor enabled' do
         let_it_be(:user) { create(:user, :two_factor, password: password) }
+
+        it 'fails to authenticate and does not call GitLab::Auth even when using the correct password' do
+          expect(::Gitlab::Auth).not_to receive(:find_with_user_password)
+
+          authenticate(password)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(user.reload.failed_attempts).to eq(0)
+        end
+      end
+
+      context "when the user's password is automatically set" do
+        let_it_be(:user) { create(:user, password_automatically_set: true) }
 
         it 'fails to authenticate and does not call GitLab::Auth even when using the correct password' do
           expect(::Gitlab::Auth).not_to receive(:find_with_user_password)

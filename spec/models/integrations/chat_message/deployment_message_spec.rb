@@ -19,6 +19,29 @@ RSpec.describe Integrations::ChatMessage::DeploymentMessage, feature_category: :
 
   it_behaves_like Integrations::ChatMessage
 
+  def deployment_data(params)
+    {
+      object_kind: "deployment",
+      status: "success",
+      deployable_id: 3,
+      deployable_url: "deployable_url",
+      environment: "sandbox",
+      project: {
+        name: "greatproject",
+        web_url: "project_web_url",
+        path_with_namespace: "project_path_with_namespace"
+      },
+      user: {
+        name: "Jane Person",
+        username: "jane"
+      },
+      user_url: "user_url",
+      short_sha: "12345678",
+      commit_url: "commit_url",
+      commit_title: "commit title text"
+    }.merge(params)
+  end
+
   describe '#pretext' do
     it 'returns a message with the data returned by the deployment data builder' do
       expect(subject.pretext).to eq("Deploy to myenvironment succeeded")
@@ -80,29 +103,6 @@ RSpec.describe Integrations::ChatMessage::DeploymentMessage, feature_category: :
   end
 
   describe '#attachments' do
-    def deployment_data(params)
-      {
-        object_kind: "deployment",
-        status: "success",
-        deployable_id: 3,
-        deployable_url: "deployable_url",
-        environment: "sandbox",
-        project: {
-          name: "greatproject",
-          web_url: "project_web_url",
-          path_with_namespace: "project_path_with_namespace"
-        },
-        user: {
-          name: "Jane Person",
-          username: "jane"
-        },
-        user_url: "user_url",
-        short_sha: "12345678",
-        commit_url: "commit_url",
-        commit_title: "commit title text"
-      }.merge(params)
-    end
-
     context 'without markdown' do
       it 'returns attachments with the data returned by the deployment data builder' do
         job_url = Gitlab::Routing.url_helpers.project_job_url(project, ci_build)
@@ -163,6 +163,25 @@ RSpec.describe Integrations::ChatMessage::DeploymentMessage, feature_category: :
         text: "[project_path_with_namespace](project_web_url) with job [#3](deployable_url) by [Jane Person (jane)](user_url)\n[12345678](commit_url): commit title text",
         color: "#334455"
       }])
+    end
+  end
+
+  describe '#attachment_color' do
+    using RSpec::Parameterized::TableSyntax
+    where(:status, :expected_color) do
+      'success'  | 'good'
+      'canceled' | 'warning'
+      'failed'   | 'danger'
+      'blub'     | '#334455'
+    end
+
+    with_them do
+      it 'returns the correct color' do
+        data = deployment_data(status: status)
+        message = described_class.new(data)
+
+        expect(message.attachment_color).to eq(expected_color)
+      end
     end
   end
 end

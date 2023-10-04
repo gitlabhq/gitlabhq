@@ -357,7 +357,7 @@ when the account was created either:
 #### Supported user attributes
 
 - **can_create_group** - `true` or `false` to indicate whether the user can create
-  new groups. Default is `true`.
+  new top-level groups. Default is `true`.
 - **projects_limit** - The total number of personal projects a user can create.
   A value of `0` means the user cannot create new projects in their personal
   namespace. Default is `10000`.

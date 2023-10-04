@@ -30,6 +30,7 @@ export default {
           projectPath: this.projectPath,
           filePath: this.filePath,
           ref: this.ref,
+          refType: this.refType?.toUpperCase(),
         };
       },
       skip() {
@@ -44,6 +45,11 @@ export default {
     projectPath: {
       type: String,
       required: true,
+    },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {

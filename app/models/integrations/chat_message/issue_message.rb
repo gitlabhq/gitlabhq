@@ -41,6 +41,10 @@ module Integrations
         }
       end
 
+      def attachment_color
+        '#C95823'
+      end
+
       private
 
       def message
@@ -56,7 +60,7 @@ module Integrations
           title: issue_title,
           title_link: issue_url,
           text: format(SlackMarkdownSanitizer.sanitize_slack_link(description)),
-          color: '#C95823'
+          color: attachment_color
         }]
       end
 

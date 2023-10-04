@@ -68,13 +68,40 @@ module Integrations
         builder.add_embed do |embed|
           embed.author = Discordrb::Webhooks::EmbedAuthor.new(name: message.user_name, icon_url: message.user_avatar)
           embed.description = (message.pretext + "\n" + Array.wrap(message.attachments).join("\n")).gsub(ATTACHMENT_REGEX, " \\k<entry> - \\k<name>\n")
-          embed.colour = 16543014 # The hex "fc6d26" as an Integer
+          embed.colour = embed_color(message)
           embed.timestamp = Time.now.utc
         end
       end
     rescue RestClient::Exception => e
       log_error(e.message)
       false
+    end
+
+    COLOR_OVERRIDES = {
+      'good' => '#0d532a',
+      'warning' => '#703800',
+      'danger' => '#8d1300'
+    }.freeze
+
+    def embed_color(message)
+      return 'fc6d26'.hex unless message.respond_to?(:attachment_color)
+
+      color = message.attachment_color
+
+      color = COLOR_OVERRIDES[color] if COLOR_OVERRIDES.key?(color)
+
+      color = color.delete_prefix('#')
+
+      normalize_color(color).hex
+    end
+
+    # Expands the short notation to the full colorcode notation
+    # 123456 -> 123456
+    # 123    -> 112233
+    def normalize_color(color)
+      return (color[0, 1] * 2) + (color[1, 1] * 2) + (color[2, 1] * 2) if color.length == 3
+
+      color
     end
 
     def custom_data(data)

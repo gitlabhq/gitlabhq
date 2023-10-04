@@ -89,6 +89,15 @@ module Integrations
         }
       end
 
+      def attachment_color
+        case status
+        when 'success'
+          detailed_status == 'passed with warnings' ? 'warning' : 'good'
+        else
+          'danger'
+        end
+      end
+
       private
 
       def actually_failed_jobs(builds)
@@ -177,15 +186,6 @@ module Integrations
           s_("ChatMessage|has failed")
         else
           status
-        end
-      end
-
-      def attachment_color
-        case status
-        when 'success'
-          detailed_status == 'passed with warnings' ? 'warning' : 'good'
-        else
-          'danger'
         end
       end
 

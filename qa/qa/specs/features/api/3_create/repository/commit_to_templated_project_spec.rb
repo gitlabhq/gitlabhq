@@ -7,25 +7,10 @@ module QA
 
       it 'commits via the api', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/357234' do
         expect do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.update_files(
-              [
-                {
-                    file_path: '.gitlab-ci.yml',
-                    content: 'script'
-                }
-              ]
-            )
-            commit.add_files(
-              [
-                {
-                    file_path: 'foo',
-                    content: 'bar'
-                }
-              ]
-            )
-          end
+          create(:commit, project: project, actions: [
+            { action: 'update', file_path: '.gitlab-ci.yml', content: 'script' },
+            { action: 'create', file_path: 'foo', content: 'bar' }
+          ])
         end.not_to raise_exception
       end
     end

@@ -81,6 +81,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.access_token_revoked_email(user, 'token_name').message
   end
 
+  def access_token_about_to_expire_email
+    Notify.access_token_about_to_expire_email(user, ['%w', '%w']).message
+  end
+
   def ssh_key_expired_email
     fingerprints = []
     Notify.ssh_key_expired_email(user, fingerprints).message
@@ -220,6 +224,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def two_factor_otp_attempt_failed_email
     Notify.two_factor_otp_attempt_failed_email(user, '127.0.0.1').message
+  end
+
+  def disabled_two_factor_email
+    Notify.disabled_two_factor_email(user).message
   end
 
   def new_email_address_added_email

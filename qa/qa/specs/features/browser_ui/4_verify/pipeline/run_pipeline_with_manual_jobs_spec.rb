@@ -18,48 +18,43 @@ module QA
       end
 
       let!(:ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  default:
-                    tags: ["#{executor}"]
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              default:
+                tags: ["#{executor}"]
 
-                  stages:
-                    - Stage1
-                    - Stage2
-                    - Stage3
+              stages:
+                - Stage1
+                - Stage2
+                - Stage3
 
-                  Prep:
-                    stage: Stage1
-                    script: exit 0
-                    when: manual
+              Prep:
+                stage: Stage1
+                script: exit 0
+                when: manual
 
-                  Build:
-                    stage: Stage2
-                    needs: ['Prep']
-                    script: exit 0
-                    parallel: 6
+              Build:
+                stage: Stage2
+                needs: ['Prep']
+                script: exit 0
+                parallel: 6
 
-                  Test:
-                    stage: Stage3
-                    needs: ['Build']
-                    script: exit 0
+              Test:
+                stage: Stage3
+                needs: ['Build']
+                script: exit 0
 
-                  Deploy:
-                    stage: Stage3
-                    needs: ['Test']
-                    script: exit 0
-                    parallel: 6
-                YAML
-              }
-            ]
-          )
-        end
+              Deploy:
+                stage: Stage3
+                needs: ['Test']
+                script: exit 0
+                parallel: 6
+            YAML
+          }
+        ])
       end
 
       before do

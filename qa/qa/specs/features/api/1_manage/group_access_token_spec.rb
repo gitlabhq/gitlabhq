@@ -37,14 +37,14 @@ module QA
         }
       ) do
         expect do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.api_client = api_client
-            commit.project = project
-            commit.branch = "new_branch_#{SecureRandom.hex(8)}"
-            commit.start_branch = project.default_branch
-            commit.commit_message = 'Add new file'
-            commit.add_files([{ file_path: "text-#{SecureRandom.hex(8)}.txt", content: 'new file' }])
-          end
+          create(:commit,
+            api_client: api_client,
+            project: project,
+            branch: "new_branch_#{SecureRandom.hex(8)}",
+            start_branch: project.default_branch,
+            commit_message: 'Add new file', actions: [
+              { action: 'create', file_path: "text-#{SecureRandom.hex(8)}.txt", content: 'new file' }
+            ])
         rescue StandardError => e
           QA::Runtime::Logger.error("Full failure message: #{e.message}")
           raise

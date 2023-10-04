@@ -10,36 +10,31 @@ module QA
       let(:prefill_variable_description5) { Faker::Lorem.sentence }
       let(:project) { create(:project, name: 'project-with-prefill-variables') }
       let!(:commit) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  variables:
-                    TEST1:
-                      value: #{prefill_variable_value1}
-                      description: #{prefill_variable_description1}
-                    TEST2:
-                      description: #{prefill_variable_description2}
-                    TEST3:
-                      value: test 3 value
-                    TEST4: test 4 value
-                    TEST5:
-                      value: "FOO"
-                      options:
-                        - #{prefill_variable_value5}
-                        - "FOO"
-                      description: #{prefill_variable_description5}
-                  test:
-                    script: echo "$FOO"
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              variables:
+                TEST1:
+                  value: #{prefill_variable_value1}
+                  description: #{prefill_variable_description1}
+                TEST2:
+                  description: #{prefill_variable_description2}
+                TEST3:
+                  value: test 3 value
+                TEST4: test 4 value
+                TEST5:
+                  value: "FOO"
+                  options:
+                    - #{prefill_variable_value5}
+                    - "FOO"
+                  description: #{prefill_variable_description5}
+              test:
+                script: echo "$FOO"
+            YAML
+          }
+        ])
       end
 
       before do

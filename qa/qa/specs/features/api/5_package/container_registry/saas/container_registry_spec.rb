@@ -77,15 +77,9 @@ module QA
       it 'pushes, pulls image to the registry and deletes tag',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348001' do
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2, message: "Commit push") do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.api_client = api_client
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.project = project
-            commit.add_files([{
-              file_path: '.gitlab-ci.yml',
-              content: gitlab_ci_yaml
-            }])
-          end
+          create(:commit, api_client: api_client, commit_message: 'Add .gitlab-ci.yml', project: project, actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml }
+          ])
         end
 
         Support::Retrier.retry_until(

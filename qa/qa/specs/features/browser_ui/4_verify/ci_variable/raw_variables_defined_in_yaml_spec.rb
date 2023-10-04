@@ -16,53 +16,48 @@ module QA
       end
 
       let!(:commit_ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  variables:
-                    VAR7:
-                      value: "value 7 $CI_PIPELINE_ID"
-                      expand: false
-                    VAR8:
-                      value: "value 8 $CI_PIPELINE_ID"
-                      expand: false
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              variables:
+                VAR7:
+                  value: "value 7 $CI_PIPELINE_ID"
+                  expand: false
+                VAR8:
+                  value: "value 8 $CI_PIPELINE_ID"
+                  expand: false
 
-                  #{pipeline_job_name}:
-                    tags:
-                      - #{executor}
-                    script:
-                      - echo "VAR1 is $VAR1"
-                      - echo "VAR2 is $VAR2"
-                      - echo "VAR3 is $VAR3"
-                      - echo "VAR4 is $VAR4"
-                      - echo "VAR5 is $VAR5"
-                      - echo "VAR6 is $VAR6"
-                      - echo "VAR7 is $VAR7"
-                      - echo "VAR8 is $VAR8"
-                    variables:
-                      VAR1: "JOBID-$CI_JOB_ID"
-                      VAR2: "PIPELINEID-$CI_PIPELINE_ID and $VAR1"
-                      VAR3:
-                        value: "PIPELINEID-$CI_PIPELINE_ID and $VAR1"
-                        expand: false
-                      VAR4:
-                        value: "JOBID-$CI_JOB_ID"
-                        expand: false
-                      VAR5: "PIPELINEID-$CI_PIPELINE_ID and $VAR4"
-                      VAR6:
-                        value: "PIPELINEID-$CI_PIPELINE_ID and $VAR4"
-                        expand: false
-                      VAR7: "overridden value 7 $CI_PIPELINE_ID"
-                YAML
-              }
-            ]
-          )
-        end
+              #{pipeline_job_name}:
+                tags:
+                  - #{executor}
+                script:
+                  - echo "VAR1 is $VAR1"
+                  - echo "VAR2 is $VAR2"
+                  - echo "VAR3 is $VAR3"
+                  - echo "VAR4 is $VAR4"
+                  - echo "VAR5 is $VAR5"
+                  - echo "VAR6 is $VAR6"
+                  - echo "VAR7 is $VAR7"
+                  - echo "VAR8 is $VAR8"
+                variables:
+                  VAR1: "JOBID-$CI_JOB_ID"
+                  VAR2: "PIPELINEID-$CI_PIPELINE_ID and $VAR1"
+                  VAR3:
+                    value: "PIPELINEID-$CI_PIPELINE_ID and $VAR1"
+                    expand: false
+                  VAR4:
+                    value: "JOBID-$CI_JOB_ID"
+                    expand: false
+                  VAR5: "PIPELINEID-$CI_PIPELINE_ID and $VAR4"
+                  VAR6:
+                    value: "PIPELINEID-$CI_PIPELINE_ID and $VAR4"
+                    expand: false
+                  VAR7: "overridden value 7 $CI_PIPELINE_ID"
+            YAML
+          }
+        ])
       end
 
       let(:pipeline_id) { project.pipelines.first[:id] }

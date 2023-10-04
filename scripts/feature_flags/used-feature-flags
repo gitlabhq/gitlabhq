@@ -3,7 +3,9 @@
 
 require 'set'
 require 'fileutils'
-require_relative '../lib/gitlab_edition'
+require_relative '../../lib/gitlab_edition'
+
+ADDITIONAL_EDITIONS = %w[ee jh].freeze
 
 class String
   def red
@@ -23,18 +25,19 @@ class String
   end
 end
 
-flags_paths = [
-  'config/feature_flags/**/*.yml'
-]
+def add_definition_path!(edition, flag_def_paths)
+  return unless GitlabEdition.public_send(:"#{edition}?") # rubocop:disable GitlabSecurity/PublicSend
 
-# For EE additionally process `ee/` feature flags
-if GitlabEdition.ee?
-  flags_paths << 'ee/config/feature_flags/**/*.yml'
+  flag_def_paths << "#{edition}/config/feature_flags/**/*.yml"
+end
+
+def mark_replicator_flags_as_used(edition)
+  return unless GitlabEdition.public_send(:"#{edition}?") # rubocop:disable GitlabSecurity/PublicSend
 
   # Geo feature flags are constructed dynamically and there's no explicit checks in the codebase so we mark all
   # the replicators' derived feature flags as used.
   # See https://gitlab.com/gitlab-org/gitlab/-/blob/54e802e8fe76b6f93656d75ef9b566bf57b60f41/ee/lib/gitlab/geo/replicator.rb#L183-185
-  Dir.glob('ee/app/replicators/geo/*_replicator.rb').each_with_object(Set.new) do |path, memo|
+  Dir.glob("#{edition}/app/replicators/geo/*_replicator.rb").each do |path|
     replicator_name = File.basename(path, '.rb')
     feature_flag_name = "geo_#{replicator_name.delete_suffix('_replicator')}_replication"
 
@@ -42,16 +45,13 @@ if GitlabEdition.ee?
   end
 end
 
-# For JH additionally process `jh/` feature flags
-if GitlabEdition.jh?
-  flags_paths << 'jh/config/feature_flags/**/*.yml'
+flag_definition_paths = [
+  'config/feature_flags/**/*.yml'
+]
 
-  Dir.glob('jh/app/replicators/geo/*_replicator.rb').each_with_object(Set.new) do |path, memo|
-    replicator_name = File.basename(path, '.rb')
-    feature_flag_name = "geo_#{replicator_name.delete_suffix('_replicator')}_replication"
-
-    FileUtils.touch(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
-  end
+ADDITIONAL_EDITIONS.each do |edition|
+  add_definition_path!(edition, flag_definition_paths)
+  mark_replicator_flags_as_used(edition)
 end
 
 all_flags = {}
@@ -59,19 +59,16 @@ additional_flags = Set.new
 
 # Iterate all defined feature flags
 # to discover which were used
-flags_paths.each do |flags_path|
-  puts flags_path
-  Dir.glob(flags_path).each do |path|
-    feature_flag_name = File.basename(path, '.yml')
+Dir.glob(flag_definition_paths).each do |flag_definition_path|
+  feature_flag_name = File.basename(flag_definition_path, '.yml')
 
-    # TODO: we need a better way of tracking use of Gitaly FF across Gitaly and GitLab
-    if feature_flag_name.start_with?('gitaly_')
-      puts "Skipping the #{feature_flag_name} feature flag since it starts with 'gitaly_'."
-      next
-    end
-
-    all_flags[feature_flag_name] = File.exist?(File.join('tmp', 'feature_flags', feature_flag_name + '.used'))
+  # TODO: we need a better way of tracking use of Gitaly FF across Gitaly and GitLab
+  if feature_flag_name.start_with?('gitaly_')
+    puts "Skipping the #{feature_flag_name} feature flag since it starts with 'gitaly_'."
+    next
   end
+
+  all_flags[feature_flag_name] = File.exist?(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
 end
 
 # Iterate all used feature flags
@@ -82,8 +79,8 @@ Dir.glob('tmp/feature_flags/*.used').each do |path|
   additional_flags.add(feature_flag_name) unless all_flags[feature_flag_name]
 end
 
-used_flags = all_flags.select { |name, used| used }
-unused_flags = all_flags.reject { |name, used| used }
+used_flags = all_flags.select { |_name, used| used }
+unused_flags = all_flags.reject { |_name, used| used }
 
 puts "=========================================".green.bold
 puts "Feature Flags usage summary:".green.bold

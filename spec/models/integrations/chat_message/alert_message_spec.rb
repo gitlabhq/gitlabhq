@@ -57,4 +57,10 @@ RSpec.describe Integrations::ChatMessage::AlertMessage do
       expect(time_item[:value]).to eq(expected_time)
     end
   end
+
+  describe '#attachment_color' do
+    it 'returns the correct color' do
+      expect(subject.attachment_color).to eq('#C95823')
+    end
+  end
 end

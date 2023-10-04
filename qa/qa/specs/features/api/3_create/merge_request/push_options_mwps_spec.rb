@@ -26,23 +26,18 @@ module QA
       end
 
       it 'sets merge when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347843' do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  no-op:
-                    tags:
-                      - "runner-for-#{project.name}"
-                    script: sleep 999 # Leave the pipeline pending
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              no-op:
+                tags:
+                  - "runner-for-#{project.name}"
+                script: sleep 999 # Leave the pipeline pending
+            YAML
+          }
+        ])
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
@@ -77,23 +72,18 @@ module QA
           issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/346425"
         }
       ) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  no-op:
-                    tags:
-                      - "runner-for-#{project.name}"
-                    script: echo 'OK'
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              no-op:
+                tags:
+                  - "runner-for-#{project.name}"
+                script: echo 'OK'
+            YAML
+          }
+        ])
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project

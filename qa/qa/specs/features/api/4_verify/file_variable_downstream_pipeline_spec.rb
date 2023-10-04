@@ -29,6 +29,7 @@ module QA
       let(:upstream_project_files) do
         [
           {
+            action: 'create',
             file_path: '.gitlab-ci.yml',
             content: <<~YAML
                   default:
@@ -54,6 +55,7 @@ module QA
             YAML
           },
           {
+            action: 'create',
             file_path: 'child.yml',
             content: <<~YAML
                   default:
@@ -78,6 +80,7 @@ module QA
       let(:downstream_project_file) do
         [
           {
+            action: 'create',
             file_path: '.gitlab-ci.yml',
             content: <<~YAML
                   default:
@@ -175,11 +178,7 @@ module QA
       end
 
       def add_ci_file(project, files)
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add CI files to project'
-          commit.add_files(files)
-        end
+        create(:commit, project: project, commit_message: 'Add CI files to project', actions: files)
       end
 
       def wait_for_pipelines_to_finish

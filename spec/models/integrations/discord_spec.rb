@@ -77,7 +77,7 @@ RSpec.describe Integrations::Discord, feature_category: :integrations do
             icon_url: start_with('https://www.gravatar.com/avatar/'),
             name: user.name
           ),
-          color: 16543014,
+          color: 3359829,
           timestamp: Time.now.utc.iso8601
         )
       end

@@ -56,31 +56,43 @@ RSpec.describe BlobPresenter do
   end
 
   context 'when blob has ref_type' do
-    before do
-      blob.ref_type = 'heads'
-    end
+    %w[heads tags].each do |ref_type|
+      context "when ref_type is #{ref_type}" do
+        before do
+          blob.ref_type = ref_type
+        end
 
-    describe '#web_url' do
-      it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{ref}/#{path}?ref_type=heads") }
-    end
+        describe '#web_url' do
+          it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{ref}/#{path}?ref_type=#{ref_type}") }
+        end
 
-    describe '#web_path' do
-      it { expect(presenter.web_path).to eq("/#{project.full_path}/-/blob/#{ref}/#{path}?ref_type=heads") }
-    end
+        describe '#web_path' do
+          it { expect(presenter.web_path).to eq("/#{project.full_path}/-/blob/#{ref}/#{path}?ref_type=#{ref_type}") }
+        end
 
-    describe '#edit_blob_path' do
-      it { expect(presenter.edit_blob_path).to eq("/#{project.full_path}/-/edit/#{ref}/#{path}?ref_type=heads") }
-    end
+        describe '#edit_blob_path' do
+          it { expect(presenter.edit_blob_path).to eq("/#{project.full_path}/-/edit/#{ref}/#{path}?ref_type=#{ref_type}") }
+        end
 
-    describe '#raw_path' do
-      it { expect(presenter.raw_path).to eq("/#{project.full_path}/-/raw/#{ref}/#{path}?ref_type=heads") }
-    end
+        describe '#raw_path' do
+          it { expect(presenter.raw_path).to eq("/#{project.full_path}/-/raw/#{ref}/#{path}?ref_type=#{ref_type}") }
+        end
 
-    describe '#replace_path' do
-      it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/update/#{ref}/#{path}?ref_type=heads") }
-    end
+        describe '#replace_path' do
+          it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/update/#{ref}/#{path}?ref_type=#{ref_type}") }
+        end
 
-    it_behaves_like '#can_current_user_push_to_branch?'
+        describe '#history_path' do
+          it { expect(presenter.history_path).to eq("/#{project.full_path}/-/commits/#{ref}/#{path}?ref_type=#{ref_type}") }
+        end
+
+        describe '#blame_path' do
+          it { expect(presenter.blame_path).to eq("/#{project.full_path}/-/blame/#{ref}/#{path}?ref_type=#{ref_type}") }
+        end
+
+        it_behaves_like '#can_current_user_push_to_branch?'
+      end
+    end
   end
 
   describe '#can_modify_blob?' do

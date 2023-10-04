@@ -90,11 +90,11 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def blame_path
-    url_helpers.project_blame_path(project, ref_qualified_path)
+    url_helpers.project_blame_path(*path_params)
   end
 
   def history_path
-    url_helpers.project_commits_path(project, ref_qualified_path)
+    url_helpers.project_commits_path(*path_params)
   end
 
   def permalink_path

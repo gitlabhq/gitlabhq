@@ -10,28 +10,29 @@ module QA
     describe 'Open Web IDE from Diff Tab' do
       files = [
         {
-            file_path: 'file1',
-            content: 'test1'
+          action: 'create',
+          file_path: 'file1',
+          content: 'test1'
         },
         {
-            file_path: 'file2',
-            content: 'test2'
+          action: 'create',
+          file_path: 'file2',
+          content: 'test2'
         },
         {
-            file_path: 'file3',
-            content: 'test3'
+          action: 'create',
+          file_path: 'file3',
+          content: 'test3'
         }
       ]
 
       let(:project) { create(:project, :with_readme) }
       let(:source) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.branch = 'new-mr'
-          commit.start_branch = project.default_branch
-          commit.commit_message = 'Add new files'
-          commit.add_files(files)
-        end
+        create(:commit,
+          project: project,
+          branch: 'new-mr',
+          start_branch: project.default_branch,
+          commit_message: 'Add new files', actions: files)
       end
 
       let(:merge_request) do

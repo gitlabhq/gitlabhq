@@ -29,15 +29,14 @@ module QA
       private
 
       def add_files_to_project
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add CI and local files'
-          commit.add_files([build_config_file, test_config_file, non_detectable_file, main_ci_file])
-        end
+        create(:commit, project: project, commit_message: 'Add CI and local files', actions: [
+          build_config_file, test_config_file, non_detectable_file, main_ci_file
+        ])
       end
 
       def main_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             include: 'configs/*.yml'
@@ -47,6 +46,7 @@ module QA
 
       def build_config_file
         {
+          action: 'create',
           file_path: 'configs/builds.yml',
           content: <<~YAML
             build:
@@ -58,6 +58,7 @@ module QA
 
       def test_config_file
         {
+          action: 'create',
           file_path: 'configs/tests.yml',
           content: <<~YAML
             test:
@@ -69,6 +70,7 @@ module QA
 
       def non_detectable_file
         {
+          action: 'create',
           file_path: 'configs/not_included.yaml', # we only include `*.yml` not `*.yaml`
           content: <<~YAML
             deploy:

@@ -48,12 +48,9 @@ module QA
       def create_project(user, api_client, project_name)
         project = create(:project, name: project_name, api_client: api_client, add_name_uuid: false, personal_namespace: user.username)
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.add_files([{ file_path: 'README.md', content: '# This is a test project' }])
-          commit.commit_message = 'Add README.md'
-          commit.api_client = api_client
-        end
+        create(:commit, project: project, api_client: api_client, commit_message: 'Add README.md', actions: [
+          { action: 'create', file_path: 'README.md', content: '# This is a test project' }
+        ])
 
         project
       end

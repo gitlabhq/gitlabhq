@@ -43,16 +43,11 @@ module QA
         praefect_manager.stop_node(praefect_manager.primary_node)
         praefect_manager.wait_for_health_check_failure(praefect_manager.primary_node)
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = second_added_commit_message
-          commit.add_files([
-                             {
-                               file_path: "file-#{SecureRandom.hex(8)}",
-                               content: 'This is created on gitaly2/gitaly3 while gitaly1 is unavailable'
-                             }
-                           ])
-        end
+        create(:commit, project: project, commit_message: second_added_commit_message, actions: [{
+          action: 'create',
+          file_path: "file-#{SecureRandom.hex(8)}",
+          content: 'This is created on gitaly2/gitaly3 while gitaly1 is unavailable'
+        }])
 
         # Confirm that we have access to the repo after failover,
         # including the commit we just added

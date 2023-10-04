@@ -57,18 +57,9 @@ module QA
       end
 
       def push_commit(exit_code: 0)
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: gitlab_ci_yaml(exit_code: exit_code)
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          { action: 'create', file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml(exit_code: exit_code) }
+        ])
       end
 
       def setup_pipeline_emails(emails)

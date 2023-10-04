@@ -117,28 +117,23 @@ module QA
       end
 
       def add_ci_file
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  default:
-                    image: ruby:2.6
-                    tags: [#{runner_name}]
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              default:
+                image: ruby:2.6
+                tags: [#{runner_name}]
 
-                  #{job_name}:
-                    script: echo "Using pull policies #{pull_policies}"
-                    image:
-                      name: ruby:2.6
-                      pull_policy: #{pull_policies}
-                YAML
-              }
-            ]
-          )
-        end
+              #{job_name}:
+                script: echo "Using pull policies #{pull_policies}"
+                image:
+                  name: ruby:2.6
+                  pull_policy: #{pull_policies}
+            YAML
+          }
+        ])
       end
 
       def visit_job

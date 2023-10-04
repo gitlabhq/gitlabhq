@@ -16,23 +16,18 @@ module QA
       end
 
       let!(:ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  job:
-                    tags:
-                      - #{executor}
-                    script: echo $PROTECTED_VARIABLE
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              job:
+                tags:
+                  - #{executor}
+                script: echo $PROTECTED_VARIABLE
+            YAML
+          }
+        ])
       end
 
       let(:developer) do
@@ -94,20 +89,13 @@ module QA
       end
 
       def user_commit_to_protected_branch(api_client)
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.api_client = api_client
-          commit.project = project
-          commit.branch = 'protected-branch'
-          commit.commit_message = Faker::Lorem.sentence
-          commit.add_files(
-            [
-              {
-                file_path: Faker::File.unique.file_name,
-                content: Faker::Lorem.sentence
-              }
-            ]
-          )
-        end
+        create(:commit,
+          api_client: api_client,
+          project: project,
+          branch: 'protected-branch',
+          commit_message: Faker::Lorem.sentence, actions: [
+            { action: 'create', file_path: Faker::File.unique.file_name, content: Faker::Lorem.sentence }
+          ])
       end
 
       def create_merge_request(api_client)

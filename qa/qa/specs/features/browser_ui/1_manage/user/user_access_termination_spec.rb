@@ -66,14 +66,15 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347865' do
           QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 2) do
             expect do
-              Resource::Repository::Commit.fabricate_via_api! do |commit|
-                commit.api_client = @user_api_client
-                commit.project = @project
-                commit.branch = "new_branch_#{SecureRandom.hex(8)}"
-                commit.start_branch = @project.default_branch
-                commit.commit_message = 'Add new file'
-                commit.add_files([{ file_path: 'test.txt', content: 'new file' }])
-              end
+              create(:commit,
+                api_client: @user_api_client,
+                project: @project,
+                branch: "new_branch_#{SecureRandom.hex(8)}",
+                start_branch: @project.default_branch,
+                commit_message: 'Add new file',
+                actions: [
+                  { action: 'create', file_path: 'test.txt', content: 'new file' }
+                ])
             end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError,
               /403 Forbidden - You are not allowed to push into this branch/)
           end

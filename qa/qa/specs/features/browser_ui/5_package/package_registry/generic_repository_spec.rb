@@ -32,21 +32,12 @@ module QA
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            generic_packages_yaml = ERB.new(read_fixture('package_managers/generic', 'generic_upload_install_package.yaml.erb')).result(binding)
+          generic_packages_yaml = ERB.new(read_fixture('package_managers/generic', 'generic_upload_install_package.yaml.erb')).result(binding)
 
-            commit.project = project
-            commit.commit_message = 'Add files'
-            commit.add_files([{
-                                  file_path: '.gitlab-ci.yml',
-                                  content: generic_packages_yaml
-                              },
-                              {
-                                  file_path: 'file.txt',
-                                  content: file_txt
-                              }]
-                            )
-          end
+          create(:commit, project: project, commit_message: 'Add files', actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: generic_packages_yaml },
+            { action: 'create', file_path: 'file.txt', content: file_txt }
+          ])
         end
 
         project.visit!

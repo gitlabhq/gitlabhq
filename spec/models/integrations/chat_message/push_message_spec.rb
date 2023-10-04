@@ -214,4 +214,10 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
       end
     end
   end
+
+  describe '#attachment_color' do
+    it 'returns the correct color' do
+      expect(subject.attachment_color).to eq('#345')
+    end
+  end
 end

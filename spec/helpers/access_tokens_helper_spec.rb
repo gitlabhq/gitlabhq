@@ -9,6 +9,7 @@ RSpec.describe AccessTokensHelper do
     where(:prefix, :description_location) do
       :personal_access_token  | [:doorkeeper, :scope_desc]
       :project_access_token   | [:doorkeeper, :project_access_token_scope_desc]
+      :group_access_token     | [:doorkeeper, :group_access_token_scope_desc]
     end
 
     with_them do

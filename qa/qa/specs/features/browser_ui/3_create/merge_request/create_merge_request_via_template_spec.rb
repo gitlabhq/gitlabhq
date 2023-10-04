@@ -11,17 +11,13 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = template_project
-          commit.commit_message = 'Add custom merge request template'
-          commit.add_files(
-            [
-              {
-                file_path: ".gitlab/merge_request_templates/#{template_name}.md",
-                content: template_content
-              }
-            ])
-        end
+        create(:commit, project: template_project, commit_message: 'Add custom merge request template', actions: [
+          {
+            action: 'create',
+            file_path: ".gitlab/merge_request_templates/#{template_name}.md",
+            content: template_content
+          }
+        ])
       end
 
       it 'creates a merge request via custom template', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347722' do

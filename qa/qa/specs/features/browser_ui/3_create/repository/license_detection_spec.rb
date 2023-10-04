@@ -12,10 +12,9 @@ module QA
       shared_examples 'project license detection' do
         it 'displays the name of the license on the repository' do
           license_path = Runtime::Path.fixture('software_licenses', license_file_name)
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.add_files([{ file_path: 'LICENSE', content: File.read(license_path) }])
-          end
+          create(:commit, project: project, actions: [
+            { action: 'create', file_path: 'LICENSE', content: File.read(license_path) }
+          ])
 
           project.visit!
 

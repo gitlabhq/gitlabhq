@@ -7,20 +7,15 @@ module QA
       let(:project) { create(:project, name: 'pipeline-editor-project') }
 
       let!(:commit) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  'This is to make pipeline fail immediately to save test execution time and resources.'
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              'This is to make pipeline fail immediately to save test execution time and resources.'
+            YAML
+          }
+        ])
       end
 
       let(:new_content) do
