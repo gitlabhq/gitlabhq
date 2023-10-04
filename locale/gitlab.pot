@@ -29050,7 +29050,7 @@ msgstr ""
 msgid "MemberRoles|Admin vulnerability"
 msgstr ""
 
-msgid "MemberRoles|Allows admin access to the vulnerability reports. 'Read vulnerability' must be selected in order to take effect."
+msgid "MemberRoles|Allows admin access to the vulnerability reports. Select 'Read vulnerability' for this to take effect."
 msgstr ""
 
 msgid "MemberRoles|Allows read-only access to the source code."
@@ -29098,7 +29098,7 @@ msgstr ""
 msgid "MemberRoles|Incident manager"
 msgstr ""
 
-msgid "MemberRoles|Make sure the group has an Ultimate license."
+msgid "MemberRoles|Make sure the group is in the Ultimate tier."
 msgstr ""
 
 msgid "MemberRoles|Name"
@@ -29114,9 +29114,6 @@ msgid "MemberRoles|Read code"
 msgstr ""
 
 msgid "MemberRoles|Read vulnerability"
-msgstr ""
-
-msgid "MemberRoles|Removing a custom role also removes all members with this custom role from the group. If you decide to delete a custom role, you must re-add these users to the group."
 msgstr ""
 
 msgid "MemberRoles|Role name"
@@ -29135,6 +29132,9 @@ msgid "MemberRoles|To add a new role select 'Add new role'."
 msgstr ""
 
 msgid "MemberRoles|To add a new role select a group and then 'Add new role'."
+msgstr ""
+
+msgid "MemberRoles|To delete the custom role make sure no group member has this custom role"
 msgstr ""
 
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}."
@@ -43017,6 +43017,9 @@ msgstr ""
 msgid "SecurityReports|Does not have issue"
 msgstr ""
 
+msgid "SecurityReports|Does not have merge request"
+msgstr ""
+
 msgid "SecurityReports|Download %{artifactName}"
 msgstr ""
 
@@ -43062,6 +43065,9 @@ msgstr ""
 msgid "SecurityReports|Has issue"
 msgstr ""
 
+msgid "SecurityReports|Has merge request"
+msgstr ""
+
 msgid "SecurityReports|Hide dismissed"
 msgstr ""
 
@@ -43093,6 +43099,9 @@ msgid "SecurityReports|Manage and track vulnerabilities identified in your selec
 msgstr ""
 
 msgid "SecurityReports|Maximum selected projects limit reached"
+msgstr ""
+
+msgid "SecurityReports|Merge Request"
 msgstr ""
 
 msgid "SecurityReports|Monitor vulnerabilities in all of your projects"
@@ -49398,9 +49407,6 @@ msgstr ""
 msgid "To manage seats for all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
 msgstr ""
 
-msgid "To minimize the impact of storage limits to Free top-level groups, for a limited time, GitLab is offering a %{promotion_link_start}one-time 70 percent discount%{link_end} off the list price for %{offer_availability_link_start}qualifying top-level groups%{link_end} when you purchase a new, one year subscription of GitLab Premium SaaS. This offer is valid until 2023-10-31."
-msgstr ""
-
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
@@ -54960,7 +54966,7 @@ msgstr ""
 msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To ensure that your group does not become read-only, you should contact a user with the Owner role for this group to upgrade to a paid tier, or manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}."
 msgstr ""
 
-msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. You should reduce the number of users or upgrade to a paid tier %{strong_start}before%{strong_end} you manage your storage usage. Otherwise, your Free top-level group will become read-only immediately because the 5-user limit applies. For more information, see our %{faq_link_start}FAQ%{link_end}.%{br_tag}%{br_tag}To minimize the impact of storage limits to Free top-level groups, for a limited time, GitLab is offering a %{promotion_link_start}one-time 70 percent discount%{link_end} off the list price for %{offer_availability_link_start}qualifying top-level groups%{link_end} when you purchase a new, one year subscription of GitLab Premium SaaS. This offer is valid until 2023-10-31."
+msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. You should reduce the number of users or upgrade to a paid tier %{strong_start}before%{strong_end} you manage your storage usage. Otherwise, your Free top-level group will become read-only immediately because the 5-user limit applies. For more information, see our %{faq_link_start}FAQ%{link_end}."
 msgstr ""
 
 msgid "Your GPG keys"

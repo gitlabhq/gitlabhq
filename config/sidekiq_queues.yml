@@ -163,6 +163,8 @@
   - 1
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
+- - click_house_ci_finished_builds_sync
+  - 1
 - - cluster_agent
   - 1
 - - compliance_management_chain_of_custody_report

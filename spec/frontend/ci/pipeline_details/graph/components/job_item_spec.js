@@ -1,10 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
-import { GlBadge, GlModal, GlToast } from '@gitlab/ui';
+import { GlModal, GlToast } from '@gitlab/ui';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
@@ -28,8 +29,9 @@ describe('pipeline graph job item', () => {
   const findJobWithLink = () => wrapper.findByTestId('job-with-link');
   const findActionVueComponent = () => wrapper.findComponent(ActionComponent);
   const findActionComponent = () => wrapper.findByTestId('ci-action-button');
-  const findBadge = () => wrapper.findComponent(GlBadge);
+  const findBadge = () => wrapper.findByTestId('job-bridge-badge');
   const findJobLink = () => wrapper.findByTestId('job-with-link');
+  const findJobCiBadge = () => wrapper.findComponent(CiBadgeLink);
   const findModal = () => wrapper.findComponent(GlModal);
 
   const clickOnModalPrimaryBtn = () => findModal().vm.$emit('primary');
@@ -57,6 +59,9 @@ describe('pipeline graph job item', () => {
       mocks: {
         ...mocks,
       },
+      stubs: {
+        CiBadgeLink,
+      },
     });
   };
 
@@ -81,7 +86,8 @@ describe('pipeline graph job item', () => {
 
       expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
 
-      expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
+      expect(findJobCiBadge().exists()).toBe(true);
+      expect(findJobCiBadge().find('.ci-status-icon-success').exists()).toBe(true);
 
       expect(wrapper.text()).toBe(mockJob.name);
     });
@@ -99,7 +105,8 @@ describe('pipeline graph job item', () => {
     });
 
     it('should render status and name', () => {
-      expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
+      expect(findJobCiBadge().exists()).toBe(true);
+      expect(findJobCiBadge().find('.ci-status-icon-success').exists()).toBe(true);
       expect(findJobLink().exists()).toBe(false);
 
       expect(wrapper.text()).toBe(mockJobWithoutDetails.name);
@@ -107,6 +114,15 @@ describe('pipeline graph job item', () => {
 
     it('should apply hover class and provided class name', () => {
       expect(findJobWithoutLink().classes()).toContain('css-class-job-name');
+    });
+  });
+
+  describe('CiBadgeLink', () => {
+    it('should not render a link', () => {
+      createWrapper();
+
+      expect(findJobCiBadge().exists()).toBe(true);
+      expect(findJobCiBadge().props('useLink')).toBe(false);
     });
   });
 

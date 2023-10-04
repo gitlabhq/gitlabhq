@@ -36,7 +36,7 @@ Like static roles, custom roles are [inherited](../../user/project/members/index
 - The `base_access_level` must be a [valid access level](../../api/access_requests.md#valid-access-levels).
 The `base_access_level` determines which abilities are included in the custom role. For example, if the `base_access_level` is `10`, the custom role will include any abilities that a static Guest role would receive, plus any additional abilities that are enabled by the `member_roles` record by setting an attribute, such as `read_code`, to true.
 - A custom role can enable additional abilities for a `base_access_level` but it cannot disable a permission. As a result, custom roles are "additive only". The rationale for this choice is [in this comment](https://gitlab.com/gitlab-org/gitlab/-/issues/352891#note_1059561579).
-- For now, custom role abilities are supported only at project level. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411851) to add support for custom group abilities.
+- Custom role abilities are supported at project level and group level.
 
 ## How to implement a new ability for custom roles
 

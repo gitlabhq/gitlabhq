@@ -3,7 +3,9 @@
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security,
     feature_flag: { name: 'ci_prevent_file_var_expansion_downstream_pipeline', scope: :project },
-    quarantine: { type: :bug, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424903' } do
+    only: { subdomain: 'staging-canary' } do
+    # Runs this test only in staging-canary to debug flakiness https://gitlab.com/gitlab-org/gitlab/-/issues/424903
+    # We need to collect failure data, please don't quarantine for the time being
     describe 'Pipeline with file variables and downstream pipelines' do
       let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }

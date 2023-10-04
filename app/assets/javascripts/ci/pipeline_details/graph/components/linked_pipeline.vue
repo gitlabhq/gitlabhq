@@ -13,7 +13,7 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import CancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { reportToSentry } from '~/ci/utils';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from '../constants';
 
@@ -22,7 +22,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    CiIcon,
+    CiBadgeLink,
     GlBadge,
     GlButton,
     GlLink,
@@ -242,7 +242,14 @@ export default {
     </gl-tooltip>
     <div class="gl-bg-white gl-border gl-p-3 gl-rounded-lg gl-w-full" :class="cardClasses">
       <div class="gl-display-flex gl-gap-x-3">
-        <ci-icon v-if="!pipelineIsLoading" :status="pipelineStatus" :size="24" />
+        <ci-badge-link
+          v-if="!pipelineIsLoading"
+          :status="pipelineStatus"
+          size="md"
+          :show-text="false"
+          :use-link="false"
+          class="gl-align-self-start"
+        />
         <div v-else class="gl-pr-3"><gl-loading-icon size="sm" inline /></div>
         <div
           class="gl-display-flex gl-downstream-pipeline-job-width gl-flex-direction-column gl-line-height-normal"

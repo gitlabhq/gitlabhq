@@ -77,7 +77,10 @@ export default {
     },
     detailsPath() {
       // For now, this can either come from graphQL with camelCase or REST API in snake_case
-      return this.useLink && (this.status.detailsPath || this.status.details_path);
+      if (!this.useLink) {
+        return null;
+      }
+      return this.status.detailsPath || this.status.details_path;
     },
     badgeStyles() {
       switch (this.status.icon) {

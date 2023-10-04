@@ -379,11 +379,47 @@ RSpec.shared_examples "redis_shared_examples" do
       }
     end
 
+    let(:resque_yaml_config_with_only_cert) do
+      {
+        url: 'rediss://localhost:6380',
+        ssl_params: {
+          cert_file: '/tmp/client.crt'
+        }
+      }
+    end
+
+    let(:resque_yaml_config_with_only_key) do
+      {
+        url: 'rediss://localhost:6380',
+        ssl_params: {
+          key_file: '/tmp/client.key'
+        }
+      }
+    end
+
     let(:parsed_config_with_tls) do
       {
         url: 'rediss://localhost:6380',
         ssl_params: {
           cert: dummy_certificate,
+          key: dummy_key
+        }
+      }
+    end
+
+    let(:parsed_config_with_only_cert) do
+      {
+        url: 'rediss://localhost:6380',
+        ssl_params: {
+          cert: dummy_certificate
+        }
+      }
+    end
+
+    let(:parsed_config_with_only_key) do
+      {
+        url: 'rediss://localhost:6380',
+        ssl_params: {
           key: dummy_key
         }
       }
@@ -430,6 +466,34 @@ RSpec.shared_examples "redis_shared_examples" do
             resque_yaml_config_with_tls)
         end.to raise_error(Gitlab::Redis::Wrapper::InvalidPathError,
           "Key file /tmp/client.key specified in in `resque.yml` does not exist.")
+      end
+    end
+
+    context 'when only certificate file is specified' do
+      before do
+        allow(::File).to receive(:exist?).with("/tmp/client.crt").and_return(true)
+        allow(::File).to receive(:read).with("/tmp/client.crt").and_return("DUMMY_CERTIFICATE")
+        allow(OpenSSL::X509::Certificate).to receive(:new).with("DUMMY_CERTIFICATE").and_return(dummy_certificate)
+        allow(::File).to receive(:exist?).with("/tmp/client.key").and_return(false)
+      end
+
+      it 'renders resque.yml correctly' do
+        expect(subject.send(:parse_client_tls_options,
+          resque_yaml_config_with_only_cert)).to eq(parsed_config_with_only_cert)
+      end
+    end
+
+    context 'when only key file is specified' do
+      before do
+        allow(::File).to receive(:exist?).with("/tmp/client.crt").and_return(false)
+        allow(::File).to receive(:exist?).with("/tmp/client.key").and_return(true)
+        allow(::File).to receive(:read).with("/tmp/client.key").and_return("DUMMY_KEY")
+        allow(OpenSSL::PKey).to receive(:read).with("DUMMY_KEY").and_return(dummy_key)
+      end
+
+      it 'renders resque.yml correctly' do
+        expect(subject.send(:parse_client_tls_options,
+          resque_yaml_config_with_only_key)).to eq(parsed_config_with_only_key)
       end
     end
 

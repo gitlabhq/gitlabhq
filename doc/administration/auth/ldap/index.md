@@ -164,7 +164,6 @@ Here's an example of setting up LDAP with the basic configuration settings.
              host: 'ldap.mydomain.com'
              port: 636
              uid: 'sAMAccountName'
-             base: 'dc=example,dc=com'
              bind_dn: 'CN=Gitlab,OU=Users,DC=domain,DC=com'
              password: '<bind_user_password>'
              encryption: 'simple_tls'
@@ -208,7 +207,6 @@ For more information, see
                'host' =>  'ldap.mydomain.com',
                'port' => 636,
                'uid' => 'sAMAccountName',
-               'base' => 'dc=example,dc=com'
                'bind_dn' => 'CN=Gitlab,OU=Users,DC=domain,DC=com',
                'password' => '<bind_user_password>',
                'encryption' => 'simple_tls',
@@ -245,7 +243,6 @@ For more information, see
            host: 'ldap.mydomain.com'
            port: 636
            uid: 'sAMAccountName'
-           base: 'dc=example,dc=com'
            bind_dn: 'CN=Gitlab,OU=Users,DC=domain,DC=com'
            password: '<bind_user_password>'
            encryption: 'simple_tls'

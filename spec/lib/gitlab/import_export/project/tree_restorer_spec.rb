@@ -449,6 +449,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
             expect(pipeline_schedule.cron).to eq('0 4 * * 0')
             expect(pipeline_schedule.cron_timezone).to eq('UTC')
             expect(pipeline_schedule.active).to eq(false)
+            expect(pipeline_schedule.owner_id).to eq(@user.id)
           end
         end
 

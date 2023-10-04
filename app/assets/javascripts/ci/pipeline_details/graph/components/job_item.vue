@@ -5,7 +5,7 @@ import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import ActionComponent from '../../../common/private/job_action_component.vue';
 import JobNameComponent from '../../../common/private/job_name_component.vue';
 import { BRIDGE_KIND, RETRY_ACTION_TITLE, SINGLE_JOB, SKIP_RETRY_MODAL_KEY } from '../constants';
@@ -58,7 +58,7 @@ export default {
   hoverClass: 'gl-shadow-x0-y0-b3-s1-blue-500',
   components: {
     ActionComponent,
-    CiIcon,
+    CiBadgeLink,
     GlBadge,
     GlForm,
     GlFormCheckbox,
@@ -329,7 +329,7 @@ export default {
       @mouseout="hideTooltips"
     >
       <div class="gl-display-flex gl-align-items-center gl-flex-grow-1">
-        <ci-icon :size="24" :status="job.status" class="gl-line-height-0" />
+        <ci-badge-link :status="job.status" size="md" :show-text="false" :use-link="false" />
         <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
           <div class="gl-text-truncate gl-pr-9 gl-line-height-normal">{{ job.name }}</div>
           <div
@@ -341,7 +341,13 @@ export default {
           </div>
         </div>
       </div>
-      <gl-badge v-if="isBridge" class="gl-mt-3" variant="info" size="sm">
+      <gl-badge
+        v-if="isBridge"
+        class="gl-mt-3"
+        variant="info"
+        size="sm"
+        data-testid="job-bridge-badge"
+      >
         {{ $options.i18n.bridgeBadgeText }}
       </gl-badge>
     </component>

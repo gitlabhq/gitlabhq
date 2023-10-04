@@ -12,6 +12,7 @@ export default (el) => {
     dataset: { path, newCustomEmojiPath },
   } = el;
   const canAwardEmoji = parseBoolean(el.dataset.canAwardEmoji);
+  const showDefaultAwardEmojis = parseBoolean(el.dataset.showDefaultAwardEmojis);
 
   return new Vue({
     el,
@@ -38,7 +39,7 @@ export default (el) => {
           awards: this.awards,
           canAwardEmoji: this.canAwardEmoji,
           currentUserId: this.currentUserId,
-          defaultAwards: ['thumbsup', 'thumbsdown'],
+          defaultAwards: showDefaultAwardEmojis ? ['thumbsup', 'thumbsdown'] : [],
           selectedClass: 'selected',
         },
         on: {

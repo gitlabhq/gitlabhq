@@ -145,18 +145,18 @@ describe('buildClient', () => {
 
   describe('fetchTraces', () => {
     it('fetches traces from the tracing URL', async () => {
-      const mockTraces = [
-        {
-          trace_id: 'trace-1',
-          duration_nano: 3000,
-          spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }],
-        },
-        { trace_id: 'trace-2', duration_nano: 3000, spans: [{ duration_nano: 2000 }] },
-      ];
+      const mockResponse = {
+        traces: [
+          {
+            trace_id: 'trace-1',
+            duration_nano: 3000,
+            spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }],
+          },
+          { trace_id: 'trace-2', duration_nano: 3000, spans: [{ duration_nano: 2000 }] },
+        ],
+      };
 
-      axiosMock.onGet(tracingUrl).reply(200, {
-        traces: mockTraces,
-      });
+      axiosMock.onGet(tracingUrl).reply(200, mockResponse);
 
       const result = await client.fetchTraces();
 
@@ -165,7 +165,7 @@ describe('buildClient', () => {
         withCredentials: true,
         params: new URLSearchParams(),
       });
-      expect(result).toEqual(mockTraces);
+      expect(result).toEqual(mockResponse);
     });
 
     it('rejects if traces are missing', async () => {
@@ -197,25 +197,39 @@ describe('buildClient', () => {
         expect(getQueryParam()).toBe('');
       });
 
+      it('appends page_token if specified', async () => {
+        await client.fetchTraces({ pageToken: 'page-token' });
+
+        expect(getQueryParam()).toBe('page_token=page-token');
+      });
+
+      it('appends page_size if specified', async () => {
+        await client.fetchTraces({ pageSize: 10 });
+
+        expect(getQueryParam()).toBe('page_size=10');
+      });
+
       it('converts filter to proper query params', async () => {
         await client.fetchTraces({
-          durationMs: [
-            { operator: '>', value: '100' },
-            { operator: '<', value: '1000' },
-          ],
-          operation: [
-            { operator: '=', value: 'op' },
-            { operator: '!=', value: 'not-op' },
-          ],
-          serviceName: [
-            { operator: '=', value: 'service' },
-            { operator: '!=', value: 'not-service' },
-          ],
-          period: [{ operator: '=', value: '5m' }],
-          traceId: [
-            { operator: '=', value: 'trace-id' },
-            { operator: '!=', value: 'not-trace-id' },
-          ],
+          filters: {
+            durationMs: [
+              { operator: '>', value: '100' },
+              { operator: '<', value: '1000' },
+            ],
+            operation: [
+              { operator: '=', value: 'op' },
+              { operator: '!=', value: 'not-op' },
+            ],
+            serviceName: [
+              { operator: '=', value: 'service' },
+              { operator: '!=', value: 'not-service' },
+            ],
+            period: [{ operator: '=', value: '5m' }],
+            traceId: [
+              { operator: '=', value: 'trace-id' },
+              { operator: '!=', value: 'not-trace-id' },
+            ],
+          },
         });
         expect(getQueryParam()).toBe(
           'gt[duration_nano]=100000&lt[duration_nano]=1000000' +
@@ -228,17 +242,21 @@ describe('buildClient', () => {
 
       it('handles repeated params', async () => {
         await client.fetchTraces({
-          operation: [
-            { operator: '=', value: 'op' },
-            { operator: '=', value: 'op2' },
-          ],
+          filters: {
+            operation: [
+              { operator: '=', value: 'op' },
+              { operator: '=', value: 'op2' },
+            ],
+          },
         });
         expect(getQueryParam()).toBe('operation=op&operation=op2');
       });
 
       it('ignores unsupported filters', async () => {
         await client.fetchTraces({
-          unsupportedFilter: [{ operator: '=', value: 'foo' }],
+          filters: {
+            unsupportedFilter: [{ operator: '=', value: 'foo' }],
+          },
         });
 
         expect(getQueryParam()).toBe('');
@@ -246,8 +264,10 @@ describe('buildClient', () => {
 
       it('ignores empty filters', async () => {
         await client.fetchTraces({
-          durationMs: null,
-          traceId: undefined,
+          filters: {
+            durationMs: null,
+            traceId: undefined,
+          },
         });
 
         expect(getQueryParam()).toBe('');
@@ -255,24 +275,26 @@ describe('buildClient', () => {
 
       it('ignores unsupported operators', async () => {
         await client.fetchTraces({
-          durationMs: [
-            { operator: '*', value: 'foo' },
-            { operator: '=', value: 'foo' },
-            { operator: '!=', value: 'foo' },
-          ],
-          operation: [
-            { operator: '>', value: 'foo' },
-            { operator: '<', value: 'foo' },
-          ],
-          serviceName: [
-            { operator: '>', value: 'foo' },
-            { operator: '<', value: 'foo' },
-          ],
-          period: [{ operator: '!=', value: 'foo' }],
-          traceId: [
-            { operator: '>', value: 'foo' },
-            { operator: '<', value: 'foo' },
-          ],
+          filters: {
+            durationMs: [
+              { operator: '*', value: 'foo' },
+              { operator: '=', value: 'foo' },
+              { operator: '!=', value: 'foo' },
+            ],
+            operation: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+            serviceName: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+            period: [{ operator: '!=', value: 'foo' }],
+            traceId: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+          },
         });
 
         expect(getQueryParam()).toBe('');

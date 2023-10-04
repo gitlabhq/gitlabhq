@@ -11,8 +11,6 @@ Set the title to: `Description of the original issue`
 - [ ] Read the [security process for developers] if you are not familiar with it.
 - [ ] Make sure the [issue really needs to follow the security release workflow].
 - [ ] Add a `~severity::x` label to the issue and all associated merge requests.
-- [ ] **IMPORTANT**: Mark this [issue as linked] to the Security Release Tracking Issue. You can find it [here](https://gitlab.com/gitlab-org/gitlab/-/issues?sort=created_date&state=opened&label_name[]=upcoming+security+release). This issue
-MUST be linked for the release bot to know that the associated merge requests should be merged for this security release.
 - [ ] Mark this [issue as linked] to the `gitlab-org/gitlab` issue that describes the security vulnerability.
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.
@@ -39,9 +37,14 @@ After your merge request has been approved according to our [approval guidelines
 - [ ] On the "Related merge requests" section, ensure that `4` merge requests are associated: The one targeting `master` and the `3` backports.
 - [ ] If this issue requires less than `4` merge requests, post a message on the Security Release Tracking Issue and ping the Release Managers.
 
+## Assigning to a release
+
+- [ ]  **IMPORTANT**: When this issue is ready for release (Default branch MR and backports are approved and ready to be merged), apply the ~"security-target" label. 
+   * The `gitlab-release-tools-bot` evaluates and links issues with the label to the next planned security release tracking issue. If the bot finds the issue is not ready to be included in the security release, it will leave a comment on the issue explaining what needs to be done. 
+   * This issue will only be included in a security release if it is successfully linked to the security release tracking issue.
+
 ## Documentation and final details
 
-- [ ] When you believe this issue is ready for release (Backports are approved and ready to be merged), apply the ~"security-target" label (This label does not have an effect yet, but will in upcoming releases. See <https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/19611#computer-developer-process> for more information).
 - [ ] To avoid release delays, please nominate a developer in a different timezone who will be able to respond to any pipeline or merge failures in your absence `@gitlab-username`
 - [ ] Ensure `~severity::x` label is on this issue, all associated issues, and merge requests
 - [ ] Ensure the [Links section](#links) is completed.
@@ -80,4 +83,4 @@ After your merge request has been approved according to our [approval guidelines
 [issue really needs to follow the security release workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#making-sure-the-issue-needs-to-follow-the-security-release-workflow
 [breaking changes workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/far_reaching_impact_fixes_or_breaking_change_fixes.md
 
-/label ~security
+/label ~security ~"security-notifications

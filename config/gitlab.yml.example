@@ -657,6 +657,10 @@ production: &base
     ci_runners_stale_group_runners_prune_worker_cron:
       cron: "30 * * * *"
 
+    # Periodically queue syncing of finished builds from p_ci_finished_build_ch_sync_events to ClickHouse
+    click_house_ci_finished_builds_sync_worker:
+      cron: "*/3 * * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com

@@ -309,8 +309,8 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
       context 'with pipeline schedules' do
         let(:relation_name) { :pipeline_schedules }
 
-        it 'has no owner_id' do
-          expect(subject.first['owner_id']).to be_nil
+        it 'has owner_id' do
+          expect(subject.first['owner_id']).to be_present
         end
       end
     end

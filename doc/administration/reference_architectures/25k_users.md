@@ -2232,7 +2232,7 @@ cluster alongside your instance, read how to
 ## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
 
 Run select components of cloud-native GitLab in Kubernetes with the [GitLab Helm chart](https://docs.gitlab.com/charts/). In this setup, you can run the equivalent of GitLab Rails in the Kubernetes cluster called Webservice. You can also run the equivalent of Sidekiq nodes in the Kubernetes cluster called Sidekiq. In addition,
-the following other supporting services are supported: NGINX, Task Runner, Migrations,
+the following other supporting services are supported: NGINX, Toolbox, Migrations,
 Prometheus, and Grafana.
 
 Hybrid installations leverage the benefits of both cloud native and traditional

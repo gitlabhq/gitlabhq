@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Users::SignupService, feature_category: :system_access do
-  let(:user) { create(:user, setup_for_company: true) }
+  let_it_be(:user) { create(:user, setup_for_company: true) }
 
   describe '#execute' do
     context 'when updating name' do
@@ -48,23 +48,12 @@ RSpec.describe Users::SignupService, feature_category: :system_access do
         expect(user.reload.setup_for_company).to be(false)
       end
 
-      context 'when on SaaS', :saas do
-        it 'returns an error result when setup_for_company is missing' do
-          result = update_user(user, setup_for_company: '')
+      it 'returns an error result when setup_for_company is missing' do
+        result = update_user(user, setup_for_company: '')
 
-          expect(user.reload.setup_for_company).not_to be_blank
-          expect(result.success?).to be(false)
-          expect(result.message).to eq("Setup for company can't be blank")
-        end
-      end
-
-      context 'when not on .com' do
-        it 'returns success when setup_for_company is blank' do
-          result = update_user(user, setup_for_company: '')
-
-          expect(result.success?).to be(true)
-          expect(user.reload.setup_for_company).to be(nil)
-        end
+        expect(user.reload.setup_for_company).not_to be_blank
+        expect(result.success?).to be(false)
+        expect(result.message).to eq("Setup for company can't be blank")
       end
     end
 

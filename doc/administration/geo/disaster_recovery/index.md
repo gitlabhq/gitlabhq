@@ -670,7 +670,9 @@ If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-
 a point-in-time recovery to the last known state.
 Data that was created on the primary while the secondary was paused is lost.
 
-If you are running GitLab 14.5 and later:
+::Tabs
+
+:::TabTitle For GitLab 14.5 and later
 
 1. For each node (such as PostgreSQL or Gitaly) outside of the **secondary** Kubernetes cluster using the Linux
    package, SSH into the node and run one of the following commands:
@@ -706,7 +708,7 @@ If you are running GitLab 14.5 and later:
    | ---- | ------------- | ------- |
    | `ENABLE_SILENT_MODE` | `false`  | If `true`, enables [Silent Mode](../../silent_mode/index.md) before promotion (GitLab 16.4 and later) |
 
-If you are running GitLab 14.4 and earlier:
+:::TabTitle For GitLab 14.4 and earlier
 
 1. SSH in to the database node in the **secondary** site and trigger PostgreSQL to
    promote to read-write:
@@ -743,6 +745,8 @@ If you are running GitLab 14.4 and earlier:
    ```shell
    kubectl --namespace gitlab exec -ti gitlab-geo-task-runner-XXX -- gitlab-rake geo:set_secondary_as_primary
    ```
+
+::EndTabs
 
 ### Step 3. Promote the **secondary** cluster
 

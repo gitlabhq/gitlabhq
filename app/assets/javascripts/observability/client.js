@@ -166,18 +166,24 @@ function filterObjToQueryParams(filterObj) {
  *
  * @returns Array<Trace> : A list of traces
  */
-async function fetchTraces(tracingUrl, filters = {}) {
-  const filterParams = filterObjToQueryParams(filters);
+async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize } = {}) {
+  const params = filterObjToQueryParams(filters);
+  if (pageToken) {
+    params.append('page_token', pageToken);
+  }
+  if (pageSize) {
+    params.append('page_size', pageSize);
+  }
 
   try {
     const { data } = await axios.get(tracingUrl, {
       withCredentials: true,
-      params: filterParams,
+      params,
     });
     if (!Array.isArray(data.traces)) {
       throw new Error('traces are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
     }
-    return data.traces;
+    return data;
   } catch (e) {
     return reportErrorAndThrow(e);
   }

@@ -355,17 +355,15 @@ bundle exec rails g post_deployment_migration change_ci_builds_default
 
 ```ruby
 class ChangeCiBuildsDefault < Gitlab::Database::Migration[2.1]
-  def up
-    change_column_default('ci_builds', 'partition_id', from: 100, to: 101)
-  end
+  enable_lock_retries!
 
-  def down
-    change_column_default('ci_builds', 'partition_id', from: 101, to: 100)
+  def change
+    change_column_default('ci_builds', 'partition_id', from: 100, to: 101)
   end
 end
 ```
 
-You can consider [enabling lock retries](../migration_style_guide.md#usage-with-transactional-migrations)
+[Enable lock retries](../migration_style_guide.md#usage-with-transactional-migrations)
 when you run a migration on big tables, because it might take some time to
 acquire a lock on this table.
 
