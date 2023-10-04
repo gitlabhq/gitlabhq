@@ -4,6 +4,7 @@ module Gitlab
   module Git
     class Blame
       include Gitlab::EncodingHelper
+      include Gitlab::Git::WrapsGitalyErrors
 
       attr_reader :lines, :blames, :range
 
@@ -29,11 +30,17 @@ module Gitlab
       end
 
       def load_blame
-        output = encode_utf8(
-          @repo.gitaly_commit_client.raw_blame(@sha, @path, range: range_spec)
-        )
-
+        output = encode_utf8(fetch_raw_blame)
         process_raw_blame(output)
+      end
+
+      def fetch_raw_blame
+        wrapped_gitaly_errors do
+          @repo.gitaly_commit_client.raw_blame(@sha, @path, range: range_spec)
+        end
+      # Return empty result when blame range is out-of-range
+      rescue ArgumentError
+        ""
       end
 
       def process_raw_blame(output)

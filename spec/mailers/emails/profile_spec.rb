@@ -199,6 +199,10 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like 'a user cannot unsubscribe through footer link'
       it_behaves_like 'resource about to expire email'
+
+      it 'includes the email reason' do
+        is_expected.to have_body_text _('You are receiving this email because you are an Owner of the Group.')
+      end
     end
 
     context 'when access token belongs to a project' do
@@ -218,6 +222,10 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like 'a user cannot unsubscribe through footer link'
       it_behaves_like 'resource about to expire email'
+
+      it 'includes the email reason' do
+        is_expected.to have_body_text _('You are receiving this email because you are a Maintainer of the Project.')
+      end
     end
   end
 

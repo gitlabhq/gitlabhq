@@ -65,11 +65,13 @@ module Emails
       @token_names = token_names
       @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
       @resource = resource
-      @target_url = if resource.is_a?(Group)
-                      group_settings_access_tokens_url(resource)
-                    else
-                      project_settings_access_tokens_url(resource)
-                    end
+      if resource.is_a?(Group)
+        @target_url = group_settings_access_tokens_url(resource)
+        @reason_text = _('You are receiving this email because you are an Owner of the Group.')
+      else
+        @target_url = project_settings_access_tokens_url(resource)
+        @reason_text = _('You are receiving this email because you are a Maintainer of the Project.')
+      end
 
       mail_with_locale(
         to: recipient.notification_email_or_default,

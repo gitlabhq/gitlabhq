@@ -54281,6 +54281,12 @@ msgstr ""
 msgid "You are on a read-only GitLab instance."
 msgstr ""
 
+msgid "You are receiving this email because you are a Maintainer of the Project."
+msgstr ""
+
+msgid "You are receiving this email because you are an Owner of the Group."
+msgstr ""
+
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr ""
 
