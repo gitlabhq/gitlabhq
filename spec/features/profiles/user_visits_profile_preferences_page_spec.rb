@@ -57,7 +57,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
   end
 
   describe 'User changes their language', :js do
-    it 'creates a flash message', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/31404' do
+    it 'creates a flash message' do
       select_from_listbox 'English', from: 'English'
       click_button 'Save changes'
 

@@ -10,7 +10,7 @@ module QA
       include Support::API
       let(:project_name) { "project-archive-download-#{SecureRandom.hex(8)}" }
 
-      let(:archive_types) { %w(tar.gz tar.bz2 tar zip) }
+      let(:archive_types) { %w[tar.gz tar.bz2 tar zip] }
 
       let(:users) do
         {

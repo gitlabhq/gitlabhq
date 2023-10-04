@@ -13,7 +13,7 @@ module QA
         def initialize(rbac:)
           super(rbac: rbac)
           @attempts = 0
-          @available_regions = %w(
+          @available_regions = %w[
             asia-east1 asia-east2
             asia-northeast1 asia-south1
             asia-southeast1 australia-southeast1
@@ -21,7 +21,7 @@ module QA
             northamerica-northeast1 southamerica-east1
             us-central1 us-east1 us-east4
             us-west1 us-west2
-          )
+          ]
         end
 
         def setup
