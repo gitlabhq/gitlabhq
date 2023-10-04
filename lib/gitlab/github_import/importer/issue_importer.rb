@@ -29,8 +29,8 @@ module Gitlab
         def execute
           Issue.transaction do
             if (issue_id = create_issue)
-              create_assignees(issue_id)
               issuable_finder.cache_database_id(issue_id)
+              create_assignees(issue_id)
               update_search_data(issue_id)
             end
           end

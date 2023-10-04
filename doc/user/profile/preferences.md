@@ -303,7 +303,9 @@ To access your **Followers** and **Following** tabs:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../policy/experiment-beta-support.md#beta).
 
-To enable [Code Suggestions](../../user/project/repository/code_suggestions/index.md):
+Code Suggestions are disabled by default at the user account level.
+
+To update this setting:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
@@ -311,7 +313,7 @@ To enable [Code Suggestions](../../user/project/repository/code_suggestions/inde
 1. Select **Save changes**.
 
 NOTE:
-If Code Suggestions are turned off [for the group](../../user/group/manage.md#enable-code-suggestions), then you cannot enable them for yourself. (Your setting has no effect.)
+If Code Suggestions are disabled [for any groups that you belong to](../../user/group/manage.md#enable-code-suggestions), then you cannot enable them for yourself. (Your setting has no effect.)
 
 ## Integrate your GitLab instance with third-party services
 

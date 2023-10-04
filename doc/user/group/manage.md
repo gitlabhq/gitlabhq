@@ -452,9 +452,11 @@ You can give all users in a group and its subgroups access to [Code Suggestions]
 - This setting
   [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
 - Each user can
-  [Enable Code Suggestions](../../user/profile/preferences.md#enable-code-suggestions).
+  [enable Code Suggestions](../../user/profile/preferences.md#enable-code-suggestions).
 
-To enable Code Suggestions for a group:
+Code Suggestions are enabled by default at the group level.
+
+To update this setting:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
