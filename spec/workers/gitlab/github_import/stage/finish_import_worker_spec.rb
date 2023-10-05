@@ -6,6 +6,8 @@ RSpec.describe Gitlab::GithubImport::Stage::FinishImportWorker, feature_category
   let(:project) { create(:project) }
   let(:worker) { described_class.new }
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#perform' do
     it 'marks the import as finished and reports import statistics' do
       expect(project).to receive(:after_import)

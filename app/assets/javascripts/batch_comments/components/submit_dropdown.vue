@@ -127,7 +127,7 @@ export default {
     dropup
     class="submit-review-dropdown"
     :class="{ 'submit-review-dropdown-animated': shouldAnimateReviewButton }"
-    data-qa-selector="submit_review_dropdown"
+    data-testid="submit-review-dropdown"
     variant="info"
     category="primary"
   >
@@ -192,7 +192,6 @@ export default {
           type="submit"
           class="js-no-auto-disable"
           data-testid="submit-review-button"
-          data-qa-selector="submit_review_button"
         >
           {{ __('Submit review') }}
         </gl-button>

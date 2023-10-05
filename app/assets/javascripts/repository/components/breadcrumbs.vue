@@ -184,7 +184,7 @@ export default {
               this.currentPath ? encodeURIComponent(this.currentPath) : '',
             ),
             extraAttrs: {
-              'data-qa-selector': 'new_file_menu_item',
+              'data-testid': 'new-file-menu-item',
             },
           },
           {
@@ -284,7 +284,6 @@ export default {
           :toggle-text="__('Add to tree')"
           toggle-class="add-to-tree gl-ml-2"
           data-testid="add-to-tree"
-          data-qa-selector="add_to_tree_dropdown"
           text-sr-only
           icon="plus"
           :items="dropdownItems"

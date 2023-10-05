@@ -51,7 +51,6 @@ export default {
           text: s__('mrWidget|Refresh now'),
           onClick: () => this.refresh(),
           testId: 'merge-request-failed-refresh-button',
-          dataQaSelector: 'merge_request_error_content',
         },
       ];
     },

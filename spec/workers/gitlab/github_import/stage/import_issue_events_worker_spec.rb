@@ -14,6 +14,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_cat
     settings.write({ optional_stages: { single_endpoint_issue_events_import: stage_enabled } })
   end
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     let(:importer) { instance_double('Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter') }
     let(:client) { instance_double('Gitlab::GithubImport::Client') }

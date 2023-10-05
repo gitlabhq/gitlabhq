@@ -54,7 +54,7 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown :items="listItems" dropup data-qa-selector="review_preview_dropdown">
+  <gl-disclosure-dropdown :items="listItems" dropup data-testid="review-preview-dropdown">
     <template #toggle>
       <gl-button>
         {{ __('Pending comments') }}

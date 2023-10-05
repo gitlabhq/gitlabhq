@@ -206,16 +206,11 @@ export default {
           <div class="media-body">
             <div
               data-testid="pipeline-info-container"
-              data-qa-selector="merge_request_pipeline_info_content"
               class="gl-display-flex gl-flex-wrap gl-align-items-center gl-justify-content-space-between"
             >
               <p class="mr-pipeline-title gl-m-0! gl-mr-3! gl-font-weight-bold gl-text-gray-900">
                 {{ pipeline.details.event_type_name }}
-                <gl-link
-                  :href="pipeline.path"
-                  class="pipeline-id"
-                  data-testid="pipeline-id"
-                  data-qa-selector="pipeline_link"
+                <gl-link :href="pipeline.path" class="pipeline-id" data-testid="pipeline-id"
                   >#{{ pipeline.id }}</gl-link
                 >
                 {{ pipeline.details.status.label }}

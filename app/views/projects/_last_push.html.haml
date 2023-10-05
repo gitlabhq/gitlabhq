@@ -16,5 +16,5 @@
 
     - if create_mr_button_from_event?(event)
       - c.with_actions do
-        = render Pajamas::ButtonComponent.new(variant: :confirm, href: create_mr_path_from_push_event(event), button_options: { data: { qa_selector: 'create_merge_request_button' }}) do
+        = render Pajamas::ButtonComponent.new(variant: :confirm, href: create_mr_path_from_push_event(event), button_options: { data: { testid: 'create-merge-request-button' }}) do
           = _('Create merge request')

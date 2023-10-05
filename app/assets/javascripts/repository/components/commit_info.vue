@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <div class="well-segment commit gl-min-h-8 gl-p-5 gl-w-full gl-display-flex">
+  <div class="well-segment commit gl-min-h-8 gl-p-2 gl-w-full gl-display-flex">
     <user-avatar-link
       v-if="commit.author"
       :link-href="commit.author.webPath"

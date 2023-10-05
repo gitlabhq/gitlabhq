@@ -50,4 +50,18 @@ RSpec.describe BulkImports::Pipeline::ExtractedData do
       end
     end
   end
+
+  describe '#each_with_index' do
+    context 'when block is present' do
+      it 'yields each data item with index' do
+        expect { |b| subject.each_with_index(&b) }.to yield_control
+      end
+    end
+
+    context 'when block is not present' do
+      it 'returns enumerator' do
+        expect(subject.each_with_index).to be_instance_of(Enumerator)
+      end
+    end
+  end
 end

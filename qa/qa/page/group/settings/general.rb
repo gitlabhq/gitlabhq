@@ -12,7 +12,7 @@ module QA
 
           view 'app/views/groups/edit.html.haml' do
             element :permission_lfs_2fa_content
-            element :advanced_settings_content
+            element 'advanced-settings-content'
           end
 
           view 'app/views/groups/settings/_permissions.html.haml' do
@@ -41,11 +41,11 @@ module QA
           end
 
           view 'app/views/groups/settings/_transfer.html.haml' do
-            element :transfer_group_content
+            element 'transfer-group-content'
           end
 
           view 'app/assets/javascripts/groups/components/transfer_group_form.vue' do
-            element :transfer_group_button
+            element 'transfer-group-button'
           end
 
           def set_group_name(name)
@@ -114,14 +114,14 @@ module QA
           def transfer_group(source_group, target_group)
             QA::Runtime::Logger.info "Transferring group: #{source_group.path} to target group: #{target_group.path}"
 
-            expand_content(:advanced_settings_content)
+            expand_content('advanced-settings-content')
 
             scroll_to_transfer_group_content
 
             select_namespace(target_group.path)
 
             wait_for_enabled_transfer_group_button
-            click_element(:transfer_group_button)
+            click_element('transfer-group-button')
 
             fill_confirmation_text(source_group.full_path)
             confirm_transfer
@@ -131,15 +131,15 @@ module QA
 
           def scroll_to_transfer_group_content
             retry_until(sleep_interval: 1, message: 'Waiting for transfer group content to display') do
-              has_element?(:transfer_group_content, wait: 3)
+              has_element?('transfer-group-content', wait: 3)
             end
 
-            scroll_to_element :transfer_group_content
+            scroll_to_element 'transfer-group-content'
           end
 
           def wait_for_enabled_transfer_group_button
             retry_until(sleep_interval: 1, message: 'Waiting for transfer group button to be enabled') do
-              has_element?(:transfer_group_button, disabled: false, wait: 3)
+              has_element?('transfer-group-button', disabled: false, wait: 3)
             end
           end
         end

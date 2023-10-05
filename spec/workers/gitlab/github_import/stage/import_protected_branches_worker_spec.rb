@@ -10,6 +10,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker, featu
   let(:importer) { instance_double('Gitlab::GithubImport::Importer::ProtectedBranchImporter') }
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     it 'imports all the pull requests' do
       waiter = Gitlab::JobWaiter.new(2, '123')
@@ -31,28 +33,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker, featu
         .with(project.id, { '123' => 2 }, :lfs_objects)
 
       worker.import(client, project)
-    end
-
-    context 'when an error raised' do
-      let(:exception) { StandardError.new('_some_error_') }
-
-      before do
-        allow_next_instance_of(Gitlab::GithubImport::Importer::ProtectedBranchesImporter) do |importer|
-          allow(importer).to receive(:execute).and_raise(exception)
-        end
-      end
-
-      it 'raises an error' do
-        expect(Gitlab::Import::ImportFailureService).to receive(:track)
-          .with(
-            project_id: project.id,
-            exception: exception,
-            error_source: described_class.name,
-            metrics: true
-          ).and_call_original
-
-        expect { worker.import(client, project) }.to raise_error(StandardError)
-      end
     end
   end
 end

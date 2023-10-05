@@ -11,6 +11,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWork
   let(:importer) { instance_double(Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImporter) }
   let(:waiter) { Gitlab::JobWaiter.new(2, '123') }
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     it 'imports all PR review requests' do
       expect(Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImporter)

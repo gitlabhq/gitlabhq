@@ -406,7 +406,7 @@ export default {
               category="primary"
               variant="confirm"
               class="gl-sm-mr-3 gl-mb-3"
-              data-qa-selector="start_review_button"
+              data-testid="start-review-button"
               @click="handleAddToReview"
             >
               <template v-if="hasDrafts">{{ __('Add to review') }}</template>
@@ -416,7 +416,7 @@ export default {
               :disabled="isDisabled"
               category="secondary"
               variant="confirm"
-              data-qa-selector="comment_now_button"
+              data-testid="comment-now-button"
               class="gl-sm-mr-3 gl-mb-3 js-comment-button"
               @click="handleUpdate()"
             >

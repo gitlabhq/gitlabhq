@@ -33,6 +33,15 @@ module BulkImports
           end
         end
 
+        def already_processed?(data, _)
+          values = Gitlab::Cache::Import::Caching.values_from_set(cache_key)
+          values.include?(OpenSSL::Digest::SHA256.hexdigest(data.to_s))
+        end
+
+        def save_processed_entry(data, _)
+          Gitlab::Cache::Import::Caching.set_add(cache_key, OpenSSL::Digest::SHA256.hexdigest(data.to_s))
+        end
+
         private
 
         def group_badge?(data)

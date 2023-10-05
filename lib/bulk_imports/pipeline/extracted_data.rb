@@ -5,6 +5,8 @@ module BulkImports
     class ExtractedData
       attr_reader :data
 
+      delegate :each, :each_with_index, to: :data
+
       def initialize(data: nil, page_info: {})
         @data = data.is_a?(Enumerator) ? data : Array.wrap(data)
         @page_info = page_info
@@ -19,10 +21,6 @@ module BulkImports
 
       def next_page
         @page_info&.dig('next_page')
-      end
-
-      def each(&block)
-        data.each(&block)
       end
     end
   end

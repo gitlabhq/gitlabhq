@@ -20,8 +20,7 @@ export default {
   name: 'MembersFilteredSearchBar',
   components: { FilteredSearchBar },
   availableTokens: AVAILABLE_FILTERED_SEARCH_TOKENS,
-  searchButtonAttributes: { 'data-qa-selector': 'search_button' },
-  searchInputAttributes: { 'data-qa-selector': 'search_bar_input' },
+  searchButtonAttributes: { 'data-testid': 'search-button' },
   inject: {
     namespace: {},
     sourceId: {},

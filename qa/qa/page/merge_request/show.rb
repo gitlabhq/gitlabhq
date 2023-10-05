@@ -8,36 +8,36 @@ module QA
         include Page::Component::Issuable::Sidebar
 
         view 'app/assets/javascripts/batch_comments/components/preview_dropdown.vue' do
-          element :review_preview_dropdown
+          element 'review-preview-dropdown'
         end
 
         view 'app/assets/javascripts/batch_comments/components/review_bar.vue' do
-          element :review_bar_content
+          element 'review-bar-content'
         end
 
         view 'app/assets/javascripts/batch_comments/components/submit_dropdown.vue' do
-          element :submit_review_dropdown
-          element :submit_review_button
+          element 'submit-review-dropdown'
+          element 'submit-review-button'
         end
 
         view 'app/assets/javascripts/diffs/components/compare_dropdown_layout.vue' do
-          element :dropdown_content
+          element 'version-dropdown-content'
         end
 
         view 'app/assets/javascripts/diffs/components/compare_versions.vue' do
-          element :target_version_dropdown
-          element :file_tree_button
+          element 'target-version-dropdown'
+          element 'file-tree-button'
         end
 
         view 'app/assets/javascripts/diffs/components/tree_list.vue' do
-          element :file_tree_container
-          element :diff_tree_search
+          element 'file-tree-container'
+          element 'diff-tree-search'
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
-          element :file_title_container
-          element :dropdown_button
-          element :edit_in_ide_button
+          element 'file-title-container'
+          element 'options-dropdown-button'
+          element 'edit-in-ide-button'
         end
 
         view 'app/assets/javascripts/vue_shared/components/file_row.vue' do
@@ -45,13 +45,13 @@ module QA
         end
 
         view 'app/assets/javascripts/diffs/components/diff_row.vue' do
-          element :diff_comment_button
-          element :new_diff_line_link
+          element 'left-comment-button'
+          element 'left-line-number'
         end
 
         view 'app/assets/javascripts/notes/components/note_form.vue' do
-          element :start_review_button
-          element :comment_now_button
+          element 'start-review-button'
+          element 'comment-now-button'
         end
 
         view 'app/views/projects/merge_requests/_code_dropdown.html.haml' do
@@ -62,12 +62,12 @@ module QA
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_pipeline.vue' do
-          element :merge_request_pipeline_info_content
-          element :pipeline_link
+          element 'pipeline-info-container'
+          element 'pipeline-id'
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_failed_to_merge.vue' do
-          element :merge_request_error_content
+          element 'merge-request-failed-refresh-button'
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
@@ -150,19 +150,19 @@ module QA
         end
 
         def start_review
-          click_element(:start_review_button)
+          click_element('start-review-button')
 
           # After clicking the button, wait for it to disappear
           # before moving on to the next part of the test
-          has_no_element?(:start_review_button)
+          has_no_element?('start-review-button')
         end
 
         def click_target_version_dropdown
-          click_element(:target_version_dropdown)
+          click_element('target-version-dropdown')
         end
 
         def version_dropdown_content
-          find_element(:dropdown_content).text
+          find_element('version-dropdown-content').text
         end
 
         def submit_pending_reviews
@@ -174,17 +174,17 @@ module QA
             end
           end
 
-          within_element(:review_bar_content) do
-            click_element(:review_preview_dropdown)
+          within_element('review-bar-content') do
+            click_element('review-preview-dropdown')
           end
 
-          click_element(:submit_review_dropdown)
-          click_element(:submit_review_button)
+          click_element('submit-review-dropdown')
+          click_element('submit-review-button')
 
           # After clicking the button, wait for the review bar to disappear
           # before moving on to the next part of the test
           wait_until(reload: false) do
-            has_no_element?(:review_bar_content)
+            has_no_element?('review-bar-content')
           end
         end
 
@@ -193,8 +193,8 @@ module QA
             has_css?('a[data-linenumber="1"]')
           end
 
-          all_elements(:new_diff_line_link, minimum: 1).first.hover
-          click_element(:diff_comment_button)
+          all_elements('left-line-number', minimum: 1).first.hover
+          click_element('left-comment-button')
           click_element(:dismiss_suggestion_popover_button) if has_element?(:dismiss_suggestion_popover_button, wait: 1)
 
           fill_element('reply-field', text)
@@ -216,7 +216,7 @@ module QA
         end
 
         def click_pipeline_link
-          click_element(:pipeline_link)
+          click_element('pipeline-id')
         end
 
         def edit!
@@ -248,11 +248,11 @@ module QA
 
         def search_file_tree(file_name)
           open_file_tree
-          fill_element(:diff_tree_search, file_name)
+          fill_element('diff-tree-search', file_name)
         end
 
         def open_file_tree
-          click_element(:file_tree_button) if has_no_element?(:file_tree_container, wait: 1)
+          click_element('file-tree-button') if has_no_element?('file-tree-container', wait: 1)
         end
 
         def has_merge_button?
@@ -275,7 +275,7 @@ module QA
         def has_pipeline_status?(text)
           # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
           wait_until(max_duration: 120, sleep_interval: 5, reload: true) do
-            has_element?(:merge_request_pipeline_info_content, text: text, wait: 15)
+            has_element?('pipeline-info-container', text: text, wait: 15)
           end
         end
 
@@ -423,7 +423,7 @@ module QA
 
         def wait_for_merge_request_error_message
           wait_until(max_duration: 30, reload: false) do
-            has_element?(:merge_request_error_content)
+            has_element?('merge-request-failed-refresh-button')
           end
         end
 
@@ -438,21 +438,21 @@ module QA
         end
 
         def edit_file_in_web_ide(file_name)
-          within_element(:file_title_container, file_name: file_name) do
-            click_element(:dropdown_button)
-            click_element(:edit_in_ide_button)
+          within_element('file-title-container', file_name: file_name) do
+            click_element('options-dropdown-button')
+            click_element('edit-in-ide-button')
           end
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
         def add_suggestion_to_diff(suggestion, line)
           find("a[data-linenumber='#{line}']").hover
-          click_element(:diff_comment_button)
+          click_element('left-comment-button')
           click_element(:suggestion_button)
           initial_content = find_element('reply-field').value
           fill_element('reply-field', '')
           fill_element('reply-field', initial_content.gsub(/(```suggestion:-0\+0\n).*(\n```)/, "\\1#{suggestion}\\2"))
-          click_element(:comment_now_button)
+          click_element('comment-now-button')
           wait_for_requests
         end
 

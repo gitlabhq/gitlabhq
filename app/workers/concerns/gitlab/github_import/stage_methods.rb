@@ -3,6 +3,21 @@
 module Gitlab
   module GithubImport
     module StageMethods
+      extend ActiveSupport::Concern
+
+      included do
+        include ApplicationWorker
+
+        sidekiq_retries_exhausted do |msg, e|
+          Gitlab::Import::ImportFailureService.track(
+            project_id: msg['args'][0],
+            exception: e,
+            error_source: self.class.name,
+            fail_import: true
+          )
+        end
+      end
+
       # project_id - The ID of the GitLab project to import the data into.
       def perform(project_id)
         info(project_id, message: 'starting stage')
@@ -29,7 +44,8 @@ module Gitlab
           project_id: project_id,
           exception: e,
           error_source: self.class.name,
-          fail_import: abort_on_failure
+          fail_import: false,
+          metrics: true
         )
 
         raise(e)
@@ -49,10 +65,6 @@ module Gitlab
         # rubocop: disable CodeReuse/ActiveRecord
         Project.joins_import_state.where(import_state: { status: :started }).find_by_id(id)
         # rubocop: enable CodeReuse/ActiveRecord
-      end
-
-      def abort_on_failure
-        false
       end
 
       private

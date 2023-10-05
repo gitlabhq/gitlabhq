@@ -8,7 +8,6 @@ module Gitlab
 
         data_consistency :always
 
-        sidekiq_options retry: 3
         include GithubImport::Queue
         include StageMethods
 
@@ -27,15 +26,6 @@ module Gitlab
             { waiter.key => waiter.jobs_remaining },
             :lfs_objects
           )
-        rescue StandardError => e
-          Gitlab::Import::ImportFailureService.track(
-            project_id: project.id,
-            error_source: self.class.name,
-            exception: e,
-            metrics: true
-          )
-
-          raise(e)
         end
       end
     end

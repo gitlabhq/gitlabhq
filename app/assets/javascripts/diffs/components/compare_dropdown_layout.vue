@@ -26,7 +26,7 @@ export default {
 <template>
   <gl-dropdown
     :text="selectedVersionName"
-    data-qa-selector="dropdown_content"
+    data-testid="version-dropdown-content"
     size="small"
     category="tertiary"
   >

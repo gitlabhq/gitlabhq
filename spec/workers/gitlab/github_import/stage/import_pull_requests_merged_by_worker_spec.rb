@@ -7,6 +7,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker, fe
   let(:import_state) { create(:import_state, project: project) }
   let(:worker) { described_class.new }
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     it 'imports all the pull requests' do
       importer = double(:importer)

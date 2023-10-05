@@ -7,7 +7,6 @@ module Gitlab
 
       data_consistency :always
 
-      sidekiq_options retry: 3
       include GithubImport::Queue
 
       # The interval to schedule new instances of this job at.

@@ -134,7 +134,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
     end
   end
 
-  describe '#transform' do
+  describe '#transform', :clean_gitlab_redis_cache do
     it 'updates matching urls and usernames with new ones' do
       transformed_mr = subject.transform(context, mr)
       transformed_note = subject.transform(context, mr_note)
@@ -154,7 +154,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       expect(transformed_system_note.note).not_to include("@old_username")
       expect(transformed_username_system_note.note).not_to include("@source_username")
 
-      expect(transformed_issue.description).to eq('http://localhost:80/namespace1/project-1/-/issues/1')
+      expect(transformed_issue.description)
+        .to eq("http://localhost:80/#{transformed_issue.namespace.full_path}/-/issues/1")
       expect(transformed_mr.description).to eq("#{expected_url} @destination_username? @alice-gdk, @bob-gdk!")
       expect(transformed_note.note).to eq("#{expected_url} @same_username")
       expect(transformed_issue_note.note).to include("@newer_username, not_a@username, and @new_username.")
