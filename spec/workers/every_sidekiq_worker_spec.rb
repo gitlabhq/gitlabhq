@@ -315,7 +315,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'GitlabPerformanceBarStatsWorker' => 3,
         'GitlabSubscriptions::RefreshSeatsWorker' => 0,
         'GitlabSubscriptions::AddOnPurchases::BulkRefreshUserAssignmentsWorker' => 0,
-        'GitlabShellWorker' => 3,
         'GitlabServicePingWorker' => 3,
         'GroupDestroyWorker' => 3,
         'GroupExportWorker' => false,

@@ -389,7 +389,7 @@ To clear all data from a project wiki and recreate it in a blank state:
    p = Project.find_by_full_path('<username-or-group>/<project-name>')
 
    # This command deletes the wiki project from the filesystem.
-   GitlabShellWorker.perform_in(0, :remove_repository, p.repository_storage, p.wiki.disk_path)
+   p.wiki.repository.remove
 
    # Refresh the wiki repository state.
    p.wiki.repository.expire_exists_cache

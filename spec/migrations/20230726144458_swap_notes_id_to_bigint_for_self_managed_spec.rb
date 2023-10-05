@@ -115,6 +115,39 @@ RSpec.describe SwapNotesIdToBigintForSelfManaged, feature_category: :database do
           end
         end
       end
+
+      context 'when having different naming for fk_d83a918cb1 foreign key' do
+        before do
+          connection.execute('ALTER TABLE system_note_metadata DROP CONSTRAINT IF EXISTS fk_d83a918cb1')
+          connection.execute('ALTER TABLE system_note_metadata DROP CONSTRAINT IF EXISTS fk_rails_d83a918cb1')
+          connection.execute('ALTER TABLE system_note_metadata ADD CONSTRAINT fk_rails_d83a918cb1 FOREIGN KEY (note_id)
+          REFERENCES notes(id) ON DELETE CASCADE')
+        end
+
+        after do
+          connection.execute('ALTER TABLE system_note_metadata DROP CONSTRAINT IF EXISTS fk_rails_d83a918cb1')
+        end
+
+        it 'swaps the columns' do
+          disable_migrations_output do
+            reversible_migration do |migration|
+              migration.before -> {
+                notes_table.reset_column_information
+
+                expect(notes_table.columns.find { |c| c.name == 'id' }.sql_type).to eq('integer')
+                expect(notes_table.columns.find { |c| c.name == 'id_convert_to_bigint' }.sql_type).to eq('bigint')
+              }
+
+              migration.after -> {
+                notes_table.reset_column_information
+
+                expect(notes_table.columns.find { |c| c.name == 'id' }.sql_type).to eq('bigint')
+                expect(notes_table.columns.find { |c| c.name == 'id_convert_to_bigint' }.sql_type).to eq('integer')
+              }
+            end
+          end
+        end
+      end
     end
   end
 end

@@ -85,7 +85,7 @@ module Sidebars
         end
 
         def pages_menu_item
-          unless context.project.pages_available? && context.current_user&.can?(:update_pages, context.project)
+          unless ::Gitlab::Pages.enabled? && context.current_user&.can?(:update_pages, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :pages)
           end
 

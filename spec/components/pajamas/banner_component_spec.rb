@@ -80,8 +80,8 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
 
     describe 'variant' do
       context 'by default (promotion)' do
-        it 'applies no variant class' do
-          expect(page).to have_css "[class='gl-banner']"
+        it 'does not apply introduction class' do
+          expect(page).not_to have_css ".gl-banner-introduction"
         end
       end
 
@@ -89,7 +89,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
         let(:options) { { variant: :introduction } }
 
         it "applies the introduction class to the banner" do
-          expect(page).to have_css ".gl-banner.gl-banner-introduction"
+          expect(page).to have_css ".gl-banner-introduction"
         end
 
         it "applies the confirm class to the close button" do
@@ -101,7 +101,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
         let(:options) { { variant: :foobar } }
 
         it 'ignores the unknown variant' do
-          expect(page).to have_css "[class='gl-banner']"
+          expect(page).to have_css ".gl-banner"
         end
       end
     end

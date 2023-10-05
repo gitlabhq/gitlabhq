@@ -51,5 +51,3 @@ module Projects
     end
   end
 end
-
-Projects::HashedStorage::MigrateRepositoryService.prepend_mod_with('Projects::HashedStorage::MigrateRepositoryService')

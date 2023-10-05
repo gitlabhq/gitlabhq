@@ -161,7 +161,6 @@ Style/IfUnlessModifier:
     - 'app/models/integrations/asana.rb'
     - 'app/models/integrations/base_chat_notification.rb'
     - 'app/models/integrations/datadog.rb'
-    - 'app/models/integrations/jira.rb'
     - 'app/models/integrations/pushover.rb'
     - 'app/models/issue.rb'
     - 'app/models/issue_email_participant.rb'

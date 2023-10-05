@@ -5146,28 +5146,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#pages_available?' do
-    let(:project) { create(:project, group: group) }
-
-    subject { project.pages_available? }
-
-    before do
-      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
-    end
-
-    context 'when the project is in a top level namespace' do
-      let(:group) { create(:group) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context 'when the project is in a subgroup' do
-      let(:group) { create(:group, :nested) }
-
-      it { is_expected.to be(true) }
-    end
-  end
-
   describe '#remove_private_deploy_keys' do
     let!(:project) { create(:project) }
 

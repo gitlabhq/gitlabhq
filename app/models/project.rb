@@ -2244,10 +2244,6 @@ class Project < ApplicationRecord
     File.join(Settings.pages.path, full_path)
   end
 
-  def pages_available?
-    Gitlab.config.pages.enabled
-  end
-
   def pages_show_onboarding?
     !(pages_metadatum&.onboarding_complete || pages_metadatum&.deployed)
   end

@@ -148,10 +148,6 @@ We also collect metrics specific to [Geo](../../../administration/geo/index.md) 
    ```json
    [
      {
-       "repository_verification_enabled"=>true,
-       "repositories_replication_enabled"=>true,
-       "repositories_synced_count"=>24,
-       "repositories_failed_count"=>0,
        "git_fetch_event_count_weekly"=>nil,
        "git_push_event_count_weekly"=>nil,
        ... other geo node status fields

@@ -412,7 +412,7 @@ module API
     end
 
     def require_pages_enabled!
-      not_found! unless user_project.pages_available?
+      not_found! unless ::Gitlab::Pages.enabled?
     end
 
     def require_pages_config_enabled!

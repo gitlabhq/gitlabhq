@@ -990,8 +990,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/serializers/file_lock_entity.rb'
     - 'ee/app/serializers/geo_node_serializer.rb'
     - 'ee/app/serializers/geo_node_status_serializer.rb'
-    - 'ee/app/serializers/geo_project_registry_entity.rb'
-    - 'ee/app/serializers/geo_project_registry_serializer.rb'
     - 'ee/app/serializers/group_analytics_serializer.rb'
     - 'ee/app/serializers/group_vulnerability_autocomplete_entity.rb'
     - 'ee/app/serializers/group_vulnerability_autocomplete_serializer.rb'

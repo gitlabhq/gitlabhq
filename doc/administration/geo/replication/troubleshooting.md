@@ -172,8 +172,7 @@ http://secondary.example.com/
                         GitLab Version: 14.9.2-ee
                               Geo Role: Secondary
                          Health Status: Healthy
-                          Repositories: succeeded 12345 / total 12345 (100%)
-                 Verified Repositories: succeeded 12345 / total 12345 (100%)
+                  Project Repositories: succeeded 12345 / total 12345 (100%)
              Project Wiki Repositories: succeeded 6789 / total 6789 (100%)
                            Attachments: succeeded 4 / total 4 (100%)
                       CI job artifacts: succeeded 0 / total 0 (0%)
@@ -191,6 +190,7 @@ http://secondary.example.com/
      Terraform State Versions Verified: succeeded 0 / total 10 (0%)
          Snippet Repositories Verified: succeeded 99 / total 100 (99%)
            Pipeline Artifacts Verified: succeeded 0 / total 10 (0%)
+         Project Repositories Verified: succeeded 12345 / total 12345 (100%)
     Project Wiki Repositories Verified: succeeded 6789 / total 6789 (100%)
                          Sync Settings: Full
               Database replication lag: 0 seconds
@@ -199,19 +199,19 @@ http://secondary.example.com/
                 Last status report was: 1 minute ago
 ```
 
-There are up to three statuses for each item. For example, for `Repositories`, you see the following lines:
+There are up to three statuses for each item. For example, for `Project Repositories`, you see the following lines:
 
 ```plaintext
-  Repositories: succeeded 12345 / total 12345 (100%)
-  Verified Repositories: succeeded 12345 / total 12345 (100%)
+  Project Repositories: succeeded 12345 / total 12345 (100%)
+  Project Repositories Verified: succeeded 12345 / total 12345 (100%)
   Repositories Checked: failed 5 / succeeded 0 / total 5 (0%)
 ```
 
 The 3 status items are defined as follows:
 
-- The `Repositories` output shows how many repositories are synced from the primary to the secondary.
-- The `Verified Repositories` output shows how many repositories on this secondary have a matching repository checksum with the Primary.
-- The `Repositories Checked` output shows how many repositories have passed a local Git repository check (`git fsck`) on the secondary.
+- The `Project Repositories` output shows how many project repositories are synced from the primary to the secondary.
+- The `Project Verified Repositories` output shows how many project repositories on this secondary have a matching repository checksum with the Primary.
+- The `Repositories Checked` output shows how many project repositories have passed a local Git repository check (`git fsck`) on the secondary.
 
 To find more details about failed items, check
 [the `gitlab-rails/geo.log` file](../../logs/log_parsing.md#find-most-common-geo-sync-errors)

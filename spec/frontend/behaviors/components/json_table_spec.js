@@ -70,7 +70,7 @@ describe('behaviors/components/json_table', () => {
     });
 
     it('renders gltable', () => {
-      expect(findTable().props()).toEqual({
+      expect(findTable().props()).toMatchObject({
         fields: [],
         items: [],
       });
@@ -121,7 +121,7 @@ describe('behaviors/components/json_table', () => {
     });
 
     it('passes cleaned fields and items to table', () => {
-      expect(findTable().props()).toEqual({
+      expect(findTable().props()).toMatchObject({
         fields: [
           'A',
           {

@@ -13,8 +13,6 @@ RSpec.describe Gitlab::Shell do
     described_class.instance_variable_set(:@secret_token, nil)
   end
 
-  it { is_expected.to respond_to :remove_repository }
-
   describe '.secret_token' do
     let(:secret_file) { 'tmp/tests/.secret_shell_test' }
     let(:link_file) { 'tmp/tests/shell-secret-test/.gitlab_shell_secret' }
@@ -81,19 +79,6 @@ RSpec.describe Gitlab::Shell do
     before do
       allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
-    end
-
-    describe '#remove_repository' do
-      let!(:project) { create(:project, :repository, :legacy_storage) }
-      let(:disk_path) { "#{project.disk_path}.git" }
-
-      it 'returns true when the command succeeds' do
-        expect(project.repository.raw).to exist
-
-        expect(gitlab_shell.remove_repository(project.repository_storage, project.disk_path)).to be(true)
-
-        expect(project.repository.raw).not_to exist
-      end
     end
 
     describe '#mv_repository' do

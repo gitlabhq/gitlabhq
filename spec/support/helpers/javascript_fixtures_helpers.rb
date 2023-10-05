@@ -39,7 +39,7 @@ module JavaScriptFixturesHelpers
   end
 
   def remove_repository(project)
-    Gitlab::Shell.new.remove_repository(project.repository_storage, project.disk_path)
+    project.repository.remove
   end
 
   # Public: Reads a GraphQL query from the filesystem as a string

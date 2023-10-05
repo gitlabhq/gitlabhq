@@ -20920,12 +20920,6 @@ msgstr ""
 msgid "Geo|%{label} should be between 1-999"
 msgstr ""
 
-msgid "Geo|%{name} is scheduled for re-sync"
-msgstr ""
-
-msgid "Geo|%{name} is scheduled for re-verify"
-msgstr ""
-
 msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
 msgstr ""
 
@@ -20948,12 +20942,6 @@ msgid "Geo|All %{replicable_name}"
 msgstr ""
 
 msgid "Geo|All projects"
-msgstr ""
-
-msgid "Geo|All projects are being scheduled for resync"
-msgstr ""
-
-msgid "Geo|All projects are being scheduled for reverify"
 msgstr ""
 
 msgid "Geo|Allow this secondary site to replicate content on Object Storage"
@@ -20999,9 +20987,6 @@ msgid "Geo|Consult Geo troubleshooting information"
 msgstr ""
 
 msgid "Geo|Container repositories synchronization concurrency limit"
-msgstr ""
-
-msgid "Geo|Could not remove tracking entry for an existing project."
 msgstr ""
 
 msgid "Geo|Data replication lag"
@@ -21052,9 +21037,6 @@ msgstr ""
 msgid "Geo|Geo Settings"
 msgstr ""
 
-msgid "Geo|Geo Status"
-msgstr ""
-
 msgid "Geo|Geo allows you to choose specific groups or storage shards to replicate."
 msgstr ""
 
@@ -21100,15 +21082,6 @@ msgstr ""
 msgid "Geo|Last event ID processed"
 msgstr ""
 
-msgid "Geo|Last repository check run"
-msgstr ""
-
-msgid "Geo|Last successful sync"
-msgstr ""
-
-msgid "Geo|Last sync attempt"
-msgstr ""
-
 msgid "Geo|Last time verified"
 msgstr ""
 
@@ -21131,12 +21104,6 @@ msgid "Geo|Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart
 msgstr ""
 
 msgid "Geo|Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
-msgstr ""
-
-msgid "Geo|Never"
-msgstr ""
-
-msgid "Geo|Next sync scheduled at"
 msgstr ""
 
 msgid "Geo|No %{replicable_type} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
@@ -21181,9 +21148,6 @@ msgstr ""
 msgid "Geo|Primary site"
 msgstr ""
 
-msgid "Geo|Project (ID: %{project_id}) no longer exists on the primary. It is safe to remove this entry, as this will not remove any data on disk."
-msgstr ""
-
 msgid "Geo|Projects in certain groups"
 msgstr ""
 
@@ -21194,9 +21158,6 @@ msgid "Geo|Queued"
 msgstr ""
 
 msgid "Geo|Re-verification interval"
-msgstr ""
-
-msgid "Geo|Remove"
 msgstr ""
 
 msgid "Geo|Remove %{siteType} site"
@@ -21310,9 +21271,6 @@ msgstr ""
 msgid "Geo|Site's status was updated %{timeAgo}."
 msgstr ""
 
-msgid "Geo|Status"
-msgstr ""
-
 msgid "Geo|Storage config"
 msgstr ""
 
@@ -21388,9 +21346,6 @@ msgstr ""
 msgid "Geo|Tracking database entry will be removed. Are you sure?"
 msgstr ""
 
-msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
-msgstr ""
-
 msgid "Geo|Tuning settings"
 msgstr ""
 
@@ -21428,9 +21383,6 @@ msgid "Geo|Verification status"
 msgstr ""
 
 msgid "Geo|Verified"
-msgstr ""
-
-msgid "Geo|Waiting for scheduler"
 msgstr ""
 
 msgid "Geo|With GitLab Geo, you can install a special read-only and replicated instance anywhere."
@@ -39727,9 +39679,6 @@ msgid "Reports|Vulnerability Name"
 msgstr ""
 
 msgid "Reports|metrics report"
-msgstr ""
-
-msgid "Repositories"
 msgstr ""
 
 msgid "Repositories Analytics"

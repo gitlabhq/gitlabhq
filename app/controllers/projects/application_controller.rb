@@ -85,7 +85,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def require_pages_enabled!
-    not_found unless @project.pages_available?
+    not_found unless ::Gitlab::Pages.enabled?
   end
 
   def check_issues_available!

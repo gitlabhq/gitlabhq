@@ -33,7 +33,6 @@ Lint/AmbiguousOperatorPrecedence:
     - 'config/initializers/carrierwave_s3_encryption_headers_patch.rb'
     - 'config/initializers/kaminari_active_record_relation_methods_with_limit.rb'
     - 'danger/roulette/Dangerfile'
-    - 'ee/app/models/ee/integrations/jira.rb'
     - 'ee/app/models/geo/upload_registry.rb'
     - 'ee/app/models/iterations/cadence.rb'
     - 'ee/app/models/license.rb'

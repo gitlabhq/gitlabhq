@@ -890,6 +890,10 @@ any job can have this variable, regardless of whether an environment is defined.
 
 If the environment scope is `review/*`, then jobs with environment names starting
 with `review/` would have that variable available.
+Using environment-scoped variables with [`rules` and `include`](../yaml/includes.md#use-rules-with-include)
+might not work as expected in a pipeline.
+Because the environment-scoped variable is set only in a matching job,
+the variable might not be defined when GitLab validates the pipeline configuration at pipeline creation.
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping in each environment group.

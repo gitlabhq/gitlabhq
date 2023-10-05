@@ -97,6 +97,7 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/mr_widget_options.vue' do
           element :mr_widget_content
+          element 'pipeline-container'
         end
 
         view 'app/assets/javascripts/vue_shared/components/markdown/apply_suggestion.vue' do
@@ -142,6 +143,10 @@ module QA
 
         view 'app/assets/javascripts/ci/jobs_page/components/job_cells/job_cell.vue' do
           element 'fork-icon'
+        end
+
+        view 'app/assets/javascripts/vue_merge_request_widget/components/mr_collapsible_extension.vue' do
+          element 'mr-collapsible-title'
         end
 
         def start_review
@@ -488,6 +493,28 @@ module QA
 
         def has_fork_icon?
           has_element?('fork-icon', skip_finished_loading_check: true)
+        end
+
+        def click_artifacts_dropdown_button
+          wait_for_requests
+          within_element('pipeline-container') do
+            click_element('base-dropdown-toggle')
+          end
+        end
+
+        def has_artifact_with_name?(name)
+          has_text?(name)
+        end
+
+        def open_exposed_artifacts_list
+          within_element('pipeline-container') do
+            wait_until(reload: false) { has_no_text?('Loading artifacts') }
+            click_element('mr-collapsible-title')
+          end
+        end
+
+        def has_exposed_artifact_with_name?(name)
+          has_link?(name)
         end
       end
     end

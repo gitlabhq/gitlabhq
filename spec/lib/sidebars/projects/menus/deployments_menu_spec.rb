@@ -73,7 +73,7 @@ RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu, feature_category: :na
       let(:item_id) { :pages }
 
       before do
-        allow(project).to receive(:pages_available?).and_return(pages_enabled)
+        allow(::Gitlab::Pages).to receive(:enabled?).and_return(pages_enabled)
       end
 
       describe 'when pages are enabled' do

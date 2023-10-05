@@ -123,7 +123,6 @@ Lint/UnusedMethodArgument:
     - 'app/models/integrations/discord.rb'
     - 'app/models/integrations/ewm.rb'
     - 'app/models/integrations/hangouts_chat.rb'
-    - 'app/models/integrations/jira.rb'
     - 'app/models/integrations/microsoft_teams.rb'
     - 'app/models/integrations/mock_ci.rb'
     - 'app/models/integrations/mock_monitoring.rb'
