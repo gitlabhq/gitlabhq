@@ -1,6 +1,21 @@
 <script>
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
 
+const validateOptionsProp = (options) => {
+  const requiredOptionPropType = {
+    value: ['string', 'number', 'boolean'],
+    disabled: ['boolean', 'undefined'],
+  };
+  const optionProps = Object.keys(requiredOptionPropType);
+
+  return options.every((option) => {
+    if (!option) {
+      return false;
+    }
+    return optionProps.every((name) => requiredOptionPropType[name].includes(typeof option[name]));
+  });
+};
+
 // TODO: We're planning to move this component to GitLab UI
 //       https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1787
 export default {
@@ -12,6 +27,7 @@ export default {
     options: {
       type: Array,
       required: true,
+      validator: validateOptionsProp,
     },
     value: {
       type: [String, Number, Boolean],

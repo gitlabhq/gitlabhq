@@ -46,7 +46,7 @@ Running `yarn jest-debug` runs Jest in debug mode, allowing you to debug/inspect
 ### Timeout error
 
 The default timeout for Jest is set in
-[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/test_setup.js).
+[`/jest.config.base.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/jest.config.base.js).
 
 If your test exceeds that time, it fails.
 

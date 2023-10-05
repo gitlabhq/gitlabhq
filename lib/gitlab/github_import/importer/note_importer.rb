@@ -17,7 +17,9 @@ module Gitlab
         end
 
         def execute
-          return unless (noteable_id = find_noteable_id)
+          noteable_id = find_noteable_id
+
+          raise Exceptions::NoteableNotFound, 'Error to find noteable_id for note' unless noteable_id
 
           author_id, author_found = user_finder.author_id_for(note)
 
@@ -34,8 +36,7 @@ module Gitlab
             updated_at: note.updated_at
           }
 
-          note = Note.new(attributes.merge(importing: true))
-          note.validate!
+          Note.new(attributes.merge(importing: true)).validate!
 
           # We're using bulk_insert here so we can bypass any callbacks.
           # Running these would result in a lot of unnecessary SQL
@@ -44,9 +45,6 @@ module Gitlab
           # to generate HTML version - you also need to regenerate it in
           # Gitlab::GithubImport::Importer::NoteAttachmentsImporter.
           ApplicationRecord.legacy_bulk_insert(Note.table_name, [attributes]) # rubocop:disable Gitlab/BulkInsert
-        rescue ActiveRecord::InvalidForeignKey
-          # It's possible the project and the issue have been deleted since
-          # scheduling this job. In this case we'll just skip creating the note.
         end
 
         # Returns the ID of the issue or merge request to create the note for.

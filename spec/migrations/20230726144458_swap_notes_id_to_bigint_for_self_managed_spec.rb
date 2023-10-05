@@ -126,6 +126,9 @@ RSpec.describe SwapNotesIdToBigintForSelfManaged, feature_category: :database do
 
         after do
           connection.execute('ALTER TABLE system_note_metadata DROP CONSTRAINT IF EXISTS fk_rails_d83a918cb1')
+          connection.execute('ALTER TABLE system_note_metadata DROP CONSTRAINT IF EXISTS fk_d83a918cb1_tmp')
+          connection.execute('ALTER TABLE system_note_metadata ADD CONSTRAINT fk_d83a918cb1 FOREIGN KEY (note_id)
+          REFERENCES notes(id) ON DELETE CASCADE')
         end
 
         it 'swaps the columns' do

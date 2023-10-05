@@ -36,13 +36,6 @@ module Gitlab
           Logger.warn(message: e.message, 'error.class': e.class.name)
 
           import_with_legacy_diff_note
-        rescue ActiveRecord::InvalidForeignKey => e
-          # It's possible the project and the issue have been deleted since
-          # scheduling this job. In this case we'll just skip creating the note
-          Logger.info(
-            message: e.message,
-            github_identifiers: note.github_identifiers
-          )
         end
 
         private

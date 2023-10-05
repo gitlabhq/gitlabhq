@@ -55,6 +55,12 @@ module Pages
     strong_memoize_attr :prefix
 
     def unique_host
+      # When serving custom domain we don't present the unique host to avoid
+      # GitLab Pages auto-redirect to the unique domain instead of keeping serving
+      # from the custom domain.
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/426435
+      return if domain.present?
+
       url_builder.unique_host
     end
     strong_memoize_attr :unique_host

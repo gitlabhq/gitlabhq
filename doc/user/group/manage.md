@@ -464,16 +464,16 @@ To update this setting:
 1. Under **Code Suggestions**, select the **Projects in this group can use Code Suggestions** checkbox.
 1. Select **Save changes**.
 
-## Enable Experiment features **(ULTIMATE SAAS)**
+## Enable Experiment and Beta features **(ULTIMATE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 
 WARNING:
-[Experiment features](../../policy/experiment-beta-support.md#experiment) may produce unexpected results
+[Experiment and Beta features](../../policy/experiment-beta-support.md) may produce unexpected results
 (for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
 and might include insecure code or failed pipelines).
 
-You can give all users in a top-level group access to Experiment features.
+You can give all users in a top-level group access to Experiment and Beta features.
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
@@ -482,7 +482,7 @@ To enable Experiment features for a top-level group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Experiment features**, select the **Use Experiment features** checkbox.
+1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
 1. Select **Save changes**.
 
 ## Enable third-party AI features **(ULTIMATE SAAS)**

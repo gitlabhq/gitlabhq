@@ -5429,16 +5429,13 @@ msgstr ""
 msgid "Analytics|Charts"
 msgstr ""
 
-msgid "Analytics|Choose a chart type on the right"
-msgstr ""
-
 msgid "Analytics|Choose a measurement to start"
 msgstr ""
 
 msgid "Analytics|Code"
 msgstr ""
 
-msgid "Analytics|Column Chart"
+msgid "Analytics|Column chart"
 msgstr ""
 
 msgid "Analytics|Configure Dashboard Project"
@@ -5477,7 +5474,7 @@ msgstr ""
 msgid "Analytics|Data"
 msgstr ""
 
-msgid "Analytics|Data Table"
+msgid "Analytics|Data table"
 msgstr ""
 
 msgid "Analytics|Dates and times are displayed in the UTC timezone"
@@ -5513,7 +5510,7 @@ msgstr ""
 msgid "Analytics|Language"
 msgstr ""
 
-msgid "Analytics|Line Chart"
+msgid "Analytics|Line chart"
 msgstr ""
 
 msgid "Analytics|New dashboard"
@@ -5564,7 +5561,7 @@ msgstr ""
 msgid "Analytics|Select a visualization type"
 msgstr ""
 
-msgid "Analytics|Single Statistic"
+msgid "Analytics|Single statistic"
 msgstr ""
 
 msgid "Analytics|Single stats"
@@ -5615,13 +5612,13 @@ msgstr ""
 msgid "Analytics|Visualization Designer"
 msgstr ""
 
-msgid "Analytics|Visualization Type"
-msgstr ""
-
 msgid "Analytics|Visualization designer"
 msgstr ""
 
 msgid "Analytics|Visualization title"
+msgstr ""
+
+msgid "Analytics|Visualization type"
 msgstr ""
 
 msgid "Analytics|Visualization was saved successfully"
@@ -10096,9 +10093,6 @@ msgid "Choose your framework"
 msgstr ""
 
 msgid "Ci config already present"
-msgstr ""
-
-msgid "CiCatalog|About this project"
 msgstr ""
 
 msgid "CiCatalog|Back to the CI/CD Catalog"

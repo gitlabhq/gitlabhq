@@ -10,6 +10,7 @@ const DEFAULT_OPTIONS = [
 ];
 
 describe('~/vue_shared/components/segmented_control_button_group.vue', () => {
+  let consoleSpy;
   let wrapper;
 
   const createComponent = (props = {}, scopedSlots = {}) => {
@@ -95,6 +96,36 @@ describe('~/vue_shared/components/segmented_control_button_group.vue', () => {
       expect(findButtonsData().map((x) => x.text)).toEqual(
         DEFAULT_OPTIONS.map((x) => `In a slot - ${x.text}`),
       );
+    });
+  });
+
+  describe('options prop validation', () => {
+    beforeEach(() => {
+      consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    });
+
+    it.each([
+      [[{ disabled: true }]],
+      [[{ value: '1', disabled: 'false' }]],
+      [[{ value: null, disabled: 'true' }]],
+      [[[{ value: true }, null]]],
+    ])('with options=%j, fails validation', (options) => {
+      createComponent({ options });
+
+      expect(consoleSpy).toHaveBeenCalledTimes(1);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Invalid prop: custom validator check failed for prop "options"'),
+      );
+    });
+
+    it.each([
+      [[{ value: '1' }]],
+      [[{ value: 1, disabled: true }]],
+      [[{ value: true, disabled: false }]],
+    ])('with options=%j, passes validation', (options) => {
+      createComponent({ options });
+
+      expect(consoleSpy).not.toHaveBeenCalled();
     });
   });
 });

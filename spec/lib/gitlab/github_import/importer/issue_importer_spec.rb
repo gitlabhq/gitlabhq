@@ -183,21 +183,6 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
       end
     end
 
-    context 'when the import fails due to a foreign key error' do
-      it 'does not raise any errors' do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(issue)
-          .and_return([user.id, true])
-
-        expect(importer)
-          .to receive(:insert_and_return_id)
-          .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
-
-        expect { importer.create_issue }.not_to raise_error
-      end
-    end
-
     it 'produces a valid Issue' do
       allow(importer.user_finder)
         .to receive(:author_id_for)

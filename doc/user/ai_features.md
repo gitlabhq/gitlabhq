@@ -38,7 +38,7 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
   - This setting is available to Ultimate groups on SaaS and can be
     set by a user who has the Owner role in the group.
   - View [how to enable this setting](group/manage.md#enable-third-party-ai-features).
-- Experiment features
+- Experiment and Beta features
   - All features categorized as
     [Experiment features](../policy/experiment-beta-support.md#experiment) or
     [Beta features](../policy/experiment-beta-support.md#beta)
@@ -46,10 +46,10 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
     level. This is in addition to the Third-party AI features setting.
   - Their usage is subject to the
     [Testing Terms of Use](https://about.gitlab.com/handbook/legal/testing-agreement/).
-  - Experiment features are disabled by default.
+  - Experiment and Beta features are disabled by default.
   - This setting is available to Ultimate groups on SaaS and can be set by a user
     who has the Owner role in the group.
-  - View [how to enable this setting](group/manage.md#enable-experiment-features).
+  - View [how to enable this setting](group/manage.md#enable-experiment-and-beta-features).
 - Code Suggestions
   - View [how to enable for self-managed](project/repository/code_suggestions/saas.md#enable-code-suggestions).
   - View [how to enable for SaaS](project/repository/code_suggestions/self_managed.md#enable-code-suggestions-on-self-managed-gitlab).
@@ -66,7 +66,7 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
-  - Enable the [experiment features setting](group/manage.md#enable-experiment-features).
+  - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the repository.
 
 GitLab can help you get up to speed faster if you:
@@ -111,7 +111,7 @@ We cannot guarantee that the large language model produces results that are corr
 To use this feature, at least one group you're a member of must:
 
 - Have the [third-party AI features setting](group/manage.md#enable-third-party-ai-features) enabled.
-- Have the [experiment features setting](group/manage.md#enable-experiment-features) enabled.
+- Have the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
 
 You can get AI generated support from GitLab Duo Chat about the following topics:
 
@@ -158,7 +158,7 @@ To use this feature:
 
 - The parent group of the issue must:
   - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
-  - Enable the [experiment features setting](group/manage.md#enable-experiment-features).
+  - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the issue.
 
 You can generate a summary of discussions on an issue:
@@ -182,7 +182,7 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
-  - Enable the [experiment features setting](group/manage.md#enable-experiment-features).
+  - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the CI/CD analytics.
 
 In CI/CD Analytics, you can view a forecast of deployment frequency:
@@ -208,7 +208,7 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
-  - Enable the [experiment features setting](group/manage.md#enable-experiment-features).
+  - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the CI/CD job.
 
 When the feature is available, the "Root cause analysis" button will appears on
@@ -223,7 +223,7 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
-  - Enable the [experiment features setting](group/manage.md#enable-experiment-features).
+  - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the issue.
 
 You can generate the description for an issue from a short summary.

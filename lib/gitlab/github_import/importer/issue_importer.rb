@@ -64,9 +64,6 @@ module Gitlab
           issue.validate!
 
           insert_and_return_id(attributes, project.issues)
-        rescue ActiveRecord::InvalidForeignKey
-          # It's possible the project has been deleted since scheduling this
-          # job. In this case we'll just skip creating the issue.
         end
 
         # Stores all issue assignees in the database.

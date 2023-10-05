@@ -4,8 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Pages::LookupPath, feature_category: :pages do
   let(:project) { create(:project, :pages_private, pages_https_only: true) }
+  let(:trim_prefix) { nil }
+  let(:domain) { nil }
 
-  subject(:lookup_path) { described_class.new(project) }
+  subject(:lookup_path) { described_class.new(project, trim_prefix: trim_prefix, domain: domain) }
 
   before do
     stub_pages_setting(
@@ -30,11 +32,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   describe '#https_only' do
-    subject(:lookup_path) { described_class.new(project, domain: domain) }
-
     context 'when no domain provided' do
-      let(:domain) { nil }
-
       it 'delegates to Project#pages_https_only?' do
         expect(lookup_path.https_only).to eq(true)
       end
@@ -124,18 +122,22 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   describe '#prefix' do
-    it 'returns "/" for pages group root projects' do
-      project = instance_double(Project, full_path: "namespace/namespace.example.com")
-      lookup_path = described_class.new(project, trim_prefix: 'mygroup')
+    let(:trim_prefix) { 'mygroup' }
 
-      expect(lookup_path.prefix).to eq('/')
+    context 'when pages group root projects' do
+      let(:project) { instance_double(Project, full_path: "namespace/namespace.example.com") }
+
+      it 'returns "/"' do
+        expect(lookup_path.prefix).to eq('/')
+      end
     end
 
-    it 'returns the project full path with the provided prefix removed' do
-      project = instance_double(Project, full_path: 'mygroup/myproject')
-      lookup_path = described_class.new(project, trim_prefix: 'mygroup')
+    context 'when pages in the given prefix' do
+      let(:project) { instance_double(Project, full_path: 'mygroup/myproject') }
 
-      expect(lookup_path.prefix).to eq('/myproject/')
+      it 'returns the project full path with the provided prefix removed' do
+        expect(lookup_path.prefix).to eq('/myproject/')
+      end
     end
   end
 
@@ -157,12 +159,18 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
 
         expect(lookup_path.unique_host).to eq('unique-domain.example.com')
       end
+
+      context 'when there is domain provided' do
+        let(:domain) { instance_double(PagesDomain) }
+
+        it 'returns nil' do
+          expect(lookup_path.unique_host).to eq(nil)
+        end
+      end
     end
   end
 
   describe '#root_directory' do
-    subject(:lookup_path) { described_class.new(project) }
-
     context 'when there is no deployment' do
       it 'returns nil' do
         expect(lookup_path.root_directory).to be_nil
