@@ -24,7 +24,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
   <gl-button-stub
     buttontextclasses=""
     category="primary"
-    data-qa-selector="delete_button"
+    data-testid="delete-button"
     icon=""
     size="medium"
     variant="danger"

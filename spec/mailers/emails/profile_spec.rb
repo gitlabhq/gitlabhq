@@ -297,7 +297,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject /^A personal access token has been revoked$/i
+        is_expected.to have_subject /^Your personal access token has been revoked$/i
       end
 
       it 'provides the names of the token' do
@@ -325,7 +325,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject /^A personal access token has been revoked$/i
+        is_expected.to have_subject /^Your personal access token has been revoked$/i
       end
 
       it 'provides the names of the token' do

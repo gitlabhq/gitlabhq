@@ -177,7 +177,6 @@ module IssuablesHelper
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
       markdownDocsPath: help_page_path('user/markdown'),
       lockVersion: issuable.lock_version,
-      state: issuable.state,
       issuableTemplateNamesPath: template_names_path(parent, issuable),
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
@@ -358,7 +357,6 @@ module IssuablesHelper
       issuableId: issuable.id,
       issueType: issuable.issue_type,
       isHidden: issue_hidden?(issuable),
-      sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
       **incident_only_initial_data(issuable),
       **issue_header_data(issuable),

@@ -268,7 +268,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           markdownPreviewPath: "/#{@project.full_path}/preview_markdown?target_id=#{issue.iid}&target_type=Issue",
           markdownDocsPath: '/help/user/markdown',
           lockVersion: issue.lock_version,
-          state: issue.state,
           issuableTemplateNamesPath: template_names_path(@project, issue),
           initialTitleHtml: issue.title,
           initialTitleText: issue.title,
@@ -284,7 +283,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           issuableId: issue.id,
           issueType: 'issue',
           isHidden: false,
-          sentryIssueIdentifier: nil,
           zoomMeetingUrl: nil
         }
 
@@ -381,26 +379,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
           expect(helper.issuable_initial_data(edited_issuable.reload)).to include(expected)
         end
-      end
-    end
-
-    describe '#sentryIssueIdentifier' do
-      let(:issue) { create(:issue, author: user) }
-
-      before do
-        assign(:project, issue.project)
-      end
-
-      it 'sets sentryIssueIdentifier to nil with no sentry issue' do
-        expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
-          .to be_nil
-      end
-
-      it 'sets sentryIssueIdentifier to sentry_issue_identifier' do
-        sentry_issue = create(:sentry_issue, issue: issue)
-
-        expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
-          .to eq(sentry_issue.sentry_issue_identifier)
       end
     end
 

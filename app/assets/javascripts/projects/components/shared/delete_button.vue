@@ -87,7 +87,7 @@ export default {
     <gl-button
       category="primary"
       variant="danger"
-      data-qa-selector="delete_button"
+      data-testid="delete-button"
       @click="onButtonClick"
       >{{ $options.i18n.deleteProject }}</gl-button
     >

@@ -7,6 +7,7 @@ import Tracking from '~/tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { n__, sprintf } from '~/locale';
 import { memberName, triggerExternalAlert } from 'ee_else_ce/invite_members/utils/member_utils';
+import { captureException } from '~/ci/runner/sentry_utils';
 import {
   USERS_FILTER_ALL,
   MEMBER_MODAL_LABELS,
@@ -262,8 +263,9 @@ export default {
         } else {
           this.onInviteSuccess();
         }
-      } catch (e) {
-        this.showInvalidFeedbackMessage(e);
+      } catch (error) {
+        captureException({ error, component: this.$options.name });
+        this.showInvalidFeedbackMessage(error);
       } finally {
         this.isLoading = false;
       }

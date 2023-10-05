@@ -123,7 +123,7 @@ module Emails
       @target_url = profile_personal_access_tokens_url
       @source = source
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("A personal access token has been revoked")))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your personal access token has been revoked")))
     end
 
     def ssh_key_expired_email(user, fingerprints)

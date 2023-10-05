@@ -36,4 +36,3 @@ export const SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT =
   'users_visiting_security_configuration_threat_management';
 
 export const SERVICE_PING_PIPELINE_SECURITY_VISIT = 'users_visiting_pipeline_security';
-export const USER_CONTEXT_SCHEMA = 'iglu:com.gitlab/user_context/jsonschema/1-0-0';

@@ -6,7 +6,6 @@ import {
   GITLAB_INTERNAL_EVENT_CATEGORY,
   SERVICE_PING_SCHEMA,
   LOAD_INTERNAL_EVENTS_SELECTOR,
-  USER_CONTEXT_SCHEMA,
 } from '~/tracking/constants';
 import * as utils from '~/tracking/utils';
 import { Tracker } from '~/tracking/tracker';
@@ -181,16 +180,6 @@ describe('InternalEvents', () => {
         environment: 'testing',
         key: 'value',
       };
-      window.gl.snowplowStandardContext = {
-        schema: 'iglu:com.gitlab/gitlab_standard',
-        data: {
-          environment: 'testing',
-          key: 'value',
-          google_analytics_id: '',
-          source: 'gitlab-javascript',
-          extra: {},
-        },
-      };
     });
 
     it('should not call setDocumentTitle or page methods when window.glClient is undefined', () => {
@@ -203,33 +192,11 @@ describe('InternalEvents', () => {
     });
 
     it('should call setDocumentTitle and page methods on window.glClient when it is defined', () => {
-      const mockStandardContext = window.gl.snowplowStandardContext;
-      const userContext = {
-        schema: USER_CONTEXT_SCHEMA,
-        data: mockStandardContext?.data,
-      };
-
       InternalEvents.initBrowserSDK();
 
       expect(window.glClient.setDocumentTitle).toHaveBeenCalledWith('GitLab');
       expect(window.glClient.page).toHaveBeenCalledWith({
         title: 'GitLab',
-        context: [userContext],
-      });
-    });
-
-    it('should call page method with combined standard and experiment contexts', () => {
-      const mockStandardContext = window.gl.snowplowStandardContext;
-      const userContext = {
-        schema: USER_CONTEXT_SCHEMA,
-        data: mockStandardContext?.data,
-      };
-
-      InternalEvents.initBrowserSDK();
-
-      expect(window.glClient.page).toHaveBeenCalledWith({
-        title: 'GitLab',
-        context: [userContext],
       });
     });
 
@@ -241,16 +208,6 @@ describe('InternalEvents', () => {
       expect(window.glClient.setDocumentTitle).toHaveBeenCalledWith('GitLab');
       expect(window.glClient.page).toHaveBeenCalledWith({
         title: 'GitLab',
-        context: [
-          {
-            schema: USER_CONTEXT_SCHEMA,
-            data: {
-              google_analytics_id: '',
-              source: 'gitlab-javascript',
-              extra: {},
-            },
-          },
-        ],
       });
     });
   });

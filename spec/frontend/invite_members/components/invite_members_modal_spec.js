@@ -34,6 +34,7 @@ import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
+import { captureException } from '~/ci/runner/sentry_utils';
 import { GROUPS_INVITATIONS_PATH, invitationsApiResponse } from '../mock_data/api_responses';
 import {
   propsData,
@@ -52,6 +53,7 @@ import {
 
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 jest.mock('~/experimentation/experiment_tracking');
+jest.mock('~/ci/runner/sentry_utils');
 
 describe('InviteMembersModal', () => {
   let wrapper;
@@ -447,10 +449,8 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the generic error for http server error', async () => {
-          mockInvitationsApi(
-            HTTP_STATUS_INTERNAL_SERVER_ERROR,
-            'Request failed with status code 500',
-          );
+          const SERVER_ERROR_MESSAGE = 'Request failed with status code 500';
+          mockInvitationsApi(HTTP_STATUS_INTERNAL_SERVER_ERROR, SERVER_ERROR_MESSAGE);
 
           clickInviteButton();
 
@@ -458,6 +458,10 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
           expect(findMembersSelect().props('exceptionState')).toBe(false);
+          expect(captureException).toHaveBeenCalledWith({
+            error: new Error(SERVER_ERROR_MESSAGE),
+            component: wrapper.vm.$options.name,
+          });
         });
 
         it('displays the restricted user api message for response with bad request', async () => {

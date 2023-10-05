@@ -1,12 +1,10 @@
 import API from '~/api';
-import getStandardContext from './get_standard_context';
 
 import Tracking from './tracking';
 import {
   GITLAB_INTERNAL_EVENT_CATEGORY,
   LOAD_INTERNAL_EVENTS_SELECTOR,
   SERVICE_PING_SCHEMA,
-  USER_CONTEXT_SCHEMA,
 } from './constants';
 import { Tracker } from './tracker';
 import { InternalEventHandler, createInternalEventPayload } from './utils';
@@ -91,18 +89,10 @@ const InternalEvents = {
    * Initialize browser sdk for product analytics
    */
   initBrowserSDK() {
-    const standardContext = getStandardContext();
-
     if (window.glClient) {
       window.glClient.setDocumentTitle('GitLab');
       window.glClient.page({
         title: 'GitLab',
-        context: [
-          {
-            schema: USER_CONTEXT_SCHEMA,
-            data: standardContext?.data || {},
-          },
-        ],
       });
     }
   },
