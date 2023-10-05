@@ -24,7 +24,9 @@ module QA
           end
 
           def latest_pipeline_status
-            latest_pipeline.find(element_selector_css('ci-badge-text')).text
+            within(latest_pipeline) do
+              find_element('ci-badge-text')
+            end.text
           end
 
           # If no status provided, wait for pipeline to complete

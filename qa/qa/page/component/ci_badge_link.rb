@@ -32,12 +32,13 @@ module QA
           super
 
           base.view 'app/assets/javascripts/vue_shared/components/ci_badge_link.vue' do
-            element 'ci-badge-link'
+            element 'ci-badge-text'
           end
         end
 
         def status_badge
-          find_element('ci-badge-link').text
+          # There are more than 1 on job details page
+          all_elements('ci-badge-text', minimum: 1).first.text
         end
 
         def completed?(timeout: 60)

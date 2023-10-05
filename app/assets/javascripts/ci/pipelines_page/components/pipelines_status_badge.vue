@@ -43,7 +43,6 @@ export default {
       class="gl-mb-3"
       :status="pipelineStatus"
       :show-text="!isChildView"
-      data-testidr="pipeline-commit-status"
       @ciStatusBadgeClick="trackClick"
     />
     <pipelines-timeago :pipeline="pipeline" />
