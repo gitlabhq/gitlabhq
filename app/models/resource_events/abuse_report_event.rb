@@ -16,7 +16,9 @@ module ResourceEvents
       close_report: 4,
       ban_user_and_close_report: 5,
       block_user_and_close_report: 6,
-      delete_user_and_close_report: 7
+      delete_user_and_close_report: 7,
+      trust_user: 8,
+      trust_user_and_close_report: 9
     }
 
     enum reason: {
@@ -28,7 +30,8 @@ module ResourceEvents
       copyright: 6,
       malware: 7,
       other: 8,
-      unconfirmed: 9
+      unconfirmed: 9,
+      trusted: 10
     }
 
     def success_message

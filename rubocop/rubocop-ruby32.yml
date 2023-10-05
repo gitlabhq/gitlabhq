@@ -1,5 +1,5 @@
-# RuboCop configuration adjustments during the transition time from Ruby 3.0 to
-# Ruby 3.1.
+# RuboCop configuration adjustments during the transition time from Ruby 3.1 to
+# Ruby 3.2.
 #
 # After the transition has been completed:
 # * Enable all disabled cops and resolve the offenses.
@@ -9,3 +9,7 @@
 # Short-hand Hash syntax does not work prior 3.1.
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
+
+# With 3.2+ `require 'set'` is no longer needed as it's always loaded.
+Lint/RedundantRequireStatement:
+  Enabled: false

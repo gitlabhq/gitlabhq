@@ -42,6 +42,7 @@ module Admin
         when :block_user then block_user
         when :delete_user then delete_user
         when :close_report then close_report
+        when :trust_user then trust_user
         end
       end
 
@@ -64,6 +65,10 @@ module Admin
         close_similar_open_reports
         abuse_report.closed!
         success
+      end
+
+      def trust_user
+        Users::TrustService.new(current_user).execute(abuse_report.user)
       end
 
       def close_similar_open_reports

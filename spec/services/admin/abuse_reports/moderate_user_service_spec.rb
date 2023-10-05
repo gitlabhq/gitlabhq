@@ -210,6 +210,43 @@ RSpec.describe Admin::AbuseReports::ModerateUserService, feature_category: :inst
       end
     end
 
+    describe 'when trusting the user' do
+      let(:action) { 'trust_user' }
+
+      it 'calls the Users::TrustService method' do
+        expect_next_instance_of(Users::TrustService, admin) do |service|
+          expect(service).to receive(:execute).with(abuse_report.user).and_return(status: :success)
+        end
+
+        subject
+      end
+
+      context 'when not closing the report' do
+        let(:close) { false }
+
+        it_behaves_like 'does not close the report'
+        it_behaves_like 'records an event', action: 'trust_user'
+      end
+
+      context 'when closing the report' do
+        it_behaves_like 'closes the report'
+        it_behaves_like 'records an event', action: 'trust_user_and_close_report'
+      end
+
+      context 'when trusting the user fails' do
+        before do
+          allow_next_instance_of(Users::TrustService) do |service|
+            allow(service).to receive(:execute).with(abuse_report.user)
+             .and_return(status: :error, message: 'Trusting the user failed')
+          end
+        end
+
+        it_behaves_like 'returns an error response', 'Trusting the user failed'
+        it_behaves_like 'does not close the report'
+        it_behaves_like 'does not record an event'
+      end
+    end
+
     describe 'when only closing the report' do
       let(:action) { '' }
 

@@ -1274,6 +1274,30 @@ Input type: `AlertTodoCreateInput`
 | <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 | <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
+### `Mutation.amazonS3ConfigurationCreate`
+
+Input type: `AmazonS3ConfigurationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationamazons3configurationcreateaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="mutationamazons3configurationcreateawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
+| <a id="mutationamazons3configurationcreatebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="mutationamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationamazons3configurationcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
+| <a id="mutationamazons3configurationcreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationamazons3configurationcreatesecretaccesskey"></a>`secretAccessKey` | [`String!`](#string) | Secret access key of the Amazon S3 account. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationamazons3configurationcreateamazons3configuration"></a>`amazonS3Configuration` | [`AmazonS3ConfigurationType`](#amazons3configurationtype) | configuration created. |
+| <a id="mutationamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationamazons3configurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.approveDeployment`
 
 Input type: `ApproveDeploymentInput`
@@ -13289,6 +13313,21 @@ An endpoint and credentials used to accept Prometheus alerts for a project.
 | <a id="alertmanagementprometheusintegrationtoken"></a>`token` | [`String`](#string) | Token used to authenticate alert notification requests. |
 | <a id="alertmanagementprometheusintegrationtype"></a>`type` | [`AlertManagementIntegrationType!`](#alertmanagementintegrationtype) | Type of integration. |
 | <a id="alertmanagementprometheusintegrationurl"></a>`url` | [`String`](#string) | Endpoint which accepts alert notifications. |
+
+### `AmazonS3ConfigurationType`
+
+Stores Amazon S3 configurations.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="amazons3configurationtypeaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="amazons3configurationtypeawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
+| <a id="amazons3configurationtypebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="amazons3configurationtypegroup"></a>`group` | [`Group!`](#group) | Group the configuration belongs to. |
+| <a id="amazons3configurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
+| <a id="amazons3configurationtypename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
 ### `ApiFuzzingCiConfiguration`
 
@@ -30274,6 +30313,22 @@ Implementations:
 | <a id="alertmanagementintegrationtoken"></a>`token` | [`String`](#string) | Token used to authenticate alert notification requests. |
 | <a id="alertmanagementintegrationtype"></a>`type` | [`AlertManagementIntegrationType!`](#alertmanagementintegrationtype) | Type of integration. |
 | <a id="alertmanagementintegrationurl"></a>`url` | [`String`](#string) | Endpoint which accepts alert notifications. |
+
+#### `AmazonS3ConfigurationInterface`
+
+Implementations:
+
+- [`AmazonS3ConfigurationType`](#amazons3configurationtype)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="amazons3configurationinterfaceaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="amazons3configurationinterfaceawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
+| <a id="amazons3configurationinterfacebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="amazons3configurationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
+| <a id="amazons3configurationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
 #### `BaseHeaderInterface`
 

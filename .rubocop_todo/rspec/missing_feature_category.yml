@@ -4745,7 +4745,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/models/instance_metadata_spec.rb'
     - 'spec/models/integrations/asana_spec.rb'
     - 'spec/models/integrations/assembla_spec.rb'
-    - 'spec/models/integrations/bamboo_spec.rb'
     - 'spec/models/integrations/base_issue_tracker_spec.rb'
     - 'spec/models/integrations/base_slack_notification_spec.rb'
     - 'spec/models/integrations/base_third_party_wiki_spec.rb'

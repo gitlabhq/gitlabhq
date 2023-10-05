@@ -320,7 +320,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/models/group_spec.rb'
     - 'spec/models/instance_configuration_spec.rb'
     - 'spec/models/integration_spec.rb'
-    - 'spec/models/integrations/bamboo_spec.rb'
     - 'spec/models/integrations/buildkite_spec.rb'
     - 'spec/models/integrations/campfire_spec.rb'
     - 'spec/models/integrations/jira_spec.rb'

@@ -90,7 +90,7 @@ module Spam
     end
 
     def allow_possible_spam?
-      target.allow_possible_spam?(user) || user.allow_possible_spam?
+      target.allow_possible_spam?(user) || user.trusted?
     end
 
     def spamcheck_client

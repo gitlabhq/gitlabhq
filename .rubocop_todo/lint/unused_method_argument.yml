@@ -118,7 +118,6 @@ Lint/UnusedMethodArgument:
     - 'app/models/discussion.rb'
     - 'app/models/external_issue.rb'
     - 'app/models/group.rb'
-    - 'app/models/integrations/bamboo.rb'
     - 'app/models/integrations/buildkite.rb'
     - 'app/models/integrations/discord.rb'
     - 'app/models/integrations/ewm.rb'

@@ -271,6 +271,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :bulk_imports
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
+  has_one  :trusted_with_spam_attribute, -> { UserCustomAttribute.trusted_with_spam }, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'Users::Callout'
   has_many :group_callouts, class_name: 'Users::GroupCallout'
   has_many :project_callouts, class_name: 'Users::ProjectCallout'
@@ -2223,8 +2224,8 @@ class User < MainClusterwide::ApplicationRecord
     }
   end
 
-  def allow_possible_spam?
-    custom_attributes.by_key(UserCustomAttribute::ALLOW_POSSIBLE_SPAM).exists?
+  def trusted?
+    trusted_with_spam_attribute.present?
   end
 
   def namespace_commit_email_for_namespace(namespace)

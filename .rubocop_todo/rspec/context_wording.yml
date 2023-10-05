@@ -2177,7 +2177,6 @@ RSpec/ContextWording:
     - 'spec/models/import_export_upload_spec.rb'
     - 'spec/models/import_failure_spec.rb'
     - 'spec/models/integration_spec.rb'
-    - 'spec/models/integrations/bamboo_spec.rb'
     - 'spec/models/integrations/base_chat_notification_spec.rb'
     - 'spec/models/integrations/chat_message/issue_message_spec.rb'
     - 'spec/models/integrations/chat_message/merge_message_spec.rb'

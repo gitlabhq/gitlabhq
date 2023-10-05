@@ -6120,25 +6120,23 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
-      describe '#allow_possible_spam?' do
+      describe '#trusted?' do
         context 'when no custom attribute is set' do
-          it 'is false' do
-            expect(user.allow_possible_spam?).to be_falsey
+          it 'is falsey' do
+            expect(user.trusted?).to be_falsey
           end
         end
 
         context 'when the custom attribute is set' do
           before do
-            user.custom_attributes.upsert_custom_attributes(
-              [{
-                user_id: user.id,
-                key: UserCustomAttribute::ALLOW_POSSIBLE_SPAM,
-                value: "test"
-              }])
+            user.custom_attributes.create!(
+              key: UserCustomAttribute::TRUSTED_BY,
+              value: "test"
+            )
           end
 
-          it '#allow_possible_spam? is true' do
-            expect(user.allow_possible_spam?).to be_truthy
+          it 'is truthy' do
+            expect(user.trusted?).to be_truthy
           end
         end
       end

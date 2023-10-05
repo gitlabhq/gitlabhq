@@ -17,6 +17,9 @@ import {
   ERROR_MESSAGE,
   NO_ACTION,
   USER_ACTION_OPTIONS,
+  TRUST_ACTION,
+  TRUST_REASON,
+  REASON_OPTIONS,
 } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
 
@@ -40,10 +43,11 @@ describe('ReportActions', () => {
   const setCloseReport = (close) => wrapper.findByTestId('close').find('input').setChecked(close);
   const setSelectOption = (id, value) =>
     wrapper.findByTestId(`${id}-select`).find(`option[value=${value}]`).setSelected();
-  const selectAction = (action) => setSelectOption('action', action);
+  const selectAction = (chosenAction) => setSelectOption('action', chosenAction);
   const selectReason = (reason) => setSelectOption('reason', reason);
   const setComment = (comment) => wrapper.findByTestId('comment').find('input').setValue(comment);
   const submitForm = () => wrapper.findByTestId('submit-button').vm.$emit('click');
+  const findReasonOptions = () => wrapper.findByTestId('reason-select');
 
   const createComponent = (props = {}) => {
     wrapper = mountExtended(ReportActions, {
@@ -79,8 +83,8 @@ describe('ReportActions', () => {
 
         expect(options).toHaveLength(USER_ACTION_OPTIONS.length);
 
-        USER_ACTION_OPTIONS.forEach((action, index) => {
-          expect(options.at(index).text()).toBe(action.text);
+        USER_ACTION_OPTIONS.forEach((userAction, index) => {
+          expect(options.at(index).text()).toBe(userAction.text);
         });
       });
     });
@@ -96,6 +100,51 @@ describe('ReportActions', () => {
 
         expect(options).toHaveLength(1);
         expect(options.at(0).text()).toBe(NO_ACTION.text);
+      });
+    });
+  });
+
+  describe('reasons', () => {
+    beforeEach(() => {
+      clickActionsButton();
+    });
+
+    it('shows all non-trust reasons by default', () => {
+      const reasons = findReasonOptions().findAll('option');
+      expect(reasons).toHaveLength(REASON_OPTIONS.length);
+
+      REASON_OPTIONS.forEach((reason, index) => {
+        expect(reasons.at(index).text()).toBe(reason.text);
+      });
+    });
+
+    describe('when user selects any non-trust action', () => {
+      it('shows non-trust reasons', () => {
+        const reasonLength = REASON_OPTIONS.length;
+        let reasons;
+
+        USER_ACTION_OPTIONS.forEach((userAction) => {
+          if (userAction !== TRUST_ACTION && userAction !== NO_ACTION) {
+            selectAction(userAction.value);
+
+            reasons = findReasonOptions().findAll('option');
+            expect(reasons).toHaveLength(reasonLength);
+          }
+        });
+      });
+    });
+
+    describe('when user selects "Trust user"', () => {
+      beforeEach(() => {
+        selectAction(TRUST_ACTION.value);
+      });
+
+      it('only shows "Confirmed trusted user" reason', () => {
+        const reasons = findReasonOptions().findAll('option');
+
+        expect(reasons).toHaveLength(1);
+
+        expect(reasons.at(0).text()).toBe(TRUST_REASON.text);
       });
     });
   });

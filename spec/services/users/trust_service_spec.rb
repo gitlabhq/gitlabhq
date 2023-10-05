@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::AllowPossibleSpamService, feature_category: :user_management do
+RSpec.describe Users::TrustService, feature_category: :user_management do
   let_it_be(:current_user) { create(:admin) }
 
   subject(:service) { described_class.new(current_user) }
@@ -18,7 +18,7 @@ RSpec.describe Users::AllowPossibleSpamService, feature_category: :user_manageme
       operation
       user.reload
 
-      expect(user.custom_attributes.by_key(UserCustomAttribute::ALLOW_POSSIBLE_SPAM)).to be_present
+      expect(user.custom_attributes.by_key(UserCustomAttribute::TRUSTED_BY)).to be_present
     end
   end
 end

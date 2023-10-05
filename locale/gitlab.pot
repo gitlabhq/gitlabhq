@@ -2239,6 +2239,12 @@ msgstr ""
 msgid "AbuseReportEvent|Successfully scheduled the user for deletion and closed the report"
 msgstr ""
 
+msgid "AbuseReportEvent|Successfully trusted the user"
+msgstr ""
+
+msgid "AbuseReportEvent|Successfully trusted the user and closed the report"
+msgstr ""
+
 msgid "AbuseReports|%{reportedUser} reported for %{category} by %{count} users"
 msgstr ""
 
@@ -2306,6 +2312,9 @@ msgid "AbuseReport|Confirmed posting of personal information or credentials"
 msgstr ""
 
 msgid "AbuseReport|Confirmed spam"
+msgstr ""
+
+msgid "AbuseReport|Confirmed trusted user"
 msgstr ""
 
 msgid "AbuseReport|Confirmed violation of a copyright or a trademark"
@@ -2426,6 +2435,9 @@ msgid "AbuseReport|Spam"
 msgstr ""
 
 msgid "AbuseReport|Tier"
+msgstr ""
+
+msgid "AbuseReport|Trust user"
 msgstr ""
 
 msgid "AbuseReport|Verification"

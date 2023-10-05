@@ -31,7 +31,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
   end
 
   let(:check_for_spam) { true }
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, author: user) }
   let_it_be(:snippet) { create(:personal_snippet, :public, author: user) }
 
@@ -136,15 +136,9 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
       end
     end
 
-    context 'if allow_possible_spam user custom attribute is set' do
+    context 'if user is trusted to create possible spam' do
       before do
-        UserCustomAttribute.upsert_custom_attributes(
-          [{
-            user_id: user.id,
-            key: 'allow_possible_spam',
-            value: 'does not matter'
-          }]
-        )
+        user.custom_attributes.create!(key: 'trusted_by', value: 'does not matter')
       end
 
       context 'and a service returns a verdict that should be overridden' do

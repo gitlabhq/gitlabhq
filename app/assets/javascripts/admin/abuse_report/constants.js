@@ -25,11 +25,14 @@ export const ACTIONS_I18N = {
 };
 
 export const NO_ACTION = { value: '', text: s__('AbuseReport|No action') };
+export const TRUST_REASON = { value: 'trusted', text: s__(`AbuseReport|Confirmed trusted user`) };
+export const TRUST_ACTION = { value: 'trust_user', text: s__('AbuseReport|Trust user') };
 
 export const USER_ACTION_OPTIONS = [
   NO_ACTION,
   { value: 'block_user', text: s__('AbuseReport|Block user') },
   { value: 'ban_user', text: s__('AbuseReport|Ban user') },
+  TRUST_ACTION,
   { value: 'delete_user', text: s__('AbuseReport|Delete user') },
 ];
 

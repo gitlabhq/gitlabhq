@@ -28,14 +28,13 @@ module Integrations
       non_empty_password_title: -> { s_('ProjectService|Enter new password') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password') }
 
-    validates :bamboo_url, presence: true, public_url: true, if: :activated?
-    validates :build_key, presence: true, if: :activated?
-    validates :username,
-      presence: true,
-      if: ->(service) { service.activated? && service.password }
-    validates :password,
-      presence: true,
-      if: ->(service) { service.activated? && service.username }
+    with_options if: :activated? do
+      validates :bamboo_url, presence: true, public_url: true
+      validates :build_key, presence: true
+    end
+
+    validates :username, presence: true, if: ->(integration) { integration.activated? && integration.password }
+    validates :password, presence: true, if: ->(integration) { integration.activated? && integration.username }
 
     attr_accessor :response
 
@@ -48,8 +47,16 @@ module Integrations
     end
 
     def help
-      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bamboo'), target: '_blank', rel: 'noopener noreferrer'
-      s_('BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+      docs_link = ActionController::Base.helpers.link_to(
+        _('Learn more.'),
+        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bamboo'),
+        target: '_blank',
+        rel: 'noopener noreferrer'
+      )
+      format(
+        s_('BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision labeling and ' \
+           'a repository trigger in Bamboo. %{docs_link}').html_safe,
+        docs_link: docs_link.html_safe)
     end
 
     def self.to_param
@@ -70,14 +77,16 @@ module Integrations
       get_path("updateAndBuild.action", { buildKey: build_key })
     end
 
-    def calculate_reactive_cache(sha, ref)
+    def calculate_reactive_cache(sha, _ref)
       response = try_get_path("rest/api/latest/result/byChangeset/#{sha}")
 
       { build_page: read_build_page(response), commit_status: read_commit_status(response) }
     end
 
     def avatar_url
-      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/atlassian-bamboo.svg')
+      ActionController::Base.helpers.image_path(
+        'illustrations/third-party-logos/integrations-logos/atlassian-bamboo.svg'
+      )
     end
 
     private
@@ -116,7 +125,7 @@ module Integrations
         if result.blank?
           'Pending'
         else
-          result.dig('buildState')
+          result['buildState']
         end
 
       return :error unless status.present?
