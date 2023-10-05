@@ -33,6 +33,15 @@ describe('InternalEvents', () => {
       expect(API.trackInternalEvent).toHaveBeenCalledWith(event);
     });
 
+    it('trackEvent calls trackBrowserSDK with correct arguments', () => {
+      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
+
+      InternalEvents.trackEvent(event);
+
+      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledTimes(1);
+      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event);
+    });
+
     it('trackEvent calls tracking.event functions with correct arguments', () => {
       const trackingSpy = mockTracking(GITLAB_INTERNAL_EVENT_CATEGORY, undefined, jest.spyOn);
 
@@ -209,6 +218,31 @@ describe('InternalEvents', () => {
       expect(window.glClient.page).toHaveBeenCalledWith({
         title: 'GitLab',
       });
+    });
+  });
+
+  describe('trackBrowserSDK', () => {
+    beforeEach(() => {
+      window.glClient = {
+        track: jest.fn(),
+      };
+    });
+
+    it('should not call glClient.track if Tracker is not enabled', () => {
+      Tracker.enabled.mockReturnValue(false);
+
+      InternalEvents.trackBrowserSDK(event);
+
+      expect(window.glClient.track).not.toHaveBeenCalled();
+    });
+
+    it('should call glClient.track with correct arguments if Tracker is enabled', () => {
+      Tracker.enabled.mockReturnValue(true);
+
+      InternalEvents.trackBrowserSDK(event);
+
+      expect(window.glClient.track).toHaveBeenCalledTimes(1);
+      expect(window.glClient.track).toHaveBeenCalledWith(event);
     });
   });
 });

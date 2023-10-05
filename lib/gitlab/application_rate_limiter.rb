@@ -59,6 +59,7 @@ module Gitlab
           project_fork_sync: { threshold: 10, interval: 30.minutes },
           ai_action: { threshold: 160, interval: 8.hours },
           jobs_index: { threshold: 600, interval: 1.minute },
+          vertex_embeddings_api: { threshold: 450, interval: 1.minute },
           bulk_import: { threshold: 6, interval: 1.minute },
           projects_api_rate_limit_unauthenticated: {
             threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes

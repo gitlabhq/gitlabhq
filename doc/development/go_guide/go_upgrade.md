@@ -18,19 +18,20 @@ the [Cloud-Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG) project
 publishes a set of Docker images deployed and configured by Helm Charts or
 the GitLab Operator.
 
-Testing matrices for all projects using Go must include the version shipped
-by Distribution:
+## Testing against shipped Go versions
 
-- [Check the Go version shipping with Omnibus GitLab](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/blob/master/docker/VERSIONS#L6).
-- [Check the Go version shipping with Cloud-Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/cng/blob/master/ci_files/variables.yml#L12).
+Testing matrices for all projects using Go must include the version shipped by Distribution. Check the Go version set by `GO_VERSION` for:
+
+- [Linux package builds](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/blob/master/docker/VERSIONS).
+- [Cloud-Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/cng/blob/master/ci_files/variables.yml).
 
 ## Supporting multiple Go versions
 
 Individual Go projects need to support multiple Go versions because:
 
 - When a new version of Go is released, we should start integrating it into the CI pipelines to verify compatibility with the new compiler.
-- We must support the [official Omnibus GitLab Go version](#updating-go-version), which may be behind the latest minor release.
-- When Omnibus switches Go version, we still may need to support the old one for security backports.
+- We must support the versions of Go [shipped by Distribution](#testing-against-shipped-go-versions), which might be behind the latest minor release.
+- When Linux package builds or Cloud-Native GitLab (CNG) change a Go version, we still might need to support the old version for backports.
 
 These 3 requirements may easily be satisfied by keeping support for the [3 latest minor versions of Go](https://go.dev/dl/).
 

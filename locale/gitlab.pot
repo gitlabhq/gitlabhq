@@ -13841,6 +13841,9 @@ msgstr ""
 msgid "Create a new project"
 msgstr ""
 
+msgid "Create a new project on GitLab. Store your files, plan your work, and collaborate on code."
+msgstr ""
+
 msgid "Create a new repository"
 msgstr ""
 
@@ -45787,9 +45790,6 @@ msgid "Storage:"
 msgstr ""
 
 msgid "StorageSize|Unknown"
-msgstr ""
-
-msgid "Store your files, plan your work, collaborate on code, and more."
 msgstr ""
 
 msgid "Strikethrough (%{modifierKey}%{shiftKey}X)"

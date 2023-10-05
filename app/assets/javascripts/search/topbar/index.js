@@ -11,18 +11,10 @@ export const initTopbar = (store) => {
     return false;
   }
 
-  const {
-    groupInitialJson,
-    projectInitialJson,
-    elasticsearchEnabled,
-    defaultBranchName,
-  } = el.dataset;
+  const { groupInitialJson, projectInitialJson, defaultBranchName } = el.dataset;
 
   const groupInitialJsonParsed = JSON.parse(groupInitialJson);
   const projectInitialJsonParsed = JSON.parse(projectInitialJson);
-  const elasticsearchEnabledParsed = elasticsearchEnabled
-    ? JSON.parse(elasticsearchEnabled)
-    : false;
 
   return new Vue({
     el,
@@ -32,7 +24,6 @@ export const initTopbar = (store) => {
         props: {
           groupInitialJson: groupInitialJsonParsed,
           projectInitialJson: projectInitialJsonParsed,
-          elasticsearchEnabled: elasticsearchEnabledParsed,
           defaultBranchName,
         },
       });

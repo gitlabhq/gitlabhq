@@ -1209,6 +1209,8 @@
 .frontend:rules:compile-test-assets:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *backend-patterns
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
@@ -1835,6 +1837,8 @@
     - <<: *if-default-refs
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *backend-patterns
 
 .rails:rules:clusterwide-db:
   rules:
@@ -2765,6 +2769,8 @@
       changes: *workhorse-patterns
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+    - <<: *if-merge-request
+      changes: *backend-patterns
 
 .test-metadata:rules:update-tests-metadata:
   rules:

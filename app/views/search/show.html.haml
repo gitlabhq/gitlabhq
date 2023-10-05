@@ -21,7 +21,7 @@
   %h1.page-title.gl-font-size-h-display.gl-mr-5= _('Search')
   = render_if_exists 'search/form_elasticsearch', attrs: { class: 'mb-2 mb-sm-0 align-self-center' }
 
-#js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "elasticsearch-enabled": @search_service_presenter.advanced_search_enabled?.to_s, "default-branch-name": @project&.default_branch } }
+#js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "default-branch-name": @project&.default_branch } }
 .results.gl-lg-display-flex.gl-mt-0
   #js-search-sidebar{ class: search_bar_classes, data: { navigation_json: search_navigation_json, search_type: search_service.search_type } }
   - if @search_term

@@ -5,7 +5,8 @@ import { mapState, mapActions } from 'vuex';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
-import { SYNTAX_OPTIONS_DOCUMENT } from '../constants';
+import { ZOEKT_SEARCH_TYPE, ADVANCED_SEARCH_TYPE } from '~/search/store/constants';
+import { SYNTAX_OPTIONS_ADVANCED_DOCUMENT, SYNTAX_OPTIONS_ZOEKT_DOCUMENT } from '../constants';
 import GroupFilter from './group_filter.vue';
 import ProjectFilter from './project_filter.vue';
 
@@ -42,11 +43,6 @@ export default {
       required: false,
       default: () => ({}),
     },
-    elasticsearchEnabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     defaultBranchName: {
       type: String,
       required: false,
@@ -54,7 +50,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['query']),
+    ...mapState(['query', 'searchType']),
     search: {
       get() {
         return this.query ? this.query.search : '';
@@ -67,7 +63,15 @@ export default {
       return !parseBoolean(this.query.snippets);
     },
     showSyntaxOptions() {
-      return this.elasticsearchEnabled && this.isDefaultBranch;
+      return (
+        (this.searchType === ZOEKT_SEARCH_TYPE || this.searchType === ADVANCED_SEARCH_TYPE) &&
+        this.isDefaultBranch
+      );
+    },
+    documentBasedOnSearchType() {
+      return this.searchType === ZOEKT_SEARCH_TYPE
+        ? SYNTAX_OPTIONS_ZOEKT_DOCUMENT
+        : SYNTAX_OPTIONS_ADVANCED_DOCUMENT;
     },
     isDefaultBranch() {
       return !this.query.repository_ref || this.query.repository_ref === this.defaultBranchName;
@@ -82,7 +86,6 @@ export default {
       this.$refs.markdownDrawer.toggleDrawer();
     },
   },
-  SYNTAX_OPTIONS_DOCUMENT,
 };
 </script>
 
@@ -104,10 +107,7 @@ export default {
                 @click="onToggleDrawer"
                 >{{ $options.i18n.syntaxOptionsLabel }}
               </gl-button>
-              <markdown-drawer
-                ref="markdownDrawer"
-                :document-path="$options.SYNTAX_OPTIONS_DOCUMENT"
-              />
+              <markdown-drawer ref="markdownDrawer" :document-path="documentBasedOnSearchType" />
             </template>
           </div>
           <gl-search-box-by-click

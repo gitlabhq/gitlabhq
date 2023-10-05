@@ -84,16 +84,20 @@ so we only use `finished` builds.
 ### Developing behind feature flags
 
 It's hard to fully test data ingestion and query performance in development/staging environments.
-That's why we plan to deliver those features to production behing feature flags and test the performance on real data.
-Feature flags for data ingestion and API's will be separate.
+That's why we plan to deliver those features to production behind feature flags and test the performance on real data.
+Feature flags for data ingestion and APIs will be separate.
 
 ### Data ingestion
 
-A background worker will push `ci_builds` sorted by `(finished_at, id)` from Posgres to ClickHouse.
-Every time the worker starts, it will find the most recently inserted build and continue from there.
+Every time a job finished, a record will be created in a new `p_ci_finished_build_ch_sync_events` table, which includes
+the `build_id` and a `processed` value.
+A background worker loops through unprocessed `p_ci_finished_build_ch_sync_events` records and push the denormalized
+`ci_builds` information from Postgres to ClickHouse.
 
 At some point we most likely will need to
 [parallelize this worker because of the number of processed builds](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126863#note_1494922639).
+This will be achieved by having the cron worker accept an argument determining the number of workers. The cron worker
+will use that argument to queue the respective number of workers that will actually perform the syncing to ClickHouse.
 
 We will start with most recent builds and will not upload all historical data.
 
@@ -129,4 +133,4 @@ continue developing mechanisms for migrations.
 #### Re-uploading data after changing the schema
 
 If we need to modify database schema, old data maybe incomplete.
-In that case we can simply truncate the ClickHouse tables and reupload (part of) the data.
+In that case we can simply truncate the ClickHouse tables and re-upload (part of) the data.
