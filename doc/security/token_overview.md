@@ -93,9 +93,9 @@ Project maintainers and owners can add or enable a deploy key for a project repo
 
 ## Runner authentication tokens
 
-In GitLab 16.0 and later, you can use a runner authentication token to register
-runners instead of a runner registration token. Runner registration tokens have
-been [deprecated](../update/deprecations.md#registration-tokens-and-server-side-runner-arguments-in-gitlab-runner-register-command).
+In GitLab 16.0 and later, to register a runner, you can use a runner authentication token
+instead of a runner registration token. Runner registration tokens have
+been [deprecated](../ci/runners/new_creation_workflow.md).
 
 After you create a runner and its configuration, you receive a runner authentication token
 that you use to register the runner. The runner authentication token is stored locally in the
@@ -117,7 +117,7 @@ for the following executors only have access to the job token and not the runner
 - SSH
 
 Malicious access to a runner's file system may expose the `config.toml` file and the
-runner authentication token. The attacker could use the runner authentication
+runner authentication token. The attacker could use the runner authentication token
 to [clone the runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
 
 You can use the `runners` API to
@@ -126,7 +126,7 @@ programmatically [rotate or revoke a runner authentication token](../api/runners
 ## Runner registration tokens (deprecated)
 
 WARNING:
-The ability to pass a runner registration token has been [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) and is
+The ability to pass a runner registration token has been [deprecated](../ci/runners/new_creation_workflow.md) and is
 planned for removal in GitLab 18.0, along with support for certain configuration arguments. This change is a breaking change. GitLab has implemented a new
 [GitLab Runner token architecture](../ci/runners/new_creation_workflow.md), which introduces
 a new method for registering runners and eliminates the

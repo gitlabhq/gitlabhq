@@ -973,7 +973,7 @@ export const boardListQueryResponse = ({
     boardList: {
       __typename: 'BoardList',
       id: listId,
-      totalWeight: 5,
+      totalIssueWeight: '5',
       issuesCount,
     },
   },

@@ -259,6 +259,14 @@ If you receive a `404` during setup when using "verify configuration", make sure
 If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](index.md#set-up-your-identity-provider), they may see a 404.
 As outlined in the [user access section](index.md#link-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
 
+If the top-level group has [restricted membership by email domain](../access_and_permissions.md#restrict-group-access-by-domain), and a user with an email domain that is not allowed tries to sign in with SSO, that user might receive a 404. Users might have multiple accounts, and their SAML identity might be linked to their personal account which has an email address that is different than the company domain. To check this, verify the following:
+
+- That the top-level group has restricted membership by email domain.
+- That, in [Audit Events](../../../administration/audit_events.md) for the top-level group:
+  - You can see **Signed in with GROUP_SAML authentication** action for that user.
+  - That the user's username is the same as the username you configured for SAML SSO, by selecting the **Author** name.
+    - If the username is different to the username you configured for SAML SSO, ask the user to [unlink the SAML identity](index.md#unlink-accounts) from their personal account.
+
 If all users are receiving a `404` after signing in to the identity provider (IdP):
 
 - Verify the `assertion_consumer_service_url`:

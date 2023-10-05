@@ -71,6 +71,8 @@ To enforce 2FA only for certain groups:
    and projects, the shortest grace period is used.
 1. Select **Save changes**.
 
+Enforcement affects all [direct and inherited members](../user/project/members/index.md#membership-types) in the group.
+
 Access tokens are not required to provide a second factor for authentication because
 they are API-based. Tokens generated before 2FA is enforced remain valid.
 

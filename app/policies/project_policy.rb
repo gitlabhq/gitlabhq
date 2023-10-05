@@ -642,7 +642,6 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
-    prevent(*create_read_update_admin_destroy(:cluster))
     prevent(*create_read_update_admin_destroy(:deployment))
   end
 
@@ -666,6 +665,7 @@ class ProjectPolicy < BasePolicy
     prevent :read_pipeline_schedule
     prevent(*create_read_update_admin_destroy(:feature_flag))
     prevent(:admin_feature_flags_user_lists)
+    prevent(*create_read_update_admin_destroy(:cluster))
   end
 
   rule { container_registry_disabled }.policy do

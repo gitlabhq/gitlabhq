@@ -205,6 +205,12 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching, feat
     end
   end
 
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/atlassian-bamboo.svg'))
+    end
+  end
+
   def stub_update_and_build_request(status: 200, body: nil)
     bamboo_full_url = 'http://gitlab.com/bamboo/updateAndBuild.action?buildKey=foo&os_authType=basic'
 

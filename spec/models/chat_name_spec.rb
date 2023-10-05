@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ChatName, feature_category: :integrations do
-  let_it_be(:chat_name) { create(:chat_name) }
+  let_it_be_with_reload(:chat_name) { create(:chat_name) }
 
   subject { chat_name }
 

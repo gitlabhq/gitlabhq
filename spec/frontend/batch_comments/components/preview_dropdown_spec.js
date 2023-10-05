@@ -16,7 +16,7 @@ Vue.use(Vuex);
 
 let wrapper;
 
-const setCurrentFileHash = jest.fn();
+const goToFile = jest.fn();
 const scrollToDraft = jest.fn();
 
 const findPreviewItem = () => wrapper.findComponent(PreviewItem);
@@ -27,7 +27,7 @@ function factory({ viewDiffsFileByFile = false, draftsCount = 1, sortedDrafts = 
       diffs: {
         namespaced: true,
         actions: {
-          setCurrentFileHash,
+          goToFile,
         },
         state: {
           viewDiffsFileByFile,
@@ -59,12 +59,12 @@ describe('Batch comments preview dropdown', () => {
     it('toggles active file when viewDiffsFileByFile is true', async () => {
       factory({
         viewDiffsFileByFile: true,
-        sortedDrafts: [{ id: 1, file_hash: 'hash' }],
+        sortedDrafts: [{ id: 1, file_hash: 'hash', file_path: 'foo' }],
       });
       findPreviewItem().trigger('click');
       await nextTick();
 
-      expect(setCurrentFileHash).toHaveBeenCalledWith(expect.anything(), 'hash');
+      expect(goToFile).toHaveBeenCalledWith(expect.anything(), { path: 'foo' });
 
       await nextTick();
       expect(scrollToDraft).toHaveBeenCalledWith(

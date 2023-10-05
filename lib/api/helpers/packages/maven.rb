@@ -9,10 +9,12 @@ module API
         params :path_and_file_name do
           requires :path,
             type: String,
+            file_path: true,
             desc: 'Package path',
             documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
           requires :file_name,
             type: String,
+            file_path: true,
             desc: 'Package file name',
             documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
         end

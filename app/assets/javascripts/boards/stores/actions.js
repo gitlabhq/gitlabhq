@@ -621,7 +621,7 @@ export default {
                 __typename: 'BoardList',
                 id: fromList.boardList.id,
                 issuesCount: fromList.boardList.issuesCount - 1,
-                totalWeight: fromList.boardList.totalWeight - Number(weight),
+                totalIssueWeight: fromList.boardList.totalIssueWeight - Number(weight),
               },
             };
 
@@ -645,7 +645,7 @@ export default {
                 __typename: 'BoardList',
                 id: toList.boardList.id,
                 issuesCount: toList.boardList.issuesCount + 1,
-                totalWeight: toList.boardList.totalWeight + Number(weight),
+                totalIssueWeight: toList.boardList.totalIssueWeight + Number(weight),
               },
             };
 
@@ -731,7 +731,7 @@ export default {
               __typename: 'BoardList',
               id: fromList.boardList.id,
               issuesCount: fromList.boardList.issuesCount + 1,
-              totalWeight: fromList.boardList.totalWeight,
+              totalIssueWeight: fromList.boardList.totalIssueWeight,
             },
           };
 

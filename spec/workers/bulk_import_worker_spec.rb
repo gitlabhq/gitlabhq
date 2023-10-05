@@ -32,6 +32,16 @@ RSpec.describe BulkImportWorker, feature_category: :importers do
       end
     end
 
+    context 'when bulk import is timeout' do
+      it 'does nothing' do
+        bulk_import = create(:bulk_import, :timeout)
+
+        expect(described_class).not_to receive(:perform_in)
+
+        subject.perform(bulk_import.id)
+      end
+    end
+
     context 'when all entities are processed' do
       it 'marks bulk import as finished' do
         bulk_import = create(:bulk_import, :started)

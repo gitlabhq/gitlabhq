@@ -76,4 +76,8 @@ class BulkImport < ApplicationRecord
   def supports_batched_export?
     source_version_info >= self.class.min_gl_version_for_migration_in_batches
   end
+
+  def completed?
+    finished? || failed? || timeout?
+  end
 end

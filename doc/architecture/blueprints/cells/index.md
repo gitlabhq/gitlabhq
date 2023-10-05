@@ -93,11 +93,11 @@ The first 2-3 quarters are required to define a general split of data and build 
 
     The Admin Area section for the most part is shared across a cluster.
 
-1. **User accounts are shared across cluster.**
+1. **User accounts are shared across cluster.** ✓
 
     The purpose is to make `users` cluster-wide.
 
-1. **User can create Group.**
+1. **User can create Group.** ✓ ([demo](https://www.youtube.com/watch?v=LUyV0ncfdRs))
 
     The purpose is to perform a targeted decomposition of `users` and `namespaces`, because `namespaces` will be stored locally in the Cell.
 
@@ -323,6 +323,7 @@ Below is a list of known affected features with preliminary proposed solutions.
 
 - [Cells: Admin Area](impacted_features/admin-area.md)
 - [Cells: Backups](impacted_features/backups.md)
+- [Cells: CI/CD Catalog](impacted_features/ci-cd-catalog.md)
 - [Cells: CI Runners](impacted_features/ci-runners.md)
 - [Cells: Container Registry](impacted_features/container-registry.md)
 - [Cells: Contributions: Forks](impacted_features/contributions-forks.md)
@@ -344,7 +345,6 @@ Below is a list of known affected features with preliminary proposed solutions.
 The following list of impacted features only represents placeholders that still require work to estimate the impact of Cells and develop solution proposals.
 
 - [Cells: Agent for Kubernetes](impacted_features/agent-for-kubernetes.md)
-- [Cells: CI/CD Catalog](impacted_features/ci-cd-catalog.md)
 - [Cells: Data pipeline ingestion](impacted_features/data-pipeline-ingestion.md)
 - [Cells: GitLab Pages](impacted_features/gitlab-pages.md)
 - [Cells: Personal Access Tokens](impacted_features/personal-access-tokens.md)

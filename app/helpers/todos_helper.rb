@@ -166,6 +166,10 @@ module TodosHelper
     todos_filter_params.values.none?
   end
 
+  def todos_has_filtered_results?
+    params[:group_id] || params[:project_id] || params[:author_id] || params[:type] || params[:action_id]
+  end
+
   def no_todos_messages
     [
       s_('Todos|Good job! Looks like you don\'t have anything left on your To-Do List'),

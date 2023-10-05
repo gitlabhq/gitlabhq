@@ -22,5 +22,9 @@ FactoryBot.define do
     trait :failed do
       status { -1 }
     end
+
+    trait :timeout do
+      status { 3 }
+    end
   end
 end

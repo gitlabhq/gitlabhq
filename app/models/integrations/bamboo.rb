@@ -76,6 +76,10 @@ module Integrations
       { build_page: read_build_page(response), commit_status: read_commit_status(response) }
     end
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/atlassian-bamboo.svg')
+    end
+
     private
 
     def get_build_result(response)
