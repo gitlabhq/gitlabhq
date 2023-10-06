@@ -62,9 +62,13 @@ class GroupMember < Member
     return false unless access_level == Gitlab::Access::OWNER
     return last_owner unless last_owner.nil?
 
-    group.member_owners_excluding_project_bots.where.not(
-      group: group, user_id: user_id
-    ).empty?
+    owners = group.member_owners_excluding_project_bots
+
+    owners.reject! do |member|
+      member.group == group && member.user_id == user_id
+    end
+
+    owners.empty?
   end
 
   private

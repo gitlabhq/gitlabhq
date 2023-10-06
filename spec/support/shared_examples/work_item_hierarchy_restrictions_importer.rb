@@ -56,4 +56,19 @@ RSpec.shared_examples 'work item hierarchy restrictions importer' do
       expect(WorkItems::HierarchyRestriction.count).to eq(7)
     end
   end
+
+  context 'when restrictions contain attributes not present in the table' do
+    before do
+      allow(WorkItems::HierarchyRestriction)
+        .to receive(:column_names).and_return(%w[parent_type_id child_type_id])
+    end
+
+    it 'filters out missing columns' do
+      expect(WorkItems::HierarchyRestriction).to receive(:upsert_all) do |args|
+        expect(args[0].keys).to eq(%i[parent_type_id child_type_id])
+      end
+
+      subject
+    end
+  end
 end

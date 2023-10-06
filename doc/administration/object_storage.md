@@ -845,8 +845,6 @@ these are separate buckets. Use of bucket prefixes
 Helm-based installs require separate buckets to
 [handle backup restorations](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy).
 
-If the same bucket is used for multiple object types, only the first object type in the configuration uses the bucket. Other object types revert to their default local storage (for the default storage locations, see the [table in the linked section)[https://docs.gitlab.com/omnibus/settings/configuration.html#disable-the-varoptgitlab-directory-management)).
-
 ### S3 API compatibility issues
 
 Not all S3 providers [are fully compatible](../administration/backup_restore/backup_gitlab.md#other-s3-providers)

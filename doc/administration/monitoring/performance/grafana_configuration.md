@@ -14,8 +14,7 @@ series metrics through graphs and dashboards. GitLab writes performance data to 
 and Grafana allows you to query the data to display graphs.
 
 WARNING:
-Grafana bundled with GitLab was deprecated GitLab 16.0 and removed in GitLab 16.3.
-For more information, see [deprecation notes](#deprecation-of-bundled-grafana).
+Grafana bundled with GitLab was deprecated GitLab 16.0 and [removed](#grafana-bundled-with-gitlab-removed) in GitLab 16.3.
 
 ## Import GitLab dashboards
 
@@ -65,12 +64,15 @@ configuration screen:
 - No scopes appear.
 - The `read_user` scope is included.
 
-## Deprecation of bundled Grafana
+<!--- start_remove The following content will be removed on remove_date: '2023-12-22' -->
 
-Bundled Grafana was an optional service for Linux package installations that provided a user interface to GitLab metrics.
+## Grafana bundled with GitLab (removed)
+
+Grafana bundled with GitLab was an optional service for Linux package installations that provided a user interface to
+GitLab metrics.
 
 The version of Grafana that is bundled with Linux package installations is no longer supported. If you're using the
-bundled Grafana, you should switch to a newer version from [Grafana Labs](https://grafana.com/grafana/).
+Grafana that came bundled with GitLab, you should switch to a newer version from [Grafana Labs](https://grafana.com/grafana/).
 
 ### Switch to new Grafana instance
 
@@ -80,3 +82,5 @@ To switch away from bundled Grafana to a newer version of Grafana from Grafana L
 1. [Export the existing dashboards](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#export-a-dashboard) from bundled Grafana.
 1. [Import the existing dashboards](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) in the new Grafana instance.
 1. [Configure GitLab](#integrate-with-gitlab-ui) to use the new Grafana instance.
+
+<!--- end_remove -->
