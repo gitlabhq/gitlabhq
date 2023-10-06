@@ -34,8 +34,11 @@ module ActiveRecord
         ::ActiveRecord::Reflection::MacroReflection.prepend(
           ActiveRecord::GitlabPatches::Partitioning::Reflection::MacroReflection
         )
-        ::ActiveRecord::Base.prepend(
+        ::ActiveRecord::Persistence.prepend(
           ActiveRecord::GitlabPatches::Partitioning::Base
+        )
+        ::ActiveRecord::Persistence::ClassMethods.prepend(
+          ActiveRecord::GitlabPatches::Partitioning::Base::ClassMethods
         )
       end
     end

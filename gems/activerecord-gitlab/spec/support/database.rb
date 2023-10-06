@@ -24,6 +24,14 @@ RSpec.configure do |config|
         t.integer :partition_id
         t.boolean :test_flag, default: false
       end
+
+      create_table :locking_jobs, force: true do |t|
+        t.integer :pipeline_id
+        t.integer :partition_id
+        t.integer :lock_version, default: 0, null: false
+        t.integer :status, default: 0, null: false
+        t.string :name
+      end
     end
   end
 end

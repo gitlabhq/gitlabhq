@@ -50,31 +50,16 @@ To learn more about how to install Cosign, see [Cosign Installation documentatio
 
 #### Container images
 
-The example below demonstrates how to sign a container image in GitLab CI. The signature is automatically stored in the
-same container repository as the image.
-
-To learn more about signing containers, see [Cosign Signing Containers documentation](https://docs.sigstore.dev/signing/signing_with_containers/).
+The [`Cosign.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Cosign.gitlab-ci.yml)
+template can be used to build and sign a container image in GitLab CI. The signature is automatically stored in the same
+container repository as the image.
 
 ```yaml
-build_and_sign_image:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  variables:
-    COSIGN_YES: "true"
-  id_tokens:
-    SIGSTORE_ID_TOKEN:
-      aud: sigstore
-  before_script:
-    - apk add --update cosign
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" .
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-    - IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA)
-    - cosign sign $IMAGE_DIGEST
+include:
+- template: Cosign.gitlab-ci.yml
 ```
+
+To learn more about signing containers, see [Cosign Signing Containers documentation](https://docs.sigstore.dev/signing/signing_with_containers/).
 
 #### Build artifacts
 

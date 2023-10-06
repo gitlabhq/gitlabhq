@@ -9,9 +9,9 @@ status: active
 milestone: "16.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127442
 time_frame: all
-data_source: redis
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisMetric
+instrumentation_class: TotalCountMetric
 performance_indicator_type: []
 distribution:
 - ce
@@ -21,5 +21,7 @@ tier:
 - premium
 - ultimate
 options:
-  event: use
-  prefix: i_code_review_saved_replies
+  events:
+    - i_code_review_saved_replies_use
+events:
+  - name: i_code_review_saved_replies_use

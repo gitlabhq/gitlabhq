@@ -4,19 +4,18 @@ if ::ActiveRecord::VERSION::STRING >= "7.1"
   raise 'New version of active-record detected, please remove or update this patch'
 end
 
+# rubocop:disable Gitlab/ModuleWithInstanceVariables
 module ActiveRecord
   module GitlabPatches
     module Partitioning
       module Base
-        extend ActiveSupport::Concern
-
         def _query_constraints_hash
           constraints_hash = super
 
           return constraints_hash unless self.class.use_partition_id_filter?
 
           if self.class.query_constraints_list.nil?
-            { @primary_key => id_in_database } # rubocop:disable Gitlab/ModuleWithInstanceVariables
+            { @primary_key => id_in_database }
           else
             self.class.query_constraints_list.index_with do |column_name|
               attribute_in_database(column_name)
@@ -24,7 +23,7 @@ module ActiveRecord
           end
         end
 
-        class_methods do
+        module ClassMethods
           def use_partition_id_filter?
             false
           end
@@ -47,3 +46,4 @@ module ActiveRecord
     end
   end
 end
+# rubocop:enable Gitlab/ModuleWithInstanceVariables

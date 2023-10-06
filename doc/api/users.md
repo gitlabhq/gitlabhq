@@ -44,6 +44,7 @@ GET /users
     "username": "john_smith",
     "name": "John Smith",
     "state": "active",
+    "locked": false,
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
     "web_url": "http://localhost:3000/john_smith"
   },
@@ -52,6 +53,7 @@ GET /users
     "username": "jack_smith",
     "name": "Jack Smith",
     "state": "blocked",
+    "locked": false,
     "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
     "web_url": "http://localhost:3000/jack_smith"
   }
@@ -160,6 +162,7 @@ You can use all [parameters available for everyone](#for-non-administrator-users
     "email": "john@example.com",
     "name": "John Smith",
     "state": "active",
+    "locked": false,
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
@@ -202,6 +205,7 @@ You can use all [parameters available for everyone](#for-non-administrator-users
     "email": "jack@example.com",
     "name": "Jack Smith",
     "state": "blocked",
+    "locked": false,
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
@@ -348,6 +352,7 @@ Parameters:
   "username": "john_smith",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
@@ -395,6 +400,7 @@ Example Responses:
   "email": "john@example.com",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
@@ -675,6 +681,7 @@ GET /user
   "email": "john@example.com",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
@@ -739,6 +746,7 @@ Parameters:
   "email": "john@example.com",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
@@ -957,6 +965,7 @@ Example response:
   "username": "john_smith",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith"
 }
@@ -993,6 +1002,7 @@ Example response:
     "name": "Lennie Donnelly",
     "username": "evette.kilback",
     "state": "active",
+    "locked": false,
     "avatar_url": "https://www.gravatar.com/avatar/7955171a55ac4997ed81e5976287890a?s=80&d=identicon",
     "web_url": "http://127.0.0.1:3000/evette.kilback"
   },
@@ -1001,6 +1011,7 @@ Example response:
     "name": "Serena Bradtke",
     "username": "cammy",
     "state": "active",
+    "locked": false,
     "avatar_url": "https://www.gravatar.com/avatar/a2daad869a7b60d3090b7b9bef4baf57?s=80&d=identicon",
     "web_url": "http://127.0.0.1:3000/cammy"
   }

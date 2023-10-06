@@ -10,8 +10,7 @@ module IssuableLink
   extend ActiveSupport::Concern
 
   MAX_LINKS_COUNT = 100
-  TYPE_RELATES_TO = 'relates_to'
-  TYPE_BLOCKS = 'blocks' ## EE-only. Kept here to be used on link_type enum.
+  TYPE_RELATES_TO = Enums::IssuableLink::TYPE_RELATES_TO
 
   class_methods do
     def inverse_link_type(type)
@@ -43,7 +42,7 @@ module IssuableLink
 
     scope :for_source_or_target, ->(issuable) { where(source: issuable).or(where(target: issuable)) }
 
-    enum link_type: { TYPE_RELATES_TO => 0, TYPE_BLOCKS => 1 }
+    enum link_type: Enums::IssuableLink.link_types
 
     private
 

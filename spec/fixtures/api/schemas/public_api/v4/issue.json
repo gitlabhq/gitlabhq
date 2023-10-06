@@ -150,6 +150,9 @@
           "state": {
             "type": "string"
           },
+          "locked": {
+            "type": "boolean"
+          },
           "avatar_url": {
             "type": "string",
             "format": "uri"
@@ -180,6 +183,9 @@
         "state": {
           "type": "string"
         },
+        "locked": {
+          "type": "boolean"
+        },
         "avatar_url": {
           "type": "string",
           "format": "uri"
@@ -206,6 +212,9 @@
         "state": {
           "type": "string"
         },
+        "locked": {
+          "type": "boolean"
+        },
         "avatar_url": {
           "type": "string",
           "format": "uri"
@@ -218,6 +227,7 @@
       "required": [
         "id",
         "state",
+        "locked",
         "avatar_url",
         "name",
         "username",

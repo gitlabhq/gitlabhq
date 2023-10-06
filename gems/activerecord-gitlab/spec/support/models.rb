@@ -48,3 +48,14 @@ class Metadata < PartitionedRecord
   belongs_to :job,
     ->(metadata) { where(partition_id: metadata.partition_id) }
 end
+
+class LockingJob < PartitionedRecord
+  self.table_name = :locking_jobs
+  query_constraints :id, :partition_id
+
+  enum status: { created: 0, completed: 1 }
+
+  def locking_enabled?
+    will_save_change_to_status?
+  end
+end

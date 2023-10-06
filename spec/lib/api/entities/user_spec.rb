@@ -16,7 +16,7 @@ RSpec.describe API::Entities::User do
       # UserSafe
       :id, :username, :name,
       # UserBasic
-      :state, :avatar_url, :web_url,
+      :state, :locked, :avatar_url, :web_url,
       # User
       :created_at, :bio, :location, :public_email, :skype, :linkedin, :twitter, :discord,
       :website_url, :organization, :job_title, :pronouns, :bot, :work_information,
