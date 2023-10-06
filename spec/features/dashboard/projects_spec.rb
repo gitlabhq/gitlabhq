@@ -153,7 +153,7 @@ RSpec.describe 'Dashboard Projects', feature_category: :groups_and_projects do
 
       page.within('[data-testid="project_controls"]') do
         expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
-        expect(page).to have_css('.ci-status-link')
+        expect(page).to have_css("[data-testid='ci-status-badge']")
         expect(page).to have_css('.ci-status-icon-success')
         expect(page).to have_link('Pipeline: passed')
       end
@@ -165,7 +165,7 @@ RSpec.describe 'Dashboard Projects', feature_category: :groups_and_projects do
 
         page.within('[data-testid="project_controls"]') do
           expect(page).not_to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
-          expect(page).not_to have_css('.ci-status-link')
+          expect(page).not_to have_css("[data-testid='ci-status-badge']")
           expect(page).not_to have_css('.ci-status-icon-success')
           expect(page).not_to have_link('Pipeline: passed')
         end

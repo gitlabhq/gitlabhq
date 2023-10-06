@@ -81,7 +81,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
           it 'shows correct build status from default branch' do
             page.within("//li[@id='commit-#{pipeline.short_sha}']") do
-              expect(page).to have_css('.ci-status-link')
+              expect(page).to have_css("[data-testid='ci-status-badge-legacy']")
               expect(page).to have_css('.ci-status-icon-success')
             end
           end

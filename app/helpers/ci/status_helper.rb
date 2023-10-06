@@ -79,7 +79,7 @@ module Ci
       variant = badge_variant(status)
       klass = "ci-status-link #{ci_icon_class_for_status(status)} d-inline-flex gl-line-height-1 #{cssclass}"
       title = "#{type.titleize}: #{ci_label_for_status(status)}"
-      data = { toggle: 'tooltip', placement: tooltip_placement, container: container }
+      data = { toggle: 'tooltip', placement: tooltip_placement, container: container, testid: 'ci-status-badge-legacy' }
       badge_classes = 'gl-px-2 gl-ml-3'
 
       gl_badge_tag(variant: variant, size: :md, href: path, class: badge_classes, title: title, data: data) do

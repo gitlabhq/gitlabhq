@@ -21580,9 +21580,6 @@ msgstr ""
 msgid "GitLab Support Bot"
 msgstr ""
 
-msgid "GitLab Ultimate trial"
-msgstr ""
-
 msgid "GitLab User"
 msgstr ""
 
@@ -35276,9 +35273,6 @@ msgstr ""
 msgid "Please review the updated escalation policies for %{project}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
 
-msgid "Please select"
-msgstr ""
-
 msgid "Please select a Jira project"
 msgstr ""
 
@@ -45507,9 +45501,6 @@ msgstr ""
 msgid "Start Date"
 msgstr ""
 
-msgid "Start GitLab Ultimate free trial"
-msgstr ""
-
 msgid "Start Time"
 msgstr ""
 
@@ -45604,9 +45595,6 @@ msgid "Starts: %{startsAt}"
 msgstr ""
 
 msgid "State your message to activate"
-msgstr ""
-
-msgid "State/Province"
 msgstr ""
 
 msgid "State/Province/City"
@@ -49276,9 +49264,6 @@ msgstr ""
 msgid "To access this domain create a new DNS record"
 msgstr ""
 
-msgid "To activate your trial, we need additional details from you."
-msgstr ""
-
 msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -49286,9 +49271,6 @@ msgid "To add the entry manually, provide the following details to the applicati
 msgstr ""
 
 msgid "To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
-msgstr ""
-
-msgid "To complete registration, we need additional details from you."
 msgstr ""
 
 msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to connect."
@@ -50015,6 +49997,15 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "TrialRegistration|Start GitLab Ultimate free trial"
+msgstr ""
+
+msgid "TrialRegistration|To complete registration, we need additional details from you."
+msgstr ""
+
+msgid "TrialRegistration|Your GitLab Ultimate free trial lasts for 30 days. After this period, you can maintain a GitLab Free account forever or upgrade to a paid plan."
+msgstr ""
+
 msgid "Trials|%{planName} Trial"
 msgstr ""
 
@@ -50054,6 +50045,15 @@ msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
 msgstr ""
 
 msgid "Trial|Continue"
+msgstr ""
+
+msgid "Trial|Please select"
+msgstr ""
+
+msgid "Trial|State/Province"
+msgstr ""
+
+msgid "Trial|To activate your trial, we need additional details from you."
 msgstr ""
 
 msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
@@ -50120,9 +50120,6 @@ msgid "Try again"
 msgstr ""
 
 msgid "Try again?"
-msgstr ""
-
-msgid "Try all GitLab features for free for 30 days. No credit card required."
 msgstr ""
 
 msgid "Try all GitLab has to offer for 30 days."
@@ -54949,9 +54946,6 @@ msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limi
 msgstr ""
 
 msgid "Your GPG keys"
-msgstr ""
-
-msgid "Your GitLab Ultimate free trial lasts for 30 days. After this period, you can maintain a GitLab Free account forever or upgrade to a paid plan."
 msgstr ""
 
 msgid "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in %{duration} or you can click the link below to unlock now."
