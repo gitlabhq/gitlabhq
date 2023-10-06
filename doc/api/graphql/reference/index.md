@@ -18624,11 +18624,16 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeepicid"></a>`epicId` | [`ID`](#id) | ID of an epic associated with the issues. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeiterationid"></a>`iterationId` | [`ID`](#id) | ID of an iteration associated with the issues. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimemyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimenot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
 | <a id="groupvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricscycletimeweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
 ##### `GroupValueStreamAnalyticsFlowMetrics.deploymentCount`
 
@@ -18656,11 +18661,16 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountepicid"></a>`epicId` | [`ID`](#id) | ID of an epic associated with the issues. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountfrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountiterationid"></a>`iterationId` | [`ID`](#id) | ID of an iteration associated with the issues. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountnot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuecountweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
 ##### `GroupValueStreamAnalyticsFlowMetrics.issuesCompletedCount`
 
@@ -18674,11 +18684,16 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountepicid"></a>`epicId` | [`ID`](#id) | ID of an epic associated with the issues. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountfrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountiterationid"></a>`iterationId` | [`ID`](#id) | ID of an iteration associated with the issues. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountnot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
 ##### `GroupValueStreamAnalyticsFlowMetrics.leadTime`
 
@@ -18692,11 +18707,16 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeepicid"></a>`epicId` | [`ID`](#id) | ID of an epic associated with the issues. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeiterationid"></a>`iterationId` | [`ID`](#id) | ID of an iteration associated with the issues. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimemyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimenot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricsleadtimeweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
 ### `GroupWikiRepositoryRegistry`
 
@@ -23690,10 +23710,15 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeepicid"></a>`epicId` | [`ID`](#id) | ID of an epic associated with the issues. |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimefrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeiterationid"></a>`iterationId` | [`ID`](#id) | ID of an iteration associated with the issues. |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimemyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimenot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="projectvaluestreamanalyticsflowmetricscycletimeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricscycletimeweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
 ##### `ProjectValueStreamAnalyticsFlowMetrics.deploymentCount`
 
@@ -23720,10 +23745,15 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountepicid"></a>`epicId` | [`ID`](#id) | ID of an epic associated with the issues. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountfrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountiterationid"></a>`iterationId` | [`ID`](#id) | ID of an iteration associated with the issues. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountnot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuecountweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
 ##### `ProjectValueStreamAnalyticsFlowMetrics.issuesCompletedCount`
 
@@ -23737,10 +23767,15 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountepicid"></a>`epicId` | [`ID`](#id) | ID of an epic associated with the issues. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountfrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountiterationid"></a>`iterationId` | [`ID`](#id) | ID of an iteration associated with the issues. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountnot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
 ##### `ProjectValueStreamAnalyticsFlowMetrics.leadTime`
 
@@ -23754,10 +23789,15 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | ---- | ---- | ----------- |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeepicid"></a>`epicId` | [`ID`](#id) | ID of an epic associated with the issues. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimefrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeiterationid"></a>`iterationId` | [`ID`](#id) | ID of an iteration associated with the issues. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimemyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimenot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricsleadtimeweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
 ### `ProjectWikiRepositoryRegistry`
 
@@ -31440,6 +31480,21 @@ Represents an escalation rule.
 | <a id="negatedissuefilterinputreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag not associated with the issue's milestone. Ignored when parent is a group. |
 | <a id="negatedissuefilterinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filters out issues by the given issue types. |
 | <a id="negatedissuefilterinputweight"></a>`weight` | [`String`](#string) | Weight not applied to the issue. |
+
+### `NegatedValueStreamAnalyticsIssueFilterInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="negatedvaluestreamanalyticsissuefilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users not assigned to the issue. |
+| <a id="negatedvaluestreamanalyticsissuefilterinputauthorusername"></a>`authorUsername` | [`String`](#string) | Username of a user who didn't author the issue. |
+| <a id="negatedvaluestreamanalyticsissuefilterinputepicid"></a>`epicId` | [`ID`](#id) | ID of an epic not associated with the issues. |
+| <a id="negatedvaluestreamanalyticsissuefilterinputiterationid"></a>`iterationId` | [`ID`](#id) | List of iteration Global IDs not applied to the issue. |
+| <a id="negatedvaluestreamanalyticsissuefilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels not applied to this issue. |
+| <a id="negatedvaluestreamanalyticsissuefilterinputmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone not applied to this issue. |
+| <a id="negatedvaluestreamanalyticsissuefilterinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
+| <a id="negatedvaluestreamanalyticsissuefilterinputweight"></a>`weight` | [`Int`](#int) | Weight not applied to the issue. |
 
 ### `OncallRotationActivePeriodInputType`
 

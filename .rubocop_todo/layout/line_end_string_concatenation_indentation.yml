@@ -266,7 +266,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/lib/gitlab/ci/templates/themekit_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_runner_spec.rb'
     - 'spec/lib/gitlab/database/migrations/batched_background_migration_helpers_spec.rb'
-    - 'spec/lib/gitlab/email/message/in_product_marketing/helper_spec.rb'
     - 'spec/lib/gitlab/github_import/markdown_text_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/issue_event_spec.rb'
     - 'spec/lib/gitlab/insecure_key_fingerprint_spec.rb'

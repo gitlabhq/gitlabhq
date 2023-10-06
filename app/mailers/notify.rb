@@ -22,7 +22,6 @@ class Notify < ApplicationMailer
   include Emails::Groups
   include Emails::Reviews
   include Emails::ServiceDesk
-  include Emails::InProductMarketing
   include Emails::AdminNotification
   include Emails::IdentityVerification
   include Emails::Imports

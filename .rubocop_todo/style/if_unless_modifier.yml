@@ -813,7 +813,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/database/transaction/observer.rb'
     - 'lib/gitlab/database/with_lock_retries.rb'
     - 'lib/gitlab/email/handler/service_desk_handler.rb'
-    - 'lib/gitlab/email/message/in_product_marketing/base.rb'
     - 'lib/gitlab/email/message/repository_push.rb'
     - 'lib/gitlab/email/receiver.rb'
     - 'lib/gitlab/email/reply_parser.rb'

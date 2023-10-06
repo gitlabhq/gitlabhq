@@ -137,7 +137,6 @@ RSpec/ReturnFromStub:
     - 'spec/lib/gitlab/daemon_spec.rb'
     - 'spec/lib/gitlab/database_importers/instance_administrators/create_group_spec.rb'
     - 'spec/lib/gitlab/diff/file_spec.rb'
-    - 'spec/lib/gitlab/email/message/in_product_marketing/helper_spec.rb'
     - 'spec/lib/gitlab/exclusive_lease_helpers/sleeping_lock_spec.rb'
     - 'spec/lib/gitlab/exclusive_lease_helpers_spec.rb'
     - 'spec/lib/gitlab/external_authorization_spec.rb'

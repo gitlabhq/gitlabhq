@@ -176,7 +176,6 @@ RSpec/ScatteredLet:
     - 'spec/lib/gitlab/utils/measuring_spec.rb'
     - 'spec/lib/gitlab/zentao/client_spec.rb'
     - 'spec/lib/peek/views/external_http_spec.rb'
-    - 'spec/mailers/emails/in_product_marketing_spec.rb'
     - 'spec/mailers/notify_spec.rb'
     - 'spec/mailers/previews_spec.rb'
     - 'spec/migrations/20220329175119_remove_leftover_ci_job_artifact_deletions_spec.rb'

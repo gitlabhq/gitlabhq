@@ -38757,6 +38757,9 @@ msgstr ""
 msgid "Read their documentation."
 msgstr ""
 
+msgid "Readme"
+msgstr ""
+
 msgid "Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
 msgstr ""
 
@@ -48001,6 +48004,9 @@ msgid "There was a problem fetching users."
 msgstr ""
 
 msgid "There was a problem handling the pipeline data."
+msgstr ""
+
+msgid "There was a problem loading this project's readme content."
 msgstr ""
 
 msgid "There was a problem sending the confirmation email"

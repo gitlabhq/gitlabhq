@@ -17,7 +17,7 @@ module Gitlab
             check(env, log_params)
           end
 
-          log_params[:duration_s] = execution_time.round(5) if execution_time
+          log_params[:duration_ms] = execution_time.round(5) if execution_time
 
           log(log_params) unless log_params.empty?
         end
@@ -29,7 +29,7 @@ module Gitlab
 
       def measure_execution_time(&blk)
         if Feature.enabled?(:log_execution_time_path_traversal_middleware, Feature.current_request)
-          Benchmark.realtime(&blk)
+          Benchmark.ms(&blk)
         else
           yield
 

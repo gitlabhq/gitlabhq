@@ -195,7 +195,7 @@ gem 'seed-fu', '~> 2.3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-model', '~> 7.2' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-api',   '7.13.3' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'aws-sdk-core', '~> 3.185.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'aws-sdk-core', '~> 3.185.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'aws-sdk-cloudformation', '~> 1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'aws-sdk-s3', '~> 1.136.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -232,7 +232,7 @@ gem 'rack', '~> 2.2.8' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base' # rubocop:todo Gemfile/MissingFeatureCategory
 
 group :puma do
-  gem 'puma', '~> 6.3', '>= 6.3.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'puma', '~> 6.4', require: false # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'sd_notify', '~> 0.1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 end
 
@@ -383,7 +383,7 @@ gem 'snowplow-tracker', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Metrics
 gem 'webrick', '~> 1.8.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'prometheus-client-mmap', '~> 0.28', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'prometheus-client-mmap', '~> 0.28', '>= 0.28.1', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'warning', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -540,7 +540,7 @@ gem 'kas-grpc', '~> 0.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'grpc', '~> 1.58.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'google-protobuf', '~> 3.24', '>= 3.24.3' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'google-protobuf', '~> 3.24', '>= 3.24.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'toml-rb', '~> 2.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

@@ -96,7 +96,6 @@ Style/StringConcatenation:
     - 'lib/gitlab/database/rename_reserved_paths_migration/v1/migration_classes.rb'
     - 'lib/gitlab/database/unidirectional_copy_trigger.rb'
     - 'lib/gitlab/email/handler/service_desk_handler.rb'
-    - 'lib/gitlab/email/message/in_product_marketing/helper.rb'
     - 'lib/gitlab/git.rb'
     - 'lib/gitlab/git/branch.rb'
     - 'lib/gitlab/git/tag.rb'

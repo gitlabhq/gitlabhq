@@ -31,7 +31,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                 .and_call_original
         expect(::Gitlab::AppLogger)
           .to receive(:warn)
-                .with({ class_name: described_class.name, duration_s: instance_of(Float) })
+                .with({ class_name: described_class.name, duration_ms: instance_of(Float) })
                 .and_call_original
 
         expect(subject).to eq(fake_response)
@@ -68,7 +68,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
           .to receive(:warn)
                 .with({
                   class_name: described_class.name,
-                  duration_s: instance_of(Float),
+                  duration_ms: instance_of(Float),
                   message: described_class::PATH_TRAVERSAL_MESSAGE,
                   fullpath: fullpath
                 }).and_call_original
