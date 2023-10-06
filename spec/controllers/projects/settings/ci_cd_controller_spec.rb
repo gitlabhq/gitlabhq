@@ -100,15 +100,15 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           show # warmup
 
           # with one tag
-          create(:ci_runner, :instance, tag_list: %w(shared_runner))
-          create(:ci_runner, :project, projects: [other_project], tag_list: %w(project_runner))
-          create(:ci_runner, :group, groups: [group], tag_list: %w(group_runner))
+          create(:ci_runner, :instance, tag_list: %w[shared_runner])
+          create(:ci_runner, :project, projects: [other_project], tag_list: %w[project_runner])
+          create(:ci_runner, :group, groups: [group], tag_list: %w[group_runner])
           control = ActiveRecord::QueryRecorder.new { show }
 
           # with several tags
-          create(:ci_runner, :instance, tag_list: %w(shared_runner tag2 tag3))
-          create(:ci_runner, :project, projects: [other_project], tag_list: %w(project_runner tag2 tag3))
-          create(:ci_runner, :group, groups: [group], tag_list: %w(group_runner tag2 tag3))
+          create(:ci_runner, :instance, tag_list: %w[shared_runner tag2 tag3])
+          create(:ci_runner, :project, projects: [other_project], tag_list: %w[project_runner tag2 tag3])
+          create(:ci_runner, :group, groups: [group], tag_list: %w[group_runner tag2 tag3])
 
           expect { show }.not_to exceed_query_limit(control)
         end

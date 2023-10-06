@@ -84,7 +84,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     end
 
     context "with labels" do
-      let(:label_titles) { %w(bug feature enhancement) }
+      let(:label_titles) { %w[bug feature enhancement] }
 
       before do
         label_titles.each do |title|

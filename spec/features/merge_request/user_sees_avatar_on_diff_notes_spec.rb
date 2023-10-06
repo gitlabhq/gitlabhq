@@ -83,7 +83,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
     end
   end
 
-  %w(parallel).each do |view|
+  %w[parallel].each do |view|
     context "#{view} view" do
       before do
         visit diffs_project_merge_request_path(project, merge_request, view: view)

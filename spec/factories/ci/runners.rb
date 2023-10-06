@@ -83,7 +83,7 @@ FactoryBot.define do
     trait :tagged_only do
       run_untagged { false }
 
-      tag_list { %w(tag1 tag2) }
+      tag_list { %w[tag1 tag2] }
     end
 
     trait :locked do

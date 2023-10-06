@@ -409,7 +409,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
           expect(response.headers['Gitlab-Workhorse-Detect-Content-Type']).to eq('true')
           expect(send_data).to start_with('artifacts-entry:')
 
-          expect(params.keys).to eq(%w(Archive Entry))
+          expect(params.keys).to eq(%w[Archive Entry])
           expect(params['Archive']).to start_with(archive_path)
           # On object storage, the URL can end with a query string
           expect(params['Archive']).to match(archive_matcher)

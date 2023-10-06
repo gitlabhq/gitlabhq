@@ -887,7 +887,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       it 'correctly renders tabs and panes' do
         visit new_user_session_path
 
-        ensure_tab_pane_correctness(%w(Crowd Standard))
+        ensure_tab_pane_correctness(%w[Crowd Standard])
       end
 
       it 'displays the remember me checkbox' do

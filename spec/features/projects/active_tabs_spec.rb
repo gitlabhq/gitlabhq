@@ -55,7 +55,7 @@ RSpec.describe 'Project active tab', feature_category: :groups_and_projects do
 
     it_behaves_like 'page has active tab', 'Repository'
 
-    %w(Files Commits Graph Compare Branches Tags).each do |sub_menu|
+    %w[Files Commits Graph Compare Branches Tags].each do |sub_menu|
       context "on project Repository/#{sub_menu}" do
         before do
           click_tab(sub_menu)

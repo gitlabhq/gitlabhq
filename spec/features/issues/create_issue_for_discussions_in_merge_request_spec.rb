@@ -12,9 +12,9 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
     url = new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
 
     if title.empty?
-      %{a[href="#{url}"]}
+      %(a[href="#{url}"])
     else
-      %{a[title="#{title}"][href="#{url}"]}
+      %(a[title="#{title}"][href="#{url}"])
     end
   end
 

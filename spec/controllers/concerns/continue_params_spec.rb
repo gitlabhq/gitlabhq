@@ -34,7 +34,7 @@ RSpec.describe ContinueParams do
       strong_continue_params(to: '/hello', notice: 'world', notice_now: '!', something: 'else')
     end
 
-    expect(controller.continue_params.keys).to contain_exactly(*%w(to notice notice_now))
+    expect(controller.continue_params.keys).to contain_exactly(*%w[to notice notice_now])
   end
 
   it 'does not allow cross host redirection' do

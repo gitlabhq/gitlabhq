@@ -1368,7 +1368,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     it 'renders json in a correct format' do
       post :preview_markdown, params: { namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text' }
 
-      expect(json_response.keys).to match_array(%w(body references))
+      expect(json_response.keys).to match_array(%w[body references])
     end
 
     context 'when not authorized' do

@@ -216,7 +216,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     end
 
     def create_all_pipeline_types
-      %w(pending running success failed canceled).each_with_index do |status, index|
+      %w[pending running success failed canceled].each_with_index do |status, index|
         create_pipeline(status, project.commit("HEAD~#{index}"))
       end
 

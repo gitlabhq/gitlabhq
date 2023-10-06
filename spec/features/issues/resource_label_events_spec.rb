@@ -49,7 +49,7 @@ RSpec.describe 'List issue resource label events', :js, feature_category: :team_
     end
 
     it 'shows add note for newly added labels' do
-      toggle_labels(%w(foo bar))
+      toggle_labels(%w[foo bar])
       visit project_issue_path(project, issue)
       wait_for_requests
 

@@ -54,7 +54,7 @@ RSpec.describe Projects::DeployKeysController do
         it 'returns json in a correct format' do
           get :index, params: params.merge(format: :json)
 
-          expect(json_response.keys).to match_array(%w(enabled_keys available_project_keys public_keys))
+          expect(json_response.keys).to match_array(%w[enabled_keys available_project_keys public_keys])
           expect(json_response['enabled_keys'].count).to eq(1)
           expect(json_response['available_project_keys'].count).to eq(1)
           expect(json_response['public_keys'].count).to eq(1)

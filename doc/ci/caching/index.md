@@ -725,3 +725,16 @@ job B:
 
 Even if the `key` is different, the cached files might get "cleaned" before each
 stage if the jobs run on different runners in subsequent pipelines.
+
+### Concurrent runners missing local cache
+
+If you have configured multiple concurrent runners with the Docker executor, locally cached files might
+not be present for concurrently-running jobs as you expect. The names of cache volumes are constructed
+uniquely for each runner instance, so files cached by one runner instance are not found in the cache by another runner
+instance.
+
+To share the cache between concurrent runners, you can either:
+
+- Use the `[runners.docker]` section of the runners' `config.toml` to configure a single mount point on the host that
+is mapped to `/cache` in each container, preventing the runner from creating unique volume names.
+- Use a distributed cache.

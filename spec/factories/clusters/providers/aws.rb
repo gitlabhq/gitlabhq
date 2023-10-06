@@ -7,7 +7,7 @@ FactoryBot.define do
     kubernetes_version { '1.16' }
     role_arn { 'arn:aws:iam::123456789012:role/role-name' }
     vpc_id { 'vpc-00000000000000000' }
-    subnet_ids { %w(subnet-00000000000000000 subnet-11111111111111111) }
+    subnet_ids { %w[subnet-00000000000000000 subnet-11111111111111111] }
     security_group_id { 'sg-00000000000000000' }
     key_name { 'user' }
 

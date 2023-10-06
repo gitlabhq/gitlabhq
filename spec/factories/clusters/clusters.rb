@@ -83,7 +83,7 @@ FactoryBot.define do
     end
 
     trait :with_installed_prometheus do
-      integration_prometheus factory: %i(clusters_integrations_prometheus)
+      integration_prometheus factory: %i[clusters_integrations_prometheus]
     end
 
     trait :with_domain do
@@ -92,7 +92,7 @@ FactoryBot.define do
 
     trait :with_environments do
       transient do
-        environments { %i(staging production) }
+        environments { %i[staging production] }
       end
 
       cluster_type { Clusters::Cluster.cluster_types[:project_type] }

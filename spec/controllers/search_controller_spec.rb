@@ -551,7 +551,7 @@ RSpec.describe SearchController, feature_category: :global_search do
           expect(payload[:metadata]['meta.search.force_search_results']).to eq('true')
           expect(payload[:metadata]['meta.search.filters.confidential']).to eq('true')
           expect(payload[:metadata]['meta.search.filters.state']).to eq('true')
-          expect(payload[:metadata]['meta.search.project_ids']).to eq(%w(456 789))
+          expect(payload[:metadata]['meta.search.project_ids']).to eq(%w[456 789])
           expect(payload[:metadata]['meta.search.type']).to eq('basic')
           expect(payload[:metadata]['meta.search.level']).to eq('global')
           expect(payload[:metadata]['meta.search.filters.language']).to eq('ruby')
@@ -562,7 +562,7 @@ RSpec.describe SearchController, feature_category: :global_search do
           search: 'hello world',
           group_id: '123',
           project_id: '456',
-          project_ids: %w(456 789),
+          project_ids: %w[456 789],
           confidential: true,
           include_archived: true,
           state: true,

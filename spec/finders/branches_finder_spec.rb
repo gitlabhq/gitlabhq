@@ -92,7 +92,7 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
           result = subject
 
           expect(result.count).to eq(3)
-          expect(result.map(&:name)).to eq(%w{csv fix lfs})
+          expect(result.map(&:name)).to eq(%w[csv fix lfs])
         end
       end
 
@@ -265,7 +265,7 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         it 'filters branches' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(feature_conflict few-commits))
+          expect(result.map(&:name)).to eq(%w[feature_conflict few-commits])
         end
       end
 
@@ -275,7 +275,7 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         it 'filters branches' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(fix flatten-dir))
+          expect(result.map(&:name)).to eq(%w[fix flatten-dir])
         end
       end
 
@@ -306,7 +306,7 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
           it 'filters branches' do
             result = subject
 
-            expect(result.map(&:name)).to eq(%w(feature improve/awesome merge-test markdown feature_conflict))
+            expect(result.map(&:name)).to eq(%w[feature improve/awesome merge-test markdown feature_conflict])
           end
         end
 
@@ -316,7 +316,7 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
           it 'filters branches' do
             result = subject
 
-            expect(result.map(&:name)).to eq(%w(merge-test markdown))
+            expect(result.map(&:name)).to eq(%w[merge-test markdown])
           end
         end
       end
@@ -328,7 +328,7 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
           result = subject
 
           expect(result.count).to eq(3)
-          expect(result.map(&:name)).to eq(%w{csv fix lfs})
+          expect(result.map(&:name)).to eq(%w[csv fix lfs])
         end
       end
 
@@ -338,7 +338,7 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         it 'falls back to default execute and ignore paginations' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(feature feature_conflict few-commits fix flatten-dir))
+          expect(result.map(&:name)).to eq(%w[feature feature_conflict few-commits fix flatten-dir])
         end
       end
     end

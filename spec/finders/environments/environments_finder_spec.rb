@@ -24,13 +24,13 @@ RSpec.describe Environments::EnvironmentsFinder do
       end
 
       it 'returns environments with any of the requested states' do
-        result = described_class.new(project, user, states: %w(available stopped)).execute
+        result = described_class.new(project, user, states: %w[available stopped]).execute
 
         expect(result).to contain_exactly(environment, environment_stopped, environment_available, stopped_environment)
       end
 
       it 'raises exception when requested state is invalid' do
-        expect { described_class.new(project, user, states: %w(invalid stopped)).execute }.to(
+        expect { described_class.new(project, user, states: %w[invalid stopped]).execute }.to(
           raise_error(described_class::InvalidStatesError, 'Requested states are invalid')
         )
       end

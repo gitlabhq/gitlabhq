@@ -628,7 +628,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
     let_it_be(:admin) { create(:admin) }
     let_it_be(:project) { create(:project) }
 
-    let(:graphql_query) { graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id name)) }
+    let(:graphql_query) { graphql_query_for('project', { 'fullPath' => project.full_path }, %w[id name]) }
 
     before do
       sign_in(admin)
@@ -674,8 +674,8 @@ RSpec.describe GraphqlController, feature_category: :integrations do
   end
 
   describe '#append_info_to_payload' do
-    let(:query_1) { { query: graphql_query_for('project', { 'fullPath' => 'foo' }, %w(id name), 'getProject_1') } }
-    let(:query_2) { { query: graphql_query_for('project', { 'fullPath' => 'bar' }, %w(id), 'getProject_2') } }
+    let(:query_1) { { query: graphql_query_for('project', { 'fullPath' => 'foo' }, %w[id name], 'getProject_1') } }
+    let(:query_2) { { query: graphql_query_for('project', { 'fullPath' => 'bar' }, %w[id], 'getProject_2') } }
     let(:graphql_queries) { [query_1, query_2] }
     let(:log_payload) { {} }
     let(:expected_logs) do

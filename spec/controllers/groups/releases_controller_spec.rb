@@ -56,7 +56,7 @@ RSpec.describe Groups::ReleasesController do
 
           index
 
-          expect(json_response.map { |r| r['tag'] }).to match_array(%w(p2 p1 v2 v1))
+          expect(json_response.map { |r| r['tag'] }).to match_array(%w[p2 p1 v2 v1])
         end
       end
 

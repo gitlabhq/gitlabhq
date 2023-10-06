@@ -189,7 +189,7 @@ RSpec.describe TemplateFinder do
 
       context 'template names hash keys' do
         it 'has all the expected keys' do
-          expect(result.first.to_h.keys).to match_array(%i(id key name project_id))
+          expect(result.first.to_h.keys).to match_array(%i[id key name project_id])
         end
       end
     end
@@ -223,7 +223,7 @@ RSpec.describe TemplateFinder do
 
         context 'template names hash keys' do
           it 'has all the expected keys' do
-            expect(result.first.to_h.keys).to match_array(%i(id key name project_id))
+            expect(result.first.to_h.keys).to match_array(%i[id key name project_id])
           end
         end
       end

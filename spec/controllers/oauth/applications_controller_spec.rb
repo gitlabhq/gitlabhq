@@ -198,7 +198,7 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
       end
 
       context 'when scopes are invalid' do
-        let(:scopes) { %w(api foo) }
+        let(:scopes) { %w[api foo] }
 
         render_views
 

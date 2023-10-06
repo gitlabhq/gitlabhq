@@ -1303,7 +1303,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_selector(
-            %{span[title="#{pipeline.yaml_errors}"]})
+            %(span[title="#{pipeline.yaml_errors}"]))
         end
       end
 
@@ -1316,7 +1316,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_selector(
-            %{span[title="#{pipeline.present.failure_reason}"]})
+            %(span[title="#{pipeline.present.failure_reason}"]))
         end
       end
     end

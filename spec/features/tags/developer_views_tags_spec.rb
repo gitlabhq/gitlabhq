@@ -43,7 +43,7 @@ RSpec.describe 'Developer views tags', feature_category: :source_code_management
     it 'avoids a N+1 query in branches index' do
       control_count = ActiveRecord::QueryRecorder.new { visit project_tags_path(project) }.count
 
-      %w(one two three four five).each { |tag| repository.add_tag(user, tag, 'master', 'foo') }
+      %w[one two three four five].each { |tag| repository.add_tag(user, tag, 'master', 'foo') }
 
       expect { visit project_tags_path(project) }.not_to exceed_query_limit(control_count)
     end
