@@ -2,7 +2,8 @@
 - breadcrumb_title @integration.title
 - page_title @integration.title, _('Integrations')
 
-%h2.gl-mb-4
+%h2.gl-mb-0.gl-display-flex.gl-align-items-center.gl-gap-3
+  = render Pajamas::AvatarComponent.new(@integration, size: 64, alt: '')
   = @integration.title
 
 = render 'shared/integrations/tabs', integration: @integration, active_tab: 'edit' do

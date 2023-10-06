@@ -35,7 +35,7 @@ All templates:
 - Use the [GitLab-managed Terraform state](terraform_state.md) as the Terraform state storage backend.
 - Trigger four pipeline stages: `test`, `validate`, `build`, and `deploy`.
 - Run Terraform commands: `test`, `validate`, `plan`, and `plan-json`. It also runs the `apply` only on the default branch.
-- Check for security problems using [IaC Scanning](../../application_security/iac_scanning/index.md#configure-iac-scanning-manually).
+- Check for security problems using [IaC Scanning](../../application_security/iac_scanning/index.md).
 
 ### Latest Terraform template
 

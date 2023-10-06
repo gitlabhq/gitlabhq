@@ -261,12 +261,8 @@ module Gitlab
       def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:, path: nil)
         ref ||= root_ref
 
-        if Feature.enabled?(:resolve_ambiguous_archives, container)
-          commit_id = extract_commit_id_from_ref(ref)
-          return {} if commit_id.nil?
-        else
-          commit_id = ref
-        end
+        commit_id = extract_commit_id_from_ref(ref)
+        return {} if commit_id.nil?
 
         commit = Gitlab::Git::Commit.find(self, commit_id)
         return {} if commit.nil?

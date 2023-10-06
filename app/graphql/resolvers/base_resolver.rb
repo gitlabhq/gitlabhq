@@ -63,8 +63,13 @@ module Resolvers
           type parent.singular_type, null: true
 
           def ready?(**args)
-            ready, early_return = super
-            [ready, select_result(early_return)]
+            value = super
+
+            if value.is_a?(Array)
+              [value[0], select_result(value[1])]
+            else
+              value
+            end
           end
 
           def resolve(**args)

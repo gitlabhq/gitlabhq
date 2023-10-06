@@ -203,25 +203,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
             expect(metadata['CommitId']).to eq(expected_commit_id)
           end
         end
-
-        context 'when resolve_ambiguous_archives is disabled' do
-          before do
-            stub_feature_flags(resolve_ambiguous_archives: false)
-          end
-
-          where(:ref, :expected_commit_id, :desc) do
-            'refs/heads/branch-merged'    | ref(:branch_merged_commit_id) | 'when tag looks like a branch (difference!)'
-            'branch-merged'               | ref(:branch_master_commit_id) | 'when tag has the same name as a branch'
-            ref(:branch_merged_commit_id) | ref(:branch_merged_commit_id) | 'when tag looks like a commit id'
-            'v0.0.0'                      | ref(:branch_master_commit_id) | 'when tag looks like a normal tag'
-          end
-
-          with_them do
-            it 'selects the correct commit' do
-              expect(metadata['CommitId']).to eq(expected_commit_id)
-            end
-          end
-        end
       end
 
       context 'when branch is ambiguous' do
@@ -239,25 +220,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         with_them do
           it 'selects the correct commit' do
             expect(metadata['CommitId']).to eq(expected_commit_id)
-          end
-        end
-
-        context 'when resolve_ambiguous_archives is disabled' do
-          before do
-            stub_feature_flags(resolve_ambiguous_archives: false)
-          end
-
-          where(:ref, :expected_commit_id, :desc) do
-            'refs/tags/v1.0.0'            | ref(:tag_1_0_0_commit_id)     | 'when branch looks like a tag (difference!)'
-            'v1.0.0'                      | ref(:tag_1_0_0_commit_id)     | 'when branch has the same name as a tag'
-            ref(:branch_merged_commit_id) | ref(:branch_merged_commit_id) | 'when branch looks like a commit id'
-            'just-a-normal-branch'        | ref(:branch_master_commit_id) | 'when branch looks like a normal branch'
-          end
-
-          with_them do
-            it 'selects the correct commit' do
-              expect(metadata['CommitId']).to eq(expected_commit_id)
-            end
           end
         end
       end
