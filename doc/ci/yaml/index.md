@@ -4383,7 +4383,7 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 Use `timeout` to configure a timeout for a specific job. If the job runs for longer
 than the timeout, the job fails.
 
-The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run).
+The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run),
 but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
