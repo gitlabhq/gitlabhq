@@ -25,7 +25,7 @@ For a full list of reference architectures, see
 | Load balancer<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
-| Gitaly<sup>5</sup>         | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| Gitaly                     | 1     | 4 vCPU, 15 GB memory<sup>5</sup>   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
 | GitLab Rails<sup>6</sup>   | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node            | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>4</sup> | -     | -                      | -               | -            | -        |
@@ -36,9 +36,9 @@ For a full list of reference architectures, see
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
-5. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
-   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
-   [Large repositories](index.md#large-repositories) for more information.
+5. Gitaly specifications are based on the use of normal-sized repositories in good health.
+   However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
+   Refer to [large monorepos](index.md#large-monorepos) for more information.
 6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
    However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
 <!-- markdownlint-enable MD029 -->
@@ -393,16 +393,10 @@ are supported and can be added if needed.
 [Gitaly](../gitaly/index.md) server node requirements are dependent on data size,
 specifically the number of projects and those projects' sizes.
 
-NOTE:
-Increased specs for Gitaly nodes may be required in some circumstances such as
-significantly large repositories or if any [additional workloads](index.md#additional-workloads),
-such as [server hooks](../server_hooks.md), have been added.
-
-NOTE:
-Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
-However, large repositories or monorepos not following these practices can significantly
-impact Gitaly performance and requirements.
-Refer to [Large repositories](index.md#large-repositories) for more information.
+WARNING:
+**Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
+**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -945,7 +939,7 @@ NOTE:
 The 2,000 reference architecture is not a highly-available setup. To achieve HA,
 you can follow a modified [3K reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
 
-NOTE:
+WARNING:
 **Gitaly Cluster is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
 

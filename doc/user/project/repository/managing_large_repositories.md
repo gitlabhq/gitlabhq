@@ -25,6 +25,8 @@ Large repositories pose a performance risk performance when used in GitLab, espe
 Git itself has performance limitations when it comes to handling
 monorepos.
 
+Monorepos can also impact notably on hardware, in some cases hitting limitations such as vertical scaling and network or disk bandwidth limits.
+
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is our Git storage service built
 on top of [Git](https://git-scm.com/). This means that any limitations of
 Git are experienced in Gitaly, and in turn by end users of GitLab.
@@ -393,7 +395,7 @@ and does not require us to update each `.gitlab-ci.yml`.
 
 ### Reference architectures
 
-Large repositories tend to be found in larger organisations with many users. The GitLab Quality and Support teams provide several [reference architectures](../../../administration/reference_architectures/index.md) that are the recommended way to deploy GitLab at scale.
+Large repositories tend to be found in larger organisations with many users. The GitLab Quality Engineering and Support teams provide several [reference architectures](../../../administration/reference_architectures/index.md) that are the recommended way to deploy GitLab at scale.
 
 In these types of setups, the GitLab environment used should match a reference architecture to improve performance.
 

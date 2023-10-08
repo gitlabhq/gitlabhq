@@ -37,7 +37,7 @@ For a full list of reference architectures, see
 | PostgreSQL<sup>1</sup>                    | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
 | PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Gitaly<sup>5 6</sup>                      | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
+| Gitaly<sup>5</sup>                        | 3     | 4 vCPU, 15 GB memory<sup>6</sup> | `n1-standard-4` | `m5.xlarge`  |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Sidekiq<sup>7</sup>                       | 4     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
@@ -51,10 +51,10 @@ For a full list of reference architectures, see
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
-6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
-   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
-   [Large repositories](index.md#large-repositories) for more information.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+6. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+   However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
 7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
    However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
 <!-- markdownlint-enable MD029 -->
@@ -1101,6 +1101,11 @@ The following IPs will be used as an example:
 repositories. In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being
 designated the primary, and failover occurs automatically if the primary node goes down.
 
+WARNING:
+**Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
+**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
 Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
 Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
 
@@ -1110,12 +1115,6 @@ For guidance on:
   instead of this section. Use the same Gitaly specs.
 - Migrating existing repositories that aren't managed by Gitaly Cluster, see
   [migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
-
-NOTE:
-Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
-However, large repositories or monorepos not following these practices can significantly
-impact Gitaly performance and requirements.
-Refer to [Large repositories](index.md#large-repositories) for more information.
 
 The recommended cluster setup includes the following components:
 
@@ -1438,16 +1437,10 @@ the file of the same name on this server. If this is the first Linux package nod
 The [Gitaly](../gitaly/index.md) server nodes that make up the cluster have
 requirements that are dependent on data and load.
 
-NOTE:
-Increased specs for Gitaly nodes may be required in some circumstances such as
-significantly large repositories or if any [additional workloads](index.md#additional-workloads),
-such as [server hooks](../server_hooks.md), have been added.
-
-NOTE:
-Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
-However, large repositories or monorepos not following these practices can significantly
-impact Gitaly performance and requirements.
-Refer to the [Large repositories](index.md#large-repositories) for more information.
+WARNING:
+**Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
+**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -2237,7 +2230,7 @@ to be complex. **This setup is only recommended** if you have strong working
 knowledge and experience in Kubernetes. The rest of this
 section assumes this.
 
-NOTE:
+WARNING:
 **Gitaly Cluster is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
 
@@ -2270,7 +2263,7 @@ services where applicable):
 | PostgreSQL<sup>1</sup>                    | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`  |
 | PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
-| Gitaly<sup>5 6</sup>                      | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge` |
+| Gitaly<sup>5</sup>                        | 3     | 4 vCPU, 15 GB memory<sup>6</sup> | `n1-standard-4` | `m5.xlarge` |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | Object storage<sup>4</sup>                | -     | -                     | -               | -           |
@@ -2281,10 +2274,10 @@ services where applicable):
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
-6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
-   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
-   [Large repositories](index.md#large-repositories) for more information.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+6. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+   However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:

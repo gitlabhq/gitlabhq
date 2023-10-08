@@ -1163,6 +1163,44 @@ For other SSF data types replace `Upload` in the command above with the desired 
 NOTE:
 There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
 
+### Failed verification of Uploads on the primary Geo site
+
+If some Uploads verification is failing on the primary Geo site with the `verification_checksum: nil` and `verification_failure: Error during verification: undefined method 'underscore' for NilClass:Class` errros, this can be due to orphaned Uploads. The parent record owning the Upload (the Upload's `model`) has somehow been deleted, but the Upload record still exists. These verification failures are false.
+
+You can find these errors in the `geo.log` file on the primary Geo site.
+
+To confirm that model records are missing, you can run a Rake task on the primary Geo site:
+
+```shell
+sudo gitlab-rake gitlab:uploads:check
+```
+
+You can delete these Upload records on the primary Geo site to get rid of these failures by running the following script from the [Rails console](../../operations/rails_console.md):
+
+```ruby
+# Look for uploads with the verification error
+# or edit with your own affected IDs
+uploads = Geo::UploadState.where(
+  verification_checksum: nil,
+  verification_state: 3,
+  verification_failure: "Error during verification: undefined method  'underscore' for NilClass:Class"
+).pluck(:upload_id)
+
+uploads_deleted = 0
+begin
+    uploads.each do |upload|
+    u = Upload.find upload
+    rescue => e
+        puts "checking upload #{u.id} failed with #{e.message}"
+      else
+        uploads_deleted=uploads_deleted + 1
+        p u                            ### allow verification before destroy
+        # p u.destroy!                 ### uncomment to actually destroy
+  end
+end
+p "#{uploads_deleted} remote objects were destroyed."
+```
+
 ## HTTP response code errors
 
 ### Secondary site returns 502 errors with Geo proxying

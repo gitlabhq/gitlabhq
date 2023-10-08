@@ -28,7 +28,6 @@ many organizations.
 
 | Users        | Configuration           | GCP            | AWS          | Azure    |
 |--------------|-------------------------|----------------|--------------|----------|
-| Up to 500    | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4` | `c5.xlarge`  | `F4s v2` |
 | Up to 1,000  | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8` | `c5.2xlarge` | `F8s v2` |
 
 ```plantuml
@@ -68,6 +67,11 @@ The diagram above shows that while GitLab can be installed on a single server, i
 ## Requirements
 
 Before starting, see the [requirements](index.md#requirements) for reference architectures.
+
+WARNING:
+**The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
+**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 ## Setup instructions
 

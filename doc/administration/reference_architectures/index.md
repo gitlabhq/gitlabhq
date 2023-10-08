@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Reference architectures **(FREE SELF)**
 
 The GitLab Reference Architectures have been designed and tested by the
-GitLab Quality and Support teams to provide recommended deployments at scale.
+GitLab Quality Engineering and Support teams to provide recommended deployments at scale.
 
 ## Available reference architectures
 
@@ -50,6 +50,8 @@ The first choice to consider is whether a Self Managed approach is correct for y
 Running any application in production is complex, and the same applies for GitLab. While we aim to make this as smooth as possible, there are still the general complexities. This depends on the design chosen, but typically you'll need to manage all aspects such as hardware, operating systems, networking, storage, security, GitLab itself, and more. This includes both the initial setup of the environment and the longer term maintenance.
 
 As such, it's recommended that you have a working knowledge of running and maintaining applications in production when deciding on going down this route. If you aren't in this position, our [Professional Services](https://about.gitlab.com/services/#implementation-services) team offers implementation services, but for those who want a more managed solution long term, it's recommended to instead explore our other offerings such as [GitLab SaaS](../../subscriptions/gitlab_com/index.md) or [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md).
+
+If Self Managed is the approach you're considering, it's strongly encouraged to read through this page in full, in particular the [Deciding which architecture to use](#deciding-which-architecture-to-use), [Large monorepos](#large-monorepos) and [Additional workloads](#additional-workloads) sections.
 
 ## Deciding which architecture to use
 
@@ -122,6 +124,13 @@ a key requirement for your environment. You must also make additional decisions
 on how each site is configured, such as if each secondary site would be the
 same architecture as the primary, or if each site is configured for HA.
 
+### Large monorepos / Additional workloads
+
+If you have any [large monorepos](#large-monorepos) or significant [additional workloads](#additional-workloads), these can affect the performance of the environment notably and adjustments may be required depending on the context.
+
+If either applies to you, it's encouraged for you to reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
+for further guidance.
+
 ### Cloud provider services
 
 For all the previously described strategies, you can run select GitLab components on equivalent cloud provider services such as the PostgreSQL database or Redis.
@@ -157,12 +166,17 @@ graph TD
    L2B --> L3A
    L3A -->|Yes| L4A
    L3A -->|No| L4D
+   L5A("<a href=#gitlab-geo-cross-regional-distribution-disaster--recovery>Do you need cross regional distribution</br> or disaster recovery?"</a>) --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
+   L4A ~~~ L5A
+   L4B ~~~ L5A
+   L4C ~~~ L5A
+   L4D ~~~ L5A
 
-   L5A("<a href=#gitlab-geo-cross-regional-distribution-disaster--recovery>Do you need cross regional distribution or disaster recovery?"</a>) --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
-   L4A -.- L5A
-   L4B -.- L5A
-   L4C -.- L5A
-   L4D -.- L5A
+   L5B("Do you have <a href=#large-monorepos>Large Monorepos</a> or expect</br> to have substantial <a href=#additional-workloads>additional workloads</a>?") --> |Yes| L6B><b>Additional Recommendation</b><br><br> Contact Customer Success Manager or Support]
+   L4A ~~~ L5B
+   L4B ~~~ L5B
+   L4C ~~~ L5B
+   L4D ~~~ L5B
 
 classDef default fill:#FCA326
 linkStyle default fill:none,stroke:#7759C2
@@ -196,6 +210,24 @@ However, this does not constitute a guarantee for every potential permutation.
 
 See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 
+### Large Monorepos
+
+The reference architectures were tested with repositories of varying sizes that follow best practices.
+
+**However, [large monorepos](../../user/project/repository/managing_large_repositories.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.**
+Their presence, as well as how they are used, can put a significant strain on the entire system from Gitaly through to the underlying infrastructure.
+
+WARNING:
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
+As such, large monorepos come with notable cost. If you have such a repository we strongly recommend
+the following guidance is followed to ensure the best chance of good performance and to keep costs in check:
+
+- [Optimize the Large Monorepo](../../user/project/repository/managing_large_repositories.md#optimizing-large-repositories-for-gitlab). Using features such as [LFS](../../user/project/repository/managing_large_repositories.md#using-lfs-for-large-blobs) to not store binaries, and other approaches for reducing repository size, can dramatically improve performance and reduce costs.
+- Depending on the monorepo, increased environment specifications may be required to compensate. Gitaly in particular will likely require additional resources along with Praefect, GitLab Rails, and Load Balancers. This depends notably on the monorepo itself and the usage against it.
+- When the monorepo is significantly large (20 gigabytes or more) further additional strategies maybe required such as even further increased specifications or in some cases a separate Gitaly backend for the monorepo alone.
+- Network and disk bandwidth is another potential consideration with large monorepos. In very heavy cases, it's possible to see bandwidth saturation if there's a high amount of concurrent clones (such as with CI). It's strongly recommended [reducing full clones wherever possible](../../user/project/repository/managing_large_repositories.md#reduce-concurrent-clones-in-cicd) in this scenario. Otherwise, additional environment specifications may be required to increase bandwidth, but this differs between cloud providers.
+
 ### Additional workloads
 
 These reference architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab
@@ -212,38 +244,13 @@ You may need to adjust the suggested specifications to compensate if you use, fo
 - [System hooks](../system_hooks.md).
 
 As a general rule, you should have robust monitoring in place to measure the impact of any additional workloads to
-inform any changes needed to be made.
+inform any changes needed to be made. It's also strongly encouraged for you to reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
+for further guidance.
 
 ### No swap
 
 Swap is not recommended in the reference architectures. It's a failsafe that impacts performance greatly. The
 reference architectures are designed to have memory headroom to avoid needing swap.
-
-### Large repositories
-
-The relevant reference architectures were tested with repositories of varying sizes that follow best practices.
-
-However, large repositories or monorepos (several gigabytes or more) can **significantly** impact the performance
-of Git and in turn the environment itself if best practices aren't being followed such as not storing binary or blob
-files in LFS.
-
-Repositories are at the core of any environment and the consequences can be wide-ranging when they are not optimized.
-Some examples of this impact include:
-
-- [Git packing operations](https://git-scm.com/book/en/v2/Git-Internals-Packfiles) taking longer and consuming high CPU
-  and memory resources.
-- Git checkouts taking longer that affect both users and CI/CD pipelines alike.
-
-As such, large repositories come with notable cost and typically require more resources to handle, (significantly more
-in some cases). You should review large repositories to ensure they maintain good health and reduce their size wherever
-possible.
-
-NOTE:
-If best practices aren't followed and large repositories are present on the environment, increased Gitaly specs may be
-required to ensure stable performance.
-
-Refer to the [Managing large repositories documentation](../../user/project/repository/managing_large_repositories.md)
-for more information and guidance.
 
 ### Praefect PostgreSQL
 
