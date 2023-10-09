@@ -1464,10 +1464,11 @@ Input type: `AuditEventsStreamingHeadersUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreamingheadersupdateactive"></a>`active` | [`Boolean`](#boolean) | Boolean option determining whether header is active or not. |
 | <a id="mutationauditeventsstreamingheadersupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsstreamingheadersupdateheaderid"></a>`headerId` | [`AuditEventsStreamingHeaderID!`](#auditeventsstreamingheaderid) | Header to update. |
-| <a id="mutationauditeventsstreamingheadersupdatekey"></a>`key` | [`String!`](#string) | Header key. |
-| <a id="mutationauditeventsstreamingheadersupdatevalue"></a>`value` | [`String!`](#string) | Header value. |
+| <a id="mutationauditeventsstreamingheadersupdatekey"></a>`key` | [`String`](#string) | Header key. |
+| <a id="mutationauditeventsstreamingheadersupdatevalue"></a>`value` | [`String`](#string) | Header value. |
 
 #### Fields
 
@@ -1524,10 +1525,11 @@ Input type: `AuditEventsStreamingInstanceHeadersUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminginstanceheadersupdateactive"></a>`active` | [`Boolean`](#boolean) | Boolean option determining whether header is active or not. |
 | <a id="mutationauditeventsstreaminginstanceheadersupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsstreaminginstanceheadersupdateheaderid"></a>`headerId` | [`AuditEventsStreamingInstanceHeaderID!`](#auditeventsstreaminginstanceheaderid) | Header to update. |
-| <a id="mutationauditeventsstreaminginstanceheadersupdatekey"></a>`key` | [`String!`](#string) | Header key. |
-| <a id="mutationauditeventsstreaminginstanceheadersupdatevalue"></a>`value` | [`String!`](#string) | Header value. |
+| <a id="mutationauditeventsstreaminginstanceheadersupdatekey"></a>`key` | [`String`](#string) | Header key. |
+| <a id="mutationauditeventsstreaminginstanceheadersupdatevalue"></a>`value` | [`String`](#string) | Header value. |
 
 #### Fields
 
