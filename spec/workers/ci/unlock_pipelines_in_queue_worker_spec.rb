@@ -31,8 +31,9 @@ RSpec.describe Ci::UnlockPipelinesInQueueWorker, :unlock_pipelines, :clean_gitla
           unlocked_pipeline_artifacts: 2
         )
 
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:remaining_pending, 1)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:pipeline_id, pipeline_1.id)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:project, pipeline_1.project.full_path)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:remaining_pending, 1)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:skipped_already_leased, false)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:skipped_already_unlocked, false)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:exec_timeout, false)

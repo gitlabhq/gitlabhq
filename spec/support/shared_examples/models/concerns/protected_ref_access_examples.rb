@@ -52,7 +52,11 @@ RSpec.shared_examples 'protected ref access' do |association|
   end
 
   describe '#check_access' do
+    let_it_be(:group) { create(:group) }
+    # Making a project public to avoid false positives tests
+    let_it_be(:project) { create(:project, :public, group: group) }
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:protected_ref) { create(association, project: project) }
 
     let(:access_level) { ::Gitlab::Access::DEVELOPER }
 
@@ -69,6 +73,47 @@ RSpec.shared_examples 'protected ref access' do |association|
 
     context 'when current_user is nil' do
       it { expect(subject.check_access(nil)).to eq(false) }
+    end
+
+    context 'when current_user access exists without membership' do
+      let(:other_user) { create(:user) }
+      let(:user_access) do
+        described_class.new(association => protected_ref, access_level: access_level, user_id: other_user.id)
+      end
+
+      let(:enable_ff) { false }
+
+      before do
+        stub_feature_flags(check_membership_in_protected_ref_access: enable_ff)
+      end
+
+      it 'does not check membership if check_membership_in_protected_ref_access FF is disabled' do
+        expect(project).not_to receive(:member?).with(other_user)
+
+        user_access.check_access(other_user)
+      end
+
+      context 'when check_membership_in_protected_ref_access FF is enabled' do
+        let(:enable_ff) { true }
+
+        it 'does check membership' do
+          expect(project).to receive(:member?).with(other_user)
+
+          user_access.check_access(other_user)
+        end
+
+        it 'returns false' do
+          expect(user_access.check_access(other_user)).to be_falsey
+        end
+
+        context 'when user has inherited membership' do
+          let!(:inherited_membership) { create(:group_member, group: group, user: other_user) }
+
+          it do
+            expect(user_access.check_access(other_user)).to be_truthy
+          end
+        end
+      end
     end
 
     context 'when access_level is NO_ACCESS' do

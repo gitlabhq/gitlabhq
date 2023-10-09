@@ -465,6 +465,8 @@
   - 1
 - - namespaces_process_sync_events
   - 1
+- - namespaces_storage_usage_export
+  - 1
 - - namespaces_sync_namespace_name
   - 1
 - - namespaces_update_root_statistics

@@ -25,7 +25,7 @@ namespace :tw do
       CodeOwnerRule.new('AI Model Validation', '@sselhorn'),
       CodeOwnerRule.new('Analytics Instrumentation', '@lciutacu'),
       CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
-      CodeOwnerRule.new('Application Performance', '@jglassman1'),
+      CodeOwnerRule.new('Cloud Connector', '@jglassman1'),
       CodeOwnerRule.new('Authentication and Authorization', '@jglassman1'),
       # CodeOwnerRule.new('Billing and Subscription Management', ''),
       CodeOwnerRule.new('Code Creation', '@jglassman1'),

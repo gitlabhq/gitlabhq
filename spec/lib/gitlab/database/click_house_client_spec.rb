@@ -112,6 +112,28 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
 
         results = ClickHouse::Client.select(select_query, :main)
         expect(results).to be_empty
+
+        # Async, lazy deletion
+        # Set the `deleted` field to 1 and update the `updated_at` timestamp.
+        # Based on the highest version of the given row (updated_at), CH will eventually remove the row.
+        # See: https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/replacingmergetree#is_deleted
+        soft_delete_query = ClickHouse::Client::Query.new(
+          raw_query: %{
+            INSERT INTO events (id, deleted, updated_at)
+            VALUES ({id:UInt64}, 1, {updated_at:DateTime64(6, 'UTC')})
+            },
+          placeholders: { id: event2.id, updated_at: (event2.updated_at + 2.hours).utc.to_f }
+        )
+
+        ClickHouse::Client.execute(soft_delete_query, :main)
+
+        select_query = ClickHouse::Client::Query.new(
+          raw_query: 'SELECT * FROM events FINAL WHERE id = {id:UInt64}',
+          placeholders: { id: event2.id }
+        )
+
+        results = ClickHouse::Client.select(select_query, :main)
+        expect(results).to be_empty
       end
     end
   end

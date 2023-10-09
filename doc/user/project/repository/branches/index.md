@@ -288,11 +288,7 @@ To do this:
 
 ## Configure rules for target branches **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`.
-On GitLab.com, this feature is not available.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`. Enabled by default.
 
 Some projects use multiple long-term branches for development, like `develop` and `qa`.
 In these projects, you might want to keep `main` as the default branch, but expect
