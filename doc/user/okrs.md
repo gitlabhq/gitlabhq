@@ -354,6 +354,51 @@ Prerequisites:
 By default, child OKRs are ordered by creation date.
 To reorder them, drag them around.
 
+### Schedule OKR check-in reminders
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422761) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `okr_checkin_reminders`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `okr_checkin_reminders`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Schedule check-in reminders to remind your team to provide status updates on the key results you care
+about.
+Reminders are sent to all assignees of descendant objects and key results as email notifications
+and to-do items.
+Users can't unsubscribe from the email notifications, but check-in reminders can be turned off.
+Reminders are sent on Tuesdays.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- There must be at least one objective with at least one key result in the project.
+- You can schedule reminders only for top-level objectives.
+  Scheduling a check-in reminder for child objectives has no effect.
+  The setting from the top-level objective is inherited to all child objectives.
+
+To schedule a recurring reminder for an objective, in a new comment use the `/checkin_reminder <cadence>`
+[quick action](project/quick_actions.md#work-items).
+The options for `<cadence>` are:
+
+- `weekly`
+- `twice-monthly`
+- `monthly`
+- `never` (default)
+
+For example, to schedule a weekly check-in reminder, enter:
+
+```plaintext
+/checkin_reminder weekly
+```
+
+To turn off a check-in reminder, enter:
+
+```plaintext
+/checkin_reminder never
+```
+
 ## Confidential OKRs
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.

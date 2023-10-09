@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
+RSpec.describe LastGroupOwnerAssigner do
   describe "#execute" do
     let_it_be(:user, reload: true) { create(:user) }
     let_it_be(:group) { create(:group) }

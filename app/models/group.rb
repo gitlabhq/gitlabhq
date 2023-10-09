@@ -512,15 +512,9 @@ class Group < Namespace
                               members_with_parents(only_active_users: false)
                             end
 
-    owners = []
-
-    members_from_hiearchy.all_owners.each_batch do |relation|
-      owners += relation.preload(:user).load.reject do |member|
-        member.user.project_bot?
-      end
-    end
-
-    owners
+    members_from_hiearchy.all_owners.left_outer_joins(:user)
+      .merge(User.without_project_bot)
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455")
   end
 
   def ldap_synced?
