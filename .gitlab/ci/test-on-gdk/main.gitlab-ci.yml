@@ -160,7 +160,7 @@ gdk-qa-reliable:
     QA_RUN_TYPE: gdk-qa-blocking
   parallel: 10
   rules:
-    - if: $CI_MERGE_REQUEST_LABELS =~ /devops::govern|devops::create|devops::verify/
+    - if: $CI_MERGE_REQUEST_LABELS =~ /devops::govern|devops::create|devops::verify|devops::manage|devops::data stores/
     - when: on_success
       allow_failure: true
 
