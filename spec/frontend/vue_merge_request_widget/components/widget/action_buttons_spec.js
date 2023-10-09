@@ -1,4 +1,4 @@
-import { GlButton, GlDropdownItem } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Actions from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 
@@ -37,7 +37,7 @@ describe('~/vue_merge_request_widget/components/widget/action_buttons.vue', () =
         tertiaryButtons: [{ text: 'hello world', href: 'https://gitlab.com', target: '_blank' }],
       });
 
-      expect(wrapper.findAllComponents(GlDropdownItem)).toHaveLength(1);
+      expect(wrapper.findAllComponents(GlDisclosureDropdown)).toHaveLength(1);
     });
   });
 });

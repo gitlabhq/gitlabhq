@@ -14,7 +14,7 @@ The general steps of refactoring existing code to modularization could be:
 1. Use the same namespace for all classes and modules related to the same [bounded context](bounded_contexts.md).
 
     - **Why?** Without even a rough understanding of the domains at play in the codebase it is difficult to draw a plan.
-      Having well namespaced code that everyone else can follow is also the pre-requisite for modularization. 
+      Having well namespaced code that everyone else can follow is also the pre-requisite for modularization.
     - If a domain is already well namespaced and no similar or related namespaces exist, we can move directly to the
       next step.
 1. Prepare Rails development for Packwerk packages. This is a **once off step** with maybe some improvements
@@ -50,4 +50,3 @@ The general steps of refactoring existing code to modularization could be:
 
 Once we have Packwerk configured for the Rails application (step 2 above), emerging domains could be directly implemented
 as Packwerk packages, benefiting from isolation and clear interface immediately.
-   

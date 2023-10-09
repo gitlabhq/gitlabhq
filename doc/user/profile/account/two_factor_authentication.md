@@ -167,7 +167,7 @@ On self-managed GitLab, by default this feature is available. On GitLab.com this
 
 You can use Cisco Duo as an OTP provider in GitLab.
 
-DUO® is a registered trademark of Cisco Systems, Inc., and/or its affiliates in the United States and certain other countries. 
+DUO® is a registered trademark of Cisco Systems, Inc., and/or its affiliates in the United States and certain other countries.
 
 #### Prerequisites
 

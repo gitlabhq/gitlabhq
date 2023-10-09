@@ -69,10 +69,10 @@ For example, Azure AD sends the Azure Group Object ID instead of the name. Use t
 ```
 
 Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
-are not accepted as a source of groups. 
+are not accepted as a source of groups.
 
 For more information on configuring the
-required group attribute name in the SAML identity provider's settings, see 
+required group attribute name in the SAML identity provider's settings, see
 example configurations for [Azure AD](../../../user/group/saml_sso/example_saml_config.md#group-sync) and [Okta](../../../user/group/saml_sso/example_saml_config.md#group-sync-1).
 
 ## Configure SAML Group Links

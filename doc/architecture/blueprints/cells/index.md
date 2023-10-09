@@ -347,7 +347,11 @@ The following list of impacted features only represents placeholders that still 
 - [Cells: Agent for Kubernetes](impacted_features/agent-for-kubernetes.md)
 - [Cells: Data pipeline ingestion](impacted_features/data-pipeline-ingestion.md)
 - [Cells: GitLab Pages](impacted_features/gitlab-pages.md)
+- [Cells: Group Transfer](impacted_features/group-transfer.md)
+- [Cells: Issues](impacted_features/issues.md)
+- [Cells: Merge Requests](impacted_features/merge-requests.md)
 - [Cells: Personal Access Tokens](impacted_features/personal-access-tokens.md)
+- [Cells: Project Transfer](impacted_features/project-transfer.md)
 - [Cells: Router Endpoints Classification](impacted_features/router-endpoints-classification.md)
 - [Cells: Schema changes (Postgres and Elasticsearch migrations)](impacted_features/schema-changes.md)
 - [Cells: Uploads](impacted_features/uploads.md)
@@ -413,7 +417,7 @@ The design goals of the Cells architecture describe that [all Cells are under a 
 
 - Cell-local features should be limited to those related to managing the Cell, but never be a feature where the Cell semantic is exposed to the customer.
 - The Cells architecture wants to freely control the distribution of Organization and customer data across Cells without impacting users when data is migrated.
- 
+
 Cluster-wide features are strongly discouraged because:
 
 - They might require storing a substantial amount of data cluster-wide which decreases [scalability headroom](goals.md#provides-100x-headroom).

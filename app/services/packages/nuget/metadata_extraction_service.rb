@@ -23,10 +23,9 @@ module Packages
       end
 
       def nuspec_file_content
-        ExtractMetadataFileService
+        ProcessPackageFileService
           .new(package_file)
-          .execute
-          .payload
+          .execute[:nuspec_file_content]
       end
     end
   end

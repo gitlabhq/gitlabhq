@@ -877,7 +877,7 @@ Patroni uses a Unix socket to manage the PostgreSQL instance. Therefore, a conne
 
 Replicas use the replication user (`gitlab_replicator` by default) to communicate with the leader. For this user,
 you can choose between `trust` and `md5` authentication. If you set `postgresql['sql_replication_password']`,
-Patroni uses `md5` authentication, and otherwise falls back to `trust`. 
+Patroni uses `md5` authentication, and otherwise falls back to `trust`.
 
 Based on the authentication you choose, you must specify the cluster CIDR in the `postgresql['md5_auth_cidr_addresses']` or `postgresql['trust_auth_cidr_addresses']` settings.
 

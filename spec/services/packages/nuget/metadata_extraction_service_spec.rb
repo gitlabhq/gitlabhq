@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :package_registry do
-  let_it_be(:package_file) { create(:nuget_package).package_files.first }
-
-  subject { described_class.new(package_file) }
+  let_it_be(:package_file) { build(:package_file, :nuget) }
+  let(:service) { described_class.new(package_file) }
 
   describe '#execute' do
+    subject { service.execute }
+
     let(:nuspec_file_content) do
-      <<~XML.squish
+      <<~XML
         <?xml version="1.0" encoding="utf-8"?>
         <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
           <metadata>
@@ -49,18 +50,15 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
     end
 
     it 'calls the necessary services and executes the metadata extraction' do
-      expect(::Packages::Nuget::ExtractMetadataFileService).to receive(:new).with(package_file) do
-        double.tap do |service|
-          expect(service).to receive(:execute).and_return(double(payload: nuspec_file_content))
-        end
+      expect_next_instance_of(Packages::Nuget::ProcessPackageFileService, package_file) do |service|
+        expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: { nuspec_file_content: nuspec_file_content }))
       end
 
-      expect(::Packages::Nuget::ExtractMetadataContentService).to receive_message_chain(:new, :execute)
-        .with(nuspec_file_content).with(no_args).and_return(double(payload: expected_metadata))
+      expect_next_instance_of(Packages::Nuget::ExtractMetadataContentService, nuspec_file_content) do |service|
+        expect(service).to receive(:execute).and_call_original
+      end
 
-      metadata = subject.execute.payload
-
-      expect(metadata).to eq(expected_metadata)
+      expect(subject.payload).to eq(expected_metadata)
     end
   end
 end

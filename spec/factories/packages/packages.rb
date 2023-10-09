@@ -199,8 +199,14 @@ FactoryBot.define do
       sequence(:version) { |n| "1.0.#{n}" }
       package_type { :nuget }
 
-      after :create do |package|
-        create :package_file, :nuget, package: package, file_name: "#{package.name}.#{package.version}.nupkg"
+      transient do
+        without_package_files { false }
+      end
+
+      after :create do |package, evaluator|
+        unless evaluator.without_package_files
+          create :package_file, :nuget, package: package, file_name: "#{package.name}.#{package.version}.nupkg"
+        end
       end
 
       trait(:with_metadatum) do

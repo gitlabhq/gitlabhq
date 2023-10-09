@@ -346,7 +346,7 @@ enum in the Subscription model with a single table is because we needs
 specific associations and validations for each (an
 `ActivityPub::ProjectSubscription` belongs to a Project, an
 `ActivityPub::UserSubscription` does not). It also gives us more room for
-extensibility in the future. 
+extensibility in the future.
 
 #### Unfollow
 
@@ -386,7 +386,7 @@ Actually, GitLab already implements the Webfinger protocol endpoint through
 Doorkeeper
 ([this is the action that maps to its route](https://github.com/doorkeeper-gem/doorkeeper-openid_connect/blob/5987683ccc22262beb6e44c76ca4b65288d6067a/app/controllers/doorkeeper/openid_connect/discovery_controller.rb#L14-L16)),
 implemented in GitLab
-[in JwksController](https://gitlab.com/gitlab-org/gitlab/-/blob/efa76816bd0603ba3acdb8a0f92f54abfbf5cc02/app/controllers/jwks_controller.rb). 
+[in JwksController](https://gitlab.com/gitlab-org/gitlab/-/blob/efa76816bd0603ba3acdb8a0f92f54abfbf5cc02/app/controllers/jwks_controller.rb).
 
 There is no incompatibility here, we can just extend this controller.
 Although, we'll probably have to rename it, as it won't be related to Jwks

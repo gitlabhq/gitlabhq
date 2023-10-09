@@ -284,7 +284,7 @@ FactoryBot.define do
     end
 
     trait(:nuget) do
-      package
+      package { association(:nuget_package, without_package_files: true) }
       file_fixture { 'spec/fixtures/packages/nuget/package.nupkg' }
       file_name { 'package.nupkg' }
       file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
@@ -292,7 +292,7 @@ FactoryBot.define do
     end
 
     trait(:snupkg) do
-      package
+      package { association(:nuget_package) }
       file_fixture { 'spec/fixtures/packages/nuget/package.snupkg' }
       file_name { 'package.snupkg' }
       file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }

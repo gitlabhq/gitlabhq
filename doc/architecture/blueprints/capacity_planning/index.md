@@ -97,7 +97,7 @@ There is no need for a persistent state across Tamland runs aside from the S3 bu
 
 ### Benefits of executing inside tenant environments
 
-Each Tamland run for a single environment (tenant) can take a few hours to execute. With the number of tenants expected to increase significantly, we need to consider scaling the execution environment for Tamland. 
+Each Tamland run for a single environment (tenant) can take a few hours to execute. With the number of tenants expected to increase significantly, we need to consider scaling the execution environment for Tamland.
 
 In this design, Tamland becomes a part of the Dedicated stack and a component of the individual tenant environment. As such, scaling the execution environment for Tamland is solved by design, because tenant forecasts execute inherently parallel in their respective environments.
 
@@ -109,7 +109,7 @@ Tamland is released as a Docker image, see [Tamland's README](https://gitlab.com
 
 The manifest contains information about which saturation metrics to forecast on (see this [manifest example](https://gitlab.com/gitlab-com/gl-infra/tamland/-/blob/62854e1afbc2ed3160a55a738ea587e0cf7f994f/saturation.json) for GitLab.com). This will be generated from the metrics catalog and will be the same for all tenants for starters.
 
-In order to generate the manifest from the metrics catalog, we setup dedicated GitLab project `tamland-dedicated` . On a regular basis, a scheduled pipeline grabs the metrics catalog, generates the JSON manifest from it and commits this to the project. 
+In order to generate the manifest from the metrics catalog, we setup dedicated GitLab project `tamland-dedicated` . On a regular basis, a scheduled pipeline grabs the metrics catalog, generates the JSON manifest from it and commits this to the project.
 
 On the Dedicated tenants, we download the latest version of the committed JSON manifest from `tamland-dedicated` and use this as input to execute Tamland.
 
@@ -125,7 +125,7 @@ An alternative design, we don't consider an option at this point, is to setup Ta
 
 ![tamland-as-a-service](images/tamland-as-a-service.png)
 
-In this design, a central Prometheus/Thanos instance is needed to provide the metrics data for Tamland. Dedicated tenants use remote-write to push their Prometheus data to the central Thanos instance. 
+In this design, a central Prometheus/Thanos instance is needed to provide the metrics data for Tamland. Dedicated tenants use remote-write to push their Prometheus data to the central Thanos instance.
 
 Tamland is set up to run on a regular basis and consume metrics data from the single Thanos instance. It stores its results and cache in S3, similar to the other design.
 
@@ -136,4 +136,4 @@ This design **has not been chosen** because of both technical and organisational
 1. Our central Thanos instance currently doesn't have metrics data for Dedicated tenants as of the start of FY24Q3.
 1. Extra work required to set up scalable execution environment.
 1. Thanos is considered a bottleneck as it provides data for all tenants and this poses a risk of overloading it when we execute the forecasting for a high number of tenants.
-1. We strive to build out Tamland into a tool of more general use. We expect a better outcome in terms of design, documentation and process efficiency by building it as a tool for other teams to use and not offering it as a service. In the long run, we might be able to integrate Tamland (as a tool) inside self-managed environments or publish Tamland as an open source forecasting tool. This would not be feasible if we were hosting it as a service. 
+1. We strive to build out Tamland into a tool of more general use. We expect a better outcome in terms of design, documentation and process efficiency by building it as a tool for other teams to use and not offering it as a service. In the long run, we might be able to integrate Tamland (as a tool) inside self-managed environments or publish Tamland as an open source forecasting tool. This would not be feasible if we were hosting it as a service.

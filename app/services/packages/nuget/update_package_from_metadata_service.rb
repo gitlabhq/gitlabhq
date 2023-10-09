@@ -57,6 +57,7 @@ module Packages
         build_infos = package_to_destroy&.build_infos || []
 
         update_package(target_package, build_infos)
+        update_symbol_files(target_package, package_to_destroy) if symbol_package?
         ::Packages::UpdatePackageFileService.new(@package_file, package_id: target_package.id, file_name: package_filename)
                                             .execute
         package_to_destroy&.destroy!
@@ -76,6 +77,12 @@ module Packages
         package.build_infos << build_infos if build_infos.any?
       rescue StandardError => e
         raise InvalidMetadataError, e.message
+      end
+
+      def update_symbol_files(package, package_to_destroy)
+        return if Feature.disabled?(:index_nuget_symbol_files, package.project)
+
+        package_to_destroy.nuget_symbols.update_all(package_id: package.id)
       end
 
       def valid_metadata?

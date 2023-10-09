@@ -784,15 +784,6 @@ GitLab Auto Rollback is turned off by default. To turn it on:
 1. Select the checkbox for **Enable automatic rollbacks**.
 1. Select **Save changes**.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-09-22' -->
-
-### Monitor environments (removed)
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/10107) in GitLab 14.7
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
-
-<!--- end_remove -->
-
 ### Web terminals (deprecated)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.

@@ -14,7 +14,7 @@ that will create:
 
 - A deb package for Ubuntu 16.04, available as a build artifact, and
 - A Docker image. The Docker image is pushed to the
-  [Omnibus GitLab container registry](https://gitlab.com/gitlab-org/omnibus-gitlab/container_registry). Images for the GitLab Enterprise Edition are named `gitlab-ee`. Images for the GitLab Community Edition are named `gitlab-ce`. 
+  [Omnibus GitLab container registry](https://gitlab.com/gitlab-org/omnibus-gitlab/container_registry). Images for the GitLab Enterprise Edition are named `gitlab-ee`. Images for the GitLab Community Edition are named `gitlab-ce`.
 - The image tag is the commit that triggered the pipeline.
 
 When you push a commit to either the GitLab CE or GitLab EE project, the

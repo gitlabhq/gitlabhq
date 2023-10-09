@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :package_registry do
-  let_it_be_with_reload(:package_file) { create(:nuget_package).package_files.first }
+  let_it_be(:package_file) { build(:package_file, :nuget) }
+  let_it_be(:package_zip_file) { Zip::File.new(package_file.file) }
 
-  let(:service) { described_class.new(package_file) }
+  let(:service) { described_class.new(package_zip_file) }
 
   describe '#execute' do
     subject { service.execute }
@@ -39,35 +40,9 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
       end
     end
 
-    context 'with invalid package file' do
-      let(:package_file) { nil }
-
-      it_behaves_like 'raises an error', 'invalid package file'
-    end
-
-    context 'when linked to a non nuget package' do
-      before do
-        package_file.package.maven!
-      end
-
-      it_behaves_like 'raises an error', 'invalid package file'
-    end
-
-    context 'with a 0 byte package file' do
-      before do
-        allow_next_instance_of(Packages::PackageFileUploader) do |instance|
-          allow(instance).to receive(:size).and_return(0)
-        end
-      end
-
-      it_behaves_like 'raises an error', 'invalid package file'
-    end
-
     context 'without the nuspec file' do
       before do
-        allow_next_instance_of(Zip::File) do |instance|
-          allow(instance).to receive(:glob).and_return([])
-        end
+        allow(package_zip_file).to receive(:glob).and_return([])
       end
 
       it_behaves_like 'raises an error', 'nuspec file not found'
@@ -75,9 +50,9 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
 
     context 'with a too big nuspec file' do
       before do
-        allow_next_instance_of(Zip::File) do |instance|
-          allow(instance).to receive(:glob).and_return([instance_double(File, size: 6.megabytes)])
-        end
+        allow(package_zip_file).to receive(:glob).and_return(
+          [instance_double(File, size: described_class::MAX_FILE_SIZE + 1)]
+        )
       end
 
       it_behaves_like 'raises an error', 'nuspec file too big'
@@ -85,10 +60,7 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
 
     context 'with a corrupted nupkg file with a wrong entry size' do
       let(:nupkg_fixture_path) { expand_fixture_path('packages/nuget/corrupted_package.nupkg') }
-
-      before do
-        allow(Zip::File).to receive(:new).and_return(Zip::File.new(nupkg_fixture_path, false, false))
-      end
+      let(:package_zip_file) { Zip::File.new(nupkg_fixture_path) }
 
       it_behaves_like 'raises an error',
         <<~ERROR.squish

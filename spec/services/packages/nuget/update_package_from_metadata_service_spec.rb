@@ -261,6 +261,26 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
           expect(package_file.package).to eq(existing_package)
         end
 
+        context 'with packages_nuget_symbols records' do
+          before do
+            create_list(:nuget_symbol, 2, package: package)
+          end
+
+          it 'links the symbol records to the existing package' do
+            expect { subject }.to change { existing_package.nuget_symbols.count }.by(2)
+          end
+
+          context 'when the feature flag is disabled' do
+            before do
+              stub_feature_flags(index_nuget_symbol_files: false)
+            end
+
+            it 'does not link the symbol records to the existing package' do
+              expect { subject }.not_to change { existing_package.nuget_symbols.count }
+            end
+          end
+        end
+
         it_behaves_like 'taking the lease'
 
         it_behaves_like 'not updating the package if the lease is taken'

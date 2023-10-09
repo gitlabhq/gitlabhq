@@ -1346,9 +1346,6 @@ msgstr ""
 msgid "%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{integrations_link_end} in preference to a webhook."
 msgstr ""
 
-msgid "%{widget} options"
-msgstr ""
-
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
 msgstr ""
 
@@ -18312,6 +18309,12 @@ msgid "Enterprise User"
 msgstr ""
 
 msgid "Enterprise User Account on GitLab"
+msgstr ""
+
+msgid "Enterprise user associated at: "
+msgstr ""
+
+msgid "Enterprise user of: "
 msgstr ""
 
 msgid "EnterpriseUsers|The user does not match the \"Enterprise User\" definition for the group"

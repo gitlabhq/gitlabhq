@@ -69,6 +69,7 @@
               = @user.external? ? _('Yes') : _('No')
 
           = render_if_exists 'admin/users/provisioned_by', user: @user
+          = render_if_exists 'admin/users/enterprise_group', user: @user
 
           %li
             %span.light= _('Can create top level groups:')
