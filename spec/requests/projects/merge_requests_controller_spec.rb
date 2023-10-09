@@ -14,19 +14,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     let(:merge_request) { create :merge_request, source_project: project, author: user }
 
-    context 'when logged in' do
-      before do
-        group.add_developer(user)
-        login_as(user)
-      end
-
-      it_behaves_like "observability csp policy", described_class do
-        let(:tested_path) do
-          project_merge_request_path(project, merge_request)
-        end
-      end
-    end
-
     context 'when the author of the merge request is banned', feature_category: :insider_threat do
       let_it_be(:user) { create(:user, :banned) }
 

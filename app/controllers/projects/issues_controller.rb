@@ -7,7 +7,6 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include IssuesCalendar
   include RecordUserLastActivity
-  include ::Observability::ContentSecurityPolicy
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
   SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze

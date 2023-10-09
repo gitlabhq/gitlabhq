@@ -64,7 +64,6 @@ Lint/AssignmentInCondition:
     - 'app/services/merge_requests/mergeability_check_service.rb'
     - 'app/services/metrics/dashboard/dynamic_embed_service.rb'
     - 'app/services/packages/debian/parse_debian822_service.rb'
-    - 'app/services/pages/migrate_from_legacy_storage_service.rb'
     - 'app/services/projects/operations/update_service.rb'
     - 'app/services/projects/prometheus/alerts/notify_service.rb'
     - 'app/services/projects/unlink_fork_service.rb'

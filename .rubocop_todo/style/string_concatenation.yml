@@ -24,7 +24,6 @@ Style/StringConcatenation:
     - 'app/services/packages/composer/version_parser_service.rb'
     - 'app/services/packages/debian/generate_distribution_key_service.rb'
     - 'app/services/packages/debian/generate_distribution_service.rb'
-    - 'app/services/pages/zip_directory_service.rb'
     - 'app/services/repositories/base_service.rb'
     - 'app/services/verify_pages_domain_service.rb'
     - 'app/uploaders/gitlab_uploader.rb'

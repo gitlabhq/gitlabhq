@@ -7,10 +7,7 @@ module IdeHelper
       'use-new-web-ide' => use_new_web_ide?.to_s,
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
       'sign-in-path' => new_session_path(current_user),
-      'user-preferences-path' => profile_preferences_path,
-      'editor-font-src-url' => font_url('gitlab-mono/GitLabMono.woff2'),
-      'editor-font-family' => 'GitLab Mono',
-      'editor-font-format' => 'woff2'
+      'user-preferences-path' => profile_preferences_path
     }.merge(use_new_web_ide? ? new_ide_data(project: project) : legacy_ide_data(project: project))
 
     return base_data unless project
@@ -29,6 +26,28 @@ module IdeHelper
 
   private
 
+  def new_ide_fonts
+    {
+      fallback_font_family: 'monospace',
+      font_faces: [{
+        family: 'GitLab Mono',
+        display: 'block',
+        src: [{
+          url: font_url('gitlab-mono/GitLabMono.woff2'),
+          format: 'woff2'
+        }]
+      }, {
+        family: 'GitLab Mono',
+        display: 'block',
+        style: 'italic',
+        src: [{
+          url: font_url('gitlab-mono/GitLabMono-Italic.woff2'),
+          format: 'woff2'
+        }]
+      }]
+    }
+  end
+
   def new_ide_code_suggestions_data
     {}
   end
@@ -38,7 +57,8 @@ module IdeHelper
       'project-path' => project&.path_with_namespace,
       'csp-nonce' => content_security_policy_nonce,
       # We will replace these placeholders in the FE
-      'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path')
+      'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path'),
+      'editor-font' => new_ide_fonts.to_json
     }.merge(new_ide_code_suggestions_data)
   end
 

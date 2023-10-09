@@ -103,10 +103,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           'new-web-ide-help-page-path' =>
             help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
           'csp-nonce' => 'test-csp-nonce',
-          'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path'),
-          'editor-font-family' => 'GitLab Mono',
-          'editor-font-format' => 'woff2',
-          'editor-font-src-url' => a_string_matching(%r{gitlab-mono/GitLabMono})
+          'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path')
         }
       end
 
@@ -117,6 +114,34 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
       it 'returns hash' do
         expect(helper.ide_data(project: nil, fork_info: fork_info, params: params))
           .to include(base_data)
+      end
+
+      it 'includes editor font configuration' do
+        ide_data = helper.ide_data(project: nil, fork_info: fork_info, params: params)
+        editor_font = ::Gitlab::Json.parse(ide_data.fetch('editor-font'), symbolize_names: true)
+
+        expect(editor_font).to include({
+          fallback_font_family: 'monospace',
+          font_faces: [
+            {
+              family: 'GitLab Mono',
+              display: 'block',
+              src: [{
+                url: a_string_matching(%r{gitlab-mono/GitLabMono-[^I]}),
+                format: 'woff2'
+              }]
+            },
+            {
+              family: 'GitLab Mono',
+              display: 'block',
+              style: 'italic',
+              src: [{
+                url: a_string_matching(%r{gitlab-mono/GitLabMono-Italic}),
+                format: 'woff2'
+              }]
+            }
+          ]
+        })
       end
 
       it 'does not use new web ide if feature flag is disabled' do

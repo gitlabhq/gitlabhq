@@ -72,14 +72,6 @@ RSpec.shared_examples 'groups routing' do
     expect(get("groups/#{group_path}/-/harbor/repositories/test/artifacts/test/tags")).to route_to('groups/harbor/tags#index', group_id: group_path, repository_id: 'test', artifact_id: 'test')
   end
 
-  it 'routes to the observability controller explore method' do
-    expect(get("groups/#{group_path}/-/observability/explore")).to route_to('groups/observability#explore', group_id: group_path)
-  end
-
-  it 'routes to the observability controller datasources method' do
-    expect(get("groups/#{group_path}/-/observability/datasources")).to route_to('groups/observability#datasources', group_id: group_path)
-  end
-
   it 'routes to the usage quotas controller' do
     expect(get("groups/#{group_path}/-/usage_quotas")).to route_to("groups/usage_quotas#index", group_id: group_path)
   end

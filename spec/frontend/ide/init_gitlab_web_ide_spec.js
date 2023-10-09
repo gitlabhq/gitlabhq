@@ -36,9 +36,9 @@ const TEST_START_REMOTE_PARAMS = {
   remotePath: '/test/projects/f oo',
   connectionToken: '123abc',
 };
-const TEST_EDITOR_FONT_SRC_URL = 'http://gitlab.test/assets/jetbrains-mono/JetBrainsMono.woff2';
+const TEST_EDITOR_FONT_SRC_URL = 'http://gitlab.test/assets/gitlab-mono/GitLabMono.woff2';
 const TEST_EDITOR_FONT_FORMAT = 'woff2';
-const TEST_EDITOR_FONT_FAMILY = 'JebBrains Mono';
+const TEST_EDITOR_FONT_FAMILY = 'GitLab Mono';
 
 describe('ide/init_gitlab_web_ide', () => {
   let resolveConfirm;
@@ -56,9 +56,20 @@ describe('ide/init_gitlab_web_ide', () => {
     el.dataset.userPreferencesPath = TEST_USER_PREFERENCES_PATH;
     el.dataset.mergeRequest = TEST_MR_ID;
     el.dataset.filePath = TEST_FILE_PATH;
-    el.dataset.editorFontSrcUrl = TEST_EDITOR_FONT_SRC_URL;
-    el.dataset.editorFontFormat = TEST_EDITOR_FONT_FORMAT;
-    el.dataset.editorFontFamily = TEST_EDITOR_FONT_FAMILY;
+    el.dataset.editorFont = JSON.stringify({
+      fallback_font_family: 'monospace',
+      font_faces: [
+        {
+          family: TEST_EDITOR_FONT_FAMILY,
+          src: [
+            {
+              url: TEST_EDITOR_FONT_SRC_URL,
+              format: TEST_EDITOR_FONT_FORMAT,
+            },
+          ],
+        },
+      ],
+    });
     el.dataset.signInPath = TEST_SIGN_IN_PATH;
 
     document.body.append(el);
@@ -121,9 +132,18 @@ describe('ide/init_gitlab_web_ide', () => {
           signIn: TEST_SIGN_IN_PATH,
         },
         editorFont: {
-          srcUrl: TEST_EDITOR_FONT_SRC_URL,
-          fontFamily: TEST_EDITOR_FONT_FAMILY,
-          format: TEST_EDITOR_FONT_FORMAT,
+          fallbackFontFamily: 'monospace',
+          fontFaces: [
+            {
+              family: TEST_EDITOR_FONT_FAMILY,
+              src: [
+                {
+                  url: TEST_EDITOR_FONT_SRC_URL,
+                  format: TEST_EDITOR_FONT_FORMAT,
+                },
+              ],
+            },
+          ],
         },
         handleStartRemote: expect.any(Function),
         handleTracking,

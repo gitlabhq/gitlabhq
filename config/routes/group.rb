@@ -131,11 +131,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :container_registries, only: [:index, :show], controller: 'registry/repositories'
     resource :dependency_proxy, only: [:show, :update]
 
-    namespace :observability do
-      get 'explore'
-      get 'datasources'
-    end
-
     namespace :harbor do
       resources :repositories, only: [:index, :show], constraints: { id: %r{[a-zA-Z./:0-9_\-]+} } do
         resources :artifacts, only: [:index] do

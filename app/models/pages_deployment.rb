@@ -6,8 +6,6 @@ class PagesDeployment < ApplicationRecord
   include FileStoreMounter
   include Gitlab::Utils::StrongMemoize
 
-  MIGRATED_FILE_NAME = "_migrated.zip"
-
   attribute :file_store, :integer, default: -> { ::Pages::DeploymentUploader.default_store }
 
   belongs_to :project, optional: false
@@ -16,7 +14,6 @@ class PagesDeployment < ApplicationRecord
   belongs_to :ci_build, class_name: 'Ci::Build', optional: true
 
   scope :older_than, ->(id) { where('id < ?', id) }
-  scope :migrated_from_legacy_storage, -> { where(file: MIGRATED_FILE_NAME) }
   scope :with_files_stored_locally, -> { where(file_store: ::ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
   scope :project_id_in, ->(ids) { where(project_id: ids) }
@@ -42,10 +39,6 @@ class PagesDeployment < ApplicationRecord
       .older_than(deployment.id)
       .where(project_id: deployment.project_id, path_prefix: deployment.path_prefix)
       .update_all(updated_at: now, deleted_at: time || now)
-  end
-
-  def migrated?
-    file.filename == MIGRATED_FILE_NAME
   end
 
   private

@@ -3,34 +3,20 @@
 import { GlSkeletonLoader, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 
 import {
-  SKELETON_VARIANTS_BY_ROUTE,
   SKELETON_STATE,
   DEFAULT_TIMERS,
-  OBSERVABILITY_ROUTES,
   TIMEOUT_ERROR_LABEL,
   TIMEOUT_ERROR_MESSAGE,
-  SKELETON_VARIANT_EMBED,
   SKELETON_SPINNER_VARIANT,
 } from '../../constants';
-import DashboardsSkeleton from './dashboards.vue';
-import ExploreSkeleton from './explore.vue';
-import ManageSkeleton from './manage.vue';
-import EmbedSkeleton from './embed.vue';
 
 export default {
   components: {
     GlSkeletonLoader,
-    DashboardsSkeleton,
-    ExploreSkeleton,
-    ManageSkeleton,
-    EmbedSkeleton,
     GlAlert,
     GlLoadingIcon,
   },
-  SKELETON_VARIANTS_BY_ROUTE,
   SKELETON_STATE,
-  OBSERVABILITY_ROUTES,
-  SKELETON_VARIANT_EMBED,
   i18n: {
     TIMEOUT_ERROR_LABEL,
     TIMEOUT_ERROR_MESSAGE,
@@ -61,9 +47,6 @@ export default {
     },
     spinnerVariant() {
       return this.variant === SKELETON_SPINNER_VARIANT;
-    },
-    embedVariant() {
-      return this.variant === SKELETON_VARIANT_EMBED;
     },
   },
   mounted() {
@@ -118,9 +101,6 @@ export default {
     showError() {
       this.state = SKELETON_STATE.ERROR;
     },
-    isVariantByRoute(route) {
-      return this.variant === SKELETON_VARIANTS_BY_ROUTE[route];
-    },
   },
 };
 </script>
@@ -128,12 +108,7 @@ export default {
   <div class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch">
     <transition name="fade">
       <div v-if="skeletonVisible" class="gl-px-5 gl-my-5">
-        <dashboards-skeleton v-if="isVariantByRoute($options.OBSERVABILITY_ROUTES.DASHBOARDS)" />
-        <explore-skeleton v-else-if="isVariantByRoute($options.OBSERVABILITY_ROUTES.EXPLORE)" />
-        <manage-skeleton v-else-if="isVariantByRoute($options.OBSERVABILITY_ROUTES.MANAGE)" />
-        <embed-skeleton v-else-if="embedVariant" />
-        <gl-loading-icon v-else-if="spinnerVariant" size="lg" />
-
+        <gl-loading-icon v-if="spinnerVariant" size="lg" />
         <gl-skeleton-loader v-else>
           <rect y="2" width="10" height="8" />
           <rect y="2" x="15" width="15" height="8" />

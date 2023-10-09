@@ -897,7 +897,6 @@ RSpec/VerifiedDoubles:
     - 'spec/services/packages/maven/find_or_create_package_service_spec.rb'
     - 'spec/services/packages/maven/metadata/sync_service_spec.rb'
     - 'spec/services/packages/nuget/metadata_extraction_service_spec.rb'
-    - 'spec/services/pages/zip_directory_service_spec.rb'
     - 'spec/services/post_receive_service_spec.rb'
     - 'spec/services/projects/branches_by_mode_service_spec.rb'
     - 'spec/services/projects/create_service_spec.rb'

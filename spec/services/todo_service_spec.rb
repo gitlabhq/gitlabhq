@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe TodoService, feature_category: :team_planning do
   include AfterNextHelpers
 
+  let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:author) { create(:user) }
   let_it_be(:assignee) { create(:user) }
@@ -657,10 +658,26 @@ RSpec.describe TodoService, feature_category: :team_planning do
     end
 
     describe '#mark_todo' do
-      it 'creates a todo from a issue' do
+      it 'creates a todo from an issue' do
         service.mark_todo(unassigned_issue, author)
 
         should_create_todo(user: author, target: unassigned_issue, action: Todo::MARKED)
+      end
+
+      context 'when issue belongs to a group' do
+        it 'creates a todo from an issue' do
+          group_issue = create(:issue, :group_level, namespace: group)
+          service.mark_todo(group_issue, group_issue.author)
+
+          should_create_todo(
+            user: group_issue.author,
+            author: group_issue.author,
+            target: group_issue,
+            action: Todo::MARKED,
+            project: nil,
+            group: group
+          )
+        end
       end
     end
 
@@ -725,6 +742,22 @@ RSpec.describe TodoService, feature_category: :team_planning do
         service.mark_todo(work_item, author)
 
         should_create_todo(user: author, target: work_item, action: Todo::MARKED)
+      end
+
+      context 'when work item belongs to a group' do
+        it 'creates a todo from a work item' do
+          group_work_item = create(:work_item, :group_level, namespace: group)
+          service.mark_todo(group_work_item, group_work_item.author)
+
+          should_create_todo(
+            user: group_work_item.author,
+            author: group_work_item.author,
+            target: group_work_item,
+            action: Todo::MARKED,
+            project: nil,
+            group: group
+          )
+        end
       end
     end
 

@@ -99,25 +99,6 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
           end
         end
       end
-
-      context 'when deployment were created during migration' do
-        before do
-          allow(deployment).to receive(:migrated?).and_return(true)
-        end
-
-        it 'uses deployment from object storage' do
-          freeze_time do
-            expect(source).to eq(
-              type: 'zip',
-              path: deployment.file.url(expire_at: 1.day.from_now),
-              global_id: "gid://gitlab/PagesDeployment/#{deployment.id}",
-              sha256: deployment.file_sha256,
-              file_size: deployment.size,
-              file_count: deployment.file_count
-            )
-          end
-        end
-      end
     end
   end
 

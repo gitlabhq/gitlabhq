@@ -4,7 +4,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include DiffForPath
   include DiffHelper
   include RendersCommits
-  include ::Observability::ContentSecurityPolicy
 
   skip_before_action :merge_request
   before_action :authorize_create_merge_request_from!

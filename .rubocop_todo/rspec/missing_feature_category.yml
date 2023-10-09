@@ -4910,7 +4910,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/models/project_import_data_spec.rb'
     - 'spec/models/project_label_spec.rb'
     - 'spec/models/project_metrics_setting_spec.rb'
-    - 'spec/models/project_pages_metadatum_spec.rb'
     - 'spec/models/project_repository_spec.rb'
     - 'spec/models/project_snippet_spec.rb'
     - 'spec/models/project_statistics_spec.rb'

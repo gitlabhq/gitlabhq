@@ -695,20 +695,14 @@ class Issue < ApplicationRecord
   # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
   # Make sure to sync this method with issue_policy.rb
   def readable_by?(user)
-    if !project.issues_enabled?
-      false
-    elsif user.can_read_all_resources?
+    if user.can_read_all_resources?
       true
-    elsif project.personal? && project.team.owner?(user)
-      true
-    elsif confidential? && !assignee_or_author?(user)
-      project.member?(user, Gitlab::Access::REPORTER)
     elsif hidden?
       false
-    elsif project.public? || (project.internal? && !user.external?)
-      project.feature_available?(:issues, user)
+    elsif project
+      project_level_readable_by?(user)
     else
-      project.member?(user)
+      group_level_readable_by?(user)
     end
   end
 
@@ -760,6 +754,31 @@ class Issue < ApplicationRecord
   end
 
   private
+
+  def project_level_readable_by?(user)
+    if !project.issues_enabled?
+      false
+    elsif project.personal? && project.team.owner?(user)
+      true
+    elsif confidential? && !assignee_or_author?(user)
+      project.member?(user, Gitlab::Access::REPORTER)
+    elsif project.public? || (project.internal? && !user.external?)
+      project.feature_available?(:issues, user)
+    else
+      project.member?(user)
+    end
+  end
+
+  def group_level_readable_by?(user)
+    # This should never happen as we don't support personal namespace level issues. Just additional safety.
+    return false unless namespace.is_a?(::Group)
+
+    if confidential? && !assignee_or_author?(user)
+      namespace.member?(user, Gitlab::Access::REPORTER)
+    else
+      namespace.member?(user)
+    end
+  end
 
   def due_date_after_start_date
     return unless start_date.present? && due_date.present?

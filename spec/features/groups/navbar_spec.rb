@@ -18,7 +18,6 @@ RSpec.describe 'Group navbar', :with_license, feature_category: :navigation do
 
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })
-    stub_feature_flags(observability_group_tab: false)
     stub_group_wikis(false)
     group.add_maintainer(user)
     sign_in(user)
@@ -87,18 +86,6 @@ RSpec.describe 'Group navbar', :with_license, feature_category: :navigation do
       group.update!(harbor_integration: harbor_integration)
 
       insert_harbor_registry_nav(_('Package Registry'))
-
-      visit group_path(group)
-    end
-
-    it_behaves_like 'verified navigation bar'
-  end
-
-  context 'when observability tab is enabled' do
-    before do
-      stub_feature_flags(observability_group_tab: true)
-
-      insert_observability_nav
 
       visit group_path(group)
     end

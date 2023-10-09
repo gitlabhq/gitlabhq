@@ -5297,12 +5297,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    describe '#pages_path' do
-      it 'returns a path where pages are stored' do
-        expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
-      end
-    end
-
     describe '#migrate_to_hashed_storage!' do
       let(:project) { create(:project, :empty_repo, :legacy_storage) }
 
@@ -5389,12 +5383,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
         expect(project.disk_path).to eq(hashed_path)
-      end
-    end
-
-    describe '#pages_path' do
-      it 'returns a path where pages are stored' do
-        expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
       end
     end
 

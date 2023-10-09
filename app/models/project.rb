@@ -2239,11 +2239,6 @@ class Project < ApplicationRecord
     pages_metadatum&.deployed?
   end
 
-  def pages_path
-    # TODO: when we migrate Pages to work with new storage types, change here to use disk_path
-    File.join(Settings.pages.path, full_path)
-  end
-
   def pages_show_onboarding?
     !(pages_metadatum&.onboarding_complete || pages_metadatum&.deployed)
   end

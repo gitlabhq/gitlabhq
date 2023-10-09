@@ -20,7 +20,6 @@ module Sidebars
         add_menu(Sidebars::Groups::SuperSidebarMenus::SecureMenu.new(context))
         add_menu(Sidebars::Groups::SuperSidebarMenus::DeployMenu.new(context))
         add_menu(Sidebars::Groups::SuperSidebarMenus::OperationsMenu.new(context))
-        add_menu(Sidebars::Groups::SuperSidebarMenus::MonitorMenu.new(context))
         add_menu(Sidebars::Groups::SuperSidebarMenus::AnalyzeMenu.new(context))
 
         pick_from_old_menus(old_menus)

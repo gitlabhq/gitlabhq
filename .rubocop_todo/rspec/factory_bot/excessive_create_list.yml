@@ -36,7 +36,6 @@ RSpec/FactoryBot/ExcessiveCreateList:
     - 'spec/services/database/consistency_check_service_spec.rb'
     - 'spec/services/groups/transfer_service_spec.rb'
     - 'spec/services/notification_service_spec.rb'
-    - 'spec/services/pages/migrate_from_legacy_storage_service_spec.rb'
     - 'spec/services/todo_service_spec.rb'
     - 'spec/support/shared_examples/services/notification_service_shared_examples.rb'
     - 'spec/workers/ssh_keys/expired_notification_worker_spec.rb'

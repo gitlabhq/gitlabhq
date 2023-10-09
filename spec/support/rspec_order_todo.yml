@@ -9354,8 +9354,6 @@
 - './spec/services/pages_domains/create_acme_order_service_spec.rb'
 - './spec/services/pages_domains/obtain_lets_encrypt_certificate_service_spec.rb'
 - './spec/services/pages_domains/retry_acme_order_service_spec.rb'
-- './spec/services/pages/migrate_from_legacy_storage_service_spec.rb'
-- './spec/services/pages/migrate_legacy_storage_to_deployment_service_spec.rb'
 - './spec/services/pages/zip_directory_service_spec.rb'
 - './spec/services/personal_access_tokens/create_service_spec.rb'
 - './spec/services/personal_access_tokens/last_used_service_spec.rb'

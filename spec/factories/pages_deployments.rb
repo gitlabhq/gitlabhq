@@ -8,10 +8,6 @@ FactoryBot.define do
       filename { nil }
     end
 
-    trait(:migrated) do
-      filename { PagesDeployment::MIGRATED_FILE_NAME }
-    end
-
     after(:build) do |deployment, evaluator|
       file = UploadedFile.new("spec/fixtures/pages.zip", filename: evaluator.filename)
 

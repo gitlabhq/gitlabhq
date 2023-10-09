@@ -295,7 +295,6 @@ Style/IfUnlessModifier:
     - 'app/services/packages/maven/find_or_create_package_service.rb'
     - 'app/services/packages/nuget/update_package_from_metadata_service.rb'
     - 'app/services/packages/pypi/create_package_service.rb'
-    - 'app/services/pages/migrate_legacy_storage_to_deployment_service.rb'
     - 'app/services/post_receive_service.rb'
     - 'app/services/projects/container_repository/gitlab/delete_tags_service.rb'
     - 'app/services/projects/container_repository/third_party/delete_tags_service.rb'

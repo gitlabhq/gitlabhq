@@ -3,7 +3,6 @@ import highlightCurrentUser from './highlight_current_user';
 import { renderKroki } from './render_kroki';
 import renderMath from './render_math';
 import renderSandboxedMermaid from './render_sandboxed_mermaid';
-import renderObservability from './render_observability';
 import { renderJSONTable } from './render_json_table';
 
 function initPopovers(elements) {
@@ -21,16 +20,7 @@ export function renderGFM(element) {
     return;
   }
 
-  const [
-    highlightEls,
-    krokiEls,
-    mathEls,
-    mermaidEls,
-    tableEls,
-    userEls,
-    popoverEls,
-    observabilityEls,
-  ] = [
+  const [highlightEls, krokiEls, mathEls, mermaidEls, tableEls, userEls, popoverEls] = [
     '.js-syntax-highlight',
     '.js-render-kroki[hidden]',
     '.js-render-math',
@@ -38,7 +28,6 @@ export function renderGFM(element) {
     '[lang="json"][data-lang-params="table"]',
     '.gfm-project_member',
     '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic',
-    '.js-render-observability',
   ].map((selector) => Array.from(element.querySelectorAll(selector)));
 
   syntaxHighlight(highlightEls);
@@ -47,6 +36,5 @@ export function renderGFM(element) {
   renderSandboxedMermaid(mermaidEls);
   renderJSONTable(tableEls.map((e) => e.parentNode));
   highlightCurrentUser(userEls);
-  renderObservability(observabilityEls);
   initPopovers(popoverEls);
 }
