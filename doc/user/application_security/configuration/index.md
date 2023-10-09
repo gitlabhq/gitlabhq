@@ -53,7 +53,7 @@ You can configure the following security controls:
     For more details, read [DAST on-demand scans](../dast/proxy-based.md#on-demand-scans).
 - [Dependency Scanning](../dependency_scanning/index.md)
   - Select **Configure with a merge request** to create a merge request with the changes required to
-    enable Dependency Scanning. For more details, see [Enable Dependency Scanning via an automatic merge request](../dependency_scanning/index.md#enable-dependency-scanning-via-an-automatic-merge-request).
+    enable Dependency Scanning. For more information, see [Use a preconfigured merge request](../dependency_scanning/index.md#use-a-preconfigured-merge-request).
 - [Container Scanning](../container_scanning/index.md)
   - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Container Scanning. For more details, see

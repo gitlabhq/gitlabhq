@@ -544,7 +544,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
   describe 'group README', :js do
     context 'with gitlab-profile project and README.md' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:project) { create(:project, :readme, namespace: group) }
+      let_it_be(:project) { create(:project, :public, :readme, namespace: group) }
 
       it 'renders README block on group page' do
         visit group_path(group)

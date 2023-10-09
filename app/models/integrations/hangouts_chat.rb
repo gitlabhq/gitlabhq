@@ -30,12 +30,15 @@ module Integrations
     end
 
     def help
-      docs_link = ActionController::Base.helpers.link_to _('How do I set up a Google Chat webhook?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/hangouts_chat'), target: '_blank', rel: 'noopener noreferrer'
-      s_('Before enabling this integration, create a webhook for the room in Google Chat where you want to receive notifications from this project. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+      docs_link = ActionController::Base.helpers.link_to(_('How do I set up a Google Chat webhook?'),
+        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/hangouts_chat'),
+        target: '_blank', rel: 'noopener noreferrer')
+      format(
+        s_('Before enabling this integration, create a webhook for the room in Google Chat where you want to receive ' \
+           'notifications from this project. %{docs_link}').html_safe, docs_link: docs_link.html_safe)
     end
 
-    def default_channel_placeholder
-    end
+    def default_channel_placeholder; end
 
     def self.supported_events
       %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page]
@@ -43,14 +46,20 @@ module Integrations
 
     private
 
-    def notify(message, opts)
+    def notify(message, _opts)
       url = webhook.dup
 
       key = parse_thread_key(message)
       url = Gitlab::Utils.add_url_parameters(url, { threadKey: key }) if key
 
-      simple_text = parse_simple_text_message(message)
-      ::HangoutsChat::Sender.new(url).simple(simple_text)
+      payload = { text: parse_simple_text_message(message) }
+
+      Gitlab::HTTP.post(
+        url,
+        body: payload.to_json,
+        headers: { 'Content-Type' => 'application/json' },
+        parse: nil
+      ).response
     end
 
     # Returns an appropriate key for threading messages in google chat

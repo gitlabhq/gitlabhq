@@ -524,6 +524,39 @@ RSpec.describe GroupsHelper do
     end
   end
 
+  describe '#show_group_readme?' do
+    let_it_be_with_refind(:group) { create(:group, :public) }
+    let_it_be(:current_user) { nil }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    context 'when project is public' do
+      let_it_be(:project) { create(:project, :public, :readme, group: group, path: 'gitlab-profile') }
+
+      it { expect(helper.show_group_readme?(group)).to be(true) }
+    end
+
+    context 'when project is private' do
+      let_it_be(:project) { create(:project, :private, :readme, group: group, path: 'gitlab-profile') }
+
+      context 'when user can see the project' do
+        let_it_be(:current_user) { create(:user) }
+
+        before do
+          project.add_developer(current_user)
+        end
+
+        it { expect(helper.show_group_readme?(group)).to be(true) }
+      end
+
+      it 'when user can not see the project' do
+        expect(helper.show_group_readme?(group)).to be(false)
+      end
+    end
+  end
+
   describe "#enabled_git_access_protocol_options_for_group" do
     subject { helper.enabled_git_access_protocol_options_for_group }
 

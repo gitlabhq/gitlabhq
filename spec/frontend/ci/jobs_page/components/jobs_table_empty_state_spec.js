@@ -6,7 +6,7 @@ describe('Jobs table empty state', () => {
   let wrapper;
 
   const pipelineEditorPath = '/root/project/-/ci/editor';
-  const emptyStateSvgPath = 'assets/jobs-empty-state.svg';
+  const emptyStateSvgPath = 'illustrations/empty-state/empty-pipeline-md.svg';
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 

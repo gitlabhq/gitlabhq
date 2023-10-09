@@ -174,7 +174,9 @@ module GroupsHelper
   end
 
   def show_group_readme?(group)
-    group.group_readme
+    return false unless group.group_readme
+
+    can?(current_user, :read_code, group.readme_project)
   end
 
   def group_settings_readme_app_data(group)

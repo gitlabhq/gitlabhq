@@ -22,8 +22,11 @@ Licenses not in the SPDX list are reported as "Unknown". License information can
 
 ## Configuration
 
-Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration)
-and ensure that its prerequisites are met.
+Prerequisites:
+
+- On GitLab self-managed only, enable [Synchronization with the GitLab License Database](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin Area for the GitLab instance. On GitLab SaaS this step has already been completed.
+- Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#enabling-the-analyzer)
+  and ensure that its prerequisites are met.
 
 From the `.gitlab-ci.yml` file, remove the deprecated line `Jobs/License-Scanning.gitlab-ci.yml`, if
 it's present.
