@@ -49,7 +49,7 @@ class FooPolicy < BasePolicy
   # ...
 
   rule { is_public }.enable :read
-  rule { thing }.prevent :read
+  rule { ~thing }.prevent :read
 
   # equivalently,
   rule { is_public }.policy do

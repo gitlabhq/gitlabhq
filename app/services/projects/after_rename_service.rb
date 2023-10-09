@@ -62,13 +62,9 @@ module Projects
 
     def rename_or_migrate_repository!
       success =
-        if migrate_to_hashed_storage?
-          ::Projects::HashedStorage::MigrationService
-            .new(project, full_path_before)
-            .execute
-        else
-          project.storage.rename_repo(old_full_path: full_path_before, new_full_path: full_path_after)
-        end
+        ::Projects::HashedStorage::MigrationService
+          .new(project, full_path_before)
+          .execute
 
       rename_failed! unless success
     end
@@ -103,11 +99,6 @@ module Projects
         "Project #{project.id} has been renamed from " \
           "#{full_path_before} to #{full_path_after}"
       )
-    end
-
-    def migrate_to_hashed_storage?
-      Gitlab::CurrentSettings.hashed_storage_enabled? &&
-        project.storage_upgradable?
     end
 
     def send_move_instructions?

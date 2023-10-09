@@ -69,7 +69,7 @@ With this method:
 - The instance must be publicly available.
 - The instance must be on GitLab version 15.7 or later.
 - You must set up [OAuth authentication](#set-up-oauth-authentication).
-- If your instance is using HTTPS, your GitLab certificate must be publicly trusted or contain the full chained certificate.
+- If your instance uses HTTPS, your GitLab certificate must be publicly trusted or contain the full chain certificate.
 - Your network must allow inbound and outbound connections between GitLab and Jira. For self-managed instances that are behind a
   firewall and cannot be directly accessed from the internet:
   - Open your firewall and only allow inbound traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).

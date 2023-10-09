@@ -113,6 +113,8 @@ The Organization MVC will contain the following functionality:
 - Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented.
 - Groups. This includes the ability to create, edit, and delete Groups, as well as a Groups overview that can be accessed by the Organization Owner and Users.
 - Projects. This includes the ability to create, edit, and delete Projects, as well as a Projects overview that can be accessed by the Organization Owner and Users.
+- Personal Namespaces. Users get [a personal Namespace in each Organization](../cells/impacted_features/personal-namespaces.md) they interact with.
+- User Profile. Each [User Profile will be scoped to the Organization](../cells/impacted_features/user-profile.md).
 
 ### Organization Access
 
