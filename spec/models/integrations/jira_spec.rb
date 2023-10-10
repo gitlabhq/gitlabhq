@@ -597,7 +597,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     it 'uses the default GitLab::HTTP timeouts' do
       timeouts = Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS
 
-      expect(Gitlab::HTTP).to receive(:httparty_perform_request)
+      expect(Gitlab::HTTP_V2::Client).to receive(:httparty_perform_request)
         .with(Net::HTTP::Get, '/foo', hash_including(timeouts)).and_call_original
 
       jira_integration.client.get('/foo')

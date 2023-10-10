@@ -94,7 +94,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
       it 'streams the download' do
         expected_options = { headers: anything, stream_body: true }
 
-        expect(Gitlab::HTTP).to receive(:perform_request).with(Net::HTTP::Get, anything, expected_options)
+        expect(Gitlab::HTTP).to receive(:get).with(anything, expected_options)
 
         subject.execute
       end

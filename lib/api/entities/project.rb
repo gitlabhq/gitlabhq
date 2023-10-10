@@ -84,6 +84,7 @@ module API
       expose(:feature_flags_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :feature_flags) }
       expose(:infrastructure_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :infrastructure) }
       expose(:monitor_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :monitor) }
+      expose(:model_experiments_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :model_experiments) }
 
       expose(:emails_disabled, documentation: { type: 'boolean' }) { |project, options| project.emails_disabled? }
       expose :emails_enabled, documentation: { type: 'boolean' }

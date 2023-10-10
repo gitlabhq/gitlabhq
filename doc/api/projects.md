@@ -1544,6 +1544,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `feature_flags_access_level`                                | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `infrastructure_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                      | string  | No | One of `disabled`, `private`, or `enabled`. |
+| `model_experiments_access_level`                            | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | No | Which storage shard the repository is on. _(administrator only)_ |
@@ -1632,6 +1633,7 @@ POST /projects/user/:user_id
 | `feature_flags_access_level`                                | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `infrastructure_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                      | string  | No | One of `disabled`, `private`, or `enabled`. |
+| `model_experiments_access_level`                            | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | No | Which storage shard the repository is on. _(administrators only)_ |

@@ -3743,7 +3743,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/hotlinking_detector_spec.rb'
     - 'spec/lib/gitlab/http_connection_adapter_spec.rb'
     - 'spec/lib/gitlab/http_io_spec.rb'
-    - 'spec/lib/gitlab/http_spec.rb'
     - 'spec/lib/gitlab/i18n/metadata_entry_spec.rb'
     - 'spec/lib/gitlab/i18n/po_linter_spec.rb'
     - 'spec/lib/gitlab/i18n/translation_entry_spec.rb'

@@ -336,7 +336,6 @@ Lint/UnusedBlockArgument:
     - 'spec/lib/gitlab/git_access_wiki_spec.rb'
     - 'spec/lib/gitlab/graphql/tracers/application_context_tracer_spec.rb'
     - 'spec/lib/gitlab/health_checks/simple_check_shared.rb'
-    - 'spec/lib/gitlab/http_spec.rb'
     - 'spec/lib/gitlab/jwt_authenticatable_spec.rb'
     - 'spec/lib/gitlab/memory/jemalloc_spec.rb'
     - 'spec/lib/gitlab/middleware/memory_report_spec.rb'

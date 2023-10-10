@@ -25,70 +25,74 @@ module Gitlab
 
       include HTTParty # rubocop:disable Gitlab/HTTParty
 
-      class << self
-        alias_method :httparty_perform_request, :perform_request
-      end
-
       connection_adapter NewConnectionAdapter
 
-      def self.perform_request(http_method, path, options, &block)
-        raise_if_blocked_by_silent_mode(http_method) if options.delete(:silent_mode_enabled)
+      class << self
+        def try_get(path, options = {}, &block)
+          self.get(path, options, &block) # rubocop:disable Style/RedundantSelf
+        rescue *HTTP_ERRORS
+          nil
+        end
 
-        log_info = options.delete(:extra_log_info)
-        options_with_timeouts =
-          if !options.has_key?(:timeout)
-            options.with_defaults(DEFAULT_TIMEOUT_OPTIONS)
-          else
-            options
-          end
+        def configuration
+          Gitlab::HTTP_V2.configuration
+        end
 
-        if options[:stream_body]
-          httparty_perform_request(http_method, path, options_with_timeouts, &block)
-        else
-          begin
-            start_time = nil
-            read_total_timeout = options.fetch(:timeout, DEFAULT_READ_TOTAL_TIMEOUT)
+        private
 
-            httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
-              start_time ||= system_monotonic_time
-              elapsed = system_monotonic_time - start_time
+        alias_method :httparty_perform_request, :perform_request
 
-              raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds" if elapsed > read_total_timeout
+        # TODO: This overwrites a method implemented by `HTTPParty`
+        # The calls to `get/...` will call this method instead of `httparty_perform_request`
+        def perform_request(http_method, path, options, &block)
+          raise_if_blocked_by_silent_mode(http_method) if options.delete(:silent_mode_enabled)
 
-              yield fragment if block
+          log_info = options.delete(:extra_log_info)
+          options_with_timeouts =
+            if !options.has_key?(:timeout)
+              options.with_defaults(DEFAULT_TIMEOUT_OPTIONS)
+            else
+              options
             end
-          rescue HTTParty::RedirectionTooDeep
-            raise RedirectionTooDeep
-          rescue *HTTP_ERRORS => e
-            extra_info = log_info || {}
-            extra_info = log_info.call(e, path, options) if log_info.respond_to?(:call)
-            configuration.log_exception(e, extra_info)
 
-            raise e
+          if options[:stream_body]
+            httparty_perform_request(http_method, path, options_with_timeouts, &block)
+          else
+            begin
+              start_time = nil
+              read_total_timeout = options.fetch(:timeout, DEFAULT_READ_TOTAL_TIMEOUT)
+
+              httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
+                start_time ||= system_monotonic_time
+                elapsed = system_monotonic_time - start_time
+
+                raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds" if elapsed > read_total_timeout
+
+                yield fragment if block
+              end
+            rescue HTTParty::RedirectionTooDeep
+              raise RedirectionTooDeep
+            rescue *HTTP_ERRORS => e
+              extra_info = log_info || {}
+              extra_info = log_info.call(e, path, options) if log_info.respond_to?(:call)
+              configuration.log_exception(e, extra_info)
+
+              raise e
+            end
           end
         end
-      end
 
-      def self.try_get(path, options = {}, &block)
-        self.get(path, options, &block) # rubocop:disable Style/RedundantSelf
-      rescue *HTTP_ERRORS
-        nil
-      end
+        def raise_if_blocked_by_silent_mode(http_method)
+          return if SILENT_MODE_ALLOWED_METHODS.include?(http_method)
 
-      def self.raise_if_blocked_by_silent_mode(http_method)
-        return if SILENT_MODE_ALLOWED_METHODS.include?(http_method)
+          configuration.silent_mode_log_info('Outbound HTTP request blocked', http_method.to_s)
 
-        configuration.silent_mode_log_info('Outbound HTTP request blocked', http_method.to_s)
+          raise SilentModeBlockedError, 'only get, head, options, and trace methods are allowed in silent mode'
+        end
 
-        raise SilentModeBlockedError, 'only get, head, options, and trace methods are allowed in silent mode'
-      end
-
-      def self.system_monotonic_time
-        Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
-      end
-
-      def self.configuration
-        Gitlab::HTTP_V2.configuration
+        def system_monotonic_time
+          Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
+        end
       end
     end
   end

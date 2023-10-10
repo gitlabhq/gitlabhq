@@ -3907,7 +3907,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/highlight_spec.rb'
     - 'spec/lib/gitlab/hook_data/project_member_builder_spec.rb'
     - 'spec/lib/gitlab/hotlinking_detector_spec.rb'
-    - 'spec/lib/gitlab/http_spec.rb'
     - 'spec/lib/gitlab/i18n/po_linter_spec.rb'
     - 'spec/lib/gitlab/import/set_async_jid_spec.rb'
     - 'spec/lib/gitlab/import_export/attribute_cleaner_spec.rb'

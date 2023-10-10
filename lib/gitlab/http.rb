@@ -10,21 +10,14 @@ require_relative 'http_connection_adapter'
 
 module Gitlab
   class HTTP
-    BlockedUrlError = Class.new(StandardError)
-    RedirectionTooDeep = Class.new(StandardError)
-    ReadTotalTimeout = Class.new(Net::ReadTimeout)
-    HeaderReadTimeout = Class.new(Net::ReadTimeout)
-    SilentModeBlockedError = Class.new(StandardError)
+    BlockedUrlError = Gitlab::HTTP_V2::BlockedUrlError
+    RedirectionTooDeep = Gitlab::HTTP_V2::RedirectionTooDeep
+    ReadTotalTimeout = Gitlab::HTTP_V2::ReadTotalTimeout
+    HeaderReadTimeout = Gitlab::HTTP_V2::HeaderReadTimeout
+    SilentModeBlockedError = Gitlab::HTTP_V2::SilentModeBlockedError
 
-    HTTP_TIMEOUT_ERRORS = [
-      Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Gitlab::HTTP::ReadTotalTimeout
-    ].freeze
-    HTTP_ERRORS = HTTP_TIMEOUT_ERRORS + [
-      EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
-      Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH,
-      Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep,
-      Net::HTTPBadResponse
-    ].freeze
+    HTTP_TIMEOUT_ERRORS = Gitlab::HTTP_V2::HTTP_TIMEOUT_ERRORS
+    HTTP_ERRORS = Gitlab::HTTP_V2::HTTP_ERRORS
 
     DEFAULT_TIMEOUT_OPTIONS = {
       open_timeout: 10,
@@ -40,70 +33,63 @@ module Gitlab
       Net::HTTP::Trace
     ].freeze
 
-    include HTTParty # rubocop:disable Gitlab/HTTParty
+    # We are explicitly assigning these constants because they are used in the codebase.
+    Error = HTTParty::Error
+    Response = HTTParty::Response
+    ResponseError = HTTParty::ResponseError
+    CookieHash = HTTParty::CookieHash
 
     class << self
-      alias_method :httparty_perform_request, :perform_request
-    end
+      ::Gitlab::HTTP_V2::SUPPORTED_HTTP_METHODS.each do |method|
+        define_method(method) do |path, options = {}, &block|
+          if ::Feature.enabled?(:use_gitlab_http_v2, Feature.current_request)
+            ::Gitlab::HTTP_V2.public_send(method, path, http_v2_options(options), &block) # rubocop:disable GitlabSecurity/PublicSend
+          else
+            ::Gitlab::LegacyHTTP.public_send(method, path, options, &block) # rubocop:disable GitlabSecurity/PublicSend
+          end
+        end
+      end
 
-    connection_adapter ::Gitlab::HTTPConnectionAdapter
+      def try_get(path, options = {}, &block)
+        get(path, options, &block)
+      rescue *HTTP_ERRORS
+        nil
+      end
 
-    def self.perform_request(http_method, path, options, &block)
-      raise_if_blocked_by_silent_mode(http_method)
+      # TODO: This method is subject to be removed
+      # We have this for now because we explicitly use the `perform_request` method in some places.
+      def perform_request(http_method, path, options, &block)
+        if ::Feature.enabled?(:use_gitlab_http_v2, Feature.current_request)
+          method_name = http_method::METHOD.downcase.to_sym
 
-      log_info = options.delete(:extra_log_info)
-      options_with_timeouts =
-        if !options.has_key?(:timeout)
-          options.with_defaults(DEFAULT_TIMEOUT_OPTIONS)
+          unless ::Gitlab::HTTP_V2::SUPPORTED_HTTP_METHODS.include?(method_name)
+            raise ArgumentError, "Unsupported HTTP method: '#{method_name}'."
+          end
+
+          # Use `::Gitlab::HTTP_V2.get/post/...` methods
+          ::Gitlab::HTTP_V2.public_send(method_name, path, http_v2_options(options), &block) # rubocop:disable GitlabSecurity/PublicSend
         else
-          options
+          ::Gitlab::LegacyHTTP.perform_request(http_method, path, options, &block)
         end
-
-      if options[:stream_body]
-        return httparty_perform_request(http_method, path, options_with_timeouts, &block)
       end
 
-      start_time = nil
-      read_total_timeout = options.fetch(:timeout, DEFAULT_READ_TOTAL_TIMEOUT)
+      private
 
-      httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
-        start_time ||= Gitlab::Metrics::System.monotonic_time
-        elapsed = Gitlab::Metrics::System.monotonic_time - start_time
-
-        if elapsed > read_total_timeout
-          raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds"
+      def http_v2_options(options)
+        # TODO: until we remove `allow_object_storage` from all places.
+        if options.delete(:allow_object_storage)
+          options[:extra_allowed_uris] = ObjectStoreSettings.enabled_endpoint_uris
         end
 
-        yield fragment if block
+        # Configure HTTP_V2 Client
+        {
+          allow_local_requests: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,
+          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+          dns_rebinding_protection_enabled: Gitlab::CurrentSettings.dns_rebinding_protection_enabled?,
+          outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist, # rubocop:disable Naming/InclusiveLanguage
+          silent_mode_enabled: Gitlab::SilentMode.enabled?
+        }.merge(options)
       end
-    rescue HTTParty::RedirectionTooDeep
-      raise RedirectionTooDeep
-    rescue *HTTP_ERRORS => e
-      extra_info = log_info || {}
-      extra_info = log_info.call(e, path, options) if log_info.respond_to?(:call)
-      Gitlab::ErrorTracking.log_exception(e, extra_info)
-      raise e
-    end
-
-    def self.try_get(path, options = {}, &block)
-      self.get(path, options, &block)
-    rescue *HTTP_ERRORS
-      nil
-    end
-
-    def self.raise_if_blocked_by_silent_mode(http_method)
-      return unless blocked_by_silent_mode?(http_method)
-
-      ::Gitlab::SilentMode.log_info(
-        message: 'Outbound HTTP request blocked',
-        outbound_http_request_method: http_method.to_s
-      )
-
-      raise SilentModeBlockedError, 'only get, head, options, and trace methods are allowed in silent mode'
-    end
-
-    def self.blocked_by_silent_mode?(http_method)
-      ::Gitlab::SilentMode.enabled? && SILENT_MODE_ALLOWED_METHODS.exclude?(http_method)
     end
   end
 end

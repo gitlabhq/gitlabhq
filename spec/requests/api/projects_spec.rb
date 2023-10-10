@@ -1286,6 +1286,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         attrs[:builds_access_level] = 'disabled'
         attrs[:merge_requests_access_level] = 'disabled'
         attrs[:issues_access_level] = 'disabled'
+        attrs[:model_experiments_access_level] = 'disabled'
       end
 
       post api(path, user), params: project
@@ -1296,7 +1297,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         next if %i[
           has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
           container_registry_access_level releases_access_level environments_access_level feature_flags_access_level
-          infrastructure_access_level monitor_access_level
+          infrastructure_access_level monitor_access_level model_experiments_access_level
         ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
@@ -3892,7 +3893,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(Project.find_by(path: project[:path]).analytics_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
-    %i(releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level).each do |field|
+    %i(releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level model_experiments_access_level).each do |field|
       it "sets #{field}" do
         put api(path, user), params: { field => 'private' }
 

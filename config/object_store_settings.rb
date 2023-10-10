@@ -50,6 +50,20 @@ class ObjectStoreSettings
     [bucket, prefix]
   end
 
+  def self.enabled_endpoint_uris
+    SUPPORTED_TYPES.filter_map do |type|
+      section_setting = Gitlab.config.try(type)
+
+      next unless section_setting && section_setting['enabled']
+
+      object_store_setting = section_setting['object_store']
+
+      next unless object_store_setting && object_store_setting['enabled']
+
+      URI(object_store_setting.dig('connection', 'endpoint'))
+    end.uniq
+  end
+
   def initialize(settings)
     @settings = settings
   end
