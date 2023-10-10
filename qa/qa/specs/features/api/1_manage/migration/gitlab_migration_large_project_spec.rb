@@ -82,7 +82,16 @@ module QA
               status: "failed",
               importer: :gitlab,
               import_finished: false,
-              import_time: Time.now - @start
+              import_time: Time.now - @start,
+              source: {
+                name: "GitLab Source",
+                project_name: source_project.path_with_namespace,
+                address: source_gitlab_address
+              },
+              target: {
+                name: "GitLab Target",
+                address: QA::Runtime::Scenario.gitlab_address
+              }
             }
           )
         end

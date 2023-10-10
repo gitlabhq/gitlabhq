@@ -48,7 +48,7 @@ module Routing
       if use_issue_path?(entity)
         project_issue_url(entity.project, entity.iid, *args)
       else
-        project_work_items_url(entity.project, entity.iid, *args)
+        project_work_item_url(entity.project, entity.iid, *args)
       end
     end
 

@@ -35,6 +35,26 @@ class SearchController < ApplicationController
     update_scope_for_code_search
   end
 
+  before_action only: :show do
+    push_frontend_feature_flag(:search_notes_hide_archived_projects, current_user)
+  end
+
+  before_action only: :show do
+    push_frontend_feature_flag(:search_issues_hide_archived_projects, current_user)
+  end
+
+  before_action only: :show do
+    push_frontend_feature_flag(:search_merge_requests_hide_archived_projects, current_user)
+  end
+
+  before_action only: :show do
+    push_frontend_feature_flag(:search_commits_hide_archived_projects, current_user)
+  end
+
+  before_action only: :show do
+    push_frontend_feature_flag(:search_milestones_hide_archived_projects, current_user)
+  end
+
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
   layout 'search'

@@ -95,10 +95,10 @@ module QA
               --set="auth.signing_key=#{Runtime::Env.workspaces_oauth_signing_key}" \
               --set="ingress.host.workspaceDomain=#{Runtime::Env.workspaces_proxy_domain}" \
               --set="ingress.host.wildcardDomain=*.#{Runtime::Env.workspaces_proxy_domain}" \
-              --set="ingress.tls.workspaceDomainCert=$(cat #{Runtime::Env.workspaces_domain_cert})" \
-              --set="ingress.tls.workspaceDomainKey=$(cat #{Runtime::Env.workspaces_domain_key})" \
-              --set="ingress.tls.wildcardDomainCert=$(cat #{Runtime::Env.workspaces_wildcard_cert})" \
-              --set="ingress.tls.wildcardDomainKey=$(cat #{Runtime::Env.workspaces_wildcard_key})" \
+              --set="ingress.tls.workspaceDomainCert=#{Runtime::Env.workspaces_domain_cert}" \
+              --set="ingress.tls.workspaceDomainKey=#{Runtime::Env.workspaces_domain_key}" \
+              --set="ingress.tls.wildcardDomainCert=#{Runtime::Env.workspaces_wildcard_cert}" \
+              --set="ingress.tls.wildcardDomainKey=#{Runtime::Env.workspaces_wildcard_key}" \
               --set="ingress.className=nginx"
           CMD
 

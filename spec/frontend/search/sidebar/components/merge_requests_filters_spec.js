@@ -79,12 +79,12 @@ describe('GlobalSearch MergeRequestsFilters', () => {
       expect(findStatusFilter().exists()).toBe(true);
     });
 
-    it("doesn't render ArchivedFilter", () => {
-      expect(findArchivedFilter().exists()).toBe(false);
+    it('renders render ArchivedFilter', () => {
+      expect(findArchivedFilter().exists()).toBe(true);
     });
 
     it('renders 1 divider', () => {
-      expect(findDividers()).toHaveLength(0);
+      expect(findDividers()).toHaveLength(1);
     });
   });
 

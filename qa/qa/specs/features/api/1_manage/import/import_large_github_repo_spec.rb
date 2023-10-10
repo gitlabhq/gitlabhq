@@ -184,7 +184,16 @@ module QA
               status: "failed",
               importer: :github,
               import_finished: false,
-              import_time: Time.now - @start
+              import_time: Time.now - @start,
+              source: {
+                name: "GitHub",
+                project_name: github_repo,
+                address: "https://github.com"
+              },
+              target: {
+                name: "GitLab",
+                address: gitlab_address
+              }
             }
           )
         end

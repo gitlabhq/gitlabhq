@@ -7,7 +7,7 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
   let_it_be(:project) { create(:project, :public, namespace: group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:work_item) { create(:work_item, project: project) }
-  let(:work_items_path) { project_work_items_path(project, work_items_path: work_item.iid) }
+  let(:work_items_path) { project_work_item_path(project, work_item.iid) }
   let_it_be(:task) { create(:work_item, :task, project: project, title: 'Task 1') }
 
   context 'for signed in user' do

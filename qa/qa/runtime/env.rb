@@ -473,10 +473,6 @@ module QA
         ENV.fetch("WORKSPACES_OAUTH_APP_SECRET")
       end
 
-      def workspaces_oauth_redirect_uri
-        ENV.fetch("WORKSPACES_OAUTH_REDIRECT_URI")
-      end
-
       def workspaces_oauth_signing_key
         ENV.fetch("WORKSPACES_OAUTH_SIGNING_KEY")
       end

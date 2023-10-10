@@ -15,6 +15,7 @@ import {
   SCOPE_PROJECTS,
   SCOPE_NOTES,
   SCOPE_COMMITS,
+  SCOPE_MILESTONES,
   SEARCH_TYPE_ADVANCED,
 } from '../constants';
 import IssuesFilters from './issues_filters.vue';
@@ -23,6 +24,7 @@ import BlobsFilters from './blobs_filters.vue';
 import ProjectsFilters from './projects_filters.vue';
 import NotesFilters from './notes_filters.vue';
 import CommitsFilters from './commits_filters.vue';
+import MilestonesFilters from './milestones_filters.vue';
 
 export default {
   name: 'GlobalSearchSidebar',
@@ -38,6 +40,7 @@ export default {
     DomElementListener,
     SmallScreenDrawerNavigation,
     CommitsFilters,
+    MilestonesFilters,
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
@@ -57,18 +60,20 @@ export default {
       return this.currentScope === SCOPE_PROJECTS;
     },
     showNotesFilters() {
-      return (
-        this.currentScope === SCOPE_NOTES &&
-        this.searchType === SEARCH_TYPE_ADVANCED &&
-        this.glFeatures.searchNotesHideArchivedProjects
-      );
+      // for now, the feature flag is placed here. Since we have only one filter in notes scope
+      return this.currentScope === SCOPE_NOTES && this.glFeatures.searchNotesHideArchivedProjects;
     },
     showCommitsFilters() {
       // for now, the feature flag is placed here. Since we have only one filter in commits scope
       return (
-        this.currentScope === SCOPE_COMMITS &&
-        this.searchType === SEARCH_TYPE_ADVANCED &&
-        this.glFeatures.searchCommitsHideArchivedProjects
+        this.currentScope === SCOPE_COMMITS && this.glFeatures.searchCommitsHideArchivedProjects
+      );
+    },
+    showMilestonesFilters() {
+      // for now, the feature flag is placed here. Since we have only one filter in milestones scope
+      return (
+        this.currentScope === SCOPE_MILESTONES &&
+        this.glFeatures.searchMilestonesHideArchivedProjects
       );
     },
     showScopeNavigation() {
@@ -97,6 +102,7 @@ export default {
       <projects-filters v-if="showProjectsFilters" />
       <notes-filters v-if="showNotesFilters" />
       <commits-filters v-if="showCommitsFilters" />
+      <milestones-filters v-if="showMilestonesFilters" />
     </sidebar-portal>
   </section>
 
@@ -112,6 +118,7 @@ export default {
       <projects-filters v-if="showProjectsFilters" />
       <notes-filters v-if="showNotesFilters" />
       <commits-filters v-if="showCommitsFilters" />
+      <milestones-filters v-if="showMilestonesFilters" />
     </div>
     <small-screen-drawer-navigation class="gl-lg-display-none">
       <scope-legacy-navigation />
@@ -121,6 +128,7 @@ export default {
       <projects-filters v-if="showProjectsFilters" />
       <notes-filters v-if="showNotesFilters" />
       <commits-filters v-if="showCommitsFilters" />
+      <milestones-filters v-if="showMilestonesFilters" />
     </small-screen-drawer-navigation>
   </section>
 </template>

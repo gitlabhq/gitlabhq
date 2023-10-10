@@ -191,7 +191,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         it 'redirects to work item page using iid' do
           make_request
 
-          expect(response).to redirect_to(project_work_items_path(project, task.iid, query))
+          expect(response).to redirect_to(project_work_item_path(project, task.iid, query))
         end
       end
 

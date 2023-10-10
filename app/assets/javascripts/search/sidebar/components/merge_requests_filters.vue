@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { HR_DEFAULT_CLASSES, SEARCH_TYPE_ADVANCED } from '../constants';
+import { HR_DEFAULT_CLASSES } from '../constants';
 import { statusFilterData } from './status_filter/data';
 import StatusFilter from './status_filter/index.vue';
 import FiltersTemplate from './filters_template.vue';
@@ -22,9 +22,8 @@ export default {
     ...mapState(['useSidebarNavigation', 'searchType']),
     showArchivedFilter() {
       return (
-        Object.values(archivedFilterData.scopes).includes(this.currentScope) &&
-        this.glFeatures.searchMergeRequestsHideArchivedProjects &&
-        this.searchType === SEARCH_TYPE_ADVANCED
+        archivedFilterData.scopes.includes(this.currentScope) &&
+        this.glFeatures.searchMergeRequestsHideArchivedProjects
       );
     },
     showStatusFilter() {

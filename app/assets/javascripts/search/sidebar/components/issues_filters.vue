@@ -42,9 +42,8 @@ export default {
     },
     showArchivedFilter() {
       return (
-        Object.values(archivedFilterData.scopes).includes(this.currentScope) &&
-        this.glFeatures.searchIssuesHideArchivedProjects &&
-        this.searchType === SEARCH_TYPE_ADVANCED
+        archivedFilterData.scopes.includes(this.currentScope) &&
+        this.glFeatures.searchIssuesHideArchivedProjects
       );
     },
     showDivider() {
