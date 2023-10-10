@@ -83,4 +83,4 @@ After your merge request has been approved according to our [approval guidelines
 [issue really needs to follow the security release workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#making-sure-the-issue-needs-to-follow-the-security-release-workflow
 [breaking changes workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/far_reaching_impact_fixes_or_breaking_change_fixes.md
 
-/label ~security ~"security-notifications
+/label ~security ~"security-notifications"

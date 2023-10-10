@@ -374,4 +374,4 @@ GitLab [application logs](../../administration/logs/index.md) are delivered to a
 To gain read only access to this bucket:
 
 1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the title "Customer Log Access". In the body of the ticket, include a list of IAM Principal ARNs (users or roles) that are fetching the logs from S3.
-1. GitLab then informs you of the name of the S3 bucket. Your nominated users/roles can then able to list and get all objects in the S3 bucket.
+1. GitLab then informs you of the name of the S3 bucket. Your nominated users/roles are then able to list and get all objects in the S3 bucket.

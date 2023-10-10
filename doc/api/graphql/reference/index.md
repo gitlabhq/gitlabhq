@@ -8121,6 +8121,29 @@ The edge type for [`AlertManagementIntegration`](#alertmanagementintegration).
 | <a id="alertmanagementintegrationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="alertmanagementintegrationedgenode"></a>`node` | [`AlertManagementIntegration`](#alertmanagementintegration) | The item at the end of the edge. |
 
+#### `AmazonS3ConfigurationTypeConnection`
+
+The connection type for [`AmazonS3ConfigurationType`](#amazons3configurationtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="amazons3configurationtypeconnectionedges"></a>`edges` | [`[AmazonS3ConfigurationTypeEdge]`](#amazons3configurationtypeedge) | A list of edges. |
+| <a id="amazons3configurationtypeconnectionnodes"></a>`nodes` | [`[AmazonS3ConfigurationType]`](#amazons3configurationtype) | A list of nodes. |
+| <a id="amazons3configurationtypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AmazonS3ConfigurationTypeEdge`
+
+The edge type for [`AmazonS3ConfigurationType`](#amazons3configurationtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="amazons3configurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="amazons3configurationtypeedgenode"></a>`node` | [`AmazonS3ConfigurationType`](#amazons3configurationtype) | The item at the end of the edge. |
+
 #### `ApprovalProjectRuleConnection`
 
 The connection type for [`ApprovalProjectRule`](#approvalprojectrule).
@@ -13387,7 +13410,7 @@ An endpoint and credentials used to accept Prometheus alerts for a project.
 
 ### `AmazonS3ConfigurationType`
 
-Stores Amazon S3 configurations.
+Stores Amazon S3 configurations for audit event streaming.
 
 #### Fields
 
@@ -17601,6 +17624,7 @@ GPG signature for a signed commit.
 | <a id="groupactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
+| <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
