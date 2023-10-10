@@ -38,12 +38,17 @@ However, if we count the number of page view events happening in the week before
 and then compare it with the number of events for the week following the feature release,
 we can derive insights about the increase in interest due to the release of the new feature.
 
-This process leads to what we call a metric. An event-based metric always looks at counts them for a specified time frame, like a week.
+This process leads to what we call a metric. An event-based metric counts the number of times an event occurred overall or in a specified time frame.
 The same event can be used across different metrics and a metric can count either one or multiple events.
 The count can but does not have to be based on a uniqueness criterion, such as only counting distinct users who performed an event.
 
 Metrics do not have to be based on events. Metrics can also be observations about the state of a GitLab instance itself,
 such as the value of a setting or the count of rows in a database table.
+
+## Instrumentation
+
+- To instrument an event-based metric, see the [internal event tracking quick start guide](internal_event_instrumentation/quick_start.md).
+- To instrument a metric that observes the GitLab instances state, see [the service ping implementation](service_ping/implement.md).
 
 ## Data flow
 
@@ -64,7 +69,7 @@ flowchart LR;
     service_ping-->|json with metric values - weekly export|snowflake
     snowplow-->|event records - continuous import|snowflake
     snowflake-->vis
-    
+
     subgraph glb[Gitlab Application]
         feature[Feature Code]
         subgraph events[Internal Analytics Code]
@@ -79,7 +84,7 @@ flowchart LR;
     vis[Dashboards in Sisense/Tableau]
 ```
 
-## Instrumentation
+## Data Privacy
 
-- To instrument an event-based metric, please look into the [internal event tracking quick start guide](internal_event_instrumentation/quick_start.md).
-- To instrument a metric that observes the GitLab instances state, please start with [the service ping implementation](service_ping/implement.md).
+GitLab only receives event counts or similarly aggregated information from self-managed instances. User identifiers for individual events on the SaaS version of GitLab are [pseudonymized](https://metrics.gitlab.com/identifiers).
+An exact description on what kind of data is being collected through the Internal Analytics system is given in our [handbook](https://about.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).

@@ -58,6 +58,10 @@ tier. Users can continue to access the features in a paid tier without sharing u
 - [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md).
 - [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements).
 
+### Features available in 16.6 and later
+
+- [Group wikis](../../user/project/wiki/group.md).
+
 NOTE:
 Registration is not yet required for participation, but may be added in a future milestone.
 

@@ -50,7 +50,7 @@ By default, self-managed instances do not collect event data via Snowplow. We ca
 
 ## Configure a remote event collector
 
-On GitLab.com to a collector configured by GitLab. By default, self-managed instances do not have a collector configured and do not collect data via Snowplow.
+On GitLab.com events are sent to a collector configured by GitLab. By default, self-managed instances do not have a collector configured and do not collect data with Snowplow.
 
 You can configure your self-managed GitLab instance to use a custom Snowplow collector.
 

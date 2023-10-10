@@ -1452,7 +1452,7 @@ class Project < ApplicationRecord
       super(import_url.sanitized_url)
 
       credentials = import_url.credentials.to_h.transform_values { |value| CGI.unescape(value.to_s) }
-      create_or_update_import_data(credentials: credentials)
+      build_or_assign_import_data(credentials: credentials)
     else
       super(value)
     end
@@ -1473,9 +1473,7 @@ class Project < ApplicationRecord
     valid?(:import_url) || errors.messages[:import_url].nil?
   end
 
-  # TODO: rename to build_or_assign_import_data as it doesn't save record
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/377319
-  def create_or_update_import_data(data: nil, credentials: nil)
+  def build_or_assign_import_data(data: nil, credentials: nil)
     return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data

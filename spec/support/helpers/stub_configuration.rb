@@ -154,6 +154,11 @@ module StubConfiguration
     stub_application_setting(maintenance_mode: value)
   end
 
+  def stub_usage_ping_features(value)
+    stub_application_setting(usage_ping_enabled: value)
+    stub_application_setting(usage_ping_features_enabled: value)
+  end
+
   private
 
   # Modifies stubbed messages to also stub possible predicate versions

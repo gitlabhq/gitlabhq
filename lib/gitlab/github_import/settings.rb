@@ -61,7 +61,7 @@ module Gitlab
           additional_access_tokens: user_settings[:additional_access_tokens]
         )
 
-        import_data = project.create_or_update_import_data(
+        import_data = project.build_or_assign_import_data(
           data: {
             optional_stages: optional_stages,
             timeout_strategy: user_settings[:timeout_strategy]

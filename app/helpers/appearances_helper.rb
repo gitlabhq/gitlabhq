@@ -80,7 +80,7 @@ module AppearancesHelper
     add_gitlab_black_text = options[:add_gitlab_black_text] || false
 
     if current_appearance&.header_logo?
-      image_tag current_appearance.header_logo_path, class: 'brand-header-logo'
+      image_tag current_appearance.header_logo_path, class: 'brand-header-logo', alt: ''
     elsif add_gitlab_white_text
       render partial: 'shared/logo_with_white_text', formats: :svg
     elsif add_gitlab_black_text

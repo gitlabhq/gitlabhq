@@ -100,7 +100,7 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
 
       context 'with an optimistic strategy' do
         before do
-          project.create_or_update_import_data(data: { timeout_strategy: "optimistic" })
+          project.build_or_assign_import_data(data: { timeout_strategy: "optimistic" })
           project.save!
         end
 

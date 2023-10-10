@@ -158,6 +158,19 @@ export default {
       >{{ s__('Pipeline|merge request') }}</gl-badge
     >
     <gl-badge
+      v-if="pipeline.flags.merged_result_pipeline"
+      v-gl-tooltip
+      :title="
+        s__(
+          `Pipeline|This pipeline ran on the contents of this merge request combined with the contents of the target branch.`,
+        )
+      "
+      variant="info"
+      size="sm"
+      data-testid="pipeline-url-merged-results"
+      >{{ s__('Pipeline|merged results') }}</gl-badge
+    >
+    <gl-badge
       v-if="isInFork"
       v-gl-tooltip
       :title="__('Pipeline ran in fork of project')"

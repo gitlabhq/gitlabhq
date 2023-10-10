@@ -240,7 +240,7 @@ RSpec.describe AppearancesHelper do
       let!(:appearance) { create(:appearance, :with_header_logo) }
 
       it 'renders image tag' do
-        expect(helper).to receive(:image_tag).with(appearance.header_logo_path, class: 'brand-header-logo')
+        expect(helper).to receive(:image_tag).with(appearance.header_logo_path, class: 'brand-header-logo', alt: '')
 
         subject
       end

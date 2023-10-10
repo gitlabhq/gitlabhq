@@ -11,7 +11,7 @@ module Tooling
         For the following files, a review from the [Data team and Analytics Instrumentation team](https://gitlab.com/groups/gitlab-org/analytics-section/analytics-instrumentation/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
         Please check the ~"analytics instrumentation" [Service Ping guide](https://docs.gitlab.com/ee/development/service_ping/) or the [Snowplow guide](https://docs.gitlab.com/ee/development/snowplow/).
 
-        For MR review guidelines, see the [Service Ping review guidelines](https://docs.gitlab.com/ee/development/service_ping/review_guidelines.html) or the [Snowplow review guidelines](https://docs.gitlab.com/ee/development/snowplow/review_guidelines.html).
+        For MR review guidelines, see the [Internal Analytics review guidelines](https://docs.gitlab.com/ee/development/internal_analytics/review_guidelines.html).
 
         %<changed_files>s
 

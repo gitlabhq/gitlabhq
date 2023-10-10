@@ -33,7 +33,8 @@ class Ci::PipelineEntity < Grape::Entity
     expose :can_cancel?, as: :cancelable
     expose :failure_reason?, as: :failure_reason
     expose :detached_merge_request_pipeline?, as: :detached_merge_request_pipeline
-    expose :merged_result_pipeline?, as: :merge_request_pipeline
+    expose :merged_result_pipeline?, as: :merge_request_pipeline # deprecated, use merged_result_pipeline going forward
+    expose :merged_result_pipeline?, as: :merged_result_pipeline
   end
 
   expose :details do

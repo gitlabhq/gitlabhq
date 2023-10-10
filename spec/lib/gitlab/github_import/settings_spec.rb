@@ -68,7 +68,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     end
 
     it 'puts optional steps, timeout strategy & access tokens into projects import_data' do
-      project.create_or_update_import_data(credentials: { user: 'token' })
+      project.build_or_assign_import_data(credentials: { user: 'token' })
 
       settings.write(data_input)
 
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
   describe '#enabled?' do
     it 'returns is enabled or not specific optional stage' do
-      project.create_or_update_import_data(data: { optional_stages: optional_stages })
+      project.build_or_assign_import_data(data: { optional_stages: optional_stages })
 
       expect(settings.enabled?(:single_endpoint_issue_events_import)).to eq true
       expect(settings.enabled?(:single_endpoint_notes_import)).to eq false
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
   describe '#disabled?' do
     it 'returns is disabled or not specific optional stage' do
-      project.create_or_update_import_data(data: { optional_stages: optional_stages })
+      project.build_or_assign_import_data(data: { optional_stages: optional_stages })
 
       expect(settings.disabled?(:single_endpoint_issue_events_import)).to eq false
       expect(settings.disabled?(:single_endpoint_notes_import)).to eq true

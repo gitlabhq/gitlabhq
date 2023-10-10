@@ -15,6 +15,7 @@ describe('Pipeline label component', () => {
   const findAutoDevopsTag = () => wrapper.findByTestId('pipeline-url-autodevops');
   const findAutoDevopsTagLink = () => wrapper.findByTestId('pipeline-url-autodevops-link');
   const findDetachedTag = () => wrapper.findByTestId('pipeline-url-detached');
+  const findMergedResultsTag = () => wrapper.findByTestId('pipeline-url-merged-results');
   const findFailureTag = () => wrapper.findByTestId('pipeline-url-failure');
   const findForkTag = () => wrapper.findByTestId('pipeline-url-fork');
   const findTrainTag = () => wrapper.findByTestId('pipeline-url-train');
@@ -41,6 +42,7 @@ describe('Pipeline label component', () => {
     expect(findScheduledTag().exists()).toBe(false);
     expect(findForkTag().exists()).toBe(false);
     expect(findTrainTag().exists()).toBe(false);
+    expect(findMergedResultsTag().exists()).toBe(false);
   });
 
   it('should render the stuck tag when flag is provided', () => {
@@ -138,6 +140,28 @@ describe('Pipeline label component', () => {
 
     expect(findForkTag().exists()).toBe(true);
     expect(findForkTag().text()).toBe('fork');
+  });
+
+  it('should render the merged results badge when the pipeline is a merged results pipeline', () => {
+    const mergedResultsPipeline = defaultProps.pipeline;
+    mergedResultsPipeline.flags.merged_result_pipeline = true;
+
+    createComponent({
+      ...mergedResultsPipeline,
+    });
+
+    expect(findMergedResultsTag().text()).toBe('merged results');
+  });
+
+  it('should not render the merged results badge when the pipeline is not a merged results pipeline', () => {
+    const mergedResultsPipeline = defaultProps.pipeline;
+    mergedResultsPipeline.flags.merged_result_pipeline = false;
+
+    createComponent({
+      ...mergedResultsPipeline,
+    });
+
+    expect(findMergedResultsTag().exists()).toBe(false);
   });
 
   it('should render the train badge when the pipeline is a merge train pipeline', () => {
