@@ -10,26 +10,10 @@ module Preloaders
     end
 
     def execute
-      if ::Feature.enabled?(:use_traversal_ids)
-        preload_with_traversal_ids
-      else
-        preload_direct_memberships
-      end
+      preload_with_traversal_ids
     end
 
     private
-
-    def preload_direct_memberships
-      group_memberships = GroupMember.active_without_invites_and_requests
-                                     .where(user: @user, source_id: @groups)
-                                     .group(:source_id)
-                                     .maximum(:access_level)
-
-      @groups.each do |group|
-        access_level = group_memberships[group.id]
-        group.merge_value_to_request_store(User, @user.id, access_level) if access_level.present?
-      end
-    end
 
     def preload_with_traversal_ids
       # Diagrammatic representation of this step:

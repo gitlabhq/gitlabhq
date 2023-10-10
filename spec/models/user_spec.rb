@@ -5073,14 +5073,6 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe '#ci_owned_runners' do
     it_behaves_like '#ci_owned_runners'
-
-    context 'when FF use_traversal_ids is disabled fallbacks to inefficient implementation' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it_behaves_like '#ci_owned_runners'
-    end
   end
 
   describe '#projects_with_reporter_access_limited_to' do

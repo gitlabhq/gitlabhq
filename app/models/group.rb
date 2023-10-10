@@ -694,7 +694,7 @@ class Group < Namespace
     return GroupMember::NO_ACCESS unless user
     return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
 
-    max_member_access([user.id])[user.id]
+    max_member_access(user)
   end
 
   def mattermost_team_params
@@ -953,16 +953,16 @@ class Group < Namespace
     end
   end
 
-  def max_member_access(user_ids)
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455") do
-      Gitlab::SafeRequestLoader.execute(
-        resource_key: max_member_access_for_resource_key(User),
-        resource_ids: user_ids,
-        default_value: Gitlab::Access::NO_ACCESS
-      ) do |user_ids|
-        members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
-      end
-    end
+  def max_member_access(user)
+    Gitlab::SafeRequestLoader.execute(
+      resource_key: max_member_access_for_resource_key(User),
+      resource_ids: [user.id],
+      default_value: Gitlab::Access::NO_ACCESS
+    ) do |_|
+      next {} unless user.active?
+
+      members_with_parents(only_active_users: false).where(user_id: user.id).group(:user_id).maximum(:access_level)
+    end.fetch(user.id)
   end
 
   def update_two_factor_requirement

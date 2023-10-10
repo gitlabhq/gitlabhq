@@ -293,20 +293,20 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 16.0 and later
 
 1. Install the database packages.
 
-   For Ubuntu 20.04 and later:
+   For Ubuntu 22.04 and later:
 
    ```shell
    sudo apt install -y postgresql postgresql-client libpq-dev postgresql-contrib
    ```
 
-   For Ubuntu 18.04 and earlier, the available PostgreSQL doesn't meet the minimum
+   For Ubuntu 20.04 and earlier, the available PostgreSQL doesn't meet the minimum
    version requirement. You must add PostgreSQL's repository:
 
    ```shell
+   sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-   sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-   sudo apt update
-   sudo apt -y install postgresql-12 postgresql-client-12 libpq-dev
+   sudo apt-get update
+   sudo apt-get -y install postgresql-14
    ```
 
 1. Verify the PostgreSQL version you have is supported by the version of GitLab you're

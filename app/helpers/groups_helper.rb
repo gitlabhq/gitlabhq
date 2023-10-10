@@ -188,7 +188,7 @@ module GroupsHelper
     }
   end
 
-  def enabled_git_access_protocol_options_for_group
+  def enabled_git_access_protocol_options_for_group(_)
     case ::Gitlab::CurrentSettings.enabled_git_access_protocol
     when nil, ""
       [[_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]]

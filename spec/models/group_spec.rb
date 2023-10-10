@@ -683,160 +683,126 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   context 'traversal queries' do
     let_it_be(:group, reload: true) { create(:group, :nested) }
 
-    context 'recursive' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
+    it_behaves_like 'namespace traversal'
 
-      it_behaves_like 'namespace traversal'
+    describe '#self_and_descendants' do
+      it { expect(group.self_and_descendants.to_sql).to include 'traversal_ids @>' }
+    end
 
-      describe '#self_and_descendants' do
-        it { expect(group.self_and_descendants.to_sql).not_to include 'traversal_ids @>' }
-      end
+    describe '#self_and_descendant_ids' do
+      it { expect(group.self_and_descendant_ids.to_sql).to include 'traversal_ids @>' }
+    end
 
-      describe '#self_and_descendant_ids' do
-        it { expect(group.self_and_descendant_ids.to_sql).not_to include 'traversal_ids @>' }
-      end
+    describe '#descendants' do
+      it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
+    end
 
-      describe '#descendants' do
-        it { expect(group.descendants.to_sql).not_to include 'traversal_ids @>' }
-      end
+    describe '#self_and_hierarchy' do
+      it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
+    end
 
-      describe '#self_and_hierarchy' do
-        it { expect(group.self_and_hierarchy.to_sql).not_to include 'traversal_ids @>' }
-      end
+    describe '#ancestors' do
+      it { expect(group.ancestors.to_sql).to include "\"namespaces\".\"id\" = #{group.parent_id}" }
 
-      describe '#ancestors' do
-        it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
-      end
-
-      describe '.shortest_traversal_ids_prefixes' do
-        it { expect { described_class.shortest_traversal_ids_prefixes }.to raise_error /Feature not supported since the `:use_traversal_ids` is disabled/ }
+      it 'hierarchy order' do
+        expect(group.ancestors(hierarchy_order: :asc).to_sql).to include 'ORDER BY "depth" ASC'
       end
     end
 
-    context 'linear' do
-      it_behaves_like 'namespace traversal'
+    describe '#ancestors_upto' do
+      it { expect(group.ancestors_upto.to_sql).to include "WITH ORDINALITY" }
+    end
 
-      describe '#self_and_descendants' do
-        it { expect(group.self_and_descendants.to_sql).to include 'traversal_ids @>' }
-      end
+    describe '.shortest_traversal_ids_prefixes' do
+      subject { filter.shortest_traversal_ids_prefixes }
 
-      describe '#self_and_descendant_ids' do
-        it { expect(group.self_and_descendant_ids.to_sql).to include 'traversal_ids @>' }
-      end
+      context 'for many top-level namespaces' do
+        let!(:top_level_groups) { create_list(:group, 4) }
 
-      describe '#descendants' do
-        it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
-      end
+        context 'when querying all groups' do
+          let(:filter) { described_class.id_in(top_level_groups) }
 
-      describe '#self_and_hierarchy' do
-        it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
-      end
-
-      describe '#ancestors' do
-        it { expect(group.ancestors.to_sql).to include "\"namespaces\".\"id\" = #{group.parent_id}" }
-
-        it 'hierarchy order' do
-          expect(group.ancestors(hierarchy_order: :asc).to_sql).to include 'ORDER BY "depth" ASC'
-        end
-      end
-
-      describe '#ancestors_upto' do
-        it { expect(group.ancestors_upto.to_sql).to include "WITH ORDINALITY" }
-      end
-
-      describe '.shortest_traversal_ids_prefixes' do
-        subject { filter.shortest_traversal_ids_prefixes }
-
-        context 'for many top-level namespaces' do
-          let!(:top_level_groups) { create_list(:group, 4) }
-
-          context 'when querying all groups' do
-            let(:filter) { described_class.id_in(top_level_groups) }
-
-            it "returns all traversal_ids" do
-              is_expected.to contain_exactly(
-                *top_level_groups.map { |group| [group.id] }
-              )
-            end
-          end
-
-          context 'when querying selected groups' do
-            let(:filter) { described_class.id_in(top_level_groups.first) }
-
-            it "returns only a selected traversal_ids" do
-              is_expected.to contain_exactly([top_level_groups.first.id])
-            end
+          it "returns all traversal_ids" do
+            is_expected.to contain_exactly(
+              *top_level_groups.map { |group| [group.id] }
+            )
           end
         end
 
-        context 'for namespace hierarchy' do
-          let!(:group_a) { create(:group) }
-          let!(:group_a_sub_1) { create(:group, parent: group_a) }
-          let!(:group_a_sub_2) { create(:group, parent: group_a) }
-          let!(:group_b) { create(:group) }
-          let!(:group_b_sub_1) { create(:group, parent: group_b) }
-          let!(:group_c) { create(:group) }
+        context 'when querying selected groups' do
+          let(:filter) { described_class.id_in(top_level_groups.first) }
 
-          context 'when querying all groups' do
-            let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_a_sub_2, group_b, group_b_sub_1, group_c]) }
-
-            it 'returns only shortest prefixes of top-level groups' do
-              is_expected.to contain_exactly(
-                [group_a.id],
-                [group_b.id],
-                [group_c.id]
-              )
-            end
-          end
-
-          context 'when sub-group is reparented' do
-            let(:filter) { described_class.id_in([group_b_sub_1, group_c]) }
-
-            before do
-              group_b_sub_1.update!(parent: group_c)
-            end
-
-            it 'returns a proper shortest prefix of a new group' do
-              is_expected.to contain_exactly(
-                [group_c.id]
-              )
-            end
-          end
-
-          context 'when querying sub-groups' do
-            let(:filter) { described_class.id_in([group_a_sub_1, group_b_sub_1, group_c]) }
-
-            it 'returns sub-groups as they are shortest prefixes' do
-              is_expected.to contain_exactly(
-                [group_a.id, group_a_sub_1.id],
-                [group_b.id, group_b_sub_1.id],
-                [group_c.id]
-              )
-            end
-          end
-
-          context 'when querying group and sub-group of this group' do
-            let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_c]) }
-
-            it 'returns parent groups as this contains all sub-groups' do
-              is_expected.to contain_exactly(
-                [group_a.id],
-                [group_c.id]
-              )
-            end
+          it "returns only a selected traversal_ids" do
+            is_expected.to contain_exactly([top_level_groups.first.id])
           end
         end
       end
 
-      context 'when project namespace exists in the group' do
-        let!(:project) { create(:project, group: group) }
-        let!(:project_namespace) { project.project_namespace }
+      context 'for namespace hierarchy' do
+        let!(:group_a) { create(:group) }
+        let!(:group_a_sub_1) { create(:group, parent: group_a) }
+        let!(:group_a_sub_2) { create(:group, parent: group_a) }
+        let!(:group_b) { create(:group) }
+        let!(:group_b_sub_1) { create(:group, parent: group_b) }
+        let!(:group_c) { create(:group) }
 
-        it 'filters out project namespace' do
-          expect(group.descendants.find_by_id(project_namespace.id)).to be_nil
+        context 'when querying all groups' do
+          let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_a_sub_2, group_b, group_b_sub_1, group_c]) }
+
+          it 'returns only shortest prefixes of top-level groups' do
+            is_expected.to contain_exactly(
+              [group_a.id],
+              [group_b.id],
+              [group_c.id]
+            )
+          end
         end
+
+        context 'when sub-group is reparented' do
+          let(:filter) { described_class.id_in([group_b_sub_1, group_c]) }
+
+          before do
+            group_b_sub_1.update!(parent: group_c)
+          end
+
+          it 'returns a proper shortest prefix of a new group' do
+            is_expected.to contain_exactly(
+              [group_c.id]
+            )
+          end
+        end
+
+        context 'when querying sub-groups' do
+          let(:filter) { described_class.id_in([group_a_sub_1, group_b_sub_1, group_c]) }
+
+          it 'returns sub-groups as they are shortest prefixes' do
+            is_expected.to contain_exactly(
+              [group_a.id, group_a_sub_1.id],
+              [group_b.id, group_b_sub_1.id],
+              [group_c.id]
+            )
+          end
+        end
+
+        context 'when querying group and sub-group of this group' do
+          let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_c]) }
+
+          it 'returns parent groups as this contains all sub-groups' do
+            is_expected.to contain_exactly(
+              [group_a.id],
+              [group_c.id]
+            )
+          end
+        end
+      end
+    end
+
+    context 'when project namespace exists in the group' do
+      let!(:project) { create(:project, group: group) }
+      let!(:project_namespace) { project.project_namespace }
+
+      it 'filters out project namespace' do
+        expect(group.descendants.find_by_id(project_namespace.id)).to be_nil
       end
     end
   end
@@ -1682,6 +1648,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'returns correct access level' do
         expect(group.max_member_access_for_user(group_user)).to eq(Gitlab::Access::OWNER)
+      end
+
+      context 'when user is not active' do
+        let_it_be(:group_user) { create(:user, :deactivated) }
+
+        it 'returns NO_ACCESS' do
+          expect(group.max_member_access_for_user(group_user)).to eq(Gitlab::Access::NO_ACCESS)
+        end
       end
     end
 

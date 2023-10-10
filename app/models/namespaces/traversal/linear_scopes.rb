@@ -12,14 +12,10 @@ module Namespaces
         # list of namespace IDs, it can be faster to reference the ID in
         # traversal_ids than the primary key ID column.
         def as_ids
-          return super unless use_traversal_ids?
-
           select(Arel.sql('namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)]').as('id'))
         end
 
         def roots
-          return super unless use_traversal_ids?
-
           root_ids = all.select("#{quoted_table_name}.traversal_ids[1]").distinct
           unscoped.where(id: root_ids)
         end
@@ -37,20 +33,14 @@ module Namespaces
         end
 
         def self_and_descendants(include_self: true)
-          return super unless use_traversal_ids?
-
           self_and_descendants_with_comparison_operators(include_self: include_self)
         end
 
         def self_and_descendant_ids(include_self: true)
-          return super unless use_traversal_ids?
-
           self_and_descendants(include_self: include_self).as_ids
         end
 
         def self_and_hierarchy
-          return super unless use_traversal_ids?
-
           unscoped.from_union([all.self_and_ancestors, all.self_and_descendants(include_self: false)])
         end
 
@@ -73,10 +63,6 @@ module Namespaces
         end
 
         private
-
-        def use_traversal_ids?
-          Feature.enabled?(:use_traversal_ids)
-        end
 
         def self_and_ancestors_from_inner_join(include_self: true, upto: nil, hierarchy_order: nil)
           base_cte = all.reselect('namespaces.traversal_ids').as_cte(:base_ancestors_cte)

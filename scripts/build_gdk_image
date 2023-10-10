@@ -26,6 +26,7 @@ docker buildx build \
   --platform=${ARCH:-amd64} \
   --tag="${IMAGE}:${SHA_TAG}" \
   --tag="${IMAGE}:${BRANCH_TAG}" \
+  --provenance=false \
   ${OUTPUT_OPTION} \
   .
 

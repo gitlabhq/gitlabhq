@@ -15,6 +15,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   `secret_detection_default_branch` and `secret_detection` were consolidated into one job,
 >   `secret_detection`.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an interactive reading and how-to demo of this Secret Detection doc, see [How to enable secret detection in GitLab Application Security Part 1/2](https://youtu.be/dbMxeO6nJCE?feature=shared) and [How to enable secret detection in GitLab Application Security Part 2/2](https://youtu.be/VL-_hdiTazo?feature=shared)
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an interactive reading and how-to demo playlist, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
+
 People sometimes accidentally commit secrets like keys or API tokens to Git repositories.
 After a sensitive value is pushed to a remote repository, anyone with access to the repository can impersonate the authorized user of the secret for malicious purposes.
 Most organizations require exposed secrets to be revoked and replaced to address this risk.

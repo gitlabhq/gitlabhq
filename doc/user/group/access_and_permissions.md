@@ -134,9 +134,11 @@ can be added to the group.
 
 The most popular public email domains cannot be restricted, such as:
 
-- `gmail.com`, `yahoo.com`, `aol.com`, `icloud.com`
-- `hotmail.com`, `hotmail.co.uk`, `hotmail.fr`
-- `msn.com`, `live.com`, `outlook.com`
+- `aol.com`, `gmail.com`, `hotmail.co.uk`, `hotmail.com`,
+- `hotmail.fr`, `icloud.com`, `live.com`, `mail.com`,
+- `me.com`, `msn.com`, `outlook.com`,
+- `proton.me`, `protonmail.com`, `tutanota.com`,
+- `yahoo.com`, `yandex.com`, `zohomail.com`
 
 When you share a group, both the source and target namespaces must allow the domains of the members' email addresses.
 

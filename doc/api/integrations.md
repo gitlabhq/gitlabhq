@@ -231,9 +231,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New Issue URL |
-| `issues_url` | string | true | Issue URL |
-| `project_url` | string | true | Project URL |
+| `new_issue_url` | string | true |  New issue URL. |
+| `issues_url` | string | true | Issue URL. |
+| `project_url` | string | true | Project URL. |
 
 ### Disable Bugzilla
 
@@ -371,7 +371,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `confluence_url` | string | true | The URL of the Confluence Cloud Workspace hosted on atlassian.net.  |
+| `confluence_url` | string | true | The URL of the Confluence Workspace hosted on `atlassian.net`. |
 
 ### Disable Confluence Workspace
 
@@ -403,9 +403,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New Issue URL |
-| `issues_url` | string | true | Issue URL |
-| `project_url` | string | true | Project URL |
+| `new_issue_url` | string | true |  New issue URL. |
+| `issues_url` | string | true | Issue URL. |
+| `project_url` | string | true | Project URL. |
 
 ### Disable a custom issue tracker
 
@@ -438,12 +438,12 @@ Parameters:
 | Parameter              | Type    | Required | Description                                                                                                                                                                            |
 |------------------------|---------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api_key`              | string  | true     | API key used for authentication with Datadog.                                                                                                                                          |
-| `api_url`              | string  | false    | (Advanced) The full URL for your Datadog site                                                                                                                                          |
-| `datadog_env`          | string  | false    | For self-managed deployments, set the env% tag for all the data sent to Datadog.                                                                                                       |
-| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments                                                                               |
-| `datadog_site`         | string  | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`                                                                                                      |
-| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format: `key:value\nkey2:value2` ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.)   |
-| `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3) |
+| `api_url`              | string  | false    | (Advanced) The full URL for your Datadog site.                                                                                                                                          |
+| `datadog_env`          | string  | false    | For self-managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                       |
+| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                               |
+| `datadog_site`         | string  | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`.                                                                                                      |
+| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.).   |
+| `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3). |
 
 ### Disable Datadog
 
@@ -480,24 +480,24 @@ Parameters:
 | `webhook` | string | true | Discord webhook (for example, `https://discord.com/api/webhooks/…`). |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_issue_channel` | string | false | The webhook override to receive confidential issues events notifications. |
+| `confidential_issue_channel` | string | false | The webhook override to receive notifications for confidential issue events. |
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `confidential_note_channel` | string | false | The webhook override to receive confidential note events notifications. |
+| `confidential_note_channel` | string | false | The webhook override to receive notifications for confidential note events. |
 | `issues_events` | boolean | false | Enable notifications for issue events. |
-| `issue_channel` | string | false | The webhook override to receive issues events notifications. |
+| `issue_channel` | string | false | The webhook override to receive notifications for issue events. |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `merge_request_channel` | string | false | The webhook override to receive merge request events notifications. |
+| `merge_request_channel` | string | false | The webhook override to receive notifications for merge request events. |
 | `note_events` | boolean | false | Enable notifications for note events. |
-| `note_channel` | string | false | The webhook override to receive note events notifications. |
+| `note_channel` | string | false | The webhook override to receive notifications for note events. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `pipeline_channel` | string | false | The webhook override to receive pipeline events notifications. |
+| `pipeline_channel` | string | false | The webhook override to receive notifications for pipeline events. |
 | `push_events` | boolean | false | Enable notifications for push events. |
-| `push_channel` | string | false | The webhook override to receive push events notifications. |
+| `push_channel` | string | false | The webhook override to receive notifications for push events. |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `tag_push_channel` | string | false | The webhook override to receive tag push events notifications. |
+| `tag_push_channel` | string | false | The webhook override to receive notifications for tag push events. |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-| `wiki_page_channel` | string | false | The webhook override to receive wiki page events notifications. |
+| `wiki_page_channel` | string | false | The webhook override to receive notifications for wiki page events. |
 
 ### Disable Discord Notifications
 
@@ -637,7 +637,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `external_wiki_url` | string | true | The URL of the external wiki |
+| `external_wiki_url` | string | true | The URL of the external wiki. |
 
 ### Disable an external wiki
 
@@ -707,33 +707,33 @@ Parameters:
 | `username` | string | false | username. |
 | `channel` | string | false | Default channel to use if others are not configured. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
+| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `alert_channel` | string | false | The name of the channel to receive alert events notifications. |
+| `alert_channel` | string | false | The name of the channel to receive notifications for alert events. |
 | `alert_events` | boolean | false | Enable notifications for alert events. |
 | `commit_events` | boolean | false | Enable notifications for commit events. |
-| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications. |
+| `confidential_issue_channel` | string | false | The name of the channel to receive notifications for confidential issue events. |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_note_channel` | string | false | The name of the channel to receive confidential note events notifications. |
+| `confidential_note_channel` | string | false | The name of the channel to receive notifications for confidential note events. |
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `deployment_channel` | string | false | The name of the channel to receive deployment events notifications. |
+| `deployment_channel` | string | false | The name of the channel to receive notifications for deployment events. |
 | `deployment_events` | boolean | false | Enable notifications for deployment events. |
-| `incident_channel` | string | false | The name of the channel to receive incidents events notifications. |
+| `incident_channel` | string | false | The name of the channel to receive notifications for incident events. |
 | `incidents_events` | boolean | false | Enable notifications for incident events. |
-| `issue_channel` | string | false | The name of the channel to receive issues events notifications. |
+| `issue_channel` | string | false | The name of the channel to receive notifications for issue events. |
 | `issues_events` | boolean | false | Enable notifications for issue events. |
 | `job_events` | boolean | false | Enable notifications for job events. |
-| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications. |
+| `merge_request_channel` | string | false | The name of the channel to receive notifications for merge request events. |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `note_channel` | string | false | The name of the channel to receive note events notifications. |
+| `note_channel` | string | false | The name of the channel to receive notifications for note events. |
 | `note_events` | boolean | false | Enable notifications for note events. |
-| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications. |
+| `pipeline_channel` | string | false | The name of the channel to receive notifications for pipeline events. |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `push_channel` | string | false | The name of the channel to receive push events notifications. |
+| `push_channel` | string | false | The name of the channel to receive notifications for push events. |
 | `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications. |
+| `tag_push_channel` | string | false | The name of the channel to receive notifications for tag push events. |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications. |
+| `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
 
 ### Disable the GitLab for Slack app
@@ -768,7 +768,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | The Hangouts Chat webhook (for example, `https://chat.googleapis.com/v1/spaces...`). |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
+| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | false | Enable notifications for push events. |
 | `issues_events` | boolean | false | Enable notifications for issue events. |
@@ -810,11 +810,11 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `recipients` | string | true | Recipients/channels separated by whitespaces |
-| `default_irc_uri` | string | false | `irc://irc.network.net:6697/` |
-| `server_host` | string | false | localhost |
-| `server_port` | integer | false | 6659 |
-| `colorize_messages` | boolean | false | Colorize messages |
+| `recipients` | string | true | Recipients or channels separated by whitespaces. |
+| `default_irc_uri` | string | false | `irc://irc.network.net:6697/`. |
+| `server_host` | string | false | localhost. |
+| `server_port` | integer | false | 6659. |
+| `colorize_messages` | boolean | false | Colorize messages. |
 
 ### Disable irker
 
@@ -938,7 +938,7 @@ Parameters:
 | `jira_issue_transition_id` | string | no | The ID of one or more transitions for [custom issue transitions](../integration/jira/issues.md#custom-issue-transitions). Ignored if `jira_issue_transition_automatic` is enabled. Defaults to a blank string, which disables custom transitions. |
 | `commit_events` | boolean | false | Enable notifications for commit events. |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `comment_on_event_enabled` | boolean | false | Enable comments inside Jira issues on each GitLab event (commit / merge request). |
+| `comment_on_event_enabled` | boolean | false | Enable comments in Jira issues on each GitLab event (commit or merge request). |
 
 ### Disable Jira
 
@@ -974,7 +974,7 @@ Parameters:
 | `username` | string | false | username. |
 | `channel` | string | false | Default channel to use if others are not configured. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
+| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | false | Enable notifications for push events. |
 | `issues_events` | boolean | false | Enable notifications for issue events. |
@@ -985,15 +985,15 @@ Parameters:
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-| `push_channel` | string | false | The name of the channel to receive push events notifications. |
-| `issue_channel` | string | false | The name of the channel to receive issues events notifications. |
-| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications. |
-| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications. |
-| `note_channel` | string | false | The name of the channel to receive note events notifications. |
-| `confidential_note_channel` | string | false | The name of the channel to receive confidential note events notifications. |
-| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications. |
-| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications. |
-| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications. |
+| `push_channel` | string | false | The name of the channel to receive notifications for push events. |
+| `issue_channel` | string | false | The name of the channel to receive notifications for issue events. |
+| `confidential_issue_channel` | string | false | The name of the channel to receive notifications for confidential issue events. |
+| `merge_request_channel` | string | false | The name of the channel to receive notifications for merge request events. |
+| `note_channel` | string | false | The name of the channel to receive notifications for note events. |
+| `confidential_note_channel` | string | false | The name of the channel to receive notifications for confidential note events. |
+| `tag_push_channel` | string | false | The name of the channel to receive notifications for tag push events. |
+| `pipeline_channel` | string | false | The name of the channel to receive notifications for pipeline events. |
+| `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
 
 ### Disable Mattermost notifications
 
@@ -1059,7 +1059,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | The Microsoft Teams webhook (for example, `https://outlook.office.com/webhook/...`). |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified`. |
+| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | false | Enable notifications for push events. |
 | `issues_events` | boolean | false | Enable notifications for issue events. |
@@ -1175,9 +1175,9 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `recipients` | string | yes | Comma-separated list of recipient email addresses. |
-| `notify_only_broken_pipelines` | boolean | no | Notify only broken pipelines. |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `notify_only_default_branch` | boolean | no | Send notifications only for the default branch. |
+| `notify_only_default_branch` | boolean | no | Send notifications for the default branch. |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
 
 ### Disable pipeline status emails
@@ -1322,7 +1322,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true | New Issue URL. |
+| `new_issue_url` | string | true | New issue URL. |
 | `project_url` | string | true | Project URL. |
 | `issues_url` | string | true | Issue URL. |
 
@@ -1416,7 +1416,7 @@ Parameters:
 | Parameter               | Type   | Required | Description                   |
 |-------------------------|--------|----------|-------------------------------|
 | `url`                   | string | yes      | URL of the Squash TM webhook. |
-| `token`                 | string | no       | Optional token                |
+| `token`                 | string | no       | Optional token.               |
 
 ### Disable Squash TM
 
@@ -1449,17 +1449,17 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token`   | string | true | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
-| `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`) |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
-| `push_events` | boolean | true | Enable notifications for push events |
-| `issues_events` | boolean | true | Enable notifications for issue events |
-| `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events |
-| `merge_requests_events` | boolean | true | Enable notifications for merge request events |
-| `tag_push_events` | boolean | true | Enable notifications for tag push events |
-| `note_events` | boolean | true | Enable notifications for note events |
-| `confidential_note_events` | boolean | true | Enable notifications for confidential note events |
-| `pipeline_events` | boolean | true | Enable notifications for pipeline events |
-| `wiki_page_events` | boolean | true | Enable notifications for wiki page events |
+| `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `push_events` | boolean | true | Enable notifications for push events. |
+| `issues_events` | boolean | true | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | true | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | true | Enable notifications for tag push events. |
+| `note_events` | boolean | true | Enable notifications for note events. |
+| `confidential_note_events` | boolean | true | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | true | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | true | Enable notifications for wiki page events. |
 
 ### Disable Telegram
 

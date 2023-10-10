@@ -70,28 +70,10 @@ RSpec.shared_examples 'namespace traversal scopes' do
   end
 
   describe '.roots' do
-    context "use_traversal_ids feature flag is true" do
-      before do
-        stub_feature_flags(use_traversal_ids: true)
-      end
+    it_behaves_like '.roots'
 
-      it_behaves_like '.roots'
-
-      it 'not make recursive queries' do
-        expect { described_class.where(id: [nested_group_1]).roots.load }.not_to make_queries_matching(/WITH RECURSIVE/)
-      end
-    end
-
-    context "use_traversal_ids feature flag is false" do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it_behaves_like '.roots'
-
-      it 'makes recursive queries' do
-        expect { described_class.where(id: [nested_group_1]).roots.load }.to make_queries_matching(/WITH RECURSIVE/)
-      end
+    it 'not make recursive queries' do
+      expect { described_class.where(id: [nested_group_1]).roots.load }.not_to make_queries_matching(/WITH RECURSIVE/)
     end
   end
 

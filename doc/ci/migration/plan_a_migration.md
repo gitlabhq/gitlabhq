@@ -55,21 +55,6 @@ the migration requirements:
 - How do you deploy your code?
 - Where do you deploy your code?
 
-### Jenkins
-
-If you are [migrating from Jenkins](jenkins.md), these additional questions can help with planning
-the migration:
-
-- What plugins are used by jobs in Jenkins today?
-  - Do you know what these plugins do exactly?
-  - Do any plugin wrap a common build tool? For example, Maven, Gradle, or NPM?
-- What is installed on the Jenkins agents?
-- Are there any shared libraries in use?
-- How are you authenticating from Jenkins? Are you using SSH keys, API tokens, or other secrets?
-- Are there other projects that you need to access from your pipeline?
-- Are there credentials in Jenkins to access outside services? For example Ansible Tower,
-  Artifactory, or other Cloud Providers or deployment targets?
-
 ## Related topics
 
 - How to migrate Atlassian Bamboo Server's CI/CD infrastructure to GitLab CI/CD, [part one](https://about.gitlab.com/blog/2022/07/06/migration-from-atlassian-bamboo-server-to-gitlab-ci/)

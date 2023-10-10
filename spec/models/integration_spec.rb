@@ -598,23 +598,7 @@ RSpec.describe Integration, feature_category: :integrations do
                 end
               end
 
-              context 'recursive' do
-                before do
-                  stub_feature_flags(use_traversal_ids: false)
-                end
-
-                include_examples 'correct ancestor order'
-              end
-
-              context 'linear' do
-                before do
-                  stub_feature_flags(use_traversal_ids: true)
-
-                  sub_subgroup.reload # make sure traversal_ids are reloaded
-                end
-
-                include_examples 'correct ancestor order'
-              end
+              include_examples 'correct ancestor order'
             end
           end
         end

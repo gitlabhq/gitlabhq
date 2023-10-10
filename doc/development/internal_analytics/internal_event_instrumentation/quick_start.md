@@ -31,6 +31,11 @@ bin/rails g gitlab:analytics:internal_events \
 --mr=https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121544
 ```
 
+Where:
+
+- `time_frames`: Valid options are `7d` and `28d` if you provide a `unique` value and `all` for metrics without `unique`. We are working to make `7d` and `28d` work for metrics with `all` time frame in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411264).
+- `unique`: Valid options are `user.id`, `project.id`, and `namespace.id`, as they are logged as part of the standard context. We [are actively working](https://gitlab.com/gitlab-org/gitlab/-/issues/411255) on a way to define uniqueness on arbitrary properties sent with the event, such as `merge_request.id`.
+
 ## Trigger events
 
 Triggering an event and thereby updating a metric is slightly different on backend and frontend. Please refer to the relevant section below.
@@ -135,7 +140,3 @@ Sometimes we want to send internal events when the component is rendered or load
 = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'i_devops' } }) do
         = _("New project")
 ```
-
-### Limitations
-
-The only values we allow for `unique` are `user.id`, `project.id`, and `namespace.id`, as they are logged as part of the standard context. We currently don't have anywhere to put a value like `merge_request.id`. That will change with self-describing events.

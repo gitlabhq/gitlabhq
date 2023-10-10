@@ -12,12 +12,12 @@ module QA
           end
 
           def has_file_explorer?
-            page.has_css?('.explorer-folders-view', visible: true)
-            page.has_css?('[aria-label="Files Explorer"]', visible: true)
+            has_element?('div[aria-label="Files Explorer"]')
           end
 
           def right_click_file_explorer
-            page.find('.explorer-folders-view', visible: true).right_click
+            has_element?('div.monaco-list-rows')
+            find_element('div[aria-label="Files Explorer"]').right_click
           end
 
           def open_file_from_explorer(file_name)
@@ -32,78 +32,69 @@ module QA
             within_element('.monaco-editor', &block)
           end
 
-          def has_new_folder_menu_item?
-            page.has_css?('[aria-label="New Folder..."]', visible: true)
+          def has_right_click_menu_item?
+            has_element?('div.menu-item-check')
           end
 
           def click_new_folder_menu_item
-            page.find('[aria-label="New Folder..."]').click
-          end
-
-          def enter_new_folder_text_input(name)
-            page.find('.explorer-item-edited', visible: true)
-            send_keys(name, :enter)
-          end
-
-          def has_upload_menu_item?
-            page.has_css?('.menu-item-check', visible: true)
+            click_element('span[aria-label="New Folder..."]')
           end
 
           def click_upload_menu_item
-            page.find('[aria-label="Upload..."]', visible: true).click
+            click_element('span[aria-label="Upload..."]')
+          end
+
+          def enter_new_folder_text_input(name)
+            find_element('input[type="text"]')
+            send_keys(name, :enter)
           end
 
           def enter_file_input(file)
-            page.find('input[type="file"]', visible: false).send_keys(file)
+            find_element('input[type="file"]', visible: false).send_keys(file)
           end
 
           def has_commit_pending_tab?
-            page.has_css?('.scm-viewlet-label', visible: true)
+            has_element?('.scm-viewlet-label')
           end
 
           def click_commit_pending_tab
-            page.find('.scm-viewlet-label', visible: true).click
+            click_element('.scm-viewlet-label', visible: true)
           end
 
           def click_commit_tab
-            page.find('a.codicon-source-control-view-icon', visible: true).click
+            click_element('.codicon-source-control-view-icon')
           end
 
           def has_commit_message_box?
-            page.has_css?('div.view-lines.monaco-mouse-cursor-text', visible: true)
+            has_element?('div[aria-label="Source Control Input"]')
           end
 
           def enter_commit_message(message)
-            page.find('div.view-lines.monaco-mouse-cursor-text', visible: true).send_keys(message)
-          end
-
-          def click_commit_button
-            page.find('a.monaco-text-button', visible: true).click
-          end
-
-          def has_notification_box?
-            page.has_css?('a.monaco-text-button', visible: true)
-          end
-
-          def create_merge_request
-            Support::Waiter.wait_until(max_duration: 10, retry_on_exception: true) do
-              within_vscode_editor do
-                page.find('.monaco-button[title="Create MR"]').click
-              end
+            within_element('div[aria-label="Source Control Input"]') do
+              find_element('.view-line').click
+              send_keys(message)
             end
           end
 
+          def click_commit_button
+            click_element('div[aria-label="Commit to \'main\'"]')
+          end
+
+          def has_notification_box?
+            has_element?('.monaco-dialog-box')
+          end
+
           def click_new_branch
-            page.find('.monaco-button[title="Create new branch"]').click
+            click_element('.monaco-button[title="Create new branch"]')
           end
 
           def has_branch_input_field?
-            page.has_css?('.monaco-findInput', visible: true)
+            has_element?('input[aria-label="input"]')
           end
 
           def has_message?(content)
             within_vscode_editor do
-              page.has_content?(content)
+              has_text?(content)
             end
           end
 
@@ -133,15 +124,14 @@ module QA
 
           def create_new_folder(name)
             within_vscode_editor do
-              right_click_file_explorer
-              has_new_folder_menu_item?
-
               # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
               Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
+                right_click_file_explorer
+                has_right_click_menu_item?
                 click_new_folder_menu_item
                 # Verify New Folder button is triggered and textbox is waiting for input
                 enter_new_folder_text_input(name)
-                page.has_content?(name)
+                has_text?(name)
               end
             end
           end
@@ -160,8 +150,8 @@ module QA
               end
 
               has_commit_message_box?
-              send_keys(message)
-              page.has_content?(message)
+              enter_commit_message(message)
+              has_text?(message)
               click_commit_button
               has_notification_box?
             end
@@ -176,8 +166,14 @@ module QA
             end
           end
 
+          def create_merge_request
+            within_vscode_editor do
+              has_element?('div[title="GitLab Web IDE Extension (Extension)"]')
+              click_element('.monaco-button[title="Create MR"]')
+            end
+          end
+
           def upload_file(file_path)
-            wait_for_ide_to_load
             within_vscode_editor do
               # VSCode eagerly removes the input[type='file'] from click on Upload.
               # We need to execute a script on the iframe to stub out the iframes body.removeChild to add it back in.
@@ -186,32 +182,40 @@ module QA
               # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
               Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
                 right_click_file_explorer
-                has_upload_menu_item?
+                has_right_click_menu_item?
                 click_upload_menu_item
                 enter_file_input(file_path)
               end
+              # Wait for the file to be uploaded
+              has_text?(file_path)
             end
           end
 
           def add_file_content(prompt_data)
-            click_inside_editor_frame
-            within_file_editor do
-              send_keys(:enter, :enter, prompt_data)
+            within_vscode_editor do
+              click_inside_editor_frame
+              within_file_editor do
+                send_keys(:enter, :enter, prompt_data)
+              end
             end
           end
 
           def verify_prompt_appears_and_accept(pattern)
-            within_file_editor do
-              Support::Waiter.wait_until(max_duration: 30) do
-                page.text.match?(pattern)
+            within_vscode_editor do
+              within_file_editor do
+                Support::Waiter.wait_until(max_duration: 30) do
+                  page.text.match?(pattern)
+                end
+                send_keys(:tab)
               end
-              send_keys(:tab)
             end
           end
 
           def validate_prompt(pattern)
-            within_file_editor do
-              page.text.match?(pattern)
+            within_vscode_editor do
+              within_file_editor do
+                page.text.match?(pattern)
+              end
             end
           end
         end

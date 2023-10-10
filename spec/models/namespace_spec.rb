@@ -661,23 +661,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   context 'traversal scopes' do
-    context 'recursive' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it_behaves_like 'namespace traversal scopes'
-    end
-
-    context 'linear' do
-      it_behaves_like 'namespace traversal scopes'
-    end
-
-    shared_examples 'makes recursive queries' do
-      specify do
-        expect { subject }.to make_queries_matching(/WITH RECURSIVE/)
-      end
-    end
+    it_behaves_like 'namespace traversal scopes'
 
     shared_examples 'does not make recursive queries' do
       specify do
@@ -691,14 +675,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       subject { described_class.where(id: namespace).self_and_descendants.load }
 
       it_behaves_like 'does not make recursive queries'
-
-      context 'when feature flag :use_traversal_ids is disabled' do
-        before do
-          stub_feature_flags(use_traversal_ids: false)
-        end
-
-        it_behaves_like 'makes recursive queries'
-      end
     end
 
     describe '.self_and_descendant_ids' do
@@ -707,14 +683,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       subject { described_class.where(id: namespace).self_and_descendant_ids.load }
 
       it_behaves_like 'does not make recursive queries'
-
-      context 'when feature flag :use_traversal_ids is disabled' do
-        before do
-          stub_feature_flags(use_traversal_ids: false)
-        end
-
-        it_behaves_like 'makes recursive queries'
-      end
     end
   end
 
@@ -1292,30 +1260,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to eq false }
   end
 
-  describe '#use_traversal_ids?' do
-    let_it_be(:namespace, reload: true) { create(:namespace) }
-
-    subject { namespace.use_traversal_ids? }
-
-    context 'when use_traversal_ids feature flag is true' do
-      before do
-        stub_feature_flags(use_traversal_ids: true)
-      end
-
-      it { is_expected.to eq true }
-
-      it_behaves_like 'disabled feature flag when traversal_ids is blank'
-    end
-
-    context 'when use_traversal_ids feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-  end
-
   describe '#users_with_descendants' do
     let(:user_a) { create(:user) }
     let(:user_b) { create(:user) }
@@ -1419,28 +1363,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#all_projects' do
-    context 'with use_traversal_ids feature flag enabled' do
-      before do
-        stub_feature_flags(use_traversal_ids: true)
-      end
+    include_examples '#all_projects'
 
-      include_examples '#all_projects'
-
-      # Using #self_and_descendant instead of #self_and_descendant_ids can produce
-      # very slow queries.
-      it 'calls self_and_descendant_ids' do
-        namespace = create(:group)
-        expect(namespace).to receive(:self_and_descendant_ids)
-        namespace.all_projects
-      end
-    end
-
-    context 'with use_traversal_ids feature flag disabled' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      include_examples '#all_projects'
+    # Using #self_and_descendant instead of #self_and_descendant_ids can produce
+    # very slow queries.
+    it 'calls self_and_descendant_ids' do
+      namespace = create(:group)
+      expect(namespace).to receive(:self_and_descendant_ids)
+      namespace.all_projects
     end
   end
 

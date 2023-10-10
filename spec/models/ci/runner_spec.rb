@@ -309,19 +309,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  context 'when use_traversal_ids* are enabled' do
-    it_behaves_like '.belonging_to_parent_groups_of_project'
-  end
-
-  context 'when use_traversal_ids* are disabled' do
-    before do
-      stub_feature_flags(
-        use_traversal_ids: false
-      )
-    end
-
-    it_behaves_like '.belonging_to_parent_groups_of_project'
-  end
+  it_behaves_like '.belonging_to_parent_groups_of_project'
 
   context 'with instance runners sharing enabled' do
     # group specific

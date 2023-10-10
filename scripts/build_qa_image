@@ -90,5 +90,6 @@ docker buildx build \
   --build-arg=QA_BUILD_TARGET="${QA_BUILD_TARGET}" \
   --file="${CI_PROJECT_DIR}/qa/Dockerfile" \
   --push \
+  --provenance=false \
   ${DESTINATIONS} \
   ${CI_PROJECT_DIR}

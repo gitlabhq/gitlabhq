@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Builder::Group do
+RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :secrets_management do
   let_it_be(:group) { create(:group) }
 
   let(:builder) { described_class.new(group) }
@@ -185,21 +185,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group do
           end
         end
 
-        context 'recursive' do
-          before do
-            stub_feature_flags(use_traversal_ids: false)
-          end
-
-          include_examples 'correct ancestor order'
-        end
-
-        context 'linear' do
-          before do
-            stub_feature_flags(use_traversal_ids: true)
-          end
-
-          include_examples 'correct ancestor order'
-        end
+        include_examples 'correct ancestor order'
       end
     end
   end

@@ -2509,14 +2509,6 @@ class User < MainClusterwide::ApplicationRecord
   def ci_namespace_mirrors_for_group_members(level)
     search_members = group_members.where('access_level >= ?', level)
 
-    # This reduces searched prefixes to only shortest ones
-    # to avoid querying descendants since they are already covered
-    # by ancestor namespaces. If the FF is not available fallback to
-    # inefficient search: https://gitlab.com/gitlab-org/gitlab/-/issues/336436
-    unless Feature.enabled?(:use_traversal_ids)
-      return Ci::NamespaceMirror.contains_any_of_namespaces(search_members.pluck(:source_id))
-    end
-
     traversal_ids = Group.joins(:all_group_members)
       .merge(search_members)
       .shortest_traversal_ids_prefixes

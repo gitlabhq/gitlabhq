@@ -8,8 +8,6 @@ module Preloaders
     end
 
     def execute
-      return unless ::Feature.enabled?(:use_traversal_ids)
-
       # type == 'Group' condition located on subquery to prevent a filter in the query
       root_query = Namespace.joins("INNER JOIN (#{join_sql}) as root_query ON root_query.root_id = namespaces.id")
                         .select('namespaces.*, root_query.id as source_id')
