@@ -71,6 +71,9 @@ export default {
 
       return options;
     },
+    isNotificationsTodosButtons() {
+      return this.glFeatures.notificationsTodosButtons;
+    },
   },
   methods: {
     ...mapActions(['setExpandDiscussions']),
@@ -92,10 +95,12 @@ export default {
     class="gl-display-flex discussions-counter"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-pl-4 gl-rounded-base gl-mr-3 gl-min-h-7"
+      class="gl-display-flex gl-align-items-center gl-pl-4 gl-rounded-base gl-min-h-7"
       :class="{
         'gl-bg-orange-50': blocksMerge && !allResolved,
         'gl-bg-gray-50': !blocksMerge || allResolved,
+        'gl-mr-3': !isNotificationsTodosButtons,
+        'gl-mr-5': isNotificationsTodosButtons,
       }"
       data-testid="discussions-counter-text"
     >

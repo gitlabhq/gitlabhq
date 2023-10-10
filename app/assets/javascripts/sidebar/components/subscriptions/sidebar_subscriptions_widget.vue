@@ -1,5 +1,6 @@
 <script>
 import {
+  GlButton,
   GlDisclosureDropdownItem,
   GlDropdownForm,
   GlIcon,
@@ -30,6 +31,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    GlButton,
     GlDisclosureDropdownItem,
     GlDropdownForm,
     GlIcon,
@@ -130,6 +132,9 @@ export default {
     canSubscribe() {
       return this.emailsDisabled || !this.isLoggedIn;
     },
+    isNotificationsTodosButtons() {
+      return this.glFeatures.notificationsTodosButtons;
+    },
   },
   methods: {
     setSubscribed(subscribed) {
@@ -207,7 +212,7 @@ export default {
     </div>
   </gl-dropdown-form>
   <gl-disclosure-dropdown-item
-    v-else-if="isMovedMrSidebar"
+    v-else-if="isMovedMrSidebar && !isNotificationsTodosButtons"
     data-testid="notification-toggle"
     @action="toggleSubscribed"
   >
@@ -220,6 +225,17 @@ export default {
       />
     </template>
   </gl-disclosure-dropdown-item>
+  <gl-button
+    v-else-if="isNotificationsTodosButtons"
+    ref="tooltip"
+    v-gl-tooltip.hover.top
+    category="secondary"
+    data-testid="subscribe-button"
+    :title="notificationTooltip"
+    @click="toggleSubscribed"
+  >
+    <gl-icon :name="notificationIcon" :size="16" :class="{ 'gl-fill-blue-500': subscribed }" />
+  </gl-button>
   <sidebar-editable-item
     v-else
     ref="editable"

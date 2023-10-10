@@ -1016,48 +1016,29 @@ If you notice replication failures in `Admin > Geo > Sites` or the [Sync status 
 
 ### Manually retry replication or verification
 
-Project Git repositories and Project Wiki Git repositories have the ability in `Admin > Geo > Replication` to `Resync all`, `Reverify all`, or for a single resource, `Resync`  or `Reverify`.
+A Geo data type is a specific class of data that is required by one or more GitLab features to store relevant information and is replicated by Geo to secondary sites.
 
-Adding this ability to other data types is proposed in issue [364725](https://gitlab.com/gitlab-org/gitlab/-/issues/364725).
+The following Geo data types exist:
 
-The following sections describe how to use internal application commands in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session) to cause replication or verification immediately.
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-### Blob types
-
-- `Ci::JobArtifact`
-- `Ci::PipelineArtifact`
-- `Ci::SecureFile`
-- `LfsObject`
-- `MergeRequestDiff`
-- `Packages::PackageFile`
-- `PagesDeployment`
-- `Terraform::StateVersion`
-- `Upload`
-
-`Packages::PackageFile` is used in the following
-[Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-examples, but things generally work the same for the other types.
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-### Repository types, except for project or project wiki repositories
-
-- `SnippetRepository`
-- `GroupWikiRepository`
-
-`SnippetRepository` is used in the examples below, but things generally work the same for the other Repository types.
-
-[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to enact the following, basic troubleshooting steps.
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-#### The Replicator
+- **Blob types:**
+  - `Ci::JobArtifact`
+  - `Ci::PipelineArtifact`
+  - `Ci::SecureFile`
+  - `LfsObject`
+  - `MergeRequestDiff`
+  - `Packages::PackageFile`
+  - `PagesDeployment`
+  - `Terraform::StateVersion`
+  - `Upload`
+  - `DependencyProxy::Manifest`
+  - `DependencyProxy::Blob`
+- **Repository types:**
+  - `ContainerRepositoryRegistry`
+  - `DesignManagement::Repository`
+  - `ProjectRepository`
+  - `ProjectWikiRepository`
+  - `SnippetRepository`
+  - `GroupWikiRepository`
 
 The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it):
 
@@ -1066,33 +1047,135 @@ model_record = Packages::PackageFile.last
 model_record.replicator.registry.replicator.model_record # just showing that these methods exist
 ```
 
-#### Replicate a package file, synchronously, given an ID
+With all this information, you can:
 
-```ruby
-model_record = Packages::PackageFile.find(id)
-model_record.replicator.send(:download)
-```
+- [Manually resync and reverify individual components](#resync-and-reverify-individual-components)
+- [Manually resync and reverify multiple components](#resync-and-reverify-multiple-components)
 
-#### Replicate a package file, synchronously, given a registry ID
+#### Resync and reverify individual components
 
-```ruby
-registry = Geo::PackageFileRegistry.find(registry_id)
-registry.replicator.send(:download)
-```
+[You can force a resync and reverify individual items](https://gitlab.com/gitlab-org/gitlab/-/issues/364727)
+for all component types managed by the [self-service framework](../../../development/geo/framework.md) using the UI.
+On the secondary site, visit **Admin > Geo > Replication**.
 
-#### Find registry records of blobs that failed to sync
+However, if this doesn't work, you can perform the same action using the Rails
+console. The following sections describe how to use internal application
+commands in the Rails console to cause replication or verification for
+individual records synchronously or asynchronously.
 
-```ruby
-Geo::PackageFileRegistry.failed
-```
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-#### Find registry records of blobs that are missing on the primary site
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to enact the following, basic troubleshooting steps:
 
-```ruby
-Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Geo primary site')
-```
+- **For Blob types** (using the `Packages::PackageFile` component as an example)
 
-#### Verify package files on the secondary manually
+  - Find registry records that failed to sync:
+
+    ```ruby
+    Geo::PackageFileRegistry.failed
+    ```
+
+  - Find registry records that are missing on the primary site:
+
+    ```ruby
+    Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Geo primary site')
+    ```
+
+  - Resync a package file, synchronously, given an ID:
+
+    ```ruby
+    model_record = Packages::PackageFile.find(id)
+    model_record.replicator.send(:download)
+    ```
+
+  - Resync a package file, synchronously, given a registry ID:
+
+    ```ruby
+    registry = Geo::PackageFileRegistry.find(registry_id)
+    registry.replicator.send(:download)
+    ```
+
+  - Resync a package file, asynchronously, given a registry ID.
+    Since GitLab 16.2, a component can be asynchronously replicated as follows:
+
+    ```ruby
+    registry = Geo::PackageFileRegistry.find(registry_id)
+    registry.replicator.enqueue_sync
+    ```
+
+  - Reverify a package file, asynchronously, given a registry ID.
+    Since GitLab 16.2, a component can be asynchronously reverified as follows:
+
+    ```ruby
+    registry = Geo::PackageFileRegistry.find(registry_id)
+    registry.replicator.verify_async
+    ```
+
+- **For Repository types** (using the `SnippetRepository` component as an example)
+
+  - Resync a snippet repository, synchronously, given an ID:
+
+    ```ruby
+    model_record = Geo::SnippetRepositoryRegistry.find(id)
+    model_record.replicator.sync_repository
+    ```
+
+  - Resync a snippet repository, synchronously, given a registry ID
+
+    ```ruby
+    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
+    registry.replicator.sync_repository
+    ```
+
+  - Resync a snippet repository, asynchronously, given a registry ID.
+    Since GitLab 16.2, a component can be asynchronously replicated as follows:
+
+    ```ruby
+    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
+    registry.replicator.enqueue_sync
+    ```
+
+  - Reverify a snippet repository, asynchronously, given a registry ID.
+    Since GitLab 16.2, a component can be asynchronously reverified as follows:
+
+    ```ruby
+    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
+    registry.replicator.verify_async
+    ```
+
+#### Resync and reverify multiple components
+
+NOTE:
+There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+The following sections describe how to use internal application commands in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to cause bulk replication or verification.
+
+##### Reverify all components (or any SSF data type which supports verification)
+
+For GitLab 16.4 and earlier:
+
+1. SSH into a GitLab Rails node in the primary Geo site.
+1. Open the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Mark all uploads as `pending verification`:
+
+   ```ruby
+   Upload.verification_state_table_class.each_batch do |relation|
+     relation.update_all(verification_state: 0)
+   end
+   ```
+
+1. This causes the primary to start checksumming all Uploads.
+1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
+
+For other SSF data types replace `Upload` in the command above with the desired model class.
+
+##### Verify blob files on the secondary manually
 
 This iterates over all package files on the secondary, looking at the
 `verification_checksum` stored in the database (which came from the primary)
@@ -1142,26 +1225,6 @@ status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
 # See the output in its entirety
 status
 ```
-
-#### Reverify all uploads (or any SSF data type which is verified)
-
-1. SSH into a GitLab Rails node in the primary Geo site.
-1. Open [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Mark all uploads as "pending verification":
-
-   ```ruby
-   Upload.verification_state_table_class.each_batch do |relation|
-     relation.update_all(verification_state: 0)
-   end
-   ```
-
-1. This causes the primary to start checksumming all Uploads.
-1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
-
-For other SSF data types replace `Upload` in the command above with the desired model class.
-
-NOTE:
-There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
 
 ### Failed verification of Uploads on the primary Geo site
 

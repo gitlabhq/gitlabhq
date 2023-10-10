@@ -19,11 +19,11 @@ Gem::Specification.new do |spec|
   spec.test_files = Dir['spec/**/*']
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency 'activesupport', '~> 7.0.6'
+  spec.add_runtime_dependency 'activesupport', '~> 7'
   spec.add_runtime_dependency 'httparty', '~> 0.21.0'
   spec.add_runtime_dependency 'ipaddress', '~> 0.8.3'
   spec.add_runtime_dependency 'nokogiri', '~> 1.15.4'
-  spec.add_runtime_dependency "railties", "~> 7.0.6"
+  spec.add_runtime_dependency "railties", "~> 7"
 
   spec.add_development_dependency 'gitlab-styles', '~> 10.1.0'
   spec.add_development_dependency 'rspec-rails', '~> 6.0.3'

@@ -9,9 +9,11 @@ RSpec.describe 'User manages subscription', :js, feature_category: :code_review_
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }
   let(:moved_mr_sidebar_enabled) { false }
+  let(:notifications_todos_buttons_enabled) { false }
 
   before do
     stub_feature_flags(moved_mr_sidebar: moved_mr_sidebar_enabled)
+    stub_feature_flags(notifications_todos_buttons: notifications_todos_buttons_enabled)
     set_cookie('new-actions-popover-viewed', 'true')
     project.add_maintainer(user)
     sign_in(user)
@@ -58,6 +60,21 @@ RSpec.describe 'User manages subscription', :js, feature_category: :code_review_
       wait_for_requests
 
       expect(page).to have_selector('.gl-toggle:not(.is-checked)')
+    end
+  end
+
+  context 'with notifications_todos_buttons feature flag enabled' do
+    let(:moved_mr_sidebar_enabled) { true }
+    let(:notifications_todos_buttons_enabled) { true }
+
+    it 'toggles subscription' do
+      wait_for_requests
+
+      find('[data-testid="subscribe-button"]').click
+      expect(page).to have_selector('[data-testid="notifications-off-icon"]')
+
+      find('[data-testid="subscribe-button"]').click
+      expect(page).to have_selector('[data-testid="notifications-icon"]')
     end
   end
 end

@@ -71,3 +71,16 @@ For self-compiled installations:
    ```
 
 1. [Restart GitLab](restart_gitlab.md#self-compiled-installations).
+
+## Prevent Guest users from promoting to a higher role
+
+On GitLab Ultimate, Guest users do not count toward paid seats. However, when a Guest user creates
+projects and namespaces, they are automatically promoted to a higher role than Guest and occupy
+a paid seat.
+
+To prevent Guest users from being promoted to a higher role and occupying a paid seat,
+set the user as [external](../administration/external_users.md).
+
+External users cannot create personal projects or namespaces. If a user with the Guest role is promoted into a higher role by another user,
+the external user setting must be removed before they can create personal projects or namespaces. For a complete list of restrictions for external
+users, see [External users](../administration/external_users.md).

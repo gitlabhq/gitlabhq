@@ -143,6 +143,9 @@ export default {
     isMovedMrSidebar() {
       return this.glFeatures.movedMrSidebar;
     },
+    isNotificationsTodosButtons() {
+      return this.glFeatures.notificationsTodosButtons;
+    },
     draftLabel() {
       return this.draft ? this.$options.i18n.markAsReady : this.$options.i18n.markAsDraft;
     },
@@ -250,7 +253,9 @@ export default {
           />
         </div>
       </template>
-      <gl-disclosure-dropdown-group v-if="isLoggedIn && isMovedMrSidebar">
+      <gl-disclosure-dropdown-group
+        v-if="isLoggedIn && isMovedMrSidebar && !isNotificationsTodosButtons"
+      >
         <sidebar-subscriptions-widget
           :iid="String(mr.iid)"
           :full-path="fullPath"
@@ -261,7 +266,10 @@ export default {
 
       <gl-disclosure-dropdown-group
         bordered
-        :class="{ 'gl-mt-0! gl-pt-0! gl-border-t-0!': !(isLoggedIn && isMovedMrSidebar) }"
+        :class="{
+          'gl-mt-0! gl-pt-0! gl-border-t-0!':
+            !(isLoggedIn && isMovedMrSidebar) || isNotificationsTodosButtons,
+        }"
       >
         <gl-disclosure-dropdown-item
           v-if="canUpdateMergeRequest"

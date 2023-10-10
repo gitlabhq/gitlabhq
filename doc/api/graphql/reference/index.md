@@ -2418,6 +2418,34 @@ Input type: `CreateNoteInput`
 | <a id="mutationcreatenoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatenotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
+### `Mutation.createPackagesProtectionRule`
+
+Creates a protection rule to restrict access to project packages. Available only when feature flag `packages_protected_packages` is enabled.
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `CreatePackagesProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| <a id="mutationcreatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
+| <a id="mutationcreatepackagesprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
+| <a id="mutationcreatepackagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Max GitLab access level unable to push a package. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationcreatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule after mutation. |
+
 ### `Mutation.createRequirement`
 
 Input type: `CreateRequirementInput`
@@ -21769,6 +21797,18 @@ A packages cleanup policy designed to keep only packages and packages assets tha
 | <a id="packagescleanuppolicykeepnduplicatedpackagefiles"></a>`keepNDuplicatedPackageFiles` | [`PackagesCleanupKeepDuplicatedPackageFilesEnum!`](#packagescleanupkeepduplicatedpackagefilesenum) | Number of duplicated package files to retain. |
 | <a id="packagescleanuppolicynextrunat"></a>`nextRunAt` | [`Time`](#time) | Next time that this packages cleanup policy will be executed. |
 
+### `PackagesProtectionRule`
+
+A packages protection rule designed to protect packages from being pushed by users with a certain access level.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| <a id="packagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
+| <a id="packagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Max GitLab access level unable to push a package. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+
 ### `PageInfo`
 
 Information about pagination in a connection.
@@ -28826,6 +28866,24 @@ Values for sorting package.
 | <a id="packagescleanupkeepduplicatedpackagefilesenumten_package_files"></a>`TEN_PACKAGE_FILES` | Value to keep 10 package files. |
 | <a id="packagescleanupkeepduplicatedpackagefilesenumthirty_package_files"></a>`THIRTY_PACKAGE_FILES` | Value to keep 30 package files. |
 | <a id="packagescleanupkeepduplicatedpackagefilesenumtwenty_package_files"></a>`TWENTY_PACKAGE_FILES` | Value to keep 20 package files. |
+
+### `PackagesProtectionRuleAccessLevel`
+
+Access level of a package protection rule resource.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="packagesprotectionruleaccessleveldeveloper"></a>`DEVELOPER` | Developer access. |
+| <a id="packagesprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
+| <a id="packagesprotectionruleaccesslevelowner"></a>`OWNER` | Owner access. |
+
+### `PackagesProtectionRulePackageType`
+
+Package type of a package protection rule resource.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
 
 ### `PipelineConfigSourceEnum`
 

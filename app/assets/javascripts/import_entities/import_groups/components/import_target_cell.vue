@@ -100,6 +100,7 @@ export default {
             'gl-inset-border-1-gray-100!': !isPathSelectionAvailable,
           }"
           debounce="500"
+          data-testid="target-namespace-input"
           :disabled="!isPathSelectionAvailable"
           :value="group.importTarget.newName"
           :aria-label="__('New name')"

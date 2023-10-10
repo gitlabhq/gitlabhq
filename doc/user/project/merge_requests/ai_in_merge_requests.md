@@ -99,7 +99,7 @@ Provide feedback on this experimental feature in [issue 408994](https://gitlab.c
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com that is using Google's Vertex service and the `text-bison` model. It requires the [group-level third-party AI features setting](../../group/manage.md#enable-third-party-ai-features) to be enabled.
+This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com that is using Google's Vertex service and the `code-bison` model. It requires the [group-level third-party AI features setting](../../group/manage.md#enable-third-party-ai-features) to be enabled.
 
 Use GitLab Duo Test generation in a merge request to see a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
 

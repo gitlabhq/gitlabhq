@@ -47,6 +47,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
+    push_frontend_feature_flag(:notifications_todos_buttons, project)
   end
 
   before_action only: [:edit] do

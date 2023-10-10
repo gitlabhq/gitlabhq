@@ -14393,6 +14393,15 @@ msgstr ""
 msgid "CsvParser|Unable to auto-detect delimiter; defaulted to \",\""
 msgstr ""
 
+msgid "CsvViewer|No CSV data to display."
+msgstr ""
+
+msgid "CsvViewer|The file is too large to render all the rows. To see the entire file, switch to the raw view."
+msgstr ""
+
+msgid "CsvViewer|View raw data"
+msgstr ""
+
 msgid "Current"
 msgstr ""
 
@@ -31223,9 +31232,6 @@ msgid "No %{header} for this request."
 msgstr ""
 
 msgid "No %{providerTitle} repositories found"
-msgstr ""
-
-msgid "No CSV data to display."
 msgstr ""
 
 msgid "No Epic"
@@ -50405,6 +50411,9 @@ msgid "Unauthenticated web rate limit period in seconds"
 msgstr ""
 
 msgid "Unauthorized to access the cluster agent in this project"
+msgstr ""
+
+msgid "Unauthorized to create a package protection rule"
 msgstr ""
 
 msgid "Unauthorized to create an environment"

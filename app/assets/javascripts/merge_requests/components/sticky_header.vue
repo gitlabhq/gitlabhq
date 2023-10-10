@@ -11,6 +11,7 @@ import StatusBadge from '~/issuable/components/status_badge.vue';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
+import SubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import titleSubscription from '../queries/title.subscription.graphql';
 
@@ -46,6 +47,7 @@ export default {
     DiscussionCounter,
     StatusBadge,
     TodoWidget,
+    SubscriptionsWidget,
     ClipboardButton,
   },
   directives: {
@@ -79,6 +81,9 @@ export default {
     },
     isSignedIn() {
       return isLoggedIn();
+    },
+    isNotificationsTodosButtons() {
+      return this.glFeatures.notificationsTodosButtons;
     },
   },
   watch: {
@@ -189,13 +194,23 @@ export default {
           </ul>
           <div class="gl-display-none gl-lg-display-flex gl-align-items-center gl-ml-auto">
             <discussion-counter blocks-merge hide-options />
-            <todo-widget
+            <div
               v-if="isSignedIn"
-              :issuable-id="issuableId"
-              :issuable-iid="issuableIid"
-              :full-path="projectPath"
-              issuable-type="merge_request"
-            />
+              :class="{ 'gl-display-flex gl-gap-3': isNotificationsTodosButtons }"
+            >
+              <todo-widget
+                :issuable-id="issuableId"
+                :issuable-iid="issuableIid"
+                :full-path="projectPath"
+                issuable-type="merge_request"
+              />
+              <subscriptions-widget
+                v-if="isNotificationsTodosButtons"
+                :iid="issuableIid"
+                :full-path="projectPath"
+                issuable-type="merge_request"
+              />
+            </div>
           </div>
         </div>
       </div>

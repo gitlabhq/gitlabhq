@@ -114,6 +114,9 @@ export default {
     tootltipTitle() {
       return todoLabel(this.hasTodo);
     },
+    isNotificationsTodosButtons() {
+      return this.glFeatures.notificationsTodosButtons;
+    },
   },
   methods: {
     toggleTodo() {
@@ -183,7 +186,18 @@ export default {
 </script>
 
 <template>
-  <div data-testid="sidebar-todo">
+  <gl-button
+    v-if="isNotificationsTodosButtons && isMergeRequest"
+    v-gl-tooltip.hover.top
+    data-testid="sidebar-todo"
+    :title="tootltipTitle"
+    category="secondary"
+    type="reset"
+    @click.stop.prevent="toggleTodo"
+  >
+    <gl-icon :class="{ 'todo-undone gl-fill-blue-500': hasTodo }" :name="collapsedButtonIcon" />
+  </gl-button>
+  <div v-else data-testid="sidebar-todo">
     <todo-button
       :issuable-type="issuableType"
       :issuable-id="issuableId"
