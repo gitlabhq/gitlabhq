@@ -425,6 +425,8 @@ Dangerfile
 /app/validators/addressable_url_validator.rb
 /app/validators/public_url_validator.rb
 /config/initializers/content_security_policy.rb
+/config/initializers/gitlab_http.rb
+/gems/gitlab-http/**/*.rb
 /lib/gitlab/content_security_policy/
 /lib/gitlab/http.rb
 /lib/gitlab/http_connection_adapter.rb

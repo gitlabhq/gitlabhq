@@ -104,10 +104,6 @@ describe('AdminRunnerShowApp', () => {
       const expected = `Description My Runner
                         Last contact Never contacted
                         Version 1.0.0
-                        IP Address None
-                        Executor None
-                        Architecture None
-                        Platform darwin
                         Configuration Runs untagged jobs
                         Maximum job timeout None
                         Token expiry

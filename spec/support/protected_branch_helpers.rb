@@ -3,7 +3,7 @@
 module ProtectedBranchHelpers
   def set_allowed_to(operation, option = 'Maintainers', form: '.js-new-protected-branch')
     within(form) do
-      within_select(".js-allowed-to-#{operation}") do
+      within_select(".js-allowed-to-#{operation}:not([disabled])") do
         Array(option).each { |opt| click_on(opt) }
       end
     end

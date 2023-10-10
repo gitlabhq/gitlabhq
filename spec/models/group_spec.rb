@@ -1428,6 +1428,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       group.add_member(user, GroupMember::OWNER)
     end
 
+    before do
+      # Add an invite to the group, which should be filtered out
+      create(:group_member, :invited, source: group)
+    end
+
     it 'returns the member-owners' do
       expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
     end
@@ -1455,6 +1460,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           it 'returns only direct member-owners' do
             expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
           end
+
+          context 'when there is an invite in the linked group' do
+            before do
+              create(:group_member, :invited, source: subgroup)
+            end
+
+            it 'returns only direct member-owners' do
+              expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+            end
+          end
         end
       end
 
@@ -1469,6 +1484,31 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         it 'returns member-owners including parents' do
           expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2)
+        end
+
+        context 'with group sharing' do
+          let_it_be(:invited_group) { create(:group) }
+
+          let!(:invited_group_owner) { invited_group.add_member(user, GroupMember::OWNER) }
+
+          before do
+            create(:group_group_link, :owner, shared_group: subgroup, shared_with_group: invited_group)
+          end
+
+          it 'returns member-owners including parents, and member-owners of the invited group' do
+            expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2, invited_group_owner)
+          end
+
+          context 'when there is an invite in the linked group' do
+            before do
+              # Add an invite to this group, which should be filtered out
+              create(:group_member, :invited, source: invited_group)
+            end
+
+            it 'returns member-owners including parents, and member-owners of the invited group' do
+              expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2, invited_group_owner)
+            end
+          end
         end
       end
     end

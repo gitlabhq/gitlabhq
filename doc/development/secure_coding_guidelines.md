@@ -243,15 +243,16 @@ In order to mitigate SSRF vulnerabilities, it is necessary to validate the desti
 The preferred SSRF mitigations within GitLab are:
 
 1. Only connect to known, trusted domains/IP addresses.
-1. Use the [GitLab::HTTP](#gitlab-http-library) library
+1. Use the [`Gitlab::HTTP`](#gitlab-http-library) library
 1. Implement [feature-specific mitigations](#feature-specific-mitigations)
 
 #### GitLab HTTP Library
 
-The [GitLab::HTTP](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/http.rb) wrapper library has grown to include mitigations for all of the GitLab-known SSRF vectors. It is also configured to respect the
+The [`Gitlab::HTTP`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/http.rb) wrapper library has grown to include mitigations for all of the GitLab-known SSRF vectors. It is also configured to respect the
 `Outbound requests` options that allow instance administrators to block all internal connections, or limit the networks to which connections can be made.
+The `Gitlab::HTTP` wrapper library deletages the requests to the [`gitlab-http`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-http) gem.
 
-In some cases, it has been possible to configure GitLab::HTTP as the HTTP
+In some cases, it has been possible to configure `Gitlab::HTTP` as the HTTP
 connection library for 3rd-party gems. This is preferable over re-implementing
 the mitigations for a new feature.
 
@@ -668,12 +669,12 @@ Whenever possible this example should be **avoided** for security purposes:
 response = HTTParty.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384'])
 ```
 
-When using [`GitLab::HTTP`](#gitlab-http-library), the code looks like:
+When using [`Gitlab::HTTP`](#gitlab-http-library), the code looks like:
 
 This is the **recommended** implementation to avoid security issues such as SSRF:
 
 ```ruby
-response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384'])
+response = Gitlab::HTTP.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384'])
 ```
 
 ##### TLS 1.2
@@ -706,7 +707,7 @@ This example was taken [from the GitLab Agent](https://gitlab.com/gitlab-org/clu
 For **Ruby**, you can use again [`HTTParty`](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
 
 ```ruby
-response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_2, ciphers: ['ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES256-GCM-SHA384'])
+response = Gitlab::HTTP.get('https://gitlab.com', ssl_version: :TLSv1_2, ciphers: ['ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES256-GCM-SHA384'])
 ```
 
 ## GitLab Internal Authorization

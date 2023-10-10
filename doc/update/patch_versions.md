@@ -48,7 +48,7 @@ cd /home/git/gitlab
 
 # If you haven't done so during installation or a previous upgrade already
 sudo -u git -H bundle config set --local deployment 'true'
-sudo -u git -H bundle config set --local without 'development test mysql aws kerberos'
+sudo -u git -H bundle config set --local without 'development test kerberos'
 
 # Update gems
 sudo -u git -H bundle install

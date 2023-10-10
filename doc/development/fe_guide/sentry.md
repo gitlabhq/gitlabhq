@@ -7,8 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Sentry monitoring in the frontend development of GitLab
 
 The GitLab Frontend team uses Sentry as an observability tool to monitor how the UI performs for
-users on `gitlab.com`. Our Sentry instance is located at
-[https://new-sentry.gitlab.net/](https://new-sentry.gitlab.net/). Only GitLab team members can access Sentry.
+users on `gitlab.com`.
 
 GitLab.com is configured to report to our Sentry instance at **Admin > Metrics and profiling > Sentry**.
 
@@ -17,6 +16,14 @@ We monitor two kinds of data: **Errors** and **Performance**.
 NOTE:
 The [Frontend Observability Working Group](https://handbook.gitlab.com/handbook/company/working-groups/frontend-observability/) is looking to improve how we use Sentry. GitLab team members can provide feedback at
 [issue #427402](https://gitlab.com/gitlab-org/gitlab/-/issues/427402).
+
+## Start using Sentry
+
+Our Sentry instance is located at [https://new-sentry.gitlab.net/](https://new-sentry.gitlab.net/).
+Only GitLab team members can access Sentry.
+
+After your first log-in you can join the `#gitlab` team by selecting **Join a team**. Confirm that
+`#gitlab` appears under `YOUR TEAMS` in the [teams page](https://new-sentry.gitlab.net/settings/gitlab/teams/).
 
 ## Error reporting
 

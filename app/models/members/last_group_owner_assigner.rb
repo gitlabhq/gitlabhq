@@ -22,7 +22,7 @@ class LastGroupOwnerAssigner
   end
 
   def owner_ids
-    @owner_ids ||= owners.where(id: member_ids).ids
+    @owner_ids ||= member_ids & owners.map(&:id)
   end
 
   def member_ids
@@ -30,6 +30,6 @@ class LastGroupOwnerAssigner
   end
 
   def owners
-    @owners ||= group.member_owners_excluding_project_bots.load
+    @owners ||= group.member_owners_excluding_project_bots
   end
 end

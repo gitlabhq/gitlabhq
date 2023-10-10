@@ -3,7 +3,7 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
-  let!(:user_1) { create(:user, username: 'foobar', password: User.random_password) }
+  let!(:user_1) { create(:user, username: 'foobar', password: User.random_password, password_automatically_set: true) }
   let(:password) { User.random_password }
 
   def stub_username(username)
@@ -26,8 +26,14 @@ RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
   describe ':reset' do
     context 'when all inputs are correct' do
       it 'updates the password properly' do
+        expect(user_1.password_automatically_set?).to eq(true)
+
         run_rake_task('gitlab:password:reset', user_1.username)
-        expect(user_1.reload.valid_password?(password)).to eq(true)
+
+        user_1.reload
+
+        expect(user_1.valid_password?(password)).to eq(true)
+        expect(user_1.password_automatically_set?).to eq(false)
       end
     end
 

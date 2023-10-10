@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify:main@sha256:f1b735a792778bf4d92dfc3cec55322322b54a57d29dae3ee8842013ad3242a8 as base
+FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify:main@sha256:fb833ce8f838e38104ee3b499a99f86e7a5844a4d4d8fdeeababd2d717504f3e as base
 
 ENV GITLAB_LICENSE_MODE=test \
     GDK_KILL_CONFIRM=true

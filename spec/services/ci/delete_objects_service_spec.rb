@@ -47,8 +47,8 @@ RSpec.describe Ci::DeleteObjectsService, :aggregate_failures, feature_category: 
     context 'with artifacts both ready and not ready for deletion' do
       let(:data) { [] }
 
-      let_it_be(:past_ready) { create(:ci_deleted_object, pick_up_at: 2.days.ago) }
-      let_it_be(:ready) { create(:ci_deleted_object, pick_up_at: 1.day.ago) }
+      let!(:past_ready) { create(:ci_deleted_object, pick_up_at: 2.days.ago) }
+      let!(:ready) { create(:ci_deleted_object, pick_up_at: 1.day.ago) }
 
       it 'skips records with pick_up_at in the future' do
         not_ready = create(:ci_deleted_object, pick_up_at: 1.day.from_now)

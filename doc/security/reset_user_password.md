@@ -104,6 +104,7 @@ If you know the username, user ID, or email address, you can use the Rails conso
    new_password = ::User.random_password
    user.password = new_password
    user.password_confirmation = new_password
+   user.password_automatically_set = false
    ```
 
    To set a specific value for the new password:
@@ -112,6 +113,7 @@ If you know the username, user ID, or email address, you can use the Rails conso
    new_password = 'examplepassword'
    user.password = new_password
    user.password_confirmation = new_password
+   user.password_automatically_set = false
    ```
 
 1. Optional. Notify the user that an administrator changed their password:

@@ -51,14 +51,21 @@ GitLab authorizes the creator of the deploy key if the Git-command triggers addi
 ## Security implications
 
 The intended use case for deploy keys is for non-human interaction with GitLab, for example: an automated script running on a server in your organization.
+
+You should create a dedicated account to act as a service account, and create the deploy key with the service account.
+If you use another user account to create deploy keys, the user is granted persistent privileges.
+
+In addition:
+
+- Deploy keys work even if the user who created them is removed from the group or project.
+- The creator of a deploy key retains access to the group or project, even if the user is demoted or removed.
+- When a deploy key is specified in a protected branch rule, the creator of the deploy key gains access to the protected branch, as well as to the deploy key itself.
+
 As with all sensitive information, you should ensure only those who need access to the secret can read it.
 For human interactions, use credentials tied to users such as Personal Access Tokens.
 
 To help detect a potential secret leak, you can use the
 [Audit Event](../../../administration/audit_event_streaming/examples.md#example-payloads-for-ssh-events-with-deploy-key) feature.
-
-WARNING:
-Deploy keys work even if the user who created them is removed from the group or project.
 
 ## View deploy keys
 

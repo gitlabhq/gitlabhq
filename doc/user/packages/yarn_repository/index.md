@@ -76,10 +76,6 @@ You can use **Shared Runners** *(Default)* or **Private Runners** (Advanced).
 
 #### Shared runners
 
-Third party images such as `node:latest` or `node:current` do not have direct access
-to the `CI_JOB_TOKEN` when operating in a shared runner. You must configure an
-authentication token or use a private runner.
-
 To create an authentication token for your project or group:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.

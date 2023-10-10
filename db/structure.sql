@@ -32136,8 +32136,6 @@ CREATE INDEX index_deployments_on_project_id_and_id ON deployments USING btree (
 
 CREATE UNIQUE INDEX index_deployments_on_project_id_and_iid ON deployments USING btree (project_id, iid);
 
-CREATE INDEX index_deployments_on_project_id_and_ref ON deployments USING btree (project_id, ref);
-
 CREATE INDEX index_deployments_on_project_id_and_status_and_created_at ON deployments USING btree (project_id, status, created_at);
 
 CREATE INDEX index_deployments_on_project_id_and_updated_at_and_id ON deployments USING btree (project_id, updated_at DESC, id DESC);

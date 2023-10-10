@@ -18,12 +18,19 @@ or you can choose other UI text to update.
 
 ## Steps
 
-To make a contribution, you will:
+To make a contribution, follow these steps:
 
-1. [Configure the GitLab Development Kit](#step-1-configure-the-gitlab-development-kit)
-1. [Make your code updates](#step-2-change-the-code)
-1. [Push your changes to the community fork](#step-3-push-your-changes-to-the-community-fork)
-1. [Create a merge request](#step-4-create-a-merge-request)
+- [Confirm the prerequisites](#prerequisites)
+- [Step 1: Configure the GitLab Development Kit](#step-1-configure-the-gitlab-development-kit)
+  - [A new GDK installation](#a-new-gdk-installation)
+  - [An existing GDK installation](#an-existing-gdk-installation)
+- [Step 2: Change the code](#step-2-change-the-code)
+  - [Update the translation files](#update-the-translation-files)
+  - [Update the documentation](#update-the-documentation)
+- [Step 3: Push your changes to the community fork](#step-3-push-your-changes-to-the-community-fork)
+- [Step 4: Create a merge request](#step-4-create-a-merge-request)
+
+[View an interactive demo](https://gitlab.navattic.com/ak10d67) of the contribution process.
 
 ## Prerequisites
 
@@ -41,6 +48,8 @@ On GitLab.com:
   community fork, where you'll author your changes.
 
 ## Step 1: Configure the GitLab Development Kit
+
+[View an interactive demo of this step](https://gitlab.navattic.com/xtk20s8x).
 
 The GitLab Development Kit (GDK) is a local version of GitLab that's yours to play with.
 It's just like an installation of self-managed GitLab. It includes sample projects you
@@ -152,6 +161,8 @@ If you get errors, run `gdk doctor` to troubleshoot. For more advanced troublesh
 
 ## Step 2: Change the code
 
+[View an interactive demo of this step](https://gitlab.navattic.com/uu5a0dc5).
+
 Now for the fun part. Let's edit some code.
 
 In this example, I found some UI text I'd like to change.
@@ -250,6 +261,8 @@ To view these changes in action, you can
 
 ## Step 3: Push your changes to the community fork
 
+[View an interactive demo of this step](https://gitlab.navattic.com/rhdu0iro).
+
 Now you're going to push your changes to the community fork. This is the next step
 in getting your changes put into the main GitLab repository.
 
@@ -293,6 +306,8 @@ in getting your changes put into the main GitLab repository.
    ```
 
 ## Step 4: Create a merge request
+
+[View an interactive demo of this step](https://gitlab.navattic.com/tu5n0haw).
 
 Now you're ready to push changes from the community fork to the main GitLab repository!
 

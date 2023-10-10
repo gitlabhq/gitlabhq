@@ -107,10 +107,6 @@ export default {
             <runner-upgrade-status-badge size="sm" :runner="runner" />
           </template>
         </runner-detail>
-        <runner-detail :label="s__('Runners|IP Address')" :value="runner.ipAddress" />
-        <runner-detail :label="s__('Runners|Executor')" :value="runner.executorName" />
-        <runner-detail :label="s__('Runners|Architecture')" :value="runner.architectureName" />
-        <runner-detail :label="s__('Runners|Platform')" :value="runner.platformName" />
         <runner-detail :label="s__('Runners|Configuration')">
           <template v-if="configTextProtected || configTextUntagged" #value>
             <gl-intersperse>
