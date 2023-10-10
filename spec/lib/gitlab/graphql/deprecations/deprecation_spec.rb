@@ -175,6 +175,23 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
 
       expect(desc).to be_nil
     end
+
+    it 'strips any leading or trailing spaces' do
+      desc = deprecation.edit_description("   Some description.    \n")
+
+      expect(desc).to eq('Some description. Deprecated in 10.10: This was renamed.')
+    end
+
+    it 'strips any leading or trailing spaces in heredoc string literals' do
+      description = <<~DESC
+        Lorem ipsum
+        dolor sit amet.
+      DESC
+
+      desc = deprecation.edit_description(description)
+
+      expect(desc).to eq("Lorem ipsum\ndolor sit amet. Deprecated in 10.10: This was renamed.")
+    end
   end
 
   describe '#original_description' do

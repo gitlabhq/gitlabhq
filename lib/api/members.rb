@@ -114,8 +114,6 @@ module API
           requires :user_id, types: [Integer, String], desc: 'The user ID of the new member or multiple IDs separated by commas.'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'members-api'
-          optional :tasks_to_be_done, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Tasks the inviter wants the member to do'
-          optional :tasks_project_id, type: Integer, desc: 'The project ID in which to create the task issues'
         end
 
         post ":id/members", feature_category: feature_category do

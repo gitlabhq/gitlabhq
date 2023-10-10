@@ -20,6 +20,9 @@ module Atlassian
         end
         expose :title
         expose :author, using: JiraConnect::Serializers::AuthorEntity
+        expose :reviewers do |mr|
+          JiraConnect::Serializers::ReviewerEntity.represent(mr.merge_request_reviewers, merge_request: mr)
+        end
         expose :commentCount do |mr|
           if options[:user_notes_count]
             options[:user_notes_count].fetch(mr.id, 0)

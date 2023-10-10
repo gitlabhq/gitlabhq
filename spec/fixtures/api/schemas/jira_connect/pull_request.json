@@ -16,6 +16,12 @@
     "author": {
       "$ref": "./author.json"
     },
+    "reviewers": {
+      "type": "array",
+      "items": {
+        "$ref": "./reviewer.json"
+      }
+    },
     "commentCount": {
       "type": "integer"
     },

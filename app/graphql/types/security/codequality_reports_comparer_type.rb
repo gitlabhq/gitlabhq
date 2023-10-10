@@ -11,7 +11,7 @@ module Types
       field :report,
         type: CodequalityReportsComparer::ReportType,
         null: true,
-        hash_key: 'data',
+        hash_key: :data,
         description: 'Compared codequality report.'
     end
     # rubocop: enable Graphql/AuthorizeTypes

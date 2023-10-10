@@ -266,34 +266,6 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         end
       end
 
-      context 'with tasks_to_be_done and tasks_project_id in the params' do
-        let(:project_id) { source_type == 'project' ? source.id : create(:project, namespace: source).id }
-
-        context 'when there is 1 invitation' do
-          it 'creates a member_task with the tasks_to_be_done and the project' do
-            post invitations_url(source, maintainer),
-                 params: { email: email, access_level: Member::DEVELOPER, tasks_to_be_done: %w(code ci), tasks_project_id: project_id }
-
-            member = source.members.find_by(invite_email: email)
-            expect(member.tasks_to_be_done).to match_array([:code, :ci])
-            expect(member.member_task.project_id).to eq(project_id)
-          end
-        end
-
-        context 'when there are multiple invitations' do
-          it 'creates a member_task with the tasks_to_be_done and the project' do
-            post invitations_url(source, maintainer),
-                 params: { email: [email, email2].join(','), access_level: Member::DEVELOPER, tasks_to_be_done: %w(code ci), tasks_project_id: project_id }
-
-            members = source.members.where(invite_email: [email, email2])
-            members.each do |member|
-              expect(member.tasks_to_be_done).to match_array([:code, :ci])
-              expect(member.member_task.project_id).to eq(project_id)
-            end
-          end
-        end
-      end
-
       context 'with invite_source considerations', :snowplow do
         let(:params) { { email: email, access_level: Member::DEVELOPER } }
 

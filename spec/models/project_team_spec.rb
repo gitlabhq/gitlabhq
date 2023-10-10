@@ -328,19 +328,6 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
       expect(project.team.reporter?(user1)).to be(true)
       expect(project.team.reporter?(user2)).to be(true)
     end
-
-    context 'when `tasks_to_be_done` and `tasks_project_id` are passed' do
-      before do
-        project.team.add_members([user1], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
-      end
-
-      it 'creates a member_task with the correct attributes', :aggregate_failures do
-        member = project.project_members.last
-
-        expect(member.tasks_to_be_done).to match_array([:ci, :code])
-        expect(member.member_task.project).to eq(project)
-      end
-    end
   end
 
   describe '#add_member' do

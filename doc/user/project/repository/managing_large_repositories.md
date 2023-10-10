@@ -393,6 +393,17 @@ concurrent = 4
 This makes the cloning configuration to be part of the given runner
 and does not require us to update each `.gitlab-ci.yml`.
 
+### Configure Gitaly negotiation timeouts
+
+You might experience a `fatal: the remote end hung up unexpectedly` error when attempting to fetch or archive:
+
+- Large repositories.
+- Many repositories in parallel.
+- The same large repository in parallel.
+ 
+You can attempt to mitigate this issue by increasing the default negotiation timeout values. For more information, see
+[Configure negotiation timeouts](../../../administration/gitaly/configure_gitaly.md#configure-negotiation-timeouts).
+
 ### Reference architectures
 
 Large repositories tend to be found in larger organisations with many users. The GitLab Quality Engineering and Support teams provide several [reference architectures](../../../administration/reference_architectures/index.md) that are the recommended way to deploy GitLab at scale.

@@ -577,12 +577,6 @@ class Member < ApplicationRecord
 
   def after_accept_invite
     post_create_hook
-
-    run_after_commit_or_now do
-      if member_task
-        TasksToBeDone::CreateWorker.perform_async(member_task.id, created_by_id, [user_id.to_i])
-      end
-    end
   end
 
   def after_decline_invite
