@@ -843,6 +843,10 @@ Other issues:
 
 ### Linux package installations
 
+- The binaries for PostgreSQL 11 and repmgr have been removed. Before upgrading, you must:
+  1. Ensure the installation is using [PostgreSQL 12](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+  1. If using repmgr, [convert to using Patroni](../../administration/postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni).
+
 - In GitLab 13.0, `sidekiq-cluster` was enabled by default and the `sidekiq` service ran `sidekiq-cluster` under the hood.
   However, users could control this behavior using `sidekiq['cluster']` setting to run Sidekiq directly instead. Users
   could also run `sidekiq-cluster` separately using the various `sidekiq_cluster[*]` settings available in `gitlab.rb`.
@@ -871,10 +875,6 @@ Other issues:
 
   For more information, see
   [Set up the initial password](https://docs.gitlab.com/omnibus/installation/index.html#set-up-the-initial-password).
-- The binaries for PostgreSQL 11 and repmgr have been removed. Prior to upgrading, administrators of Linux package
-  installations must:
-  1. Ensure the installation is using [PostgreSQL 12](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
-  1. If using repmgr, [convert to using Patroni](../../administration/postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni).
 - Two configuration options for Redis were deprecated in GitLab 13 and removed in GitLab 14:
 
   - `redis_slave_role` is replaced with `redis_replica_role`.

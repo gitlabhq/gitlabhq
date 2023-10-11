@@ -140,7 +140,7 @@ function filterObjToQueryParams(filterObj) {
       let value = rawValue;
       if (filterName === 'durationMs') {
         // converting durationMs to duration_nano
-        value *= 1000;
+        value *= 1000000;
       }
 
       if (paramName && value) {

@@ -1091,7 +1091,7 @@ module Ci
     end
 
     def has_expiring_artifacts?
-      artifacts_expire_at.present? && artifacts_expire_at > Time.current
+      artifacts_expire_at.present? && artifacts_expire_at.future?
     end
 
     def job_jwt_variables

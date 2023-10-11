@@ -66,14 +66,14 @@ To identify the RSpec tests that are likely to fail in a merge request, we use *
 
 ##### Static mappings
 
-We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
+We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
   be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/5ab06422826c0d69c615655982a6f969a7f3c6ea/tooling/lib/tooling/find_tests.rb#L17)).
 
 The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
 
 ##### Dynamic mappings
 
-First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with a dynamic mapping strategy from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
+First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with a dynamic mapping strategy from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
   ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/lib/tooling/find_tests.rb#L20)).
 
 In addition to `test_file_finder`, we have added several advanced mappings to detect even more tests to run:

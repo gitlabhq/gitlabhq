@@ -232,7 +232,7 @@ describe('buildClient', () => {
           },
         });
         expect(getQueryParam()).toBe(
-          'gt[duration_nano]=100000&lt[duration_nano]=1000000' +
+          'gt[duration_nano]=100000000&lt[duration_nano]=1000000000' +
             '&operation=op&not[operation]=not-op' +
             '&service_name=service&not[service_name]=not-service' +
             '&period=5m' +

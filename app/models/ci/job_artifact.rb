@@ -310,7 +310,7 @@ module Ci
     end
 
     def expiring?
-      expire_at.present? && expire_at > Time.current
+      expire_at.present? && expire_at.future?
     end
 
     def expire_in

@@ -790,7 +790,18 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
     for Omnibus GitLab. This replaces `gitlab_shell['custom_hooks_dir']`.
 - PostgreSQL 13.6 is being shipped as the default version for fresh installs and
   12.10 for upgrades. You can manually upgrade to PostgreSQL 13.6 following the
-  [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#gitlab-150-and-later).
+  [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) with:
+
+  ```shell
+  sudo gitlab-ctl pg-upgrade -V 13
+  ```
+
+  Until PostgreSQL 12 is removed, you may
+  [pin the PostgreSQL version](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only)
+  if needed for compatibility or test environment reasons.
+
+  [Fault tolerant and Geo installations require additional steps and planning](../../administration/postgresql/replication_and_failover.md#upgrading-postgresql-major-version-in-a-patroni-cluster).
+
   Because of underlying structural changes, the running PostgreSQL process
   **_must_** be restarted when it is upgraded before running database
   migrations. If automatic restart is skipped, you must run the following

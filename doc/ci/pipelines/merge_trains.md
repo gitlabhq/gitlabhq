@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Merge trains **(PREMIUM ALL)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. The flag is enabled on GitLab.com and enabled by default on self-managed GitLab.
+
 NOTE:
 [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train**
 and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**.
@@ -18,9 +20,6 @@ In projects with frequent merges to the default branch, changes in different mer
 might conflict with each other. [Merged results pipelines](merged_results_pipelines.md)
 ensure the changes work with the content in the default branch, but not content
 that others are merging at the same time.
-
-Merge trains do not work with [Semi-linear history merge requests](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history)
-or [fast-forward merge requests](../../user/project/merge_requests/methods/index.md#fast-forward-merge).
 
 For more information about:
 

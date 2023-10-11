@@ -43,7 +43,7 @@ The following stages guide you through a series of four steps to provide the inf
    - If you need to make changes to these attributes, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 1. Tenant configuration: Provides the minimum required information needed to create your GitLab Dedicated tenant:
    - Desired instance subdomain: The main domain for GitLab Dedicated instances is `gitlab-dedicated.com`. You choose the subdomain name where your instance is accessible from. For example, `customer_name.gitlab-dedicated.com`.
-   - Desired primary region: Primary AWS region in which your data is stored. Note the [unavailable AWS regions](../../subscriptions/gitlab_dedicated/index.md#unavailable-aws-regions).
+   - Desired primary region: Primary AWS region in which your data is stored. Note the [available AWS regions](../../subscriptions/gitlab_dedicated/index.md#available-aws-regions).
    - Desired secondary region: Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster.
    - Desired backup region: An AWS region where the primary backups of your data are replicated. This can be the same as the primary or secondary region, or different.
    - Desired maintenance window: A weekly four-hour time slot that GitLab uses to perform routine maintenance and upgrade operations on all tenant instances. For more information, see [maintenance windows](#maintenance-window).

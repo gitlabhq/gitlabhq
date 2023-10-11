@@ -139,6 +139,34 @@ module QA
         with_paginated_request { github_client.list_issues(github_repo, state: 'all') }
       end
 
+      let(:gh_issues) do
+        issues = gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
+          id = issue.number
+          hash[id] = {
+            url: issue.html_url,
+            title: issue.title,
+            body: issue.body || '',
+            comments: gh_issue_comments[id]
+          }
+        end
+
+        fetch_github_events(issues, "issue")
+      end
+
+      let(:gh_prs) do
+        prs = gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
+          id = pr.number
+          hash[id] = {
+            url: pr.html_url,
+            title: pr.title,
+            body: pr.body || '',
+            comments: [*gh_pr_comments[id], *gh_issue_comments[id]].compact
+          }
+        end
+
+        fetch_github_events(prs, "pr")
+      end
+
       # rubocop:disable Layout/LineLength
       let(:gh_issue_comments) do
         logger.info("- Fetching issue comments -")
@@ -353,63 +381,21 @@ module QA
       #
       private
 
-      # Github prs
-      #
-      # Instance variable is used because parallel doesn't play nice with memoized rspec vars
-      #
-      # @return [Hash]
-      def gh_prs
-        @gh_prs ||= begin
-          prs = gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
-            id = pr.number
-            hash[id] = {
-              url: pr.html_url,
-              title: pr.title,
-              body: pr.body || '',
-              comments: [*gh_pr_comments[id], *gh_issue_comments[id]].compact
-            }
-          end
-
-          fetch_github_events(prs, "pr")
-        end
-      end
-
-      # Github issues
-      #
-      # Instance variable is used because parallel doesn't play nice with memoized rspec vars
-      #
-      # @return [Hash]
-      def gh_issues
-        @gh_issues ||= begin
-          issues = gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
-            id = issue.number
-            hash[id] = {
-              url: issue.html_url,
-              title: issue.title,
-              body: issue.body || '',
-              comments: gh_issue_comments[id]
-            }
-          end
-
-          fetch_github_events(issues, "issue")
-        end
-      end
-
       # Fetch github events and add to issue object
       #
       # @param [Hash] issuables
       # @param [String] type
       # @return [Hash]
       def fetch_github_events(issuables, type)
-        logger.info("- Fetching #{type} events in #{api_parallel_threads} parallel threads -")
-        Parallel.map(issuables, in_threads: 8) do |id, issuable|
-          logger.debug("[tid: #{current_thread}] Fetching events for #{type} !#{id}")
+        logger.info("- Fetching #{type} events -")
+        issuables.to_h do |id, issuable|
+          logger.debug("Fetching events for #{type} !#{id}")
           events = with_paginated_request { github_client.issue_events(github_repo, id) }
             .map { |event| event[:event] }
             .reject { |event| unsupported_events.include?(event) }
 
           [id, issuable.merge({ events: events })]
-        end.to_h
+        end
       end
 
       # Verify imported mrs or issues and return missing items
@@ -677,7 +663,7 @@ module QA
           next_link = github_client.last_response.rels[:next]&.href
           break unless next_link
 
-          logger.debug("[tid: #{current_thread}] Fetching resources from next page: '#{next_link}'")
+          logger.debug("Fetching resources from next page: '#{next_link}'")
           resources.concat(with_rate_limit { github_client.get(next_link) })
         end
 
@@ -693,8 +679,8 @@ module QA
         raise e unless e.response[:status] == 403
 
         wait = github_client.rate_limit.resets_in + 5
-        logger.warn("[tid: #{current_thread}] GitHub rate api rate limit reached, resuming in '#{wait}' seconds")
-        logger.debug("[tid: #{current_thread}] #{JSON.parse(e.response[:body])['message']}")
+        logger.warn("GitHub rate api rate limit reached, resuming in '#{wait}' seconds")
+        logger.debug(JSON.parse(e.response[:body])['message'])
         sleep(wait)
 
         retry
