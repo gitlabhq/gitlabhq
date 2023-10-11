@@ -6,8 +6,8 @@ module Features
       page.find("[data-testid='#{testid}']", **kwargs)
     end
 
-    def within_testid(testid, &block)
-      page.within("[data-testid='#{testid}']", &block)
+    def within_testid(testid, **kwargs, &block)
+      page.within("[data-testid='#{testid}']", **kwargs, &block)
     end
   end
 end

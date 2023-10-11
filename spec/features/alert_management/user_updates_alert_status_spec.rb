@@ -26,7 +26,7 @@ RSpec.describe 'User updates Alert Management status', :js, feature_category: :i
 
     it 'updates the alert status' do
       find('.dropdown-menu-selectable').click
-      find('.dropdown-item', text: 'Acknowledged').click
+      find('.gl-new-dropdown-item', text: 'Acknowledged').click
       wait_for_requests
 
       expect(find('.dropdown-menu-selectable')).to have_content('Acknowledged')

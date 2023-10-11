@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import updateAlertStatusMutation from '~/graphql_shared//mutations/alert_status_update.mutation.graphql';
@@ -34,13 +34,13 @@ describe('AlertManagementStatus', () => {
       },
     });
 
-  const findStatusDropdown = () => wrapper.findComponent(GlDropdown);
-  const findFirstStatusOption = () => findStatusDropdown().findComponent(GlDropdownItem);
-  const findAllStatusOptions = () => findStatusDropdown().findAllComponents(GlDropdownItem);
-  const findStatusDropdownHeader = () => wrapper.findByTestId('dropdown-header');
+  const findStatusDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findFirstStatusOption = () => findStatusDropdown().findComponent(GlListboxItem);
+  const findAllStatusOptions = () => findStatusDropdown().findAllComponents(GlListboxItem);
+  const findStatusDropdownHeader = () => wrapper.findByTestId('listbox-header-text');
 
   const selectFirstStatusOption = () => {
-    findFirstStatusOption().vm.$emit('click');
+    findFirstStatusOption().vm.$emit('select', new Event('click'));
 
     return waitForPromises();
   };
@@ -57,7 +57,7 @@ describe('AlertManagementStatus', () => {
     provide = {},
     handler = mockUpdatedMutationResult(),
   } = {}) {
-    wrapper = shallowMountExtended(AlertManagementStatus, {
+    wrapper = mountExtended(AlertManagementStatus, {
       apolloProvider: createMockApolloProvider(handler),
       propsData: {
         alert: { ...mockAlert },
@@ -82,7 +82,7 @@ describe('AlertManagementStatus', () => {
 
     it('shows the dropdown', () => {
       mountComponent({ props: { isSidebar: true, isDropdownShowing: true } });
-      expect(wrapper.classes()).toContain('show');
+      expect(wrapper.classes()).not.toContain('gl-display-none');
     });
   });
 
@@ -92,8 +92,7 @@ describe('AlertManagementStatus', () => {
     });
 
     it('calls `$apollo.mutate` with `updateAlertStatus` mutation and variables containing `iid`, `status`, & `projectPath`', async () => {
-      findFirstStatusOption().vm.$emit('click');
-      await waitForPromises();
+      await selectFirstStatusOption();
 
       expect(requestHandler).toHaveBeenCalledWith({
         iid,
@@ -194,9 +193,7 @@ describe('AlertManagementStatus', () => {
         handler: mockUpdatedMutationResult({ nodes: mockAlerts }),
       });
       Tracking.event.mockClear();
-      findFirstStatusOption().vm.$emit('click');
-
-      await waitForPromises();
+      await selectFirstStatusOption();
 
       const status = findFirstStatusOption().text();
       const { category, action, label } = trackAlertStatusUpdateOptions;

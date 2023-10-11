@@ -8,6 +8,11 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
   urgency :low, [:issues, :labels, :milestones, :commands, :merge_requests, :members]
 
   def members
+    if Feature.enabled?(:cache_autocomplete_sources_members, current_user)
+      # Cache the response on the frontend
+      expires_in 3.minutes
+    end
+
     render json: ::Groups::ParticipantsService.new(@group, current_user).execute(target)
   end
 

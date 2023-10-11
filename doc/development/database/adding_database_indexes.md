@@ -287,10 +287,13 @@ If this behavior is needed on a larger table, ask for assistance in the `#databa
 
 ## Indexes for partitioned tables
 
-Indexes [cannot be created](https://www.postgresql.org/docs/15/ddl-partitioning.html#DDL-PARTITIONING-DECLARATIVE-MAINTENANCE)
-**concurrently** on a partitioned table. You must use `CONCURRENTLY` to avoid service disruption in a hot system.
+You [cannot create indexes](https://www.postgresql.org/docs/15/ddl-partitioning.html#DDL-PARTITIONING-DECLARATIVE-MAINTENANCE)
+concurrently on partitioned tables.
+However, creating indexes non-concurrently holds a write lock on the table being indexed.
+Therefore, you must use `CONCURRENTLY` when you create indexes to avoid service disruption in a hot system.
 
-To create an index on a partitioned table, use `add_concurrent_partitioned_index`, provided by the database team.
+As a workaround, the Database team has provided `add_concurrent_partitioned_index`.
+This helper creates indexes on partitioned tables without holding a write lock.
 
 Under the hood, `add_concurrent_partitioned_index`:
 

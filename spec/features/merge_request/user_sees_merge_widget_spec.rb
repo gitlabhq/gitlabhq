@@ -335,7 +335,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      expect(page).to have_selector('.accept-merge-request')
+      expect(page).not_to have_selector('.accept-merge-request')
     end
   end
 

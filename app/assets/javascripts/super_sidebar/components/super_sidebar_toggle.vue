@@ -89,7 +89,7 @@ export default {
 
 <template>
   <gl-button
-    v-gl-tooltip.hover="tooltip"
+    v-gl-tooltip="tooltip"
     aria-controls="super-sidebar"
     :aria-expanded="ariaExpanded"
     :aria-label="$options.i18n.primaryNavigationSidebar"

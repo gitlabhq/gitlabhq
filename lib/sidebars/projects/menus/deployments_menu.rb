@@ -101,3 +101,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Projects::Menus::DeploymentsMenu.prepend_mod

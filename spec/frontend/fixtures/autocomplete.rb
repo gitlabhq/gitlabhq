@@ -22,15 +22,17 @@ RSpec.describe ::AutocompleteController, '(JavaScript fixtures)', type: :control
       project.add_developer(user)
     end
 
-    get :users,
-        format: :json,
-        params: {
-          project_id: project.id,
-          active: true,
-          current_user: true,
-          author: merge_request.author.id,
-          merge_request_iid: merge_request.iid
-        }
+    get(
+      :users,
+      format: :json,
+      params: {
+        project_id: project.id,
+        active: true,
+        current_user: true,
+        author: merge_request.author.id,
+        merge_request_iid: merge_request.iid
+      }
+    )
 
     expect(response).to be_successful
   end

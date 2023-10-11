@@ -165,6 +165,195 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
     end
   end
 
+  shared_examples 'does not remove any branches' do
+    it 'does not delete any branches' do
+      expect(project.repository.raw.find_branch(delete_branch_name)).not_to be_nil
+      expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
+      expect(project.repository.raw.find_branch('test')).not_to be_nil
+
+      rake_task
+
+      expect(project.repository.raw.find_branch(delete_branch_name)).not_to be_nil
+      expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
+      expect(project.repository.raw.find_branch('test')).not_to be_nil
+    end
+  end
+
+  describe 'gitlab:cleanup:remove_missed_source_branches' do
+    subject(:rake_task) { run_rake_task('gitlab:cleanup:remove_missed_source_branches', project.id, user.id, dry_run) }
+
+    let(:project) { create(:project, :repository) }
+    # Merged merge request with force source branch 1
+    # Merged merge request with force source branch 0
+    # Non merged merge request with force source branch 1
+    # Merged Merge request with delete not in project
+    # When can not delete source branch
+
+    let!(:mr1) do
+      project.repository.raw.create_branch(delete_branch_name, "master")
+
+      create(:merge_request, :merged, :remove_source_branch, source_project: project, target_project: project,
+     source_branch: delete_branch_name, target_branch: 'master')
+    end
+
+    let!(:mr2) do
+      project.repository.raw.create_branch(keep_branch_name, "master")
+
+      create(:merge_request, :merged, source_project: project, target_project: project, source_branch: keep_branch_name,
+     target_branch: 'master')
+    end
+
+    let!(:mr3) do
+      create(:merge_request, :remove_source_branch, source_project: project, target_project: project,
+     source_branch: keep_branch_name, target_branch: 'master')
+    end
+
+    let!(:mr4) do
+      create(:merge_request, :merged, :remove_source_branch, source_branch: keep_branch_name, target_branch: 'master')
+    end
+
+    let!(:mr5) do
+      create(:merge_request, :merged, :remove_source_branch, source_branch: 'test', source_project: project,
+             target_project: project, target_branch: 'master')
+    end
+
+    let!(:protected) do
+      create(:protected_branch, :create_branch_on_repository, project: project, name: mr5.source_branch)
+    end
+
+    let(:user) { create(:user, :admin) }
+    let(:dry_run) { true }
+    let(:delete_branch_name) { "to-be-deleted-soon" }
+    let(:delete_me_not) { "delete_me_not" }
+    let(:keep_branch_name) { "not-to-be-deleted-soon" }
+
+    before do
+      project.add_owner(user)
+      stub_env('USER_ID', user.id)
+      stub_env('PROJECT_ID', project.id)
+    end
+
+    context 'when dry run is true' do
+      it_behaves_like 'does not remove any branches'
+
+      context 'and when a valid batch size is given' do
+        it 'takes into account for the batch size' do
+          run_rake_task('gitlab:cleanup:remove_missed_source_branches', project.id, user.id, dry_run)
+
+          stub_env('BATCH_SIZE', '1')
+          count_1 = ActiveRecord::QueryRecorder.new do
+            run_rake_task('gitlab:cleanup:remove_missed_source_branches', project.id, user.id, dry_run)
+          end.count
+
+          stub_env('BATCH_SIZE', '2')
+          count_2 = ActiveRecord::QueryRecorder.new do
+            run_rake_task('gitlab:cleanup:remove_missed_source_branches', project.id, user.id, dry_run)
+          end.count
+
+          expect(count_1).to be > count_2
+        end
+      end
+    end
+
+    context 'when dry run is false' do
+      let!(:mr6) do
+        project.repository.raw.create_branch(delete_me_not, "master")
+
+        create(:merge_request, :merged, :remove_source_branch, source_project: project, target_project: project,
+               source_branch: delete_me_not, target_branch: 'master')
+      end
+
+      before do
+        stub_env('DRY_RUN', 'false')
+      end
+
+      it 'deletes the branches' do
+        expect(project.repository.raw.find_branch(delete_branch_name)).not_to be_nil
+        expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
+        expect(project.repository.raw.find_branch(delete_me_not)).not_to be_nil
+        expect(project.repository.raw.find_branch('test')).not_to be_nil
+
+        rake_task
+
+        expect(project.repository.raw.find_branch(delete_branch_name)).to be_nil
+        expect(project.repository.raw.find_branch(delete_me_not)).to be_nil
+        expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
+        expect(project.repository.raw.find_branch('test')).not_to be_nil
+      end
+
+      context 'when a limit is set' do
+        before do
+          stub_env('LIMIT_TO_DELETE', 1)
+        end
+
+        it 'deletes only one branch' do
+          expect(project.repository.raw.find_branch(delete_branch_name)).not_to be_nil
+          expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
+          expect(project.repository.raw.find_branch(delete_me_not)).not_to be_nil
+          expect(project.repository.raw.find_branch('test')).not_to be_nil
+
+          rake_task
+
+          expect(project.repository.raw.find_branch(delete_branch_name)).to be_nil
+          expect(project.repository.raw.find_branch(delete_me_not)).not_to be_nil
+          expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
+          expect(project.repository.raw.find_branch('test')).not_to be_nil
+        end
+      end
+
+      context 'when the branch has a merged and opened mr' do
+        let!(:mr7) do
+          project.repository.raw.create_branch(delete_me_not, "master")
+
+          create(:merge_request, :opened, :remove_source_branch, source_project: project, target_project: project,
+                 source_branch: delete_me_not, target_branch: 'master')
+        end
+
+        it 'does not delete the branch of the merged/open mr' do
+          expect(project.repository.raw.find_branch(delete_me_not)).not_to be_nil
+
+          rake_task
+
+          expect(project.repository.raw.find_branch(delete_me_not)).not_to be_nil
+        end
+      end
+
+      context 'when an valid batch size is given' do
+        before do
+          stub_env('BATCH_SIZE', '1')
+        end
+
+        it 'deletes the branches' do
+          expect(project.repository.raw.find_branch(delete_branch_name)).not_to be_nil
+          expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
+          expect(project.repository.raw.find_branch('test')).not_to be_nil
+
+          rake_task
+
+          expect(project.repository.raw.find_branch(delete_branch_name)).to be_nil
+          expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
+          expect(project.repository.raw.find_branch('test')).not_to be_nil
+        end
+      end
+
+      context 'when an invalid batch size is given' do
+        before do
+          stub_env('BATCH_SIZE', '-1')
+        end
+
+        it_behaves_like 'does not remove any branches'
+      end
+
+      context 'when an invalid limit to delete is given' do
+        before do
+          stub_env('LIMIT_TO_DELETE', '-1')
+        end
+
+        it_behaves_like 'does not remove any branches'
+      end
+    end
+  end
+
   context 'sessions' do
     describe 'gitlab:cleanup:sessions:active_sessions_lookup_keys', :clean_gitlab_redis_sessions do
       subject(:rake_task) { run_rake_task('gitlab:cleanup:sessions:active_sessions_lookup_keys') }

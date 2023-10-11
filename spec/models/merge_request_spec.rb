@@ -3694,7 +3694,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           allow(subject).to receive(:head_pipeline).and_return(nil)
         end
 
-        it { expect(subject.mergeable_ci_state?).to be_truthy }
+        it { expect(subject.mergeable_ci_state?).to be_falsey }
       end
     end
 
@@ -3735,7 +3735,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           allow(subject).to receive(:head_pipeline).and_return(nil)
         end
 
-        it { expect(subject.mergeable_ci_state?).to be_truthy }
+        it { expect(subject.mergeable_ci_state?).to be_falsey }
       end
     end
 

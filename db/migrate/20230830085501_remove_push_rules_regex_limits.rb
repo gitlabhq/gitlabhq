@@ -5,10 +5,13 @@ class RemovePushRulesRegexLimits < Gitlab::Database::Migration[2.1]
     change_column :push_rules, :force_push_regex, :string, limit: nil
     change_column :push_rules, :delete_branch_regex, :string, limit: nil
     change_column :push_rules, :commit_message_regex, :string, limit: nil
-    change_column :push_rules, :commit_message_negative_regex, :string, limit: nil
     change_column :push_rules, :author_email_regex, :string, limit: nil
     change_column :push_rules, :file_name_regex, :string, limit: nil
     change_column :push_rules, :branch_name_regex, :string, limit: nil
+
+    return unless column_exists?(:push_rules, :commit_message_negative_regex)
+
+    change_column :push_rules, :commit_message_negative_regex, :string, limit: nil
   end
 
   def down

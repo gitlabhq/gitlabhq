@@ -26,14 +26,16 @@ RSpec.describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)',
     create(:label, project: project, title: 'P3')
     create(:label, project: project, title: 'P4')
 
-    get :labels,
-        format: :json,
-        params: {
-            namespace_id: group.path,
-            project_id: project.path,
-            type: issue.class.name,
-            type_id: issue.id
-        }
+    get(
+      :labels,
+      format: :json,
+      params: {
+        namespace_id: group.path,
+        project_id: project.path,
+        type: issue.class.name,
+        type_id: issue.id
+      }
+    )
 
     expect(response).to be_successful
   end

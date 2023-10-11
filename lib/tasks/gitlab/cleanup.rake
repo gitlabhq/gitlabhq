@@ -87,6 +87,74 @@ namespace :gitlab do
       end
     end
 
+    desc "GitLab | Cleanup | Clean missed source branches to be deleted"
+    task remove_missed_source_branches: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      logger.info("Gitlab|Cleanup|Clean up missed source branches|Executed by #{gitlab_user}")
+
+      if ENV['LIMIT_TO_DELETE'].present? && !ENV['LIMIT_TO_DELETE'].to_i.between?(1, 10000)
+        logger.info("Please specify a limit between 1 and 10000")
+        next
+      end
+
+      if ENV['BATCH_SIZE'].present? && !ENV['BATCH_SIZE'].to_i.between?(1, 1000)
+        logger.info("Please specify a batch size between 1 and 1000")
+        next
+      end
+
+      batch_size = ENV['BATCH_SIZE'].present? ? ENV['BATCH_SIZE'].to_i : 1000
+      limit = ENV['LIMIT_TO_DELETE'].present? ? ENV['LIMIT_TO_DELETE'].to_i : 10000
+
+      project = find_project
+      user = User.find_by_id(ENV['USER_ID']&.to_i)
+
+      number_deleted = 0
+
+      # rubocop: disable Layout/LineLength
+      MergeRequest
+        .merged
+        .where(project: project)
+        .each_batch(of: batch_size) do |mrs|
+          matching_mrs = mrs.where(
+            "merge_params LIKE '%force_remove_source_branch: ''1''%' OR merge_params LIKE '%should_remove_source_branch: ''1''%'"
+          )
+
+          branches_to_delete = []
+
+          # rubocop: enable Layout/LineLength
+          matching_mrs.each do |mr|
+            next unless mr.source_branch_exists? && mr.can_remove_source_branch?(user)
+
+            # Ensuring that only this MR exists for the source branch
+            if MergeRequest.where(project: project).where.not(id: mr.id).where(source_branch: mr.source_branch).exists?
+              next
+            end
+
+            latest_diff_sha = mr.latest_merge_request_diff.head_commit_sha
+
+            next unless latest_diff_sha
+
+            branches_to_delete << { reference: mr.source_branch_ref, old_sha: latest_diff_sha,
+new_sha: Gitlab::Git::BLANK_SHA }
+
+            break if number_deleted + branches_to_delete.size >= limit
+          end
+
+          if dry_run?
+            logger.info "DRY RUN: Branches to be deleted in batch #{branches_to_delete.join(',')}"
+            logger.info "DRY RUN: Count: #{branches_to_delete.size}"
+          else
+            project.repository.raw.update_refs(branches_to_delete)
+            logger.info "Branches deleted #{branches_to_delete.join(',')}"
+          end
+
+          number_deleted += branches_to_delete.size
+
+          break if number_deleted >= limit
+        end
+    end
+
     desc 'GitLab | Cleanup | Clean orphan LFS files'
     task orphan_lfs_files: :gitlab_environment do
       warn_user_is_not_gitlab

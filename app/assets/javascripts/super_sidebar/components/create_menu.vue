@@ -62,7 +62,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip:super-sidebar.hover.bottom="dropdownOpen ? '' : $options.i18n.createNew"
+    v-gl-tooltip:super-sidebar.bottom="dropdownOpen ? '' : $options.i18n.createNew"
     category="tertiary"
     icon="plus"
     no-caret

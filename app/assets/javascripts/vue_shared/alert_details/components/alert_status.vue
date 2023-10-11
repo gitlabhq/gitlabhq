@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import updateAlertStatusMutation from '~/graphql_shared/mutations/alert_status_update.mutation.graphql';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -11,10 +11,10 @@ export default {
       'AlertManagement|There was an error while updating the status of the alert.',
     ),
     UPDATE_ALERT_STATUS_INSTRUCTION: s__('AlertManagement|Please try again.'),
+    ASSIGN_STATUS_HEADER: s__('AlertManagement|Assign status'),
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   inject: {
     trackAlertStatusUpdateOptions: {
@@ -44,10 +44,20 @@ export default {
       default: () => PAGE_CONFIG.OPERATIONS.STATUSES,
     },
   },
+  data() {
+    return {
+      alertStatus: this.alert.status,
+    };
+  },
   computed: {
     dropdownClass() {
-      // eslint-disable-next-line no-nested-ternary
-      return this.isSidebar ? (this.isDropdownShowing ? 'show' : 'gl-display-none') : '';
+      return this.isSidebar && !this.isDropdownShowing ? 'gl-display-none' : '';
+    },
+    items() {
+      return Object.entries(this.statuses).map(([value, text]) => ({ value, text }));
+    },
+    headerText() {
+      return this.isSidebar ? this.$options.i18n.ASSIGN_STATUS_HEADER : '';
     },
   },
   methods: {
@@ -97,30 +107,15 @@ export default {
 
 <template>
   <div class="dropdown dropdown-menu-selectable" :class="dropdownClass">
-    <gl-dropdown
+    <gl-collapsible-listbox
       ref="dropdown"
-      right
-      :text="statuses[alert.status]"
-      class="w-100"
-      toggle-class="dropdown-menu-toggle"
-      @keydown.esc.native="$emit('hide-dropdown')"
-      @hide="$emit('hide-dropdown')"
-    >
-      <p v-if="isSidebar" class="gl-dropdown-header-top" data-testid="dropdown-header">
-        {{ s__('AlertManagement|Assign status') }}
-      </p>
-      <div class="dropdown-content dropdown-body">
-        <gl-dropdown-item
-          v-for="(label, field) in statuses"
-          :key="field"
-          data-testid="statusDropdownItem"
-          :active="field === alert.status"
-          :active-class="'is-active'"
-          @click="updateAlertStatus(field)"
-        >
-          {{ label }}
-        </gl-dropdown-item>
-      </div>
-    </gl-dropdown>
+      v-model="alertStatus"
+      placement="right"
+      :header-text="headerText"
+      :items="items"
+      block
+      @hidden="$emit('hide-dropdown')"
+      @select="updateAlertStatus"
+    />
   </div>
 </template>

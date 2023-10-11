@@ -27,13 +27,16 @@ RSpec.describe 'Environments (JavaScript fixtures)', feature_category: :environm
         query = get_graphql_query_as_string(environment_details_query_path)
         puts project.full_path
         puts environment.name
-        post_graphql(query, current_user: admin,
-                            variables:
-                            {
-                              projectFullPath: project.full_path,
-                              environmentName: environment.name,
-                              pageSize: 10
-                            })
+        post_graphql(
+          query,
+          current_user: admin,
+          variables:
+          {
+            projectFullPath: project.full_path,
+            environmentName: environment.name,
+            pageSize: 10
+          }
+        )
         expect_graphql_errors_to_be_empty
       end
     end
@@ -58,13 +61,16 @@ RSpec.describe 'Environments (JavaScript fixtures)', feature_category: :environm
       it "graphql/#{environment_details_query_path}.json" do
         query = get_graphql_query_as_string(environment_details_query_path)
 
-        post_graphql(query, current_user: admin,
-                            variables:
-                            {
-                              projectFullPath: project.full_path,
-                              environmentName: environment.name,
-                              pageSize: 10
-                            })
+        post_graphql(
+          query,
+          current_user: admin,
+          variables:
+          {
+            projectFullPath: project.full_path,
+            environmentName: environment.name,
+            pageSize: 10
+          }
+        )
         expect_graphql_errors_to_be_empty
       end
     end

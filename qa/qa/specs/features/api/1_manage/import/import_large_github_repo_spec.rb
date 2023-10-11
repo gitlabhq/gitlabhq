@@ -14,7 +14,7 @@ module QA
     describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:github_repo) { ENV['QA_LARGE_IMPORT_REPO'] || 'rspec/rspec-core' }
       let(:import_max_duration) { ENV['QA_LARGE_IMPORT_DURATION']&.to_i || 7200 }
-      let(:api_parallel_threads) { ENV['QA_LARGE_IMPORT_GH_API_PARALLEL']&.to_i || Etc.nprocessors }
+      let(:api_parallel_threads) { ENV['QA_LARGE_IMPORT_API_PARALLEL']&.to_i || Etc.nprocessors }
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
       let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address.chomp("/") }

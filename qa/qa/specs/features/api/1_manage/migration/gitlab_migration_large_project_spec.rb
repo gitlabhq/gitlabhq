@@ -18,6 +18,7 @@ module QA
       let!(:gitlab_source_group) { ENV["QA_LARGE_IMPORT_GROUP"] || "gitlab-migration-large-import-test" }
       let!(:gitlab_source_project) { ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
       let!(:import_wait_duration) { { max_duration: (ENV["QA_LARGE_IMPORT_DURATION"] || 3600).to_i, sleep_interval: 30 } }
+      let!(:api_parallel_threads) { ENV['QA_LARGE_IMPORT_API_PARALLEL']&.to_i || Etc.nprocessors }
 
       # test uses production as source which doesn't have actual admin user
       let!(:source_admin_user) { nil }
@@ -327,7 +328,7 @@ module QA
       def fetch_mrs(project, client, transform_urls: false)
         imported_mrs = project.merge_requests(auto_paginate: true, attempts: 2)
 
-        Parallel.map(imported_mrs, in_threads: 6) do |mr|
+        Parallel.map(imported_mrs, in_threads: api_parallel_threads) do |mr|
           resource = Resource::MergeRequest.init do |resource|
             resource.project = project
             resource.iid = mr[:iid]
@@ -355,7 +356,7 @@ module QA
       def fetch_issues(project, client, transform_urls: false)
         imported_issues = project.issues(auto_paginate: true, attempts: 2)
 
-        Parallel.map(imported_issues, in_threads: 6) do |issue|
+        Parallel.map(imported_issues, in_threads: api_parallel_threads) do |issue|
           resource = build(:issue, project: project, iid: issue[:iid], api_client: client)
 
           [issue[:iid], {

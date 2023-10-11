@@ -41,6 +41,9 @@ GitLab Enterprise Edition can receive paid features by registering with GitLab a
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
 tier. Users can continue to access the features in a paid tier without sharing usage data.
 
+NOTE:
+Registration is not yet required for participation, but may be added in a future milestone.
+
 ### Features available in 14.1 and later
 
 - [Email from GitLab](../email_from_gitlab.md).
@@ -61,9 +64,6 @@ tier. Users can continue to access the features in a paid tier without sharing u
 ### Features available in 16.6 and later
 
 - [Group wikis](../../user/project/wiki/group.md).
-
-NOTE:
-Registration is not yet required for participation, but may be added in a future milestone.
 
 ### Enable registration features
 

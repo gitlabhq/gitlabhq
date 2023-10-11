@@ -153,7 +153,7 @@ export default {
       class="gl-display-flex gl-justify-content-space-between gl-gap-2"
     >
       <counter
-        v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.issues"
+        v-gl-tooltip:super-sidebar.bottom="$options.i18n.issues"
         class="gl-flex-basis-third dashboard-shortcuts-issues"
         icon="issues"
         :count="userCounts.assigned_issues"
@@ -171,7 +171,7 @@ export default {
         @hidden="mrMenuShown = false"
       >
         <counter
-          v-gl-tooltip:super-sidebar.hover.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
+          v-gl-tooltip:super-sidebar.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
           class="gl-w-full"
           icon="merge-request-open"
           :count="mergeRequestTotalCount"
@@ -183,7 +183,7 @@ export default {
         />
       </merge-request-menu>
       <counter
-        v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.todoList"
+        v-gl-tooltip:super-sidebar.bottom="$options.i18n.todoList"
         class="gl-flex-basis-third shortcuts-todos js-todos-count"
         icon="todo-done"
         :count="userCounts.todos"
@@ -197,7 +197,7 @@ export default {
     </div>
     <button
       id="super-sidebar-search"
-      v-gl-tooltip.bottom.hover.html="searchTooltip"
+      v-gl-tooltip.bottom.html="searchTooltip"
       v-gl-modal="$options.SEARCH_MODAL_ID"
       class="counter gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-inset-border-1-gray-a-08 gl-line-height-1 gl-focus--focus gl-w-full"
       data-testid="super-sidebar-search-button"
