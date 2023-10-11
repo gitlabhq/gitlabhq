@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'clearing redis cache', :clean_gitlab_redis_repository_cache, :clean_gitlab_redis_cache,
                :silence_stdout, :use_null_store_as_repository_cache, feature_category: :redis do

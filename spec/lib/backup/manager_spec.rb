@@ -69,7 +69,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     let(:pre_restore_warning) { nil }
     let(:post_restore_warning) { nil }
     let(:definitions) { { 'my_task' => Backup::Manager::TaskDefinition.new(task: task, enabled: enabled, human_name: 'my task', destination_path: 'my_task.tar.gz') } }
-    let(:backup_information) { {} }
+    let(:backup_information) { { backup_created_at: Time.zone.parse('2019-01-01'), gitlab_version: '12.3' } }
     let(:task) do
       instance_double(Backup::Task,
              pre_restore_warning: pre_restore_warning,
@@ -936,6 +936,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     end
 
     let(:gitlab_version) { Gitlab::VERSION }
+    let(:backup_id) { "1546300800_2019_01_01_#{gitlab_version}" }
+
     let(:backup_information) do
       {
         backup_created_at: Time.zone.parse('2019-01-01'),
@@ -948,8 +950,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       Rake.application.rake_require 'tasks/cache'
 
       allow(Gitlab::BackupLogger).to receive(:info)
-      allow(task1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'))
-      allow(task2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'))
+      allow(task1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task1.tar.gz'), backup_id)
+      allow(task2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'), backup_id)
       allow(YAML).to receive(:safe_load_file).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'),
                                                    permitted_classes: described_class::YAML_PERMITTED_CLASSES)
         .and_return(backup_information)
@@ -1014,6 +1016,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
     context 'when BACKUP variable is set to a correct file' do
       let(:tar_cmdline) { %w{tar -xf 1451606400_2016_01_01_1.2.3_gitlab_backup.tar} }
+      let(:backup_id) { "1451606400_2016_01_01_1.2.3" }
 
       before do
         allow(Gitlab::BackupLogger).to receive(:info)

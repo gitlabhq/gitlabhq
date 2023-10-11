@@ -17,6 +17,8 @@ module Environments
     private
 
     def revert_environment(job)
+      return if job.persisted_environment.nil?
+
       job.persisted_environment.fire_state_event(:recover_stuck_stopping)
     end
   end

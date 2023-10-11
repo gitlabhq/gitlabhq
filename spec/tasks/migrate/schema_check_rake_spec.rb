@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake'
 
 RSpec.describe 'schema_version_check rake task', :silence_stdout do
   include StubENV
@@ -10,9 +9,6 @@ RSpec.describe 'schema_version_check rake task', :silence_stdout do
   before(:all) do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/migrate/schema_check'
-
-    # empty task as env is already loaded
-    Rake::Task.define_task :environment
   end
 
   before do

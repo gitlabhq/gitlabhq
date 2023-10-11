@@ -39493,6 +39493,9 @@ msgstr ""
 msgid "Replaces the clone URL root."
 msgstr ""
 
+msgid "ReplicateService|Failed to verify %{type} repository checksum from %{old} to %{new}"
+msgstr ""
+
 msgid "Reply"
 msgstr ""
 
@@ -50729,9 +50732,6 @@ msgid "UpdateProject|Prune unreachable objects"
 msgstr ""
 
 msgid "UpdateProject|Pruning unreachable objects can lead to repository corruption."
-msgstr ""
-
-msgid "UpdateRepositoryStorage|Failed to verify %{type} repository checksum from %{old} to %{new}"
 msgstr ""
 
 msgid "UpdateRepositoryStorage|Timeout waiting for %{type} repository pushes"

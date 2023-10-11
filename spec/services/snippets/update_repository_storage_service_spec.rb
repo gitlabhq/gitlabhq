@@ -67,6 +67,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
         expect(snippet_repository_double).to receive(:replicate)
           .with(snippet.repository.raw)
           .and_raise(Gitlab::Git::CommandError)
+        expect(snippet_repository_double).to receive(:remove)
 
         expect do
           subject.execute
@@ -101,10 +102,11 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
           .with(snippet.repository.raw)
         expect(snippet_repository_double).to receive(:checksum)
           .and_return('not matching checksum')
+        expect(snippet_repository_double).to receive(:remove)
 
         expect do
           subject.execute
-        end.to raise_error(UpdateRepositoryStorageMethods::Error, /Failed to verify snippet repository checksum from \w+ to not matching checksum/)
+        end.to raise_error(Repositories::ReplicateService::Error, /Failed to verify snippet repository checksum from \w+ to not matching checksum/)
 
         expect(snippet).not_to be_repository_read_only
         expect(snippet.repository_storage).to eq('default')

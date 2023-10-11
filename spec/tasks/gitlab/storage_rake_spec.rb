@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'rake gitlab:storage:*', :silence_stdout, feature_category: :cell do
   before do

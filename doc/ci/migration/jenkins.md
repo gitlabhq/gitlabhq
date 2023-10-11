@@ -609,6 +609,23 @@ cache-job:
       - binaries/
 ```
 
+### Jenkins plugins
+
+Some functionality in Jenkins that is enabled through plugins is supported natively
+in GitLab with keywords and features that offer similar functionality. For example:
+
+| Jenkins plugin                                                                    | GitLab feature |
+|-----------------------------------------------------------------------------------|----------------|
+| [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout` keyword](../yaml/index.md#timeout) |
+| [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [Coverage report artifacts](../yaml/artifacts_reports.md#artifactsreportscoverage_report) and [Code coverage](../testing/code_coverage.md) |
+| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage.md) and [Test coverage visualization](../testing/test_coverage_visualization.md) |
+| [Embeddable Build Status](https://plugins.jenkins.io/embeddable-build-status/)    | [Pipeline status badges](../../user/project/badges.md#pipeline-status-badges) |
+| [JUnit](https://plugins.jenkins.io/junit/)                                        | [JUnit test report artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) and [Unit test reports](../testing/unit_test_reports.md) |
+| [Mailer](https://plugins.jenkins.io/mailer/)                                      | [Notification emails](../../user/profile/notifications.md) |
+| [Parameterized Trigger Plugin](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger` keyword](../yaml/index.md#trigger) and [downstream pipelines](../pipelines/downstream_pipelines.md) |
+| [Role-based Authorization Strategy](https://plugins.jenkins.io/role-strategy/)    | GitLab [permissions and roles](../../user/permissions.md) |
+| [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [Job](../jobs/index.md) logs are time stamped by default |
+
 ### Security Scanning features
 
 You might have used plugins for things like code quality, security, or static application scanning in Jenkins.

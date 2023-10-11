@@ -32,9 +32,6 @@ When importing projects:
   creates comments describing that non-existent users were added as reviewers and approvers. However, the actual
   reviewer status and approval are not applied to the merge request in GitLab.
 - You can change the target namespace and target repository name before you import.
-- The importer also imports branches on forks of projects related to open pull requests. These branches are
-  imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
-  a discrepancy in branches compared to those of the GitHub repository.
 - The organization the repository belongs to must not impose restrictions of a [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions) on the GitLab instance you import to.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -251,6 +248,8 @@ The following items of a project are imported:
 
 - Repository description.
 - Git repository data.
+- All project branches.
+- All branches of forks of the project related to open pull requests, but not closed pull requests. Branches from forks are imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`.
 - Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
 - Collaborators (members). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10. From GitLab 16.0, can
   be imported [as an additional item](#select-additional-items-to-import).

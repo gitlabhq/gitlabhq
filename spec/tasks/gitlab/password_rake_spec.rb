@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
   let!(:user_1) { create(:user, username: 'foobar', password: User.random_password, password_automatically_set: true) }

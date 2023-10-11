@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:update_project_templates rake task', :silence_stdout, feature_category: :importers do
   let!(:tmpdir) { Dir.mktmpdir }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:feature_categories:index', :silence_stdout, feature_category: :scalability do
   before do

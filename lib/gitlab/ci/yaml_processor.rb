@@ -209,7 +209,8 @@ module Gitlab
         return unless project && sha && project.repository_exists? && project.commit(sha)
 
         unless project_ref_contains_sha?
-          error!('Could not validate configuration. Config originates from external project')
+          error!('Could not validate configuration. The configuration originates from an external ' \
+                 'project or a commit not associated with a Git reference (a detached commit)')
         end
       end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:incoming_email:secret rake tasks', :silence_stdout, feature_category: :build do
   let(:encrypted_secret_file_dir) { Pathname.new(Dir.mktmpdir) }

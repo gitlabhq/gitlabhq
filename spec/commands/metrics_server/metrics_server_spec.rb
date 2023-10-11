@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 
 require_relative '../../../metrics_server/metrics_server'
 

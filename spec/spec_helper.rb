@@ -145,12 +145,6 @@ RSpec.configure do |config|
       metadata[:schema] = :latest if metadata[:level] == :background_migration
     end
 
-    # Do not overwrite type if it's already set
-    unless metadata.key?(:type)
-      match = location.match(%r{/spec/([^/]+)/})
-      metadata[:type] = match[1].singularize.to_sym if match
-    end
-
     # Admin controller specs get auto admin mode enabled since they are
     # protected by the 'EnforcesAdminAuthentication' concern
     metadata[:enable_admin_mode] = true if %r{(ee)?/spec/controllers/admin/}.match?(location)

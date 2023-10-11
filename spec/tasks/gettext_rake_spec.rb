@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 require_relative '../../tooling/lib/tooling/gettext_extractor'
 require_relative '../support/matchers/abort_matcher'
 

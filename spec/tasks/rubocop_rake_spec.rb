@@ -2,20 +2,17 @@
 # rubocop:disable RSpec/VerifiedDoubles
 
 require 'fast_spec_helper'
-require 'rake'
 require 'tmpdir'
 require 'fileutils'
 
 require_relative '../support/silence_stdout'
 require_relative '../support/helpers/next_instance_of'
-require_relative '../support/helpers/rake_helpers'
 require_relative '../support/matchers/abort_matcher'
 require_relative '../../rubocop/formatter/todo_formatter'
 require_relative '../../rubocop/todo_dir'
 require_relative '../../rubocop/check_graceful_task'
 
 RSpec.describe 'rubocop rake tasks', :silence_stdout do
-  include RakeHelpers
   include NextInstanceOf
 
   before do

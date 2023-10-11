@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 
 RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :service_ping do
   include UsageDataHelpers

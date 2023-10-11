@@ -17,16 +17,11 @@ ClickHouse::Client.configure do |config|
     )
   end
 
-  if Rails.env.development? || Rails.env.test?
-    config.logger = ::ClickHouse::Logger.build
-    config.log_proc = ->(query) do
-      structured_log(query.to_sql)
-    end
-  else
-    config.logger = Logger.new('/dev/null')
-    config.log_proc = ->(query) do
-      structured_log(query.to_redacted_sql)
-    end
+  config.logger = ::ClickHouse::Logger.build
+  config.log_proc = ->(query) do
+    query_output =
+      Rails.env.production? ? query.to_redacted_sql : query.to_sql
+    structured_log(query_output)
   end
 
   config.json_parser = Gitlab::Json

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:git rake tasks', :silence_stdout do
   let(:base_path) { 'tmp/tests/default_storage' }

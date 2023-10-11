@@ -20,15 +20,12 @@ or you can choose other UI text to update.
 
 To make a contribution, follow these steps:
 
-- [Confirm the prerequisites](#prerequisites)
+- [Prerequisites](#prerequisites)
 - [Step 1: Configure the GitLab Development Kit](#step-1-configure-the-gitlab-development-kit)
-  - [A new GDK installation](#a-new-gdk-installation)
-  - [An existing GDK installation](#an-existing-gdk-installation)
 - [Step 2: Change the code](#step-2-change-the-code)
-  - [Update the translation files](#update-the-translation-files)
-  - [Update the documentation](#update-the-documentation)
 - [Step 3: Push your changes to the community fork](#step-3-push-your-changes-to-the-community-fork)
 - [Step 4: Create a merge request](#step-4-create-a-merge-request)
+- [Step 5: Complete the review process](#step-5-complete-the-review-process)
 
 [View an interactive demo](https://gitlab.navattic.com/ak10d67) of the contribution process.
 
@@ -158,6 +155,12 @@ To confirm it was successful:
 
 If you get errors, run `gdk doctor` to troubleshoot. For more advanced troubleshooting, see
 [the troubleshooting docs](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/troubleshooting).
+
+### Gitpod
+
+If you want to contribute without the overhead of setting up a local development environment,
+you can use [Gitpod](../../integration/gitpod.md) instead.
+Gitpod runs a virtual instance of the GDK.
 
 ## Step 2: Change the code
 
@@ -348,8 +351,26 @@ Now, any time you want to make a contribution to GitLab, you can just
 go to the `gitlab-development-kit` folder and run `gdk update`. Then make
 your changes in the `gitlab` directory and push them to the fork.
 
-If you need help at any point in the process, type `@gitlab-bot help` in a comment
-or initiate a [mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/)
-on [Discord](https://discord.gg/gitlab).
+## Step 5: Complete the review process
 
-Congratulations on submitting your request, and thank you for your contribution!
+After you create a merge request, GitLab automatically triggers a [CI/CD pipeline](../../ci/pipelines/index.md)
+that runs tests, linting, security scans, and more.
+
+Your pipeline must be successful for your merge request to be merged.
+
+- To check the status of your pipeline, at the top of your merge request, select **Pipelines**.
+- If you need help understanding or fixing the pipeline, in a comment, use the `@gitlab-bot help` command.
+
+### Getting a review
+
+GitLab will triage your merge request automatically.
+However, you can type `@gitlab-bot ready` in a comment to alert reviewers that your MR is ready.
+
+- When the label is set to `workflow::ready for review`, [a developer reviews the MR](../code_review.md).
+- When you have resolved all of their feedback and the MR has been approved, the MR is ready for merge.
+
+If you need help at any point in the process, type `@gitlab-bot help` in a comment or initiate a
+[mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/) on [Discord](https://discord.gg/gitlab).
+
+When the merge request is merged, your change becomes part of the GitLab codebase.
+Great job! Thank you for your contribution!

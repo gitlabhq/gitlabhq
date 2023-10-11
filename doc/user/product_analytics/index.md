@@ -269,6 +269,19 @@ POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
 
 If the request is successful, the returned JSON includes an array of rows of results.
 
+## Onboarding GitLab internal projects
+
+GitLab team members can enable Product Analytics on their own internal projects on GitLab.com during the experiment phase.
+
+1. Send a message to the Product Analytics team (`#g_analyze_product_analytics`) informing them of the repository to be enabled.
+1. Ensure that the project is within an Ultimate namespace.
+1. Using ChatOps, enable both the `product_analytics_dashboards` and `combined_analytics_dashboards`
+
+    ```plaintext
+    /chatops run feature set product_analytics_dashboards true --project=FULLPATH_TO_PROJECT
+    /chatops run feature set combined_analytics_dashboards true --project=FULLPATH_TO_PROJECT
+    ```
+
 ## Troubleshooting
 
 ### No events are collected

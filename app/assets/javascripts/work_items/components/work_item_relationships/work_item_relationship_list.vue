@@ -52,6 +52,7 @@ export default {
             :child-item="linkedItem.workItem"
             :can-update="canUpdate"
             :child-path="linkedItemPath(workItemFullPath, linkedItem.workItem.iid)"
+            :show-task-icon="true"
             @click="$emit('showModal', { event: $event, child: linkedItem.workItem })"
             @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
           />

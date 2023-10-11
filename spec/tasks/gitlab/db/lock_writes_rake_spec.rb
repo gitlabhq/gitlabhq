@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:db:lock_writes', :reestablished_active_record_base, feature_category: :cell do
   before(:all) do
@@ -8,9 +8,6 @@ RSpec.describe 'gitlab:db:lock_writes', :reestablished_active_record_base, featu
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db/validate_config'
     Rake.application.rake_require 'tasks/gitlab/db/lock_writes'
-
-    # empty task as env is already loaded
-    Rake::Task.define_task :environment
   end
 
   let(:table_locker) { instance_double(Gitlab::Database::TablesLocker) }

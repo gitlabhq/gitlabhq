@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-require_relative "rspec_order"
-require_relative "system_exit_detected"
-require_relative "helpers/stub_configuration"
-require_relative "helpers/stub_metrics"
-require_relative "helpers/stub_object_storage"
-require_relative "helpers/fast_rails_root"
+require_relative 'rake'
+require_relative 'rspec_order'
+require_relative 'system_exit_detected'
+require_relative 'helpers/stub_configuration'
+require_relative 'helpers/stub_metrics'
+require_relative 'helpers/stub_object_storage'
+require_relative 'helpers/fast_rails_root'
 
 require 'gitlab/rspec/all'
 require 'gitlab/utils/all'
@@ -18,6 +19,15 @@ RSpec.configure do |config|
 
   # Re-run failures locally with `--only-failures`
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', './spec/examples.txt')
+
+  config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_spec\.rb\z}) do |metadata|
+    # Infer metadata tag `type` if not already inferred by
+    # `infer_spec_type_from_file_location!`.
+    unless metadata.key?(:type)
+      match = %r{/spec/([^/]+)/}.match(metadata[:location])
+      metadata[:type] = match[1].singularize.to_sym if match
+    end
+  end
 
   # Makes diffs show entire non-truncated values.
   config.around(:each, :unlimited_max_formatted_output_length) do |example|

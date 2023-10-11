@@ -15,7 +15,7 @@ RSpec.describe Backup::Task do
 
   describe '#restore' do
     it 'must be implemented by the subclass' do
-      expect { subject.restore('some/path') }.to raise_error(NotImplementedError)
+      expect { subject.restore('some/path', 'backup_id') }.to raise_error(NotImplementedError)
     end
   end
 end

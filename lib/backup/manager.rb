@@ -102,7 +102,7 @@ module Backup
         Gitlab::TaskHelpers.ask_to_continue
       end
 
-      definition.task.restore(File.join(Gitlab.config.backup.path, definition.destination_path))
+      definition.task.restore(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
 
       puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 

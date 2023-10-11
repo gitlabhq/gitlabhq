@@ -288,7 +288,8 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
             context 'when a project ref does not contain the sha' do
               it 'returns an error' do
                 expect(subject).not_to be_valid
-                expect(subject.errors).to include(/Could not validate configuration/)
+                expect(subject.errors).to include(
+                  /configuration originates from an external project or a commit not associated with a Git reference/)
               end
             end
           end

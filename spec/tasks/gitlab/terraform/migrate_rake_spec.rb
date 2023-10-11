@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:terraform_states', :silence_stdout do
   let!(:version) { create(:terraform_state_version) }

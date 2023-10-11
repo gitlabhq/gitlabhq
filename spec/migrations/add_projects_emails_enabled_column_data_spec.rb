@@ -1,18 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 require_migration!
 
 RSpec.describe AddProjectsEmailsEnabledColumnData, :migration, feature_category: :database do
-  before :all do
-    Rake.application.rake_require 'active_record/railties/databases'
-    Rake.application.rake_require 'tasks/gitlab/db'
-
-    # empty task as env is already loaded
-    Rake::Task.define_task :environment
-  end
-
   let(:migration) { described_class::MIGRATION }
   let(:project_settings) { table(:project_settings) }
   let(:projects) { table(:projects) }
@@ -41,7 +32,10 @@ RSpec.describe AddProjectsEmailsEnabledColumnData, :migration, feature_category:
     end
   end
 
-  it 'sets emails_enabled to be the opposite of emails_disabled' do
+  it 'sets emails_enabled to be the opposite of emails_disabled', type: :task do
+    Rake.application.rake_require 'active_record/railties/databases'
+    Rake.application.rake_require 'tasks/gitlab/db'
+
     disabled_records_to_migrate = 4
     enabled_records_to_migrate  = 2
 

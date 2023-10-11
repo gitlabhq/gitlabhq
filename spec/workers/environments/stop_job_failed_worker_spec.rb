@@ -39,6 +39,18 @@ RSpec.describe Environments::StopJobFailedWorker, feature_category: :continuous_
             .to('available')
         end
       end
+
+      context 'when there is no environment' do
+        let(:job) { stop_job }
+
+        before do
+          environment.destroy!
+        end
+
+        it 'does not cause an error' do
+          expect { subject }.not_to raise_error
+        end
+      end
     end
 
     context 'with build job' do

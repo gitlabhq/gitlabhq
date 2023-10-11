@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:ci_secure_files', factory_default: :keep, feature_category: :mobile_devops do
   describe 'check' do

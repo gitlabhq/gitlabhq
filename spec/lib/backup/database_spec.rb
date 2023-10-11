@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Backup::Database, :reestablished_active_record_base, feature_category: :backup_restore do
   let(:progress) { StringIO.new }
   let(:output) { progress.string }
+  let(:backup_id) { 'some_id' }
   let(:one_database_configured?) { base_models_for_backup.one? }
   let(:timeout_service) do
     instance_double(Gitlab::Database::TransactionTimeoutSettings, restore_timeouts: nil, disable_timeouts: nil)
@@ -17,7 +18,6 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
   end
 
   before(:all) do # rubocop:disable RSpec/BeforeAll
-    Rake::Task.define_task(:environment)
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'
@@ -26,7 +26,6 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
   end
 
   describe '#dump', :delete do
-    let(:backup_id) { 'some_id' }
     let(:force) { true }
 
     subject { described_class.new(progress, force: force) }
@@ -222,7 +221,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
-        subject.restore(backup_dir)
+        subject.restore(backup_dir, backup_id)
 
         expect(output).to include('Removing all tables. Press `Ctrl-C` within 5 seconds to abort')
       end
@@ -240,7 +239,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
-        subject.restore(backup_dir)
+        subject.restore(backup_dir, backup_id)
 
         expect(output).to include("Restoring PostgreSQL database")
         expect(output).to include("[DONE]")
@@ -260,7 +259,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
-        expect { subject.restore(backup_dir) }.to raise_error(Backup::Error)
+        expect { subject.restore(backup_dir, backup_id) }.to raise_error(Backup::Error)
       end
     end
 
@@ -276,7 +275,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
-        subject.restore(backup_dir)
+        subject.restore(backup_dir, backup_id)
 
         expect(output).to include("ERRORS")
         expect(output).not_to include(noise)
@@ -305,7 +304,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
         expect(ENV).to receive(:merge!).with(hash_including { 'PGHOST' => 'test.example.com' })
         expect(ENV).not_to receive(:[]=).with('PGPASSWORD', anything)
 
-        subject.restore(backup_dir)
+        subject.restore(backup_dir, backup_id)
 
         expect(ENV['PGPORT']).to eq(config['port']) if config['port']
         expect(ENV['PGUSER']).to eq(config['username']) if config['username']
@@ -328,14 +327,14 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           end
 
           expect do
-            subject.restore('db')
+            subject.restore('db', backup_id)
           end.to raise_error(Backup::Error, /Source database file does not exist/)
         end
       end
 
       context 'for ci database' do
         it 'ci database tolerates missing source file' do
-          expect { subject.restore(backup_dir) }.not_to raise_error
+          expect { subject.restore(backup_dir, backup_id) }.not_to raise_error
         end
       end
     end

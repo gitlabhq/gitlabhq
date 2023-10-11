@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_category: :database do
   before(:all) do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db'
-
-    # empty task as env is already loaded
-    Rake::Task.define_task :environment
   end
 
   before do

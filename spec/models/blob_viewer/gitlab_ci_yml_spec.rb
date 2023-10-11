@@ -55,7 +55,8 @@ RSpec.describe BlobViewer::GitlabCiYml, feature_category: :source_code_managemen
 
       context 'when a project ref does not contain the sha' do
         it 'returns an error' do
-          expect(validation_message).to match(/Could not validate configuration/)
+          expect(validation_message).to match(
+            /configuration originates from an external project or a commit not associated with a Git reference/)
         end
       end
     end

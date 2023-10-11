@@ -75,7 +75,7 @@ module Backup
     end
 
     override :restore
-    def restore(destination_dir)
+    def restore(destination_dir, backup_id)
       base_models_for_backup.each do |database_name, _base_model|
         backup_model = Backup::DatabaseModel.new(database_name)
 

@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_stdout,
                :suppress_gitlab_schemas_validate_connection, feature_category: :cell, query_analyzers: false do
   before(:all) do
     Rake.application.rake_require 'tasks/gitlab/db/decomposition/rollback/bump_ci_sequences'
-
-    # empty task as env is already loaded
-    Rake::Task.define_task :environment
   end
 
   let(:expected_error_message) do

@@ -51,7 +51,10 @@ module Gitlab
           if @field.connection?
             redact_connection(value, context)
           elsif @field.type.list?
-            redact_list(value.to_a, context) unless value.nil?
+            unless value.nil?
+              value = value.to_a
+              redact_list(value, context)
+            end
           end
 
           value

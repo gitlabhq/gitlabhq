@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:doctor:reset_encrypted_tokens', :silence_stdout, feature_category: :runner_fleet do
   let(:model_names) { 'Project,Group' }

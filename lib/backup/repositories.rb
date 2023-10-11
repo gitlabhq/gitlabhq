@@ -31,8 +31,8 @@ module Backup
     end
 
     override :restore
-    def restore(destination_path)
-      strategy.start(:restore, destination_path, remove_all_repositories: remove_all_repositories)
+    def restore(destination_path, backup_id)
+      strategy.start(:restore, destination_path, remove_all_repositories: remove_all_repositories, backup_id: backup_id)
       enqueue_consecutive
 
     ensure

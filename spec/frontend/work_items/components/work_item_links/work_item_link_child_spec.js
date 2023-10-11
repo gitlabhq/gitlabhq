@@ -94,6 +94,7 @@ describe('WorkItemLinkChild', () => {
         childItem: workItemObjectiveWithChild,
         canUpdate: true,
         childPath: '/gitlab-org/gitlab-test/-/work_items/12',
+        showTaskIcon: false,
       });
     });
 

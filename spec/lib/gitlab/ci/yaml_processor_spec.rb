@@ -3659,7 +3659,8 @@ module Gitlab
         context 'when a project ref does not contain the forked commit sha' do
           it 'returns an error' do
             is_expected.not_to be_valid
-            expect(subject.errors).to include(/Could not validate configuration/)
+            expect(subject.errors).to include(
+              /configuration originates from an external project or a commit not associated with a Git reference/)
           end
 
           it_behaves_like 'when the processor is executed twice consecutively'

@@ -36,6 +36,7 @@ describe('WorkItemRelationshipList', () => {
       childItem: mockLinkedItems[0].workItem,
       canUpdate: true,
       childPath: '/test-project-path/-/work_items/83',
+      showTaskIcon: true,
     });
   });
 });

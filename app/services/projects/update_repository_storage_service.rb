@@ -48,13 +48,8 @@ module Projects
         pool_repository: pool_repository
       )
 
-      checksum, new_checksum = replicate_object_pool_repository(from: pool_repository, to: target_pool_repository)
-
-      if checksum != new_checksum
-        raise Error,
-          format(s_('UpdateRepositoryStorage|Failed to verify %{type} repository checksum from %{old} to %{new}'),
-            type: 'object_pool', old: checksum, new: new_checksum)
-      end
+      Repositories::ReplicateService.new(pool_repository.object_pool.repository)
+        .execute(target_pool_repository.object_pool.repository, :object_pool)
     end
 
     def remove_old_paths
@@ -94,19 +89,6 @@ module Projects
         disk_path: pool_repository.disk_path,
         state: 'ready'
       )
-    end
-
-    def replicate_object_pool_repository(from:, to:)
-      old_object_pool = from.object_pool
-      new_object_pool = to.object_pool
-
-      checksum = old_object_pool.repository.checksum
-
-      new_object_pool.repository.replicate(old_object_pool.repository)
-
-      new_checksum = new_object_pool.repository.checksum
-
-      [checksum, new_checksum]
     end
 
     def replicate_object_pool_on_move_ff_enabled?
