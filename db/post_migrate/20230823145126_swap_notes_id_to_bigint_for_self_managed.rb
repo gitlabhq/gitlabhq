@@ -60,6 +60,10 @@ class SwapNotesIdToBigintForSelfManaged < Gitlab::Database::Migration[2.1]
     [:timelogs, :fk_timelogs_note_id, :note_id, :nullify]
   ]
 
+  class PgForeignKeys < MigrationRecord
+    self.table_name = :postgres_foreign_keys
+  end
+
   def up
     return if com_or_dev_or_test_but_not_jh?
 
@@ -88,6 +92,8 @@ class SwapNotesIdToBigintForSelfManaged < Gitlab::Database::Migration[2.1]
     create_referencing_foreign_keys
 
     replace_referencing_foreign_keys
+
+    find_and_drop_faulting_foreign_keys(:system_note_metadata, :fk_d83a918cb1)
 
     with_lock_retries(raise_on_exhaustion: true) do
       # Swap the original and new column names
@@ -177,6 +183,26 @@ class SwapNotesIdToBigintForSelfManaged < Gitlab::Database::Migration[2.1]
         remove_foreign_key(from_table, TABLE_NAME, column: column, primary_key: :id, name: name)
 
         rename_constraint(from_table, temporary_name, name)
+      end
+    end
+  end
+
+  # Customers reported that some FKs are blocking the +notes_pkey+ to be dropped. This is happening, because some
+  # foreign keys listed in +REFERENCING_FOREIGN_KEYS+ have different names in customers instances.
+  # We need to find and remove this FKs to finish the swapping process.
+  #
+  # @info https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8227
+  def find_and_drop_faulting_foreign_keys(constrained_table, referenced_fk_name)
+    foreign_keys = PgForeignKeys.select(:name)
+                     .where(constrained_table_name: constrained_table)
+                     .where(referenced_table_name: TABLE_NAME)
+                     .where.not(name: referenced_fk_name)
+
+    with_lock_retries(raise_on_exhaustion: true) do
+      execute "LOCK TABLE #{TABLE_NAME}, #{constrained_table} IN ACCESS EXCLUSIVE MODE"
+
+      foreign_keys.each do |foreign_key|
+        remove_foreign_key_if_exists(constrained_table, name: foreign_key.name)
       end
     end
   end
