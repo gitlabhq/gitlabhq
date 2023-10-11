@@ -52,7 +52,7 @@ As part of the transition from `CI_JOB_JWT` to ID tokens, you must update the `b
 
 ```shell
 $ vault write auth/jwt/config \
-    jwks_url="https://gitlab.example.com/-/jwks" \
+    oidc_discovery_url="https://gitlab.example.com" \
     bound_issuer="https://gitlab.example.com"
 ```
 
@@ -72,7 +72,7 @@ You can create multiple authentication paths in Vault, which enable you to trans
 
    ```shell
    $ vault write auth/jwt_v2/config \
-       jwks_url="https://gitlab.example.com/-/jwks" \
+       oidc_discovery_url="https://gitlab.example.com" \
        bound_issuer="https://gitlab.example.com"
    ```
 
@@ -170,7 +170,7 @@ After all roles have been updated with the `bound_claims.iss` claims, you can re
 
 ```shell
 $ vault write auth/jwt/config \
-    jwks_url="https://gitlab.example.com/-/jwks" \
+    oidc_discovery_url="https://gitlab.example.com" \
     bound_issuer=""
 ```
 

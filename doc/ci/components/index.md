@@ -13,13 +13,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This feature is an experimental feature and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/9897)
 to track future work. Tell us about your use case by leaving comments in the epic.
 
-## Components repository
-
-A components repository is a GitLab project with a repository that hosts one or more pipeline components.
-A pipeline component is a reusable single pipeline configuration unit. Use them to compose
-an entire pipeline configuration or a small part of a larger pipeline.
+A CI/CD component is a reusable single pipeline configuration unit. Use them to compose an entire pipeline configuration or a small part of a larger pipeline.
 
 A component can optionally take [input parameters](../yaml/inputs.md).
+
+CI/CD components are similar to the other kinds of [configuration added with the `include` keyword](../yaml/includes.md), but have several advantages:
+
+- Components can be released and used with a specific version.
+- Multiple components can be combined in the same project and released with a single tag.
+- Components are discoverable in the [CI/CD Catalog](catalog.md).
+
+## Components repository
+
+A components repository is a GitLab project with a repository that hosts one or more pipeline components. All components in the project are versioned and released together.
+
+If a component requires different versioning from other components, the component should be migrated to its own components repository.
 
 ## Create a components repository
 
@@ -167,7 +175,7 @@ To create a release for a CI/CD component, use either:
   be released after all tests pass in pipelines for new tags.
 - The [UI for creating a release](../../user/project/releases/index.md#create-a-release).
 
-All released versions of the components are displayed in the CI/CD Catalog
+All released versions of the components are displayed in the [CI/CD Catalog](catalog.md)
 page for the given resource, providing users with information about official releases.
 
 Components [can be used](#use-a-component-in-a-cicd-configuration) without being released,

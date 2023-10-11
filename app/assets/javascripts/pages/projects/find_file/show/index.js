@@ -6,8 +6,9 @@ import InitBlobRefSwitcher from '../ref_switcher';
 InitBlobRefSwitcher();
 const findElement = document.querySelector('.js-file-finder');
 const projectFindFile = new ProjectFindFile($('.file-finder-holder'), {
-  url: findElement.dataset.fileFindUrl,
   treeUrl: findElement.dataset.findTreeUrl,
   blobUrlTemplate: findElement.dataset.blobUrlTemplate,
+  refType: findElement.dataset.refType,
 });
+projectFindFile.load(findElement.dataset.fileFindUrl);
 new ShortcutsFindFile(projectFindFile); // eslint-disable-line no-new

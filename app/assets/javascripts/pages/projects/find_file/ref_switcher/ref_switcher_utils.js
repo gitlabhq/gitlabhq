@@ -10,19 +10,32 @@ export function generateRefDestinationPath(selectedRef, namespace) {
     return window.location.href;
   }
 
+  let refType = null;
   const { pathname } = window.location;
   const encodedHash = '%23';
 
   const [projectRootPath] = pathname.split(namespace);
+  let actualRef = selectedRef;
+
+  const matches = selectedRef.match(/^refs\/(heads|tags)\/(.+)/);
+  if (matches) {
+    [, refType, actualRef] = matches;
+  }
 
   const destinationPath = joinPaths(
     projectRootPath,
     namespace,
-    encodeURI(selectedRef).replace(/#/g, encodedHash),
+    encodeURI(actualRef).replace(/#/g, encodedHash),
   );
 
   const newURL = new URL(window.location);
   newURL.pathname = destinationPath;
+
+  if (refType) {
+    newURL.searchParams.set('ref_type', refType.toLowerCase());
+  } else {
+    newURL.searchParams.delete('ref_type');
+  }
 
   return newURL.href;
 }

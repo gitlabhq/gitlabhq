@@ -29438,9 +29438,12 @@ Possible states of a user.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="userstateactive"></a>`active` | User is active and is able to use the system. |
-| <a id="userstateblocked"></a>`blocked` | User has been blocked and is prevented from using the system. |
-| <a id="userstatedeactivated"></a>`deactivated` | User is no longer active and is unable to use the system. |
+| <a id="userstateactive"></a>`active` | User is active and can use the system. |
+| <a id="userstatebanned"></a>`banned` | User is blocked, and their contributions are hidden. |
+| <a id="userstateblocked"></a>`blocked` | User has been blocked by an administrator and cannot use the system. |
+| <a id="userstateblocked_pending_approval"></a>`blocked_pending_approval` | User is blocked and pending approval. |
+| <a id="userstatedeactivated"></a>`deactivated` | User is no longer active and cannot use the system. |
+| <a id="userstateldap_blocked"></a>`ldap_blocked` | User has been blocked by the system. |
 
 ### `ValueStreamDashboardMetric`
 

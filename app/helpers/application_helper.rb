@@ -123,7 +123,7 @@ module ApplicationHelper
     {
       page: body_data_page,
       page_type_id: controller.params[:id],
-      find_file: find_file_path,
+      find_file: find_file_path(ref_type: @ref_type),
       group: @group&.path,
       group_full_path: @group&.full_path
     }.merge(project_data)

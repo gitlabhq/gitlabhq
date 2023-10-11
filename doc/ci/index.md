@@ -75,6 +75,10 @@ They can be hard-coded in your `.gitlab-ci.yml` file, project settings, or dynam
 
 - [Learn more about CI/CD variables](variables/index.md).
 
+### CI/CD components
+
+A [CI/CD component](components/index.md) is a reusable single pipeline configuration unit. Use them to compose an entire pipeline configuration or a small part of a larger pipeline.
+
 ## Videos
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab CI/CD demo](https://www.youtube-nocookie.com/embed/ljth1Q5oJoo).
