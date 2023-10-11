@@ -74,12 +74,12 @@ export default {
       default: 0,
     },
     issueId: {
-      type: Number,
+      type: String,
       required: false,
       default: null,
     },
     issueIid: {
-      type: Number,
+      type: String,
       required: false,
       default: null,
     },
@@ -365,7 +365,7 @@ export default {
             addHierarchyChild({
               cache,
               fullPath: this.fullPath,
-              iid: String(this.issueIid),
+              iid: this.issueIid,
               workItem: workItemCreate.workItem,
             }),
         });
@@ -400,7 +400,7 @@ export default {
             removeHierarchyChild({
               cache,
               fullPath: this.fullPath,
-              iid: String(this.issueIid),
+              iid: this.issueIid,
               workItem: { id },
             }),
         });

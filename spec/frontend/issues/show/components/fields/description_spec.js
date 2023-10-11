@@ -10,18 +10,13 @@ describe('Description field component', () => {
   let trackingSpy;
 
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
-  const mountComponent = ({ description = 'test', contentEditorOnIssues = false } = {}) => {
+  const mountComponent = ({ description = 'test' } = {}) => {
     wrapper = shallowMount(DescriptionField, {
       attachTo: document.body,
       propsData: {
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
         value: description,
-      },
-      provide: {
-        glFeatures: {
-          contentEditorOnIssues,
-        },
       },
       stubs: {
         MarkdownField,
@@ -33,15 +28,7 @@ describe('Description field component', () => {
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
     jest.spyOn(eventHub, '$emit');
 
-    mountComponent({ contentEditorOnIssues: true });
-  });
-
-  it('passes feature flag to the MarkdownEditorComponent', () => {
-    expect(findMarkdownEditor().props('enableContentEditor')).toBe(true);
-
-    mountComponent({ contentEditorOnIssues: false });
-
-    expect(findMarkdownEditor().props('enableContentEditor')).toBe(false);
+    mountComponent();
   });
 
   it('uses the MarkdownEditor component to edit markdown', () => {

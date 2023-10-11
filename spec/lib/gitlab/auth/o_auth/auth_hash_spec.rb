@@ -90,6 +90,22 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, feature_category: :user_management
     end
   end
 
+  context 'when username claim is in email format' do
+    let(:info_hash) do
+      {
+        email: nil,
+        name: 'GitLab test',
+        nickname: 'GitLab@gitlabsandbox.onmicrosoft.com',
+        uid: uid_ascii
+      }
+    end
+
+    it 'creates proper email and username fields' do
+      expect(auth_hash.username).to eql 'GitLab'
+      expect(auth_hash.email).to eql 'temp-email-for-oauth-GitLab@gitlab.localhost'
+    end
+  end
+
   context 'name not provided' do
     before do
       info_hash.delete(:name)

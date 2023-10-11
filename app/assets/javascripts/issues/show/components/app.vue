@@ -185,12 +185,12 @@ export default {
       default: false,
     },
     issueId: {
-      type: Number,
+      type: String,
       required: false,
       default: null,
     },
     issueIid: {
-      type: Number,
+      type: String,
       required: false,
       default: null,
     },
@@ -521,7 +521,6 @@ export default {
         :project-namespace="projectNamespace"
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
-        :issue-id="issueId"
         :issuable-type="issuableType"
         @updateForm="setFormState"
       />

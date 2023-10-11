@@ -10,7 +10,6 @@ describe('Ci environments dropdown', () => {
   const defaultProps = {
     areEnvironmentsLoading: false,
     environments: envs,
-    hasEnvScopeQuery: false,
     selectedEnvironmentScope: '',
   };
 
@@ -51,32 +50,23 @@ describe('Ci environments dropdown', () => {
   });
 
   describe('Search term is empty', () => {
-    describe.each`
-      hasEnvScopeQuery | status              | defaultEnvStatus      | firstItemValue | envIndices
-      ${true}          | ${'exists'}         | ${'prepends'}         | ${'*'}         | ${[1, 2, 3]}
-      ${false}         | ${'does not exist'} | ${'does not prepend'} | ${envs[0]}     | ${[0, 1, 2]}
-    `(
-      'when query for fetching environment scope $status',
-      ({ defaultEnvStatus, firstItemValue, hasEnvScopeQuery, envIndices }) => {
-        beforeEach(() => {
-          createComponent({ props: { environments: envs, hasEnvScopeQuery } });
-        });
+    beforeEach(() => {
+      createComponent({ props: { environments: envs } });
+    });
 
-        it(`${defaultEnvStatus} * in listbox`, () => {
-          expect(findListboxItemByIndex(0).text()).toBe(firstItemValue);
-        });
+    it(`prepends * in listbox`, () => {
+      expect(findListboxItemByIndex(0).text()).toBe('*');
+    });
 
-        it('renders all environments', () => {
-          expect(findListboxItemByIndex(envIndices[0]).text()).toBe(envs[0]);
-          expect(findListboxItemByIndex(envIndices[1]).text()).toBe(envs[1]);
-          expect(findListboxItemByIndex(envIndices[2]).text()).toBe(envs[2]);
-        });
+    it('renders all environments', () => {
+      expect(findListboxItemByIndex(1).text()).toBe(envs[0]);
+      expect(findListboxItemByIndex(2).text()).toBe(envs[1]);
+      expect(findListboxItemByIndex(3).text()).toBe(envs[2]);
+    });
 
-        it('does not display active checkmark', () => {
-          expect(findActiveIconByIndex(0).classes('gl-visibility-hidden')).toBe(true);
-        });
-      },
-    );
+    it('does not display active checkmark', () => {
+      expect(findActiveIconByIndex(0).classes('gl-visibility-hidden')).toBe(true);
+    });
   });
 
   describe('when `*` is the value of selectedEnvironmentScope props', () => {
@@ -92,38 +82,11 @@ describe('Ci environments dropdown', () => {
     });
   });
 
-  describe('when environments are not fetched via graphql', () => {
+  describe('when fetching environments', () => {
     const currentEnv = envs[2];
 
     beforeEach(() => {
       createComponent();
-    });
-
-    it('filters on the frontend and renders only the environment searched for', async () => {
-      await findListbox().vm.$emit('search', currentEnv);
-
-      expect(findAllListboxItems()).toHaveLength(1);
-      expect(findListboxItemByIndex(0).text()).toBe(currentEnv);
-    });
-
-    it('does not emit event when searching', async () => {
-      expect(wrapper.emitted('search-environment-scope')).toBeUndefined();
-
-      await findListbox().vm.$emit('search', currentEnv);
-
-      expect(wrapper.emitted('search-environment-scope')).toBeUndefined();
-    });
-
-    it('does not display note about max environments shown', () => {
-      expect(findMaxEnvNote().exists()).toBe(false);
-    });
-  });
-
-  describe('when fetching environments via graphql', () => {
-    const currentEnv = envs[2];
-
-    beforeEach(() => {
-      createComponent({ props: { hasEnvScopeQuery: true } });
     });
 
     it('renders dropdown divider', () => {
@@ -137,7 +100,7 @@ describe('Ci environments dropdown', () => {
     });
 
     it('renders dropdown loading icon while fetch query is loading', () => {
-      createComponent({ props: { areEnvironmentsLoading: true, hasEnvScopeQuery: true } });
+      createComponent({ props: { areEnvironmentsLoading: true } });
 
       expect(findListbox().props('loading')).toBe(true);
       expect(findListbox().props('searching')).toBe(false);
@@ -145,7 +108,7 @@ describe('Ci environments dropdown', () => {
     });
 
     it('renders search loading icon while search query is loading and dropdown is open', async () => {
-      createComponent({ props: { areEnvironmentsLoading: true, hasEnvScopeQuery: true } });
+      createComponent({ props: { areEnvironmentsLoading: true } });
       await findListbox().vm.$emit('shown');
 
       expect(findListbox().props('loading')).toBe(false);
@@ -185,7 +148,7 @@ describe('Ci environments dropdown', () => {
     describe('when creating a new environment scope from a search term', () => {
       const searchTerm = 'new-env';
       beforeEach(() => {
-        createComponent({ searchTerm, props: { hasEnvScopeQuery: true } });
+        createComponent({ searchTerm });
       });
 
       it('sets new environment scope as the selected environment scope', async () => {

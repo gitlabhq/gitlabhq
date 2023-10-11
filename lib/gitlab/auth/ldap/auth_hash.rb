@@ -6,6 +6,8 @@ module Gitlab
   module Auth
     module Ldap
       class AuthHash < Gitlab::Auth::OAuth::AuthHash
+        extend ::Gitlab::Utils::Override
+
         def uid
           @uid ||= Gitlab::Auth::Ldap::Person.normalize_dn(super)
         end
@@ -43,6 +45,12 @@ module Gitlab
 
         def ldap_config
           @ldap_config ||= Gitlab::Auth::Ldap::Config.new(self.provider)
+        end
+
+        # Overrding this method as LDAP allows email as the username !
+        override :get_username
+        def get_username
+          username_claims.map { |claim| get_from_auth_hash_or_info(claim) }.find(&:presence)
         end
       end
     end

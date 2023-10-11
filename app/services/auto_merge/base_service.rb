@@ -63,7 +63,7 @@ module AutoMerge
           !merge_request.broken? &&
           (skip_draft_check(merge_request) || !merge_request.draft?) &&
           merge_request.mergeable_discussions_state? &&
-          !merge_request.merge_blocked_by_other_mrs? &&
+          (skip_blocked_check(merge_request) || !merge_request.merge_blocked_by_other_mrs?) &&
           yield
       end
     end
@@ -112,6 +112,11 @@ module AutoMerge
 
     # Will skip the draft check or not when checking if strategy is available
     def skip_draft_check(merge_request)
+      false
+    end
+
+    # Will skip the blocked check or not when checking if strategy is available
+    def skip_blocked_check(merge_request)
       false
     end
   end

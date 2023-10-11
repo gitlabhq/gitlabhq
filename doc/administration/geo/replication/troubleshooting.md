@@ -503,6 +503,46 @@ This check is also required when using a mixture of GitLab deployments. The loca
 
 ## Fixing PostgreSQL database replication errors
 
+The following sections outline troubleshooting steps for fixing replication error messages (indicated by `Database replication working? ... no` in the
+[`geo:check` output](#health-check-rake-task).
+The instructions present here mostly assume a single-node Geo Linux package deployment, and might need to be adapted to different environments.
+
+### Removing an inactive replication slot
+
+Replication slots are marked as 'inactive' when the replication client (a secondary site) connected to the slot disconnects.
+Inactive replication slots cause WAL files to be retained, because they are sent to the client when it reconnects and the slot becomes active once more.
+If the secondary site is not able to reconnect, use the following steps to remove its corresponding inactive replication slot:
+
+1. [Start a PostgreSQL console session](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database) on the Geo primary site's database node:
+
+   ```shell
+   sudo gitlab-psql -d gitlabhq_production
+   ```
+
+   NOTE:
+   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
+
+1. View the replication slots and remove them if they are inactive:
+
+   ```sql
+   SELECT * FROM pg_replication_slots;
+   ```
+
+   Slots where `active` is `f` are inactive.
+
+   - When this slot should be active, because you have a **secondary** site configured using that slot,
+     look for the [PostgreSQL logs](../../logs/index.md#postgresql-logs) for the **secondary** site,
+     to view why the replication is not running.
+   - If you are no longer using the slot (for example, you no longer have Geo enabled), or the secondary site is no longer able to reconnect,
+     you should remove it using the PostgreSQL console session:
+
+     ```sql
+     SELECT pg_drop_replication_slot('<name_of_inactive_slot>');
+     ```
+
+1. Follow either the steps [to remove that Geo site](remove_geo_site.md) if it's no longer required,
+   or [re-initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process), which recreates the replication slot correctly.
+
 ### Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
 
 If a replication slot is inactive,
@@ -517,18 +557,7 @@ HINT: Close open transactions soon to avoid wraparound problems.
 You might also need to commit or roll back old prepared transactions, or drop stale replication slots.
 ```
 
-To fix this:
-
-1. [Connect to the primary database](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database).
-
-1. Run `SELECT * FROM pg_replication_slots;`.
-   Note the `slot_name` that reports `active` as `f` (false).
-
-1. Follow [the steps to remove that Geo site](remove_geo_site.md).
-
-The following sections outline troubleshooting steps for fixing replication
-error messages (indicated by `Database replication working? ... no` in the
-[`geo:check` output](#health-check-rake-task).
+To fix this, you should [remove the inactive replication slot](#removing-an-inactive-replication-slot) and re-initiate the replication.
 
 ### Message: `ERROR:  replication slots can only be used if max_replication_slots > 0`?
 
@@ -568,35 +597,9 @@ the default 30 minutes. Adjust as required for your installation.
 ### Message: "PANIC: could not write to file `pg_xlog/xlogtemp.123`: No space left on device"
 
 Determine if you have any unused replication slots in the **primary** database. This can cause large amounts of
-log data to build up in `pg_xlog`. Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
+log data to build up in `pg_xlog`.
 
-1. Start a PostgreSQL console session:
-
-   ```shell
-   sudo gitlab-psql
-   ```
-
-   NOTE:
-   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
-
-1. View your replication slots:
-
-   ```sql
-   SELECT * FROM pg_replication_slots;
-   ```
-
-Slots where `active` is `f` are not active.
-
-- When this slot should be active, because you have a **secondary** site configured using that slot,
-  sign in on the web interface for the **secondary** site and check the [PostgreSQL logs](../../logs/index.md#postgresql-logs)
-  to view why the replication is not running.
-
-- If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
-  PostgreSQL console session:
-
-  ```sql
-  SELECT pg_drop_replication_slot('<name_of_extra_slot>');
-  ```
+[Removing the inactive slots](#removing-an-inactive-replication-slot) can reduce the amount of space used in the `pg_xlog`.
 
 ### Message: "ERROR: canceling statement due to conflict with recovery"
 

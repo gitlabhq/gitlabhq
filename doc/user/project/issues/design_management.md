@@ -190,17 +190,11 @@ To archive multiple designs at once:
 
 ## Markdown and rich text editors for descriptions
 
-<!-- When content_editor_on_issues flag is removed, move version notes
-     to "Add a design to an issue", update that topic, and delete this one. -->
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
+> - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
 
-FLAG:
-On self-managed GitLab, by default the rich text editor is available. To hide it, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `content_editor_on_issues`.
-On GitLab.com, this feature is available.
-
-When this feature is enabled, you can use the Markdown and rich text editor in design descriptions.
+You can use the Markdown and rich text editor in design descriptions.
 It's the same editor you use for comments across GitLab.
 
 ## Reorder designs

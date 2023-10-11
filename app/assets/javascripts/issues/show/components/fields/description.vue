@@ -2,7 +2,6 @@
 <script>
 import { __ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { ISSUE_NOTEABLE_TYPE } from '~/notes/constants';
 import updateMixin from '../../mixins/update';
@@ -11,7 +10,7 @@ export default {
   components: {
     MarkdownEditor,
   },
-  mixins: [updateMixin, glFeaturesFlagMixin()],
+  mixins: [updateMixin],
   props: {
     value: {
       type: String,
@@ -71,7 +70,6 @@ export default {
     <label class="sr-only" for="issue-description">{{ __('Description') }}</label>
     <markdown-editor
       ref="markdownEditor"
-      :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
       class="gl-mt-3"
       :value="value"
       :render-markdown-path="markdownPreviewPath"

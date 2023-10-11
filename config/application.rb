@@ -430,7 +430,7 @@ module Gitlab
 
     config.middleware.insert_before ActionDispatch::RemoteIp, ::Gitlab::Middleware::HandleIpSpoofAttackError
 
-    config.middleware.insert_after Rails::Rack::Logger, ::Gitlab::Middleware::HandleMalformedStrings
+    config.middleware.insert_after ActionDispatch::ShowExceptions, ::Gitlab::Middleware::HandleMalformedStrings
 
     config.middleware.insert_after ::Gitlab::Middleware::HandleMalformedStrings, ::Gitlab::Middleware::PathTraversalCheck
 

@@ -1,8 +1,0 @@
----
-name: content_editor_on_issues
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98703
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375172
-milestone: '15.5'
-type: development
-group: group::knowledge
-default_enabled: true

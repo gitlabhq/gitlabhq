@@ -69,8 +69,8 @@ describe('Description component', () => {
     wrapper = shallowMountExtended(Description, {
       apolloProvider: mockApollo,
       propsData: {
-        issueId: 1,
-        issueIid: 1,
+        issueId: '1',
+        issueIid: '1',
         ...initialProps,
         ...props,
       },

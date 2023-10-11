@@ -14,7 +14,7 @@ module QA
             base.view 'app/assets/javascripts/invite_members/components/invite_modal_base.vue' do
               element :invite_button
               element :access_level_dropdown
-              element :invite_members_modal_content
+              element 'invite-modal'
             end
 
             base.view 'app/assets/javascripts/invite_members/components/members_token_select.vue' do
@@ -41,7 +41,7 @@ module QA
           def add_member(username, access_level = 'Developer', refresh_page: true)
             open_invite_members_modal
 
-            within_element(:invite_members_modal_content) do
+            within_element('invite-modal') do
               fill_element(:members_token_select_input, username)
               Support::WaitForRequests.wait_for_requests
               click_button(username, match: :prefer_exact)
@@ -54,7 +54,7 @@ module QA
           def invite_group(group_name, access_level = 'Guest', refresh_page: true)
             open_invite_group_modal
 
-            within_element(:invite_members_modal_content) do
+            within_element('invite-modal') do
               click_button 'Select a group'
 
               Support::WaitForRequests.wait_for_requests

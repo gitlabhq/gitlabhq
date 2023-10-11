@@ -285,7 +285,6 @@ export default {
     :are-scoped-variables-available="areScopedVariablesAvailable"
     :entity="entity"
     :environments="environments"
-    :has-env-scope-query="hasEnvScopeQuery"
     :hide-environment-scope="hideEnvironmentScope"
     :is-loading="isLoading"
     :max-variable-limit="maxVariableLimit"

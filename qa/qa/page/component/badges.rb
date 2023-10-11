@@ -16,12 +16,12 @@ module QA
         end
 
         view 'app/assets/javascripts/badges/components/badge_list.vue' do
-          element :badge_list_content
-          element :badge_list
+          element 'badge-list-content'
+          element 'badge-list'
         end
 
         view 'app/assets/javascripts/badges/components/badge.vue' do
-          element :badge_image_link
+          element 'badge-image-link'
         end
 
         def show_badge_add_form
@@ -45,14 +45,14 @@ module QA
         end
 
         def has_badge?(badge_name)
-          within_element(:badge_list_content) do
-            has_element?(:badge_list, text: badge_name)
+          within_element('badge-list-content') do
+            has_element?('badge-list', text: badge_name)
           end
         end
 
         def has_visible_badge_image_link?(link_url)
-          within_element(:badge_list_content) do
-            has_element?(:badge_image_link, link_url: link_url)
+          within_element('badge-list-content') do
+            has_element?('badge-image-link', link_url: link_url)
           end
         end
       end

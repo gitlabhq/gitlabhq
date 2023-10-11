@@ -34,7 +34,8 @@ If a component requires different versioning from other components, the componen
 To create a components repository, you must:
 
 1. [Create a new project](../../user/project/index.md#create-a-blank-project) with a `README.md` file.
-1. Create a `template.yml` file inside the project's root directory that contains the configuration you want to provide as a component.
+1. Create either a single file or a templates directory according to the [directory structure](#directory-structure).
+
    For example:
 
    ```yaml
@@ -106,8 +107,8 @@ For example, the following component could be referenced with `gitlab.com/my-use
 
 #### Component configurations saved in any directory (deprecated)
 
-NOTE:
-Saving component configurations through this directory structure is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/415855).
+WARNING:
+Saving component configurations through this directory structure is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/415855) and should be avoided.
 
 Components configurations can be saved through the following directory structure, containing:
 

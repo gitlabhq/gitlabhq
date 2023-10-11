@@ -76,14 +76,8 @@ describe('issue_note_form component', () => {
     });
   });
 
-  it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
-    createComponentWrapper({}, { contentEditorOnIssues: false });
-
-    expect(wrapper.text()).not.toContain('Switch to rich text editing');
-  });
-
-  it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
-    createComponentWrapper({}, { contentEditorOnIssues: true });
+  it('shows content editor switcher', () => {
+    createComponentWrapper();
 
     expect(wrapper.text()).toContain('Switch to rich text editing');
   });

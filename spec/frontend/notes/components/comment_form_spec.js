@@ -308,15 +308,8 @@ describe('issue_comment_form component', () => {
       });
     });
 
-    it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
-      mountComponent({ mountFunction: mount, features: { contentEditorOnIssues: false } });
-
-      expect(wrapper.text()).not.toContain('Switch to rich text editing');
-    });
-
-    it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
-      mountComponent({ mountFunction: mount, features: { contentEditorOnIssues: true } });
-
+    it('shows content editor switcher', () => {
+      mountComponent({ mountFunction: mount });
       expect(wrapper.text()).toContain('Switch to rich text editing');
     });
 

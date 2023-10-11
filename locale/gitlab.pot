@@ -30648,6 +30648,12 @@ msgstr ""
 msgid "NamespaceLimits|Exclusion added successfully"
 msgstr ""
 
+msgid "NamespaceLimits|Export .csv"
+msgstr ""
+
+msgid "NamespaceLimits|Export a csv file with Free Tier anonymized namespace storage usage statistics. This is an asynchronous operation, once the file is generated we will send it to your registered email."
+msgstr ""
+
 msgid "NamespaceLimits|Free Tier"
 msgstr ""
 
@@ -30655,6 +30661,9 @@ msgid "NamespaceLimits|NONE"
 msgstr ""
 
 msgid "NamespaceLimits|Namespace limits could not be loaded. Reload the page to try again."
+msgstr ""
+
+msgid "NamespaceLimits|Namespaces Statistics"
 msgstr ""
 
 msgid "NamespaceLimits|Notifications Limit"

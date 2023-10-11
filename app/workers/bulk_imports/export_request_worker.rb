@@ -125,7 +125,7 @@ module BulkImports
     end
 
     def export_url
-      entity.export_relations_url_path
+      entity.export_relations_url_path(batched: Feature.enabled?(:bulk_imports_batched_import_export))
     end
   end
 end

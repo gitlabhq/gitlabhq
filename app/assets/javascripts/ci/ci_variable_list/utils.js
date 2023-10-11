@@ -1,27 +1,4 @@
-import { uniq } from 'lodash';
 import { allEnvironments } from './constants';
-
-/**
- * This function takes a list of variable, environments and
- * new environments added through the scope dropdown
- * and create a new Array that concatenate the environment list
- * with the environment scopes find in the variable list. This is
- * useful for variable settings so that we can render a list of all
- * environment scopes available based on the list of envs, the ones the user
- * added explictly and what is found under each variable.
- * @param {Array} variables
- * @param {Array} environments
- * @returns {Array} - Array of environments
- */
-
-export const createJoinedEnvironments = (
-  variables = [],
-  environments = [],
-  newEnvironments = [],
-) => {
-  const scopesFromVariables = variables.map((variable) => variable.environmentScope);
-  return uniq([...environments, ...newEnvironments, ...scopesFromVariables]).sort();
-};
 
 /**
  * This function job is to convert the * wildcard to text when applicable

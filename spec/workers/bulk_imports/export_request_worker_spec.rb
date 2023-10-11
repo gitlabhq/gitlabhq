@@ -127,6 +127,20 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
 
         described_class.new.perform(entity.id)
       end
+
+      context 'when bulk_imports_batched_import_export feature flag is disabled' do
+        it 'requests relation export without batched param' do
+          stub_feature_flags(bulk_imports_batched_import_export: false)
+
+          expected_url = "/projects/#{entity.source_xid}/export_relations"
+
+          expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            expect(client).to receive(:post).with(expected_url)
+          end
+
+          described_class.new.perform(entity.id)
+        end
+      end
     end
   end
 

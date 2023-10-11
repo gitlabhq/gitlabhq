@@ -561,7 +561,14 @@ const linkType = (sourceMarkdown) => {
   return LINK_HTML;
 };
 
-const normalizeUrl = (url) => decodeURIComponent(removeLastSlashInUrlPath(removeUrlProtocol(url)));
+const normalizeUrl = (url) => {
+  const processedUrl = removeLastSlashInUrlPath(removeUrlProtocol(url));
+  try {
+    return decodeURIComponent(processedUrl);
+  } catch {
+    return processedUrl;
+  }
+};
 
 /**
  * Validates that the provided URL is a valid GFM autolink

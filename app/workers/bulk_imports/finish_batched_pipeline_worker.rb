@@ -43,7 +43,7 @@ module BulkImports
     end
 
     def import_in_progress?
-      tracker.batches.any?(&:started?)
+      tracker.batches.any? { |b| b.started? || b.created? }
     end
   end
 end

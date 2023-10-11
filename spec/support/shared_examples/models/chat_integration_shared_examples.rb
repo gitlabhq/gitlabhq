@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "chat integration" do |integration_name|
+RSpec.shared_examples "chat integration" do |integration_name, supports_deployments: false|
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -26,8 +26,14 @@ RSpec.shared_examples "chat integration" do |integration_name|
   end
 
   describe '.supported_events' do
-    it 'does not support deployment_events' do
-      expect(described_class.supported_events).not_to include('deployment')
+    if supports_deployments
+      it 'supports deployment_events' do
+        expect(described_class.supported_events).to include('deployment')
+      end
+    else
+      it 'does not support deployment_events' do
+        expect(described_class.supported_events).not_to include('deployment')
+      end
     end
   end
 
@@ -375,7 +381,11 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       let(:sample_data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.now) }
 
-      it_behaves_like "untriggered #{integration_name} integration"
+      if supports_deployments
+        it_behaves_like "triggered #{integration_name} integration"
+      else
+        it_behaves_like "untriggered #{integration_name} integration"
+      end
     end
   end
 end

@@ -39,7 +39,7 @@ module QA
             end
 
             base.view 'app/assets/javascripts/members/components/members_tabs.vue' do
-              element :groups_list_tab
+              element 'groups-list-tab'
             end
 
             base.view 'app/assets/javascripts/members/components/action_buttons/remove_group_link_button.vue' do
@@ -82,7 +82,7 @@ module QA
           end
 
           def remove_group(group_name)
-            click_element :groups_list_tab
+            click_element 'groups-list-tab'
 
             within_element(:member_row, text: group_name) do
               click_element :remove_group_link_button
@@ -92,7 +92,7 @@ module QA
           end
 
           def has_group?(group_name)
-            click_element :groups_list_tab
+            click_element 'groups-list-tab'
             has_element?(:member_row, text: group_name)
           end
         end

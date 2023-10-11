@@ -40,7 +40,7 @@ module QA
         end
 
         def has_project?(project_name)
-          has_element?(:project_content, project_name: project_name)
+          has_element?('project-content', project_name: project_name)
         end
 
         private

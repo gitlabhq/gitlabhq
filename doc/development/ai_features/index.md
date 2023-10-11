@@ -61,6 +61,7 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
    Feature.enable(:openai_experimentation)
    ```
 
+1. Ensure you have followed [the process to obtain an EE license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
 1. Enable `Experimental features` and `Third-party AI services`
    1. Go to the group with the Ultimate license
@@ -101,24 +102,18 @@ To populate the embedding database for GitLab chat:
 In order to obtain a GCP service key for local development, please follow the steps below:
 
 - Create a sandbox GCP project by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group GCP project by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
-- Once you have access to an individual or shared GCP project, navigate to
-  the project by visiting
-  [https://gitlabsandbox.cloud](https://gitlabsandbox.cloud) and selecting the
-  project name. On the project page, select `Open GCP Console`
-- In the GCP console, type `IAM & Admin` into the search box. Then go to `IAM & Admin` > `Service Accounts` and select `Create service account`.
-- Name the service account something specific to what you're using it for. Select `Create and Continue`. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
-- Select your new service account and `Keys` > `Add Key` > `Create new key`. Use default Key type of `JSON`. This will download the **private** JSON credentials for your service account.
 - If you are using an individual GCP project, you may also need to enable the Vertex AI API:
     1. Go to **APIs & Services > Enabled APIs & services**.
     1. Select **+ Enable APIs and Services**.
     1. Search for `Vertex AI API`.
     1. Select **Vertex AI API**, then select **Enable**.
+- Install the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install)
+- Authenticate locally with GCP using the [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
 - Open the Rails console. Update the settings to:
 
 ```ruby
 # PROJECT_ID = "your-gcp-project-name"
 
-Gitlab::CurrentSettings.update(vertex_ai_credentials: File.read('/YOUR_FILE.json'))
 Gitlab::CurrentSettings.update(vertex_ai_project: PROJECT_ID)
 ```
 

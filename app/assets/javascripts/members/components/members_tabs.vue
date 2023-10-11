@@ -22,7 +22,7 @@ export const TABS = [
   {
     namespace: MEMBER_TYPES.group,
     title: __('Groups'),
-    attrs: { 'data-qa-selector': 'groups_list_tab' },
+    attrs: { 'data-testid': 'groups-list-tab' },
     queryParamValue: TAB_QUERY_PARAM_VALUES.group,
   },
   {

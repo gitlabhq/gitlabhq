@@ -2,10 +2,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { getDraft, updateDraft, getLockVersion, clearDraft } from '~/lib/utils/autosave';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_ISSUE, TYPENAME_USER } from '~/graphql_shared/constants';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import EditActions from './edit_actions.vue';
 import DescriptionField from './fields/description.vue';
@@ -24,7 +21,6 @@ export default {
     IssuableTypeField,
     LockedWarning,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     endpoint: {
       type: String,
@@ -78,11 +74,6 @@ export default {
       required: false,
       default: '',
     },
-    issueId: {
-      type: Number,
-      required: false,
-      default: null,
-    },
   },
   data() {
     const autosaveKey = [document.location.pathname, document.location.search];
@@ -109,12 +100,6 @@ export default {
     },
     showTypeField() {
       return [TYPE_INCIDENT, TYPE_ISSUE].includes(this.issuableType);
-    },
-    resourceId() {
-      return this.issueId && convertToGraphQLId(TYPENAME_ISSUE, this.issueId);
-    },
-    userId() {
-      return convertToGraphQLId(TYPENAME_USER, gon.current_user_id);
     },
   },
   watch: {

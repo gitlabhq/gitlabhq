@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe Integrations::Discord, feature_category: :integrations do
-  it_behaves_like "chat integration", "Discord notifications" do
+  it_behaves_like "chat integration", "Discord notifications", supports_deployments: true do
     let(:client) { Discordrb::Webhooks::Client }
     let(:client_arguments) { { url: webhook_url } }
     let(:payload) do

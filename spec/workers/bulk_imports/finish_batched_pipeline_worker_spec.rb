@@ -39,8 +39,18 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
     end
 
     context 'when import is in progress' do
-      it 're-enqueues' do
+      it 're-enqueues for any started batches' do
         create(:bulk_import_batch_tracker, :started, tracker: pipeline_tracker)
+
+        expect(described_class)
+          .to receive(:perform_in)
+          .with(described_class::REQUEUE_DELAY, pipeline_tracker.id)
+
+        subject.perform(pipeline_tracker.id)
+      end
+
+      it 're-enqueues for any created batches' do
+        create(:bulk_import_batch_tracker, :created, tracker: pipeline_tracker)
 
         expect(described_class)
           .to receive(:perform_in)

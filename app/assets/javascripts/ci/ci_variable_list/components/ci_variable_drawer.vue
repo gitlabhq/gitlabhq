@@ -311,7 +311,6 @@ export default {
         <ci-environments-dropdown
           v-if="areScopedVariablesAvailable"
           class="gl-mb-5"
-          has-env-scope-query
           :are-environments-loading="areEnvironmentsLoading"
           :environments="environments"
           :selected-environment-scope="variable.environmentScope"

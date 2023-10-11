@@ -284,10 +284,10 @@ If [`artifacts:expire_in`](../ci/yaml/index.md#artifactsexpire_in) is used to se
 an expiry for the artifacts, they are marked for deletion right after that date passes.
 Otherwise, they expire per the [default artifacts expiration setting](../administration/settings/continuous_integration.md).
 
-Artifacts are cleaned up by the `expire_build_artifacts_worker` cron job which Sidekiq
+Artifacts are deleted by the `expire_build_artifacts_worker` cron job which Sidekiq
 runs every 7 minutes (`*/7 * * * *` in [Cron](../topics/cron/index.md) syntax).
 
-To change the default schedule on which the artifacts are expired:
+To change the default schedule on which expired artifacts are deleted:
 
 ::Tabs
 

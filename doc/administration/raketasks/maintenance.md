@@ -454,3 +454,15 @@ main: == [advisory_lock_connection] object_id: 173580, pg_backend_pid: 5532
 ```
 
 The messages returned are informational and can be ignored.
+
+### PostgreSQL socket errors when executing the `gitlab:env:info` Rake task
+
+After running `sudo gitlab-rake gitlab:env:info` on Gitaly or other non-Rails nodes , you might see the following error:
+
+```plaintext
+PG::ConnectionBad: could not connect to server: No such file or directory
+Is the server running locally and accepting
+connections on Unix domain socket "/var/opt/gitlab/postgresql/.s.PGSQL.5432"?
+```
+
+This is because, in a multi-node environment, the `gitlab:env:info` Rake task should only be executed on the nodes running **GitLab Rails**.

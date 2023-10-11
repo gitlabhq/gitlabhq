@@ -271,7 +271,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
           import = build(:bulk_import, source_version: '16.2.0')
           entity = build(:bulk_import_entity, :project_entity, bulk_import: import)
 
-          expect(entity.export_relations_url_path)
+          expect(entity.export_relations_url_path(batched: true))
             .to eq("/projects/#{entity.source_xid}/export_relations?batched=true")
         end
       end
@@ -280,7 +280,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         it 'returns export relations url' do
           entity = build(:bulk_import_entity)
 
-          expect(entity.export_relations_url_path)
+          expect(entity.export_relations_url_path(batched: true))
             .to eq("/groups/#{entity.source_xid}/export_relations")
         end
       end

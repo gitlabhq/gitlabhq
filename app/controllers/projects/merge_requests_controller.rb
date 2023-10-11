@@ -36,8 +36,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   before_action only: [:show, :diffs] do
-    push_frontend_feature_flag(:content_editor_on_issues, project&.group)
-    push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)

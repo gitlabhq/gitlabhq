@@ -100,7 +100,7 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-show="isLoading" size="md" />
-    <div data-qa-selector="badge_list_content">
+    <div data-testid="badge-list-content">
       <gl-table
         :empty-text="emptyMessage"
         :fields="fields"
@@ -109,7 +109,7 @@ export default {
         :current-page="currentPage"
         stacked="md"
         show-empty
-        data-qa-selector="badge_list"
+        data-testid="badge-list"
       >
         <template #cell(name)="{ item }">
           <label class="label-bold str-truncated mb-0">{{ item.name }}</label>

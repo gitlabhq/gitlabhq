@@ -5,7 +5,6 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
@@ -24,7 +23,7 @@ export default {
     GlLink,
     GlFormCheckbox,
   },
-  mixins: [issuableStateMixin, resolvable, glFeaturesFlagMixin()],
+  mixins: [issuableStateMixin, resolvable],
   props: {
     noteBody: {
       type: String,
@@ -224,9 +223,6 @@ export default {
         placeholder: { link: ['startTag', 'endTag'] },
       };
     },
-    enableContentEditor() {
-      return Boolean(this.glFeatures.contentEditorOnIssues);
-    },
     codeSuggestionsConfig() {
       return {
         canSuggest: this.canSuggest,
@@ -361,7 +357,6 @@ export default {
       <comment-field-layout :noteable-data="getNoteableData" :is-internal-note="isInternalNote">
         <markdown-editor
           ref="markdownEditor"
-          :enable-content-editor="enableContentEditor"
           :value="updatedNoteBody"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="markdownDocsPath"

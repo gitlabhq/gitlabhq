@@ -38,7 +38,6 @@ import {
   VARIABLE_ACTIONS,
   variableOptions,
 } from '../constants';
-import { createJoinedEnvironments } from '../utils';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
 
@@ -89,10 +88,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    hasEnvScopeQuery: {
-      type: Boolean,
-      required: true,
     },
     mode: {
       type: String,
@@ -146,13 +141,6 @@ export default {
     },
     isTipVisible() {
       return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
-    },
-    environmentsList() {
-      if (this.hasEnvScopeQuery) {
-        return this.environments;
-      }
-
-      return createJoinedEnvironments(this.variables, this.environments, this.newEnvironments);
     },
     maskedFeedback() {
       return this.displayMaskedError
@@ -404,9 +392,8 @@ export default {
             <ci-environments-dropdown
               v-if="areScopedVariablesAvailable"
               :are-environments-loading="areEnvironmentsLoading"
-              :has-env-scope-query="hasEnvScopeQuery"
               :selected-environment-scope="variable.environmentScope"
-              :environments="environmentsList"
+              :environments="environments"
               @select-environment="setEnvironmentScope"
               @search-environment-scope="$emit('search-environment-scope', $event)"
             />
