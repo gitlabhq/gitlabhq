@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:model1) { create(:ml_models, :with_versions, project: project) }
   let_it_be(:model2) { create(:ml_models, project: project) }
+  let_it_be(:model3) { create(:ml_models, project: project) }
   let_it_be(:model_in_different_project) { create(:ml_models) }
 
   let(:model_registry_enabled) { true }
+  let(:params) { {} }
 
   before do
     allow(Ability).to receive(:allowed?).and_call_original
@@ -39,7 +41,7 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
     it 'fetches the correct models' do
       index_request
 
-      expect(assigns(:models)).to match_array([model1, model2])
+      expect(assigns(:paginator).records).to match_array([model3, model2, model1])
     end
 
     it 'does not perform N+1 sql queries' do
@@ -58,11 +60,29 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
         is_expected.to have_gitlab_http_status(:not_found)
       end
     end
+
+    describe 'pagination' do
+      before do
+        stub_const("Projects::Ml::ModelsController::MAX_MODELS_PER_PAGE", 2)
+      end
+
+      it 'paginates', :aggregate_failures do
+        list_models
+
+        paginator = assigns(:paginator)
+
+        expect(paginator.records).to match_array([model3, model2])
+
+        list_models({ cursor: paginator.cursor_for_next_page })
+
+        expect(assigns(:paginator).records.first).to eq(model1)
+      end
+    end
   end
 
   private
 
-  def list_models
-    get project_ml_models_path(project)
+  def list_models(new_params = nil)
+    get project_ml_models_path(project), params: new_params || params
   end
 end

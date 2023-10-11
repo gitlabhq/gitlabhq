@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::InitialPipelineProcessWorker, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let(:job) { build(:ci_build, project: project) }
-  let(:stage) { build(:ci_stage, project: project, statuses: [job]) }
+  let(:stage) { build(:ci_stage, project: project, statuses: [job], position: 1) }
   let(:pipeline) { create(:ci_pipeline, stages: [stage], status: :created, project: project, builds: [job]) }
 
   describe '#perform' do
@@ -42,19 +42,16 @@ RSpec.describe Ci::InitialPipelineProcessWorker, feature_category: :continuous_i
     end
 
     context 'when a pipeline contains a deployment job' do
-      let(:job) { build(:ci_build, :start_review_app, project: project) }
+      before do
+        allow(::Deployments::CreateForJobService).to receive(:new).and_call_original
+        allow(::Ci::PipelineProcessing::AtomicProcessingService).to receive(:new).and_call_original
+      end
+
+      let(:job) { build(:ci_build, :created, :start_review_app, project: project, stage_idx: 1) }
       let!(:environment) { create(:environment, project: project, name: job.expanded_environment_name) }
 
       it 'creates a deployment record' do
         expect { subject }.to change { Deployment.count }.by(1)
-
-        expect(job.deployment).to have_attributes(
-          project: job.project,
-          ref: job.ref,
-          sha: job.sha,
-          deployable: job,
-          deployable_type: 'CommitStatus',
-          environment: job.persisted_environment)
       end
 
       context 'when the corresponding environment does not exist' do
@@ -64,6 +61,39 @@ RSpec.describe Ci::InitialPipelineProcessWorker, feature_category: :continuous_i
           expect { subject }.not_to change { Deployment.count }
 
           expect(job.deployment).to be_nil
+        end
+      end
+
+      it 'kicks off atomic processing before a deployment is created' do
+        expect(::Ci::PipelineProcessing::AtomicProcessingService).to receive(:new).ordered
+        expect(::Deployments::CreateForJobService).to receive(:new).ordered
+
+        subject
+      end
+
+      context 'when `create_deployment_only_for_processable_jobs` FF is disabled' do
+        before do
+          stub_feature_flags(create_deployment_only_for_processable_jobs: false)
+        end
+
+        it 'creates a deployment record' do
+          expect { subject }.to change { Deployment.count }.by(1)
+
+          expect(job.deployment).to have_attributes(
+            project: job.project,
+            ref: job.ref,
+            sha: job.sha,
+            deployable: job,
+            deployable_type: 'CommitStatus',
+            environment: job.persisted_environment
+          )
+        end
+
+        it 'a deployment is created before atomic processing is kicked off' do
+          expect(::Deployments::CreateForJobService).to receive(:new).ordered
+          expect(::Ci::PipelineProcessing::AtomicProcessingService).to receive(:new).ordered
+
+          subject
         end
       end
     end

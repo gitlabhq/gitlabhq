@@ -8,8 +8,22 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
   let_it_be(:model2) { build_stubbed(:ml_models, project: project) }
   let_it_be(:models) { [model1, model2] }
 
+  let(:paginator) do
+    Class.new do
+      def initialize(models:)
+        @models = models
+      end
+
+      def records = @models
+      def has_next_page? = true
+      def has_previous_page? = false
+      def cursor_for_previous_page = 'abcde'
+      def cursor_for_next_page = 'defgh'
+    end.new(models: models)
+  end
+
   subject(:component) do
-    described_class.new(models: models)
+    described_class.new(paginator: paginator)
   end
 
   describe 'rendered' do
@@ -34,7 +48,13 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
             'version' => nil,
             'path' => nil
           }
-        ]
+        ],
+        'pageInfo' => {
+          'hasNextPage' => true,
+          'hasPreviousPage' => false,
+          'startCursor' => 'abcde',
+          'endCursor' => 'defgh'
+        }
       })
     end
   end

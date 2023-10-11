@@ -10,3 +10,12 @@ export const mockModels = [
     path: 'path/to/model_2',
   },
 ];
+
+export const startCursor = 'eyJpZCI6IjE2In0';
+
+export const defaultPageInfo = Object.freeze({
+  startCursor,
+  endCursor: 'eyJpZCI6IjIifQ',
+  hasNextPage: true,
+  hasPreviousPage: true,
+});

@@ -1,16 +1,28 @@
 <script>
 import { GlLink } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import * as translations from '~/ml/model_registry/routes/models/index/translations';
+import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 
 export default {
   name: 'MlExperimentsIndexApp',
   components: {
     GlLink,
+    Pagination,
   },
   props: {
     models: {
       type: Array,
       required: true,
+    },
+    pageInfo: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    hasModels() {
+      return !isEmpty(this.models);
     },
   },
   i18n: translations,
@@ -27,8 +39,14 @@ export default {
       </div>
     </div>
 
-    <div v-for="model in models" :key="model.name">
-      <gl-link :href="model.path"> {{ model.name }} / {{ model.version }} </gl-link>
-    </div>
+    <template v-if="hasModels">
+      <div v-for="model in models" :key="model.name">
+        <gl-link :href="model.path"> {{ model.name }} / {{ model.version }} </gl-link>
+      </div>
+
+      <pagination v-bind="pageInfo" />
+    </template>
+
+    <p v-else class="gl-text-secondary">{{ $options.i18n.NO_MODELS_LABEL }}</p>
   </div>
 </template>

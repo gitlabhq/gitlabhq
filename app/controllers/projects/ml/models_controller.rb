@@ -6,8 +6,12 @@ module Projects
       before_action :check_feature_enabled
       feature_category :mlops
 
+      MAX_MODELS_PER_PAGE = 20
+
       def index
-        @models = ::Projects::Ml::ModelFinder.new(@project).execute
+        @paginator = ::Projects::Ml::ModelFinder.new(@project)
+                                                .execute
+                                                .keyset_paginate(cursor: params[:cursor], per_page: MAX_MODELS_PER_PAGE)
       end
 
       private

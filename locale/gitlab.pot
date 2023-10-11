@@ -30285,9 +30285,6 @@ msgstr ""
 msgid "MlExperimentTracking|Model performance"
 msgstr ""
 
-msgid "MlExperimentTracking|Model registry"
-msgstr ""
-
 msgid "MlExperimentTracking|Name"
 msgstr ""
 
@@ -30319,6 +30316,12 @@ msgid "MlExperimentTracking|Status"
 msgstr ""
 
 msgid "MlExperimentTracking|Triggered by"
+msgstr ""
+
+msgid "MlModelRegistry|Model registry"
+msgstr ""
+
+msgid "MlModelRegistry|No models registered in this project"
 msgstr ""
 
 msgid "Modal updated"

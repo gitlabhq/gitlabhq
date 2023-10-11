@@ -28,6 +28,8 @@ module Ci
     private
 
     def create_deployments!(pipeline)
+      return if Feature.enabled?(:create_deployment_only_for_processable_jobs, pipeline.project)
+
       pipeline.stages.flat_map(&:statuses).each { |build| create_deployment(build) }
     end
 

@@ -248,7 +248,8 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
   end
 
   describe '#clone!' do
-    let(:new_job) { service.clone!(job) }
+    let(:start_pipeline_on_clone) { false }
+    let(:new_job) { service.clone!(job, start_pipeline: start_pipeline_on_clone) }
 
     it 'raises an error when an unexpected class is passed' do
       expect { service.clone!(create(:ci_build).present) }.to raise_error(TypeError)
@@ -258,7 +259,24 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
       include_context 'retryable bridge'
 
       it_behaves_like 'clones the job'
-      it_behaves_like 'creates associations for a deployable job', :ci_bridge
+
+      it 'does not create a new deployment' do
+        expect { new_job }.not_to change { Deployment.count }
+      end
+
+      context 'when the pipeline is started automatically' do
+        let(:start_pipeline_on_clone) { true }
+
+        it_behaves_like 'creates associations for a deployable job', :ci_bridge
+      end
+
+      context 'when `create_deployment_only_for_processable_jobs` FF is disabled' do
+        before do
+          stub_feature_flags(create_deployment_only_for_processable_jobs: false)
+        end
+
+        it_behaves_like 'creates associations for a deployable job', :ci_bridge
+      end
 
       context 'when given variables' do
         let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
@@ -272,10 +290,25 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
     context 'when the job to be cloned is a build' do
       include_context 'retryable build'
 
-      let(:job) { job_to_clone }
-
       it_behaves_like 'clones the job'
-      it_behaves_like 'creates associations for a deployable job', :ci_build
+
+      it 'does not create a new deployment' do
+        expect { new_job }.not_to change { Deployment.count }
+      end
+
+      context 'when the pipeline is started automatically' do
+        let(:start_pipeline_on_clone) { true }
+
+        it_behaves_like 'creates associations for a deployable job', :ci_build
+      end
+
+      context 'when `create_deployment_only_for_processable_jobs` FF is disabled' do
+        before do
+          stub_feature_flags(create_deployment_only_for_processable_jobs: false)
+        end
+
+        it_behaves_like 'creates associations for a deployable job', :ci_build
+      end
 
       context 'when given variables' do
         let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
