@@ -788,7 +788,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             update_merge_request({ label_ids: [label.id] })
           end
 
-          expect(merge_request.reload.updated_at).to be > Time.current
+          expect(merge_request.reload.updated_at).to be_future
         end
       end
 

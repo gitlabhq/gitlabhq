@@ -223,7 +223,9 @@ If this applies to you, we strongly recommended referring to the linked document
 As such, large monorepos come with notable cost. If you have such a repository we strongly recommend
 the following guidance is followed to ensure the best chance of good performance and to keep costs in check:
 
-- [Optimize the Large Monorepo](../../user/project/repository/managing_large_repositories.md#optimizing-large-repositories-for-gitlab). Using features such as [LFS](../../user/project/repository/managing_large_repositories.md#using-lfs-for-large-blobs) to not store binaries, and other approaches for reducing repository size, can dramatically improve performance and reduce costs.
+- [Optimize the large monorepo](../../user/project/repository/managing_large_repositories.md#optimize-gitlab-settings). Using features such as
+  [LFS](../../user/project/repository/managing_large_repositories.md#use-lfs-for-large-blobs) to not store binaries, and other approaches for reducing repository size, can
+  dramatically improve performance and reduce costs.
 - Depending on the monorepo, increased environment specifications may be required to compensate. Gitaly in particular will likely require additional resources along with Praefect, GitLab Rails, and Load Balancers. This depends notably on the monorepo itself and the usage against it.
 - When the monorepo is significantly large (20 gigabytes or more) further additional strategies maybe required such as even further increased specifications or in some cases a separate Gitaly backend for the monorepo alone.
 - Network and disk bandwidth is another potential consideration with large monorepos. In very heavy cases, it's possible to see bandwidth saturation if there's a high amount of concurrent clones (such as with CI). It's strongly recommended [reducing full clones wherever possible](../../user/project/repository/managing_large_repositories.md#reduce-concurrent-clones-in-cicd) in this scenario. Otherwise, additional environment specifications may be required to increase bandwidth, but this differs between cloud providers.

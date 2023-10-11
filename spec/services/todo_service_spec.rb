@@ -32,11 +32,18 @@ RSpec.describe TodoService, feature_category: :team_planning do
   end
 
   shared_examples 'reassigned target' do
+    let(:additional_todo_attributes) { {} }
+
     it 'creates a pending todo for new assignee' do
       target_unassigned.assignees = [john_doe]
       service.send(described_method, target_unassigned, author)
 
-      should_create_todo(user: john_doe, target: target_unassigned, action: Todo::ASSIGNED)
+      should_create_todo(
+        user: john_doe,
+        target: target_unassigned,
+        action: Todo::ASSIGNED,
+        **additional_todo_attributes
+      )
     end
 
     it 'does not create a todo if unassigned' do
@@ -49,7 +56,13 @@ RSpec.describe TodoService, feature_category: :team_planning do
       target_assigned.assignees = [john_doe]
       service.send(described_method, target_assigned, john_doe)
 
-      should_create_todo(user: john_doe, target: target_assigned, author: john_doe, action: Todo::ASSIGNED)
+      should_create_todo(
+        user: john_doe,
+        target: target_assigned,
+        author: john_doe,
+        action: Todo::ASSIGNED,
+        **additional_todo_attributes
+      )
     end
 
     it 'does not create a todo for guests' do
@@ -812,11 +825,37 @@ RSpec.describe TodoService, feature_category: :team_planning do
       end
     end
 
-    context 'assignable is an issue' do
+    context 'assignable is a project level issue' do
       it_behaves_like 'reassigned target' do
         let(:target_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
         let(:addressed_target_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
         let(:target_unassigned) { create(:issue, project: project, author: author, assignees: []) }
+      end
+    end
+
+    context 'assignable is a project level work_item' do
+      it_behaves_like 'reassigned target' do
+        let(:target_assigned) { create(:work_item, project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+        let(:addressed_target_assigned) { create(:work_item, project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+        let(:target_unassigned) { create(:work_item, project: project, author: author, assignees: []) }
+      end
+    end
+
+    context 'assignable is a group level issue' do
+      it_behaves_like 'reassigned target' do
+        let(:additional_todo_attributes) { { project: nil, group: group } }
+        let(:target_assigned) { create(:issue, :group_level, namespace: group, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+        let(:addressed_target_assigned) { create(:issue, :group_level, namespace: group, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+        let(:target_unassigned) { create(:issue, :group_level, namespace: group, author: author, assignees: []) }
+      end
+    end
+
+    context 'assignable is a group level work item' do
+      it_behaves_like 'reassigned target' do
+        let(:additional_todo_attributes) { { project: nil, group: group } }
+        let(:target_assigned) { create(:work_item, :group_level, namespace: group, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+        let(:addressed_target_assigned) { create(:work_item, :group_level, namespace: group, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+        let(:target_unassigned) { create(:work_item, :group_level, namespace: group, author: author, assignees: []) }
       end
     end
 

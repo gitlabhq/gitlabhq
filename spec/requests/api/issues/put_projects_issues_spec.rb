@@ -334,7 +334,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to eq([])
-      expect(json_response['updated_at']).to be > Time.current
+      expect(Time.parse(json_response['updated_at'])).to be_future
     end
 
     it 'removes all labels and touches the record with labels param as array', :aggregate_failures do
@@ -344,7 +344,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to eq([])
-      expect(json_response['updated_at']).to be > Time.current
+      expect(Time.parse(json_response['updated_at'])).to be_future
     end
 
     it 'updates labels and touches the record', :aggregate_failures do
@@ -354,7 +354,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to contain_exactly('foo', 'bar')
-      expect(json_response['updated_at']).to be > Time.current
+      expect(Time.parse(json_response['updated_at'])).to be_future
     end
 
     it 'updates labels and touches the record with labels param as array', :aggregate_failures do
@@ -365,7 +365,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
-      expect(json_response['updated_at']).to be > Time.current
+      expect(Time.parse(json_response['updated_at'])).to be_future
     end
 
     it 'allows special label names', :aggregate_failures do

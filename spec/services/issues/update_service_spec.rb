@@ -825,7 +825,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         end
 
         it 'updates updated_at' do
-          expect(issue.reload.updated_at).to be > Time.current
+          expect(issue.reload.updated_at).to be_future
         end
       end
     end
