@@ -130,7 +130,9 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 - The **Groups** tab lists the `Engineering` group.
 - The **Groups** tab lists a group regardless of whether it is a public or private group.
-- All direct members of the `Engineering` group have access to the `Frontend` group. Direct members of `Engineering` that gain access to the `Frontend` group keep their same access level as in `Engineering`, but up to the maximum access level selected when sharing the group.
+- All direct members of the `Engineering` group have access to the `Frontend` group. The least access is granted between the access in the `Engineering` group and the access in the `Frontend` group.
+  - If `Member1` has the Maintainer role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member1` has the Developer role in `Frontend`.
+  - If `Member2` has the Guest role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member2` has the Guest role in `Frontend`.
 - Inherited members of the `Engineering` group do not gain access to the `Frontend` group.
 - Direct members of the `Engineering` group who have the **Group Invite** badge next to their profile on the group's usage quota page count towards the billable members of the `Frontend` group.
 

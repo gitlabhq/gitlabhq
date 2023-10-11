@@ -220,7 +220,9 @@ module QA
       # @return [void]
       def verify_pipelines_import
         logger.info("== Verifying pipelines import ==")
-        expect(pipelines).to match_array(source_pipelines)
+        # Pipeline arrays can be very large and it takes a long time to compare full array
+        # We fall back to comparing just the count
+        expect(pipelines.count).to eq(source_pipelines.count)
       end
 
       # Verify imported merge requests and mr issues

@@ -295,30 +295,20 @@ RSpec.describe AuthHelper do
     end
 
     context 'regular and nonce versions' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:gtm_nonce_enabled, :gtm_key) do
-        false | 'google_tag_manager_id'
-        true  | 'google_tag_manager_nonce_id'
+      before do
+        stub_config(extra: { 'google_tag_manager_nonce_id' => 'key' })
       end
 
-      with_them do
+      context 'on gitlab.com and a key set without a current user' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when no key is set' do
         before do
-          stub_feature_flags(gtm_nonce: gtm_nonce_enabled)
-          stub_config(extra: { gtm_key => 'key' })
+          stub_config(extra: {})
         end
 
-        context 'on gitlab.com and a key set without a current user' do
-          it { is_expected.to be_truthy }
-        end
-
-        context 'when no key is set' do
-          before do
-            stub_config(extra: {})
-          end
-
-          it { is_expected.to eq(false) }
-        end
+        it { is_expected.to eq(false) }
       end
     end
   end
@@ -343,17 +333,7 @@ RSpec.describe AuthHelper do
         allow(helper).to receive(:google_tag_manager_enabled?).and_return(true)
       end
 
-      context 'when nonce feature flag is enabled' do
-        it { is_expected.to eq('nonce') }
-      end
-
-      context 'when nonce feature flag is disabled' do
-        before do
-          stub_feature_flags(gtm_nonce: false)
-        end
-
-        it { is_expected.to eq('gtm') }
-      end
+      it { is_expected.to eq('nonce') }
     end
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Catalog::ValidateResourceService, feature_category: :pipeline_composition do
+RSpec.describe Ci::Catalog::Resources::ValidateService, feature_category: :pipeline_composition do
   describe '#execute' do
     context 'with a project that has a README and a description' do
       it 'is valid' do

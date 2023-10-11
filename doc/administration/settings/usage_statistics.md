@@ -34,36 +34,32 @@ There are several other benefits to enabling Service Ping:
 
 ## Registration Features Program
 
-> Introduced in GitLab 14.1.
-
 In GitLab versions 14.1 and later, GitLab Free customers with a self-managed instance running
 GitLab Enterprise Edition can receive paid features by registering with GitLab and sending us
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
 tier. Users can continue to access the features in a paid tier without sharing usage data.
 
 NOTE:
-Registration is not yet required for participation, but may be added in a future milestone.
+Registration is not required for participation.
 
-### Features available in 14.1 and later
+### Available features
 
-- [Email from GitLab](../email_from_gitlab.md).
+In the following table, you can see:
 
-### Features available in 14.4 and later
+- The features that are available with the Registration Features Program
+- The GitLab version the features are available from
 
-- [Repository size limit](../../administration/settings/account_and_limit_settings.md#repository-size-limit).
-- [Group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address).
-
-### Features available in 16.0 and later
-
-- [View description change history](../../user/discussions/index.md#view-description-change-history).
-- [Maintenance mode](../maintenance_mode/index.md).
-- [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards).
-- [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md).
-- [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements).
-
-### Features available in 16.6 and later
-
-- [Group wikis](../../user/project/wiki/group.md).
+| Feature | Available in |
+| ------ | ------ |
+| [Email from GitLab](../email_from_gitlab.md)       |   GitLab 14.1 and later     |
+| [Repository size limit](../../administration/settings/account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
+| [Group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) | GitLab 14.4 and later |
+| [View description change history](../../user/discussions/index.md#view-description-change-history) | GitLab 16.0 and later |
+| [Maintenance mode](../maintenance_mode/index.md) | GitLab 16.0 and later |
+| [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
+| [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md) | GitLab 16.0 and later |
+| [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
+| [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
 
 ### Enable registration features
 

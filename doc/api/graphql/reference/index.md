@@ -6888,6 +6888,38 @@ Input type: `UpdateDependencyProxyImageTtlGroupPolicyInput`
 | <a id="mutationupdatedependencyproxyimagettlgrouppolicydependencyproxyimagettlpolicy"></a>`dependencyProxyImageTtlPolicy` | [`DependencyProxyImageTtlGroupPolicy`](#dependencyproxyimagettlgrouppolicy) | Group image TTL policy after mutation. |
 | <a id="mutationupdatedependencyproxyimagettlgrouppolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.updateDependencyProxyPackagesSettings`
+
+Updates or creates dependency proxy for packages settings.
+Requires the packages and dependency proxy to be enabled in the config.
+Requires the packages feature to be enabled at the project level.
+Error is raised if `packages_dependency_proxy_maven` feature flag is disabled.
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `UpdateDependencyProxyPackagesSettingsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatedependencyproxypackagessettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatedependencyproxypackagessettingsenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the dependency proxy for packages is enabled for the project. Introduced in 16.5: This feature is an Experiment. It can be changed or removed at any time. |
+| <a id="mutationupdatedependencyproxypackagessettingsmavenexternalregistrypassword"></a>`mavenExternalRegistryPassword` | [`String`](#string) | Password for the external Maven packages registry. Introduced in 16.5: This feature is an Experiment. It can be changed or removed at any time. |
+| <a id="mutationupdatedependencyproxypackagessettingsmavenexternalregistryurl"></a>`mavenExternalRegistryUrl` | [`String`](#string) | URL for the external Maven packages registry. Introduced in 16.5: This feature is an Experiment. It can be changed or removed at any time. |
+| <a id="mutationupdatedependencyproxypackagessettingsmavenexternalregistryusername"></a>`mavenExternalRegistryUsername` | [`String`](#string) | Username for the external Maven packages registry. Introduced in 16.5: This feature is an Experiment. It can be changed or removed at any time. |
+| <a id="mutationupdatedependencyproxypackagessettingsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path for the dependency proxy for packages settings. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatedependencyproxypackagessettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatedependencyproxypackagessettingsdependencyproxypackagessetting"></a>`dependencyProxyPackagesSetting` | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | Dependency proxy for packages settings after mutation. |
+| <a id="mutationupdatedependencyproxypackagessettingserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.updateDependencyProxySettings`
 
 These settings can be adjusted by the group Owner or Maintainer.
