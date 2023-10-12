@@ -12,13 +12,18 @@ module QA
       tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "rspec/rspec-core" }
     } do
     describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      # Full object comparison is a fairly heavy operation
+      # Importer itself returns counts of objects it fetched and counts it imported
+      # We can use that for a lightweight comparison for very large projects
+      let(:only_stats_comparison) { ENV["QA_LARGE_IMPORT_GH_ONLY_STATS_COMPARISON"] == "true" }
       let(:github_repo) { ENV['QA_LARGE_IMPORT_REPO'] || 'rspec/rspec-core' }
       let(:import_max_duration) { ENV['QA_LARGE_IMPORT_DURATION']&.to_i || 7200 }
       let(:api_parallel_threads) { ENV['QA_LARGE_IMPORT_API_PARALLEL']&.to_i || Etc.nprocessors }
+
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
       let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address.chomp("/") }
-      let(:dummy_url) { "https://example.com" }
+      let(:dummy_url) { "https://example.com" } # this is used to replace all dynamic urls in descriptions and comments
       let(:api_request_params) { { auto_paginate: true, attempts: 2 } }
 
       let(:created_by_pattern) { /\*Created by: \S+\*\n\n/ }
@@ -206,95 +211,88 @@ module QA
 
       after do |example|
         unless defined?(@import_time)
-          next save_json(
-            "data",
-            {
-              status: "failed",
-              importer: :github,
-              import_finished: false,
-              import_time: Time.now - @start,
-              source: {
-                name: "GitHub",
-                project_name: github_repo,
-                address: "https://github.com"
-              },
-              target: {
-                name: "GitLab",
-                address: gitlab_address
-              }
-            }
-          )
+          next save_data_json(test_result_data({
+            status: "failed",
+            importer: :github,
+            import_finished: false,
+            import_time: Time.now - @start
+          }))
         end
 
         # add additional import time metric
         example.metadata[:custom_test_metrics][:fields] = { import_time: @import_time }
         # save data for comparison notification creation
-        save_json(
-          "data",
-          {
+        if only_stats_comparison
+          next save_data_json(test_result_data({
             status: example.exception ? "failed" : "passed",
-            importer: :github,
             import_time: @import_time,
             import_finished: true,
             errors: imported_project.project_import_status[:failed_relations],
-            reported_stats: @stats,
-            source: {
-              name: "GitHub",
-              project_name: github_repo,
-              address: "https://github.com",
-              data: {
-                branches: gh_branches.length,
-                commits: gh_commits.length,
-                labels: gh_labels.length,
-                milestones: gh_milestones.length,
-                mrs: gh_prs.length,
-                mr_comments: gh_prs.sum { |_k, v| v[:comments].length },
-                mr_events: gh_prs.sum { |_k, v| v[:events].length },
-                issues: gh_issues.length,
-                issue_comments: gh_issues.sum { |_k, v| v[:comments].length },
-                issue_events: gh_issues.sum { |_k, v| v[:events].length }
-              }
-            },
-            target: {
-              name: "GitLab",
-              project_name: imported_project.path_with_namespace,
-              address: gitlab_address,
-              data: {
-                branches: gl_branches.length,
-                commits: gl_commits.length,
-                labels: gl_labels.length,
-                milestones: gl_milestones.length,
-                mrs: mrs.length,
-                mr_comments: mrs.sum { |_k, v| v[:comments].length },
-                mr_events: mrs.sum { |_k, v| v[:events].length },
-                issues: gl_issues.length,
-                issue_comments: gl_issues.sum { |_k, v| v[:comments].length },
-                issue_events: gl_issues.sum { |_k, v| v[:events].length }
-              }
-            },
-            not_imported: {
-              mrs: @mr_diff,
-              issues: @issue_diff
+            reported_stats: @stats
+          }))
+        end
+
+        save_data_json(test_result_data({
+          status: example.exception ? "failed" : "passed",
+          import_time: @import_time,
+          import_finished: true,
+          errors: imported_project.project_import_status[:failed_relations],
+          reported_stats: @stats,
+          source: {
+            data: {
+              branches: gh_branches.length,
+              commits: gh_commits.length,
+              labels: gh_labels.length,
+              milestones: gh_milestones.length,
+              mrs: gh_prs.length,
+              mr_comments: gh_prs.sum { |_k, v| v[:comments].length },
+              mr_events: gh_prs.sum { |_k, v| v[:events].length },
+              issues: gh_issues.length,
+              issue_comments: gh_issues.sum { |_k, v| v[:comments].length },
+              issue_events: gh_issues.sum { |_k, v| v[:events].length }
             }
+          },
+          target: {
+            project_name: imported_project.path_with_namespace,
+            data: {
+              branches: gl_branches.length,
+              commits: gl_commits.length,
+              labels: gl_labels.length,
+              milestones: gl_milestones.length,
+              mrs: mrs.length,
+              mr_comments: mrs.sum { |_k, v| v[:comments].length },
+              mr_events: mrs.sum { |_k, v| v[:events].length },
+              issues: gl_issues.length,
+              issue_comments: gl_issues.sum { |_k, v| v[:comments].length },
+              issue_events: gl_issues.sum { |_k, v| v[:events].length }
+            }
+          },
+          not_imported: {
+            mrs: @mr_diff,
+            issues: @issue_diff
           }
-        )
+        }))
       end
 
       it(
         'imports large Github repo via api',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347668'
       ) do
+        if only_stats_comparison
+          logger.warn("Test is running in lightweight comparison mode, only object counts will be compared!")
+        end
+
         @start = Time.now
 
         # trigger import and log project paths
         logger.info("== Triggering import of project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
 
         # fetch all objects right after import has started
-        fetch_github_objects
+        fetch_github_objects unless only_stats_comparison
 
         import_status = -> {
           imported_project.project_import_status.yield_self do |status|
-            @stats = status.dig(:stats, :imported)
+            @stats = status[:stats]&.slice(:fetched, :imported)
 
             # fail fast if import explicitly failed
             raise "Import of '#{imported_project.full_path}' failed!" if status[:import_status] == 'failed'
@@ -308,13 +306,36 @@ module QA
 
         @import_time = Time.now - @start
 
-        aggregate_failures do
-          verify_repository_import
-          verify_labels_import
-          verify_milestones_import
-          verify_merge_requests_import
-          verify_issues_import
+        if only_stats_comparison
+          expect(@stats[:fetched]).to eq(@stats[:imported])
+        else
+          aggregate_failures do
+            verify_repository_import
+            verify_labels_import
+            verify_milestones_import
+            verify_merge_requests_import
+            verify_issues_import
+          end
         end
+      end
+
+      # Base test result data used for test result reporting
+      #
+      # @param [Hash] additional_data
+      # @return [Hash]
+      def test_result_data(additional_data = {})
+        {
+          importer: :github,
+          source: {
+            name: "GitHub",
+            project_name: github_repo,
+            address: "https://github.com"
+          },
+          target: {
+            name: "GitLab",
+            address: gitlab_address
+          }
+        }.deep_merge(additional_data)
       end
 
       # Persist all objects from repository being imported
@@ -634,11 +655,10 @@ module QA
 
       # Save json as file
       #
-      # @param [String] name
       # @param [Hash] json
       # @return [void]
-      def save_json(name, json)
-        File.open("tmp/#{name}.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
+      def save_data_json(json)
+        File.open("tmp/github-import-data.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
       end
 
       # Extract id number from web url of issue or pull request

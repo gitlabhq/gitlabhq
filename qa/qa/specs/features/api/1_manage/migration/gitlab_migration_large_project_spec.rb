@@ -78,7 +78,6 @@ module QA
       after do |example|
         unless defined?(@import_time)
           next save_json(
-            "data",
             {
               status: "failed",
               importer: :gitlab,
@@ -101,7 +100,6 @@ module QA
         example.metadata[:custom_test_metrics][:fields] = { import_time: @import_time }
         # save data for comparison notification creation
         save_json(
-          "data",
           {
             status: example.exception ? "failed" : "passed",
             importer: :gitlab,
@@ -429,11 +427,10 @@ module QA
 
       # Save json as file
       #
-      # @param [String] name
       # @param [Hash] json
       # @return [void]
-      def save_json(name, json)
-        File.open("tmp/#{name}.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
+      def save_json(json)
+        File.open("tmp/gitlab-import-data.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
       end
     end
   end

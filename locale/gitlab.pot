@@ -2737,6 +2737,9 @@ msgstr ""
 msgid "Add \"%{value}\""
 msgstr ""
 
+msgid "Add %{child_ref} to this work item as child(ren)."
+msgstr ""
+
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
 msgstr ""
 
@@ -2864,6 +2867,9 @@ msgid "Add approvers"
 msgstr ""
 
 msgid "Add child epic to an epic"
+msgstr ""
+
+msgid "Add children to work item"
 msgstr ""
 
 msgid "Add comment now"
@@ -10045,6 +10051,9 @@ msgid "Child epic"
 msgstr ""
 
 msgid "Child issues and epics"
+msgstr ""
+
+msgid "Child work item(s) added successfully"
 msgstr ""
 
 msgid "Chinese language support using"

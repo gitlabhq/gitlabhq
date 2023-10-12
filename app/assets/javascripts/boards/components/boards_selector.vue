@@ -289,7 +289,6 @@ export default {
         v-if="showDropdown"
         block
         data-testid="boards-dropdown"
-        data-qa-selector="boards_dropdown"
         searchable
         :searching="loading"
         toggle-class="gl-min-w-20"
@@ -322,7 +321,7 @@ export default {
               block
               class="gl-justify-content-start!"
               category="tertiary"
-              data-qa-selector="create_new_board_button"
+              data-testid="create-new-board-button"
               data-track-action="click_button"
               data-track-label="create_new_board"
               data-track-property="dropdown"

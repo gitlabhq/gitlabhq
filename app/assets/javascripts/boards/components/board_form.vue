@@ -140,7 +140,7 @@ export default {
           variant: this.buttonKind,
           disabled: this.submitDisabled,
           loading: this.isLoading,
-          'data-qa-selector': 'save_changes_button',
+          'data-testid': 'save-changes-button',
         },
       };
     },
@@ -324,7 +324,7 @@ export default {
           ref="name"
           v-model="board.name"
           class="form-control"
-          data-qa-selector="board_name_field"
+          data-testid="board-name-field"
           type="text"
           :placeholder="$options.i18n.titleFieldPlaceholder"
           @keyup.enter="submit"

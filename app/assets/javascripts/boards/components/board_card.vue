@@ -125,7 +125,6 @@ export default {
 
 <template>
   <li
-    data-qa-selector="board_card"
     :class="[
       {
         'multi-select gl-bg-blue-50 gl-border-blue-200': multiSelectVisible,
@@ -141,7 +140,7 @@ export default {
     :data-item-iid="item.iid"
     :data-item-path="item.referencePath"
     :style="cardStyle"
-    data-testid="board_card"
+    data-testid="board-card"
     class="board-card gl-p-5 gl-rounded-base gl-line-height-normal gl-relative gl-mb-3"
     @click="toggleIssue($event)"
   >

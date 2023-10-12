@@ -119,8 +119,6 @@ To view the value streams dashboard:
 
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.
 
-A view can display maximum four subgroups or projects.
-
 ### Using query parameters
 
 To display multiple subgroups and projects, specify their path as a URL parameter.

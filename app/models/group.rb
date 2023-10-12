@@ -663,12 +663,6 @@ class Group < Namespace
       .non_invite
   end
 
-  def users_with_parents
-    User
-      .where(id: members_with_parents.select(:user_id))
-      .reorder(nil)
-  end
-
   def users_with_descendants
     User
       .where(id: members_with_descendants.select(:user_id))

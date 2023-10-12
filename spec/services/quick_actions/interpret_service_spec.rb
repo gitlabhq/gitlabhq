@@ -3091,6 +3091,55 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it_behaves_like 'command is not available'
       end
     end
+
+    describe '/add_child command' do
+      let_it_be(:child) { create(:work_item, :issue, project: project) }
+      let_it_be(:work_item) { create(:work_item, :objective, project: project) }
+      let_it_be(:child_ref) { child.to_reference(project) }
+
+      let(:command) { "/add_child #{child_ref}" }
+
+      shared_examples 'command is available' do
+        it 'explanation contains correct message' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations)
+            .to contain_exactly("Add #{child_ref} to this work item as child(ren).")
+        end
+
+        it 'contains command' do
+          expect(service.available_commands(work_item)).to include(a_hash_including(name: :add_child))
+        end
+      end
+
+      shared_examples 'command is not available' do
+        it 'explanation is empty' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations).to eq([])
+        end
+
+        it 'does not contain command' do
+          expect(service.available_commands(work_item)).not_to include(a_hash_including(name: :add_child))
+        end
+      end
+
+      context 'when user can admin link' do
+        it_behaves_like 'command is available'
+
+        context 'when work item type does not support children' do
+          let_it_be(:work_item) { build(:work_item, :key_result, project: project) }
+
+          it_behaves_like 'command is not available'
+        end
+      end
+
+      context 'when user cannot admin link' do
+        subject(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'command is not available'
+      end
+    end
   end
 
   describe '#available_commands' do

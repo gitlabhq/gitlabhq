@@ -144,7 +144,7 @@ export default {
       </slot>
     </template>
     <slot name="default">
-      <gl-dropdown-form class="gl-relative gl-min-h-7" data-qa-selector="labels_dropdown_content">
+      <gl-dropdown-form class="gl-relative gl-min-h-7" data-testid="labels-dropdown-content">
         <gl-loading-icon
           v-if="isLoading"
           size="lg"

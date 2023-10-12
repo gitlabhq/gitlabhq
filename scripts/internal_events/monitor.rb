@@ -153,6 +153,8 @@ begin
 
     sleep 1
   end
+rescue Interrupt
+  # Quietly shut down
 ensure
   print "\e[?1049l" # Restores the original screen buffer
   print "\e[H" # Moves the cursor home

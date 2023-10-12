@@ -38,6 +38,18 @@ Analyzers and their rules are updated [at least monthly](../index.md#vulnerabili
 The GitLab ruleset for the Semgrep-based analyzer is managed in [the GitLab-managed open-source `sast-rules` project](https://gitlab.com/gitlab-org/security-products/sast-rules).
 When rules are updated, they're released as part of the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)'s container image.
 
+### Rule update policies
+
+Updates to SAST rules are not [breaking changes](../../../update/terminology.md#breaking-change).
+This means that rules may be added, removed, or updated without prior notice.
+
+However, to make rule changes more convenient and understandable, GitLab:
+
+- Documents [rule changes](#important-rule-changes) that are planned or completed.
+- [Automatically resolves](index.md#automatic-vulnerability-resolution) findings from rules after they are removed for Semgrep-based analyzers.
+- Enables you to [change the status on vulnerabilities where activity = "no longer detected" in bulk](../vulnerability_report/index.md#change-status-of-vulnerabilities).
+- Evaluates proposed rule changes for the impact they will have on existing vulnerability records.
+
 ## Configure rules in your projects
 
 You should use the default SAST rules unless you have a specific reason to make a change.

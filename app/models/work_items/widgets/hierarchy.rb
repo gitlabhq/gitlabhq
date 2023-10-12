@@ -12,17 +12,19 @@ module WorkItems
       end
 
       def self.quick_action_commands
-        [:set_parent]
+        [:set_parent, :add_child]
       end
 
       def self.quick_action_params
-        [:set_parent]
+        [:set_parent, :add_child]
       end
 
       def self.process_quick_action_param(param_name, value)
-        return super unless param_name == :set_parent && value
+        return super unless param_name.in?(quick_action_params) && value.present?
 
-        { parent: value }
+        return { parent: value } if param_name == :set_parent
+
+        return { children: value } if param_name == :add_child
       end
     end
   end

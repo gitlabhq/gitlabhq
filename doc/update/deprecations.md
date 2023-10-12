@@ -844,6 +844,20 @@ Before upgrading to GitLab 17.0, please ensure you have [migrated](https://docs.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Security policy field `newly_detected` is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422414).
+</div>
+
+In [Support additional filters for scan result policies](https://gitlab.com/groups/gitlab-org/-/epics/6826#note_1341377224), we broke the `newly_detected` field into two options: `new_needs_triage` and `new_dismissed`. By including both options in the security policy YAML, you will achieve the same result as the original `newly_detected` field. However, you may now narrow your filter to ignore findings that have been dismissed by only using `new_needs_triage`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Self-managed certificate-based integration with Kubernetes
 
 <div class="deprecation-notes">

@@ -365,7 +365,6 @@ export default {
     }"
     :style="headerStyle"
     class="board-header gl-relative"
-    data-qa-selector="board_list_header"
     data-testid="board-list-header"
   >
     <h3

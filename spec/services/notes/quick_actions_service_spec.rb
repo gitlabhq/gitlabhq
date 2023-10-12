@@ -334,6 +334,46 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       end
     end
 
+    describe '/add_child' do
+      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:child) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:second_child) { create(:work_item, :objective, project: project) }
+      let_it_be(:note_text) { "/add_child #{child.to_reference}, #{second_child.to_reference}" }
+      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+      let_it_be(:children) { [child, second_child] }
+
+      shared_examples 'adds child work items' do
+        it 'leaves the note empty' do
+          expect(execute(note)).to be_empty
+        end
+
+        it 'adds child work items' do
+          execute(note)
+
+          expect(noteable.valid?).to be_truthy
+          expect(noteable.work_item_children).to eq(children)
+        end
+      end
+
+      context 'when using work item reference' do
+        let_it_be(:note_text) { "/add_child #{child.to_reference(full: true)},#{second_child.to_reference(full: true)}" }
+
+        it_behaves_like 'adds child work items'
+      end
+
+      context 'when using work item iid' do
+        it_behaves_like 'adds child work items'
+      end
+
+      context 'when using work item URL' do
+        let_it_be(:project_path) { "#{Gitlab.config.gitlab.url}/#{project.full_path}" }
+        let_it_be(:url) { "#{project_path}/work_items/#{child.iid},#{project_path}/work_items/#{second_child.iid}" }
+        let_it_be(:note_text) { "/add_child #{url}" }
+
+        it_behaves_like 'adds child work items'
+      end
+    end
+
     describe '/set_parent' do
       let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
       let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }

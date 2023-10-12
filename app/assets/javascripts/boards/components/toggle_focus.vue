@@ -38,7 +38,7 @@ export default {
       v-gl-tooltip
       category="tertiary"
       :icon="isFullscreen ? 'minimize' : 'maximize'"
-      data-qa-selector="focus_mode_button"
+      data-testid="focus-mode-button"
       :title="$options.i18n.toggleFocusMode"
       :aria-label="$options.i18n.toggleFocusMode"
       @click="toggleFocusMode"
