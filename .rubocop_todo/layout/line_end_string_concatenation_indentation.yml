@@ -194,7 +194,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'lib/gitlab/slash_commands/presenters/run.rb'
     - 'lib/gitlab/tracking/standard_context.rb'
     - 'lib/tasks/gitlab/db/validate_config.rake'
-    - 'lib/tasks/gitlab/storage.rake'
     - 'qa/qa/ee/page/project/settings/services/jira.rb'
     - 'qa/qa/specs/features/api/4_verify/api_variable_inheritance_with_forward_pipeline_variables_spec.rb'
     - 'qa/qa/support/system_logs/kibana.rb'

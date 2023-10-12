@@ -59,7 +59,7 @@ export default {
           type="number"
           min="0"
           max="100"
-          size="xs"
+          width="xs"
           @input="onPercentageChange"
         />
         <span class="gl-ml-2">%</span>

@@ -6,16 +6,21 @@ import {
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
+import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
 import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
-import { mockAuthorToken, mockUsers } from '../mock_data';
+import { mockAuthorToken, mockUsers, projectUsersResponse } from '../mock_data';
+
+Vue.use(VueApollo);
 
 jest.mock('~/alert');
 const defaultStubs = {
@@ -37,6 +42,9 @@ const mockPreloadedUsers = [
   },
 ];
 
+const usersQueryHandler = jest.fn().mockResolvedValue(projectUsersResponse);
+const mockApollo = createMockApollo([[usersAutocompleteQuery, usersQueryHandler]]);
+
 function createComponent(options = {}) {
   const {
     config = mockAuthorToken,
@@ -47,6 +55,7 @@ function createComponent(options = {}) {
     listeners = {},
   } = options;
   return mount(UserToken, {
+    apolloProvider: mockApollo,
     propsData: {
       config,
       value,
@@ -143,6 +152,33 @@ describe('UserToken', () => {
 
         it('sets `loading` to false when request completes', () => {
           expect(findBaseToken().props('suggestionsLoading')).toBe(false);
+        });
+      });
+
+      describe('default - when fetchMilestones function is not provided in config', () => {
+        beforeEach(() => {
+          wrapper = createComponent({});
+          return triggerFetchUsers();
+        });
+
+        it('calls searchMilestonesQuery to fetch milestones', () => {
+          expect(usersQueryHandler).toHaveBeenCalledWith({
+            fullPath: mockAuthorToken.fullPath,
+            isProject: mockAuthorToken.isProject,
+            search: null,
+          });
+        });
+
+        it('calls searchMilestonesQuery with search parameter when provided', async () => {
+          const searchTerm = 'foo';
+
+          await triggerFetchUsers(searchTerm);
+
+          expect(usersQueryHandler).toHaveBeenCalledWith({
+            fullPath: mockAuthorToken.fullPath,
+            isProject: mockAuthorToken.isProject,
+            search: searchTerm,
+          });
         });
       });
     });

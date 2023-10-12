@@ -26,14 +26,11 @@ describe('IssueBoardFilter', () => {
     });
   };
 
-  let fetchUsersSpy;
   let fetchLabelsSpy;
   beforeEach(() => {
-    fetchUsersSpy = jest.fn();
     fetchLabelsSpy = jest.fn();
 
     issueBoardFilters.mockReturnValue({
-      fetchUsers: fetchUsersSpy,
       fetchLabels: fetchLabelsSpy,
     });
   });
@@ -61,7 +58,7 @@ describe('IssueBoardFilter', () => {
       ({ isSignedIn }) => {
         createComponent({ isSignedIn });
 
-        const tokens = mockTokens(fetchLabelsSpy, fetchUsersSpy, isSignedIn);
+        const tokens = mockTokens(fetchLabelsSpy, isSignedIn);
 
         expect(findBoardsFilteredSearch().props('tokens')).toEqual(orderBy(tokens, ['title']));
       },

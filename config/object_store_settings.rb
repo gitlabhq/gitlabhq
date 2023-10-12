@@ -60,7 +60,11 @@ class ObjectStoreSettings
 
       next unless object_store_setting && object_store_setting['enabled']
 
-      URI(object_store_setting.dig('connection', 'endpoint'))
+      endpoint = object_store_setting.dig('connection', 'endpoint')
+
+      next unless endpoint
+
+      URI(endpoint)
     end.uniq
   end
 

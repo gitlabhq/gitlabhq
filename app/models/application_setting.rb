@@ -651,6 +651,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :throttle_authenticated_deprecated_api_period_in_seconds
     validates :throttle_protected_paths_requests_per_period
     validates :throttle_protected_paths_period_in_seconds
+    validates :project_jobs_api_rate_limit
   end
 
   with_options(numericality: { only_integer: true, greater_than_or_equal_to: 0 }) do

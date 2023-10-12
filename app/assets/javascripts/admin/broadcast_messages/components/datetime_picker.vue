@@ -42,6 +42,6 @@ export default {
 <template>
   <div class="gl-display-flex gl-gap-3 gl-align-items-center">
     <gl-datepicker v-model="date" />
-    <gl-form-input v-model="time" size="sm" type="time" data-testid="time-picker" />
+    <gl-form-input v-model="time" width="sm" type="time" data-testid="time-picker" />
   </div>
 </template>

@@ -62,11 +62,7 @@ export default {
     tokensCE() {
       const { issue, incident } = this.$options.i18n;
       const { types } = this.$options;
-      const { fetchUsers, fetchLabels } = issueBoardFilters(
-        this.$apollo,
-        this.fullPath,
-        this.isGroupBoard,
-      );
+      const { fetchLabels } = issueBoardFilters(this.$apollo, this.fullPath, this.isGroupBoard);
 
       const tokens = [
         {
@@ -77,7 +73,8 @@ export default {
           token: UserToken,
           dataType: 'user',
           unique: true,
-          fetchUsers,
+          isProject: !this.isGroupBoard,
+          fullPath: this.fullPath,
           preloadedUsers: this.preloadedUsers(),
         },
         {
@@ -89,7 +86,8 @@ export default {
           token: UserToken,
           dataType: 'user',
           unique: true,
-          fetchUsers,
+          isProject: !this.isGroupBoard,
+          fullPath: this.fullPath,
           preloadedUsers: this.preloadedUsers(),
         },
         {

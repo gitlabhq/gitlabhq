@@ -307,8 +307,12 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
     it 'returns a list of enabled endpoint URIs' do
       stub_config(
         artifacts: { enabled: true, object_store: { enabled: true, connection: { endpoint: 'http://example1.com' } } },
+        external_diffs: {
+          enabled: true, object_store: { enabled: true, connection: { endpoint: 'http://example1.com' } }
+        },
         lfs: { enabled: false, object_store: { enabled: true, connection: { endpoint: 'http://example2.com' } } },
         uploads: { enabled: true, object_store: { enabled: false, connection: { endpoint: 'http://example3.com' } } },
+        packages: { enabled: true, object_store: { enabled: true, connection: { provider: 'AWS' } } },
         pages: { enabled: true, object_store: { enabled: true, connection: { endpoint: 'http://example4.com' } } }
       )
 

@@ -1,36 +1,16 @@
-<!-- Title suggestion: [Feature flag] Enable description of feature -->
-
-<!--
-Set the main issue link: The main issue is the one that describes the problem to solve,
-the one this feature flag is being added for. For example:
-
-[main-issue]: https://gitlab.com/gitlab-org/gitlab/-/issues/123456
--->
+<!-- Title suggestion: [Feature flag] Enable <feature-flag-name> -->
 
 [main-issue]: MAIN-ISSUE-LINK
 
 ## Summary
 
-This issue is to rollout [the feature][main-issue] on production,
+This issue is to roll out [the feature][main-issue] on production,
 that is currently behind the `<feature-flag-name>` feature flag.
-
-<!-- Short description of what the feature is about and link to relevant other issues. -->
 
 ## Owners
 
 - Most appropriate Slack channel to reach out to: `#g_TEAM_NAME`
-- Best individual to reach out to: NAME_OF_DRI
-- PM: NAME_OF_PM
-
-## Stakeholders
-
-<!--
-Are there any other stages or teams involved that need to be kept in the loop?
-
-- Name of a PM
-- The Support Team
-- The Delivery Team
--->
+- Best individual to reach out to: GITLAB_USERNAME_OF_DRI
 
 ## Expectations
 
@@ -38,30 +18,11 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 <!-- Describe the expected outcome when rolling out this feature -->
 
-### When is the feature viable?
+### What can go wrong and how would we detect it?
 
-<!-- What are the settings we need to configure in order to have this feature viable? -->
-
-<!--
-Example below:
-
-1. Enable service ping collection
-   `ApplicationSetting.first.update(usage_ping_enabled: true)`
--->
-
-### What might happen if this goes wrong?
-
-<!-- Should the feature flag be turned off? Any MRs that need to be rolled back? Communication that needs to happen? What are some things you can think of that could go wrong - data loss or broken pages? -->
-
-### What can we monitor to detect problems with this?
+<!-- Data loss, broken pages, stability/availability impact? -->
 
 <!-- Which dashboards from https://dashboards.gitlab.net are most relevant? -->
-_Consider mentioning checks for 5xx errors or other anomalies like an increase in redirects
-(302 HTTP response status)_
-
-### What can we check for monitoring production after rollouts?
-
-_Consider adding links to check for Sentry errors, Production logs for 5xx, 302s, etc._
 
 ## Rollout Steps
 
@@ -85,7 +46,7 @@ For assistance with end-to-end test failures, please reach out via the [`#qualit
 ### Specific rollout on production
 
 For visibility, all `/chatops` commands that target production should be executed in the [`#production` Slack channel](https://gitlab.slack.com/archives/C101F3796)
-and cross-posted (with the command results) to the responsible team's Slack channel (`#g_TEAM_NAME`).
+and cross-posted (with the command results) to the responsible team's Slack channel.
 
 - Ensure that the feature MRs have been deployed to both production and canary with `/chatops run auto_deploy status <merge-commit-of-your-feature>`
 - [ ] Depending on the [type of actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors) you are using, pick one of these options:
@@ -138,7 +99,7 @@ To do so, follow these steps:
 
 - [ ] Create a merge request with the following changes. Ask for review and merge it.
     - [ ] Set the `default_enabled` attribute in [the feature flag definition](https://docs.gitlab.com/ee/development/feature_flags/#feature-flag-definition-and-validation) to `true`.
-    - [ ] Review [what warrants a changelog entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) and decide if [a changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog) is needed.
+    - [ ] Decide [which changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog) is needed.
 - [ ] Ensure that the default-enabling MR has been included in the release package.
       If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post: `/chatops run release check <merge-request-url> <milestone>`
@@ -181,27 +142,6 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 ```
 /chatops run feature set <feature-flag-name> false
 ```
-
-<!-- A feature flag can also be used for rolling out a bug fix or a maintenance work.
-In this scenario, labels must be related to it, for example; ~"type::feature", ~"type::bug" or ~"type::maintenance".
-Please use /copy_metadata to copy the labels from the issue you're rolling out. -->
-
-<!--
-Template placeholders
-
-- name: MAIN-ISSUE-LINK
-  description: the URL of the issue introducing the feature flag
-- name: <feature-flag-name>
-  description: the feature flag name
-- name: #g_TEAM_NAME
-  description: the Slack channel name of the responsible team, e.g. #g_foo
-- name: NAME_OF_DRI
-  description: the GitLab username of the best individual to reach out to, e.g. @foo
-- name: NAME_OF_PM
-  description: the GitLab username of the relevant PM, e.g. @foo
-- name: <your-username>
-  description: the GitLab username of the person who would enable the feature flag on GitLab.com, e.g. @foo
--->
 
 /label ~group::
 /label ~"feature flag"

@@ -556,7 +556,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
     before do
       allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-        threshold = Gitlab::ApplicationRateLimiter.rate_limits[:jobs_index][:threshold]
+        threshold = Gitlab::ApplicationRateLimiter.rate_limits[:jobs_index][:threshold].call
         allow(strategy).to receive(:increment).and_return(threshold + 1)
       end
 

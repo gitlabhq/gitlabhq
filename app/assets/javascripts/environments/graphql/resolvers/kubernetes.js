@@ -62,10 +62,13 @@ export default {
         handleClusterError(err);
       });
   },
-  k8sServices(_, { configuration }) {
+  k8sServices(_, { configuration, namespace }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));
-    return coreV1Api
-      .listCoreV1ServiceForAllNamespaces()
+    const servicesApi = namespace
+      ? coreV1Api.listCoreV1NamespacedService(namespace)
+      : coreV1Api.listCoreV1ServiceForAllNamespaces();
+
+    return servicesApi
       .then((res) => {
         const items = res?.data?.items || [];
         return items.map((item) => {

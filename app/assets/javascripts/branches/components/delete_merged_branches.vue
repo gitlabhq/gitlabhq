@@ -168,7 +168,7 @@ export default {
           <gl-form-input
             v-model="enteredText"
             type="text"
-            size="sm"
+            width="sm"
             class="gl-mt-2"
             aria-labelledby="input-label"
             autocomplete="off"

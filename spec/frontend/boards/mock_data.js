@@ -827,7 +827,7 @@ export const mockConfidentialToken = {
   ],
 };
 
-export const mockTokens = (fetchLabels, fetchUsers, isSignedIn) => [
+export const mockTokens = (fetchLabels, isSignedIn) => [
   {
     icon: 'user',
     title: TOKEN_TITLE_ASSIGNEE,
@@ -836,7 +836,8 @@ export const mockTokens = (fetchLabels, fetchUsers, isSignedIn) => [
     token: UserToken,
     dataType: 'user',
     unique: true,
-    fetchUsers,
+    fullPath: 'gitlab-org',
+    isProject: false,
     preloadedUsers: [],
   },
   {
@@ -848,7 +849,8 @@ export const mockTokens = (fetchLabels, fetchUsers, isSignedIn) => [
     token: UserToken,
     dataType: 'user',
     unique: true,
-    fetchUsers,
+    fullPath: 'gitlab-org',
+    isProject: false,
     preloadedUsers: [],
   },
   {

@@ -7,6 +7,7 @@ import {
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
+import eventHub from '../event_hub';
 import NavItemLink from './nav_item_link.vue';
 import NavItemRouterLink from './nav_item_router_link.vue';
 
@@ -69,16 +70,14 @@ export default {
     return {
       isMouseIn: false,
       canClickPinButton: false,
+      pillCount: this.item.pill_count,
     };
   },
   computed: {
-    pillData() {
-      return this.item.pill_count;
-    },
     hasPill() {
       return (
-        Number.isFinite(this.pillData) ||
-        (typeof this.pillData === 'string' && this.pillData !== '')
+        Number.isFinite(this.pillCount) ||
+        (typeof this.pillCount === 'string' && this.pillCount !== '')
       );
     },
     isPinnable() {
@@ -182,10 +181,20 @@ export default {
     if (this.item.is_active) {
       this.$el.scrollIntoView(false);
     }
+
+    eventHub.$on('updatePillValue', this.updatePillValue);
+  },
+  destroyed() {
+    eventHub.$off('updatePillValue', this.updatePillValue);
   },
   methods: {
     togglePointerEvents() {
       this.canClickPinButton = this.isMouseIn;
+    },
+    updatePillValue({ value, itemId }) {
+      if (this.item.id === itemId) {
+        this.pillCount = value;
+      }
     },
   },
 };
@@ -249,7 +258,7 @@ export default {
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
           }"
         >
-          {{ pillData }}
+          {{ pillCount }}
         </gl-badge>
       </span>
     </component>

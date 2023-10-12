@@ -4633,120 +4633,103 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         ::Gitlab::Auth::OBSERVABILITY_SCOPES + ::Gitlab::Auth::ADMIN_SCOPES
     end
 
-    context 'when user_pat_rest_api feature flag is disabled' do
-      before do
-        stub_feature_flags(user_pat_rest_api: false)
-      end
+    it 'returns error if required attributes are missing' do
+      post api(path, user)
 
-      it 'does not create a personal access token' do
-        post api(path, user), params: params
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to eq('400 Bad request - Endpoint is disabled via user_pat_rest_api feature flag. Please contact your administrator to enable it.')
-      end
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq('name is missing, scopes is missing')
     end
 
-    context 'when user_pat_rest_api feature flag is enabled' do
-      before do
-        stub_feature_flags(user_pat_rest_api: true)
-      end
-
-      it 'returns error if required attributes are missing' do
-        post api(path, user)
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('name is missing, scopes is missing')
-      end
-
+    context 'when scope is not allowed' do
       where(:disallowed_scopes) do
         all_scopes - [::Gitlab::Auth::K8S_PROXY_SCOPE]
       end
 
       with_them do
-        it 'returns error if scopes has disallowed value' do
+        it 'returns error' do
           post api(path, user), params: params.merge({ scopes: [disallowed_scopes] })
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']).to eq('scopes does not have a valid value')
         end
       end
+    end
 
-      it 'returns error if one of the scopes is not allowed' do
-        post api(path, user), params: params.merge({ scopes: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::API_SCOPE] })
+    it 'returns error if one of the scopes is not allowed' do
+      post api(path, user), params: params.merge({ scopes: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::API_SCOPE] })
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('scopes does not have a valid value')
-      end
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq('scopes does not have a valid value')
+    end
 
-      it 'returns a 401 error when not authenticated' do
-        post api(path), params: params
+    it 'returns a 401 error when not authenticated' do
+      post api(path), params: params
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
-        expect(json_response['message']).to eq('401 Unauthorized')
-      end
+      expect(response).to have_gitlab_http_status(:unauthorized)
+      expect(json_response['message']).to eq('401 Unauthorized')
+    end
 
-      it 'returns a 403 error when called with a read_api-scoped PAT' do
-        read_only_pat = create(:personal_access_token, scopes: ['read_api'], user: user)
-        post api(path, personal_access_token: read_only_pat), params: params
+    it 'returns a 403 error when called with a read_api-scoped PAT' do
+      read_only_pat = create(:personal_access_token, scopes: ['read_api'], user: user)
+      post api(path, personal_access_token: read_only_pat), params: params
 
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
 
-      context 'when scopes are empty' do
-        let(:scopes) { [] }
+    context 'when scopes are empty' do
+      let(:scopes) { [] }
 
-        it 'returns an error when no scopes are given' do
-          post api(path, user), params: params
-
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
-          expect(json_response['message']).to eq("Scopes can't be blank")
-        end
-      end
-
-      it 'creates a personal access token' do
+      it 'returns an error when no scopes are given' do
         post api(path, user), params: params
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['name']).to eq(name)
-        expect(json_response['scopes']).to eq(scopes)
-        expect(json_response['expires_at']).to eq(1.day.from_now.to_date.to_s)
-        expect(json_response['id']).to be_present
-        expect(json_response['created_at']).to be_present
-        expect(json_response['active']).to be_truthy
-        expect(json_response['revoked']).to be_falsey
-        expect(json_response['token']).to be_present
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Scopes can't be blank")
+      end
+    end
+
+    it 'creates a personal access token' do
+      post api(path, user), params: params
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['name']).to eq(name)
+      expect(json_response['scopes']).to eq(scopes)
+      expect(json_response['expires_at']).to eq(1.day.from_now.to_date.to_s)
+      expect(json_response['id']).to be_present
+      expect(json_response['created_at']).to be_present
+      expect(json_response['active']).to be_truthy
+      expect(json_response['revoked']).to be_falsey
+      expect(json_response['token']).to be_present
+    end
+
+    context 'when expires_at at is given' do
+      let(:params) { { name: name, scopes: scopes, expires_at: expires_at } }
+
+      context 'when expires_at is in the past' do
+        let(:expires_at) { 1.day.ago }
+
+        it 'creates an inactive personal access token' do
+          post api(path, user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['active']).to be_falsey
+        end
       end
 
-      context 'when expires_at at is given' do
-        let(:params) { { name: name, scopes: scopes, expires_at: expires_at } }
+      context 'when expires_at is in the future' do
+        let(:expires_at) { 1.month.from_now.to_date }
 
-        context 'when expires_at is in the past' do
-          let(:expires_at) { 1.day.ago }
+        it 'creates a personal access token' do
+          post api(path, user), params: params
 
-          it 'creates an inactive personal access token' do
-            post api(path, user), params: params
-
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response['active']).to be_falsey
-          end
-        end
-
-        context 'when expires_at is in the future' do
-          let(:expires_at) { 1.month.from_now.to_date }
-
-          it 'creates a personal access token' do
-            post api(path, user), params: params
-
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response['name']).to eq(name)
-            expect(json_response['scopes']).to eq(scopes)
-            expect(json_response['expires_at']).to eq(1.month.from_now.to_date.to_s)
-            expect(json_response['id']).to be_present
-            expect(json_response['created_at']).to be_present
-            expect(json_response['active']).to be_truthy
-            expect(json_response['revoked']).to be_falsey
-            expect(json_response['token']).to be_present
-          end
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['name']).to eq(name)
+          expect(json_response['scopes']).to eq(scopes)
+          expect(json_response['expires_at']).to eq(1.month.from_now.to_date.to_s)
+          expect(json_response['id']).to be_present
+          expect(json_response['created_at']).to be_present
+          expect(json_response['active']).to be_truthy
+          expect(json_response['revoked']).to be_falsey
+          expect(json_response['token']).to be_present
         end
       end
     end

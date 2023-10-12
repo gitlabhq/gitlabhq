@@ -24,6 +24,7 @@ export default {
       variables() {
         return {
           configuration: this.configuration,
+          namespace: this.namespace,
         };
       },
       update(data) {

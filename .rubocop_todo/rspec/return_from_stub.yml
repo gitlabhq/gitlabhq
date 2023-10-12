@@ -230,8 +230,6 @@ RSpec/ReturnFromStub:
     - 'spec/services/projects/create_service_spec.rb'
     - 'spec/services/projects/hashed_storage/migrate_attachments_service_spec.rb'
     - 'spec/services/projects/hashed_storage/migrate_repository_service_spec.rb'
-    - 'spec/services/projects/hashed_storage/rollback_attachments_service_spec.rb'
-    - 'spec/services/projects/hashed_storage/rollback_repository_service_spec.rb'
     - 'spec/services/projects/in_product_marketing_campaign_emails_service_spec.rb'
     - 'spec/services/projects/update_remote_mirror_service_spec.rb'
     - 'spec/services/projects/update_service_spec.rb'

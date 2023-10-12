@@ -831,6 +831,8 @@ class Note < ApplicationRecord
     return if namespace_id.present? && !noteable_changed? && !project_changed?
 
     self.namespace_id = if for_issue?
+                          # Some issues are not project noteables (e.g. group-level work items)
+                          # so we need this separate condition
                           noteable&.namespace_id
                         elsif for_project_noteable?
                           project&.project_namespace_id

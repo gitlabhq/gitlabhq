@@ -82,16 +82,38 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
     });
 
+    const mockNamespacedServicesListFn = jest.fn().mockImplementation(mockServicesListFn);
+    const mockAllServicesListFn = jest.fn().mockImplementation(mockServicesListFn);
+
     beforeEach(() => {
       jest
         .spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces')
         .mockImplementation(mockServicesListFn);
+
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedService')
+        .mockImplementation(mockNamespacedServicesListFn);
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces')
+        .mockImplementation(mockAllServicesListFn);
     });
 
-    it('should request services from the cluster_client library', async () => {
-      const services = await mockResolvers.Query.k8sServices(null, { configuration });
+    it('should request namespaced services from the cluster_client library if namespace is specified', async () => {
+      const services = await mockResolvers.Query.k8sServices(null, { configuration, namespace });
+
+      expect(mockNamespacedServicesListFn).toHaveBeenCalledWith(namespace);
+      expect(mockAllServicesListFn).not.toHaveBeenCalled();
+
+      expect(services).toEqual(k8sServicesMock);
+    });
+    it('should request all services from the cluster_client library if namespace is not specified', async () => {
+      const services = await mockResolvers.Query.k8sServices(null, {
+        configuration,
+        namespace: '',
+      });
 
       expect(mockServicesListFn).toHaveBeenCalled();
+      expect(mockNamespacedServicesListFn).not.toHaveBeenCalled();
 
       expect(services).toEqual(k8sServicesMock);
     });

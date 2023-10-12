@@ -208,7 +208,6 @@ Style/GuardClause:
     - 'app/services/projects/after_rename_service.rb'
     - 'app/services/projects/create_service.rb'
     - 'app/services/projects/destroy_service.rb'
-    - 'app/services/projects/hashed_storage/rollback_service.rb'
     - 'app/services/projects/import_export/export_service.rb'
     - 'app/services/projects/import_service.rb'
     - 'app/services/projects/lfs_pointers/lfs_object_download_list_service.rb'

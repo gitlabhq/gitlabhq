@@ -20626,9 +20626,6 @@ msgstr ""
 msgid "For investigating IT service disruptions or outages"
 msgstr ""
 
-msgid "For more info, read the documentation."
-msgstr ""
-
 msgid "For more information on how the number of active users is calculated, see the %{self_managed_subscriptions_doc_link} documentation."
 msgstr ""
 
@@ -35243,9 +35240,6 @@ msgstr ""
 msgid "Please create an index before enabling indexing"
 msgstr ""
 
-msgid "Please enable and migrate to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
-msgstr ""
-
 msgid "Please enter a URL for the custom emoji."
 msgstr ""
 
@@ -35298,9 +35292,6 @@ msgid "Please follow the %{link_start}Let's Encrypt troubleshooting instructions
 msgstr ""
 
 msgid "Please follow the Let's Encrypt troubleshooting instructions to re-obtain your Let's Encrypt certificate: %{docs_url}."
-msgstr ""
-
-msgid "Please migrate all existing projects to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
 msgstr ""
 
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
@@ -43086,6 +43077,9 @@ msgstr ""
 msgid "SecurityReports|Failed updating vulnerabilities with the following IDs: %{ids}"
 msgstr ""
 
+msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
+msgstr ""
+
 msgid "SecurityReports|Has issue"
 msgstr ""
 
@@ -43141,6 +43135,9 @@ msgid "SecurityReports|Monitored projects"
 msgstr ""
 
 msgid "SecurityReports|More info"
+msgstr ""
+
+msgid "SecurityReports|New feature: Grouping"
 msgstr ""
 
 msgid "SecurityReports|No longer detected"

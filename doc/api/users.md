@@ -2139,7 +2139,7 @@ Example response:
 
 ## Create a personal access token with limited scopes for the currently authenticated user **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5 with a flag named `user_pat_rest_api`.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5.
 
 Use this API to create a new personal access token for the currently authenticated user.
 For security purposes, the scopes are limited to only `k8s_proxy` and by default the token will expire by

@@ -281,7 +281,7 @@ about contexts now.
 We can assume we run the experiment in one or a few places, but
 track events potentially in many places. The tracking call remains the same, with
 the arguments you would usually use when
-[tracking events using snowplow](../internal_analytics/snowplow/index.md). The easiest example
+tracking events using snowplow. The easiest example
 of tracking an event in Ruby would be:
 
 ```ruby

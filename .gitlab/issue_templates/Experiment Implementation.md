@@ -21,8 +21,7 @@
 
 # Tracking Details
 
-- [json schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/0-3-0) used in `gitlab-experiment` tracking.
-- see [event schema](../../doc/development/internal_analytics/snowplow/index.md#event-schema) for a guide.
+- [json schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3) used in `gitlab-experiment` tracking.
 
 | sequence | activity | category | action | label | property | value |
 | -------- | -------- | ------ | ----- | ------- | -------- | ----- |

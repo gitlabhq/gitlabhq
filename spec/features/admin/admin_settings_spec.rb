@@ -730,6 +730,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           fill_in 'Maximum authenticated web requests per rate limit period per user', with: 700
           fill_in 'Authenticated web rate limit period in seconds', with: 800
 
+          fill_in "Maximum authenticated requests to project/:id/jobs per minute", with: 1000
+
           fill_in 'Plain-text response to send to clients that hit a rate limit', with: 'Custom message'
 
           click_button 'Save changes'
@@ -750,6 +752,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           throttle_authenticated_web_enabled: true,
           throttle_authenticated_web_requests_per_period: 700,
           throttle_authenticated_web_period_in_seconds: 800,
+          project_jobs_api_rate_limit: 1000,
           rate_limiting_response_text: 'Custom message'
         )
       end

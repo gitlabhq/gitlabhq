@@ -318,11 +318,11 @@ export default {
 <template>
   <div>
     <gl-form-group :label-for="fields.name.id" :label="__('Name')">
-      <gl-form-input v-bind="fields.name" size="lg" />
+      <gl-form-input v-bind="fields.name" width="lg" />
     </gl-form-group>
 
     <gl-form-group :label-for="fields.email.id" :label="__('Email')">
-      <gl-form-input v-bind="fields.email" type="email" size="lg" />
+      <gl-form-input v-bind="fields.email" type="email" width="lg" />
     </gl-form-group>
 
     <gl-button type="submit" category="primary" variant="confirm">{{ __('Update') }}</gl-button>

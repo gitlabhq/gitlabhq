@@ -1389,8 +1389,6 @@ module API
           optional :expires_at, type: Date, default: -> { 1.day.from_now.to_date }, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
         end
         post feature_category: :system_access do
-          bad_request!('Endpoint is disabled via user_pat_rest_api feature flag. Please contact your administrator to enable it.') unless Feature.enabled?(:user_pat_rest_api)
-
           response = ::PersonalAccessTokens::CreateService.new(
             current_user: current_user, target_user: current_user, params: declared_params(include_missing: false)
           ).execute

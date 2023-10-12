@@ -57,6 +57,11 @@
       = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control gl-form-input'
 
   %fieldset
+    .form-group
+      = f.label :project_jobs_api_rate_limit, safe_format('Maximum authenticated requests to %{open}project/:id/jobs%{close} per minute', tag_pair(tag.code, :open, :close)), class: 'label-bold'
+      = f.number_field :project_jobs_api_rate_limit, class: 'form-control gl-form-input'
+
+  %fieldset
     %legend.h5.gl-border-none
       = _('Response text')
     .form-group

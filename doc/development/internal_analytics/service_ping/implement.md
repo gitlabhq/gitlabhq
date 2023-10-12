@@ -337,8 +337,8 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
      - `controller_actions`: the controller actions to track.
      - `name`: the event name.
-     - `action`: required if destination is `:snowplow. Action name for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
-     - `label`: required if destination is `:snowplow. Label for the triggered event. See [event schema](../snowplow/index.md#event-schema) for more details.
+     - `action`: required if destination is `:snowplow. Action name for the triggered event.
+     - `label`: required if destination is `:snowplow. Label for the triggered event.
      - `conditions`: optional custom conditions. Uses the same format as Rails callbacks.
      - `destinations`: optional list of destinations. Currently supports `:redis_hll` and `:snowplow`. Default: `:redis_hll`.
      - `&block`: optional block that computes and returns the `custom_id` that we want to track. This overrides the `visitor_id`.

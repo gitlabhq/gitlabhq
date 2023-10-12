@@ -156,7 +156,7 @@ export default {
       <gl-form-input
         ref="input"
         :readonly="readonly"
-        :size="size"
+        :width="size"
         class="gl-font-monospace! gl-cursor-default!"
         v-bind="formInputGroupProps"
         :value="value"

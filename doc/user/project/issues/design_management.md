@@ -31,14 +31,10 @@ For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.
   Image thumbnails are stored as other uploads, and are not associated with a project but rather
   with a specific design model.
 
-- Projects must use
-  [hashed storage](../../../administration/raketasks/storage.md#migrate-to-hashed-storage).
-
   Newly created projects use hashed storage by default.
 
-  A GitLab administrator can verify the storage type of a project by going to **Admin Area > Projects**
-  and then selecting the project in question. A project can be identified as
-  hashed-stored if the value of the **Relative path** field contains `@hashed`.
+  A GitLab administrator can verify the relative path of a hashed-stored project by going to **Admin Area > Projects**
+  and then selecting the project in question. The **Relative path** field contains `@hashed` in its value.
 
 If the requirements are not met, you are notified in the **Designs** section.
 

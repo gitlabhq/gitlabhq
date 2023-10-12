@@ -781,8 +781,7 @@ Prerequisites:
 
 - The [GitLab 14.0 release post contains several important notes](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#upgrade)
   about pre-requisites including [using Patroni instead of repmgr](../../administration/postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni),
-  migrating [to hashed storage](../../administration/raketasks/storage.md#migrate-to-hashed-storage),
-  and [to Puma](../../administration/operations/puma.md).
+  migrating to hashed storage and [to Puma](../../administration/operations/puma.md).
 - The support of PostgreSQL 11 [has been dropped](../../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
 
 Long running batched background database migrations:

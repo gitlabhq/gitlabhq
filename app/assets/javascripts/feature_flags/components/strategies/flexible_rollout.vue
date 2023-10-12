@@ -93,7 +93,7 @@ export default {
               type="number"
               min="0"
               max="100"
-              size="xs"
+              width="xs"
               @input="onPercentageChange"
             />
             <span class="ml-1">%</span>

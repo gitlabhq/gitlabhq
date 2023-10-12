@@ -207,8 +207,8 @@ This:
 
 - Removes any internal Git references to old commits.
 - Runs `git gc --prune=30.minutes.ago` against the repository to remove unreferenced objects. Repacking your repository temporarily
-  causes the size of your repository to increase significantly, because the old pack files are not removed until the
-  new pack files have been created.
+  causes the size of your repository to increase significantly, because the old packfiles are not removed until the
+  new packfiles have been created.
 - Unlinks any unused LFS objects attached to your project, freeing up storage space.
 - Recalculates the size of your repository on disk.
 

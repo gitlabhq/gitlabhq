@@ -1006,7 +1006,6 @@ Cop/SidekiqApiUsage:
     - 'db/post_migrate/**/*'
     - 'lib/gitlab/sidekiq_middleware/**/*'
     - 'lib/gitlab/background_migration/**/*'
-    - 'lib/gitlab/hashed_storage/migrator.rb'
     - 'lib/api/sidekiq_metrics.rb'
     - 'lib/gitlab/sidekiq_config.rb'
     - 'lib/gitlab/sidekiq_queue.rb'
