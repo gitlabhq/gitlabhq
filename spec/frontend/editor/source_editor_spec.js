@@ -9,21 +9,6 @@ import SourceEditor from '~/editor/source_editor';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { joinPaths } from '~/lib/utils/url_utility';
 
-jest.mock('~/helpers/startup_css_helper', () => {
-  return {
-    waitForCSSLoaded: jest.fn().mockImplementation((cb) => {
-      // We have to artificially put the callback's execution
-      // to the end of the current call stack to be able to
-      // test that the callback is called after waitForCSSLoaded.
-      // setTimeout with 0 delay does exactly that.
-      // Otherwise we might end up with false positive results
-      setTimeout(() => {
-        cb.apply();
-      }, 0);
-    }),
-  };
-});
-
 describe('Base editor', () => {
   let editorEl;
   let editor;
@@ -161,7 +146,7 @@ describe('Base editor', () => {
         expect(instance.getModel()).toBeNull();
       });
 
-      it('resets the layout in waitForCSSLoaded callback', async () => {
+      it('resets the layout in createInstance', () => {
         const layoutSpy = jest.fn();
         jest.spyOn(monacoEditor, 'create').mockReturnValue({
           layout: layoutSpy,
@@ -170,10 +155,6 @@ describe('Base editor', () => {
           dispose: jest.fn(),
         });
         editor.createInstance(defaultArguments);
-        expect(layoutSpy).not.toHaveBeenCalled();
-
-        // We're waiting for the waitForCSSLoaded mock to kick in
-        await jest.runOnlyPendingTimers();
 
         expect(layoutSpy).toHaveBeenCalled();
       });

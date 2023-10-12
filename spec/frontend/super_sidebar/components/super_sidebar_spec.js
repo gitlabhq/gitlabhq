@@ -45,6 +45,7 @@ const peekHintClass = 'super-sidebar-peek-hint';
 describe('SuperSidebar component', () => {
   let wrapper;
 
+  const findSkipToLink = () => wrapper.findByTestId('super-sidebar-skip-to');
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
   const findUserBar = () => wrapper.findComponent(UserBar);
   const findNavContainer = () => wrapper.findByTestId('nav-container');
@@ -89,6 +90,16 @@ describe('SuperSidebar component', () => {
   });
 
   describe('default', () => {
+    it('renders skip to main content link when logged in', () => {
+      createWrapper();
+      expect(findSkipToLink().attributes('href')).toBe('#content-body');
+    });
+
+    it('does not render skip to main content link when logged out', () => {
+      createWrapper({ sidebarData: { is_logged_in: false } });
+      expect(findSkipToLink().exists()).toBe(false);
+    });
+
     it('has accessible role and name', () => {
       createWrapper();
       const nav = wrapper.findByRole('navigation');

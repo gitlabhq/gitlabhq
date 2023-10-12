@@ -3,6 +3,10 @@
 module MergeRequests
   module Mergeability
     class CheckConflictStatusService < CheckBaseService
+      def self.failure_reason
+        :conflict
+      end
+
       def execute
         if merge_request.can_be_merged?
           success
@@ -17,12 +21,6 @@ module MergeRequests
 
       def cacheable?
         false
-      end
-
-      private
-
-      def failure_reason
-        :conflict
       end
     end
   end

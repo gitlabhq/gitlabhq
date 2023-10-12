@@ -47,11 +47,15 @@ module ContainerRegistry
       def token_from(config)
         case config[:type]
         when :full_access_token
-          Auth::ContainerRegistryAuthenticationService.access_token([], [])
+          Auth::ContainerRegistryAuthenticationService.access_token({})
         when :nested_repositories_token
           return unless config[:path]
 
           Auth::ContainerRegistryAuthenticationService.pull_nested_repositories_access_token(config[:path])
+        when :push_pull_nested_repositories_token
+          return unless config[:path]
+
+          Auth::ContainerRegistryAuthenticationService.push_pull_nested_repositories_access_token(config[:path])
         end
       end
     end

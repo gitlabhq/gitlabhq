@@ -4193,6 +4193,30 @@ Input type: `InstanceGoogleCloudLoggingConfigurationDestroyInput`
 | <a id="mutationinstancegooglecloudloggingconfigurationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationinstancegooglecloudloggingconfigurationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.instanceGoogleCloudLoggingConfigurationUpdate`
+
+Input type: `InstanceGoogleCloudLoggingConfigurationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdateclientemail"></a>`clientEmail` | [`String`](#string) | Email address associated with the service account that will be used to authenticate and interact with the Google Cloud Logging service. This is part of the IAM credentials. |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdategoogleprojectidname"></a>`googleProjectIdName` | [`String`](#string) | Unique identifier of the Google Cloud project to which the logging configuration belongs. |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdateid"></a>`id` | [`AuditEventsInstanceGoogleCloudLoggingConfigurationID!`](#auditeventsinstancegooglecloudloggingconfigurationid) | ID of the instance google Cloud configuration to update. |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdatelogidname"></a>`logIdName` | [`String`](#string) | Unique identifier used to distinguish and manage different logs within the same Google Cloud project. |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdateprivatekey"></a>`privateKey` | [`String`](#string) | Private Key associated with the service account. This key is used to authenticate the service account and authorize it to interact with the Google Cloud Logging service. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdateinstancegooglecloudloggingconfiguration"></a>`instanceGoogleCloudLoggingConfiguration` | [`InstanceGoogleCloudLoggingConfigurationType`](#instancegooglecloudloggingconfigurationtype) | configuration updated. |
+
 ### `Mutation.issuableResourceLinkCreate`
 
 Input type: `IssuableResourceLinkCreateInput`
@@ -19762,6 +19786,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmergetrainscount"></a>`mergeTrainsCount` | [`Int`](#int) | Number of merge requests in the merge train. |
 | <a id="mergerequestmergeuser"></a>`mergeUser` | [`UserCore`](#usercore) | User who merged this merge request or set it to auto-merge. |
 | <a id="mergerequestmergewhenpipelinesucceeds"></a>`mergeWhenPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if the merge has been set to auto-merge. |
+| <a id="mergerequestmergeabilitychecks"></a>`mergeabilityChecks` **{warning-solid}** | [`[MergeRequestMergeabilityCheck!]!`](#mergerequestmergeabilitycheck) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Status of all mergeability checks of the merge request. |
 | <a id="mergerequestmergeable"></a>`mergeable` | [`Boolean!`](#boolean) | Indicates if the merge request is mergeable. |
 | <a id="mergerequestmergeablediscussionsstate"></a>`mergeableDiscussionsState` | [`Boolean`](#boolean) | Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged. |
 | <a id="mergerequestmergedat"></a>`mergedAt` | [`Time`](#time) | Timestamp of when the merge request was merged, null if not merged. |
@@ -20526,6 +20551,17 @@ Represents the Geo sync and verification state of a Merge Request diff.
 | <a id="mergerequestdiffregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the MergeRequestDiffRegistry. |
+
+### `MergeRequestMergeabilityCheck`
+
+Mergeability check of the merge request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestmergeabilitycheckidentifier"></a>`identifier` | [`MergeabilityCheckIdentifier!`](#mergeabilitycheckidentifier) | Identifier of the mergeability check. |
+| <a id="mergerequestmergeabilitycheckstatus"></a>`status` | [`MergeabilityCheckStatus!`](#mergeabilitycheckstatus) | Status of the mergeability check. |
 
 ### `MergeRequestParticipant`
 
@@ -28668,6 +28704,34 @@ Representation of whether a GitLab merge request can be merged.
 | <a id="mergestrategyenummerge_train"></a>`MERGE_TRAIN` | Use the merge_train merge strategy. |
 | <a id="mergestrategyenummerge_when_checks_pass"></a>`MERGE_WHEN_CHECKS_PASS` | Use the merge_when_checks_pass merge strategy. |
 | <a id="mergestrategyenummerge_when_pipeline_succeeds"></a>`MERGE_WHEN_PIPELINE_SUCCEEDS` | Use the merge_when_pipeline_succeeds merge strategy. |
+
+### `MergeabilityCheckIdentifier`
+
+Representation of mergeability check identifier.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergeabilitycheckidentifierbroken_status"></a>`BROKEN_STATUS` | Mergeability check identifier is broken_status. |
+| <a id="mergeabilitycheckidentifierci_must_pass"></a>`CI_MUST_PASS` | Mergeability check identifier is ci_must_pass. |
+| <a id="mergeabilitycheckidentifierconflict"></a>`CONFLICT` | Mergeability check identifier is conflict. |
+| <a id="mergeabilitycheckidentifierdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Mergeability check identifier is discussions_not_resolved. |
+| <a id="mergeabilitycheckidentifierdraft_status"></a>`DRAFT_STATUS` | Mergeability check identifier is draft_status. |
+| <a id="mergeabilitycheckidentifiermerge_request_blocked"></a>`MERGE_REQUEST_BLOCKED` | Mergeability check identifier is merge_request_blocked. |
+| <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Mergeability check identifier is need_rebase. |
+| <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Mergeability check identifier is not_approved. |
+| <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Mergeability check identifier is not_open. |
+| <a id="mergeabilitycheckidentifierpolicies_denied"></a>`POLICIES_DENIED` | Mergeability check identifier is policies_denied. |
+| <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Mergeability check identifier is status_checks_must_pass. |
+
+### `MergeabilityCheckStatus`
+
+Representation of whether a mergeability check passed, failed or is inactive.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergeabilitycheckstatusfailed"></a>`FAILED` | Mergeability check has failed. The merge request cannot be merged. |
+| <a id="mergeabilitycheckstatusinactive"></a>`INACTIVE` | Mergeability check is disabled via settings. |
+| <a id="mergeabilitycheckstatussuccess"></a>`SUCCESS` | Mergeability check has passed. |
 
 ### `MilestoneSort`
 

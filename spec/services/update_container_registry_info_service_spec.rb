@@ -53,7 +53,7 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
 
       it 'uses a token with no access permissions' do
         expect(Auth::ContainerRegistryAuthenticationService)
-          .to receive(:access_token).with([], []).and_return(token)
+          .to receive(:access_token).with({}).and_return(token)
         expect(ContainerRegistry::Client)
           .to receive(:new).with(api_url, token: token).and_return(client)
 
@@ -112,7 +112,7 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
 
   def stub_access_token
     allow(Auth::ContainerRegistryAuthenticationService)
-      .to receive(:access_token).with([], []).and_return('foo')
+      .to receive(:access_token).with({}).and_return('foo')
   end
 
   def stub_registry_info(output)

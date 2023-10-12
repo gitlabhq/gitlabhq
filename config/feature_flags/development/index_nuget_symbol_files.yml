@@ -1,8 +1,0 @@
----
-name: index_nuget_symbol_files
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131567
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/424858
-milestone: '16.5'
-type: development
-group: group::package registry
-default_enabled: false

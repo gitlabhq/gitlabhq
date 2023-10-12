@@ -2,6 +2,10 @@
 module MergeRequests
   module Mergeability
     class CheckCiStatusService < CheckBaseService
+      def self.failure_reason
+        :ci_must_pass
+      end
+
       def execute
         if merge_request.mergeable_ci_state?
           success
@@ -16,12 +20,6 @@ module MergeRequests
 
       def cacheable?
         false
-      end
-
-      private
-
-      def failure_reason
-        :ci_must_pass
       end
     end
   end

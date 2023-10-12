@@ -431,7 +431,7 @@ module Gitlab
       end
 
       def unavailable_observability_scopes_for_resource(resource)
-        return [] if resource.is_a?(Group) && Gitlab::Observability.group_tab_enabled?(resource)
+        return [] if resource.is_a?(Group) && Gitlab::Observability.should_enable_observability_auth_scopes?(resource)
 
         OBSERVABILITY_SCOPES
       end

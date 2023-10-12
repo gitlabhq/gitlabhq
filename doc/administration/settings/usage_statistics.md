@@ -61,6 +61,7 @@ In the following table, you can see:
 | [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
 | [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
 | [Issue analytics](../../user/group/issues_analytics/index.md) | GitLab 16.5 and later |
+| [Custom Text in Emails](../../administration/settings/email.md#custom-additional-text) | GitLab 16.5 and later |
 
 ### Enable registration features
 

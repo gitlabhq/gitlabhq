@@ -248,6 +248,13 @@ export default {
         });
       }
     },
+    onKeydown(event) {
+      const isModifierKey = event.ctrlKey || event.metaKey;
+      if (isModifierKey && event.key === 'k') {
+        event.preventDefault();
+      }
+      this.$emit('keydown', event);
+    },
   },
   EDITING_MODE_KEY,
 };
@@ -317,7 +324,7 @@ export default {
         :code-suggestions-config="codeSuggestionsConfig"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
-        @keydown="$emit('keydown', $event)"
+        @keydown="onKeydown"
         @enableMarkdownEditor="onEditingModeChange('markdownField')"
       />
       <input

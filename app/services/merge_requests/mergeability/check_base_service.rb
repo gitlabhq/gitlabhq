@@ -9,6 +9,10 @@ module MergeRequests
         @params = params
       end
 
+      def self.identifier
+        failure_reason
+      end
+
       def skip?
         raise NotImplementedError
       end
@@ -24,12 +28,22 @@ module MergeRequests
 
       private
 
+      def failure_reason
+        self.class.failure_reason
+      end
+
       def success(**args)
-        Gitlab::MergeRequests::Mergeability::CheckResult.success(payload: args)
+        Gitlab::MergeRequests::Mergeability::CheckResult
+          .success(payload: default_payload(args))
       end
 
       def failure(**args)
-        Gitlab::MergeRequests::Mergeability::CheckResult.failed(payload: args)
+        Gitlab::MergeRequests::Mergeability::CheckResult
+          .failed(payload: default_payload(args))
+      end
+
+      def default_payload(args)
+        args.merge(identifier: self.class.identifier)
       end
     end
   end

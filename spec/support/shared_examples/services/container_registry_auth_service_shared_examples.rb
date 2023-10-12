@@ -284,6 +284,48 @@ RSpec.shared_examples 'a container registry auth service' do
     end
   end
 
+  describe '.push_pull_nested_repositories_access_token' do
+    let_it_be(:project) { create(:project) }
+
+    let(:token) { described_class.push_pull_nested_repositories_access_token(project.full_path) }
+    let(:access) do
+      [
+        {
+          'type' => 'repository',
+          'name' => project.full_path,
+          'actions' => %w[pull push],
+          'meta' => { 'project_path' => project.full_path }
+        },
+        {
+          'type' => 'repository',
+          'name' => "#{project.full_path}/*",
+          'actions' => %w[pull],
+          'meta' => { 'project_path' => project.full_path }
+        }
+      ]
+    end
+
+    subject { { token: token } }
+
+    it 'has the correct scope' do
+      expect(payload).to include('access' => access)
+    end
+
+    it_behaves_like 'a valid token'
+    it_behaves_like 'not a container repository factory'
+
+    context 'with path ending with a slash' do
+      let(:token) { described_class.push_pull_nested_repositories_access_token("#{project.full_path}/") }
+
+      it 'has the correct scope' do
+        expect(payload).to include('access' => access)
+      end
+
+      it_behaves_like 'a valid token'
+      it_behaves_like 'not a container repository factory'
+    end
+  end
+
   context 'user authorization' do
     let_it_be(:current_user) { create(:user) }
 
@@ -1301,7 +1343,7 @@ RSpec.shared_examples 'a container registry auth service' do
     end
 
     describe '#access_token' do
-      let(:token) { described_class.access_token(['pull'], [bad_project.full_path]) }
+      let(:token) { described_class.access_token({ bad_project.full_path => ['pull'] }) }
       let(:access) do
         [{ 'type' => 'repository',
            'name' => bad_project.full_path,

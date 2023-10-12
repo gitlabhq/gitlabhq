@@ -3,6 +3,10 @@
 module MergeRequests
   module Mergeability
     class CheckRebaseStatusService < CheckBaseService
+      def self.failure_reason
+        :need_rebase
+      end
+
       def execute
         if merge_request.should_be_rebased?
           failure(reason: failure_reason)
@@ -17,12 +21,6 @@ module MergeRequests
 
       def cacheable?
         false
-      end
-
-      private
-
-      def failure_reason
-        :need_rebase
       end
     end
   end

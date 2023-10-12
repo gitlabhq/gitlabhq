@@ -6,11 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Distributed tracing **(ULTIMATE SAAS EXPERIMENT)**
 
-> Introduced in GitLab 16.3 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - Feature flag `observability_group_tab` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133264) in GitLab 16.5.
 
 FLAG:
-On GitLab.com, by default this feature is not available. To make it available,
-an administrator can [enable the feature flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`.
+On self-managed GitLab, this feature is not available.
+On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `observability_tracing`.
 The feature is not ready for production use.
 
 With distributed tracing, you can troubleshoot application performance issues by inspecting how a request moves through different services and systems, the timing of each operation, and any errors or logs as they occur. Tracing is particularly useful in the context of microservice applications, which group multiple independent services collaborating to fulfill user requests.

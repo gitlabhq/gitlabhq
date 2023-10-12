@@ -2,6 +2,10 @@
 module MergeRequests
   module Mergeability
     class CheckBrokenStatusService < CheckBaseService
+      def self.failure_reason
+        :broken_status
+      end
+
       def execute
         if merge_request.broken?
           failure(reason: failure_reason)
@@ -16,12 +20,6 @@ module MergeRequests
 
       def cacheable?
         false
-      end
-
-      private
-
-      def failure_reason
-        :broken_status
       end
     end
   end

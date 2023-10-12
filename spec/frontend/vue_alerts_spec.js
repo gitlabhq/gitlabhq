@@ -55,7 +55,7 @@ describe('VueAlerts', () => {
     primaryButtonText: alert.querySelector('.gl-alert-action').textContent.trim(),
     primaryButtonLink: alert.querySelector('.gl-alert-action').href,
     variant: [...alert.classList]
-      .find((x) => x.match(/gl-alert-(?!not-dismissible)/))
+      .find((x) => x.match(/gl-alert-(?!not-dismissible|has-title)/))
       .replace('gl-alert-', ''),
   });
 

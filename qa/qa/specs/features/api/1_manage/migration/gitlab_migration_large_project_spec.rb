@@ -55,9 +55,20 @@ module QA
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:source_milestones) { source_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
-      let(:source_pipelines) { source_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
       let(:source_mrs) { fetch_mrs(source_project, source_api_client, transform_urls: true) }
       let(:source_issues) { fetch_issues(source_project, source_api_client, transform_urls: true) }
+      let(:source_pipelines) do
+        source_project
+          .pipelines(auto_paginate: true)
+          .sort_by { |pipeline| pipeline[:created_at] }
+          .map do |pipeline|
+            pp = pipeline.except(:id, :web_url, :project_id)
+            # pending and manual pipelines are imported with status set to canceled
+            next pp unless pp[:status] == "pending" || pp[:status] == "manual"
+
+            pp.merge({ status: "canceled" })
+          end
+      end
 
       # Imported objects
       #
@@ -66,9 +77,14 @@ module QA
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:milestones) { imported_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
-      let(:pipelines) { imported_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
       let(:mrs) { fetch_mrs(imported_project, api_client) }
       let(:issues) { fetch_issues(imported_project, api_client) }
+      let(:pipelines) do
+        imported_project
+          .pipelines(auto_paginate: true)
+          .sort_by { |pipeline| pipeline[:created_at] }
+          .map { |pipeline| pipeline.except(:id, :web_url, :project_id) }
+      end
 
       before do
         QA::Support::Helpers::ImportSource.enable(%w[gitlab_project])
@@ -218,9 +234,7 @@ module QA
       # @return [void]
       def verify_pipelines_import
         logger.info("== Verifying pipelines import ==")
-        # Pipeline arrays can be very large and it takes a long time to compare full array
-        # We fall back to comparing just the count
-        expect(pipelines.count).to eq(source_pipelines.count)
+        expect(pipelines).to eq(source_pipelines)
       end
 
       # Verify imported merge requests and mr issues

@@ -2,6 +2,10 @@
 module MergeRequests
   module Mergeability
     class CheckDiscussionsStatusService < CheckBaseService
+      def self.failure_reason
+        :discussions_not_resolved
+      end
+
       def execute
         if merge_request.mergeable_discussions_state?
           success
@@ -16,12 +20,6 @@ module MergeRequests
 
       def cacheable?
         false
-      end
-
-      private
-
-      def failure_reason
-        :discussions_not_resolved
       end
     end
   end

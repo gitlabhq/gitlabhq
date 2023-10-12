@@ -130,7 +130,9 @@ export default {
   <div>
     <div class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <gl-button
+      v-if="sidebarData.is_logged_in"
       class="super-sidebar-skip-to gl-sr-only-focusable gl-fixed gl-left-0 gl-m-3"
+      data-testid="super-sidebar-skip-to"
       href="#content-body"
       variant="confirm"
     >

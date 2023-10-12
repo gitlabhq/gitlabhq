@@ -9527,6 +9527,9 @@ msgstr ""
 msgid "Change Failure Rate"
 msgstr ""
 
+msgid "Change action"
+msgstr ""
+
 msgid "Change assignee"
 msgstr ""
 

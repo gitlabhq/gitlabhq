@@ -455,6 +455,56 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     end
   end
 
+  describe '#rename_base_repository_path' do
+    let(:path) { 'path/repository' }
+    let(:name) { 'newname' }
+    let(:dry_run) { 'false' }
+    let(:status_code) { 204 }
+
+    subject { client.rename_base_repository_path(path, name: name, dry_run: dry_run) }
+
+    before do
+      stub_rename_base_repository(path, name: name, dry_run: dry_run, status_code: status_code)
+    end
+
+    where(:dry_run, :status_code, :expected_result) do
+      true  | 202 | :accepted
+      true  | 400 | :bad_request
+      true  | 401 | :unauthorized
+      true  | 404 | :not_found
+      true  | 409 | :name_taken
+      true  | 422 | :too_many_subrepositories
+
+      false | 204 | :ok
+      false | 400 | :bad_request
+      false | 401 | :unauthorized
+      false | 404 | :not_found
+      false | 409 | :name_taken
+      false | 422 | :too_many_subrepositories
+    end
+
+    with_them do
+      it { is_expected.to eq(expected_result) }
+    end
+
+    context 'with a non-successful response' do
+      before do
+        stub_rename_base_repository(path, name: name, dry_run: false, status_code: 404)
+      end
+
+      it 'logs an error' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:log_exception).with(
+            instance_of(described_class::UnsuccessfulResponseError),
+            class: described_class.name,
+            url: "/gitlab/v1/repositories/#{path}/",
+            status_code: 404
+          )
+        subject
+      end
+    end
+  end
+
   describe '.supports_gitlab_api?' do
     subject { described_class.supports_gitlab_api? }
 
@@ -655,6 +705,40 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       end
 
       it_behaves_like 'fetching the project from container repository and path'
+    end
+  end
+
+  describe '.rename_base_repository_path' do
+    let(:name) { 'newname' }
+    let(:expected_dry_run) { true }
+
+    before do
+      stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+
+      expect_next_instance_of(described_class) do |client|
+        expect(client).to receive(:rename_base_repository_path).with(path.downcase, name: name.downcase, dry_run: expected_dry_run).and_return(:ok)
+      end
+    end
+
+    it 'passes on the parameters to  #rename_base_repository_path' do
+      described_class.rename_base_repository_path(path, name: name, dry_run: true)
+    end
+
+    context 'when path and/or name have non-downcased letters' do
+      let(:path) { 'pAtH/to/PROject' }
+      let(:name) { 'nEwNamE' }
+
+      it 'passes the path and name downcased to #rename_base_repository_path' do
+        described_class.rename_base_repository_path(path, name: name, dry_run: true)
+      end
+    end
+
+    context 'when dry_run parameter is not given' do
+      let(:expected_dry_run) { false }
+
+      it 'defaults to false' do
+        described_class.rename_base_repository_path(path, name: 'newname')
+      end
     end
   end
 
@@ -864,12 +948,9 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/"
     url += "?size=#{sizing}" if sizing
 
-    headers = { 'Accept' => described_class::JSON_TYPE }
-    headers['Authorization'] = "bearer #{token}" if token
-
     stub_request(:get, url)
-      .with(headers: headers)
-      .to_return(status: status_code, body: respond_with.to_json, headers: { 'Content-Type' => described_class::JSON_TYPE })
+      .with(headers: request_headers)
+      .to_return(status: status_code, body: respond_with.to_json, headers: headers_with_json_content_type)
   end
 
   def stub_tags(path, page_size: nil, input: {}, previous_page_url: nil, next_page_url: nil, status_code: 200, respond_with: {})
@@ -887,17 +968,12 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       url += "?#{params.map { |param, val| "#{param}=#{val}" }.join('&')}"
     end
 
-    request_headers = { 'Accept' => described_class::JSON_TYPE }
-    request_headers['Authorization'] = "bearer #{token}" if token
-
-    response_headers = { 'Content-Type' => described_class::JSON_TYPE }
-    if next_page_url || previous_page_url
-      previous_page_url = %(<#{previous_page_url}>; rel="previous") if previous_page_url
-      next_page_url = %(<#{next_page_url}>; rel="next") if next_page_url
-
-      link_header = [previous_page_url, next_page_url].compact.join(" ,")
-      response_headers['Link'] = link_header
-    end
+    response_headers =
+      add_link_to_headers_from_urls(
+        headers_with_json_content_type,
+        previous_page_url,
+        next_page_url
+      )
 
     stub_request(:get, url)
       .with(headers: request_headers)
@@ -917,13 +993,8 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       url += "?#{params.map { |param, val| "#{param}=#{val}" }.join('&')}"
     end
 
-    request_headers = { 'Accept' => described_class::JSON_TYPE }
-    request_headers['Authorization'] = "bearer #{token}" if token
-
-    response_headers = { 'Content-Type' => described_class::JSON_TYPE }
-    if next_page_url
-      response_headers['Link'] = "<#{next_page_url}>; rel=\"next\""
-    end
+    response_headers =
+      add_link_to_headers_from_urls(headers_with_json_content_type, nil, next_page_url)
 
     stub_request(:get, url)
       .with(headers: request_headers)
@@ -932,5 +1003,35 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         body: respond_with.to_json,
         headers: response_headers
       )
+  end
+
+  def stub_rename_base_repository(path, name:, dry_run: false, status_code: 204)
+    url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/?dry_run=#{dry_run}"
+
+    stub_request(:patch, url)
+      .with(headers: request_headers, body: { name: name }.to_json)
+      .to_return(status: status_code, headers: headers_with_json_content_type)
+  end
+
+  def request_headers
+    headers = { 'Accept' => described_class::JSON_TYPE }
+    headers['Authorization'] = "bearer #{token}" if token
+
+    headers
+  end
+
+  def headers_with_json_content_type
+    { 'Content-Type' => described_class::JSON_TYPE }
+  end
+
+  def add_link_to_headers_from_urls(headers, previous_page_url, next_page_url)
+    return headers unless previous_page_url || next_page_url
+
+    previous_page_url = %(<#{previous_page_url}>; rel="previous") if previous_page_url
+    next_page_url = %(<#{next_page_url}>; rel="next") if next_page_url
+
+    headers['Link'] = [previous_page_url, next_page_url].compact.join(" ,")
+
+    headers
   end
 end

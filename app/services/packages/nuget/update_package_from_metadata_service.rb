@@ -80,8 +80,6 @@ module Packages
       end
 
       def update_symbol_files(package, package_to_destroy)
-        return if Feature.disabled?(:index_nuget_symbol_files, package.project)
-
         package_to_destroy.nuget_symbols.update_all(package_id: package.id)
       end
 

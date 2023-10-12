@@ -9,7 +9,7 @@ module MergeRequests
         @params = params
       end
 
-      def execute(checks)
+      def execute(checks, execute_all: false)
         @results = checks.each_with_object([]) do |check_class, result_hash|
           check = check_class.new(merge_request: merge_request, params: params)
 
@@ -21,24 +21,20 @@ module MergeRequests
 
           result_hash << check_result
 
-          break result_hash if check_result.failed?
+          break result_hash if check_result.failed? && !execute_all
         end
 
         logger.commit
 
-        self
-      end
+        return ServiceResponse.success(payload: { results: results }) if all_results_success?
 
-      def success?
-        raise 'Execute needs to be called before' if results.nil?
-
-        results.all?(&:success?)
-      end
-
-      def failure_reason
-        raise 'Execute needs to be called before' if results.nil?
-
-        results.find(&:failed?)&.payload&.fetch(:reason)&.to_sym
+        ServiceResponse.error(
+          message: 'Checks failed.',
+          payload: {
+            results: results,
+            failure_reason: failure_reason
+          }
+        )
       end
 
       private
@@ -66,6 +62,14 @@ module MergeRequests
         strong_memoize(:logger) do
           MergeRequests::Mergeability::Logger.new(merge_request: merge_request)
         end
+      end
+
+      def all_results_success?
+        results.all?(&:success?)
+      end
+
+      def failure_reason
+        results.find(&:failed?)&.payload&.fetch(:reason)&.to_sym
       end
     end
   end

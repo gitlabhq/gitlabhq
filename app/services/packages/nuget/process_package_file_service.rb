@@ -47,8 +47,6 @@ module Packages
       end
 
       def create_symbol_files(zip_file)
-        return if Feature.disabled?(:index_nuget_symbol_files, package_file.project)
-
         ::Packages::Nuget::Symbols::CreateSymbolFilesService
           .new(package_file.package, zip_file)
           .execute

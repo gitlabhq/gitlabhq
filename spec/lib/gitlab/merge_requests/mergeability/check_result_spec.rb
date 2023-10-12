@@ -137,4 +137,19 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult do
       end
     end
   end
+
+  describe '#identifier' do
+    let(:payload) { { identifier: 'ci_must_pass' } }
+
+    subject(:identifier) do
+      described_class
+        .new(
+          status: described_class::SUCCESS_STATUS,
+          payload: payload
+        )
+        .identifier
+    end
+
+    it { is_expected.to eq(:ci_must_pass) }
+  end
 end

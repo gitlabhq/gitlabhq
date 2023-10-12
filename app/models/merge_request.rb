@@ -1251,7 +1251,7 @@ class MergeRequest < ApplicationRecord
     mergeable_git_state?(skip_rebase_check: skip_rebase_check)
   end
 
-  def mergeable_state_checks
+  def self.mergeable_state_checks
     # We want to have the cheapest checks first in the list, that way we can
     #   fail fast before running the more expensive ones.
     #
@@ -1264,14 +1264,14 @@ class MergeRequest < ApplicationRecord
     ]
   end
 
-  def mergeable_git_state_checks
+  def self.mergeable_git_state_checks
     [
       ::MergeRequests::Mergeability::CheckConflictStatusService,
       ::MergeRequests::Mergeability::CheckRebaseStatusService
     ]
   end
 
-  def all_mergeability_checks
+  def self.all_mergeability_checks
     mergeable_state_checks + mergeable_git_state_checks
   end
 
@@ -1279,7 +1279,7 @@ class MergeRequest < ApplicationRecord
     skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false,
     skip_draft_check: false, skip_blocked_check: false)
     additional_checks = execute_merge_checks(
-      mergeable_state_checks,
+      self.class.mergeable_state_checks,
       params: {
         skip_ci_check: skip_ci_check,
         skip_discussions_check: skip_discussions_check,
@@ -1293,13 +1293,21 @@ class MergeRequest < ApplicationRecord
 
   def mergeable_git_state?(skip_rebase_check: false)
     checks = execute_merge_checks(
-      mergeable_git_state_checks,
+      self.class.mergeable_git_state_checks,
       params: {
         skip_rebase_check: skip_rebase_check
       }
     )
 
     checks.success?
+  end
+
+  def all_mergeability_checks_results
+    execute_merge_checks(
+      self.class.all_mergeability_checks,
+      params: {},
+      execute_all: true
+    ).payload[:results]
   end
 
   def ff_merge_possible?
@@ -2116,11 +2124,11 @@ class MergeRequest < ApplicationRecord
     false # Overridden in EE
   end
 
-  def execute_merge_checks(checks, params: {})
+  def execute_merge_checks(checks, params: {}, execute_all: false)
     # rubocop: disable CodeReuse/ServiceClass
     MergeRequests::Mergeability::RunChecksService
       .new(merge_request: self, params: params)
-      .execute(checks)
+      .execute(checks, execute_all: execute_all)
     # rubocop: enable CodeReuse/ServiceClass
   end
 

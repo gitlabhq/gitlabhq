@@ -22,14 +22,9 @@ module Gitlab
       "#{Gitlab::Observability.observability_url}/v3/tenant/#{project.id}"
     end
 
-    # Returns true if the GitLab Observability UI (GOUI) feature flag is enabled
-    #
-    # @deprecated
-    #
-    def group_tab_enabled?(group = nil)
-      return Feature.enabled?(:observability_group_tab, group) if group
-
-      Feature.enabled?(:observability_group_tab)
+    def should_enable_observability_auth_scopes?(group)
+      # Enable the needed auth scopes if tracing is enabled.
+      Feature.enabled?(:observability_tracing, group.root_ancestor)
     end
   end
 end

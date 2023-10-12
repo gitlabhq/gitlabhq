@@ -6,6 +6,7 @@ module ContainerRegistry
 
     JSON_TYPE = 'application/json'
     CANCEL_RESPONSE_STATUS_HEADER = 'status'
+    GITLAB_REPOSITORIES_PATH = '/gitlab/v1/repositories'
 
     IMPORT_RESPONSES = {
       200 => :already_imported,
@@ -17,6 +18,16 @@ module ContainerRegistry
       424 => :pre_import_failed,
       425 => :already_being_imported,
       429 => :too_many_imports
+    }.freeze
+
+    RENAME_RESPONSES = {
+      202 => :accepted,
+      204 => :ok,
+      400 => :bad_request,
+      401 => :unauthorized,
+      404 => :not_found,
+      409 => :name_taken,
+      422 => :too_many_subrepositories
     }.freeze
 
     REGISTRY_GITLAB_V1_API_FEATURE = 'gitlab_v1_api'
@@ -34,14 +45,16 @@ module ContainerRegistry
     end
 
     def self.deduplicated_size(path)
-      with_dummy_client(token_config: { type: :nested_repositories_token, path: path&.downcase }) do |client|
-        client.repository_details(path&.downcase, sizing: :self_with_descendants)['size_bytes']
+      downcased_path = path&.downcase
+      with_dummy_client(token_config: { type: :nested_repositories_token, path: downcased_path }) do |client|
+        client.repository_details(downcased_path, sizing: :self_with_descendants)['size_bytes']
       end
     end
 
     def self.one_project_with_container_registry_tag(path)
-      with_dummy_client(token_config: { type: :nested_repositories_token, path: path&.downcase }) do |client|
-        page = client.sub_repositories_with_tag(path&.downcase, page_size: PAGE_SIZE)
+      downcased_path = path&.downcase
+      with_dummy_client(token_config: { type: :nested_repositories_token, path: downcased_path }) do |client|
+        page = client.sub_repositories_with_tag(downcased_path, page_size: PAGE_SIZE)
         details = page[:response_body]&.first
 
         break unless details
@@ -54,17 +67,26 @@ module ContainerRegistry
       end
     end
 
+    def self.rename_base_repository_path(path, name:, dry_run: false)
+      downcased_path = path&.downcase
+
+      with_dummy_client(token_config: { type: :push_pull_nested_repositories_token, path: downcased_path }) do |client|
+        client.rename_base_repository_path(downcased_path, name: name&.downcase, dry_run: dry_run)
+      end
+    end
+
     def self.each_sub_repositories_with_tag_page(path:, page_size: 100, &block)
       raise ArgumentError, 'block not given' unless block
 
       # dummy uri to initialize the loop
       next_page_uri = URI('')
       page_count = 0
+      downcased_path = path&.downcase
 
-      with_dummy_client(token_config: { type: :nested_repositories_token, path: path&.downcase }) do |client|
+      with_dummy_client(token_config: { type: :nested_repositories_token, path: downcased_path }) do |client|
         while next_page_uri
           last = Rack::Utils.parse_nested_query(next_page_uri.query)['last']
-          current_page = client.sub_repositories_with_tag(path&.downcase, page_size: page_size, last: last)
+          current_page = client.sub_repositories_with_tag(downcased_path, page_size: page_size, last: last)
 
           if current_page&.key?(:response_body)
             yield (current_page[:response_body] || [])
@@ -137,7 +159,7 @@ module ContainerRegistry
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#get-repository-details
     def repository_details(path, sizing: nil)
       with_token_faraday do |faraday_client|
-        req = faraday_client.get("/gitlab/v1/repositories/#{path}/") do |req|
+        req = faraday_client.get("#{GITLAB_REPOSITORIES_PATH}/#{path}/") do |req|
           req.params['size'] = sizing if sizing
         end
 
@@ -151,7 +173,7 @@ module ContainerRegistry
     def tags(path, page_size: 100, last: nil, before: nil, name: nil, sort: nil)
       limited_page_size = [page_size, MAX_TAGS_PAGE_SIZE].min
       with_token_faraday do |faraday_client|
-        url = "/gitlab/v1/repositories/#{path}/tags/list/"
+        url = "#{GITLAB_REPOSITORIES_PATH}/#{path}/tags/list/"
         response = faraday_client.get(url) do |req|
           req.params['n'] = limited_page_size
           req.params['last'] = last if last
@@ -208,6 +230,30 @@ module ContainerRegistry
           pagination: link_parser.parse,
           response_body: response_body(response)
         }
+      end
+    end
+
+    # Given a path 'group/subgroup/project' and name 'newname',
+    # with a successful rename, it will be 'group/subgroup/newname'
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#rename-base-repository
+    def rename_base_repository_path(path, name:, dry_run: false)
+      with_token_faraday do |faraday_client|
+        url = "#{GITLAB_REPOSITORIES_PATH}/#{path}/"
+        response = faraday_client.patch(url) do |req|
+          req.params['dry_run'] = dry_run
+          req.body = { name: name }
+        end
+
+        unless response.success?
+          Gitlab::ErrorTracking.log_exception(
+            UnsuccessfulResponseError.new,
+            class: self.class.name,
+            url: url,
+            status_code: response.status
+          )
+        end
+
+        RENAME_RESPONSES.fetch(response.status, :error)
       end
     end
 

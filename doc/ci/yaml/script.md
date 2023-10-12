@@ -343,9 +343,10 @@ Resolve this by either:
 
 ### Job log output is not formatted as expected or contains unexpected characters
 
-Sometimes the formatting in the job log displays incorrectly with tools that rely on the `TERM` environment variable for coloring or formatting. For example, with the `mypy` command:
+Sometimes the formatting in the job log displays incorrectly with tools that rely
+on the `TERM` environment variable for coloring or formatting. For example, with the `mypy` command:
 
-![Example output](<Screenshot 2023-09-28 at 13.01.18-fs8.png>)
+![Example output](img/incorrect_log_rendering.png)
 
 GitLab Runner runs the container's shell in non-interactive mode, so the shell's `TERM`
 environment variable is set to `dumb`. To fix the formatting for these tools, you can:

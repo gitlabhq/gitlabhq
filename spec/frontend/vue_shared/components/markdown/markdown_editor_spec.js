@@ -494,12 +494,62 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(findContentEditor().props().autofocus).toBe(false);
     });
 
-    it('bubbles up keydown event', () => {
-      const event = new Event('keydown');
+    describe('when keydown event is fired', () => {
+      let event;
+      beforeEach(() => {
+        event = new Event('keydown');
+        window.getSelection = jest.fn(() => ({
+          toString: jest.fn(() => 'test'),
+          removeAllRanges: jest.fn(),
+        }));
+        Object.assign(event, { preventDefault: jest.fn() });
+      });
+      it('bubbles up keydown event', () => {
+        findContentEditor().vm.$emit('keydown', event);
 
-      findContentEditor().vm.$emit('keydown', event);
+        expect(wrapper.emitted('keydown')).toEqual([[event]]);
+      });
 
-      expect(wrapper.emitted('keydown')).toEqual([[event]]);
+      it('bubbles up keydown event for meta key with default behaviour intact', () => {
+        event.metaKey = true;
+        findContentEditor().vm.$emit('keydown', event);
+
+        expect(wrapper.emitted('keydown')).toEqual([[event]]);
+        expect(event.preventDefault).toHaveBeenCalledTimes(0);
+      });
+
+      it('bubbles up keydown event for meta + k key on selected text with default behaviour prevented', () => {
+        event.metaKey = true;
+        event.key = 'k';
+        findContentEditor().vm.$emit('keydown', event);
+
+        expect(wrapper.emitted('keydown')).toEqual([[event]]);
+        expect(event.preventDefault).toHaveBeenCalledTimes(1);
+      });
+
+      it('bubbles up keydown event for meta + k key without text selection with default behaviour prevented', () => {
+        event.metaKey = true;
+        event.key = 'k';
+        window.getSelection = jest.fn(() => ({
+          toString: jest.fn(() => ''),
+          removeAllRanges: jest.fn(),
+        }));
+
+        findContentEditor().vm.$emit('keydown', event);
+
+        expect(wrapper.emitted('keydown')).toEqual([[event]]);
+        expect(event.preventDefault).toHaveBeenCalledTimes(1);
+      });
+
+      it('bubbles up keydown event for meta + non-k key with default behaviour intact', () => {
+        event.metaKey = true;
+        event.key = 'l';
+
+        findContentEditor().vm.$emit('keydown', event);
+
+        expect(wrapper.emitted('keydown')).toEqual([[event]]);
+        expect(event.preventDefault).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe(`when richText editor triggers enableMarkdownEditor event`, () => {

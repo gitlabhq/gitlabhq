@@ -45,4 +45,31 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
 
     it { is_expected.to eq("#{described_class.observability_url}/v3/tenant/#{project.id}") }
   end
+
+  describe '.should_enable_observability_auth_scopes?' do
+    subject { described_class.should_enable_observability_auth_scopes?(group) }
+
+    let(:parent) { build_stubbed(:group) }
+    let(:group) do
+      build_stubbed(:group, parent: parent).tap do |g|
+        g.namespace_settings = build_stubbed(:namespace_settings, namespace: g)
+      end
+    end
+
+    before do
+      stub_feature_flags(observability_tracing: parent)
+    end
+
+    context 'if observability_tracing FF enabled' do
+      it { is_expected.to be true }
+    end
+
+    context 'if observability_tracing FF disabled' do
+      before do
+        stub_feature_flags(observability_tracing: false)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
 end

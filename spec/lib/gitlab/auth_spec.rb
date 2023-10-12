@@ -101,10 +101,10 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
     end
 
-    context 'with observability_group_tab feature flag' do
+    context 'with observability_tracing feature flag' do
       context 'when disabled' do
         before do
-          stub_feature_flags(observability_group_tab: false)
+          stub_feature_flags(observability_tracing: false)
         end
 
         it 'contains for group all resource bot scopes without observability scopes' do
@@ -116,13 +116,14 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
       end
 
-      context 'when enabled for specific group' do
+      context 'when enabled for specific root group' do
+        let(:parent) { build_stubbed(:group) }
         let(:group) do
-          build_stubbed(:group).tap { |g| g.namespace_settings = build_stubbed(:namespace_settings, namespace: g) }
+          build_stubbed(:group, parent: parent).tap { |g| g.namespace_settings = build_stubbed(:namespace_settings, namespace: g) }
         end
 
         before do
-          stub_feature_flags(observability_group_tab: group)
+          stub_feature_flags(observability_tracing: parent)
         end
 
         it 'contains for other group all resource bot scopes including observability scopes' do
@@ -140,7 +141,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
 
         it 'contains for other group all resource bot scopes without observability scopes' do
-          other_group = build_stubbed(:group).tap do |g|
+          other_parent = build_stubbed(:group)
+          other_group = build_stubbed(:group, parent: other_parent).tap do |g|
             g.namespace_settings = build_stubbed(:namespace_settings, namespace: g)
           end
 

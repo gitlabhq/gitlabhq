@@ -165,7 +165,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_field('Days of inactivity before deactivation')
           end
 
-          it 'changes dormant users', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408224' do
+          it 'changes dormant users', :js do
             expect(page).to have_unchecked_field('Deactivate dormant users after a period of inactivity')
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
@@ -182,10 +182,11 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_checked_field('Deactivate dormant users after a period of inactivity')
           end
 
-          it 'change dormant users period', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408224' do
-            expect(page).to have_field _('Days of inactivity before deactivation')
+          it 'change dormant users period', :js do
+            expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: true)
 
             page.within(find('[data-testid="account-limit"]')) do
+              check 'application_setting_deactivate_dormant_users'
               fill_in _('application_setting_deactivate_dormant_users_period'), with: '90'
               click_button 'Save changes'
             end

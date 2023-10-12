@@ -72,14 +72,6 @@ RSpec.describe Packages::Nuget::ProcessPackageFileService, feature_category: :pa
 
         expect(subject).to be_success
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(index_nuget_symbol_files: false)
-        end
-
-        it_behaves_like 'not creating a symbol file'
-      end
     end
 
     context 'with a non symbol package file' do

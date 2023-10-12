@@ -14,4 +14,7 @@ class Approval < ApplicationRecord
   validates :user_id, presence: true, uniqueness: { scope: [:merge_request_id] }
 
   scope :with_user, -> { joins(:user) }
+  scope :with_invalid_patch_id_sha, ->(patch_id_sha) do
+    where.not(patch_id_sha: patch_id_sha).or(where(patch_id_sha: nil))
+  end
 end
