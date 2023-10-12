@@ -241,8 +241,8 @@ The configuration can be added to:
   ...
   environment = [
     "GIT_CONFIG_COUNT=1",
-    "GIT_CONFIG_KEY_1=http.version",
-    "GIT_CONFIG_VALUE_1=HTTP/1.1"
+    "GIT_CONFIG_KEY_0=http.version",
+    "GIT_CONFIG_VALUE_0=HTTP/1.1"
   ]
   ```
 

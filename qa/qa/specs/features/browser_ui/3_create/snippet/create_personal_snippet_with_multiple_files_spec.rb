@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Multiple file snippet', :reliable, product_group: :source_code do
+    describe 'Multiple file snippet', :reliable, product_group: :source_code,
+      quarantine: {
+        type: :investigating,
+        issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/427992"
+      } do
       let(:snippet) do
         Resource::Snippet.fabricate_via_browser_ui! do |snippet|
           snippet.title = 'Personal snippet with multiple files'

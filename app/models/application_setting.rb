@@ -116,6 +116,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
 
+  validates :failed_login_attempts_unlock_period_in_minutes,
+    allow_nil: true,
+    numericality: { only_integer: true, greater_than: 0 }
+
   validates :grafana_url,
     system_hook_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({
       blocked_message: "is blocked: %{exception_message}. #{GRAFANA_URL_ERROR_MESSAGE}"
@@ -262,6 +266,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :max_decompressed_archive_size,
     presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :max_login_attempts,
+    allow_nil: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :max_pages_size,
     presence: true,
@@ -952,6 +960,14 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   def personal_access_tokens_disabled?
     false
+  end
+
+  def max_login_attempts_column_exists?
+    self.class.database.cached_column_exists?(:max_login_attempts)
+  end
+
+  def failed_login_attempts_unlock_period_in_minutes_column_exists?
+    self.class.database.cached_column_exists?(:failed_login_attempts_unlock_period_in_minutes)
   end
 
   private

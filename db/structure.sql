@@ -11851,6 +11851,8 @@ CREATE TABLE application_settings (
     search_rate_limit_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     snowplow_database_collector_hostname text,
     container_registry_db_enabled boolean DEFAULT false NOT NULL,
+    failed_login_attempts_unlock_period_in_minutes integer,
+    max_login_attempts integer,
     encrypted_vertex_ai_access_token bytea,
     encrypted_vertex_ai_access_token_iv bytea,
     project_jobs_api_rate_limit integer DEFAULT 600 NOT NULL,
@@ -11858,9 +11860,11 @@ CREATE TABLE application_settings (
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
+    CONSTRAINT app_settings_failed_login_attempts_unlock_period_positive CHECK ((failed_login_attempts_unlock_period_in_minutes > 0)),
     CONSTRAINT app_settings_git_rate_limit_users_alertlist_max_usernames CHECK ((cardinality(git_rate_limit_users_alertlist) <= 100)),
     CONSTRAINT app_settings_git_rate_limit_users_allowlist_max_usernames CHECK ((cardinality(git_rate_limit_users_allowlist) <= 100)),
     CONSTRAINT app_settings_max_decompressed_archive_size_positive CHECK ((max_decompressed_archive_size >= 0)),
+    CONSTRAINT app_settings_max_login_attempts_positive CHECK ((max_login_attempts > 0)),
     CONSTRAINT app_settings_max_pages_custom_domains_per_project_check CHECK ((max_pages_custom_domains_per_project >= 0)),
     CONSTRAINT app_settings_max_terraform_state_size_bytes_check CHECK ((max_terraform_state_size_bytes >= 0)),
     CONSTRAINT app_settings_p_cleanup_package_file_worker_capacity_positive CHECK ((packages_cleanup_package_file_worker_capacity >= 0)),
@@ -13788,9 +13792,9 @@ ALTER SEQUENCE ci_pipeline_chat_data_id_seq OWNED BY ci_pipeline_chat_data.id;
 CREATE TABLE ci_pipeline_messages (
     id bigint NOT NULL,
     severity smallint DEFAULT 0 NOT NULL,
-    pipeline_id integer NOT NULL,
+    pipeline_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     content text NOT NULL,
-    pipeline_id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    pipeline_id bigint NOT NULL,
     CONSTRAINT check_58ca2981b2 CHECK ((char_length(content) <= 10000))
 );
 

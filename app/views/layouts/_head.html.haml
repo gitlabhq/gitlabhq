@@ -38,10 +38,7 @@
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
 
-  - if ::Feature.enabled?(:font_display_swap, current_user)
-    = stylesheet_link_tag_defer "fonts_swap"
-  - else
-    = stylesheet_link_tag_defer "fonts_optional"
+  = stylesheet_link_tag_defer "fonts"
 
   = stylesheet_link_tag_defer "highlight/themes/#{user_color_scheme}"
 

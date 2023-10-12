@@ -1,15 +1,11 @@
 %head
+  = stylesheet_link_tag "fonts"
   - if params[:lookbook][:display][:theme] == "light"
     = stylesheet_link_tag "application"
     = stylesheet_link_tag "application_utilities"
   - else
     = stylesheet_link_tag "application_dark"
     = stylesheet_link_tag "application_utilities_dark"
-
-  - if ::Feature.enabled?(:font_display_swap, current_user)
-    = stylesheet_link_tag_defer "fonts_swap"
-  - else
-    = stylesheet_link_tag_defer "fonts_optional"
 
 %body
   .gl-mt-6{ class: (params[:lookbook][:display][:layout] == "fluid" ? "container-fluid" : "container") }

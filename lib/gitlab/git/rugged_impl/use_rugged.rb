@@ -4,15 +4,8 @@ module Gitlab
   module Git
     module RuggedImpl
       module UseRugged
-        def use_rugged?(repo, feature_key)
-          return Feature.enabled?(feature_key) if Feature.persisted_name?(feature_key)
-
-          # Disable Rugged auto-detect(can_use_disk?) when Puma threads>1
-          # https://gitlab.com/gitlab-org/gitlab/issues/119326
-          return false if running_puma_with_multiple_threads?
-          return false if Feature.enabled?(:skip_rugged_auto_detect, type: :ops)
-
-          Gitlab::GitalyClient.can_use_disk?(repo.storage)
+        def use_rugged?(_, _)
+          false
         end
 
         def execute_rugged_call(method_name, *args)
@@ -49,9 +42,7 @@ module Gitlab
         end
 
         def rugged_enabled_through_feature_flag?
-          rugged_feature_keys.any? do |feature_key|
-            Feature.enabled?(feature_key)
-          end
+          false
         end
       end
     end

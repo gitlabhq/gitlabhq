@@ -1,8 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { GlFormCheckboxGroup } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
 
 import { archivedFilterData } from '~/search/sidebar/components/archived_filter/data';
@@ -22,12 +23,16 @@ describe('ArchivedFilter', () => {
       actions: defaultActions,
     });
 
-    wrapper = shallowMount(ArchivedFilter, {
+    wrapper = shallowMountExtended(ArchivedFilter, {
       store,
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
   const findCheckboxFilter = () => wrapper.findComponent(GlFormCheckboxGroup);
+  const findCheckboxFilterLabel = () => wrapper.findByTestId('label');
   const findH5 = () => wrapper.findComponent('h5');
 
   describe('old sidebar', () => {
@@ -43,6 +48,12 @@ describe('ArchivedFilter', () => {
       expect(findH5().exists()).toBe(true);
       expect(findH5().text()).toBe(archivedFilterData.headerLabel);
     });
+
+    it('wraps the label element with a tooltip', () => {
+      const tooltip = getBinding(findCheckboxFilterLabel().element, 'gl-tooltip');
+      expect(tooltip).toBeDefined();
+      expect(tooltip.value).toBe('Include search results from archived projects');
+    });
   });
 
   describe('new sidebar', () => {
@@ -57,6 +68,12 @@ describe('ArchivedFilter', () => {
     it("doesn't render the divider", () => {
       expect(findH5().exists()).toBe(true);
       expect(findH5().text()).toBe(archivedFilterData.headerLabel);
+    });
+
+    it('wraps the label element with a tooltip', () => {
+      const tooltip = getBinding(findCheckboxFilterLabel().element, 'gl-tooltip');
+      expect(tooltip).toBeDefined();
+      expect(tooltip.value).toBe('Include search results from archived projects');
     });
   });
 

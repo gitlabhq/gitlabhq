@@ -121,9 +121,13 @@ The first 2-3 quarters are required to define a general split of data and build 
 
     The purpose is that `ci_pipelines` (like `ci_stages`, `ci_builds`, `ci_job_artifacts`) and adjacent tables are properly attributed to be Cell-local.
 
-1. **User can create issue, merge request, and merge it after it is green.**
+1. **User can create issue.**
 
-    The purpose is to ensure that `issues` and `merge requests` are properly attributed to be `Cell-local`.
+    The purpose is to ensure that `issues` are properly attributed to be `Cell-local`.
+
+1. **User can create merge request, and merge it after it is green.**
+
+    The purpose is to ensure `merge requests` are properly attributed to be `Cell-local`.
 
 1. **User can manage Group and Project members.**
 
@@ -284,7 +288,7 @@ One iteration describes one quarter's worth of work.
 
 1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - Expected delivery: 16.10 FY25Q1 - Planned
 
-    - Essential workflows: User can create organization on Cell 2.
+    - Essential workflows: User can create Organization on Cell 2.
     - Data access layer: Cluster-unique identifiers.
     - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
     - Data access layer: Data access layer.
@@ -294,11 +298,11 @@ One iteration describes one quarter's worth of work.
 1. Iteration 5..N - starting FY25Q1
 
     - Essential workflows: User can push to Git repository.
-    - Essential workflows: User can create issue, merge request, and merge it after it is green.
     - Essential workflows: User can run CI pipeline.
     - Essential workflows: Instance-wide settings are shared across cluster.
     - Essential workflows: User can change profile avatar that is shared in cluster.
-    - Essential workflows: User can create issue, merge request, and merge it after it is green.
+    - Essential workflows: User can create issue.
+    - Essential workflows: User can create merge request, and merge it after it is green.
     - Essential workflows: User can manage Group and Project members.
     - Essential workflows: User can manage instance-wide runners.
     - Essential workflows: User is part of Organization and can only see information from the Organization.

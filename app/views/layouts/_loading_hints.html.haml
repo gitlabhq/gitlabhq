@@ -20,7 +20,4 @@
     %link{ rel: 'preload', href: font_path('gitlab-sans/GitLabSans-Italic.woff2'), as: 'font', crossorigin: css_crossorigin }
     %link{ rel: 'preload', href: font_path('gitlab-mono/GitLabMono.woff2'), as: 'font', crossorigin: css_crossorigin }
     %link{ rel: 'preload', href: font_path('gitlab-mono/GitLabMono-Italic.woff2'), as: 'font', crossorigin: css_crossorigin }
-    - if ::Feature.enabled?(:font_display_swap, current_user)
-      = preload_link_tag(path_to_stylesheet('fonts_swap'), crossorigin: css_crossorigin)
-    - else
-      = preload_link_tag(path_to_stylesheet('fonts_optional'), crossorigin: css_crossorigin)
+    = preload_link_tag(path_to_stylesheet('fonts'), crossorigin: css_crossorigin)

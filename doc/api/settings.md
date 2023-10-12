@@ -40,14 +40,16 @@ Example response:
   "id" : 1,
   "default_branch_protection" : 2,
   "default_preferred_language" : "en",
+  "failed_login_attempts_unlock_period_in_minutes": 30,
   "restricted_visibility_levels" : [],
   "password_authentication_enabled_for_web" : true,
   "after_sign_out_path" : null,
   "max_attachment_size" : 10,
+  "max_decompressed_archive_size": 25600,
   "max_export_size": 50,
   "max_import_size": 50,
   "max_import_remote_file_size": 10240,
-  "max_decompressed_archive_size": 25600,
+  "max_login_attempts": 3,
   "user_oauth_applications" : true,
   "updated_at" : "2016-01-04T15:44:55.176Z",
   "session_expire_delay" : 10080,
@@ -174,6 +176,7 @@ Example response:
   "id": 1,
   "default_projects_limit": 100000,
   "default_preferred_language": "en",
+  "failed_login_attempts_unlock_period_in_minutes": 30,
   "signup_enabled": false,
   "password_authentication_enabled_for_web": true,
   "gravatar_enabled": true,
@@ -183,10 +186,11 @@ Example response:
   "default_branch_protection": 2,
   "restricted_visibility_levels": [],
   "max_attachment_size": 10,
+  "max_decompressed_archive_size": 25600,
   "max_export_size": 50,
   "max_import_size": 50,
   "max_import_remote_file_size": 10240,
-  "max_decompressed_archive_size": 25600,
+  "max_login_attempts": 3,
   "session_expire_delay": 10080,
   "default_ci_config_path" : null,
   "default_project_visibility": "internal",
@@ -416,6 +420,7 @@ listed in the descriptions of the relevant settings.
 | `external_pipeline_validation_service_timeout` | integer    | no                                   | How long to wait for a response from the pipeline validation service. Assumes `OK` if it times out. |
 | `static_objects_external_storage_url`        | string       | no                                   | URL to an external storage for repository static objects. |
 | `static_objects_external_storage_auth_token` | string       | required by: `static_objects_external_storage_url` | Authentication token for the external storage linked in `static_objects_external_storage_url`. |
+| `failed_login_attempts_unlock_period_in_minutes` | integer          | no                           | Time period in minutes after which the user is unlocked when maximum number of failed sign-in attempts reached. |
 | `file_template_project_id` **(PREMIUM ALL)** | integer          | no                                   | The ID of a project to load custom file templates from. |
 | `first_day_of_week`                      | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday. |
 | `globally_allowed_ips`                   | string           | no                                   | Comma-separated list of IP addresses and CIDRs always allowed for inbound traffic. For example, `1.1.1.1, 2.2.2.0/24`. |
@@ -460,6 +465,7 @@ listed in the descriptions of the relevant settings.
 | `max_export_size`                        | integer          | no                                   | Maximum export size in MB. 0 for unlimited. Default = 0 (unlimited). |
 | `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited). [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8. |
 | `max_import_remote_file_size`            | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
+| `max_login_attempts`                     | integer          | no                                   | Maximum number of sign-in attempts before locking out the user. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
 | `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                            | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked.|
 | `max_ssh_key_lifetime` **(ULTIMATE SELF)** | integer        | no                                   | Maximum allowable lifetime for SSH keys in days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6. |

@@ -111,7 +111,7 @@ RSpec.describe API::Ci::Helpers::Runner do
 
         expect(current_runner_manager).not_to be_nil
         expect(current_runner_manager.system_xid).to eq('new_system_id')
-        expect(current_runner_manager.contacted_at).to eq(Time.current)
+        expect(current_runner_manager.contacted_at).to be_nil
         expect(current_runner_manager.runner).to eq(runner)
       end
 

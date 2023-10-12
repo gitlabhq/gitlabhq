@@ -1,8 +1,0 @@
----
-name: font_display_swap
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132798
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426437
-milestone: '16.5'
-type: development
-group: group::foundations
-default_enabled: false

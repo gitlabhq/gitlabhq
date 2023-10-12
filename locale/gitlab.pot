@@ -22024,6 +22024,9 @@ msgstr ""
 msgid "GlobalSearch|Include archived"
 msgstr ""
 
+msgid "GlobalSearch|Include search results from archived projects"
+msgstr ""
+
 msgid "GlobalSearch|Incremental indexing queue length"
 msgstr ""
 

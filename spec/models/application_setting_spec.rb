@@ -627,6 +627,18 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     specify do
+      is_expected.to validate_numericality_of(:failed_login_attempts_unlock_period_in_minutes)
+                       .only_integer
+                       .is_greater_than(0)
+    end
+
+    specify do
+      is_expected.to validate_numericality_of(:max_login_attempts)
+                       .only_integer
+                       .is_greater_than(0)
+    end
+
+    specify do
       is_expected.to validate_numericality_of(:local_markdown_version)
         .only_integer
         .is_greater_than_or_equal_to(0)

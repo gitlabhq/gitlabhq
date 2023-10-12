@@ -2432,8 +2432,8 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           get api(route, current_user)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['signature_type']).to eq('PGP')
-          expect(json_response['commit_source']).to eq('rugged')
+          expect(json_response['signature_type']).to eq('X509')
+          expect(json_response['commit_source']).to eq('gitaly')
         end
       end
     end
