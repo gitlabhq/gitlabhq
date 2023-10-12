@@ -213,6 +213,11 @@ export const config = {
                 epicBoardList: {
                   keyArgs: ['id'],
                 },
+                isShowingLabels: {
+                  read(currentState) {
+                    return currentState ?? true;
+                  },
+                },
               },
             },
           }

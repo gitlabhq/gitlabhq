@@ -3229,6 +3229,9 @@ msgstr ""
 msgid "AdminArea|Developer"
 msgstr ""
 
+msgid "AdminArea|Documentation"
+msgstr ""
+
 msgid "AdminArea|Features"
 msgstr ""
 
@@ -5426,9 +5429,6 @@ msgstr ""
 msgid "Analytics|Charts"
 msgstr ""
 
-msgid "Analytics|Choose a measurement to start"
-msgstr ""
-
 msgid "Analytics|Code"
 msgstr ""
 
@@ -5448,6 +5448,9 @@ msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Create your dashboard"
+msgstr ""
+
+msgid "Analytics|Create your visualization"
 msgstr ""
 
 msgid "Analytics|Custom dashboards"
@@ -5546,10 +5549,10 @@ msgstr ""
 msgid "Analytics|Save and add to Dashboard"
 msgstr ""
 
-msgid "Analytics|Save new visualization"
+msgid "Analytics|Save your dashboard"
 msgstr ""
 
-msgid "Analytics|Save your dashboard"
+msgid "Analytics|Save your visualization"
 msgstr ""
 
 msgid "Analytics|Select a measurement"
@@ -5579,6 +5582,9 @@ msgstr ""
 msgid "Analytics|Something went wrong."
 msgstr ""
 
+msgid "Analytics|Start by choosing a metric"
+msgstr ""
+
 msgid "Analytics|Tables"
 msgstr ""
 
@@ -5592,6 +5598,9 @@ msgid "Analytics|Updating dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Updating visualization %{visualizationName}"
+msgstr ""
+
+msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
 msgstr ""
 
 msgid "Analytics|Users"
@@ -14204,6 +14213,9 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
+msgid "Created %{date} ago"
+msgstr ""
+
 msgid "Created %{epicTimeagoDate}"
 msgstr ""
 
@@ -16075,6 +16087,9 @@ msgid "Dependencies|The component dependency path is based on the lock file. The
 msgstr ""
 
 msgid "Dependencies|There may be multiple paths"
+msgstr ""
+
+msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr ""
 
 msgid "Dependencies|This group exceeds the maximum number of sub-groups of 600. We cannot accurately display a project list at this time. Please access a sub-group dependency list to view this information or see the %{linkStart}dependency list help %{linkEnd} page to learn more."
@@ -22000,6 +22015,12 @@ msgstr ""
 msgid "GlobalSearch|Include archived"
 msgstr ""
 
+msgid "GlobalSearch|Incremental indexing queue length"
+msgstr ""
+
+msgid "GlobalSearch|Initial indexing queue length"
+msgstr ""
+
 msgid "GlobalSearch|Issues I've created"
 msgstr ""
 
@@ -22022,6 +22043,9 @@ msgid "GlobalSearch|Merge requests that I'm a reviewer"
 msgstr ""
 
 msgid "GlobalSearch|No labels found"
+msgstr ""
+
+msgid "GlobalSearch|Only first %{max_shown} of not indexed projects is shown"
 msgstr ""
 
 msgid "GlobalSearch|Places"
@@ -22106,6 +22130,9 @@ msgid "GlobalSearch|all GitLab"
 msgstr ""
 
 msgid "GlobalSearch|in %{scope}"
+msgstr ""
+
+msgid "GlobalSearch|projects not indexed"
 msgstr ""
 
 msgid "GlobalShortcuts|Copied reference to clipboard."
@@ -24978,6 +25005,9 @@ msgstr ""
 msgid "Index deletion is canceled"
 msgstr ""
 
+msgid "Indexing status"
+msgstr ""
+
 msgid "Indicates whether this runner can pick jobs without tags"
 msgstr ""
 
@@ -27825,6 +27855,9 @@ msgid "Let's Encrypt does not accept emails on example.com"
 msgstr ""
 
 msgid "Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
+msgstr ""
+
+msgid "License"
 msgstr ""
 
 msgid "License Compliance"
@@ -35963,7 +35996,7 @@ msgstr ""
 msgid "ProductAnalytics|Waiting for events"
 msgstr ""
 
-msgid "ProductAnalytics|What do you want to measure?"
+msgid "ProductAnalytics|What metric do you want to visualize?"
 msgstr ""
 
 msgid "ProductAnalytics|You can instrument your application using a JS module or an HTML script. Follow the instructions below for the option you prefer."
@@ -44237,6 +44270,9 @@ msgid "Show comments only"
 msgstr ""
 
 msgid "Show complete raw log"
+msgstr ""
+
+msgid "Show current status of indexing"
 msgstr ""
 
 msgid "Show details"
