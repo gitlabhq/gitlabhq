@@ -8,7 +8,6 @@ import {
   // exports
   captureException,
   captureMessage,
-  withScope,
   SDK_VERSION,
 } from 'sentrybrowser';
 import * as Sentry from 'sentrybrowser';
@@ -134,7 +133,6 @@ describe('SentryConfig', () => {
         expect(window._Sentry).toEqual({
           captureException,
           captureMessage,
-          withScope,
           SDK_VERSION,
         });
       });

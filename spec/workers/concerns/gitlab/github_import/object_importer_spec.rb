@@ -16,7 +16,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
       end
 
       def representation_class
-        MockRepresantation
+        MockRepresentation
       end
     end.new
   end
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
   let(:stubbed_representation) { representation_class }
 
   before do
-    stub_const('MockRepresantation', stubbed_representation)
+    stub_const('MockRepresentation', stubbed_representation)
   end
 
   describe '#import', :clean_gitlab_redis_cache do
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
     it 'imports the object' do
       expect(importer_class)
         .to receive(:new)
-        .with(instance_of(MockRepresantation), project, client)
+        .with(instance_of(MockRepresentation), project, client)
         .and_return(importer_instance)
 
       expect(importer_instance)
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
         .to receive(:info)
         .with(
           {
-            github_identifiers: github_identifiers,
+            external_identifiers: github_identifiers,
             message: 'starting importer',
             project_id: project.id,
             importer: 'klass_name'
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
         .to receive(:info)
         .with(
           {
-            github_identifiers: github_identifiers,
+            external_identifiers: github_identifiers,
             message: 'importer finished',
             project_id: project.id,
             importer: 'klass_name'
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
         .to receive(:info)
         .with(
           {
-            github_identifiers: nil,
+            external_identifiers: nil,
             message: 'Project import is no longer running. Stopping worker.',
             project_id: project.id,
             importer: 'klass_name',
@@ -135,12 +135,13 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
     end
 
     it 'logs error when the import fails' do
+      exception = StandardError.new('some error')
+
       expect(importer_class)
         .to receive(:new)
-        .with(instance_of(MockRepresantation), project, client)
+        .with(instance_of(MockRepresentation), project, client)
         .and_return(importer_instance)
 
-      exception = StandardError.new('some error')
       expect(importer_instance)
         .to receive(:execute)
         .and_raise(exception)
@@ -149,10 +150,35 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
         .to receive(:info)
         .with(
           {
-            github_identifiers: github_identifiers,
             message: 'starting importer',
+            external_identifiers: github_identifiers,
             project_id: project.id,
             importer: 'klass_name'
+          }
+        )
+
+      expect(Gitlab::Import::Logger)
+        .to receive(:error)
+        .with(
+          {
+            message: 'importer failed',
+            'exception.message': 'some error',
+            import_type: project.import_type,
+            project_id: project.id,
+            source: 'klass_name',
+            external_identifiers: github_identifiers
+          }
+        )
+
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_exception)
+        .with(
+          exception,
+          {
+            import_type: project.import_type,
+            project_id: project.id,
+            source: 'klass_name',
+            external_identifiers: github_identifiers
           }
         )
 
@@ -162,7 +188,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
           project_id: project.id,
           exception: exception,
           error_source: 'klass_name',
-          fail_import: false
+          fail_import: false,
+          external_identifiers: github_identifiers
         )
         .and_call_original
 
@@ -188,7 +215,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
             project_id: project.id,
             exception: a_kind_of(NoMethodError),
             error_source: 'klass_name',
-            fail_import: true
+            fail_import: true,
+            external_identifiers: { object_type: 'dummy' }
           )
           .and_call_original
 
@@ -203,7 +231,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
       before do
         expect(importer_class)
           .to receive(:new)
-          .with(instance_of(MockRepresantation), project, client)
+          .with(instance_of(MockRepresentation), project, client)
           .and_return(importer_instance)
 
         expect(importer_instance)
@@ -216,7 +244,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
           .to receive(:info)
           .with(
             {
-              github_identifiers: github_identifiers,
+              external_identifiers: github_identifiers,
               message: 'starting importer',
               project_id: project.id,
               importer: 'klass_name'
@@ -229,7 +257,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
             project_id: project.id,
             exception: exception,
             error_source: 'klass_name',
-            fail_import: false
+            fail_import: false,
+            external_identifiers: github_identifiers
           )
           .and_call_original
 

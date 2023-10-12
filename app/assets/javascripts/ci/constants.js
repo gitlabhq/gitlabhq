@@ -24,19 +24,8 @@ export const SUCCESS_STATUS = 'SUCCESS';
 export const PASSED_STATUS = 'passed';
 export const MANUAL_STATUS = 'manual';
 
-// Constants for the ID and IID selection dropdown
-export const PipelineKeyOptions = [
-  {
-    text: __('Show Pipeline ID'),
-    label: __('Pipeline ID'),
-    value: 'id',
-  },
-  {
-    text: __('Show Pipeline IID'),
-    label: __('Pipeline IID'),
-    value: 'iid',
-  },
-];
+export const PIPELINE_ID_KEY = 'id';
+export const PIPELINE_IID_KEY = 'iid';
 
 export const RAW_TEXT_WARNING = s__(
   'Pipeline|Raw text search is not currently supported. Please use the available search tokens.',

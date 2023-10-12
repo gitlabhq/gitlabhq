@@ -42,7 +42,6 @@ class SnippetsFinder < UnionFinder
   include FinderMethods
   include Gitlab::Utils::StrongMemoize
   include CreatedAtFilter
-  include Gitlab::Allowable
 
   attr_reader :current_user, :params
 
@@ -80,7 +79,6 @@ class SnippetsFinder < UnionFinder
       snippets = all_snippets
       snippets = by_ids(snippets)
       snippets = snippets.with_optional_visibility(visibility_from_scope)
-      snippets = hide_created_by_banned_user(snippets)
     end
 
     by_created_at(snippets)
@@ -89,7 +87,7 @@ class SnippetsFinder < UnionFinder
   def return_all_available_and_permited?
     # Currently limited to access_levels `admin` and `auditor`
     # See policies/base_policy.rb files for specifics.
-    params[:all_available] && can?(current_user, :read_all_resources)
+    params[:all_available] && current_user&.can_read_all_resources?
   end
 
   def all_snippets
@@ -128,7 +126,7 @@ class SnippetsFinder < UnionFinder
     queries = []
     queries << personal_snippets unless only_project?
 
-    if can?(current_user, :read_cross_project)
+    if Ability.allowed?(current_user, :read_cross_project)
       queries << snippets_of_visible_projects
       queries << snippets_of_authorized_projects if current_user
     end
@@ -207,14 +205,6 @@ class SnippetsFinder < UnionFinder
     return snippets unless params[:ids].present?
 
     snippets.id_in(params[:ids])
-  end
-
-  def hide_created_by_banned_user(snippets)
-    # if admin -> return all snippets, if not-admin -> filter out snippets by banned user
-    return snippets if can?(current_user, :read_all_resources)
-    return snippets unless Feature.enabled?(:hide_snippets_of_banned_users)
-
-    snippets.without_created_by_banned_user
   end
 
   def author

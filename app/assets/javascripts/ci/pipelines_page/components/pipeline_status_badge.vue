@@ -1,6 +1,5 @@
 <script>
 import { TRACKING_CATEGORIES } from '~/ci/constants';
-import { CHILD_VIEW } from '~/ci/pipeline_details/constants';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import Tracking from '~/tracking';
 import PipelinesTimeago from './time_ago.vue';
@@ -16,17 +15,10 @@ export default {
       type: Object,
       required: true,
     },
-    viewType: {
-      type: String,
-      required: true,
-    },
   },
   computed: {
     pipelineStatus() {
       return this.pipeline?.details?.status ?? {};
-    },
-    isChildView() {
-      return this.viewType === CHILD_VIEW;
     },
   },
   methods: {
@@ -39,12 +31,7 @@ export default {
 
 <template>
   <div>
-    <ci-badge-link
-      class="gl-mb-3"
-      :status="pipelineStatus"
-      :show-text="!isChildView"
-      @ciStatusBadgeClick="trackClick"
-    />
+    <ci-badge-link class="gl-mb-3" :status="pipelineStatus" @ciStatusBadgeClick="trackClick" />
     <pipelines-timeago :pipeline="pipeline" />
   </div>
 </template>

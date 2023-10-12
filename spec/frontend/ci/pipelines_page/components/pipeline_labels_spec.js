@@ -26,6 +26,7 @@ describe('Pipeline label component', () => {
     wrapper = shallowMountExtended(PipelineLabelsComponent, {
       propsData: { ...defaultProps, ...props },
       provide: {
+        pipelineSchedulesPath: 'group/project/-/schedules',
         targetProjectFullPath: projectPath,
       },
     });

@@ -28,7 +28,7 @@ import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue'
 import PipelinesComponent from '~/ci/pipelines_page/pipelines.vue';
 import PipelinesCiTemplates from '~/ci/pipelines_page/components/empty_state/pipelines_ci_templates.vue';
 import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
-import { RAW_TEXT_WARNING, TRACKING_CATEGORIES } from '~/ci/constants';
+import { PIPELINE_IID_KEY, RAW_TEXT_WARNING, TRACKING_CATEGORIES } from '~/ci/constants';
 import Store from '~/ci/pipeline_details/stores/pipelines_store';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
@@ -57,28 +57,23 @@ describe('Pipelines', () => {
   let mockApollo;
   let mock;
   let trackingSpy;
+  let mutationMock;
 
-  const paths = {
-    emptyStateSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
-    errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
-    noPipelinesSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
+  const withPermissionsProps = {
     ciLintPath: '/ci/lint',
     resetCachePath: `${mockProjectPath}/settings/ci_cd/reset_cache`,
     newPipelinePath: `${mockProjectPath}/pipelines/new`,
-
     ciRunnerSettingsPath: `${mockProjectPath}/-/settings/ci_cd#js-runners-settings`,
-  };
-
-  const noPermissions = {
-    emptyStateSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
-    errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
-    noPipelinesSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
+    canCreatePipeline: true,
   };
 
   const defaultProps = {
     hasGitlabCi: true,
-    canCreatePipeline: true,
-    ...paths,
+    canCreatePipeline: false,
+    projectId: mockProjectId,
+    defaultBranchName: mockDefaultBranchName,
+    endpoint: mockPipelinesEndpoint,
+    params: {},
   };
 
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
@@ -87,10 +82,9 @@ describe('Pipelines', () => {
   const findNavigationControls = () => wrapper.findComponent(NavigationControls);
   const findPipelinesTable = () => wrapper.findComponent(PipelinesTableComponent);
   const findTablePagination = () => wrapper.findComponent(TablePagination);
-  const findPipelineKeyCollapsibleBoxVue = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findPipelineKeyCollapsibleBox = () => wrapper.findComponent(GlCollapsibleListbox);
 
   const findTab = (tab) => wrapper.findByTestId(`pipelines-tab-${tab}`);
-  const findPipelineKeyCollapsibleBox = () => wrapper.findByTestId('pipeline-key-collapsible-box');
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
@@ -98,25 +92,23 @@ describe('Pipelines', () => {
     wrapper.find('[data-testid="mini-pipeline-graph-dropdown"] .dropdown-toggle');
   const findPipelineUrlLinks = () => wrapper.findAll('[data-testid="pipeline-url-link"]');
 
-  const createComponent = (props = defaultProps) => {
-    const { mutationMock, ...restProps } = props;
+  const createComponent = ({ props = {}, withPermissions = true } = {}) => {
     mockApollo = createMockApollo([[setSortPreferenceMutation, mutationMock]]);
+    const permissionsProps = withPermissions ? { ...withPermissionsProps } : {};
 
     wrapper = extendedWrapper(
       mount(PipelinesComponent, {
         provide: {
           pipelineEditorPath: '',
           suggestedCiTemplates: [],
-          ciRunnerSettingsPath: paths.ciRunnerSettingsPath,
+          ciRunnerSettingsPath: defaultProps.ciRunnerSettingsPath,
           anyRunnersAvailable: true,
         },
         propsData: {
+          ...defaultProps,
+          ...permissionsProps,
+          ...props,
           store: new Store(),
-          projectId: mockProjectId,
-          defaultBranchName: mockDefaultBranchName,
-          endpoint: mockPipelinesEndpoint,
-          params: {},
-          ...restProps,
         },
         apolloProvider: mockApollo,
       }),
@@ -124,11 +116,10 @@ describe('Pipelines', () => {
   };
 
   beforeEach(() => {
-    setWindowLocation(TEST_HOST);
-  });
-
-  beforeEach(() => {
     mock = new MockAdapter(axios);
+
+    setWindowLocation(TEST_HOST);
+    mutationMock = jest.fn();
 
     jest.spyOn(window.history, 'pushState');
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(users);
@@ -169,7 +160,9 @@ describe('Pipelines', () => {
 
     describe('when user has no permissions', () => {
       beforeEach(async () => {
-        createComponent({ hasGitlabCi: true, canCreatePipeline: false, ...noPermissions });
+        createComponent({
+          withPermissions: false,
+        });
         await waitForPromises();
       });
 
@@ -225,11 +218,13 @@ describe('Pipelines', () => {
       });
 
       it('renders Run pipeline link', () => {
-        expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
+        expect(findRunPipelineButton().attributes('href')).toBe(
+          withPermissionsProps.newPipelinePath,
+        );
       });
 
       it('renders CI lint link', () => {
-        expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
+        expect(findCiLintButton().attributes('href')).toBe(withPermissionsProps.ciLintPath);
       });
 
       it('renders Clear runner cache button', () => {
@@ -382,7 +377,7 @@ describe('Pipelines', () => {
         it('should change the text to Show Pipeline IID', async () => {
           expect(findPipelineKeyCollapsibleBox().exists()).toBe(true);
           expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockFilteredPipeline.id}`);
-          findPipelineKeyCollapsibleBoxVue().vm.$emit('select', 'iid');
+          findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
 
           await waitForPromises();
 
@@ -390,21 +385,21 @@ describe('Pipelines', () => {
         });
 
         it('calls mutation to save idType preference', () => {
-          const mutationMock = jest.fn().mockResolvedValue(setIdTypePreferenceMutationResponse);
-          createComponent({ ...defaultProps, mutationMock });
+          mutationMock = jest.fn().mockResolvedValue(setIdTypePreferenceMutationResponse);
+          createComponent();
 
-          findPipelineKeyCollapsibleBoxVue().vm.$emit('select', 'iid');
+          findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
 
-          expect(mutationMock).toHaveBeenCalledWith({ input: { visibilityPipelineIdType: 'IID' } });
+          expect(mutationMock).toHaveBeenCalledWith({
+            input: { visibilityPipelineIdType: PIPELINE_IID_KEY.toUpperCase() },
+          });
         });
 
         it('captures error when mutation response has errors', async () => {
-          const mutationMock = jest
-            .fn()
-            .mockResolvedValue(setIdTypePreferenceMutationResponseWithErrors);
-          createComponent({ ...defaultProps, mutationMock });
+          mutationMock = jest.fn().mockResolvedValue(setIdTypePreferenceMutationResponseWithErrors);
+          createComponent();
 
-          findPipelineKeyCollapsibleBoxVue().vm.$emit('select', 'iid');
+          findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
           await waitForPromises();
 
           expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
@@ -610,11 +605,13 @@ describe('Pipelines', () => {
       });
 
       it('renders Run pipeline link', () => {
-        expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
+        expect(findRunPipelineButton().attributes('href')).toBe(
+          withPermissionsProps.newPipelinePath,
+        );
       });
 
       it('renders CI lint link', () => {
-        expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
+        expect(findCiLintButton().attributes('href')).toBe(withPermissionsProps.ciLintPath);
       });
 
       it('renders Clear runner cache button', () => {
@@ -651,7 +648,7 @@ describe('Pipelines', () => {
 
     describe('when CI is not enabled and user has permissions', () => {
       beforeEach(async () => {
-        createComponent({ hasGitlabCi: false, canCreatePipeline: true, ...paths });
+        createComponent({ props: { hasGitlabCi: false } });
         await waitForPromises();
       });
 
@@ -678,7 +675,7 @@ describe('Pipelines', () => {
 
     describe('when CI is not enabled and user has no permissions', () => {
       beforeEach(async () => {
-        createComponent({ hasGitlabCi: false, canCreatePipeline: false, ...noPermissions });
+        createComponent({ props: { hasGitlabCi: false }, withPermissions: false });
         await waitForPromises();
       });
 
@@ -700,7 +697,7 @@ describe('Pipelines', () => {
 
     describe('when CI is enabled and user has no permissions', () => {
       beforeEach(() => {
-        createComponent({ hasGitlabCi: true, canCreatePipeline: false, ...noPermissions });
+        createComponent({ props: { hasGitlabCi: true }, withPermissions: false });
 
         return waitForPromises();
       });
@@ -798,8 +795,10 @@ describe('Pipelines', () => {
 
     describe('when user has no permissions', () => {
       beforeEach(async () => {
-        createComponent({ hasGitlabCi: false, canCreatePipeline: true, ...noPermissions });
-
+        createComponent({
+          props: { hasGitlabCi: false },
+          withPermissions: false,
+        });
         await waitForPromises();
       });
 
@@ -834,9 +833,11 @@ describe('Pipelines', () => {
       });
 
       it('renders buttons', () => {
-        expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
+        expect(findRunPipelineButton().attributes('href')).toBe(
+          withPermissionsProps.newPipelinePath,
+        );
 
-        expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
+        expect(findCiLintButton().attributes('href')).toBe(withPermissionsProps.ciLintPath);
         expect(findCleanCacheButton().text()).toBe('Clear runner caches');
       });
 

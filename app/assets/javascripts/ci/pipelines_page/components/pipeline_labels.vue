@@ -17,14 +17,13 @@ export default {
     targetProjectFullPath: {
       default: '',
     },
+    pipelineSchedulesPath: {
+      default: '',
+    },
   },
   props: {
     pipeline: {
       type: Object,
-      required: true,
-    },
-    pipelineScheduleUrl: {
-      type: String,
       required: true,
     },
   },
@@ -52,7 +51,7 @@ export default {
     <gl-badge
       v-if="isScheduled"
       v-gl-tooltip
-      :href="pipelineScheduleUrl"
+      :href="pipelineSchedulesPath"
       target="__blank"
       :title="__('This pipeline was created by a schedule.')"
       variant="info"

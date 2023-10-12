@@ -63,12 +63,11 @@ module Gitlab
       rescue NoMethodError => e
         # This exception will be more useful in development when a new
         # Representation is created but the developer forgot to add a
-        # `:github_identifiers` field.
+        # `#github_identifiers` method.
         track_and_raise_exception(project, e, fail_import: true)
       rescue ActiveRecord::RecordInvalid, NotRetriableError => e
         # We do not raise exception to prevent job retry
-        failure = track_exception(project, e)
-        add_identifiers_to_failure(failure, object.github_identifiers)
+        track_exception(project, e)
       rescue StandardError => e
         track_and_raise_exception(project, e)
       end
@@ -82,8 +81,7 @@ module Gitlab
         return unless failure
 
         object = representation_class.from_json_hash(hash)
-
-        add_identifiers_to_failure(failure, object.github_identifiers)
+        failure.update_column(:external_identifiers, object.github_identifiers)
       end
 
       def increment_object_counter?(_object)
@@ -117,16 +115,20 @@ module Gitlab
         extra.merge(
           project_id: project_id,
           importer: importer_class.name,
-          github_identifiers: github_identifiers
+          external_identifiers: github_identifiers
         )
       end
 
       def track_exception(project, exception, fail_import: false)
+        external_identifiers = github_identifiers || {}
+        external_identifiers[:object_type] ||= object_type&.to_s
+
         Gitlab::Import::ImportFailureService.track(
           project_id: project.id,
           error_source: importer_class.name,
           exception: exception,
-          fail_import: fail_import
+          fail_import: fail_import,
+          external_identifiers: external_identifiers
         )
       end
 
@@ -134,12 +136,6 @@ module Gitlab
         track_exception(project, exception, fail_import: fail_import)
 
         raise(exception)
-      end
-
-      def add_identifiers_to_failure(failure, external_identifiers)
-        external_identifiers[:object_type] = object_type
-
-        failure.update_column(:external_identifiers, external_identifiers)
       end
     end
   end

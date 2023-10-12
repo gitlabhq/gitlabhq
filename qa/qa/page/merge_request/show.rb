@@ -81,10 +81,10 @@ module QA
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
-          element :merge_button
-          element :merge_moment_dropdown
-          element :merge_immediately_menu_item
-          element :merged_status_content
+          element 'merge-button'
+          element 'merge-immediately-dropdown'
+          element 'merge-immediately-button'
+          element 'merged-status-content'
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/sha_mismatch.vue' do
@@ -258,13 +258,13 @@ module QA
         def has_merge_button?
           refresh
 
-          has_element?(:merge_button)
+          has_element?('merge-button')
         end
 
         def has_no_merge_button?
           refresh
 
-          has_no_element?(:merge_button)
+          has_no_element?('merge-button')
         end
 
         RSpec::Matchers.define :have_merge_button do
@@ -311,7 +311,7 @@ module QA
         def merge_when_pipeline_succeeds!
           wait_until_ready_to_merge
 
-          click_element(:merge_button, text: 'Merge when pipeline succeeds')
+          click_element('merge-button', text: 'Merge when pipeline succeeds')
         end
 
         def merged?
@@ -322,17 +322,17 @@ module QA
           # To remove page refresh logic if possible
           # We don't raise on failure because this method is used as a predicate matcher
           retry_until(max_attempts: 3, reload: true, raise_on_failure: false) do
-            has_element?(:merged_status_content, text: /The changes were merged into|Changes merged into/, wait: 20)
+            has_element?('merged-status-content', text: /The changes were merged into|Changes merged into/, wait: 20)
           end
         end
 
         RSpec::Matchers.define :be_mergeable do
           match do |page|
-            page.has_element?(:merge_button, disabled: false)
+            page.has_element?('merge-button', disabled: false)
           end
 
           match_when_negated do |page|
-            page.has_no_element?(:merge_button, disabled: false)
+            page.has_no_element?('merge-button', disabled: false)
           end
         end
 
@@ -352,9 +352,9 @@ module QA
           wait_until(message: "Waiting for ready to merge", sleep_interval: 1) do
             # changes in mr are rendered async, because of that mr can sometimes show no changes and there will be no
             # merge button, in such case we must retry loop otherwise find_element will raise ElementNotFound error
-            next false unless has_element?(:merge_button, wait: 1)
+            next false unless has_element?('merge-button', wait: 1)
 
-            break true unless find_element(:merge_button).disabled?
+            break true unless find_element('merge-button').disabled?
 
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
             next false if has_element?(:head_mismatch_content, wait: 1)
@@ -385,11 +385,11 @@ module QA
 
         def merge_immediately!
           retry_until(reload: true, sleep_interval: 1, max_attempts: 12) do
-            if has_element?(:merge_moment_dropdown)
-              click_element(:merge_moment_dropdown, skip_finished_loading_check: true)
-              click_element(:merge_immediately_menu_item, skip_finished_loading_check: true)
+            if has_element?('merge-immediately-dropdown')
+              click_element('merge-immediately-dropdown', skip_finished_loading_check: true)
+              click_element('merge-immediately-button', skip_finished_loading_check: true)
             else
-              click_element(:merge_button, skip_finished_loading_check: true)
+              click_element('merge-button', skip_finished_loading_check: true)
             end
 
             merged?
@@ -400,9 +400,9 @@ module QA
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible
           wait_until_ready_to_merge
-          wait_until { !find_element(:merge_button).text.include?('when pipeline succeeds') } # rubocop:disable Rails/NegateInclude
+          wait_until { !find_element('merge-button').text.include?('when pipeline succeeds') } # rubocop:disable Rails/NegateInclude
 
-          click_element(:merge_button)
+          click_element('merge-button')
         end
 
         def view_email_patches

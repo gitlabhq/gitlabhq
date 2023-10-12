@@ -22006,6 +22006,9 @@ msgstr ""
 msgid "GlobalSearch|Close"
 msgstr ""
 
+msgid "GlobalSearch|Command palette"
+msgstr ""
+
 msgid "GlobalSearch|Fetching aggregations error."
 msgstr ""
 
@@ -42627,6 +42630,9 @@ msgstr ""
 msgid "SecurityOrchestration|Required approvals exceed eligible approvers."
 msgstr ""
 
+msgid "SecurityOrchestration|Requires no approvals if any of the following occur:"
+msgstr ""
+
 msgid "SecurityOrchestration|Roles"
 msgstr ""
 
@@ -43083,9 +43089,6 @@ msgstr ""
 msgid "SecurityReports|Failed updating vulnerabilities with the following IDs: %{ids}"
 msgstr ""
 
-msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
-msgstr ""
-
 msgid "SecurityReports|Has issue"
 msgstr ""
 
@@ -43141,9 +43144,6 @@ msgid "SecurityReports|Monitored projects"
 msgstr ""
 
 msgid "SecurityReports|More info"
-msgstr ""
-
-msgid "SecurityReports|New feature: Grouping"
 msgstr ""
 
 msgid "SecurityReports|No longer detected"
@@ -44902,9 +44902,6 @@ msgid "Snippets|Snippets are limited to %{total} files."
 msgstr ""
 
 msgid "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them."
-msgstr ""
-
-msgid "Snippets|This snippet is hidden because its author has been banned"
 msgstr ""
 
 msgid "Snowplow"

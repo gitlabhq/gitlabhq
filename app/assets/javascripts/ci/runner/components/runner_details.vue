@@ -29,8 +29,6 @@ export default {
       import('ee_component/ci/runner/components/runner_maintenance_note_detail.vue'),
     RunnerGroups,
     RunnerProjects,
-    RunnerUpgradeStatusBadge: () =>
-      import('ee_component/ci/runner/components/runner_upgrade_status_badge.vue'),
     RunnerTags,
     RunnerManagersDetail,
     TimeAgo,
@@ -99,12 +97,6 @@ export default {
         >
           <template v-if="runner.contactedAt" #value>
             <time-ago :time="runner.contactedAt" />
-          </template>
-        </runner-detail>
-        <runner-detail :label="s__('Runners|Version')">
-          <template v-if="runner.version" #value>
-            {{ runner.version }}
-            <runner-upgrade-status-badge size="sm" :runner="runner" />
           </template>
         </runner-detail>
         <runner-detail :label="s__('Runners|Configuration')">

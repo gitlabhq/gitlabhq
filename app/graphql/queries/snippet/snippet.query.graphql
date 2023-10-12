@@ -13,7 +13,6 @@ query GetSnippetQuery($ids: [SnippetID!]) {
       webUrl
       httpUrlToRepo
       sshUrlToRepo
-      hidden
       blobs {
         __typename
         hasUnretrievableBlobs

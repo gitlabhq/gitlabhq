@@ -216,54 +216,8 @@ export const LINUX_PLATFORM = 'linux';
 export const MACOS_PLATFORM = 'osx';
 export const WINDOWS_PLATFORM = 'windows';
 
-export const DOWNLOAD_LOCATIONS = {
-  [LINUX_PLATFORM]: [
-    {
-      arch: 'amd64',
-      url:
-        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64',
-    },
-    {
-      arch: '386',
-      url:
-        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-386',
-    },
-    {
-      arch: 'arm',
-      url:
-        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-arm',
-    },
-    {
-      arch: 'arm64',
-      url:
-        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-arm64',
-    },
-  ],
-  [MACOS_PLATFORM]: [
-    {
-      arch: 'amd64',
-      url:
-        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64',
-    },
-    {
-      arch: 'arm64',
-      url:
-        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-arm64',
-    },
-  ],
-  [WINDOWS_PLATFORM]: [
-    {
-      arch: 'amd64',
-      url:
-        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe',
-    },
-    {
-      arch: '386',
-      url:
-        'https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-386.exe',
-    },
-  ],
-};
+// About Gitlab Runner Package host
+export const RUNNER_PACKAGE_HOST = 'gitlab-runner-downloads.s3.amazonaws.com';
 
 export const DEFAULT_PLATFORM = LINUX_PLATFORM;
 

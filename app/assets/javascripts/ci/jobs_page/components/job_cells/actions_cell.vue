@@ -133,7 +133,7 @@ export default {
           variables: { id: this.job.id },
         });
         if (errors.length > 0) {
-          reportMessageToSentry(this.$options.name, errors.join(', '), {});
+          reportMessageToSentry(this.$options.name, errors.join(', '));
           this.showToastMessage();
         } else if (redirect) {
           // Retry and Play actions redirect to job detail view
@@ -143,7 +143,7 @@ export default {
           eventHub.$emit('jobActionPerformed');
         }
       } catch (failure) {
-        reportMessageToSentry(this.$options.name, failure, {});
+        reportMessageToSentry(this.$options.name, failure);
         this.showToastMessage();
       }
     },

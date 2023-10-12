@@ -478,7 +478,7 @@ group :test do
 
   gem 'capybara', '~> 3.39', '>= 3.39.2' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'capybara-screenshot', '~> 1.0.26' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'selenium-webdriver', '= 4.13.1' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'selenium-webdriver', '~> 4.14' # rubocop:todo Gemfile/MissingFeatureCategory
 
   gem 'graphlyte', '~> 1.0.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

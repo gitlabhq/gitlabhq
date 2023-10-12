@@ -848,18 +848,6 @@ export const groupWorkItemByIidResponseFactory = (options) => {
   };
 };
 
-export const updateWorkItemMutationResponseFactory = (options) => {
-  const response = workItemResponseFactory(options);
-  return {
-    data: {
-      workItemUpdate: {
-        workItem: response.data.workItem,
-        errors: [],
-      },
-    },
-  };
-};
-
 export const getIssueDetailsResponse = ({ confidential = false } = {}) => ({
   data: {
     issue: {
@@ -3555,3 +3543,21 @@ export const groupWorkItemsQueryResponse = {
     },
   },
 };
+
+export const updateWorkItemNotificationsMutationResponse = (subscribed) => ({
+  data: {
+    workItemSubscribe: {
+      workItem: {
+        id: 'gid://gitlab/WorkItem/1',
+        widgets: [
+          {
+            __typename: 'WorkItemWidgetNotifications',
+            type: 'NOTIFICATIONS',
+            subscribed,
+          },
+        ],
+      },
+      errors: [],
+    },
+  },
+});

@@ -4,24 +4,12 @@ import { captureException } from '~/ci/runner/sentry_utils';
 jest.mock('@sentry/browser');
 
 describe('~/ci/runner/sentry_utils', () => {
-  let mockSetTag;
-
-  beforeEach(() => {
-    mockSetTag = jest.fn();
-
-    Sentry.withScope.mockImplementation((fn) => {
-      const scope = { setTag: mockSetTag };
-      fn(scope);
-    });
-  });
-
   describe('captureException', () => {
     const mockError = new Error('Something went wrong!');
 
     it('error is reported to sentry', () => {
       captureException({ error: mockError });
 
-      expect(Sentry.withScope).toHaveBeenCalled();
       expect(Sentry.captureException).toHaveBeenCalledWith(mockError);
     });
 
@@ -30,10 +18,11 @@ describe('~/ci/runner/sentry_utils', () => {
 
       captureException({ error: mockError, component: mockComponentName });
 
-      expect(Sentry.withScope).toHaveBeenCalled();
-      expect(Sentry.captureException).toHaveBeenCalledWith(mockError);
-
-      expect(mockSetTag).toHaveBeenCalledWith('vue_component', mockComponentName);
+      expect(Sentry.captureException).toHaveBeenCalledWith(mockError, {
+        tags: {
+          vue_component: mockComponentName,
+        },
+      });
     });
   });
 });

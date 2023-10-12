@@ -3,15 +3,14 @@ import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { TRACKING_CATEGORIES } from '~/ci/constants';
+import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
-import PipelinesStatusBadge from '../pipelines_page/components/pipelines_status_badge.vue';
+import PipelineStatusBadge from '../pipelines_page/components/pipeline_status_badge.vue';
 
 const HIDE_TD_ON_MOBILE = 'gl-display-none! gl-lg-display-table-cell!';
 const DEFAULT_TH_CLASSES =
@@ -40,16 +39,16 @@ export default {
     LegacyPipelineMiniGraph,
     PipelineFailedJobsWidget,
     PipelineOperations,
-    PipelinesStatusBadge,
+    PipelineStatusBadge,
     PipelineTriggerer,
     PipelineUrl,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  mixins: [Tracking.mixin()],
   inject: {
-    withFailedJobsDetails: {
+    useFailedJobsWidget: {
       default: false,
     },
   },
@@ -58,29 +57,21 @@ export default {
       type: Array,
       required: true,
     },
-    pipelineScheduleUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
     updateGraphDropdown: {
       type: Boolean,
       required: false,
       default: false,
     },
-    viewType: {
+    pipelineIdType: {
       type: String,
-      required: true,
-    },
-    pipelineKeyOption: {
-      type: Object,
-      required: true,
+      required: false,
+      default: PIPELINE_ID_KEY,
+      validator(value) {
+        return value === PIPELINE_IID_KEY || value === PIPELINE_ID_KEY;
+      },
     },
   },
   computed: {
-    showFailedJobsWidget() {
-      return this.glFeatures.ciJobFailuresInMr;
-    },
     tableFields() {
       return [
         {
@@ -125,10 +116,10 @@ export default {
       ];
     },
     tdClasses() {
-      return this.withFailedJobsDetails ? 'gl-pb-0! gl-border-none!' : 'pl-p-5!';
+      return this.useFailedJobsWidget ? 'gl-pb-0! gl-border-none!' : 'pl-p-5!';
     },
     pipelinesWithDetails() {
-      if (this.withFailedJobsDetails) {
+      if (this.useFailedJobsWidget) {
         return this.pipelines.map((p) => {
           return { ...p, _showDetails: true };
         });
@@ -187,14 +178,13 @@ export default {
       </template>
 
       <template #cell(status)="{ item }">
-        <pipelines-status-badge :pipeline="item" :view-type="viewType" />
+        <pipeline-status-badge :pipeline="item" />
       </template>
 
       <template #cell(pipeline)="{ item }">
         <pipeline-url
           :pipeline="item"
-          :pipeline-schedule-url="pipelineScheduleUrl"
-          :pipeline-key="pipelineKeyOption.value"
+          :pipeline-id-type="pipelineIdType"
           ref-color="gl-text-black-normal"
         />
       </template>
@@ -225,7 +215,7 @@ export default {
 
       <template #row-details="{ item }">
         <pipeline-failed-jobs-widget
-          v-if="showFailedJobsWidget"
+          v-if="useFailedJobsWidget"
           :failed-jobs-count="failedJobsCount(item)"
           :is-pipeline-active="item.active"
           :pipeline-iid="item.iid"

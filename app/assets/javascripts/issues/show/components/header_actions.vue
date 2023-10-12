@@ -390,17 +390,6 @@ export default {
       {{ $options.i18n.edit }}
     </gl-button>
 
-    <gl-button
-      v-if="showToggleIssueStateButton && !glFeatures.moveCloseIntoDropdown"
-      class="gl-display-none gl-sm-display-inline-flex!"
-      :data-qa-selector="qaSelector"
-      :loading="isToggleStateButtonLoading"
-      data-testid="toggle-issue-state-button"
-      @click="toggleIssueState"
-    >
-      {{ buttonText }}
-    </gl-button>
-
     <gl-dropdown
       v-if="hasDesktopDropdown"
       id="new-actions-header-dropdown"
@@ -428,7 +417,7 @@ export default {
         <gl-dropdown-divider />
       </template>
       <gl-dropdown-item
-        v-if="showToggleIssueStateButton && glFeatures.moveCloseIntoDropdown"
+        v-if="showToggleIssueStateButton"
         data-testid="toggle-issue-state-button"
         @click="toggleIssueState"
       >

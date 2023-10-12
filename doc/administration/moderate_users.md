@@ -262,9 +262,8 @@ Users can also be activated using the [GitLab API](../api/users.md#activate-user
 > - Hiding merge requests of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107836) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `hide_merge_requests_from_banned_users`. Disabled by default.
 > - Hiding comments of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112973) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `hidden_notes`. Disabled by default.
 > - Hiding projects of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121488) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `hide_projects_of_banned_users`. Disabled by default.
-> - Hiding snippets of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131725) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `hide_snippets_of_banned_users`. Disabled by default.
 
-GitLab administrators can ban and unban users. Banned users are blocked, and their projects, issues, merge requests, snippets, and comments are hidden.
+GitLab administrators can ban and unban users. Banned users are blocked, and their projects, issues, merge requests, and comments are hidden.
 
 ### Ban a user
 

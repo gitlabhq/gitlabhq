@@ -25078,7 +25078,6 @@ Represents a snippet entry.
 | <a id="snippetdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="snippetdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="snippetfilename"></a>`fileName` | [`String`](#string) | File Name of the snippet. |
-| <a id="snippethidden"></a>`hidden` | [`Boolean!`](#boolean) | Indicates the snippet is hidden because the author has been banned. |
 | <a id="snippethttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | HTTP URL to the snippet repository. |
 | <a id="snippetid"></a>`id` | [`SnippetID!`](#snippetid) | ID of the snippet. |
 | <a id="snippetproject"></a>`project` | [`Project`](#project) | Project the snippet is associated with. |
@@ -29528,7 +29527,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumuser_reached_limit_free_plan_alert"></a>`USER_REACHED_LIMIT_FREE_PLAN_ALERT` | Callout feature name for user_reached_limit_free_plan_alert. |
 | <a id="usercalloutfeaturenameenumverification_reminder"></a>`VERIFICATION_REMINDER` | Callout feature name for verification_reminder. |
 | <a id="usercalloutfeaturenameenumvsd_feedback_banner"></a>`VSD_FEEDBACK_BANNER` | Callout feature name for vsd_feedback_banner. |
-| <a id="usercalloutfeaturenameenumvulnerability_report_grouping"></a>`VULNERABILITY_REPORT_GROUPING` | Callout feature name for vulnerability_report_grouping. |
 | <a id="usercalloutfeaturenameenumweb_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenumweb_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
 

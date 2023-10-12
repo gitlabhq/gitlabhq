@@ -15,6 +15,8 @@ import {
 } from '~/clusters_list/store/mutation_types';
 import { apiData } from '../mock_data';
 
+jest.mock('@sentry/browser');
+
 describe('Clusters', () => {
   let mock;
   let store;
@@ -64,15 +66,7 @@ describe('Clusters', () => {
     };
   };
 
-  let captureException;
-
   beforeEach(() => {
-    jest.spyOn(Sentry, 'withScope').mockImplementation((fn) => {
-      const mockScope = { setTag: () => {} };
-      fn(mockScope);
-    });
-    captureException = jest.spyOn(Sentry, 'captureException');
-
     mock = new MockAdapter(axios);
     mockPollingApi(HTTP_STATUS_OK, apiData, paginationHeader());
 
@@ -81,7 +75,6 @@ describe('Clusters', () => {
 
   afterEach(() => {
     mock.restore();
-    captureException.mockRestore();
   });
 
   describe('clusters table', () => {
@@ -208,19 +201,23 @@ describe('Clusters', () => {
 
     describe('nodes with unknown quantity', () => {
       it('notifies Sentry about all missing quantity types', () => {
-        expect(captureException).toHaveBeenCalledTimes(8);
+        expect(Sentry.captureException).toHaveBeenCalledTimes(8);
       });
 
       it('notifies Sentry about CPU missing quantity types', () => {
         const missingCpuTypeError = new Error('UnknownK8sCpuQuantity:1missingCpuUnit');
 
-        expect(captureException).toHaveBeenCalledWith(missingCpuTypeError);
+        expect(Sentry.captureException).toHaveBeenCalledWith(missingCpuTypeError, {
+          tags: { javascript_clusters_list: 'totalCpuAndUsageError' },
+        });
       });
 
       it('notifies Sentry about Memory missing quantity types', () => {
         const missingMemoryTypeError = new Error('UnknownK8sMemoryQuantity:1missingMemoryUnit');
 
-        expect(captureException).toHaveBeenCalledWith(missingMemoryTypeError);
+        expect(Sentry.captureException).toHaveBeenCalledWith(missingMemoryTypeError, {
+          tags: { javascript_clusters_list: 'totalMemoryAndUsageError' },
+        });
       });
     });
   });

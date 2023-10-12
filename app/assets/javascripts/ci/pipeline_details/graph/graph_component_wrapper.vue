@@ -159,13 +159,6 @@ export default {
         reportMessageToSentry(
           this.$options.name,
           `| type: ${LOAD_FAILURE} , info: ${JSON.stringify(err)}`,
-          {
-            graphViewType: this.graphViewType,
-            graphqlResourceEtag: this.graphqlResourceEtag,
-            metricsPath: this.metricsPath,
-            projectPath: this.pipelineProjectPath,
-            pipelineIid: this.pipelineIid,
-          },
         );
       },
       result({ data, error }) {

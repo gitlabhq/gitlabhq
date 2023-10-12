@@ -95,6 +95,9 @@ export default {
     showSecondaryConfigurationHelpPath() {
       return Boolean(this.available && this.feature.secondary?.configurationHelpPath);
     },
+    hyphenatedFeature() {
+      return this.feature.type.replace(/_/g, '-');
+    },
   },
   methods: {
     onError(message) {
@@ -167,7 +170,7 @@ export default {
         :href="feature.configurationPath"
         variant="confirm"
         :category="configurationButton.category"
-        :data-testid="`${feature.type}_enable_button`"
+        :data-testid="`${hyphenatedFeature}-enable-button`"
         class="gl-mt-5"
       >
         {{ configurationButton.text }}
@@ -179,7 +182,7 @@ export default {
         variant="confirm"
         :category="manageViaMrButtonCategory"
         class="gl-mt-5"
-        :data-testid="`${feature.type}_mr_button`"
+        :data-testid="`${hyphenatedFeature}-mr-button`"
         @error="onError"
       />
 

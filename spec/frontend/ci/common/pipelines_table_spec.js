@@ -10,7 +10,7 @@ import PipelineUrl from '~/ci/pipelines_page/components/pipeline_url.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import PipelinesTimeago from '~/ci/pipelines_page/components/time_ago.vue';
 import {
-  PipelineKeyOptions,
+  PIPELINE_ID_KEY,
   BUTTON_TOOLTIP_RETRY,
   BUTTON_TOOLTIP_CANCEL,
   TRACKING_CATEGORIES,
@@ -24,23 +24,18 @@ describe('Pipelines Table', () => {
 
   const defaultProvide = {
     fullPath: '/my-project/',
-    glFeatures: {},
-    withFailedJobsDetails: false,
+    useFailedJobsWidget: false,
   };
 
-  const provideWithDetails = {
-    glFeatures: {
-      ciJobFailuresInMr: true,
-    },
-    withFailedJobsDetails: true,
+  const provideWithFailedJobsWidget = {
+    useFailedJobsWidget: true,
   };
 
   const { pipelines } = fixture;
 
   const defaultProps = {
     pipelines,
-    viewType: 'root',
-    pipelineKeyOption: PipelineKeyOptions[0],
+    pipelineIdType: PIPELINE_ID_KEY,
   };
 
   const [firstPipeline] = pipelines;
@@ -187,117 +182,101 @@ describe('Pipelines Table', () => {
     });
 
     describe('failed jobs details', () => {
-      describe('row', () => {
-        describe('when the FF is disabled', () => {
-          beforeEach(() => {
-            createComponent();
-          });
-
-          it('does not render', () => {
-            expect(findTableRows()).toHaveLength(pipelines.length);
-            expect(findPipelineFailureWidget().exists()).toBe(false);
-          });
+      describe('when `useFailedJobsWidget` value is provided', () => {
+        beforeEach(() => {
+          createComponent({ provide: provideWithFailedJobsWidget });
         });
 
-        describe('when the FF is enabled', () => {
-          describe('and `withFailedJobsDetails` value is provided', () => {
-            beforeEach(() => {
-              createComponent({ provide: provideWithDetails });
-            });
+        it('renders', () => {
+          // We have 2 rows per pipeline with the widget
+          expect(findTableRows()).toHaveLength(pipelines.length * 2);
+          expect(findPipelineFailureWidget().exists()).toBe(true);
+        });
 
-            it('renders', () => {
-              // We have 2 rows per pipeline with the widget
-              expect(findTableRows()).toHaveLength(pipelines.length * 2);
-              expect(findPipelineFailureWidget().exists()).toBe(true);
-            });
-
-            it('passes the expected props', () => {
-              expect(findPipelineFailureWidget().props()).toStrictEqual({
-                failedJobsCount: firstPipeline.failed_builds.length,
-                isPipelineActive: firstPipeline.active,
-                pipelineIid: firstPipeline.iid,
-                pipelinePath: firstPipeline.path,
-                // Make sure the forward slash was removed
-                projectPath: 'frontend-fixtures/pipelines-project',
-              });
-            });
+        it('passes the expected props', () => {
+          expect(findPipelineFailureWidget().props()).toStrictEqual({
+            failedJobsCount: firstPipeline.failed_builds.length,
+            isPipelineActive: firstPipeline.active,
+            pipelineIid: firstPipeline.iid,
+            pipelinePath: firstPipeline.path,
+            // Make sure the forward slash was removed
+            projectPath: 'frontend-fixtures/pipelines-project',
           });
+        });
+      });
 
-          describe('and `withFailedJobsDetails` value is not provided', () => {
-            beforeEach(() => {
-              createComponent({
-                provide: { glFeatures: { ciJobFailuresInMr: true } },
-              });
-            });
+      describe('and `useFailedJobsWidget` value is not provided', () => {
+        beforeEach(() => {
+          createComponent();
+        });
 
-            it('does not render', () => {
-              expect(findTableRows()).toHaveLength(pipelines.length);
-              expect(findPipelineFailureWidget().exists()).toBe(false);
-            });
-          });
+        it('does not render', () => {
+          expect(findTableRows()).toHaveLength(pipelines.length);
+          expect(findPipelineFailureWidget().exists()).toBe(false);
         });
       });
     });
+  });
 
-    describe('events', () => {
-      beforeEach(() => {
-        createComponent();
+  describe('events', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    describe('when confirming to cancel a pipeline', () => {
+      beforeEach(async () => {
+        await findActions().vm.$emit('cancel-pipeline', firstPipeline);
       });
 
-      describe('when confirming to cancel a pipeline', () => {
-        beforeEach(async () => {
-          await findActions().vm.$emit('cancel-pipeline', firstPipeline);
-        });
-
-        it('emits the `cancel-pipeline` event', () => {
-          expect(wrapper.emitted('cancel-pipeline')).toEqual([[firstPipeline]]);
-        });
-      });
-
-      describe('when retrying a pipeline', () => {
-        beforeEach(() => {
-          findActions().vm.$emit('retry-pipeline', firstPipeline);
-        });
-
-        it('emits the `retry-pipeline` event', () => {
-          expect(wrapper.emitted('retry-pipeline')).toEqual([[firstPipeline]]);
-        });
-      });
-
-      describe('when refreshing pipelines', () => {
-        beforeEach(() => {
-          findActions().vm.$emit('refresh-pipelines-table');
-        });
-
-        it('emits the `refresh-pipelines-table` event', () => {
-          expect(wrapper.emitted('refresh-pipelines-table')).toEqual([[]]);
-        });
+      it('emits the `cancel-pipeline` event', () => {
+        expect(wrapper.emitted('cancel-pipeline')).toEqual([[firstPipeline]]);
       });
     });
 
-    describe('tracking', () => {
+    describe('when retrying a pipeline', () => {
       beforeEach(() => {
-        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+        findActions().vm.$emit('retry-pipeline', firstPipeline);
       });
 
-      afterEach(() => {
-        unmockTracking();
+      it('emits the `retry-pipeline` event', () => {
+        expect(wrapper.emitted('retry-pipeline')).toEqual([[firstPipeline]]);
+      });
+    });
+
+    describe('when refreshing pipelines', () => {
+      beforeEach(() => {
+        findActions().vm.$emit('refresh-pipelines-table');
       });
 
-      it('tracks status badge click', () => {
-        findCiBadgeLink().vm.$emit('ciStatusBadgeClick');
-
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_ci_status_badge', {
-          label: TRACKING_CATEGORIES.table,
-        });
+      it('emits the `refresh-pipelines-table` event', () => {
+        expect(wrapper.emitted('refresh-pipelines-table')).toEqual([[]]);
       });
+    });
+  });
 
-      it('tracks pipeline mini graph stage click', () => {
-        findLegacyPipelineMiniGraph().vm.$emit('miniGraphStageClick');
+  describe('tracking', () => {
+    beforeEach(() => {
+      createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
 
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_minigraph', {
-          label: TRACKING_CATEGORIES.table,
-        });
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks status badge click', () => {
+      findCiBadgeLink().vm.$emit('ciStatusBadgeClick');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_ci_status_badge', {
+        label: TRACKING_CATEGORIES.table,
+      });
+    });
+
+    it('tracks pipeline mini graph stage click', () => {
+      findLegacyPipelineMiniGraph().vm.$emit('miniGraphStageClick');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_minigraph', {
+        label: TRACKING_CATEGORIES.table,
       });
     });
   });

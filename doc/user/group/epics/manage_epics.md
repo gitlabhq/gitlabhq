@@ -159,11 +159,7 @@ Prerequisites:
 
 - You must have at least the Reporter role for the epic's group.
 
-To close an epic, at the top of an epic, select **Close epic**.
-
-<!-- Delete when the `move_close_into_dropdown` feature flag is removed -->
-If you don't see this action at the top of an epic, your project or instance might have
-enabled a feature flag to [moved it in the actions menu](../../project/issues/managing_issues.md#move-the-close-button-into-the-actions-menu).
+To close an epic, in the upper-right corner, select **epic actions** (**{ellipsis_v}**) and then **Close epic**.
 
 You can also use the `/close` [quick action](../../project/quick_actions.md).
 
@@ -177,15 +173,8 @@ Prerequisites:
 
 To do so, either:
 
-- Select **Reopen epic**.
-
-  ![reopen epic - button](img/button_reopen_epic.png)
-
+- In the upper-right corner, select **epic actions** (**{ellipsis_v}**) and then **Reopen epic**
 - Use the `/reopen` [quick action](../../project/quick_actions.md).
-
-<!-- Delete when the `move_close_into_dropdown` feature flag is removed -->
-If you don't see this action at the top of an epic, your project or instance might have
-enabled a feature flag to [moved it in the actions menu](../../project/issues/managing_issues.md#move-the-close-button-into-the-actions-menu).
 
 ## Go to an epic from an issue
 

@@ -22,13 +22,12 @@ import {
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 
 import {
   convertWorkItemMutationResponse,
   projectWorkItemTypesQueryResponse,
   convertWorkItemMutationErrorResponse,
-  workItemByIidResponseFactory,
+  updateWorkItemNotificationsMutationResponse,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
@@ -38,9 +37,7 @@ describe('WorkItemActions component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  let mockApollo;
   const mockWorkItemReference = 'gitlab-org/gitlab-test#1';
-  const mockWorkItemIid = '1';
   const mockFullPath = 'gitlab-org/gitlab-test';
   const mockWorkItemCreateNoteEmail =
     'gitlab-incoming+gitlab-org-gitlab-test-2-ddpzuq0zd2wefzofcpcdr3dg7-issue-1@gmail.com';
@@ -75,14 +72,22 @@ describe('WorkItemActions component', () => {
     hide: jest.fn(),
   };
 
+  const typesQuerySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
   const convertWorkItemMutationSuccessHandler = jest
     .fn()
     .mockResolvedValue(convertWorkItemMutationResponse);
-
   const convertWorkItemMutationErrorHandler = jest
     .fn()
     .mockResolvedValue(convertWorkItemMutationErrorResponse);
-  const typesQuerySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
+  const toggleNotificationsOffHandler = jest
+    .fn()
+    .mockResolvedValue(updateWorkItemNotificationsMutationResponse(false));
+  const toggleNotificationsOnHandler = jest
+    .fn()
+    .mockResolvedValue(updateWorkItemNotificationsMutationResponse(true));
+  const toggleNotificationsFailureHandler = jest
+    .fn()
+    .mockRejectedValue(new Error('Failed to subscribe'));
 
   const createComponent = ({
     canUpdate = true,
@@ -90,34 +95,19 @@ describe('WorkItemActions component', () => {
     isConfidential = false,
     subscribed = false,
     isParentConfidential = false,
-    notificationsMock = [updateWorkItemNotificationsMutation, jest.fn()],
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
+    notificationsMutationHandler,
     workItemType = 'Task',
     workItemReference = mockWorkItemReference,
     workItemCreateNoteEmail = mockWorkItemCreateNoteEmail,
-    writeQueryCache = false,
   } = {}) => {
-    const handlers = [notificationsMock];
-    mockApollo = createMockApollo([
-      ...handlers,
-      [convertWorkItemMutation, convertWorkItemMutationHandler],
-      [projectWorkItemTypesQuery, typesQuerySuccessHandler],
-    ]);
-
-    // Write the query cache only when required e.g., notification widget mutation is called
-    if (writeQueryCache) {
-      const workItemQueryResponse = workItemByIidResponseFactory({ canUpdate: true });
-
-      mockApollo.clients.defaultClient.cache.writeQuery({
-        query: workItemByIidQuery,
-        variables: { fullPath: mockFullPath, iid: mockWorkItemIid },
-        data: workItemQueryResponse.data,
-      });
-    }
-
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
-      apolloProvider: mockApollo,
+      apolloProvider: createMockApollo([
+        [projectWorkItemTypesQuery, typesQuerySuccessHandler],
+        [convertWorkItemMutation, convertWorkItemMutationHandler],
+        [updateWorkItemNotificationsMutation, notificationsMutationHandler],
+      ]),
       propsData: {
         workItemId: 'gid://gitlab/WorkItem/1',
         canUpdate,
@@ -128,7 +118,6 @@ describe('WorkItemActions component', () => {
         workItemType,
         workItemReference,
         workItemCreateNoteEmail,
-        workItemIid: '1',
       },
       provide: {
         fullPath: mockFullPath,
@@ -160,7 +149,6 @@ describe('WorkItemActions component', () => {
   it('renders modal', () => {
     createComponent();
 
-    expect(findModal().exists()).toBe(true);
     expect(findModal().props('visible')).toBe(false);
   });
 
@@ -248,59 +236,15 @@ describe('WorkItemActions component', () => {
     });
 
     it('does not render when canDelete is false', () => {
-      createComponent({
-        canDelete: false,
-      });
+      createComponent({ canDelete: false });
 
       expect(findDeleteButton().exists()).toBe(false);
     });
   });
 
   describe('notifications action', () => {
-    const errorMessage = 'Failed to subscribe';
-    const notificationToggledOffMessage = 'Notifications turned off.';
-    const notificationToggledOnMessage = 'Notifications turned on.';
-
-    const toggleNotificationsOffHandler = jest.fn().mockResolvedValue({
-      data: {
-        updateWorkItemNotificationsSubscription: {
-          issue: {
-            id: 'gid://gitlab/WorkItem/1',
-            subscribed: false,
-          },
-          errors: [],
-        },
-      },
-    });
-
-    const toggleNotificationsOnHandler = jest.fn().mockResolvedValue({
-      data: {
-        updateWorkItemNotificationsSubscription: {
-          issue: {
-            id: 'gid://gitlab/WorkItem/1',
-            subscribed: true,
-          },
-          errors: [],
-        },
-      },
-    });
-
-    const toggleNotificationsFailureHandler = jest.fn().mockRejectedValue(new Error(errorMessage));
-
-    const notificationsOffMock = [
-      updateWorkItemNotificationsMutation,
-      toggleNotificationsOffHandler,
-    ];
-
-    const notificationsOnMock = [updateWorkItemNotificationsMutation, toggleNotificationsOnHandler];
-
-    const notificationsFailureMock = [
-      updateWorkItemNotificationsMutation,
-      toggleNotificationsFailureHandler,
-    ];
-
     beforeEach(() => {
-      createComponent({ writeQueryCache: true });
+      createComponent();
       isLoggedIn.mockReturnValue(true);
     });
 
@@ -309,25 +253,26 @@ describe('WorkItemActions component', () => {
     });
 
     it.each`
-      scenario        | subscribedToNotifications | notificationsMock       | subscribedState | toastMessage
-      ${'turned off'} | ${false}                  | ${notificationsOffMock} | ${false}        | ${notificationToggledOffMessage}
-      ${'turned on'}  | ${true}                   | ${notificationsOnMock}  | ${true}         | ${notificationToggledOnMessage}
+      scenario        | subscribedToNotifications | notificationsMutationHandler     | subscribed | toastMessage
+      ${'turned off'} | ${false}                  | ${toggleNotificationsOffHandler} | ${false}   | ${'Notifications turned off.'}
+      ${'turned on'}  | ${true}                   | ${toggleNotificationsOnHandler}  | ${true}    | ${'Notifications turned on.'}
     `(
       'calls mutation and displays toast when notification toggle is $scenario',
-      async ({ subscribedToNotifications, notificationsMock, subscribedState, toastMessage }) => {
-        createComponent({ notificationsMock, writeQueryCache: true });
-
-        await waitForPromises();
+      async ({
+        subscribedToNotifications,
+        notificationsMutationHandler,
+        subscribed,
+        toastMessage,
+      }) => {
+        createComponent({ notificationsMutationHandler });
 
         findNotificationsToggle().vm.$emit('change', subscribedToNotifications);
-
         await waitForPromises();
 
-        expect(notificationsMock[1]).toHaveBeenCalledWith({
+        expect(notificationsMutationHandler).toHaveBeenCalledWith({
           input: {
-            projectPath: mockFullPath,
-            iid: mockWorkItemIid,
-            subscribedState,
+            id: 'gid://gitlab/WorkItem/1',
+            subscribed,
           },
         });
         expect(toast).toHaveBeenCalledWith(toastMessage);
@@ -335,15 +280,12 @@ describe('WorkItemActions component', () => {
     );
 
     it('emits error when the update notification mutation fails', async () => {
-      createComponent({ notificationsMock: notificationsFailureMock, writeQueryCache: true });
-
-      await waitForPromises();
+      createComponent({ notificationsMutationHandler: toggleNotificationsFailureHandler });
 
       findNotificationsToggle().vm.$emit('change', false);
-
       await waitForPromises();
 
-      expect(wrapper.emitted('error')).toEqual([[errorMessage]]);
+      expect(wrapper.emitted('error')).toEqual([['Failed to subscribe']]);
     });
   });
 
@@ -360,13 +302,11 @@ describe('WorkItemActions component', () => {
 
     it('promote key result to objective', async () => {
       createComponent({ workItemType: 'Key Result' });
-
-      // wait for work item types
       await waitForPromises();
 
       expect(findPromoteButton().exists()).toBe(true);
-      findPromoteButton().vm.$emit('action');
 
+      findPromoteButton().vm.$emit('action');
       await waitForPromises();
 
       expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
@@ -379,13 +319,11 @@ describe('WorkItemActions component', () => {
         workItemType: 'Key Result',
         convertWorkItemMutationHandler: convertWorkItemMutationErrorHandler,
       });
-
-      // wait for work item types
       await waitForPromises();
 
       expect(findPromoteButton().exists()).toBe(true);
-      findPromoteButton().vm.$emit('action');
 
+      findPromoteButton().vm.$emit('action');
       await waitForPromises();
 
       expect(convertWorkItemMutationErrorHandler).toHaveBeenCalled();
@@ -400,6 +338,7 @@ describe('WorkItemActions component', () => {
       createComponent();
 
       expect(findCopyReferenceButton().exists()).toBe(true);
+
       findCopyReferenceButton().vm.$emit('action');
 
       expect(toast).toHaveBeenCalledWith('Reference copied');
@@ -422,6 +361,7 @@ describe('WorkItemActions component', () => {
       createComponent();
 
       expect(findCopyCreateNoteEmailButton().exists()).toBe(true);
+
       findCopyCreateNoteEmailButton().vm.$emit('action');
 
       expect(toast).toHaveBeenCalledWith('Email address copied');

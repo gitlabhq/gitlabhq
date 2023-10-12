@@ -40,7 +40,7 @@ module API
             project || group,
             path: params[:path],
             order_by_package_file: order_by_package_file
-          ).execute
+          ).execute&.last
         end
 
         def project

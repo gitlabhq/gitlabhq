@@ -4,11 +4,7 @@ module Packages
   module Maven
     class PackageFinder < ::Packages::GroupOrProjectPackageFinder
       def execute
-        packages.last
-      end
-
-      def execute!
-        packages.last!
+        packages
       end
 
       private

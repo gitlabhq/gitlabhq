@@ -51,7 +51,7 @@ export default {
           this.loadingCounter += 1;
         } else {
           createAlert({ message: this.$options.i18n.tooManyCallsError });
-          reportMessageToSentry(this.$options.name, this.$options.i18n.tooManyCallsError, {});
+          reportMessageToSentry(this.$options.name, this.$options.i18n.tooManyCallsError);
         }
       },
       error() {

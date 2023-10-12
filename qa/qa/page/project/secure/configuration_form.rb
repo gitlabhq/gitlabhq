@@ -14,8 +14,8 @@ module QA
 
           view 'app/assets/javascripts/security_configuration/components/feature_card.vue' do
             element 'feature-status'
-            element :sast_enable_button, "`${feature.type}_enable_button`" # rubocop:disable QA/ElementWithPattern
-            element :dependency_scanning_mr_button, "`${feature.type}_mr_button`" # rubocop:disable QA/ElementWithPattern
+            element 'sast-enable-button', "`${hyphenatedFeature}-enable-button`" # rubocop:disable QA/ElementWithPattern
+            element 'dependency-scanning-mr-button', "`${hyphenatedFeature}-mr-button`" # rubocop:disable QA/ElementWithPattern
           end
 
           view 'app/assets/javascripts/security_configuration/components/auto_dev_ops_alert.vue' do
@@ -35,11 +35,11 @@ module QA
           end
 
           def click_sast_enable_button
-            click_element(:sast_enable_button)
+            click_element('sast-enable-button')
           end
 
           def click_dependency_scanning_mr_button
-            click_element(:dependency_scanning_mr_button)
+            click_element('dependency-scanning-mr-button')
           end
 
           def has_true_sast_status?

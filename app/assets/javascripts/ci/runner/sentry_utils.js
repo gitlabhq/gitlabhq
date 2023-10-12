@@ -11,10 +11,11 @@ const COMPONENT_TAG = 'vue_component';
  * @param {String} options.component - Component name in CamelCase format
  */
 export const captureException = ({ error, component }) => {
-  Sentry.withScope((scope) => {
-    if (component) {
-      scope.setTag(COMPONENT_TAG, component);
-    }
+  if (component) {
+    Sentry.captureException(error, {
+      tags: { [COMPONENT_TAG]: component },
+    });
+  } else {
     Sentry.captureException(error);
-  });
+  }
 };

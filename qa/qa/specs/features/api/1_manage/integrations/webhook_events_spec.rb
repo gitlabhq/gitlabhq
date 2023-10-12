@@ -42,9 +42,7 @@ module QA
 
       it 'sends a wiki page event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349722' do
         Resource::ProjectWebHook.setup(session: session, wiki_page: true) do |webhook, smocker|
-          Resource::Wiki::ProjectPage.fabricate_via_api! do |page|
-            page.project = webhook.project
-          end
+          create(:project_wiki_page, project: webhook.project)
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'wiki_page')
         end

@@ -634,7 +634,6 @@ export default {
                   variant="confirm"
                   :disabled="isMergeButtonDisabled"
                   :loading="isMakingRequest"
-                  data-qa-selector="merge_button"
                   @click="handleMergeButtonClick(isAutoMergeAvailable)"
                   >{{ mergeButtonText }}</gl-button
                 >
@@ -644,7 +643,6 @@ export default {
                   :disabled="isMergeButtonDisabled"
                   variant="confirm"
                   data-testid="merge-immediately-dropdown"
-                  data-qa-selector="merge_moment_dropdown"
                   toggle-class="btn-icon js-merge-moment"
                 >
                   <template #button-content>
@@ -655,7 +653,6 @@ export default {
                     icon-name="warning"
                     button-class="accept-merge-request"
                     data-testid="merge-immediately-button"
-                    data-qa-selector="merge_immediately_menu_item"
                     @click="handleMergeImmediatelyButtonClick"
                   >
                     {{ __('Merge immediately') }}
@@ -692,7 +689,7 @@ export default {
             <div
               v-else
               class="gl-w-full gl-order-n1 mr-widget-merge-details"
-              data-qa-selector="merged_status_content"
+              data-testid="merged-status-content"
             >
               <p v-if="showMergeDetailsHeader" class="gl-mb-2 gl-text-gray-900">
                 {{ __('Merge details') }}

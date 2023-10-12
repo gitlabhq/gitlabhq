@@ -49,37 +49,4 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
       expect(rendered).not_to have_selector('span.file_count')
     end
   end
-
-  context 'spam icon and tooltip', feature_category: :insider_threat do
-    context 'when the author of the snippet is not banned' do
-      before do
-        render 'shared/snippets/snippet', snippet: snippet
-      end
-
-      it 'does not render spam icon' do
-        expect(rendered).not_to have_css('[data-testid="spam-icon"]')
-      end
-
-      it 'does not render tooltip' do
-        expect(rendered).not_to have_selector("span.has-tooltip")
-      end
-    end
-
-    context 'when the author of the snippet is banned' do
-      let_it_be(:banned_user) { create(:user, :banned) }
-      let_it_be(:snippet) { create(:snippet, author: banned_user) }
-
-      before do
-        render 'shared/snippets/snippet', snippet: snippet
-      end
-
-      it 'renders spam icon' do
-        expect(rendered).to have_css('[data-testid="spam-icon"]')
-      end
-
-      it 'renders tooltip' do
-        expect(rendered).to have_selector("span.has-tooltip[title='This snippet is hidden because its author has been banned']")
-      end
-    end
-  end
 end

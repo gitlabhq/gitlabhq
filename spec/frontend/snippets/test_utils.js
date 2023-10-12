@@ -45,7 +45,6 @@ export const createGQLSnippet = () => ({
       message: '',
     },
   },
-  hidden: false,
 });
 
 export const createGQLSnippetsQueryResponse = (snippets) => ({

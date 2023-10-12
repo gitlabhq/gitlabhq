@@ -534,7 +534,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       aggregate_failures do
         expect(page).to have_content 'Description runner-foo'
         expect(page).to have_content 'Last contact Never contacted'
-        expect(page).to have_content 'Version 14.0'
         expect(page).to have_content 'Configuration Runs untagged jobs'
         expect(page).to have_content 'Maximum job timeout None'
         expect(page).to have_content 'Tags tag1'

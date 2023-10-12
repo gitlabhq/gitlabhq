@@ -3,8 +3,8 @@ import {
   LINUX_PLATFORM,
   MACOS_PLATFORM,
   WINDOWS_PLATFORM,
-  DOWNLOAD_LOCATIONS,
-} from '../../constants';
+  RUNNER_PACKAGE_HOST,
+} from 'jh_else_ce/ci/runner/constants';
 import linuxInstall from './scripts/linux/install.sh?raw';
 import osxInstall from './scripts/osx/install.sh?raw';
 import windowsInstall from './scripts/windows/install.ps1?raw';
@@ -25,6 +25,47 @@ const OS = {
     commandPrompt: '>',
     executable: '.\\gitlab-runner.exe',
   },
+};
+
+export const DOWNLOAD_LOCATIONS = {
+  [LINUX_PLATFORM]: [
+    {
+      arch: 'amd64',
+      url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-linux-amd64`,
+    },
+    {
+      arch: '386',
+      url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-linux-386`,
+    },
+    {
+      arch: 'arm',
+      url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-linux-arm`,
+    },
+    {
+      arch: 'arm64',
+      url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-linux-arm64`,
+    },
+  ],
+  [MACOS_PLATFORM]: [
+    {
+      arch: 'amd64',
+      url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-darwin-amd64`,
+    },
+    {
+      arch: 'arm64',
+      url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-darwin-arm64`,
+    },
+  ],
+  [WINDOWS_PLATFORM]: [
+    {
+      arch: 'amd64',
+      url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-windows-amd64.exe`,
+    },
+    {
+      arch: '386',
+      url: `https://${RUNNER_PACKAGE_HOST}/latest/binaries/gitlab-runner-windows-386.exe`,
+    },
+  ],
 };
 
 export const commandPrompt = ({ platform }) => {

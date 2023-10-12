@@ -21,11 +21,3 @@ export const captureMessage = (...args) => {
 
   Sentry?.captureMessage(...args);
 };
-
-/** @type {import('@sentry/core').withScope} */
-export const withScope = (...args) => {
-  // eslint-disable-next-line no-underscore-dangle
-  const Sentry = window._Sentry;
-
-  Sentry?.withScope(...args);
-};

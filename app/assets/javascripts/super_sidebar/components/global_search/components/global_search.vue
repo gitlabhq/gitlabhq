@@ -17,6 +17,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { sprintf } from '~/locale';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, END_KEY, HOME_KEY, ESC_KEY } from '~/lib/utils/keys';
 import {
+  COMMAND_PALETTE,
   MIN_SEARCH_TERM,
   SEARCH_DESCRIBED_BY_WITH_RESULTS,
   SEARCH_DESCRIBED_BY_DEFAULT,
@@ -50,6 +51,7 @@ export default {
   name: 'GlobalSearchModal',
   SEARCH_MODAL_ID,
   i18n: {
+    COMMAND_PALETTE,
     SEARCH_DESCRIBED_BY_WITH_RESULTS,
     SEARCH_DESCRIBED_BY_DEFAULT,
     SEARCH_DESCRIBED_BY_UPDATED,
@@ -279,6 +281,7 @@ export default {
     hide-footer
     hide-header-close
     scrollable
+    :title="$options.i18n.COMMAND_PALETTE"
     body-class="gl-p-0!"
     modal-class="global-search-modal"
     :centered="false"

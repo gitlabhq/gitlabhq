@@ -47,27 +47,14 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
 
   describe 'when open' do
     context 'when clicking the top `Close issue` button', :aggregate_failures do
-      context 'when move_close_into_dropdown FF is disabled' do
-        let(:open_issue) { create(:issue, project: project) }
+      let(:open_issue) { create(:issue, project: project) }
 
-        before do
-          stub_feature_flags(move_close_into_dropdown: false)
-          visit project_issue_path(project, open_issue)
-        end
-
-        it_behaves_like 'issue closed', '.detail-page-header-actions'
+      before do
+        visit project_issue_path(project, open_issue)
+        find('#new-actions-header-dropdown > button').click
       end
 
-      context 'when move_close_into_dropdown FF is enabled' do
-        let(:open_issue) { create(:issue, project: project) }
-
-        before do
-          visit project_issue_path(project, open_issue)
-          find('#new-actions-header-dropdown > button').click
-        end
-
-        it_behaves_like 'issue closed', '.dropdown-menu-right'
-      end
+      it_behaves_like 'issue closed', '.dropdown-menu-right'
     end
 
     context 'when clicking the bottom `Close issue` button', :aggregate_failures do
@@ -83,27 +70,14 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
 
   describe 'when closed' do
     context 'when clicking the top `Reopen issue` button', :aggregate_failures do
-      context 'when move_close_into_dropdown FF is disabled' do
-        let(:closed_issue) { create(:issue, project: project, state: 'closed', author: user) }
+      let(:closed_issue) { create(:issue, project: project, state: 'closed', author: user) }
 
-        before do
-          stub_feature_flags(move_close_into_dropdown: false)
-          visit project_issue_path(project, closed_issue)
-        end
-
-        it_behaves_like 'issue reopened', '.detail-page-header-actions'
+      before do
+        visit project_issue_path(project, closed_issue)
+        find('#new-actions-header-dropdown > button').click
       end
 
-      context 'when move_close_into_dropdown FF is enabled' do
-        let(:closed_issue) { create(:issue, project: project, state: 'closed', author: user) }
-
-        before do
-          visit project_issue_path(project, closed_issue)
-          find('#new-actions-header-dropdown > button').click
-        end
-
-        it_behaves_like 'issue reopened', '.dropdown-menu-right'
-      end
+      it_behaves_like 'issue reopened', '.dropdown-menu-right'
     end
 
     context 'when clicking the bottom `Reopen issue` button', :aggregate_failures do

@@ -140,7 +140,7 @@ export default {
             this.loadingCounter += 1;
           } else {
             createAlert({ message: this.$options.tooManyCallsError });
-            reportMessageToSentry(this.componentName, this.$options.tooManyCallsError, {});
+            reportMessageToSentry(this.componentName, this.$options.tooManyCallsError);
           }
         }
       },

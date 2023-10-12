@@ -9,7 +9,7 @@ module QA
         end
 
         view 'app/views/projects/blame/show.html.haml' do
-          element :blame_file_content
+          element 'blob-content-holder'
         end
 
         def has_file?(file_name)
@@ -23,11 +23,11 @@ module QA
         end
 
         def has_file_content?(file_content)
-          within_element(:blame_file_content) { has_text?(file_content) }
+          within_element('blob-content-holder') { has_text?(file_content) }
         end
 
         def has_no_file_content?(file_content)
-          within_element(:blame_file_content) do
+          within_element('blob-content-holder') do
             has_no_text?(file_content)
           end
         end

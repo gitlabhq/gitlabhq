@@ -49,8 +49,6 @@ describe('RunnerDetails', () => {
       ${'Description'}         | ${{ description: null }}                                           | ${'None'}
       ${'Last contact'}        | ${{ contactedAt: mockOneHourAgo }}                                 | ${'1 hour ago'}
       ${'Last contact'}        | ${{ contactedAt: null }}                                           | ${'Never contacted'}
-      ${'Version'}             | ${{ version: '12.3' }}                                             | ${'12.3'}
-      ${'Version'}             | ${{ version: null }}                                               | ${'None'}
       ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED, runUntagged: true }}  | ${'Protected, Runs untagged jobs'}
       ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_REF_PROTECTED, runUntagged: false }} | ${'Protected'}
       ${'Configuration'}       | ${{ accessLevel: ACCESS_LEVEL_NOT_PROTECTED, runUntagged: true }}  | ${'Runs untagged jobs'}

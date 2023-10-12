@@ -150,10 +150,10 @@ export default {
     },
   },
   errorCaptured(error) {
-    Sentry.withScope((scope) => {
-      scope.setTag('vue_component', 'EnvironmentDetailsIndex');
-
-      Sentry.captureException(error);
+    Sentry.captureException(error, {
+      tags: {
+        vue_component: 'EnvironmentDetailsIndex',
+      },
     });
   },
   mounted() {

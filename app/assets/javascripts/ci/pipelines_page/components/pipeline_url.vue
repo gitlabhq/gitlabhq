@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { ICONS, TRACKING_CATEGORIES } from '~/ci/constants';
+import { ICONS, PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import PipelineLabels from './pipeline_labels.vue';
 
 export default {
@@ -24,13 +24,13 @@ export default {
       type: Object,
       required: true,
     },
-    pipelineScheduleUrl: {
+    pipelineIdType: {
       type: String,
-      required: true,
-    },
-    pipelineKey: {
-      type: String,
-      required: true,
+      required: false,
+      default: PIPELINE_ID_KEY,
+      validator(value) {
+        return value === PIPELINE_IID_KEY || value === PIPELINE_ID_KEY;
+      },
     },
     refClass: {
       type: String,
@@ -174,7 +174,7 @@ export default {
         class="gl-mr-1 gl-text-blue-500!"
         data-testid="pipeline-url-link"
         @click="trackClick('click_pipeline_id')"
-        >#{{ pipeline[pipelineKey] }}</gl-link
+        >#{{ pipeline[pipelineIdType] }}</gl-link
       >
       <!--Commit row-->
       <div class="gl-display-inline-flex gl-rounded-base gl-px-2 gl-bg-gray-50 gl-text-gray-700">
@@ -236,6 +236,6 @@ export default {
       />
       <!--End of commit row-->
     </div>
-    <pipeline-labels :pipeline-schedule-url="pipelineScheduleUrl" :pipeline="pipeline" />
+    <pipeline-labels :pipeline="pipeline" />
   </div>
 </template>

@@ -9,7 +9,6 @@ import {
   // exports
   captureException,
   captureMessage,
-  withScope,
   SDK_VERSION,
 } from 'sentrybrowser';
 
@@ -84,7 +83,6 @@ const initSentry = () => {
   window._Sentry = {
     captureException,
     captureMessage,
-    withScope,
     SDK_VERSION, // used to verify compatibility with the Sentry instance
   };
 };

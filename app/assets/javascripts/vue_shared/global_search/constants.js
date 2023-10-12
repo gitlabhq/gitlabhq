@@ -8,6 +8,7 @@ export const ALL_GITLAB = __('All GitLab');
 export const SEARCH_GITLAB = s__('GlobalSearch|Search GitLab');
 export const PLACES = s__('GlobalSearch|Places');
 
+export const COMMAND_PALETTE = s__('GlobalSearch|Command palette');
 export const SEARCH_DESCRIBED_BY_DEFAULT = s__(
   'GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list.',
 );

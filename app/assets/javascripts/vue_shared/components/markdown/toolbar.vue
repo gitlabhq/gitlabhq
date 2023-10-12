@@ -133,6 +133,7 @@ export default {
         category="tertiary"
         size="small"
         :title="__('Markdown is supported')"
+        :aria-label="__('Markdown is supported')"
         class="gl-px-3!"
       />
     </div>

@@ -57,7 +57,7 @@ export default {
       },
       error(error) {
         createAlert({ message: JOB_GRAPHQL_ERRORS.jobQueryErrorText });
-        reportMessageToSentry(this.$options.name, error, {});
+        reportMessageToSentry(this.$options.name, error);
       },
     },
   },
@@ -141,7 +141,7 @@ export default {
         }
       } catch (error) {
         createAlert({ message: JOB_GRAPHQL_ERRORS.jobMutationErrorText });
-        reportMessageToSentry(this.$options.name, error, {});
+        reportMessageToSentry(this.$options.name, error);
       }
     },
     async retryJob() {
@@ -157,7 +157,7 @@ export default {
         }
       } catch (error) {
         createAlert({ message: JOB_GRAPHQL_ERRORS.jobMutationErrorText });
-        reportMessageToSentry(this.$options.name, error, {});
+        reportMessageToSentry(this.$options.name, error);
       }
     },
     addEmptyVariable() {

@@ -271,7 +271,8 @@ export default {
           target="_blank"
           category="tertiary"
           size="small"
-          title="Markdown is supported"
+          :title="__('Markdown is supported')"
+          :aria-label="__('Markdown is supported')"
           class="gl-px-3!"
         />
       </div>

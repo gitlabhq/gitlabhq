@@ -3,7 +3,7 @@ import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } fro
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
-import { PipelineKeyOptions } from '~/ci/constants';
+import { PIPELINE_ID_KEY } from '~/ci/constants';
 import eventHub from '~/ci/event_hub';
 import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';
 import PipelinesService from '~/ci/pipelines_page/services/pipelines_service';
@@ -13,7 +13,6 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
 
 export default {
-  PipelineKeyOptions,
   components: {
     GlButton,
     GlEmptyState,
@@ -180,6 +179,7 @@ export default {
       }
     },
   },
+  pipelineIdKey: PIPELINE_ID_KEY,
   modal: {
     actionPrimary: {
       text: s__('Pipeline|Run pipeline'),
@@ -284,7 +284,7 @@ export default {
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
         :view-type="viewType"
-        :pipeline-key-option="$options.PipelineKeyOptions[0]"
+        :pipeline-id-type="$options.pipelineIdKey"
         @cancel-pipeline="onCancelPipeline"
         @refresh-pipelines-table="onRefreshPipelinesTable"
         @retry-pipeline="onRetryPipeline"
