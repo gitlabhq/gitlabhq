@@ -115,13 +115,13 @@ RSpec.describe NavHelper, feature_category: :navigation do
   describe '#page_has_markdown?' do
     using RSpec::Parameterized::TableSyntax
 
-    where path: %w(
+    where path: %w[
       projects/merge_requests#show
       projects/merge_requests/conflicts#show
       issues#show
       milestones#show
       issues#designs
-    )
+    ]
 
     with_them do
       before do

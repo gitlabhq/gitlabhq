@@ -24,8 +24,8 @@ CREATE TABLE ci_finished_builds
     runner_manager_architecture LowCardinality(String) DEFAULT '',
 
     --- Materialized columns
-    duration Int64 MATERIALIZED age('second', started_at, finished_at),
-    queueing_duration Int64 MATERIALIZED age('second', queued_at, started_at)
+    duration Int64 MATERIALIZED age('ms', started_at, finished_at),
+    queueing_duration Int64 MATERIALIZED age('ms', queued_at, started_at)
     --- This table is incomplete, we'll add more fields before starting the data migration
 )
 ENGINE = ReplacingMergeTree -- Using ReplacingMergeTree just in case we accidentally insert the same data twice

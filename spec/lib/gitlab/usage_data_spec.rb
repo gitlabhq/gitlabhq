@@ -293,11 +293,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           bulk_imports: {
             gitlab_v1: 2
           },
-          issue_imports: {
-            jira: 2,
-            fogbugz: 2,
-            csv: 2
-          },
           group_imports: {
             group_import: 2,
             gitlab_migration: 2
@@ -308,11 +303,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         {
           bulk_imports: {
             gitlab_v1: 1
-          },
-          issue_imports: {
-            jira: 1,
-            fogbugz: 1,
-            csv: 1
           },
           group_imports: {
             group_import: 1,

@@ -32,7 +32,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
     let_it_be(:now) { Time.now.change(usec: 0) }
     let_it_be(:issues) { create_list(:issue, 10, project: project, created_at: now) }
 
-    let(:count_path) { %w(data project issues count) }
+    let(:count_path) { %w[data project issues count] }
     let(:page_size) { 3 }
     let(:query) do
       <<~GRAPHQL
@@ -81,8 +81,8 @@ RSpec.describe GitlabSchema.types['Issue'] do
     end
 
     context 'count' do
-      let(:end_cursor) { %w(data project issues pageInfo endCursor) }
-      let(:issues_edges) { %w(data project issues edges) }
+      let(:end_cursor) { %w[data project issues pageInfo endCursor] }
+      let(:issues_edges) { %w[data project issues edges] }
 
       it 'returns total count' do
         expect(subject.dig(*count_path)).to eq(issues.count)

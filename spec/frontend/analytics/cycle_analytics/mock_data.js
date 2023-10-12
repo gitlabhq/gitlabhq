@@ -261,3 +261,5 @@ export const basePaginationResult = {
   direction: PAGINATION_SORT_DIRECTION_DESC,
   page: null,
 };
+
+export const predefinedDateRange = 'last_week';

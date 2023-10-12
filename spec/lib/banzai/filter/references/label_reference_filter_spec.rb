@@ -19,7 +19,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Label #{reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -64,14 +64,14 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     doc = reference_filter("Label #{reference}")
     link = doc.css('a').first.attr('href')
 
-    expect(link).to match %r(https?://)
+    expect(link).to match %r{https?://}
   end
 
   it 'does not include protocol when :only_path true' do
     doc = reference_filter("Label #{reference}", only_path: true)
     link = doc.css('a').first.attr('href')
 
-    expect(link).not_to match %r(https?://)
+    expect(link).not_to match %r{https?://}
   end
 
   it 'links to issue list when :label_url_method is not present' do
@@ -118,7 +118,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)))
+      expect(doc.to_html).to match(%r{\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)})
     end
 
     it 'ignores invalid label IDs' do
@@ -142,7 +142,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\)\.))
+      expect(doc.to_html).to match(%r{\(<span.+><a.+><span.+>#{label.name}</span></a></span>\)\.})
     end
 
     it 'ignores invalid label names' do
@@ -166,7 +166,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\)\.))
+      expect(doc.to_html).to match(%r{\(<span.+><a.+><span.+>#{label.name}</span></a></span>\)\.})
     end
 
     it 'ignores invalid label names' do
@@ -191,7 +191,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     it 'does not include trailing punctuation', :aggregate_failures do
       ['.', ', ok?', '...', '?', '!', ': is that ok?'].each do |trailing_punctuation|
         doc = filter("Label #{reference}#{trailing_punctuation}")
-        expect(doc.to_html).to match(%r(<span.+><a.+><span.+>\?g\.fm&amp;</span></a></span>#{Regexp.escape(trailing_punctuation)}))
+        expect(doc.to_html).to match(%r{<span.+><a.+><span.+>\?g\.fm&amp;</span></a></span>#{Regexp.escape(trailing_punctuation)}})
       end
     end
 
@@ -217,7 +217,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)))
+      expect(doc.to_html).to match(%r{\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)})
     end
 
     it 'ignores invalid label names' do
@@ -241,7 +241,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)))
+      expect(doc.to_html).to match(%r{\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)})
     end
 
     it 'ignores invalid label names' do
@@ -265,7 +265,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>g\.fm &amp; references\?</span></a></span>\.\)))
+      expect(doc.to_html).to match(%r{\(<span.+><a.+><span.+>g\.fm &amp; references\?</span></a></span>\.\)})
     end
 
     it 'ignores invalid label names' do
@@ -344,7 +344,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'referencing a label in a link href' do
-    let(:reference) { %{<a href="#{label.to_reference}">Label</a>} }
+    let(:reference) { %(<a href="#{label.to_reference}">Label</a>) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -355,7 +355,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<span.+><a.+>Label</a></span>\.\)))
+      expect(doc.to_html).to match(%r{\(<span.+><a.+>Label</a></span>\.\)})
     end
 
     it 'includes a data-project attribute' do
@@ -393,7 +393,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
       it 'links with adjacent text' do
         doc = reference_filter("Label (#{reference}.)")
-        expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{group_label.name}</span></a></span>\.\)))
+        expect(doc.to_html).to match(%r{\(<span.+><a.+><span.+>#{group_label.name}</span></a></span>\.\)})
       end
 
       it 'ignores invalid label names' do
@@ -416,7 +416,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
       it 'links with adjacent text' do
         doc = reference_filter("Label (#{reference}.)")
-        expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{group_label.name}</span></a></span>\.\)))
+        expect(doc.to_html).to match(%r{\(<span.+><a.+><span.+>#{group_label.name}</span></a></span>\.\)})
       end
 
       it 'ignores invalid label names' do

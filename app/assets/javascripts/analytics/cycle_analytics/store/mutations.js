@@ -34,6 +34,9 @@ export default {
     state.createdBefore = createdBefore;
     state.createdAfter = createdAfter;
   },
+  [types.SET_PREDEFINED_DATE_RANGE](state, predefinedDateRange) {
+    state.predefinedDateRange = predefinedDateRange;
+  },
   [types.SET_PAGINATION](state, { page, hasNextPage, sort, direction }) {
     Vue.set(state, 'pagination', {
       page,

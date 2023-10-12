@@ -27,7 +27,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Issue #{issue.to_reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -77,7 +77,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     end
 
     it 'escapes the title attribute' do
-      issue.update_attribute(:title, %{"></a>whatever<a title="})
+      issue.update_attribute(:title, %("></a>whatever<a title="))
 
       doc = reference_filter("Issue #{written_reference}")
       expect(doc.text).to eq "Issue #{reference}"
@@ -128,7 +128,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
 
     it 'does not escape the data-original attribute' do
       inner_html = 'element <code>node</code> inside'
-      doc = reference_filter(%{<a href="#{written_reference}">#{inner_html}</a>})
+      doc = reference_filter(%(<a href="#{written_reference}">#{inner_html}</a>))
       expect(doc.children.first.attr('data-original')).to eq inner_html
     end
 
@@ -163,7 +163,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
       doc = reference_filter("Issue #{written_reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
-      expect(link).not_to match %r(https?://)
+      expect(link).not_to match %r{https?://}
       expect(link).to eq issue_path
     end
 
@@ -381,7 +381,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
   end
 
   context 'cross-project reference in link href' do
-    let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
+    let(:reference_link) { %(<a href="#{reference}">Reference</a>) }
     let(:reference) { issue.to_reference(project) }
     let(:issue)     { create(:issue, project: project2) }
     let(:project2)  { create(:project, :public, namespace: namespace) }
@@ -412,7 +412,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
   end
 
   context 'cross-project URL in link href' do
-    let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
+    let(:reference_link) { %(<a href="#{reference}">Reference</a>) }
     let(:reference) { (issue_url + "#note_123").to_s }
     let(:issue)     { create(:issue, project: project2) }
     let(:project2)  { create(:project, :public, namespace: namespace) }
@@ -519,7 +519,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
 
     it 'links to a valid reference for cross-reference in link href' do
       reference = (issue_url + "#note_123").to_s
-      reference_link = %{<a href="#{reference}">Reference</a>}
+      reference_link = %(<a href="#{reference}">Reference</a>)
 
       doc = reference_filter("See #{reference_link}", context)
 
@@ -530,7 +530,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
 
     it 'links to a valid reference for issue reference in the link href' do
       reference = issue.to_reference(group)
-      reference_link = %{<a href="#{reference}">Reference</a>}
+      reference_link = %(<a href="#{reference}">Reference</a>)
       doc = reference_filter("See #{reference_link}", context)
 
       link = doc.css('a').first

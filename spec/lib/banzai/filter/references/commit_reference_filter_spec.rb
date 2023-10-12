@@ -12,7 +12,7 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Commit #{commit.id}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -61,7 +61,7 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
 
     it 'escapes the title attribute' do
       allow_next_instance_of(Commit) do |instance|
-        allow(instance).to receive(:title).and_return(%{"></a>whatever<a title="})
+        allow(instance).to receive(:title).and_return(%("></a>whatever<a title="))
       end
 
       doc = reference_filter("See #{reference}")
@@ -93,7 +93,7 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       doc = reference_filter("See #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
-      expect(link).not_to match %r(https?://)
+      expect(link).not_to match %r{https?://}
       expect(link).to eq urls.project_commit_url(project, reference, only_path: true)
     end
 

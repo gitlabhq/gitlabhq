@@ -237,7 +237,7 @@ RSpec.describe EmailsHelper do
 
       it 'returns the brand header logo' do
         expect(header_logo).to eq(
-          %{<img style="height: 50px" src="/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png" />}
+          %(<img style="height: 50px" src="/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png" />)
         )
       end
 
@@ -326,8 +326,8 @@ RSpec.describe EmailsHelper do
         create :appearance, header_message: 'Foo', footer_message: 'Bar', email_header_and_footer_enabled: true
 
         aggregate_failures do
-          expect(html_header_message).to eq(%{<div class="header-message" style=""><p>Foo</p></div>})
-          expect(html_footer_message).to eq(%{<div class="footer-message" style=""><p>Bar</p></div>})
+          expect(html_header_message).to eq(%(<div class="header-message" style=""><p>Foo</p></div>))
+          expect(html_footer_message).to eq(%(<div class="footer-message" style=""><p>Bar</p></div>))
           expect(text_header_message).to eq('Foo')
           expect(text_footer_message).to eq('Bar')
         end

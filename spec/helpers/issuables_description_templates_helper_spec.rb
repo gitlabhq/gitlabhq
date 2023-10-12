@@ -85,7 +85,7 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
   end
 
   describe '#selected_template_name' do
-    let(:template_names) { %w(another_issue_template custom_issue_template) }
+    let(:template_names) { %w[another_issue_template custom_issue_template] }
 
     context 'when no issuable_template parameter is provided' do
       it 'does not select a template' do
@@ -118,7 +118,7 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
 
   describe '#default_template_name' do
     context 'when a default template is available' do
-      let(:template_names) { %w(another_issue_template deFault) }
+      let(:template_names) { %w[another_issue_template deFault] }
 
       it 'returns the default template' do
         issue = build(:issue)
@@ -140,7 +140,7 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
     end
 
     context 'when there is no default template' do
-      let(:template_names) { %w(another_issue_template) }
+      let(:template_names) { %w[another_issue_template] }
 
       it 'returns nil' do
         expect(helper.default_template_name(template_names, build(:issue))).to be_nil

@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlDaterangePicker } from '@gitlab/ui';
-import { n__, __, sprintf } from '~/locale';
+import { MAX_DATE_RANGE_TEXT, NUMBER_OF_DAYS_SELECTED } from '~/analytics/shared/constants';
 
 export default {
   components: {
@@ -46,18 +46,6 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      maxDateRangeTooltip: sprintf(
-        __(
-          'Showing data for workflow items completed in this date range. Date range limited to %{maxDateRange} days.',
-        ),
-        {
-          maxDateRange: this.maxDateRange,
-        },
-      ),
-    };
-  },
   computed: {
     dateRange: {
       get() {
@@ -67,11 +55,18 @@ export default {
         this.$emit('change', { startDate, endDate });
       },
     },
+    maxDateRangeTooltip() {
+      return this.$options.i18n.maxDateRangeTooltip(this.maxDateRange);
+    },
   },
   methods: {
     numberOfDays(daysSelected) {
-      return n__('1 day selected', '%d days selected', daysSelected);
+      return this.$options.i18n.daysSelected(daysSelected);
     },
+  },
+  i18n: {
+    maxDateRangeTooltip: MAX_DATE_RANGE_TEXT,
+    daysSelected: NUMBER_OF_DAYS_SELECTED,
   },
 };
 </script>

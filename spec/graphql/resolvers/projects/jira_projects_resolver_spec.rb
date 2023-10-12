@@ -60,9 +60,9 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver, feature_category: :int
             project_ids = jira_projects.map(&:id)
 
             expect(jira_projects.size).to eq 2
-            expect(project_keys).to eq(%w(EX ABC))
-            expect(project_names).to eq(%w(Example Alphabetical))
-            expect(project_ids).to eq(%w(10000 10001))
+            expect(project_keys).to eq(%w[EX ABC])
+            expect(project_names).to eq(%w[Example Alphabetical])
+            expect(project_ids).to eq(%w[10000 10001])
             expect(resolver.max_page_size).to eq(2)
           end
 
@@ -75,9 +75,9 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver, feature_category: :int
               project_ids = jira_projects.map(&:id)
 
               expect(jira_projects.size).to eq 1
-              expect(project_keys).to eq(%w(ABC))
-              expect(project_names).to eq(%w(Alphabetical))
-              expect(project_ids).to eq(%w(10001))
+              expect(project_keys).to eq(%w[ABC])
+              expect(project_names).to eq(%w[Alphabetical])
+              expect(project_ids).to eq(%w[10001])
               expect(resolver.max_page_size).to eq(1)
             end
           end

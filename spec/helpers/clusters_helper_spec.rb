@@ -48,9 +48,9 @@ RSpec.describe ClustersHelper do
     end
 
     it 'generates svg image data', :aggregate_failures do
-      expect(subject.dig(:img_tags, :aws, :path)).to match(%r(/illustrations/logos/amazon_eks|svg))
-      expect(subject.dig(:img_tags, :default, :path)).to match(%r(/illustrations/logos/kubernetes|svg))
-      expect(subject.dig(:img_tags, :gcp, :path)).to match(%r(/illustrations/logos/google_gke|svg))
+      expect(subject.dig(:img_tags, :aws, :path)).to match(%r{/illustrations/logos/amazon_eks|svg})
+      expect(subject.dig(:img_tags, :default, :path)).to match(%r{/illustrations/logos/kubernetes|svg})
+      expect(subject.dig(:img_tags, :gcp, :path)).to match(%r{/illustrations/logos/google_gke|svg})
 
       expect(subject.dig(:img_tags, :aws, :text)).to eq('Amazon EKS')
       expect(subject.dig(:img_tags, :default, :text)).to eq('Kubernetes Cluster')
@@ -62,8 +62,8 @@ RSpec.describe ClustersHelper do
     end
 
     it 'displays empty image path' do
-      expect(subject[:clusters_empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-clusters|svg))
-      expect(subject[:empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-agents|svg))
+      expect(subject[:clusters_empty_state_image]).to match(%r{/illustrations/empty-state/empty-state-clusters|svg})
+      expect(subject[:empty_state_image]).to match(%r{/illustrations/empty-state/empty-state-agents|svg})
     end
 
     it 'displays add cluster using certificate path' do

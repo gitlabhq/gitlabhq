@@ -152,7 +152,7 @@ RSpec.describe AppearancesHelper do
       let!(:appearance) { create(:appearance, :with_logo) }
 
       it 'returns a path' do
-        expect(helper.brand_image).to match(%r(img .* data-src="/uploads/-/system/appearance/.*png))
+        expect(helper.brand_image).to match(%r{img .* data-src="/uploads/-/system/appearance/.*png})
       end
 
       context 'when there is no associated upload' do
@@ -163,14 +163,14 @@ RSpec.describe AppearancesHelper do
         end
 
         it 'falls back to using the original path' do
-          expect(helper.brand_image).to match(%r(img .* data-src="/uploads/-/system/appearance/.*png))
+          expect(helper.brand_image).to match(%r{img .* data-src="/uploads/-/system/appearance/.*png})
         end
       end
     end
 
     context 'when there is no logo' do
       it 'returns path of GitLab logo' do
-        expect(helper.brand_image).to match(%r(img .* data-src="#{gitlab_logo}))
+        expect(helper.brand_image).to match(%r{img .* data-src="#{gitlab_logo}})
       end
     end
 
@@ -178,13 +178,13 @@ RSpec.describe AppearancesHelper do
       let!(:appearance) { create(:appearance, title: 'My title') }
 
       it 'returns the title' do
-        expect(helper.brand_image).to match(%r(img alt="My title"))
+        expect(helper.brand_image).to match(%r{img alt="My title"})
       end
     end
 
     context 'when there is no title' do
       it 'returns the default title' do
-        expect(helper.brand_image).to match(%r(img alt="GitLab))
+        expect(helper.brand_image).to match(%r{img alt="GitLab})
       end
     end
   end
@@ -194,7 +194,7 @@ RSpec.describe AppearancesHelper do
       let!(:appearance) { create(:appearance, :with_logo) }
 
       it 'returns path of custom logo' do
-        expect(helper.brand_image_path).to match(%r(/uploads/-/system/appearance/.*/dk.png))
+        expect(helper.brand_image_path).to match(%r{/uploads/-/system/appearance/.*/dk.png})
       end
     end
 

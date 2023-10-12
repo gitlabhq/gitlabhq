@@ -8,7 +8,8 @@ module ClickHouse
       TYPE_CASTERS = {
         'UInt64' => ->(value) { Integer(value) },
         "DateTime64(6, 'UTC')" => ->(value) { ActiveSupport::TimeZone['UTC'].parse(value) },
-        "IntervalSecond" => ->(value) { ActiveSupport::Duration.build(value.to_i) }
+        "IntervalSecond" => ->(value) { ActiveSupport::Duration.build(value.to_i) },
+        "IntervalMillisecond" => ->(value) { ActiveSupport::Duration.build(value.to_i / 1000.0) }
       }.freeze
 
       def self.format(result)

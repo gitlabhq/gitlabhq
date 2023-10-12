@@ -379,7 +379,6 @@ module Gitlab
           bulk_imports: {
             gitlab_v1: count(::BulkImport.where(**time_period, source_type: :gitlab))
           },
-          issue_imports: issue_imports(time_period),
           group_imports: group_imports(time_period)
         }
       end
@@ -566,15 +565,6 @@ module Gitlab
       # no internal details leak via usage ping.
       def filtered_omniauth_provider_names
         omniauth_provider_names.reject { |name| name.starts_with?('ldap') }
-      end
-
-      def issue_imports(time_period)
-        time_frame = metric_time_period(time_period)
-        {
-          jira: count(::JiraImportState.where(time_period)), # rubocop: disable CodeReuse/ActiveRecord
-          fogbugz: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'fogbugz' }),
-          csv: count(::Issues::CsvImport.where(time_period)) # rubocop: disable CodeReuse/ActiveRecord
-        }
       end
 
       def group_imports(time_period)

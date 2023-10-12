@@ -14,6 +14,7 @@ import {
   initialPaginationState,
   reviewEvents,
   projectNamespace as namespace,
+  predefinedDateRange,
 } from '../mock_data';
 
 const { path: groupPath } = currentGroup;
@@ -32,6 +33,7 @@ const defaultState = {
   createdAfter,
   createdBefore,
   pagination: initialPaginationState,
+  predefinedDateRange,
 };
 
 describe('Project Value Stream Analytics actions', () => {
@@ -53,6 +55,7 @@ describe('Project Value Stream Analytics actions', () => {
   describe.each`
     action                      | payload                            | expectedActions                         | expectedMutations
     ${'setDateRange'}           | ${{ createdAfter, createdBefore }} | ${[{ type: 'refetchStageData' }]}       | ${[mockSetDateActionCommit]}
+    ${'setPredefinedDateRange'} | ${{ predefinedDateRange }}         | ${[]}                                   | ${[{ type: 'SET_PREDEFINED_DATE_RANGE', payload: { predefinedDateRange } }]}
     ${'setFilters'}             | ${[]}                              | ${[{ type: 'refetchStageData' }]}       | ${[]}
     ${'setSelectedStage'}       | ${{ selectedStage }}               | ${[{ type: 'refetchStageData' }]}       | ${[{ type: 'SET_SELECTED_STAGE', payload: { selectedStage } }]}
     ${'setSelectedValueStream'} | ${{ selectedValueStream }}         | ${[{ type: 'fetchValueStreamStages' }]} | ${[{ type: 'SET_SELECTED_VALUE_STREAM', payload: { selectedValueStream } }]}

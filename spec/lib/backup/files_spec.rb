@@ -68,7 +68,7 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
       it 'calls tar command with unlink' do
         expect(subject).to receive(:tar).and_return('blabla-tar')
 
-        expect(subject).to receive(:run_pipeline!).with([%w(gzip -cd), %w(blabla-tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -)], any_args)
+        expect(subject).to receive(:run_pipeline!).with([%w[gzip -cd], %w[blabla-tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -]], any_args)
         expect(subject).to receive(:pipeline_succeeded?).and_return(true)
         subject.restore('registry.tar.gz', 'backup_id')
       end
@@ -124,7 +124,7 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
     it 'excludes tmp dirs from archive' do
       expect(subject).to receive(:tar).and_return('blabla-tar')
 
-      expect(subject).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found --exclude=./@pages.tmp -C /var/gitlab-pages -cf - .), 'gzip -c -1'], any_args)
+      expect(subject).to receive(:run_pipeline!).with([%w[blabla-tar --exclude=lost+found --exclude=./@pages.tmp -C /var/gitlab-pages -cf - .], 'gzip -c -1'], any_args)
       subject.dump('registry.tar.gz', 'backup_id')
     end
 
@@ -146,7 +146,7 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
 
       it 'excludes tmp dirs from rsync' do
         expect(Gitlab::Popen).to receive(:popen)
-          .with(%w(rsync -a --delete --exclude=lost+found --exclude=/gitlab-pages/@pages.tmp /var/gitlab-pages /var/gitlab-backup))
+          .with(%w[rsync -a --delete --exclude=lost+found --exclude=/gitlab-pages/@pages.tmp /var/gitlab-pages /var/gitlab-backup])
           .and_return(['', 0])
 
         subject.dump('registry.tar.gz', 'backup_id')
@@ -154,7 +154,7 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
 
       it 'retries if rsync fails due to vanishing files' do
         expect(Gitlab::Popen).to receive(:popen)
-          .with(%w(rsync -a --delete --exclude=lost+found --exclude=/gitlab-pages/@pages.tmp /var/gitlab-pages /var/gitlab-backup))
+          .with(%w[rsync -a --delete --exclude=lost+found --exclude=/gitlab-pages/@pages.tmp /var/gitlab-pages /var/gitlab-backup])
           .and_return(['rsync failed', 24], ['', 0])
 
         expect do
@@ -164,7 +164,7 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
 
       it 'raises an error and outputs an error message if rsync failed' do
         allow(Gitlab::Popen).to receive(:popen)
-          .with(%w(rsync -a --delete --exclude=lost+found --exclude=/gitlab-pages/@pages.tmp /var/gitlab-pages /var/gitlab-backup))
+          .with(%w[rsync -a --delete --exclude=lost+found --exclude=/gitlab-pages/@pages.tmp /var/gitlab-pages /var/gitlab-backup])
           .and_return(['rsync failed', 1])
 
         expect do

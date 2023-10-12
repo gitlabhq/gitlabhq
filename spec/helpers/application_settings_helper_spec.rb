@@ -47,7 +47,7 @@ RSpec.describe ApplicationSettingsHelper do
 
   describe '.visible_attributes' do
     it 'contains tracking parameters' do
-      expect(helper.visible_attributes).to include(*%i(snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_app_id))
+      expect(helper.visible_attributes).to include(*%i[snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_app_id])
     end
 
     it 'contains :deactivate_dormant_users' do
@@ -60,16 +60,16 @@ RSpec.describe ApplicationSettingsHelper do
 
     it 'contains rate limit parameters' do
       expect(helper.visible_attributes).to include(
-        *%i(
+        *%i[
           issues_create_limit notes_create_limit project_export_limit
           project_download_export_limit project_export_limit project_import_limit
           raw_blob_request_limit group_export_limit group_download_export_limit
           group_import_limit users_get_by_id_limit search_rate_limit search_rate_limit_unauthenticated
-        ))
+        ])
     end
 
     it 'contains GitLab for Slack app parameters' do
-      params = %i(slack_app_enabled slack_app_id slack_app_secret slack_app_signing_secret slack_app_verification_token)
+      params = %i[slack_app_enabled slack_app_id slack_app_secret slack_app_signing_secret slack_app_verification_token]
 
       expect(helper.visible_attributes).to include(*params)
     end
@@ -306,7 +306,7 @@ RSpec.describe ApplicationSettingsHelper do
   describe '#sidekiq_job_limiter_modes_for_select' do
     subject { helper.sidekiq_job_limiter_modes_for_select }
 
-    it { is_expected.to eq([%w(Track track), %w(Compress compress)]) }
+    it { is_expected.to eq([%w[Track track], %w[Compress compress]]) }
   end
 
   describe '#instance_clusters_enabled?', :request_store do

@@ -44,7 +44,7 @@ RSpec.describe API::Helpers::CommonHelpers do
       get '/test?array=&array_of_strings=test,me&array_of_ints=1,2'
 
       expect(json_response['array']).to eq([])
-      expect(json_response['array_of_strings']).to eq(%w(test me))
+      expect(json_response['array_of_strings']).to eq(%w[test me])
       expect(json_response['array_of_ints']).to eq([1, 2])
     end
   end

@@ -79,6 +79,10 @@ class Snippet < ApplicationRecord
   scope :with_statistics, -> { joins(:statistics) }
   scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace]) }
 
+  scope :without_created_by_banned_user, -> do
+    where_not_exists(Users::BannedUser.where('snippets.author_id = banned_users.user_id'))
+  end
+
   attr_mentionable :description
 
   participant :author
@@ -364,6 +368,14 @@ class Snippet < ApplicationRecord
 
   def multiple_files?
     list_files.size > 1
+  end
+
+  def hidden_due_to_author_ban?
+    Feature.enabled?(:hide_snippets_of_banned_users) && author_banned?
+  end
+
+  def author_banned?
+    author.banned?
   end
 end
 

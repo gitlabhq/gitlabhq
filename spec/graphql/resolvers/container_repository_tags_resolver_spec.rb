@@ -25,7 +25,7 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver do
       subject { resolver.map(&:name) }
 
       before do
-        stub_container_registry_tags(repository: repository.path, tags: %w(aaa bab bbb ccc 123), with_manifest: false)
+        stub_container_registry_tags(repository: repository.path, tags: %w[aaa bab bbb ccc 123], with_manifest: false)
       end
 
       context 'without sort' do
@@ -37,19 +37,19 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver do
         context "name_asc" do
           let(:args) { { sort: :name_asc } }
 
-          it { is_expected.to eq(%w(123 aaa bab bbb ccc)) }
+          it { is_expected.to eq(%w[123 aaa bab bbb ccc]) }
         end
 
         context "name_desc" do
           let(:args) { { sort: :name_desc } }
 
-          it { is_expected.to eq(%w(ccc bbb bab aaa 123)) }
+          it { is_expected.to eq(%w[ccc bbb bab aaa 123]) }
         end
 
         context 'filter by name' do
           let(:args) { { sort: :name_desc, name: 'b' } }
 
-          it { is_expected.to eq(%w(bbb bab)) }
+          it { is_expected.to eq(%w[bbb bab]) }
         end
       end
     end

@@ -77,7 +77,7 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_catego
     end
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     context "wrapped in a <#{elem}/>" do
       let(:input_text) { "<#{elem}>Design #{url_for_design(design)}</#{elem}>" }
 

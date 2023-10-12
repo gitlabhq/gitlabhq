@@ -9,8 +9,8 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning
   let(:context) { {} }
 
   def image(path, alt: nil, data_src: nil)
-    alt_tag = alt ? %{alt="#{alt}"} : ""
-    data_src_tag = data_src ? %{data-src="#{data_src}"} : ""
+    alt_tag = alt ? %(alt="#{alt}") : ""
+    data_src_tag = data_src ? %(data-src="#{data_src}") : ""
 
     %(<img src="#{path}" #{alt_tag} #{data_src_tag} />)
   end

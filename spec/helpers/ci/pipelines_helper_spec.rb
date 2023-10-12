@@ -110,7 +110,7 @@ RSpec.describe Ci::PipelinesHelper do
       before do
         allow(helper).to receive(:current_user).and_return(user)
         project.add_developer(user)
-        create(:project_setting, project: project, target_platforms: %w(ios))
+        create(:project_setting, project: project, target_platforms: %w[ios])
       end
 
       describe 'the `registration_token` attribute' do

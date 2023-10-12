@@ -196,26 +196,26 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
   end
 
   describe "#mark_inline_diffs" do
-    let(:old_line) { %{abc 'def'} }
-    let(:new_line) { %{abc "def"} }
+    let(:old_line) { %(abc 'def') }
+    let(:new_line) { %(abc "def") }
 
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-      expect(marked_old_line).to eq(%q{abc <span class="idiff left deletion">&#39;</span>def<span class="idiff right deletion">&#39;</span>})
+      expect(marked_old_line).to eq(%q(abc <span class="idiff left deletion">&#39;</span>def<span class="idiff right deletion">&#39;</span>))
       expect(marked_old_line).to be_html_safe
-      expect(marked_new_line).to eq(%q{abc <span class="idiff left addition">&quot;</span>def<span class="idiff right addition">&quot;</span>})
+      expect(marked_new_line).to eq(%q(abc <span class="idiff left addition">&quot;</span>def<span class="idiff right addition">&quot;</span>))
       expect(marked_new_line).to be_html_safe
     end
 
     context 'when given HTML' do
       it 'sanitizes it' do
-        old_line = %{test.txt}
+        old_line = %(test.txt)
         new_line = %{<img src=x onerror=alert(document.domain)>}
 
         marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-        expect(marked_old_line).to eq(%q{<span class="idiff left right deletion">test.txt</span>})
+        expect(marked_old_line).to eq(%q(<span class="idiff left right deletion">test.txt</span>))
         expect(marked_old_line).to be_html_safe
         expect(marked_new_line).to eq(%q{<span class="idiff left right addition">&lt;img src=x onerror=alert(document.domain)&gt;</span>})
         expect(marked_new_line).to be_html_safe

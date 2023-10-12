@@ -1,5 +1,6 @@
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import SnippetDescription from '~/snippets/components/snippet_description_view.vue';
 import SnippetTitle from '~/snippets/components/snippet_title.vue';
 
@@ -23,12 +24,46 @@ describe('Snippet header component', () => {
       propsData: {
         ...defaultProps,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   }
+
+  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findTooltip = () => getBinding(findIcon().element, 'gl-tooltip');
 
   it('renders itself', () => {
     createComponent();
     expect(wrapper.find('.snippet-header').exists()).toBe(true);
+  });
+
+  it('does not render spam icon when author is not banned', () => {
+    createComponent();
+    expect(findIcon().exists()).toBe(false);
+  });
+
+  it('renders spam icon and tooltip when author is banned', () => {
+    createComponent({
+      props: {
+        snippet: {
+          ...snippet.snippet,
+          hidden: true,
+        },
+      },
+    });
+
+    expect(findIcon().props()).toMatchObject({
+      ariaLabel: 'Hidden',
+      name: 'spam',
+      size: 16,
+    });
+
+    expect(findIcon().attributes('title')).toBe(
+      'This snippet is hidden because its author has been banned',
+    );
+
+    expect(findTooltip()).toBeDefined();
   });
 
   it('renders snippets title and description', () => {

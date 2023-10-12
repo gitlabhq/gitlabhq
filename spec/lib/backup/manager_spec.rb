@@ -156,7 +156,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
   describe '#create' do
     let(:incremental_env) { 'false' }
-    let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz task2.tar.gz} }
+    let(:expected_backup_contents) { %w[backup_information.yml task1.tar.gz task2.tar.gz] }
     let(:backup_time) { Time.zone.parse('2019-1-1') }
     let(:backup_id) { "1546300800_2019_01_01_#{Gitlab::VERSION}" }
     let(:full_backup_id) { backup_id }
@@ -223,7 +223,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       context 'when SKIP env is set' do
-        let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz} }
+        let(:expected_backup_contents) { %w[backup_information.yml task1.tar.gz] }
 
         before do
           stub_env('SKIP', 'task2')
@@ -237,7 +237,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       context 'when the destination is optional' do
-        let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz} }
+        let(:expected_backup_contents) { %w[backup_information.yml task1.tar.gz] }
         let(:definitions) do
           {
             'task1' => Backup::Manager::TaskDefinition.new(task: task1, destination_path: 'task1.tar.gz'),
@@ -1015,7 +1015,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     end
 
     context 'when BACKUP variable is set to a correct file' do
-      let(:tar_cmdline) { %w{tar -xf 1451606400_2016_01_01_1.2.3_gitlab_backup.tar} }
+      let(:tar_cmdline) { %w[tar -xf 1451606400_2016_01_01_1.2.3_gitlab_backup.tar] }
       let(:backup_id) { "1451606400_2016_01_01_1.2.3" }
 
       before do

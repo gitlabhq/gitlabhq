@@ -487,6 +487,18 @@ RSpec.describe Snippet do
     end
   end
 
+  describe '.without_created_by_banned_user', feature_category: :insider_threat do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:banned_user) { create(:user, :banned) }
+
+    let_it_be(:snippet) { create(:snippet, author: user) }
+    let_it_be(:snippet_by_banned_user) { create(:snippet, author: banned_user) }
+
+    subject(:without_created_by_banned_user) { described_class.without_created_by_banned_user }
+
+    it { is_expected.to match_array(snippet) }
+  end
+
   describe '#participants' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:snippet) { create(:snippet, content: 'foo', project: project) }
@@ -961,5 +973,47 @@ RSpec.describe Snippet do
 
   it_behaves_like 'can move repository storage' do
     let_it_be(:container) { create(:snippet, :repository) }
+  end
+
+  describe '#hidden_due_to_author_ban', feature_category: :insider_threat do
+    let(:snippet) { build(:snippet, author: author) }
+
+    subject(:author_banned) { snippet.hidden_due_to_author_ban? }
+
+    context 'when the author is not banned' do
+      let_it_be(:author) { build(:user) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when author is banned' do
+      let_it_be(:author) { build(:user, :banned) }
+
+      context 'when the `hide_snippets_of_banned_users` feature flag is disabled' do
+        before do
+          stub_feature_flags(hide_snippets_of_banned_users: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#author_banned?', feature_category: :insider_threat do
+    let(:snippet) { build(:snippet, author: author) }
+
+    subject(:author_banned) { snippet.author_banned? }
+
+    context 'when the author is not banned' do
+      let_it_be(:author) { build(:user) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when the author is banned' do
+      let_it_be(:author) { build(:user, :banned) }
+
+      it { is_expected.to eq(true) }
+    end
   end
 end

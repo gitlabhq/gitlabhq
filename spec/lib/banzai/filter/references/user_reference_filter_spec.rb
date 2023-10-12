@@ -32,7 +32,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
     expect(reference_filter(act).to_html).to eq(exp)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Hey #{reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp

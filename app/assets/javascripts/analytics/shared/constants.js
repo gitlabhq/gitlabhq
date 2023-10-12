@@ -1,9 +1,17 @@
 import dateFormat, { masks } from '~/lib/dateformat';
-import { nDaysBefore, getStartOfDay } from '~/lib/utils/datetime_utility';
-import { s__ } from '~/locale';
+import {
+  nDaysBefore,
+  getStartOfDay,
+  dayAfter,
+  getDateInPast,
+  getCurrentUtcDate,
+  nWeeksBefore,
+} from '~/lib/utils/datetime_utility';
+import { s__, __, sprintf, n__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const DATE_RANGE_LIMIT = 180;
+export const DEFAULT_DATE_RANGE = 29; // 30 including current date
 export const PROJECTS_PER_PAGE = 50;
 
 const { isoDate, mediumDate } = masks;
@@ -14,9 +22,62 @@ export const dateFormats = {
   month: 'mmmm',
 };
 
+const TODAY = getCurrentUtcDate();
+const TOMORROW = dayAfter(TODAY, { utc: true });
+export const LAST_30_DAYS = getDateInPast(TOMORROW, 30, { utc: true });
+
 const startOfToday = getStartOfDay(new Date(), { utc: true });
-const last180Days = nDaysBefore(startOfToday, DATE_RANGE_LIMIT, { utc: true });
+const lastXDays = __('Last %{days} days');
+const lastWeek = nWeeksBefore(TOMORROW, 1, { utc: true });
+const last90Days = getDateInPast(TOMORROW, 90, { utc: true });
+const last180Days = getDateInPast(TOMORROW, DATE_RANGE_LIMIT, { utc: true });
+const mrThroughputStartDate = nDaysBefore(startOfToday, DATE_RANGE_LIMIT, { utc: true });
 const formatDateParam = (d) => dateFormat(d, dateFormats.isoDate, true);
+
+export const DATE_RANGE_CUSTOM_VALUE = 'custom';
+export const DATE_RANGE_LAST_30_DAYS_VALUE = 'last_30_days';
+
+export const DEFAULT_DATE_RANGE_OPTIONS = [
+  {
+    text: __('Last week'),
+    value: 'last_week',
+    startDate: lastWeek,
+    endDate: TODAY,
+  },
+  {
+    text: sprintf(lastXDays, { days: 30 }),
+    value: DATE_RANGE_LAST_30_DAYS_VALUE,
+    startDate: LAST_30_DAYS,
+    endDate: TODAY,
+  },
+  {
+    text: sprintf(lastXDays, { days: 90 }),
+    value: 'last_90_days',
+    startDate: last90Days,
+    endDate: TODAY,
+  },
+  {
+    text: sprintf(lastXDays, { days: 180 }),
+    value: 'last_180_days',
+    startDate: last180Days,
+    endDate: TODAY,
+  },
+];
+
+export const MAX_DATE_RANGE_TEXT = (maxDateRange) => {
+  return sprintf(
+    __(
+      'Showing data for workflow items completed in this date range. Date range limited to %{maxDateRange} days.',
+    ),
+    {
+      maxDateRange,
+    },
+  );
+};
+
+export const NUMBER_OF_DAYS_SELECTED = (numDays) => {
+  return n__('1 day selected', '%d days selected', numDays);
+};
 
 export const METRIC_POPOVER_LABEL = s__('ValueStreamAnalytics|View details');
 
@@ -147,7 +208,7 @@ export const METRIC_TOOLTIPS = {
     description: s__('ValueStreamAnalytics|The number of merge requests merged by month.'),
     groupLink: '-/analytics/productivity_analytics',
     projectLink: `-/analytics/merge_request_analytics?start_date=${formatDateParam(
-      last180Days,
+      mrThroughputStartDate,
     )}&end_date=${formatDateParam(startOfToday)}`,
     docsLink: helpPagePath('user/analytics/merge_request_analytics', {
       anchor: 'view-the-number-of-merge-requests-in-a-date-range',

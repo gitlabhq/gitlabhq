@@ -116,7 +116,7 @@ RSpec.describe Banzai::ReferenceParser::BaseParser, feature_category: :team_plan
           links = Nokogiri::HTML.fragment("<a data-foo='1'></a><a data-foo='2'></a>").children
 
           expect(subject).not_to receive(:references_relation)
-          expect(subject.referenced_by(links, ids_only: true)).to eq(%w(1 2))
+          expect(subject.referenced_by(links, ids_only: true)).to eq(%w[1 2])
         end
 
         context 'and the html fragment does not contain any attributes' do

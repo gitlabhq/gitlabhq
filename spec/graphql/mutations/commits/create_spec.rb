@@ -67,7 +67,7 @@ RSpec.describe Mutations::Commits::Create do
         context 'when service successfully creates a new commit' do
           it "returns the ETag path for the commit's pipeline" do
             commit_pipeline_path = subject[:commit_pipeline_path]
-            expect(commit_pipeline_path).to match(%r(pipelines/sha/\w+))
+            expect(commit_pipeline_path).to match(%r{pipelines/sha/\w+})
           end
 
           it 'returns the content of the commit' do

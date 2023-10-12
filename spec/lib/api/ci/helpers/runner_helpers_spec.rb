@@ -62,7 +62,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
 
       it 'extracts the runner details', :aggregate_failures do
         expect(details.keys).to match_array(
-          %w(system_id name version revision platform architecture executor config ip_address)
+          %w[system_id name version revision platform architecture executor config ip_address]
         )
         expect(details['system_id']).to eq(system_id)
         expect(details['name']).to eq(name)

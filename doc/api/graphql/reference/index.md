@@ -25042,6 +25042,7 @@ Represents a snippet entry.
 | <a id="snippetdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="snippetdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="snippetfilename"></a>`fileName` | [`String`](#string) | File Name of the snippet. |
+| <a id="snippethidden"></a>`hidden` | [`Boolean!`](#boolean) | Indicates the snippet is hidden because the author has been banned. |
 | <a id="snippethttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | HTTP URL to the snippet repository. |
 | <a id="snippetid"></a>`id` | [`SnippetID!`](#snippetid) | ID of the snippet. |
 | <a id="snippetproject"></a>`project` | [`Project`](#project) | Project the snippet is associated with. |

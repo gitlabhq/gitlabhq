@@ -18,6 +18,7 @@ import {
   stageCounts,
   initialPaginationState as pagination,
   projectNamespace as mockNamespace,
+  predefinedDateRange,
 } from '../mock_data';
 
 let state;
@@ -94,6 +95,7 @@ describe('Project Value Stream Analytics mutations', () => {
     mutation                                     | payload                                                  | stateKey                 | value
     ${types.SET_DATE_RANGE}                      | ${mockSetDatePayload}                                    | ${'createdAfter'}        | ${mockCreatedAfter}
     ${types.SET_DATE_RANGE}                      | ${mockSetDatePayload}                                    | ${'createdBefore'}       | ${mockCreatedBefore}
+    ${types.SET_PREDEFINED_DATE_RANGE}           | ${predefinedDateRange}                                   | ${'predefinedDateRange'} | ${predefinedDateRange}
     ${types.SET_LOADING}                         | ${true}                                                  | ${'isLoading'}           | ${true}
     ${types.SET_LOADING}                         | ${false}                                                 | ${'isLoading'}           | ${false}
     ${types.SET_SELECTED_VALUE_STREAM}           | ${selectedValueStream}                                   | ${'selectedValueStream'} | ${selectedValueStream}

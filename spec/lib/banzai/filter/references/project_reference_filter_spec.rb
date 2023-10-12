@@ -47,7 +47,7 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
     expect(doc.css('a').first.attr('href')).to eq urls.project_url(subject)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Hey #{CGI.escapeHTML(reference)}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp

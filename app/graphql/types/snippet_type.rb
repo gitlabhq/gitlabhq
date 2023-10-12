@@ -33,6 +33,11 @@ module Types
           description: 'Owner of the snippet.',
           null: true
 
+    field :hidden, GraphQL::Types::Boolean,
+          description: 'Indicates the snippet is hidden because the author has been banned.',
+          null: false,
+          method: :hidden_due_to_author_ban?
+
     field :file_name, GraphQL::Types::String,
           description: 'File Name of the snippet.',
           null: true

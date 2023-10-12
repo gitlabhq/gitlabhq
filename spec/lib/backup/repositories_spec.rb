@@ -85,7 +85,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
     end
 
     describe 'storages' do
-      let(:storages) { %w{default} }
+      let(:storages) { %w[default] }
 
       let_it_be(:project) { create(:project_with_design, :repository) }
 
@@ -280,7 +280,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
     end
 
     context 'storages' do
-      let(:storages) { %w{default} }
+      let(:storages) { %w[default] }
 
       before do
         stub_storage_settings('test_second_storage' => {
