@@ -20,7 +20,11 @@ This feature is not ready for production use.
 
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
-To leave feedback about Product Analytics bugs or functionality, please comment in [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970) or open a new issue with the label `group::product analytics`.
+To leave feedback about Product Analytics bugs or functionality:
+
+- Comment on [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
+- Create an issue with the `group::product analytics` label.
+- [Schedule a call](https://calendly.com/jheimbuck/30-minute-call) with the team.
 
 ## How product analytics works
 

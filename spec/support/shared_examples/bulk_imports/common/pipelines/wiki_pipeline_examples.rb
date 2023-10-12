@@ -52,7 +52,6 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
 
         subject.run
 
-        expect(tracker.failed?).to eq(true)
         expect(tracker.entity.failures.first).to be_present
         expect(tracker.entity.failures.first.exception_message).to eq('Only allowed schemes are http, https')
       end
@@ -97,11 +96,7 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
         context 'when response is not 403' do
           let(:response_double) { instance_double(HTTParty::Response, forbidden?: false, not_found?: false, code: 301) }
 
-          it 'marks tracker as failed' do
-            subject.run
-
-            expect(tracker.failed?).to eq(true)
-          end
+          include_examples 'does not raise an error'
         end
       end
     end

@@ -23,13 +23,13 @@ module Ci
 
     def self.next!
       with_redis do |redis|
-        pipeline_id, _ = redis.zpopmin(QUEUE_REDIS_KEY)
+        pipeline_id, enqueue_timestamp = redis.zpopmin(QUEUE_REDIS_KEY)
         break unless pipeline_id
 
         pipeline_id = pipeline_id.to_i
         log_event(:picked_next, pipeline_id)
 
-        pipeline_id
+        [pipeline_id, enqueue_timestamp.to_i]
       end
     end
 

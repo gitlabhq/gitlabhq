@@ -63,31 +63,38 @@ RSpec.describe Ci::UnlockPipelineRequest, :unlock_pipelines, :clean_gitlab_redis
   end
 
   describe '.next!' do
-    subject(:next_pipeline_id) { described_class.next! }
+    subject(:next_result) { described_class.next! }
 
     context 'when there are pending pipeline IDs' do
-      before do
-        travel_to(3.minutes.ago) { described_class.enqueue(1) }
+      it 'pops and returns the oldest pipeline ID from the queue (FIFO)' do
+        expected_enqueue_time = nil
+        expected_pipeline_id = 1
+        travel_to(3.minutes.ago) do
+          expected_enqueue_time = Time.current.utc.to_i
+          described_class.enqueue(expected_pipeline_id)
+        end
+
         travel_to(2.minutes.ago) { described_class.enqueue(2) }
         travel_to(1.minute.ago) { described_class.enqueue(3) }
-      end
 
-      it 'pops and returns the oldest pipeline ID from the queue (FIFO)' do
         expect(described_class).to receive(:log_event).with(:picked_next, 1)
 
-        expect { next_pipeline_id }
+        expect { next_result }
           .to change { pipeline_ids_waiting_to_be_unlocked }
           .from([1, 2, 3])
           .to([2, 3])
 
-        expect(next_pipeline_id).to eq(1)
+        pipeline_id, enqueue_timestamp = next_result
+
+        expect(pipeline_id).to eq(expected_pipeline_id)
+        expect(enqueue_timestamp).to eq(expected_enqueue_time)
       end
     end
 
     context 'when the queue is empty' do
       it 'does nothing' do
         expect(described_class).not_to receive(:log_event)
-        expect(next_pipeline_id).to be_nil
+        expect(next_result).to be_nil
       end
     end
   end

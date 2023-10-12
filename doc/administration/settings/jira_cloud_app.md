@@ -100,8 +100,9 @@ To link your self-managed instance to the GitLab for Jira Cloud app:
 1. Select **GitLab (self-managed)**.
 1. Enter your GitLab instance URL.
 1. Select **Save**.
+1. Optional. [Check if Jira Cloud is now linked](#check-if-jira-cloud-is-linked).
 
-### Check if Jira Cloud is linked
+#### Check if Jira Cloud is linked
 
 You can use the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session)
 to check if Jira Cloud is linked to:

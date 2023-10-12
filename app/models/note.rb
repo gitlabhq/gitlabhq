@@ -830,7 +830,9 @@ class Note < ApplicationRecord
   def ensure_namespace_id
     return if namespace_id.present? && !noteable_changed? && !project_changed?
 
-    self.namespace_id = if for_project_noteable?
+    self.namespace_id = if for_issue?
+                          noteable&.namespace_id
+                        elsif for_project_noteable?
                           project&.project_namespace_id
                         elsif for_personal_snippet?
                           noteable&.author&.namespace&.id

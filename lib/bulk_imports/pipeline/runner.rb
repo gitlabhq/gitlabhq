@@ -98,9 +98,9 @@ module BulkImports
       def log_and_fail(exception, step)
         log_import_failure(exception, step)
 
-        tracker.fail_op!
-
         if abort_on_failure?
+          tracker.fail_op!
+
           warn(message: 'Aborting entity migration due to pipeline failure')
           context.entity.fail_op!
         end
@@ -130,7 +130,7 @@ module BulkImports
             {
               bulk_import_id: context.bulk_import_id,
               pipeline_step: step,
-              message: 'Pipeline failed'
+              message: 'An object of a pipeline failed to import'
             }
           )
         )

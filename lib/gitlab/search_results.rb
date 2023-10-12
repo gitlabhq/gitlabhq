@@ -238,9 +238,7 @@ module Gitlab
     def filter_milestones_by_project(milestones)
       candidate_project_ids = project_ids_relation
 
-      if Feature.enabled?(:search_milestones_hide_archived_projects, current_user) && !filters[:include_archived]
-        candidate_project_ids = candidate_project_ids.non_archived
-      end
+      candidate_project_ids = candidate_project_ids.non_archived unless filters[:include_archived]
 
       project_ids = milestones.of_projects(candidate_project_ids).select(:project_id).distinct.pluck(:project_id) # rubocop: disable CodeReuse/ActiveRecord
 

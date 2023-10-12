@@ -52,4 +52,20 @@ module DnsHelpers
   def db_hosts
     ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:host).compact.uniq
   end
+
+  def stub_resolver(stubbed_lookups = {})
+    resolver = instance_double('Resolv::DNS')
+    allow(resolver).to receive(:timeouts=)
+
+    expect(Resolv::DNS).to receive(:open).and_yield(resolver)
+
+    allow(resolver).to receive(:getresources).and_return([])
+    stubbed_lookups.each do |domain, records|
+      records = Array(records).map { |txt| Resolv::DNS::Resource::IN::TXT.new(txt) }
+      # Append '.' to domain_name, indicating absolute FQDN
+      allow(resolver).to receive(:getresources).with("#{domain}.", Resolv::DNS::Resource::IN::TXT) { records }
+    end
+
+    resolver
+  end
 end

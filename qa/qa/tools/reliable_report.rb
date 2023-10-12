@@ -13,6 +13,20 @@ module QA
 
       RELIABLE_REPORT_LABEL = "reliable test report"
 
+      ALLOWED_EXCEPTION_PATTERNS = [
+        /Couldn't find option named/,
+        /Waiting for [\w:]+ to be removed/,
+        /503 Server Unavailable/,
+        /\w+ did not appear on [\w:]+ as expected/,
+        /Internal Server Error/,
+        /Ambiguous match/,
+        /500 Error - GitLab/,
+        /Page did not fully load/,
+        /Timed out reading data from server/,
+        /Internal API error/,
+        /Something went wrong/
+      ].freeze
+
       # Project for report creation: https://gitlab.com/gitlab-org/gitlab
       PROJECT_ID = 278964
 
@@ -45,10 +59,12 @@ module QA
       # @return [void]
       def print_report
         puts "#{stable_summary_table}\n\n"
+        puts "Total amount: #{stable_test_runs.sum { |_k, v| v.count }}\n\n"
         stable_results_tables.each { |stage, table| puts "#{table}\n\n" }
         return puts("No unstable reliable tests present!".colorize(:yellow)) if unstable_reliable_test_runs.empty?
 
         puts "#{unstable_summary_table}\n\n"
+        puts "Total amount: #{unstable_reliable_test_runs.sum { |_k, v| v.count }}\n\n"
         unstable_reliable_results_tables.each { |stage, table| puts "#{table}\n\n" }
       end
 
@@ -322,7 +338,7 @@ module QA
         "name: '#{wrapped_name}'\nfile: #{file.ljust(160)}"
       end
 
-      # Formatted expection with link to job url
+      # Formatted exceptions with link to job url
       #
       # @param [Hash] exceptions_and_job_urls
       # @return [String]
@@ -330,8 +346,8 @@ module QA
         return '' if exceptions_and_job_urls.empty?
 
         "<br>**Exceptions**:#{exceptions_and_job_urls.keys.map do |e|
-                                "<br>- [`#{e.truncate(250).tr('`', "'")}`](#{exceptions_and_job_urls[e]})"
-                              end.join('')}"
+          "<br>- [`#{e.truncate(250).tr('`', "'")}`](#{exceptions_and_job_urls[e]})"
+        end.join('')}"
       end
 
       # rubocop:disable Metrics/AbcSize
@@ -357,16 +373,19 @@ module QA
           stage = last_record["stage"] || "unknown"
 
           runs = records.count
-          failed = records.count { |r| r.values["status"] == "failed" }
+
+          failed = records.count do |r|
+            r.values["status"] == "failed" && !allowed_failure?(r.values["failure_exception"])
+          end
 
           failure_rate = (failed.to_f / runs) * 100
 
           records_with_exception = records.reject { |r| !r.values["failure_exception"] }
 
           # Since exception is the key in the below hash, only one instance of an occurrence is kept
-          exceptions_and_job_urls = Hash[*records_with_exception.flat_map do |r|
-                                           [r.values["failure_exception"], r.values["job_url"]]
-                                         end]
+          exceptions_and_job_urls = records_with_exception.to_h do |r|
+            [r.values["failure_exception"], r.values["job_url"]]
+          end
 
           result[stage][name] = {
             file: file,
@@ -377,7 +396,16 @@ module QA
           }
         end
       end
+
       # rubocop:enable Metrics/AbcSize
+
+      # Check if failure is allowed
+      #
+      # @param [String] failure_exception
+      # @return [Boolean]
+      def allowed_failure?(failure_exception)
+        ALLOWED_EXCEPTION_PATTERNS.any? { |pattern| pattern.match?(failure_exception) }
+      end
 
       # Flux query
       #

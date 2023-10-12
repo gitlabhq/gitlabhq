@@ -34418,6 +34418,8 @@ CREATE INDEX index_users_on_created_at ON users USING btree (created_at);
 
 CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
 
+CREATE INDEX index_users_on_email_domain_and_id ON users USING btree (lower(split_part((email)::text, '@'::text, 2)), id);
+
 CREATE INDEX index_users_on_email_trigram ON users USING gin (email gin_trgm_ops);
 
 CREATE INDEX index_users_on_feed_token ON users USING btree (feed_token);

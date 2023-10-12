@@ -51,10 +51,6 @@ class SearchController < ApplicationController
     push_frontend_feature_flag(:search_commits_hide_archived_projects, current_user)
   end
 
-  before_action only: :show do
-    push_frontend_feature_flag(:search_milestones_hide_archived_projects, current_user)
-  end
-
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
   layout 'search'

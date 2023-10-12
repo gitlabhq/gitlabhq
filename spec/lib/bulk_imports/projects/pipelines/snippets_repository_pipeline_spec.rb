@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, feature_category: :importers do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:bulk_import) { create(:bulk_import, user: user) }
@@ -55,7 +55,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline do
     end
   end
 
-  describe '#run' do
+  describe '#run', :clean_gitlab_redis_cache do
     let(:validation_response) { double(Hash, 'error?': false) }
 
     before do
@@ -149,7 +149,6 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline do
           it 'logs the failure' do
             pipeline.run
 
-            expect(tracker.failed?).to eq(true)
             expect(tracker.entity.failures.first).to be_present
             expect(tracker.entity.failures.first.exception_message).to eq('Only allowed schemes are http, https')
           end

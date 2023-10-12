@@ -16,7 +16,12 @@ RSpec.describe Ci::UnlockPipelinesInQueueWorker, :unlock_pipelines, :clean_gitla
       pipeline_1 = create(:ci_pipeline, :artifacts_locked)
       pipeline_2 = create(:ci_pipeline, :artifacts_locked)
 
-      Ci::UnlockPipelineRequest.enqueue(pipeline_1.id)
+      enqueue_timestamp = nil
+      travel_to(3.minutes.ago) do
+        enqueue_timestamp = Time.current.utc.to_i
+        Ci::UnlockPipelineRequest.enqueue(pipeline_1.id)
+      end
+
       Ci::UnlockPipelineRequest.enqueue(pipeline_2.id)
 
       expect(Ci::UnlockPipelineService).to receive(:new).with(pipeline_1).and_return(service)
@@ -33,6 +38,10 @@ RSpec.describe Ci::UnlockPipelinesInQueueWorker, :unlock_pipelines, :clean_gitla
 
       expect(worker).to receive(:log_extra_metadata_on_done).with(:pipeline_id, pipeline_1.id)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:project, pipeline_1.project.full_path)
+
+      unlock_timestamp = Time.current.utc
+      unlock_wait_time = unlock_timestamp.to_i - enqueue_timestamp
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:unlock_wait_time, unlock_wait_time)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:remaining_pending, 1)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:skipped_already_leased, false)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:skipped_already_unlocked, false)
@@ -40,10 +49,12 @@ RSpec.describe Ci::UnlockPipelinesInQueueWorker, :unlock_pipelines, :clean_gitla
       expect(worker).to receive(:log_extra_metadata_on_done).with(:unlocked_job_artifacts, 3)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:unlocked_pipeline_artifacts, 2)
 
-      expect { worker.perform_work }
-        .to change { pipeline_ids_waiting_to_be_unlocked }
-        .from([pipeline_1.id, pipeline_2.id])
-        .to([pipeline_2.id])
+      travel_to(unlock_timestamp) do
+        expect { worker.perform_work }
+          .to change { pipeline_ids_waiting_to_be_unlocked }
+          .from([pipeline_1.id, pipeline_2.id])
+          .to([pipeline_2.id])
+      end
     end
 
     context 'when queue is empty' do

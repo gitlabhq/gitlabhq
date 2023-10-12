@@ -66,7 +66,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
               'exception.message' => exception_message,
               'correlation_id' => anything,
               'class' => 'BulkImports::MyPipeline',
-              'message' => "Pipeline failed",
+              'message' => 'An object of a pipeline failed to import',
               'importer' => 'gitlab_migration',
               'exception.backtrace' => anything,
               'source_version' => entity.bulk_import.source_version_info.to_s
@@ -112,10 +112,10 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
     end
 
     context 'when pipeline is not marked to abort on failure' do
-      it 'does not mark entity as failed' do
+      it 'does not mark tracker and entity as failed' do
         subject.run
 
-        expect(tracker.failed?).to eq(true)
+        expect(tracker.failed?).to eq(false)
         expect(entity.failed?).to eq(false)
       end
     end

@@ -331,6 +331,8 @@
   - 1
 - - groups_enterprise_users_associate
   - 1
+- - groups_enterprise_users_bulk_associate_by_domain
+  - 1
 - - groups_enterprise_users_disassociate
   - 1
 - - groups_export_memberships

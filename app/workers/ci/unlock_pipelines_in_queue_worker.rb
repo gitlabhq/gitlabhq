@@ -16,7 +16,7 @@ module Ci
     MAX_RUNNING_HIGH = 1500
 
     def perform_work(*_)
-      pipeline_id = Ci::UnlockPipelineRequest.next!
+      pipeline_id, enqueue_timestamp = Ci::UnlockPipelineRequest.next!
       return log_extra_metadata_on_done(:remaining_pending, 0) unless pipeline_id
 
       Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
@@ -25,6 +25,7 @@ module Ci
 
         result = Ci::UnlockPipelineService.new(pipeline).execute
 
+        log_extra_metadata_on_done(:unlock_wait_time, Time.current.utc.to_i - enqueue_timestamp)
         log_extra_metadata_on_done(:remaining_pending, Ci::UnlockPipelineRequest.total_pending)
         log_extra_metadata_on_done(:skipped_already_leased, result[:skipped_already_leased])
         log_extra_metadata_on_done(:skipped_already_unlocked, result[:skipped_already_unlocked])
