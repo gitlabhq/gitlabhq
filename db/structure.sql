@@ -32323,8 +32323,6 @@ CREATE INDEX index_events_for_project_activity ON events USING btree (project_id
 
 CREATE INDEX index_events_on_author_id_and_created_at ON events USING btree (author_id, created_at);
 
-CREATE INDEX index_events_on_author_id_and_created_at_merge_requests ON events USING btree (author_id, created_at) WHERE ((target_type)::text = 'MergeRequest'::text);
-
 CREATE INDEX index_events_on_author_id_and_id ON events USING btree (author_id, id);
 
 CREATE INDEX index_events_on_created_at_and_id ON events USING btree (created_at, id) WHERE (created_at > '2021-08-27 00:00:00+00'::timestamp with time zone);
@@ -32453,7 +32451,7 @@ CREATE INDEX index_gpg_keys_on_user_id ON gpg_keys USING btree (user_id);
 
 CREATE UNIQUE INDEX index_gpg_signatures_on_commit_sha ON gpg_signatures USING btree (commit_sha);
 
-CREATE INDEX index_gpg_signatures_on_gpg_key_id ON gpg_signatures USING btree (gpg_key_id);
+CREATE INDEX index_gpg_signatures_on_gpg_key_id_and_id ON gpg_signatures USING btree (gpg_key_id, id);
 
 CREATE INDEX index_gpg_signatures_on_gpg_key_primary_keyid ON gpg_signatures USING btree (gpg_key_primary_keyid);
 

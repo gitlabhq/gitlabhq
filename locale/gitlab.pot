@@ -10128,6 +10128,21 @@ msgstr ""
 msgid "Ci config already present"
 msgstr ""
 
+msgid "CiCatalogComponent|Default Value"
+msgstr ""
+
+msgid "CiCatalogComponent|Inputs"
+msgstr ""
+
+msgid "CiCatalogComponent|Mandatory"
+msgstr ""
+
+msgid "CiCatalogComponent|Parameters"
+msgstr ""
+
+msgid "CiCatalogComponent|There was an error fetching this resource's components"
+msgstr ""
+
 msgid "CiCatalog|Back to the CI/CD Catalog"
 msgstr ""
 
@@ -10138,6 +10153,9 @@ msgid "CiCatalog|CI/CD Catalog resource"
 msgstr ""
 
 msgid "CiCatalog|Component ID not found, or you do not have permission to access component."
+msgstr ""
+
+msgid "CiCatalog|Components"
 msgstr ""
 
 msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
@@ -10165,6 +10183,9 @@ msgid "CiCatalog|No release available"
 msgstr ""
 
 msgid "CiCatalog|Page %{currentPage} of %{totalPage}"
+msgstr ""
+
+msgid "CiCatalog|Readme"
 msgstr ""
 
 msgid "CiCatalog|Released %{timeAgo} by %{author}"
@@ -38824,9 +38845,6 @@ msgid "Read the documentation before applying changes."
 msgstr ""
 
 msgid "Read their documentation."
-msgstr ""
-
-msgid "Readme"
 msgstr ""
 
 msgid "Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
