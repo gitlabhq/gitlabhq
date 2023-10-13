@@ -99,9 +99,8 @@ to a management project:
 | Staging     | `staging`         |
 | Production  | `production`      |
 
-The following environments set in
-[`.gitlab-ci.yml`](../../ci/yaml/index.md) deploy to the
-Development, Staging, and Production cluster respectively.
+The environments set in the
+[`.gitlab-ci.yml`](../../ci/yaml/index.md) file deploy to the Development, Staging, and Production cluster.
 
 ```yaml
 stages:

@@ -239,7 +239,7 @@ export default {
                 {{ s__('Pipeline|for') }}
                 <gl-link
                   :href="pipeline.commit.commit_path"
-                  class="commit-sha gl-font-weight-normal"
+                  class="commit-sha-container"
                   data-testid="commit-link"
                   >{{ pipeline.commit.short_id }}</gl-link
                 >
@@ -250,7 +250,7 @@ export default {
                   v-safe-html="sourceBranchLink"
                   :title="sourceBranch"
                   truncate-target="child"
-                  class="label-branch label-truncate gl-font-weight-normal"
+                  class="label-branch label-truncate ref-container"
                 />
               </template>
               <template v-if="finishedAt">

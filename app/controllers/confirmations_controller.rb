@@ -4,8 +4,6 @@ class ConfirmationsController < Devise::ConfirmationsController
   include AcceptsPendingInvitations
   include GitlabRecaptcha
   include OneTrustCSP
-  include GoogleAnalyticsCSP
-  include GoogleSyndicationCSP
 
   prepend_before_action :check_recaptcha, only: :create
   before_action :load_recaptcha, only: :new

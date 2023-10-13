@@ -1,5 +1,5 @@
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlListboxItem, GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -32,7 +32,7 @@ describe('RunnerCliInstructions component', () => {
 
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findArchitectureDropdownItems = () => wrapper.findAllByTestId('architecture-dropdown-item');
+  const findArchitectureDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
   const findBinaryDownloadButton = () => wrapper.findByTestId('binary-download-button');
   const findBinaryInstructions = () => wrapper.findByTestId('binary-instructions');
   const findRegisterCommand = () => wrapper.findByTestId('register-command');
@@ -43,7 +43,7 @@ describe('RunnerCliInstructions component', () => {
     fakeApollo = createMockApollo(requestHandlers);
 
     wrapper = extendedWrapper(
-      shallowMount(RunnerCliInstructions, {
+      mount(RunnerCliInstructions, {
         propsData: {
           platform: mockPlatform,
           registrationToken: 'MY_TOKEN',

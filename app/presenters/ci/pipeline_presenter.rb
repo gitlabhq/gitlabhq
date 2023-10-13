@@ -90,7 +90,7 @@ module Ci
     def link_to_pipeline_ref
       ApplicationController.helpers.link_to(pipeline.ref,
         project_commits_path(pipeline.project, pipeline.ref),
-        class: "ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2")
+        class: "ref-container gl-link")
     end
 
     def link_to_merge_request
@@ -98,7 +98,7 @@ module Ci
 
       ApplicationController.helpers.link_to(merge_request_presenter.to_reference,
         project_merge_request_path(merge_request_presenter.project, merge_request_presenter),
-        class: 'mr-iid')
+        class: 'mr-iid ref-container')
     end
 
     def link_to_merge_request_source_branch
@@ -140,7 +140,7 @@ module Ci
       all_related_merge_requests.first(limit).map do |merge_request|
         mr_path = project_merge_request_path(merge_request.project, merge_request)
 
-        ApplicationController.helpers.link_to "#{merge_request.to_reference} #{merge_request.title}", mr_path, class: 'mr-iid'
+        ApplicationController.helpers.link_to "#{merge_request.to_reference} #{merge_request.title}", mr_path, class: 'mr-iid ref-container'
       end
     end
 

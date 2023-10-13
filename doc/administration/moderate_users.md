@@ -73,31 +73,24 @@ GitLab administrators can block and unblock users.
 
 ### Block a user
 
-To completely prevent access of a user to the GitLab instance,
-administrators can choose to block the user.
+Prerequisite:
 
-Users can be blocked [via an abuse report](../administration/review_abuse_reports.md#blocking-users),
-by removing them in LDAP, or directly from the Admin Area. To do this:
+- You must be an administrator for the instance.
+
+You can block a user's access to the instance. When you block a user, they receive an email notification that their account has been blocked. After this email, they no longer receive notifications. A blocked user:
+
+- Cannot sign in or access any repositories, but all of their data remains in those repositories.
+- Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
+- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
+
+To block a user:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Block**.
+1. For the user you want to deactivate, select the vertical ellipsis (**{ellipsis_v}**) and then **Block**.
 
-A blocked user:
-
-- Cannot sign in.
-- Cannot access Git repositories or the API.
-- Does not receive any notifications from GitLab.
-- Cannot use [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not consume a [seat](../subscriptions/self_managed/index.md#billable-users).
-
-Personal projects, and group and user history of the blocked user are left intact.
-
-NOTE:
-Users can also be blocked using the [GitLab API](../api/users.md#block-user).
+To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the Admin area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
 
 ### Unblock a user
 
@@ -136,44 +129,27 @@ GitLab administrators can deactivate and activate users.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
-To temporarily prevent access by a GitLab user that has no recent activity,
-administrators can choose to deactivate the user.
+You can temporarily deactivate a user who has no recent activity.
 
-Deactivating a user is functionally identical to [blocking a user](#block-and-unblock-users),
-with the following differences:
+The user you deactivate must be dormant. When you deactivate a user, their projects, group, and history remain. A deactivated user:
 
-- It does not prohibit the user from logging back in via the UI.
-- Once a deactivated user logs back into the GitLab UI, their account is set to active.
+- Cannot access repositories or the API.
+- Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
+- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
 
-A deactivated user:
+Deactiviation is similar to blocking, but there are a few important differences. Deactivating a user does not prohibit the user from signing into the GitLab UI. A deactivated user can become active again by signing in. 
 
-- Cannot access Git repositories or the API.
-- Does not receive any notifications from GitLab.
-- Cannot use [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not consume a [seat](../subscriptions/self_managed/index.md#billable-users).
-
-Personal projects, and group and user history of the deactivated user are left intact.
-
-NOTE:
-Users are notified about account deactivation if
-[user deactivation emails](../administration/settings/email.md#user-deactivation-emails) are enabled.
-
-A user can be deactivated from the Admin Area. To do this:
+To deactivate a user from the Admin Area:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Deactivate**.
+1. For the user you want to deactivate, select the vertical ellipsis (**{ellipsis_v}**) and then **Deactivate**.
+1. On the dialog, select **Deactivate**.
 
-For the deactivation option to be visible to an administrator, the user:
+Email notifications stop after deactivation. GitLab sends email notifications to users when their account has been deactivated. For more information about this feature, see [user deactivation emails](../administration/settings/email.md#user-deactivation-emails).
 
-- Must have a state of active.
-- Must be [dormant](#automatically-deactivate-dormant-users).
-
-NOTE:
-Users can also be deactivated using the [GitLab API](../api/users.md#deactivate-user).
+To deactivate users with the GitLab API, see [deactivate user](../api/users.md#deactivate-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
 
 ### Automatically deactivate dormant users
 

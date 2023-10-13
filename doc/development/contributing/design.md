@@ -105,8 +105,8 @@ Check accessibility using your browser's _accessibility inspector_ ([Chrome](htt
 
 - Conform to level AA of the World Wide Web Consortium (W3C) [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/),
   according to our [statement of compliance](https://design.gitlab.com/accessibility/a11y/).
-- Follow accessibility [best practices](https://design.gitlab.com/accessibility/best-practices/)
-  and [checklist](../fe_guide/accessibility.md#quick-checklist).
+- Follow accessibility [Pajamas' best practices](https://design.gitlab.com/accessibility/best-practices/)
+  and read the accessibility developer documentation's [checklist](../fe_guide/accessibility/best_practices.md#quick-checklist).
 
 ### Handoff
 

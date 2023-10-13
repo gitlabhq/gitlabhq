@@ -277,66 +277,6 @@ RSpec.describe AuthHelper do
     end
   end
 
-  describe '#google_tag_manager_enabled?' do
-    let(:is_gitlab_com) { true }
-    let(:user) { nil }
-
-    before do
-      allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    subject(:google_tag_manager_enabled) { helper.google_tag_manager_enabled? }
-
-    context 'when not on gitlab.com' do
-      let(:is_gitlab_com) { false }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'regular and nonce versions' do
-      before do
-        stub_config(extra: { 'google_tag_manager_nonce_id' => 'key' })
-      end
-
-      context 'on gitlab.com and a key set without a current user' do
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when no key is set' do
-        before do
-          stub_config(extra: {})
-        end
-
-        it { is_expected.to eq(false) }
-      end
-    end
-  end
-
-  describe '#google_tag_manager_id' do
-    subject(:google_tag_manager_id) { helper.google_tag_manager_id }
-
-    before do
-      stub_config(extra: { 'google_tag_manager_nonce_id': 'nonce', 'google_tag_manager_id': 'gtm' })
-    end
-
-    context 'when google tag manager is disabled' do
-      before do
-        allow(helper).to receive(:google_tag_manager_enabled?).and_return(false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when google tag manager is enabled' do
-      before do
-        allow(helper).to receive(:google_tag_manager_enabled?).and_return(true)
-      end
-
-      it { is_expected.to eq('nonce') }
-    end
-  end
-
   describe '#auth_app_owner_text' do
     shared_examples 'generates text with the correct info' do
       it 'includes the name of the application owner' do

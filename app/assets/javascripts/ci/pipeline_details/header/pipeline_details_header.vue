@@ -419,7 +419,7 @@ export default {
               <template #link="{ content }">
                 <gl-link
                   :href="commitPath"
-                  class="gl-bg-blue-50 gl-rounded-base gl-px-2 gl-mx-2"
+                  class="commit-sha-container"
                   data-testid="commit-link"
                   target="_blank"
                 >

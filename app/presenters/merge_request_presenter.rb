@@ -197,7 +197,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def source_branch_link
     if source_branch_exists?
-      link_to(source_branch, source_branch_commits_path, class: 'ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2')
+      link_to(source_branch, source_branch_commits_path, class: 'ref-container gl-link')
     else
       content_tag(:span, source_branch, class: 'ref-name')
     end
@@ -205,7 +205,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def target_branch_link
     if target_branch_exists?
-      link_to(target_branch, target_branch_commits_path, class: 'ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2')
+      link_to(target_branch, target_branch_commits_path, class: 'ref-container gl-link')
     else
       content_tag(:span, target_branch, class: 'ref-name')
     end

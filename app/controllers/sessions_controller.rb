@@ -12,8 +12,6 @@ class SessionsController < Devise::SessionsController
   include OneTrustCSP
   include BizibleCSP
   include VerifiesWithEmail
-  include GoogleAnalyticsCSP
-  include GoogleSyndicationCSP
   include PreferredLanguageSwitcher
   include SkipsAlreadySignedInMessage
   include AcceptsPendingInvitations

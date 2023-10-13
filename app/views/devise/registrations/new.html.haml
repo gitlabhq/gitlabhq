@@ -2,10 +2,10 @@
 - page_description _("Join GitLab today! You and your team can plan, build, and ship secure code all in one application. Get started here for free!")
 - add_page_specific_style 'page_bundles/signup'
 - content_for :page_specific_javascripts do
-  = render "layouts/google_tag_manager_head"
+  = render_if_exists "layouts/google_tag_manager_head"
   = render "layouts/one_trust"
   = render "layouts/bizible"
-= render "layouts/google_tag_manager_body"
+= render_if_exists "layouts/google_tag_manager_body"
 
 - content_for :omniauth_providers_bottom do
   = render 'devise/shared/signup_omniauth_providers'

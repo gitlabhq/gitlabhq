@@ -1,4 +1,4 @@
-import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon, GlPagination, GlTabs } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { trimText } from 'helpers/text_helper';
@@ -14,6 +14,7 @@ import deletePipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/muta
 import playPipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '~/ci/pipeline_schedules/graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '~/ci/pipeline_schedules/graphql/queries/get_pipeline_schedules.query.graphql';
+import { SCHEDULES_PER_PAGE } from '~/ci/pipeline_schedules/constants';
 import {
   mockGetPipelineSchedulesGraphQLResponse,
   mockPipelineScheduleNodes,
@@ -22,6 +23,7 @@ import {
   playMutationResponse,
   takeOwnershipMutationResponse,
   emptyPipelineSchedulesResponse,
+  mockPipelineSchedulesResponseWithPagination,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -34,6 +36,9 @@ describe('Pipeline schedules app', () => {
   let wrapper;
 
   const successHandler = jest.fn().mockResolvedValue(mockGetPipelineSchedulesGraphQLResponse);
+  const successHandlerWithPagination = jest
+    .fn()
+    .mockResolvedValue(mockPipelineSchedulesResponseWithPagination);
   const successEmptyHandler = jest.fn().mockResolvedValue(emptyPipelineSchedulesResponse);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
@@ -81,6 +86,11 @@ describe('Pipeline schedules app', () => {
   const findInactiveTab = () => wrapper.findByTestId('pipeline-schedules-inactive-tab');
   const findSchedulesCharacteristics = () =>
     wrapper.findByTestId('pipeline-schedules-characteristics');
+  const findPagination = () => wrapper.findComponent(GlPagination);
+  const setPage = async (page) => {
+    findPagination().vm.$emit('input', page);
+    await waitForPromises();
+  };
 
   describe('default', () => {
     beforeEach(() => {
@@ -106,6 +116,10 @@ describe('Pipeline schedules app', () => {
 
     it('new schedule button links to new schedule path', () => {
       expect(findNewButton().attributes('href')).toBe('/root/ci-project/-/pipeline_schedules/new');
+    });
+
+    it('does not display pagination when no next page exists', () => {
+      expect(findPagination().exists()).toBe(false);
     });
   });
 
@@ -333,6 +347,10 @@ describe('Pipeline schedules app', () => {
         ids: null,
         projectPath: 'gitlab-org/gitlab',
         status: null,
+        first: SCHEDULES_PER_PAGE,
+        last: null,
+        nextPageCursor: '',
+        prevPageCursor: '',
       });
     });
   });
@@ -368,6 +386,59 @@ describe('Pipeline schedules app', () => {
 
         expect(findEmptyState().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('pagination', () => {
+    const { pageInfo } = mockPipelineSchedulesResponseWithPagination.data.project.pipelineSchedules;
+
+    beforeEach(async () => {
+      createComponent([[getPipelineSchedulesQuery, successHandlerWithPagination]]);
+
+      await waitForPromises();
+    });
+
+    it('displays pagination', () => {
+      expect(findPagination().exists()).toBe(true);
+      expect(findPagination().props()).toMatchObject({
+        value: 1,
+        prevPage: Number(pageInfo.hasPreviousPage),
+        nextPage: Number(pageInfo.hasNextPage),
+      });
+      expect(successHandlerWithPagination).toHaveBeenCalledWith({
+        projectPath: 'gitlab-org/gitlab',
+        ids: null,
+        first: SCHEDULES_PER_PAGE,
+        last: null,
+        nextPageCursor: '',
+        prevPageCursor: '',
+      });
+    });
+
+    it('updates query variables when going to next page', async () => {
+      await setPage(2);
+
+      expect(successHandlerWithPagination).toHaveBeenCalledWith({
+        projectPath: 'gitlab-org/gitlab',
+        ids: null,
+        first: SCHEDULES_PER_PAGE,
+        last: null,
+        prevPageCursor: '',
+        nextPageCursor: pageInfo.endCursor,
+      });
+      expect(findPagination().props('value')).toEqual(2);
+    });
+
+    it('when switching tabs pagination should reset', async () => {
+      await setPage(2);
+
+      expect(findPagination().props('value')).toEqual(2);
+
+      await findInactiveTab().trigger('click');
+
+      await waitForPromises();
+
+      expect(findPagination().props('value')).toEqual(1);
     });
   });
 });

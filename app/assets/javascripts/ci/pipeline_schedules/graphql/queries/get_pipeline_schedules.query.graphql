@@ -1,7 +1,13 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
 query getPipelineSchedulesQuery(
   $projectPath: ID!
   $status: PipelineScheduleStatus
   $ids: [ID!] = null
+  $first: Int
+  $last: Int
+  $prevPageCursor: String = ""
+  $nextPageCursor: String = ""
 ) {
   currentUser {
     id
@@ -9,7 +15,14 @@ query getPipelineSchedulesQuery(
   }
   project(fullPath: $projectPath) {
     id
-    pipelineSchedules(status: $status, ids: $ids) {
+    pipelineSchedules(
+      status: $status
+      ids: $ids
+      first: $first
+      last: $last
+      after: $nextPageCursor
+      before: $prevPageCursor
+    ) {
       count
       nodes {
         id
@@ -55,6 +68,9 @@ query getPipelineSchedulesQuery(
           updatePipelineSchedule
           adminPipelineSchedule
         }
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }

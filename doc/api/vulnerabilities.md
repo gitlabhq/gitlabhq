@@ -17,9 +17,8 @@ This document now describes the new Vulnerabilities API that provides access to
 WARNING:
 This API is in the process of being deprecated and considered unstable.
 The response payload may be subject to change or breakage
-across GitLab releases. Please use the
-[GraphQL API](graphql/reference/index.md#queryvulnerabilities)
-instead. See the [GraphQL examples](#replace-vulnerability-rest-api-with-graphql) to get started.
+across GitLab releases. Use the
+[GraphQL API](graphql/reference/index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
 
 Every API call to vulnerabilities must be [authenticated](rest/index.md#authentication).
 

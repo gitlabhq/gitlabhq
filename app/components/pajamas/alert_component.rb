@@ -24,7 +24,7 @@ module Pajamas
       classes = ["gl-alert-#{@variant}"]
       classes.push('gl-alert-not-dismissible') unless @dismissible
       classes.push('gl-alert-no-icon') unless @show_icon
-
+      classes.push('gl-alert-has-title') if @title
       classes.join(' ')
     end
 

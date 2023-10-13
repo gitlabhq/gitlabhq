@@ -7,8 +7,6 @@ class RegistrationsController < Devise::RegistrationsController
   include InvisibleCaptchaOnSignup
   include OneTrustCSP
   include BizibleCSP
-  include GoogleAnalyticsCSP
-  include GoogleSyndicationCSP
   include PreferredLanguageSwitcher
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
   include SkipsAlreadySignedInMessage
@@ -25,10 +23,6 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :load_recaptcha, only: :new
   before_action only: [:create] do
     check_rate_limit!(:user_sign_up, scope: request.ip)
-  end
-
-  before_action only: [:new] do
-    push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)
   end
 
   feature_category :instance_resiliency

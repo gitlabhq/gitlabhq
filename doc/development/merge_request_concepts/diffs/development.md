@@ -176,6 +176,174 @@ These flowcharts should help explain the flow from the controllers down to the
 models for different features. This page is not intended to document the entirety
 of options for access and working with diffs, focusing solely on the most common.
 
+### Generation of `MergeRequestDiff*` records
+
+As explained above, we use database tables to cache information from Gitaly when displaying
+diffs on merge requests. When enabled, we also use object storage when storing diffs.
+
+We have 2 types of merge request diffs: base diff and `HEAD` diff. Each type
+is generated differently.
+
+#### Base diff
+
+On every push to a merge request branch, we create a new merge request diff version.
+
+This flowchart shows a basic explanation of how each component is used in this case.
+
+```mermaid
+flowchart TD
+    A[PostReceive worker] --> B[MergeRequests::RefreshService]
+    B --> C[Reload diff of merge requests]
+    C --> D[Create merge request diff]
+    D --> K[(Database)]
+    D --> E[Ensure commit SHAs]
+    E --> L[Gitaly]
+    E --> F[Set patch-id]
+    F --> L[Gitaly]
+    F --> G[Save commits]
+    G --> L[Gitaly]
+    G --> K[(Database)]
+    G --> H[Save diffs]
+    H --> L[Gitaly]
+    H --> K[(Database)]
+    H --> M[(Object Storage)]
+    H --> I[Keep around commits]
+    I --> L[Gitaly]
+    I --> J[Clear highlight and stats cache]
+    J --> N[(Redis)]
+```
+
+This sequence diagram shows a more detailed explanation of this flow.
+
+```mermaid
+sequenceDiagram
+    PostReceive-->>+MergeRequests_RefreshService: execute()
+    Note over MergeRequests_RefreshService: Reload diff of merge requests
+    MergeRequests_RefreshService-->>+MergeRequest: reload_diff()
+    Note over MergeRequests_ReloadDiffsService: Create merge request diff
+    MergeRequest-->>+MergeRequests_ReloadDiffsService: execute()
+    MergeRequests_ReloadDiffsService-->>+MergeRequest: create_merge_request_diff()
+    MergeRequest-->>+MergeRequestDiff: create()
+    Note over MergeRequestDiff: Ensure commit SHAs
+    MergeRequestDiff-->>+MergeRequest: source_branch_sha()
+    MergeRequest-->>+Repository: commit()
+    Repository-->>+Gitaly: FindCommit RPC
+    Gitaly-->>-Repository: Gitlab::Git::Commit
+    Repository-->>+Commit: new()
+    Commit-->>-Repository: Commit
+    Repository-->>-MergeRequest: Commit
+    MergeRequest-->>-MergeRequestDiff: Commit SHA
+    Note over MergeRequestDiff: Set patch-id
+    MergeRequestDiff-->>+Repository: get_patch_id()
+    Repository-->>+Gitaly: GetPatchID RPC
+    Gitaly-->>-Repository: Patch ID
+    Repository-->>-MergeRequestDiff: Patch ID
+    Note over MergeRequestDiff: Save commits
+    MergeRequestDiff-->>+Gitaly: ListCommits RPC
+    Gitaly-->>-MergeRequestDiff: Commits
+    MergeRequestDiff-->>+MergeRequestDiffCommit: create_bulk()
+    Note over MergeRequestDiff: Save diffs
+    MergeRequestDiff-->>+Gitaly: ListCommits RPC
+    Gitaly-->>-MergeRequestDiff: Commits
+    opt When external diffs is enabled
+      MergeRequestDiff-->>+ObjectStorage: upload diffs
+    end
+    MergeRequestDiff-->>+MergeRequestDiffFile: legacy_bulk_insert()
+    Note over MergeRequestDiff: Keep around commits
+    MergeRequestDiff-->>+Repository: keep_around()
+    Repository-->>+Gitaly: WriteRef RPC
+    Note over MergeRequests_ReloadDiffsService: Clear highlight and stats cache
+    MergeRequests_ReloadDiffsService->>+Gitlab_Diff_HighlightCache: clear()
+    MergeRequests_ReloadDiffsService->>+Gitlab_Diff_StatsCache: clear()
+    Gitlab_Diff_HighlightCache-->>+Redis: cache
+    Gitlab_Diff_StatsCache-->>+Redis: cache
+```
+
+#### `HEAD` diff
+
+Whenever mergeability of a merge request is checked and the merge request `merge_status`
+is either `:unchecked`, `:cannot_be_merged_recheck`, `:checking`, or `:cannot_be_merged_rechecking`,
+we attempt to merge the changes from source branch to target branch and write to a ref.
+If it's successful (meaning, no conflict), we generate a diff based on the
+generated commit and show it as the `HEAD` diff.
+
+The flow differs from the base diff generation as it has a different entry point.
+
+This flowchart shows a basic explanation of how each component is used when generating
+a `HEAD` diff.
+
+```mermaid
+flowchart TD
+    A[MergeRequestMergeabilityCheckWorker] --> B[MergeRequests::MergeabilityCheckService]
+    B --> C[Merge changes to ref]
+    C --> L[Gitaly]
+    C --> D[Recreate merge request HEAD diff]
+    D --> K[(Database)]
+    D --> E[Ensure commit SHAs]
+    E --> L[Gitaly]
+    E --> F[Set patch-id]
+    F --> L[Gitaly]
+    F --> G[Save commits]
+    G --> L[Gitaly]
+    G --> K[(Database)]
+    G --> H[Save diffs]
+    H --> L[Gitaly]
+    H --> K[(Database)]
+    H --> M[(Object Storage)]
+    H --> I[Keep around commits]
+    I --> L[Gitaly]
+```
+
+This sequence diagram shows a more detailed explanation of this flow.
+
+```mermaid
+sequenceDiagram
+    MergeRequestMergeabilityCheckWorker-->>+MergeRequests_MergeabilityCheckService: execute()
+    Note over MergeRequests_MergeabilityCheckService: Merge changes to ref
+    MergeRequests_MergeabilityCheckService-->>+MergeRequests_MergeToRefService: execute()
+    MergeRequests_MergeToRefService-->>+Repository: merge_to_ref()
+    Repository-->>+Gitaly: UserMergeBranch RPC
+    Gitaly-->>-Repository: Commit SHA
+    MergeRequests_MergeToRefService-->>+Repository: commit()
+    Repository-->>+Gitaly: FindCommit RPC
+    Gitaly-->>-Repository: Gitlab::Git::Commit
+    Repository-->>+Commit: new()
+    Commit-->>-Repository: Commit
+    Repository-->>-MergeRequests_MergeToRefService: Commit
+    Note over MergeRequests_MergeabilityCheckService: Recreate merge request HEAD diff
+    MergeRequests_MergeabilityCheckService-->>+MergeRequests_ReloadMergeHeadDiffService: execute()
+    MergeRequests_ReloadMergeHeadDiffService-->>+MergeRequest: create_merge_request_diff()
+    MergeRequest-->>+MergeRequestDiff: create()
+    Note over MergeRequestDiff: Ensure commit SHAs
+    MergeRequestDiff-->>+MergeRequest: merge_ref_head()
+    MergeRequest-->>+Repository: commit()
+    Repository-->>+Gitaly: FindCommit RPC
+    Gitaly-->>-Repository: Gitlab::Git::Commit
+    Repository-->>+Commit: new()
+    Commit-->>-Repository: Commit
+    Repository-->>-MergeRequest: Commit
+    MergeRequest-->>-MergeRequestDiff: Commit SHA
+    Note over MergeRequestDiff: Set patch-id
+    MergeRequestDiff-->>+Repository: get_patch_id()
+    Repository-->>+Gitaly: GetPatchID RPC
+    Gitaly-->>-Repository: Patch ID
+    Repository-->>-MergeRequestDiff: Patch ID
+    Note over MergeRequestDiff: Save commits
+    MergeRequestDiff-->>+Gitaly: ListCommits RPC
+    Gitaly-->>-MergeRequestDiff: Commits
+    MergeRequestDiff-->>+MergeRequestDiffCommit: create_bulk()
+    Note over MergeRequestDiff: Save diffs
+    MergeRequestDiff-->>+Gitaly: ListCommits RPC
+    Gitaly-->>-MergeRequestDiff: Commits
+    opt When external diffs is enabled
+      MergeRequestDiff-->>+ObjectStorage: upload diffs
+    end
+    MergeRequestDiff-->>+MergeRequestDiffFile: legacy_bulk_insert()
+    Note over MergeRequestDiff: Keep around commits
+    MergeRequestDiff-->>+Repository: keep_around()
+    Repository-->>+Gitaly: WriteRef RPC
+```
+
 ### `diffs_batch.json`
 
 The most common avenue for viewing diffs is the **Changes**

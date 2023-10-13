@@ -1,6 +1,7 @@
 .gl-alert{ @alert_options, role: 'alert', class: base_class }
   - if @show_icon
-    = sprite_icon(icon, css_class: icon_classes)
+    .gl-alert-icon-container
+      = sprite_icon(icon, css_class: icon_classes)
   - if @dismissible
     = render Pajamas::ButtonComponent.new(category: :tertiary,
       icon: 'close',
@@ -8,7 +9,7 @@
       button_options: dismissible_button_options)
   .gl-alert-content{ role: 'alert' }
     - if @title
-      %h4.gl-alert-title
+      %h2.gl-alert-title
         = @title
     - if body?
       .gl-alert-body

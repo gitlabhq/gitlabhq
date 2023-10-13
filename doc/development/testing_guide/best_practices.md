@@ -607,7 +607,7 @@ This means preferring Capybara's semantic methods and avoiding querying by IDs, 
 
 The benefits of testing in this way are that:
 
-- It ensures all interactive elements have an [accessible name](../fe_guide/accessibility.md#provide-accessible-names-for-screen-readers).
+- It ensures all interactive elements have an [accessible name](../fe_guide/accessibility/best_practices.md#provide-accessible-names-for-screen-readers).
 - It is more readable, as it uses more natural language.
 - It is less brittle, as it avoids querying by IDs, classes, and attributes, which are not visible to the user.
 
@@ -617,7 +617,7 @@ If needed, you can scope interactions within a specific area of the page by usin
 As you will likely be scoping to an element such as a `div`, which typically does not have a label,
 you may use a `data-testid` selector in this case.
 
-You can use the `be_axe_clean` matcher to run [axe automated accessibility testing](../fe_guide/accessibility.md#automated-accessibility-testing-with-axe) in feature tests.
+You can use the `be_axe_clean` matcher to run [axe automated accessibility testing](../fe_guide/accessibility/automated_testing.md) in feature tests.
 
 ##### Externalized contents
 

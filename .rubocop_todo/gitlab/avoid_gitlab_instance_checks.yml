@@ -114,7 +114,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/lib/ee/gitlab/background_migration/create_compliance_standards_adherence.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_shared_vulnerability_identifiers.rb'
     - 'ee/lib/ee/gitlab/gon_helper.rb'
-    - 'ee/lib/ee/gitlab/saas.rb'
     - 'ee/lib/ee/gitlab/scim/base_provisioning_service.rb'
     - 'ee/lib/ee/gitlab/snippet_search_results.rb'
     - 'ee/lib/ee/gitlab/tracking/standard_context.rb'

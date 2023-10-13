@@ -4,6 +4,7 @@ import {
   GlBadge,
   GlButton,
   GlLoadingIcon,
+  GlPagination,
   GlTabs,
   GlTab,
   GlSprintf,
@@ -16,11 +17,19 @@ import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline
 import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
-import { ALL_SCOPE } from '../constants';
+import { ALL_SCOPE, SCHEDULES_PER_PAGE } from '../constants';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
 import TakeOwnershipModal from './take_ownership_modal.vue';
 import DeletePipelineScheduleModal from './delete_pipeline_schedule_modal.vue';
 import PipelineScheduleEmptyState from './pipeline_schedules_empty_state.vue';
+
+const defaultPagination = {
+  first: SCHEDULES_PER_PAGE,
+  last: null,
+  prevPageCursor: '',
+  nextPageCursor: '',
+  currentPage: 1,
+};
 
 export default {
   i18n: {
@@ -44,6 +53,7 @@ export default {
     GlBadge,
     GlButton,
     GlLoadingIcon,
+    GlPagination,
     GlTabs,
     GlTab,
     GlSprintf,
@@ -72,16 +82,22 @@ export default {
           // we need to ensure we send null to the API when
           // the scope is 'ALL'
           status: this.scope === ALL_SCOPE ? null : this.scope,
+          first: this.pagination.first,
+          last: this.pagination.last,
+          prevPageCursor: this.pagination.prevPageCursor,
+          nextPageCursor: this.pagination.nextPageCursor,
         };
       },
       update(data) {
-        const { pipelineSchedules: { nodes: list = [], count } = {} } = data.project || {};
+        const { pipelineSchedules: { nodes: list = [], count, pageInfo = {} } = {} } =
+          data.project || {};
         const currentUser = data.currentUser || {};
 
         return {
           list,
           count,
           currentUser,
+          pageInfo,
         };
       },
       error() {
@@ -104,6 +120,9 @@ export default {
       showDeleteModal: false,
       showTakeOwnershipModal: false,
       count: 0,
+      pagination: {
+        ...defaultPagination,
+      },
     };
   },
   computed: {
@@ -143,6 +162,15 @@ export default {
     },
     showEmptyState() {
       return !this.isLoading && this.schedulesCount === 0 && this.onAllTab;
+    },
+    showPagination() {
+      return this.schedules?.pageInfo?.hasNextPage || this.schedules?.pageInfo?.hasPreviousPage;
+    },
+    prevPage() {
+      return Number(this.schedules?.pageInfo?.hasPreviousPage);
+    },
+    nextPage() {
+      return Number(this.schedules?.pageInfo?.hasNextPage);
     },
   },
   watch: {
@@ -245,9 +273,35 @@ export default {
         this.reportError(this.$options.i18n.schedulePlayError);
       }
     },
+    resetPagination() {
+      this.pagination = {
+        ...defaultPagination,
+      };
+    },
     fetchPipelineSchedulesByStatus(scope) {
       this.scope = scope;
+      this.resetPagination();
       this.$apollo.queries.schedules.refetch();
+    },
+    handlePageChange(page) {
+      const { startCursor, endCursor } = this.schedules.pageInfo;
+
+      if (page > this.pagination.currentPage) {
+        this.pagination = {
+          first: SCHEDULES_PER_PAGE,
+          last: null,
+          prevPageCursor: '',
+          nextPageCursor: endCursor,
+          currentPage: page,
+        };
+      } else {
+        this.pagination = {
+          last: SCHEDULES_PER_PAGE,
+          first: null,
+          prevPageCursor: startCursor,
+          currentPage: page,
+        };
+      }
     },
   },
 };
@@ -296,14 +350,25 @@ export default {
 
         <gl-loading-icon v-if="isLoading" size="lg" />
 
-        <pipeline-schedules-table
-          v-else
-          :schedules="schedules.list"
-          :current-user="schedules.currentUser"
-          @showTakeOwnershipModal="setTakeOwnershipModal"
-          @showDeleteModal="setDeleteModal"
-          @playPipelineSchedule="playPipelineSchedule"
-        />
+        <template v-else>
+          <pipeline-schedules-table
+            :schedules="schedules.list"
+            :current-user="schedules.currentUser"
+            @showTakeOwnershipModal="setTakeOwnershipModal"
+            @showDeleteModal="setDeleteModal"
+            @playPipelineSchedule="playPipelineSchedule"
+          />
+
+          <gl-pagination
+            v-if="showPagination"
+            :value="pagination.currentPage"
+            :prev-page="prevPage"
+            :next-page="nextPage"
+            align="center"
+            class="gl-mt-5"
+            @input="handlePageChange"
+          />
+        </template>
       </gl-tab>
 
       <template #tabs-end>

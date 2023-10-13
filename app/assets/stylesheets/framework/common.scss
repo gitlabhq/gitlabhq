@@ -592,3 +592,23 @@ See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
     box-shadow: 0 0 0 1px inset;
   }
 }
+
+.ref-container,
+.commit-sha-container {
+  font-family: $gl-monospace-font;
+  font-variant-ligatures: none;
+  font-size: $gl-font-size-sm;
+  padding-left: $gl-spacing-scale-2;
+  padding-right: $gl-spacing-scale-2;
+  border-radius: $gl-border-radius-base;
+}
+
+.ref-container {
+  color: var(--blue-500, $blue-500) !important;
+  background-color: var(--blue-50, $blue-50);
+}
+
+.commit-sha-container {
+  color: var(--gray-700, $gray-700) !important;
+  background-color: var(--gray-50, $gray-50);
+}

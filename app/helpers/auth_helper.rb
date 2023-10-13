@@ -182,19 +182,6 @@ module AuthHelper
     current_user.allow_password_authentication_for_web? && !current_user.password_automatically_set?
   end
 
-  def google_tag_manager_enabled?
-    return false unless Gitlab.com?
-
-    extra_config.has_key?('google_tag_manager_nonce_id') &&
-      extra_config.google_tag_manager_nonce_id.present?
-  end
-
-  def google_tag_manager_id
-    return unless google_tag_manager_enabled?
-
-    extra_config.google_tag_manager_nonce_id
-  end
-
   def auth_app_owner_text(owner)
     return unless owner
 

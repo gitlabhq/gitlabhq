@@ -10,8 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Feature flag `observability_group_tab` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133264) in GitLab 16.5.
 
 FLAG:
-On self-managed GitLab, this feature is not available.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On GitLab.com, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `observability_tracing`.
 The feature is not ready for production use.
 
@@ -34,11 +33,10 @@ Prerequisites:
 
 To enable tracing in a project:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Access Tokens**.
 1. Create an access token with the following scopes: `read_api`, `read_observability`, `write_observability`.
 1. Copy the value of the access token.
-1. Navigate to your project.
 1. Select **Monitor > Tracing**.
 1. Select **Enable**.
 

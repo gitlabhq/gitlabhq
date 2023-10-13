@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import { REGISTRATION_TOKEN_PLACEHOLDER } from '../constants';
@@ -8,8 +8,7 @@ import getRunnerSetupInstructionsQuery from '../graphql/get_runner_setup.query.g
 export default {
   components: {
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlLoadingIcon,
     ModalCopyButton,
   },
@@ -27,7 +26,7 @@ export default {
   },
   data() {
     return {
-      selectedArchitecture: this.platform?.architectures[0] || null,
+      selectedArchName: this.platform?.architectures[0]?.name || null,
       instructions: null,
     };
   },
@@ -55,6 +54,9 @@ export default {
     architectures() {
       return this.platform?.architectures || [];
     },
+    selectedArchitecture() {
+      return this.architectures.find(({ name }) => name === this.selectedArchName) || null;
+    },
     binaryUrl() {
       return this.selectedArchitecture?.downloadLocation;
     },
@@ -69,20 +71,22 @@ export default {
       }
       return registerInstructions;
     },
+    listboxItems() {
+      return this.architectures.map(({ name }) => {
+        return { text: name, value: name };
+      });
+    },
   },
   watch: {
     platform() {
       // reset selection if architecture is not in this list
-      const arch = this.architectures.find(({ name }) => name === this.selectedArchitecture.name);
+      const arch = this.architectures.find(({ name }) => name === this.selectedArchName);
       if (!arch) {
-        this.selectArchitecture(this.architectures[0]);
+        this.selectedArchName = this.architectures[0]?.name || null;
       }
     },
   },
   methods: {
-    selectArchitecture(architecture) {
-      this.selectedArchitecture = architecture;
-    },
     onClose() {
       this.$emit('close');
     },
@@ -104,18 +108,7 @@ export default {
       <gl-loading-icon v-if="$apollo.loading" size="sm" inline />
     </h5>
 
-    <gl-dropdown class="gl-mb-3" :text="selectedArchitecture.name">
-      <gl-dropdown-item
-        v-for="architecture in architectures"
-        :key="architecture.name"
-        is-check-item
-        :is-checked="selectedArchitecture.name === architecture.name"
-        data-testid="architecture-dropdown-item"
-        @click="selectArchitecture(architecture)"
-      >
-        {{ architecture.name }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+    <gl-collapsible-listbox v-model="selectedArchName" class="gl-mb-3" :items="listboxItems" />
     <div class="gl-sm-display-flex gl-align-items-center gl-mb-3">
       <h5>{{ $options.i18n.downloadInstallBinary }}</h5>
       <gl-button
