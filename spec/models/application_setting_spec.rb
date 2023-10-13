@@ -297,6 +297,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:package_registry_allow_anyone_to_pull_option).in_array([true, false]) }
 
+    it { is_expected.to allow_value([true, false]).for(:math_rendering_limits_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:math_rendering_limits_enabled) }
+
     context 'when deactivate_dormant_users is enabled' do
       before do
         stub_application_setting(deactivate_dormant_users: true)

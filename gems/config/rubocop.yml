@@ -93,7 +93,7 @@ RSpec/ContextWording:
   - 'if'
 
 # This cop doesn't make sense in the context of gems
-RSpec/MissingFeatureCategory:
+RSpec/FeatureCategory:
   Enabled: false
 
 # Enable once we drop 3.0 support

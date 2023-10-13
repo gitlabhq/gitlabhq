@@ -22,6 +22,31 @@ const waitForReflow = (fn) => {
   window.requestIdleCallback(fn);
 };
 
+const katexOptions = (el) => {
+  const options = {
+    displayMode: el.dataset.mathStyle === 'display',
+    throwOnError: true,
+    trust: (context) =>
+      // this config option restores the KaTeX pre-v0.11.0
+      // behavior of allowing certain commands and protocols
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      ['\\url', '\\href'].includes(context.command) &&
+      ['http', 'https', 'mailto', '_relative'].includes(context.protocol),
+  };
+
+  if (gon.math_rendering_limits_enabled) {
+    options.maxSize = MAX_USER_SPECIFIED_EMS;
+    // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111107 for
+    // reasoning behind this value
+    options.maxExpand = MAX_MACRO_EXPANSIONS;
+  } else {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    options.maxExpand = 'Infinity';
+  }
+
+  return options;
+};
+
 /**
  * Renders math blocks sequentially while protecting against DoS attacks. Math blocks have a maximum character limit of MAX_MATH_CHARS. If rendering math takes longer than MAX_RENDER_TIME_MS, all subsequent math blocks are skipped and an error message is shown.
  */
@@ -60,7 +85,10 @@ class SafeMathRenderer {
     }
 
     const el = chosenEl || this.queue.shift();
-    const forceRender = Boolean(chosenEl) || unrestrictedPages.includes(this.pageName);
+    const forceRender =
+      Boolean(chosenEl) ||
+      unrestrictedPages.includes(this.pageName) ||
+      !gon.math_rendering_limits_enabled;
     const text = el.textContent;
 
     el.removeAttribute('style');
@@ -128,20 +156,7 @@ class SafeMathRenderer {
         }
 
         // eslint-disable-next-line no-unsanitized/property
-        displayContainer.innerHTML = this.katex.renderToString(text, {
-          displayMode: el.dataset.mathStyle === 'display',
-          throwOnError: true,
-          maxSize: MAX_USER_SPECIFIED_EMS,
-          // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111107 for
-          // reasoning behind this value
-          maxExpand: MAX_MACRO_EXPANSIONS,
-          trust: (context) =>
-            // this config option restores the KaTeX pre-v0.11.0
-            // behavior of allowing certain commands and protocols
-            // eslint-disable-next-line @gitlab/require-i18n-strings
-            ['\\url', '\\href'].includes(context.command) &&
-            ['http', 'https', 'mailto', '_relative'].includes(context.protocol),
-        });
+        displayContainer.innerHTML = this.katex.renderToString(text, katexOptions(el));
       } catch (e) {
         // Don't show a flash for now because it would override an existing flash message
         if (e.message.match(/Too many expansions/)) {

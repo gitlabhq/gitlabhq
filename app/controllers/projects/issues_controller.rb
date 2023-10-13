@@ -70,6 +70,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_force_frontend_feature_flag(:linked_work_items, project.linked_work_items_feature_flag_enabled?)
+    push_frontend_feature_flag(:notifications_todos_buttons, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

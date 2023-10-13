@@ -45,6 +45,16 @@ RSpec.describe RuboCop::FeatureCategories, feature_category: :tooling do
       end
     end
 
+    context 'when value_node is nil' do
+      let(:value_node) { nil }
+
+      it 'yields a message asking for a feature category with document link only' do
+        check.to yield_with_args(<<~MARKDOWN.chomp)
+          Please use a valid feature category. See https://example.com
+        MARKDOWN
+      end
+    end
+
     context 'when value_node is not a symbol node' do
       before do
         allow(value_node).to receive(:sym_type?).and_return(false)
@@ -55,7 +65,7 @@ RSpec.describe RuboCop::FeatureCategories, feature_category: :tooling do
       end
     end
 
-    context 'when categories contain the value the value_node has' do
+    context 'when category is found' do
       before do
         allow(value_node).to receive(:value).and_return(categories.first)
       end
@@ -65,40 +75,27 @@ RSpec.describe RuboCop::FeatureCategories, feature_category: :tooling do
       end
     end
 
-    context 'when categories do not contain the value the value_node has' do
+    context 'when a similar category is found' do
       before do
         allow(value_node).to receive(:value).and_return('invalid_category')
       end
 
-      it 'yields a message asking for a feature category with document link' do
+      it 'yields a message asking for a feature category with suggestion and document link' do
         check.to yield_with_args(<<~MARKDOWN.chomp)
           Please use a valid feature category. Did you mean `:valid_category`? See https://example.com
         MARKDOWN
       end
     end
-  end
 
-  describe '#suggestion_message' do
-    let(:value_node) { instance_double(RuboCop::AST::SymbolNode) }
-
-    context 'when categories do not contain the value the value_node has' do
+    context 'when no similar category is found' do
       before do
-        allow(value_node).to receive(:value).and_return('invalid_category')
+        allow(value_node).to receive(:value).and_return('something_completely_different')
       end
 
-      it 'returns a message suggesting a similar category name' do
-        expect(feature_categories.suggestion_message(value_node))
-          .to eq('Did you mean `:valid_category`? ')
-      end
-
-      context 'when the value the value_node has is too different' do
-        before do
-          allow(value_node).to receive(:value).and_return('GitLab')
-        end
-
-        it 'returns nil' do
-          expect(feature_categories.suggestion_message(value_node)).to be_nil
-        end
+      it 'yields a message asking for a feature category with document link only' do
+        check.to yield_with_args(<<~MARKDOWN.chomp)
+          Please use a valid feature category. See https://example.com
+        MARKDOWN
       end
     end
   end

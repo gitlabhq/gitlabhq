@@ -13,9 +13,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Read dependency added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) in GitLab 16.3.
 > - [Name and description fields added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
 > - [Admin merge request introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `admin_merge_request`. Disabled by default.
+> - [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `admin_group_member`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `admin_merge_request`.
+On self-managed GitLab, by default these two features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_merge_request` and `admin_member_custom_role`.
 On GitLab.com, this feature is not available.
 
 ## List all member roles of a group
@@ -44,6 +45,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 | `[].read_code`           | boolean | Permission to read project code. |
 | `[].read_dependency`     | boolean | Permission to read project dependencies. |
 | `[].read_vulnerability`  | boolean | Permission to read project vulnerabilities. |
+| `[].admin_group_member`  | boolean | Permission to admin members of a group. |
 
 Example request:
 

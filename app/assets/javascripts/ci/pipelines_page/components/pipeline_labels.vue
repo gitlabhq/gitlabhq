@@ -37,6 +37,13 @@ export default {
           this.pipeline?.project?.full_path !== `/${this.targetProjectFullPath}`,
       );
     },
+    showMergedResultsBadge() {
+      // A merge train pipeline is technically also a merged results pipeline,
+      // but we want the badges to be mutually exclusive.
+      return (
+        this.pipeline.flags.merged_result_pipeline && !this.pipeline.flags.merge_train_pipeline
+      );
+    },
     autoDevopsTagId() {
       return `pipeline-url-autodevops-${this.pipeline.id}`;
     },
@@ -73,7 +80,7 @@ export default {
       v-gl-tooltip
       :title="
         s__(
-          'Pipeline|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch.',
+          'Pipeline|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch.',
         )
       "
       variant="info"
@@ -148,7 +155,7 @@ export default {
       v-gl-tooltip
       :title="
         s__(
-          `Pipeline|This pipeline ran on the contents of this merge request's source branch, not the target branch.`,
+          `Pipeline|This pipeline ran on the contents of the merge request's source branch, not the target branch.`,
         )
       "
       variant="info"
@@ -157,11 +164,11 @@ export default {
       >{{ s__('Pipeline|merge request') }}</gl-badge
     >
     <gl-badge
-      v-if="pipeline.flags.merged_result_pipeline"
+      v-if="showMergedResultsBadge"
       v-gl-tooltip
       :title="
         s__(
-          `Pipeline|This pipeline ran on the contents of this merge request combined with the contents of the target branch.`,
+          `Pipeline|This pipeline ran on the contents of the merge request combined with the contents of the target branch.`,
         )
       "
       variant="info"

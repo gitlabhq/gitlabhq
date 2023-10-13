@@ -168,6 +168,8 @@ describe('Pipeline label component', () => {
   it('should render the train badge when the pipeline is a merge train pipeline', () => {
     const mergeTrainPipeline = defaultProps.pipeline;
     mergeTrainPipeline.flags.merge_train_pipeline = true;
+    // a merge train pipeline is also a merged results pipeline
+    mergeTrainPipeline.flags.merged_result_pipeline = true;
 
     createComponent({
       ...mergeTrainPipeline,
@@ -185,5 +187,18 @@ describe('Pipeline label component', () => {
     });
 
     expect(findTrainTag().exists()).toBe(false);
+  });
+
+  it('should not render the merged results badge when the pipeline is a merge train pipeline', () => {
+    const mergeTrainPipeline = defaultProps.pipeline;
+    mergeTrainPipeline.flags.merge_train_pipeline = true;
+    // a merge train pipeline is also a merged results pipeline
+    mergeTrainPipeline.flags.merged_result_pipeline = true;
+
+    createComponent({
+      ...mergeTrainPipeline,
+    });
+
+    expect(findMergedResultsTag().exists()).toBe(false);
   });
 });

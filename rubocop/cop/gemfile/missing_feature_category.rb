@@ -38,19 +38,11 @@ module RuboCop
 
           value_node = feature_category_value(node)
 
-          if value_node
-            feature_categories.check(
-              value_node: value_node,
-              document_link: DOCUMENT_LINK
-            ) do |message|
-              add_offense(value_node, message: message)
-            end
-          else
-            message = format(
-              FeatureCategories::MSG,
-              msg_suggestion: nil,
-              document_link: DOCUMENT_LINK)
-            add_offense(node, message: message)
+          feature_categories.check(
+            value_node: value_node,
+            document_link: DOCUMENT_LINK
+          ) do |message|
+            add_offense(value_node || node, message: message)
           end
         end
 

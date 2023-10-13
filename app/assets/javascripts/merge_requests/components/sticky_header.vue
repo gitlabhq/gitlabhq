@@ -87,7 +87,7 @@ export default {
       return isLoggedIn();
     },
     isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons;
+      return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
     },
   },
   watch: {

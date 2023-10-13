@@ -406,7 +406,7 @@ export default {
       right
       @shown="dismissPopover"
     >
-      <template v-if="showMovedSidebarOptions">
+      <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
         <sidebar-subscriptions-widget
           :iid="String(iid)"
           :full-path="fullPath"

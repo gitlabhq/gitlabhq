@@ -47,7 +47,7 @@ module Banzai
       # Add necessary classes to any existing math blocks
       def process_existing
         doc.xpath(XPATH_INLINE_CODE).each do |code|
-          break if @nodes_count >= RENDER_NODES_LIMIT
+          break if render_nodes_limit_reached?(@nodes_count)
 
           code[:class] = MATH_CLASSES
 
@@ -58,7 +58,7 @@ module Banzai
       # Corresponds to the "$`...`$" syntax
       def process_dollar_backtick_inline
         doc.xpath(XPATH_CODE).each do |code|
-          break if @nodes_count >= RENDER_NODES_LIMIT
+          break if render_nodes_limit_reached?(@nodes_count)
 
           closing = code.next
           opening = code.previous
@@ -86,6 +86,16 @@ module Banzai
           pre_node[STYLE_ATTRIBUTE] = 'display'
           pre_node[:class] = TAG_CLASS
         end
+      end
+
+      def settings
+        Gitlab::CurrentSettings.current_application_settings
+      end
+
+      def render_nodes_limit_reached?(count)
+        return false unless settings.math_rendering_limits_enabled?
+
+        count >= RENDER_NODES_LIMIT
       end
     end
   end

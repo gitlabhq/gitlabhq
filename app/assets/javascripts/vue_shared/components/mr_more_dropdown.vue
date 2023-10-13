@@ -144,7 +144,7 @@ export default {
       return this.glFeatures.movedMrSidebar;
     },
     isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons;
+      return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
     },
     draftLabel() {
       return this.draft ? this.$options.i18n.markAsReady : this.$options.i18n.markAsDraft;

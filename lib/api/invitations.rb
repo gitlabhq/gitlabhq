@@ -33,7 +33,12 @@ module API
           bad_request!('Must provide either email or user_id as a parameter') if params[:email].blank? && params[:user_id].blank?
 
           source = find_source(source_type, params[:id])
-          authorize_admin_source!(source_type, source)
+
+          if ::Feature.enabled?(:admin_group_member, source)
+            authorize_admin_source_member!(source_type, source)
+          else
+            authorize_admin_source!(source_type, source)
+          end
 
           create_service_params = params.merge(source: source)
 
@@ -56,7 +61,11 @@ module API
           source = find_source(source_type, params[:id])
           query = params[:query]
 
-          authorize_admin_source!(source_type, source)
+          if ::Feature.enabled?(:admin_group_member, source)
+            authorize_admin_source_member!(source_type, source)
+          else
+            authorize_admin_source!(source_type, source)
+          end
 
           invitations = paginate(retrieve_member_invitations(source, query))
 
@@ -75,7 +84,12 @@ module API
         put ":id/invitations/:email", requirements: { email: %r{[^/]+} } do
           source = find_source(source_type, params.delete(:id))
           invite_email = params[:email]
-          authorize_admin_source!(source_type, source)
+
+          if ::Feature.enabled?(:admin_group_member, source)
+            authorize_admin_source_member!(source_type, source)
+          else
+            authorize_admin_source!(source_type, source)
+          end
 
           invite = retrieve_member_invitations(source, invite_email).first
           not_found! unless invite
@@ -112,7 +126,12 @@ module API
         delete ":id/invitations/:email", requirements: { email: %r{[^/]+} } do
           source = find_source(source_type, params[:id])
           invite_email = params[:email]
-          authorize_admin_source!(source_type, source)
+
+          if ::Feature.enabled?(:admin_group_member, source)
+            authorize_admin_source_member!(source_type, source)
+          else
+            authorize_admin_source!(source_type, source)
+          end
 
           invite = retrieve_member_invitations(source, invite_email).first
           not_found! unless invite

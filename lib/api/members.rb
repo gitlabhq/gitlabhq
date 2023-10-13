@@ -118,7 +118,11 @@ module API
 
         post ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
-          authorize_admin_source!(source_type, source)
+          if ::Feature.enabled?(:admin_group_member, source)
+            authorize_admin_source_member!(source_type, source)
+          else
+            authorize_admin_source!(source_type, source)
+          end
 
           create_service_params = params.merge(source: source)
 
@@ -142,9 +146,13 @@ module API
         # rubocop: disable CodeReuse/ActiveRecord
         put ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params.delete(:id))
-          authorize_admin_source!(source_type, source)
-
           member = source_members(source).find_by!(user_id: params[:user_id])
+
+          if ::Feature.enabled?(:admin_group_member, source)
+            authorize_update_source_member!(source_type, member)
+          else
+            authorize_admin_source!(source_type, source)
+          end
 
           result = ::Members::UpdateService
             .new(current_user, declared_params(include_missing: false))

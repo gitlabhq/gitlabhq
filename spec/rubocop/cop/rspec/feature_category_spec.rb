@@ -3,9 +3,10 @@
 require 'rubocop_spec_helper'
 require 'rspec-parameterized'
 
-require_relative '../../../../rubocop/cop/rspec/invalid_feature_category'
+require_relative '../../../../rubocop/feature_categories'
+require_relative '../../../../rubocop/cop/rspec/feature_category'
 
-RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :tooling do
+RSpec.describe RuboCop::Cop::RSpec::FeatureCategory, feature_category: :tooling do
   shared_examples 'feature category validation' do |valid_category|
     it 'flags invalid feature category in top level example group' do
       expect_offense(<<~RUBY, invalid: invalid_category)
@@ -63,19 +64,12 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
 
   let(:invalid_category) { :invalid_category }
 
-  context 'with categories defined in config/feature_categories.yml' do
-    where(:valid_category) do
-      YAML.load_file(rails_root_join('config/feature_categories.yml'))
-    end
+  context 'with defined in config/feature_categories.yml and custom categories' do
+    where(:valid_category) { RuboCop::FeatureCategories.available_with_custom.to_a }
 
     with_them do
       it_behaves_like 'feature category validation', params[:valid_category]
     end
-  end
-
-  context 'with custom categories' do
-    it_behaves_like 'feature category validation', 'tooling'
-    it_behaves_like 'feature category validation', 'shared'
   end
 
   it 'flags invalid feature category for non-symbols' do
@@ -91,9 +85,11 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
   end
 
   it 'does not flag use of invalid categories in non-example code' do
+    valid_category = RuboCop::FeatureCategories.available.first
+
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/381882#note_1265865125
     expect_no_offenses(<<~RUBY)
-      RSpec.describe 'A spec' do
+      RSpec.describe 'A spec', feature_category: :#{valid_category} do
         let(:api_handler) do
           Class.new(described_class) do
             namespace '/test' do
@@ -108,6 +104,18 @@ RSpec.describe RuboCop::Cop::RSpec::InvalidFeatureCategory, feature_category: :t
             payload = generator.generate(exception, extra)
           end
         end
+      end
+    RUBY
+  end
+
+  it 'flags missing feature category in top level example group' do
+    expect_offense(<<~RUBY)
+      RSpec.describe 'foo' do
+      ^^^^^^^^^^^^^^^^^^^^^^^ Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
+      end
+
+      RSpec.describe 'foo', some: :tag do
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use a valid feature category. See https://docs.gitlab.com/ee/development/feature_categorization/#rspec-examples
       end
     RUBY
   end

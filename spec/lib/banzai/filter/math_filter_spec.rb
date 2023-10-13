@@ -207,12 +207,21 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
     expect(doc.search('[data-math-style="display"]').count).to eq(1)
   end
 
-  it 'limits how many elements can be marked as math' do
-    stub_const('Banzai::Filter::MathFilter::RENDER_NODES_LIMIT', 2)
+  context 'when limiting how many elements can be marked as math' do
+    subject { pipeline_filter('$`2+2`$ + $3+3$ + $$4+4$$') }
 
-    doc = pipeline_filter('$`2+2`$ + $3+3$ + $$4+4$$')
+    it 'enforces limits by default' do
+      stub_const('Banzai::Filter::MathFilter::RENDER_NODES_LIMIT', 2)
 
-    expect(doc.search('.js-render-math').count).to eq(2)
+      expect(subject.search('.js-render-math').count).to eq(2)
+    end
+
+    it 'does not limit when math_rendering_limits_enabled is false' do
+      stub_application_setting(math_rendering_limits_enabled: false)
+      stub_const('Banzai::Filter::MathFilter::RENDER_NODES_LIMIT', 2)
+
+      expect(subject.search('.js-render-math').count).to eq(3)
+    end
   end
 
   it 'protects against malicious backtracking' do

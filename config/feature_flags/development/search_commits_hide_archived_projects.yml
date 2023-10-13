@@ -1,8 +1,0 @@
----
-name: search_commits_hide_archived_projects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128080
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/420910
-milestone: '16.3'
-type: development
-group: group::global search
-default_enabled: false

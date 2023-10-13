@@ -115,7 +115,7 @@ export default {
       return todoLabel(this.hasTodo);
     },
     isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons;
+      return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
     },
   },
   methods: {
@@ -186,27 +186,25 @@ export default {
 </script>
 
 <template>
-  <gl-button
-    v-if="isNotificationsTodosButtons && isMergeRequest"
-    v-gl-tooltip.hover.top
-    data-testid="sidebar-todo"
-    :title="tootltipTitle"
-    category="secondary"
-    type="reset"
-    @click.stop.prevent="toggleTodo"
-  >
-    <gl-icon :class="{ 'todo-undone gl-fill-blue-500': hasTodo }" :name="collapsedButtonIcon" />
-  </gl-button>
-  <div v-else data-testid="sidebar-todo">
+  <div data-testid="sidebar-todo" :class="{ 'inline-block': !isMergeRequest }">
     <todo-button
+      v-gl-tooltip.hover.top
+      :title="isNotificationsTodosButtons ? tootltipTitle : undefined"
       :issuable-type="issuableType"
       :issuable-id="issuableId"
       :is-todo="hasTodo"
       :loading="isLoading"
-      :size="isMergeRequest ? 'medium' : 'small'"
+      :size="isMergeRequest || isNotificationsTodosButtons ? 'medium' : 'small'"
+      :class="{ 'btn-icon': isNotificationsTodosButtons }"
       class="hide-collapsed"
       @click.stop.prevent="toggleTodo"
-    />
+    >
+      <gl-icon
+        v-if="isNotificationsTodosButtons"
+        :class="{ 'todo-undone gl-fill-blue-500': hasTodo }"
+        :name="collapsedButtonIcon"
+      />
+    </todo-button>
     <gl-button
       v-if="isClassicSidebar && !isMergeRequest"
       v-gl-tooltip.left.viewport

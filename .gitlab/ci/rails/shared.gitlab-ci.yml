@@ -249,7 +249,7 @@ include:
 
 ############################
 # rspec job parallel configs
-# Adjusting these parallel job counts  has an impact on the
+# Adjusting these parallel job counts has an impact on the
 # rspec:artifact-collector jobs in .gitlab/ci/rails.gitlab-ci.yml
 # Please double-check and adjust accordingly
 .rspec-migration-parallel:
@@ -281,5 +281,42 @@ include:
 
 .rspec-ee-system-parallel:
   parallel: 10
+
+# Optimizations to distribute CI time more evenly across the CI/CD pipeline
+#
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133976 for more info
+
+# Giving 4 jobs to `rspec-ee unit pg14`
+.rspec-unit-pg14-parallel:
+  parallel: 24
+
+# Receiving 4 jobs from `rspec unit pg14`
+.rspec-ee-unit-pg14-parallel:
+  parallel: 22
+
+# Giving 2 jobs to `rspec-ee system pg14`
+.rspec-system-parallel-pg14:
+  parallel: 26
+
+# Receiving 2 jobs from `rspec system pg14`
+.rspec-ee-system-parallel-pg14:
+  parallel: 12
+
+# Adding 4 jobs, as those needs to be a bit faster.
+.rspec-migration-parallel-pg14:
+  parallel: 12
+
+# Adding 2 jobs, as those needs to be a bit faster.
+.rspec-migration-parallel-pg14-as-if-foss:
+  parallel: 10
+
+# Giving 1 job to `rspec integration pg14`
+.rspec-ee-integration-parallel-pg14:
+  parallel: 5
+
+# Receiving 1 job from `rspec-ee integration pg14`
+.rspec-integration-parallel-pg14:
+  parallel: 13
+
 # rspec job parallel configs
 ############################

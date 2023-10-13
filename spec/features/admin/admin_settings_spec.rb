@@ -166,36 +166,36 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           end
 
           it 'changes dormant users', :js do
-            expect(page).to have_unchecked_field('Deactivate dormant users after a period of inactivity')
+            expect(page).to have_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
             page.within(find('[data-testid="account-limit"]')) do
-              check 'application_setting_deactivate_dormant_users'
-              click_button 'Save changes'
+              check _('Deactivate dormant users after a period of inactivity')
+              click_button _('Save changes')
             end
 
-            expect(page).to have_content "Application settings saved successfully"
+            expect(page).to have_content _('Application settings saved successfully')
 
             page.refresh
 
+            expect(page).to have_checked_field(_('Deactivate dormant users after a period of inactivity'))
             expect(current_settings.deactivate_dormant_users).to be_truthy
-            expect(page).to have_checked_field('Deactivate dormant users after a period of inactivity')
           end
 
           it 'change dormant users period', :js do
             expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: true)
 
             page.within(find('[data-testid="account-limit"]')) do
-              check 'application_setting_deactivate_dormant_users'
-              fill_in _('application_setting_deactivate_dormant_users_period'), with: '90'
-              click_button 'Save changes'
+              check _('Deactivate dormant users after a period of inactivity')
+              fill_in _('Days of inactivity before deactivation'), with: '180'
+              click_button _('Save changes')
             end
 
-            expect(page).to have_content "Application settings saved successfully"
+            expect(page).to have_content _('Application settings saved successfully')
 
             page.refresh
 
-            expect(page).to have_field _('Days of inactivity before deactivation'), with: '90'
+            expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: false, with: '180')
           end
 
           it 'displays dormant users period field validation error', :js do

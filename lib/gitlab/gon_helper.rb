@@ -7,15 +7,16 @@ module Gitlab
     include WebpackHelper
 
     def add_gon_variables
-      gon.api_version             = 'v4'
-      gon.default_avatar_url      = default_avatar_url
-      gon.max_file_size           = Gitlab::CurrentSettings.max_attachment_size
-      gon.asset_host              = ActionController::Base.asset_host
-      gon.webpack_public_path     = webpack_public_path
-      gon.relative_url_root       = Gitlab.config.gitlab.relative_url_root
-      gon.user_color_scheme       = Gitlab::ColorSchemes.for_user(current_user).css_class
-      gon.markdown_surround_selection = current_user&.markdown_surround_selection
-      gon.markdown_automatic_lists = current_user&.markdown_automatic_lists
+      gon.api_version                   = 'v4'
+      gon.default_avatar_url            = default_avatar_url
+      gon.max_file_size                 = Gitlab::CurrentSettings.max_attachment_size
+      gon.asset_host                    = ActionController::Base.asset_host
+      gon.webpack_public_path           = webpack_public_path
+      gon.relative_url_root             = Gitlab.config.gitlab.relative_url_root
+      gon.user_color_scheme             = Gitlab::ColorSchemes.for_user(current_user).css_class
+      gon.markdown_surround_selection   = current_user&.markdown_surround_selection
+      gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
+      gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
 
       add_browsersdk_tracking
 

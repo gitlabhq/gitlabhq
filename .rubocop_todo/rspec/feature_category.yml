@@ -1,5 +1,5 @@
 ---
-RSpec/MissingFeatureCategory:
+RSpec/FeatureCategory:
   Exclude:
     - 'ee/spec/components/namespaces/storage/subgroup_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'

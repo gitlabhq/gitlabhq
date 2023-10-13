@@ -47,21 +47,27 @@ module RuboCop
     end
 
     def check(value_node:, document_link:)
-      return yield(MSG_SYMBOL) unless value_node.sym_type?
-      return if categories.include?(value_node.value.to_s)
-
-      message = format(
-        MSG,
-        msg_suggestion: suggestion_message(value_node),
-        document_link: document_link)
-
-      yield(message)
+      if value_node
+        if !value_node.sym_type?
+          yield MSG_SYMBOL
+        elsif !categories.include?(value_node.value.to_s) # rubocop:disable Rails/NegateInclude
+          yield format_message(value_node.value, document_link: document_link)
+        end
+      else
+        yield format_message(nil, document_link: document_link)
+      end
     end
 
-    def suggestion_message(value_node)
+    private
+
+    def format_message(value, document_link:)
+      format(MSG, msg_suggestion: suggestion_message(value), document_link: document_link)
+    end
+
+    def suggestion_message(value)
       spell = DidYouMean::SpellChecker.new(dictionary: categories)
 
-      suggestions = spell.correct(value_node.value)
+      suggestions = spell.correct(value)
       return if suggestions.none?
 
       format(MSG_DID_YOU_MEAN, suggestion: suggestions.first)

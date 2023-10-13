@@ -55,6 +55,10 @@
   padding-right: 0;
   z-index: $zindex-dropdown-menu;
 
+  .inline-block {
+    @include gl-display-inline-block;
+  }
+
   &.right-sidebar-merge-requests {
     width: $right-sidebar-width;
 

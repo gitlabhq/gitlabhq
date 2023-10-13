@@ -18,6 +18,7 @@ class UserCustomAttribute < ApplicationRecord
   AUTO_BANNED_BY_ABUSE_REPORT_ID = 'auto_banned_by_abuse_report_id'
   AUTO_BANNED_BY_SPAM_LOG_ID = 'auto_banned_by_spam_log_id'
   TRUSTED_BY = 'trusted_by'
+  AUTO_BANNED_BY = 'auto_banned_by'
   IDENTITY_VERIFICATION_PHONE_EXEMPT = 'identity_verification_phone_exempt'
 
   class << self

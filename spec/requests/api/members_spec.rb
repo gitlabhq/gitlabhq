@@ -803,10 +803,6 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
   end
 
   describe 'POST /projects/:id/members' do
-    it_behaves_like 'POST /:source_type/:id/members', 'project' do
-      let(:source) { project }
-    end
-
     context 'adding owner to project' do
       it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
         let(:route) do
@@ -830,16 +826,48 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
     end
   end
 
-  it_behaves_like 'POST /:source_type/:id/members', 'group' do
-    let(:source) { group }
+  context 'with admin_group_member FF disabled' do
+    before do
+      stub_feature_flags(admin_group_member: false)
+    end
+
+    it_behaves_like 'POST /:source_type/:id/members', 'project' do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'POST /:source_type/:id/members', 'group' do
+      let(:source) { group }
+    end
+
+    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
+      let(:source) { group }
+    end
   end
 
-  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
-    let(:source) { project }
-  end
+  context 'with admin_group_member FF enabled' do
+    before do
+      stub_feature_flags(admin_group_member: true)
+    end
 
-  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
-    let(:source) { group }
+    it_behaves_like 'POST /:source_type/:id/members', 'project' do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'POST /:source_type/:id/members', 'group' do
+      let(:source) { group }
+    end
+
+    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
+      let(:source) { group }
+    end
   end
 
   it_behaves_like 'DELETE /:source_type/:id/members/:user_id', 'project' do

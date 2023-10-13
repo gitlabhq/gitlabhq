@@ -13,6 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Ability to view a vulnerability report [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123835) in GitLab 16.1.
 > - [Feature flag `custom_roles_vulnerability` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124049) in GitLab 16.2.
 > - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
+> - Ability to manage group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) in GitLab 16.5 under `admin_group_member` Feature flag.
 
 Custom roles allow group members who are assigned the Owner role to create roles
 specific to the needs of their organization.
@@ -26,6 +27,7 @@ The following granular permissions are available. You can add these permissions 
 - In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and change the status of the vulnerabilities.
 - In GitLab 16.3 and later, you can create a custom role that can view the dependency list.
 - In GitLab 16.4 and later, you can create a custom role that can approve merge requests.
+- In GitLab 16.5 and later, you can create a custom role that can manage group members.
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 
@@ -90,15 +92,16 @@ For every ability, a minimal access level is defined. To be able to create a cus
 
 Some roles and abilities require having other abilities enabled. For example, a custom role can only have administration of vulnerabilities (`admin_vulnerability`) enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
 
-You can see the required minimal access levels and abilities requirements in the following table.
+You can see the abilities requirements in the following table.
 
-| Ability | Minimal access level | Required ability |
-| -- | -- | -- |
-| `read_code` | Guest    | - |
-| `read_dependency` | Guest    | - |
-| `read_vulnerability` | Guest | - |
-| `admin_merge_request` | Guest | - |
-| `admin_vulnerability` | Guest | `read_vulnerability` |
+| Ability  | Required ability |
+| -- | -- |
+| `read_code` | - |
+| `read_dependency` | - |
+| `read_vulnerability` | - |
+| `admin_merge_request` | - |
+| `admin_vulnerability` | `read_vulnerability` |
+| `admin_group_member` | - |
 
 ## Associate a custom role with an existing group member
 

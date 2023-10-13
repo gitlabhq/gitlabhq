@@ -232,7 +232,7 @@ To disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` when runn
 RSPEC_WARN_MISSING_FEATURE_CATEGORY=false bin/rspec spec/<test_file>
 ```
 
-Additionally, we flag the offenses via `RSpec/MissingFeatureCategory` RuboCop rule.
+Additionally, we flag the offenses via `RSpec/FeatureCategory` RuboCop rule.
 
 ### Tooling feature category
 

@@ -36,7 +36,7 @@ module Gitlab
 
             value = parse_node(constraints.find { |node| node.constraint.contype == DEFAULT_CONSTR })
 
-            return unless value
+            return if value.nil?
 
             "DEFAULT #{value}"
           end

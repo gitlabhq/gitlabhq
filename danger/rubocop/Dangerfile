@@ -1,0 +1,5 @@
+# frozen_string_literal: true
+
+helper.all_changed_files.each do |filename|
+  rubocop.add_suggestions_for(filename)
+end
