@@ -21,6 +21,7 @@ import RefSelector from '~/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
+import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -62,6 +63,7 @@ const initRefSwitcher = () => {
 };
 
 initRefSwitcher();
+initAmbiguousRefModal();
 
 if (viewBlobEl) {
   const {

@@ -2612,21 +2612,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  describe '#rename' do
-    let(:repository) { mutable_repository }
-
-    it 'moves the repository' do
-      checksum = repository.checksum
-      new_relative_path = "rename_test/relative/path"
-      renamed_repository = Gitlab::Git::Repository.new(repository.storage, new_relative_path, nil, nil)
-
-      repository.rename(new_relative_path)
-
-      expect(renamed_repository.checksum).to eq(checksum)
-      expect(repository.exists?).to be false
-    end
-  end
-
   describe '#remove' do
     let(:repository) { mutable_repository }
 

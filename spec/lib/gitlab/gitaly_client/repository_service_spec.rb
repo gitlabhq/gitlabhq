@@ -369,17 +369,6 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
     end
   end
 
-  describe '#rename' do
-    it 'sends a rename_repository message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:rename_repository)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(value: true))
-
-      client.rename('some/new/path')
-    end
-  end
-
   describe '#remove' do
     it 'sends a remove_repository message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)

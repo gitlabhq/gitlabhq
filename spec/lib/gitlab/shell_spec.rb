@@ -72,39 +72,6 @@ RSpec.describe Gitlab::Shell do
     end
   end
 
-  describe 'projects commands' do
-    let(:gitlab_shell_path) { File.expand_path('tmp/tests/gitlab-shell') }
-    let(:projects_path) { File.join(gitlab_shell_path, 'bin/gitlab-projects') }
-
-    before do
-      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
-      allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
-    end
-
-    describe '#mv_repository' do
-      let!(:project2) { create(:project, :repository) }
-
-      it 'returns true when the command succeeds' do
-        old_repo = project2.repository.raw
-        new_path = "project/new_path"
-        new_repo = Gitlab::Git::Repository.new(project2.repository_storage, "#{new_path}.git", nil, nil)
-
-        expect(old_repo).to exist
-        expect(new_repo).not_to exist
-
-        expect(gitlab_shell.mv_repository(project2.repository_storage, project2.disk_path, new_path)).to be_truthy
-
-        expect(old_repo).not_to exist
-        expect(new_repo).to exist
-      end
-
-      it 'returns false when the command fails' do
-        expect(gitlab_shell.mv_repository(project2.repository_storage, project2.disk_path, '')).to be_falsy
-        expect(project2.repository.raw).to exist
-      end
-    end
-  end
-
   describe 'namespace actions' do
     subject { described_class.new }
 

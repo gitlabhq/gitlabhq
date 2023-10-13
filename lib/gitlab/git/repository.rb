@@ -163,12 +163,6 @@ module Gitlab
         branch_names.count
       end
 
-      def rename(new_relative_path)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.rename(new_relative_path)
-        end
-      end
-
       def remove
         wrapped_gitaly_errors do
           gitaly_repository_client.remove

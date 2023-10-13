@@ -38,8 +38,6 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
     it 'renames a repository' do
       stub_container_registry_config(enabled: false)
 
-      expect(gitlab_shell).not_to receive(:mv_repository)
-
       expect_any_instance_of(SystemHooksService)
         .to receive(:execute_hooks_for)
         .with(project, :rename)

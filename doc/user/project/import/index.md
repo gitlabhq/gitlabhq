@@ -48,6 +48,8 @@ GitLab self-managed administrators can reduce their attack surface by disabling 
 1. Scroll to **Import sources**.
 1. Clear checkboxes for importers that are not required.
 
+In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
+
 ## Available project importers
 
 You can import projects from:

@@ -425,28 +425,6 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     end
   end
 
-  context 'namespace which contains orphan repository with same projects path name' do
-    let(:raw_fake_repo) { Gitlab::Git::Repository.new('default', File.join(group.full_path, "#{project.path}.git"), nil, nil) }
-
-    before do
-      group.add_owner(user)
-
-      raw_fake_repo.create_repository
-    end
-
-    after do
-      raw_fake_repo.remove
-    end
-
-    it 'does not allow the project transfer' do
-      transfer_result = execute_transfer
-
-      expect(transfer_result).to eq false
-      expect(project.namespace).to eq(user.namespace)
-      expect(project.errors[:new_namespace]).to include('Cannot move project')
-    end
-  end
-
   context 'target namespace containing the same project name' do
     before do
       group.add_owner(user)

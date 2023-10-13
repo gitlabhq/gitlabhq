@@ -4921,6 +4921,21 @@ msgstr ""
 msgid "Amazon EKS integration allows you to provision EKS clusters from GitLab."
 msgstr ""
 
+msgid "AmbiguousRef|There is a branch and a tag with the same name of %{ref}."
+msgstr ""
+
+msgid "AmbiguousRef|View branch"
+msgstr ""
+
+msgid "AmbiguousRef|View tag"
+msgstr ""
+
+msgid "AmbiguousRef|Which reference do you want to view?"
+msgstr ""
+
+msgid "AmbiguousRef|Which reference would you like to view?"
+msgstr ""
+
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
 msgstr ""
 
@@ -50034,9 +50049,6 @@ msgid "TransferGroup|Transfer failed: %{error_message}"
 msgstr ""
 
 msgid "TransferGroup|You don't have enough permissions."
-msgstr ""
-
-msgid "TransferProject|Cannot move project"
 msgstr ""
 
 msgid "TransferProject|Please select a new namespace for your project."

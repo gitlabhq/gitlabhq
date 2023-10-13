@@ -75,29 +75,6 @@ module Gitlab
       end
     end
 
-    # Move or rename a repository
-    #
-    # @example Move/rename a repository
-    #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
-    #
-    # @param [String] storage project's storage path
-    # @param [String] disk_path current project path on disk
-    # @param [String] new_disk_path new project path on disk
-    # @return [Boolean] whether repository could be moved/renamed on disk
-    #
-    # @deprecated
-    def mv_repository(storage, disk_path, new_disk_path)
-      return false if disk_path.empty? || new_disk_path.empty?
-
-      Gitlab::Git::Repository.new(storage, "#{disk_path}.git", nil, nil).rename("#{new_disk_path}.git")
-
-      true
-    rescue StandardError => e
-      Gitlab::ErrorTracking.track_exception(e, path: disk_path, new_path: new_disk_path, storage: storage)
-
-      false
-    end
-
     # Check if repository exists on disk
     #
     # @example Check if repository exists
