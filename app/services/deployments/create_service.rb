@@ -28,7 +28,6 @@ module Deployments
       # We use explicit parameters here so we never by accident allow parameters
       # to be set that one should not be able to set (e.g. the row ID).
       {
-        cluster_id: environment.deployment_platform&.cluster_id,
         project_id: environment.project_id,
         environment_id: environment.id,
         ref: params[:ref],

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2023-09-12 12:34\n"
+"PO-Revision-Date: 2023-10-12 08:08\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -43,6 +43,9 @@ msgstr "和"
 
 msgid " and %{sliced}"
 msgstr " 和 %{sliced}"
+
+msgid " and leave a comment on"
+msgstr " 並留下評論於"
 
 msgid " except branch:"
 msgid_plural " except branches:"
@@ -74,9 +77,6 @@ msgstr "「%{ref}」上沒有「%{path}」"
 
 msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr "\"%{repository_name}\" 的檔案大小（%{repository_size}）大於 %{limit} 限制。"
-
-msgid "### Rich text editor"
-msgstr "富文本編輯器"
 
 msgid "##### ERROR ##### You have used %{usage_percentage} of the storage quota for %{namespace_name} (%{current_size} of %{size_limit}). %{namespace_name} is now read-only. Projects under this namespace are locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
 msgstr "##### 錯誤 ##### 您已使用 %{namespace_name} %{usage_percentage}（of %{size_limit} 的 %{current_size}）的儲存額度。 %{namespace_name} 現在是唯讀的，該命名空間下的專案已被鎖定，操作將受到限制。要管理儲存空間或購買額外的儲存空間，請參閱 %{manage_storage_url}。要了解有關受限操作的更多信息，請參閱 %{restricted_actions_url}"
@@ -217,6 +217,10 @@ msgstr[0] "%d 個貢獻者"
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d 天"
+
+msgid "%d environment found"
+msgid_plural "%d environments found"
+msgstr[0] "找到 %d 個環境"
 
 msgid "%d epic"
 msgid_plural "%d epics"
@@ -365,6 +369,10 @@ msgstr[0] "%d 個標籤"
 msgid "%d tag per image name"
 msgid_plural "%d tags per image name"
 msgstr[0] "每個圖片名稱 %d 標籤"
+
+msgid "%d template found"
+msgid_plural "%d templates found"
+msgstr[0] "找到 %d 個模板"
 
 msgid "%d unresolved thread"
 msgid_plural "%d unresolved threads"
@@ -710,6 +718,9 @@ msgstr "由於未鏈結而無法刪除 %{item_ids} "
 msgid "%{itemsCount} issues with a limit of %{maxIssueCount}"
 msgstr "%{itemsCount} 個議題，上限為 %{maxIssueCount} 個"
 
+msgid "%{jobName}"
+msgstr "%{jobName}"
+
 msgid "%{jobName} job is being retried"
 msgstr "正在重試 %{jobName} 作業"
 
@@ -1022,9 +1033,6 @@ msgstr "%{startDate} – %{dueDate}"
 msgid "%{startDate} – No due date"
 msgstr "%{startDate} – 無截止日期"
 
-msgid "%{start} to %{end}"
-msgstr "%{start} 到 %{end}"
-
 msgid "%{statusStart}Dismissed%{statusEnd}"
 msgstr "%{statusStart}已解除%{statusEnd}"
 
@@ -1141,11 +1149,11 @@ msgstr "%{title} 變更"
 msgid "%{totalCpu} (%{freeSpacePercentage}%{percentSymbol} free)"
 msgstr "%{totalCpu} (剩餘%{freeSpacePercentage}%{percentSymbol})"
 
+msgid "%{totalIssueWeight} total weight"
+msgstr "總重量 %{totalIssueWeight} "
+
 msgid "%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)"
 msgstr "%{totalMemory} (剩餘%{freeSpacePercentage}%{percentSymbol})"
-
-msgid "%{totalWeight} total weight"
-msgstr "%{totalWeight} 總權重"
 
 msgid "%{total_warnings} warning(s) found:"
 msgstr "發現 %{total_warnings} 個警告："
@@ -1218,9 +1226,6 @@ msgstr "%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} 可以讓您�
 
 msgid "%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{integrations_link_end} in preference to a webhook."
 msgstr "%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} 可以在群組或專案中的事件發生時，將通知發送到網路應用程式。我們建議使用 %{integrations_link_start}整合%{integrations_link_end}，而不是使用 Webhook。"
-
-msgid "%{widget} options"
-msgstr "%{widget} 選項"
 
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
 msgstr "%{wildcards_link_start}萬用字元%{wildcards_link_end} 例如支援 %{code_tag_start}v*%{code_tag_end} 或 %{code_tag_start}*-release%{code_tag_end}。"
@@ -1537,12 +1542,6 @@ msgstr "兩步驟驗證"
 msgid "2FADevice|Registered On"
 msgstr "註冊於"
 
-msgid "3 hours"
-msgstr "3小時"
-
-msgid "30 minutes"
-msgstr "30分鐘"
-
 msgid "30+ contributions"
 msgstr "超過 30 項貢獻"
 
@@ -1569,9 +1568,6 @@ msgstr "如果您認為這是一個錯誤，請聯繫您的 GitLab 管理員。"
 
 msgid "409|There was a conflict with your request."
 msgstr "與您的請求有衝突。"
-
-msgid "8 hours"
-msgstr "8小時"
 
 msgid ":%{startLine} to %{endLine}"
 msgstr "：%{startLine}到%{endLine}"
@@ -1693,9 +1689,6 @@ msgstr "非機密性工作項不能有機密性的父級。"
 msgid "A parent must be provided when bulk updating issuables"
 msgstr "大量更新議題時必須提供上層"
 
-msgid "A personal access token has been revoked"
-msgstr "個人存取令牌已撤銷"
-
 msgid "A personal access token, named %{code_start}%{token_name}%{code_end}, has been revoked."
 msgstr "一個名為 %{code_start}%{token_name}%{code_end} 的個人存取令牌已被撤銷。"
 
@@ -1759,9 +1752,6 @@ msgstr "查看摘要"
 msgid "AI| %{link_start}How is my data used?%{link_end}"
 msgstr " %{link_start}如何使用我的資料？%{link_end}"
 
-msgid "AI| %{link_start}What are Experiment features?%{link_end}"
-msgstr "%{link_start}什麼是實驗性功能？%{link_end}"
-
 msgid "AI|%{tool} is %{transition} an answer"
 msgstr "%{tool} 是一個 %{transition} 解答"
 
@@ -1773,9 +1763,6 @@ msgstr "%{linkStart}實驗%{linkEnd} 是一項正在開發的功能，它還沒�
 
 msgid "AI|Apply AI-generated description"
 msgstr "套用 AI 生成的描述"
-
-msgid "AI|Ask GitLab Duo"
-msgstr "詢問 GitLab Duo"
 
 msgid "AI|Ask a question"
 msgstr "問一個問題"
@@ -1798,20 +1785,14 @@ msgstr "AI根據簡短提示建立問題描述"
 msgid "AI|Description is required"
 msgstr "AI需要描述"
 
-msgid "AI|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
-msgstr "啟用這些功能即表示您接受 %{link_start}GitLab 測試協議%{link_end}。"
-
 msgid "AI|Experiment"
 msgstr "實驗"
-
-msgid "AI|Experiment features"
-msgstr "實驗功能"
 
 msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`. If it is not programming code, say `The selected text is not code. I am afraid this feature is for explaining code only. Would you like to ask a different question about the selected text?` and wait for another question."
 msgstr "以人類可理解的語言，用Markdown格式解釋 %{filePath} 的程式碼。在回答中不添加原始程式碼片段或任何標題。`%{text}`。如果這不是程式碼，請說`選定的文字內容不是程式碼，該功能只用於解釋程式碼。您想問關於所選文字內容的其他問題嗎？` 然後等待另一個問題。"
 
-msgid "AI|Explain your rating (optional)"
-msgstr "AI說明您的評分（可選）"
+msgid "AI|Explain your rating to help us improve! (optional)"
+msgstr "請簡述評分以幫助我們改進！（可選）"
 
 msgid "AI|Features that use third-party AI services require transmission of data, including personal data."
 msgstr "使用第三方人工智慧服務的功能需要傳輸包括個人的資料。"
@@ -1825,11 +1806,14 @@ msgstr "AI產生問題描述"
 msgid "AI|GitLab Duo"
 msgstr "GitLab Duo"
 
+msgid "AI|GitLab Duo Chat"
+msgstr "GitLab Duo 聊天"
+
 msgid "AI|Give feedback on AI content"
-msgstr ""
+msgstr "對 AI 內容給予回饋"
 
 msgid "AI|Give feedback to improve this answer."
-msgstr ""
+msgstr "給予回饋以改善此回應。"
 
 msgid "AI|Has no support and might not be documented"
 msgstr "沒有支援，且可能沒有文件記錄"
@@ -1838,10 +1822,10 @@ msgid "AI|Helpful"
 msgstr "有幫助"
 
 msgid "AI|How could the content be improved?"
-msgstr ""
+msgstr "內容可以如何改進？"
 
 msgid "AI|How was the AI content?"
-msgstr ""
+msgstr "AI 內容如何？"
 
 msgid "AI|I don't see how I can help. Please give better instructions!"
 msgstr "我不知道我能幫上什麼忙。請給我更好的指令！"
@@ -1870,8 +1854,12 @@ msgstr "發送聊天消息。"
 msgid "AI|Something went wrong. Please try again later"
 msgstr "發生錯誤，請稍後再試"
 
+msgid "AI|Source"
+msgid_plural "AI|Sources"
+msgstr[0] "來源"
+
 msgid "AI|Thank you for your feedback."
-msgstr ""
+msgstr "感謝您的回饋。"
 
 msgid "AI|The container element wasn't found, stopping AI Genie."
 msgstr "未找到容器元素，AI Genie 停止運作。"
@@ -1882,20 +1870,14 @@ msgstr "現有描述將會在您提交後被替換。"
 msgid "AI|There is too much text in the chat. Please try again with a shorter text."
 msgstr "聊天中的文字太多。請使用較短的文字重試。"
 
-msgid "AI|These features can cause performance and stability issues and may change over time."
-msgstr "這些功能可能會導致性能和穩定性問題，並且可能會隨著時間的推移而發生變化。"
-
 msgid "AI|Third-party AI services"
 msgstr "第三方人工智慧服務"
 
 msgid "AI|To help improve the quality of the content, send your feedback to GitLab team members."
-msgstr ""
+msgstr "為了協助改善內容品質，請將您的回饋寄送給 GitLab 團隊成員。"
 
 msgid "AI|Unhelpful"
 msgstr "沒有幫助"
-
-msgid "AI|Use Experiment features"
-msgstr "使用實驗性功能"
 
 msgid "AI|Use third-party AI services"
 msgstr "使用第三方人工智慧服務"
@@ -2107,6 +2089,12 @@ msgstr "已成功安排刪除該使用者"
 msgid "AbuseReportEvent|Successfully scheduled the user for deletion and closed the report"
 msgstr "已成功安排刪除該使用者並關閉報告"
 
+msgid "AbuseReportEvent|Successfully trusted the user"
+msgstr "成功信任該使用者"
+
+msgid "AbuseReportEvent|Successfully trusted the user and closed the report"
+msgstr "成功信任該使用者並關閉報告"
+
 msgid "AbuseReports|%{reportedUser} reported for %{category} by %{count} users"
 msgstr "%{reportedUser} 被 %{count} 報告為 %{category}"
 
@@ -2176,6 +2164,9 @@ msgstr "已確認發布個人資訊或憑證"
 msgid "AbuseReport|Confirmed spam"
 msgstr "已確認的垃圾郵件"
 
+msgid "AbuseReport|Confirmed trusted user"
+msgstr "已確認的可信任使用者"
+
 msgid "AbuseReport|Confirmed violation of a copyright or a trademark"
 msgstr "已確認侵犯版權或商標"
 
@@ -2199,6 +2190,9 @@ msgstr "前往評論"
 
 msgid "AbuseReport|Go to content"
 msgstr "前往內容"
+
+msgid "AbuseReport|Go to epic"
+msgstr "前往史詩 (epic)"
 
 msgid "AbuseReport|Go to issue"
 msgstr "前往議題"
@@ -2266,6 +2260,9 @@ msgstr "舉報的評論"
 msgid "AbuseReport|Reported content"
 msgstr "舉報內容"
 
+msgid "AbuseReport|Reported epic"
+msgstr "檢舉史詩 (epic)"
+
 msgid "AbuseReport|Reported issue"
 msgstr "舉報的議題"
 
@@ -2290,6 +2287,9 @@ msgstr "垃圾郵件"
 msgid "AbuseReport|Tier"
 msgstr "層級"
 
+msgid "AbuseReport|Trust user"
+msgstr "信任使用者"
+
 msgid "AbuseReport|Verification"
 msgstr "驗證"
 
@@ -2297,7 +2297,7 @@ msgid "AbuseReport|View screenshot"
 msgstr "查看截圖"
 
 msgid "Abusive or offensive"
-msgstr ""
+msgstr "辱罵或有攻擊性的"
 
 msgid "Accept invitation"
 msgstr "接受邀請"
@@ -2346,6 +2346,9 @@ msgstr "部署密鑰"
 
 msgid "AccessDropdown|Groups"
 msgstr "群組"
+
+msgid "AccessDropdown|No role"
+msgstr "無角色"
 
 msgid "AccessDropdown|Roles"
 msgstr "角色"
@@ -2587,6 +2590,9 @@ msgstr "加入"
 msgid "Add \"%{value}\""
 msgstr "增加\"%{value}\""
 
+msgid "Add %{child_ref} to this work item as child(ren)."
+msgstr "將 %{child_ref} 作為子項新增至此工作項。"
+
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
 msgstr "新增%{linkStart}資產%{linkEnd}至您的發佈中。GitLab 會自動加入唯讀資產，如原始碼及發佈證據。"
 
@@ -2715,6 +2721,9 @@ msgstr "新增核准者"
 
 msgid "Add child epic to an epic"
 msgstr "加入子史詩 (epic) 到史詩 (epic) "
+
+msgid "Add children to work item"
+msgstr "將子項新增至工作項"
 
 msgid "Add comment now"
 msgstr "立即加入留言"
@@ -2906,7 +2915,7 @@ msgid "AddMember|Invite email is invalid"
 msgstr "邀請的電子郵件地址無效"
 
 msgid "AddMember|Invite limit of %{daily_invites} per day exceeded."
-msgstr ""
+msgstr "超過每天邀請 %{daily_invites} 次的限制。"
 
 msgid "AddMember|Invites cannot be blank"
 msgstr "邀請不可為空"
@@ -3079,6 +3088,9 @@ msgstr "組件"
 msgid "AdminArea|Developer"
 msgstr "開發人員"
 
+msgid "AdminArea|Documentation"
+msgstr "文件"
+
 msgid "AdminArea|Features"
 msgstr "功能"
 
@@ -3144,9 +3156,6 @@ msgstr "登記 GitLab 安全通訊以取得安全更新通知。"
 
 msgid "AdminArea|Sign up for the GitLab newsletter"
 msgstr "登記 GitLab 通訊"
-
-msgid "AdminArea|Stop all jobs"
-msgstr "停止所有作業"
 
 msgid "AdminArea|Total Billable users"
 msgstr "計費使用者總數"
@@ -3247,6 +3256,15 @@ msgstr "刪除"
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr "刪除專案 %{projectName}？"
 
+msgid "AdminSettings|%{setting_name} value used by both Rails and Browser JavaScript SDKs."
+msgstr "Rails 和瀏覽器 JavaScript SDK 使用的 %{setting_name} 值。"
+
+msgid "AdminSettings|%{setting_name} value used by the Browser JavaScript SDK."
+msgstr "瀏覽器 JavaScript SDK 使用的 %{setting_name} 值。"
+
+msgid "AdminSettings|%{setting_name} value used by the Rails SDK."
+msgstr "Rails SDK 使用的 %{setting_name} 值。"
+
 msgid "AdminSettings|%{strongStart}WARNING:%{strongEnd} Environment variable %{environment_variable} does not exist or is not pointing to a valid directory. %{icon_link}"
 msgstr "%{strongStart}警告：%{strongEnd} 環境變數 %{environment_variable} 不存在或未指向有效目錄。 %{icon_link}"
 
@@ -3270,6 +3288,9 @@ msgstr "預設情況下，將限制設為 0 表示沒有限制。"
 
 msgid "AdminSettings|CI/CD limits"
 msgstr "CI/CD 限制"
+
+msgid "AdminSettings|Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub %{github_docs_link_start}%{icon}%{github_docs_link_end} and Bitbucket %{bitbucket_docs_link_start}%{icon}%{bitbucket_docs_link_end}."
+msgstr "在專案建立期間，可以從已啟用的來源導入程式碼。必須為 GitHub 配置 OmniAuth %{github_docs_link_start}%{icon}%{github_docs_link_end} 和 Bitbucket %{bitbucket_docs_link_start}%{icon}%{bitbucket_docs_link_end}。"
 
 msgid "AdminSettings|Collector host"
 msgstr "收集器主機"
@@ -3316,11 +3337,11 @@ msgstr "網域驗證是公共 GitLab 網站的基本安全措施。在啟用網�
 msgid "AdminSettings|Elasticsearch indexing"
 msgstr "正在建立 Elasticsearch 索引"
 
-msgid "AdminSettings|Email from GitLab - email users right from the Admin Area. %{link_start}Learn more%{link_end}."
-msgstr "來自於 GitlLab 的電子郵件 - 從管理區域向使用者所發送的電子郵件。 %{link_start}了解更多%{link_end}."
-
 msgid "AdminSettings|Enable Registration Features"
 msgstr "啟用註冊功能"
+
+msgid "AdminSettings|Enable Sentry for Rails and Browser JavaScript"
+msgstr "為 Rails 和 瀏覽器 JavaScript 啟用 Sentry"
 
 msgid "AdminSettings|Enable Service Ping"
 msgstr "啟用 Service Ping"
@@ -3358,8 +3379,14 @@ msgstr "強制執行群組和專案的邀請流程"
 msgid "AdminSettings|Feed token"
 msgstr "Feed 令牌"
 
+msgid "AdminSettings|For a list of included Registration Features, see %{link_start}the documentation%{link_end}."
+msgstr "有關已包含的註冊功能清單，請參閱 %{link_start}文件%{link_end}。"
+
 msgid "AdminSettings|Git abuse rate limit"
 msgstr "Git 濫用率限制"
+
+msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, restart GitLab."
+msgstr "GitLab 使用 %{bold_start}Rails%{bold_end} 和 %{bold_start}瀏覽器  JavaScript%{bold_end} Sentry SDK 來將事件發送到 Sentry。要使 Rails 整合設定的更改生效，請重新啟動 GitLab。"
 
 msgid "AdminSettings|Group runners expiration"
 msgstr "群組執行器過期"
@@ -3403,9 +3430,6 @@ msgstr "保留最新且成功的流水線中所有任務的最新產物"
 msgid "AdminSettings|Let's Encrypt email"
 msgstr "Let's Encrypt 電子郵件"
 
-msgid "AdminSettings|Limit project size at a global, group, and project level. %{link_start}Learn more%{link_end}."
-msgstr "在全域、群組、專案層級限制專案的大小。%{link_start}了解更多%{link_end}."
-
 msgid "AdminSettings|Limit the number of namespaces and projects that can be indexed."
 msgstr "限制可以被索引的命名空間和專案的數量。"
 
@@ -3445,8 +3469,8 @@ msgstr "最小尺寸必須至少為 0。"
 msgid "AdminSettings|New CI/CD variables in projects and groups default to protected."
 msgstr "專案和群組的新 CI / CD 變數預設為受保護。"
 
-msgid "AdminSettings|No required pipeline"
-msgstr "沒有強制性的流水線"
+msgid "AdminSettings|No required configuration"
+msgstr "沒有必要的配置"
 
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr "只有在安裝插件、啟用且重建索引後方可開啟查詢。"
@@ -3472,9 +3496,6 @@ msgstr "專案執行器過期"
 msgid "AdminSettings|Protect CI/CD variables by default"
 msgstr "預設保護 CI / CD 變數"
 
-msgid "AdminSettings|Registration Features include:"
-msgstr "註冊功能包括:"
-
 msgid "AdminSettings|Requeue indexing workers"
 msgstr "重新佇列索引工作執行者"
 
@@ -3486,9 +3507,6 @@ msgstr "強制流水線設定"
 
 msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
 msgstr "需要 %{linkStart}電子郵件通知%{linkEnd}"
-
-msgid "AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}."
-msgstr "透過 IP 地址限制群組訪問。 %{link_start}了解更多%{link_end}。"
 
 msgid "AdminSettings|Restricted visibility levels"
 msgstr "受限制的可見性級別"
@@ -3544,6 +3562,9 @@ msgstr "設定每個專案的 GitLab 頁面自定義域的最大數量（0 表�
 msgid "AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more.%{link_end}"
 msgstr "設定每個專案的 GitLab 網頁的最大容量（0 表示無限制）。%{link_start}了解更多。%{link_end}"
 
+msgid "AdminSettings|Set visibility of project contents and configure Git access protocols."
+msgstr "設定專案內容的可見性並配置 Git 訪問協議。"
+
 msgid "AdminSettings|Setting must be greater than 0."
 msgstr "設定值必須大於 0。"
 
@@ -3564,6 +3585,9 @@ msgstr "每個專案最新成功的流水線，其所有任務的最新產物已
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
 msgstr "每個流水線中隨附文件的最大數量。"
+
+msgid "AdminSettings|The selected level must be different from the selected default group and project visibility."
+msgstr "所選級別必須與所選預設群組和專案可見性不同。"
 
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
 msgstr "必要流水線配置的範本可以是 GitLab 提供的範本之一，或者是新增到執行個體範本檔案庫的自訂範本。%{link_start}如何建立執行個體範本檔案庫？%{link_end}"
@@ -3603,6 +3627,9 @@ msgstr "您可以啟用註冊功能，因為 Service Ping 已啟用。要繼續�
 
 msgid "AdminSettings|You can't delete projects before the warning email is sent."
 msgstr "在發送警告電子郵件之前，您無法刪除專案。"
+
+msgid "AdminSettings|templates found"
+msgstr "找到模板"
 
 msgid "AdminStatistics|Active Users"
 msgstr "活躍使用者"
@@ -4546,9 +4573,6 @@ msgstr "演算法"
 msgid "All"
 msgstr "全部"
 
-msgid "All %{replicableType} are being scheduled for %{action}"
-msgstr "所有 %{replicableType} 都被排入 %{action} 排程"
-
 msgid "All (default)"
 msgstr "全部 (預設)"
 
@@ -4657,9 +4681,6 @@ msgstr "僅允許選取之用於 Git 存取的通訊協定。"
 msgid "Allow owners to manage default branch protection per group."
 msgstr "允許擁有者管理每個組別的預設分支保護。"
 
-msgid "Allow owners to manually add users outside of LDAP"
-msgstr "允許所有者手動添加LDAP之外的使用者"
-
 msgid "Allow password authentication for Git over HTTP(S)"
 msgstr "允許通過 HTTP(S) 對 Git 進行密碼驗證"
 
@@ -4687,8 +4708,8 @@ msgstr "允許使用許可的 EE 功能"
 msgid "Allow users to extend their session"
 msgstr "允許使用者延長他們的會話 (session)"
 
-msgid "Allow users to register any application to use GitLab as an OAuth provider"
-msgstr "允許使用者註冊任何應用程式，使用 GitLab 作為 OAuth 提供者"
+msgid "Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications."
+msgstr "允許使用者註冊任何應用程序以使用 GitLab 作為 OAuth 提供商，此設置不會影響群組級別的 OAuth 應用程式。"
 
 msgid "Allowed"
 msgstr "已允許"
@@ -5223,6 +5244,12 @@ msgstr "分析具有該名稱的可視化已存在。"
 msgid "Analytics|Add a visualization"
 msgstr "增加視覺化"
 
+msgid "Analytics|Add to dashboard"
+msgstr "加入到儀表板"
+
+msgid "Analytics|Add visualization"
+msgstr "增加視覺化"
+
 msgid "Analytics|Add visualizations"
 msgstr "增加視覺化"
 
@@ -5238,6 +5265,12 @@ msgstr "分析儀表板"
 msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr "“%{project_name}”的分析設定已成功更新。"
 
+msgid "Analytics|Are you sure you want to cancel creating this dashboard?"
+msgstr "您確定要取消建立此儀表板嗎？"
+
+msgid "Analytics|Are you sure you want to cancel editing this dashboard?"
+msgstr "您確定要取消編輯此儀表板嗎？"
+
 msgid "Analytics|Browser"
 msgstr "瀏覽器"
 
@@ -5250,26 +5283,32 @@ msgstr "由 GitLab 提供"
 msgid "Analytics|Cancel"
 msgstr "取消"
 
-msgid "Analytics|Choose a chart type on the right"
-msgstr "選擇右邊的圖表類型"
-
-msgid "Analytics|Choose a measurement to start"
-msgstr "選擇要開始的測量"
+msgid "Analytics|Charts"
+msgstr "圖表"
 
 msgid "Analytics|Code"
 msgstr "代碼"
 
-msgid "Analytics|Column Chart"
-msgstr "柱狀圖"
+msgid "Analytics|Column chart"
+msgstr "長條圖"
 
 msgid "Analytics|Configure Dashboard Project"
 msgstr "配置儀表板專案"
+
+msgid "Analytics|Continue creating"
+msgstr "繼續建立"
+
+msgid "Analytics|Continue editing"
+msgstr "繼續編輯"
 
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr "分析建立儀表板 %{dashboardSlug}"
 
 msgid "Analytics|Create your dashboard"
 msgstr "建立您的儀表板"
+
+msgid "Analytics|Create your visualization"
+msgstr "建立您的視覺化"
 
 msgid "Analytics|Custom dashboards"
 msgstr "客製儀表板"
@@ -5292,7 +5331,7 @@ msgstr "儀表板是透過編輯專案儀表板檔案建立的。"
 msgid "Analytics|Data"
 msgstr "資料"
 
-msgid "Analytics|Data Table"
+msgid "Analytics|Data table"
 msgstr "資料表格"
 
 msgid "Analytics|Dates and times are displayed in the UTC timezone"
@@ -5307,8 +5346,8 @@ msgstr "編輯您的儀表板"
 msgid "Analytics|Enter a dashboard title"
 msgstr "輸入儀表板標題"
 
-msgid "Analytics|Enter a visualization name"
-msgstr "分析輸入可視化名稱"
+msgid "Analytics|Enter a visualization title"
+msgstr "輸入一個視覺化標題"
 
 msgid "Analytics|Error while saving dashboard"
 msgstr "儲存儀表板時發生錯誤！"
@@ -5328,11 +5367,8 @@ msgstr "無效的視覺化設定"
 msgid "Analytics|Language"
 msgstr "語言"
 
-msgid "Analytics|Line Chart"
+msgid "Analytics|Line chart"
 msgstr "折線圖"
-
-msgid "Analytics|New analytics visualization name"
-msgstr "分析新分析可視化名稱"
 
 msgid "Analytics|New dashboard"
 msgstr "新的儀表板"
@@ -5370,22 +5406,22 @@ msgstr "結果資料"
 msgid "Analytics|Save and add to Dashboard"
 msgstr "分析保存並增加到儀表板"
 
-msgid "Analytics|Save new visualization"
-msgstr "分析保存新的可視化"
-
 msgid "Analytics|Save your dashboard"
 msgstr "儲存您的儀表板"
+
+msgid "Analytics|Save your visualization"
+msgstr "儲存您的視覺化"
 
 msgid "Analytics|Select a measurement"
 msgstr "分析選擇測量"
 
-msgid "Analytics|Select a visualization from the sidebar to get started."
-msgstr "從側邊欄選擇一個視覺化開始。"
-
 msgid "Analytics|Select a visualization type"
 msgstr "分析選擇可視化類型"
 
-msgid "Analytics|Single Statistic"
+msgid "Analytics|Single statistic"
+msgstr "單一統計"
+
+msgid "Analytics|Single stats"
 msgstr "單一統計"
 
 msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
@@ -5394,8 +5430,20 @@ msgstr "您的面板視覺化設定似乎有點問題。請見%{linkStart}疑難
 msgid "Analytics|Something went wrong while connecting to your data source. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr "在連接到您的資料源時發生了問題。請參閱%{linkStart}疑難排解文件%{linkEnd}。"
 
+msgid "Analytics|Something went wrong while loading available visualizations. Refresh the page to try again."
+msgstr "載入可用的視覺化時出現問題，請重新整理頁面重試。"
+
+msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
+msgstr "載入儀表板時發生錯誤。請重新整理頁面以重試或檢視%{linkStart}疑難排解文件%{linkEnd}。"
+
 msgid "Analytics|Something went wrong."
 msgstr "出了一些問題。"
+
+msgid "Analytics|Start by choosing a metric"
+msgstr "從選擇一個指標開始"
+
+msgid "Analytics|Tables"
+msgstr "表格"
 
 msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
 msgstr "要建立您自己的儀表板，首先要設定一個專案來儲存您的儀表板。"
@@ -5408,6 +5456,9 @@ msgstr "分析更新儀表板 %{dashboardSlug}"
 
 msgid "Analytics|Updating visualization %{visualizationName}"
 msgstr "分析更新可視化 %{visualizationName}"
+
+msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
+msgstr "使用視覺化設計師建立自定義的視覺化。保存視覺化後，您可以將其加到儀表板中。"
 
 msgid "Analytics|Users"
 msgstr "使用者"
@@ -5424,11 +5475,14 @@ msgstr "視覺化"
 msgid "Analytics|Visualization Designer"
 msgstr "視覺化設計師"
 
-msgid "Analytics|Visualization Type"
-msgstr "視覺化類型"
-
 msgid "Analytics|Visualization designer"
 msgstr "視覺化設計師"
+
+msgid "Analytics|Visualization title"
+msgstr "視覺化標題"
+
+msgid "Analytics|Visualization type"
+msgstr "視覺化類型"
 
 msgid "Analytics|Visualization was saved successfully"
 msgstr "分析可視化已成功保存"
@@ -6142,6 +6196,9 @@ msgstr "您確定要刪除這個標籤嗎？"
 msgid "Are you sure you want to delete this pipeline? Doing so will expire all pipeline caches and delete all related objects, such as builds, logs, artifacts, and triggers. This action cannot be undone."
 msgstr "您確定刪除這個流水線嗎？這麼做會將所有流水線快取設成過期，並刪除所有相關物件，例如組建、日誌、產物及觸發器。這個動作不能復原。"
 
+msgid "Are you sure you want to delete this target branch rule?"
+msgstr "是否確實要刪除此目標分支規則？"
+
 msgid "Are you sure you want to deploy this environment?"
 msgstr "您確定要部署此環境嗎？"
 
@@ -6315,17 +6372,11 @@ msgstr "刪除產物"
 msgid "Artifacts|Delete selected"
 msgstr "刪除選取"
 
-msgid "Artifacts|Help us improve this page"
-msgstr "幫助我們改進該頁面"
-
 msgid "Artifacts|Maximum selected artifacts limit reached"
 msgstr "已達到選定產物的最大限制。"
 
 msgid "Artifacts|Something went wrong while deleting. Please refresh the page to try again."
 msgstr "刪除時發生錯誤，請重新整理頁面以重試。"
-
-msgid "Artifacts|Take a quick survey"
-msgstr "做一張調查問卷"
 
 msgid "Artifacts|The selected artifact will be permanently deleted. Any reports generated from these artifacts will be empty."
 msgid_plural "Artifacts|The selected artifacts will be permanently deleted. Any reports generated from these artifacts will be empty."
@@ -6336,9 +6387,6 @@ msgstr "該產物將被永久刪除，任何從該產物所生成的報告都會
 
 msgid "Artifacts|Total artifacts size"
 msgstr "總產物大小"
-
-msgid "Artifacts|We want you to be able to use this page to easily manage your CI/CD job artifacts. We are working to improve this experience and would appreciate any feedback you have about the improvements we are making."
-msgstr "我們希望您能使用此頁面輕鬆管理您的 CI/CD 作業產物。我們正在努力改善相關體驗，若您對我們所作的改進提出任何回饋，我們會非常感激。"
 
 msgid "As this is a newly created account, to get started, click the link below to confirm your account."
 msgstr "由於這是一個新建的帳號，請點擊下面的鏈結以確認您的帳號並開始使用。"
@@ -7624,6 +7672,9 @@ msgstr "載入程式碼建議附加元件的詳細訊息時發生錯誤，如果
 msgid "Billing|An error occurred while loading pending members list"
 msgstr "加載待定成員清單時發生錯誤"
 
+msgid "Billing|An error occurred while loading users of the Code Suggestions add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgstr "載入使用者程式碼建議附加元件時發生錯誤，如果問題仍然存在，請 %{supportLinkStart}聯繫 %{supportLinkEnd}支援部門。"
+
 msgid "Billing|An error occurred while removing a billable member."
 msgstr "移除計費會員時發生錯誤。"
 
@@ -8633,8 +8684,8 @@ msgstr "匯入群組時請注意 %{linkStart}可見性規則%{linkEnd}。"
 msgid "BulkImport|Destination"
 msgstr "BulkImport|目的地"
 
-msgid "BulkImport|Direct transfer maximum download file size (MB)"
-msgstr "直接傳輸的最大下載檔案大小（MB）"
+msgid "BulkImport|Direct transfer maximum download file size (MiB)"
+msgstr "直接傳輸最大下載文件大小 (MiB)"
 
 msgid "BulkImport|Existing groups"
 msgstr "BulkImport|現有群組"
@@ -8747,6 +8798,9 @@ msgstr "批次匯入|預期為關聯的專案，但目前為關聯的群組"
 msgid "BulkImport|must be a group"
 msgstr "批次匯入|必須是一個群組"
 
+msgid "BulkImport|must have a relative path structure with no HTTP protocol characters, or leading or trailing forward slashes. Path segments must not start or end with a special character, and must not contain consecutive special characters"
+msgstr "必須具有相對路徑結構，不包含HTTP協議字元，也不包含前後斜杠，路徑段不能以特殊字元開頭或結尾，且不能包含連續的特殊字元"
+
 msgid "Bulkmport|Over six imports in one minute were attempted. Wait at least one minute and try again."
 msgstr "一分鐘內已嘗試了六次以上的匯入，請至少等待一分鐘後重試。"
 
@@ -8809,9 +8863,6 @@ msgstr "作者："
 
 msgid "CHANGELOG"
 msgstr "更新日誌"
-
-msgid "CI"
-msgstr "CI"
 
 msgid "CI Lint"
 msgstr "CI Lint"
@@ -8931,11 +8982,11 @@ msgstr "部署策略"
 msgid "CICD|Disabling this feature is a permanent change."
 msgstr "禁用該功能是永久性的變更。"
 
-msgid "CICD|Enable feature to allow job token access by the following projects."
-msgstr "啟用功能以允許以下專案存取作業令牌。"
-
 msgid "CICD|Enable feature to limit job token access to the following projects."
 msgstr "啟用功能以限制作業令牌對下列專案的存取。"
+
+msgid "CICD|Enable feature to limit job token access, so only the projects in this list can access this project with a CI/CD job token."
+msgstr "啟用功能以限制作業令牌的存取，只有此清單中的專案可以使用 CI/CD 作業令牌存取此專案。"
 
 msgid "CICD|Jobs"
 msgstr "作業"
@@ -9011,6 +9062,18 @@ msgstr "申請 CVE ID"
 
 msgid "CVE|Why Request a CVE ID?"
 msgstr "為什麼要申請一個 CVE ID？"
+
+msgid "CVS|By enabling this feature, you accept the %{linkStart}Testing Terms of Use%{linkEnd}"
+msgstr "啟用此功能即表示您接受 %{linkStart}測試使用條款%{linkEnd}"
+
+msgid "CVS|Continuous Vulnerability Scan"
+msgstr "持續性漏洞掃描"
+
+msgid "CVS|Detect vulnerabilities outside a pipeline as new data is added to the GitLab Advisory Database."
+msgstr "在將新資料加入到GitLab咨詢資料庫時，檢測流水線外的漏洞。"
+
+msgid "CVS|Toggle CVS"
+msgstr "切換 CVS"
 
 msgid "Cadence is not automated"
 msgstr "Cadence 不是自動化的"
@@ -9339,8 +9402,14 @@ msgstr "變更模板"
 msgid "Change title"
 msgstr "變更標題"
 
+msgid "Change work item parent"
+msgstr "更改工作項父項"
+
 msgid "Change work item type"
 msgstr "更改工作項類型"
+
+msgid "Change work item's parent to %{parent_ref}."
+msgstr "將工作項目的父項變更為 %{parent_ref}。"
 
 msgid "Change your password"
 msgstr "變更您的密碼"
@@ -9432,12 +9501,6 @@ msgstr "標題變更尚未儲存"
 msgid "Changes:"
 msgstr "變更："
 
-msgid "Changing any setting bellow doesn't require an application restart"
-msgstr "更改以下任何設置都不需要應用程式重新啟動"
-
-msgid "Changing any setting here requires an application restart"
-msgstr "更改此處的任何設定都需要重新啟動應用程式"
-
 msgid "Characters left"
 msgstr "剩餘字元"
 
@@ -9446,9 +9509,6 @@ msgstr "字數超過限制"
 
 msgid "Chat"
 msgstr "即時通訊"
-
-msgid "Chat not available."
-msgstr "聊天無法使用。"
 
 msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status} in %{duration}"
 msgstr "%{project_link}:由%{user_combined_name}%{humanized_status}觸發的%{ref_type}%{ref_link}流水線%{pipeline_link}耗時%{duration}"
@@ -9818,6 +9878,9 @@ msgstr "子史詩 (epic) "
 msgid "Child issues and epics"
 msgstr "子議題與史詩 (epic) "
 
+msgid "Child work item(s) added successfully"
+msgstr "子工作項目加入成功"
+
 msgid "Chinese language support using"
 msgstr "支持使用中文"
 
@@ -9871,9 +9934,6 @@ msgstr "選擇您的框架"
 
 msgid "Ci config already present"
 msgstr "Ci 配置已經存在"
-
-msgid "CiCatalog|About this project"
-msgstr "關於這個專案"
 
 msgid "CiCatalog|Back to the CI/CD Catalog"
 msgstr "返回 CI/CD 目錄"
@@ -9971,6 +10031,9 @@ msgstr "等待中"
 msgid "CiStatusLabel|preparing"
 msgstr "準備"
 
+msgid "CiStatusLabel|running"
+msgstr "執行中"
+
 msgid "CiStatusLabel|scheduled"
 msgstr "排程"
 
@@ -9986,50 +10049,47 @@ msgstr "等待手動操作"
 msgid "CiStatusLabel|waiting for resource"
 msgstr "等待資源"
 
-msgid "CiStatusText|blocked"
-msgstr "鎖定"
+msgid "CiStatusText|Blocked"
+msgstr "已封鎖"
 
-msgid "CiStatusText|canceled"
-msgstr "取消"
+msgid "CiStatusText|Canceled"
+msgstr "已取消"
 
-msgid "CiStatusText|created"
+msgid "CiStatusText|Created"
 msgstr "已建立"
 
-msgid "CiStatusText|delayed"
+msgid "CiStatusText|Delayed"
 msgstr "已延遲"
 
-msgid "CiStatusText|failed"
+msgid "CiStatusText|Failed"
 msgstr "失敗"
 
-msgid "CiStatusText|manual"
+msgid "CiStatusText|Manual"
 msgstr "手動操作"
 
-msgid "CiStatusText|passed"
-msgstr "通過"
+msgid "CiStatusText|Passed"
+msgstr "已通過"
 
-msgid "CiStatusText|pending"
-msgstr "等待中"
+msgid "CiStatusText|Pending"
+msgstr "擱置中"
 
-msgid "CiStatusText|preparing"
-msgstr "準備"
+msgid "CiStatusText|Preparing"
+msgstr "準備中"
 
-msgid "CiStatusText|scheduled"
-msgstr "排程"
-
-msgid "CiStatusText|skipped"
-msgstr "略過"
-
-msgid "CiStatusText|waiting"
-msgstr "等待"
-
-msgid "CiStatusText|warning"
-msgstr "警告"
-
-msgid "CiStatus|running"
+msgid "CiStatusText|Running"
 msgstr "執行中"
 
-msgid "CiVariables|Add Variable"
-msgstr "新增變數"
+msgid "CiStatusText|Scheduled"
+msgstr "已排程"
+
+msgid "CiStatusText|Skipped"
+msgstr "已略過"
+
+msgid "CiStatusText|Waiting"
+msgstr "等待中"
+
+msgid "CiStatusText|Warning"
+msgstr "警告"
 
 msgid "CiVariables|Add variable"
 msgstr "新增變數"
@@ -10049,7 +10109,7 @@ msgstr "刪除變數"
 msgid "CiVariables|Do you want to delete the variable %{key}?"
 msgstr "您要刪除 %{key} 變數嗎？"
 
-msgid "CiVariables|Edit Variable"
+msgid "CiVariables|Edit variable"
 msgstr "編輯變數"
 
 msgid "CiVariables|Environments"
@@ -10125,22 +10185,22 @@ msgid "CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD vari
 msgstr "該 %{entity} 具有 %{currentVariableCount} 已定義的 CI/CD 變數，每個 %{entity} 的最大變數數量為 %{maxVariableLimit}，要增加新的變數，您必須先減少已定義變數的數量。"
 
 msgid "CiVariables|This variable value does not meet the masking requirements."
-msgstr ""
+msgstr "此變數的值不符合遮罩要求。"
 
 msgid "CiVariables|Type"
 msgstr "類型"
 
 msgid "CiVariables|Unselect \"Expand variable reference\" if you want to use the variable value as a raw string."
-msgstr ""
+msgstr "如果您要使用變數值作為原始字串，請取消選取「展開變數引用」。"
 
 msgid "CiVariables|Value"
 msgstr "值"
 
 msgid "CiVariables|Value might contain a variable reference"
-msgstr ""
+msgstr "值可能包含變數參照"
 
 msgid "CiVariables|Variable value will be evaluated as raw string."
-msgstr ""
+msgstr "變數值將被評估為原始字串。"
 
 msgid "CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements."
 msgstr "變數將在作業紀錄中被遮蔽。需要值來滿足正規表示式要求。"
@@ -11365,9 +11425,6 @@ msgstr "程式建議插件狀態"
 msgid "Code block"
 msgstr "程式碼區塊"
 
-msgid "Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub"
-msgstr "專案創建期間可以啟用從來源匯入程式碼，必須為 GitHub 配置 OmniAuth。"
-
 msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
 msgstr "程式碼覆蓋率統計 %{ref} %{start_date} - %{end_date}"
 
@@ -11428,20 +11485,29 @@ msgstr "程式碼建議SM為此實例啟用程式碼碼建議 %{beta}"
 msgid "CodeSuggestionsSM|Enable Code Suggestions for users of this instance. %{link_start}What are Code Suggestions?%{link_end}"
 msgstr "程式碼建議SM為此實例的用戶啟用程式碼建議。 %{link_start}什麼是程式碼建議？%{link_end}"
 
+msgid "CodeSuggestions|%{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing."
+msgstr "%{linkStart}程式碼建議%{linkEnd} 在您開發時使用生成式 AI 來建議程式碼。"
+
 msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
 msgstr "%{link_start}什麼是程式碼建議？%{link_end}"
+
+msgid "CodeSuggestions|A user can be assigned a Code Suggestion seat only once each billable month."
+msgstr "每位使用者每個計費月份只能被分配一次程式碼建議席次。"
 
 msgid "CodeSuggestions|Code Suggestions"
 msgstr "程式碼建議 "
 
-msgid "CodeSuggestions|Code Suggestions add-on assigned"
-msgstr ""
+msgid "CodeSuggestions|Code Suggestions add-on"
+msgstr "程式碼建議附加元件"
+
+msgid "CodeSuggestions|Code Suggestions seats used"
+msgstr "已使用的程式碼建議席次"
 
 msgid "CodeSuggestions|Enable Code Suggestions"
 msgstr "啟用程式碼建議"
 
 msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing."
-msgstr ""
+msgstr "強化您寫程式的體驗，享受智慧型建議。%{linkStart}程式碼建議%{linkEnd}使用產生式人工智慧在您開發時提供程式碼建議。"
 
 msgid "CodeSuggestions|Get code suggestions as you write code in your IDE. %{link_start}Learn more%{link_end}."
 msgstr "在您的整合開發環境中編寫程式碼時，可以獲得程式碼建議。%{link_start}了解更多%{link_end}。"
@@ -11450,7 +11516,7 @@ msgid "CodeSuggestions|Introducing the Code Suggestions add-on"
 msgstr "導入程式碼建議擴充功能"
 
 msgid "CodeSuggestions|Introducing the Code&nbsp;Suggestions add&#8209;on"
-msgstr ""
+msgstr "引入程式碼建議擴充功能"
 
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
 msgstr "該群組中的專案可以使用程式碼建議"
@@ -11886,9 +11952,6 @@ msgstr "檢視開啟的合併請求"
 msgid "Complete"
 msgstr "完成"
 
-msgid "Complete verification to sign in."
-msgstr "完成驗證方可登錄。"
-
 msgid "Complete verification to sign up."
 msgstr "完成驗證方可註冊。"
 
@@ -11901,14 +11964,14 @@ msgstr "已完成"
 msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
 msgstr "在 %{duration_seconds} 秒內完成（%{relative_time}）"
 
-msgid "Compliance Center|Export frameworks as CSV. You will be emailed after the export is processed."
-msgstr "將框架匯出為CSV格式，匯出處理完成後，您將收到電子郵件通知。"
-
 msgid "Compliance Center|Export full report as CSV"
 msgstr "將完整報告匯出為 CSV "
 
 msgid "Compliance Center|Export merge request violations as CSV. You will be emailed after the export is processed."
 msgstr "將合併請求違規情況匯出為CSV格式，處理完畢後，您將收到郵件通知。"
+
+msgid "Compliance Center|Export projects as CSV. You will be emailed after the export is processed."
+msgstr "將項目匯出為CSV格式，匯出處理完成後，您將收到郵件通知。"
 
 msgid "Compliance Center|Frameworks"
 msgstr "框架"
@@ -12102,14 +12165,14 @@ msgstr "完整的目標分支名稱"
 msgid "ComplianceReport|Less than 2 approvers"
 msgstr "少於 2 個核准人"
 
+msgid "ComplianceReport|No frameworks found"
+msgstr "未找到框架"
+
 msgid "ComplianceReport|No projects found"
 msgstr "未找到專案"
 
 msgid "ComplianceReport|No projects found that match filters"
 msgstr "找不到符合篩選條件的專案"
-
-msgid "ComplianceReport|No projects with standards adherence checks found"
-msgstr "找不到符合標準遵循檢查的專案"
 
 msgid "ComplianceReport|No violations found"
 msgstr "未發現違規行為"
@@ -12129,6 +12192,9 @@ msgstr "搜尋目標分支"
 msgid "ComplianceReport|Select at least one project to apply the bulk action"
 msgstr "至少選擇一個專案以執行批次操作"
 
+msgid "ComplianceReport|Unable to load the compliance framework projects report. Refresh the page and try again."
+msgstr "無法載入合規性框架專案報告，請重新整理頁面並重試。"
+
 msgid "ComplianceReport|Unable to load the compliance framework report. Refresh the page and try again."
 msgstr "無法載入合規性框架報告，刷新頁面並重試。"
 
@@ -12141,17 +12207,47 @@ msgstr "更新篩選結果？"
 msgid "ComplianceReport|Update result"
 msgstr "更新結果"
 
+msgid "ComplianceStandardsAdherence|A rule is configured to prevent author approved merge requests."
+msgstr "已配置規則來防止作者核准合併請求。"
+
+msgid "ComplianceStandardsAdherence|A rule is configured to prevent merge requests approved by committers."
+msgstr "已配置規則來防止合併請求被提交者核准。"
+
+msgid "ComplianceStandardsAdherence|A rule is configured to require two approvals."
+msgstr "一個規則被設置為需要兩個核准。"
+
 msgid "ComplianceStandardsAdherence|At least two approvals"
 msgstr "至少兩個核准"
 
-msgid "ComplianceStandardsAdherence|Have a valid rule that prevents author approved merge requests"
-msgstr "設定一個有效的規則，以防止作者核准的合併請求。"
+msgid "ComplianceStandardsAdherence|Failure reason"
+msgstr "失敗原因"
 
-msgid "ComplianceStandardsAdherence|Have a valid rule that prevents merge requests approved by committers"
-msgstr "制定一項有效規則，以防止由提交者核准的合併請求。"
+msgid "ComplianceStandardsAdherence|Have a valid rule that prevents author-approved merge requests from being merged"
+msgstr "有一個有效的規則可以防止作者核准被合併的合併請求"
 
-msgid "ComplianceStandardsAdherence|Have a valid rule that requires any merge request to have more than two approvals"
-msgstr "需要一個有效的規則，要求任何合併請求必須獲得超過兩個的核准。"
+msgid "ComplianceStandardsAdherence|Have a valid rule that prevents merge requests with less than two approvals from being merged"
+msgstr "有一個有效的規則可以防止少於兩個核准的合併請求被合併"
+
+msgid "ComplianceStandardsAdherence|Have a valid rule that prevents users from approving merge requests where they’ve added commits"
+msgstr "有一個有效的規則可以防止使用者核准由他們提交的合併請求"
+
+msgid "ComplianceStandardsAdherence|How to fix"
+msgstr "如何解決"
+
+msgid "ComplianceStandardsAdherence|Merge request approval rules"
+msgstr "合併請求核准規則"
+
+msgid "ComplianceStandardsAdherence|No projects with standards adherence checks found"
+msgstr "找不到符合標準遵從檢查的專案"
+
+msgid "ComplianceStandardsAdherence|No rule is configured to prevent author approved merge requests."
+msgstr "沒有配置規則來阻止作者核准的合併請求。"
+
+msgid "ComplianceStandardsAdherence|No rule is configured to prevent merge requests approved by committers."
+msgstr "沒有設置規則來防止合併請求被提交者核准。"
+
+msgid "ComplianceStandardsAdherence|No rule is configured to require two approvals."
+msgstr "沒有規則配置為需要兩次核准。"
 
 msgid "ComplianceStandardsAdherence|Prevent authors as approvers"
 msgstr "防止作者也是審核者"
@@ -12159,8 +12255,32 @@ msgstr "防止作者也是審核者"
 msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
 msgstr "禁止提交者作為審核者"
 
+msgid "ComplianceStandardsAdherence|Requirement"
+msgstr "需求"
+
+msgid "ComplianceStandardsAdherence|Success reason"
+msgstr "成功原因"
+
+msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
+msgstr "以下功能有助於滿足此需求。"
+
+msgid "ComplianceStandardsAdherence|Unable to load the standards adherence report. Refresh the page and try again."
+msgstr "無法載入標準遵守情況報告。重新整理頁面並重試。"
+
+msgid "ComplianceStandardsAdherence|Update approval settings in the project's merge request settings to satisfy this requirement."
+msgstr "更新專案合併請求設置中的核准設定以滿足此需求。"
+
 msgid "ComplianceStandardsAdherence|View details"
 msgstr "檢視詳細資訊"
+
+msgid "ComplianceViolations|Compliance Violations Export"
+msgstr "違規違法匯出"
+
+msgid "ComplianceViolations|Your Compliance Violations CSV export for the group \"%{group_name}\" has been attached to this email."
+msgstr "您的合規違規 CSV 匯出文件已附加在此電子郵件中的群組 \"%{group_name}\"。"
+
+msgid "ComplianceViolations|Your Compliance Violations CSV export for the group %{group_link} has been attached to this email."
+msgstr "此郵件已附上群組%{group_link}的合規違規CSV匯出。"
 
 msgid "Component"
 msgstr "元件"
@@ -12281,6 +12401,9 @@ msgstr "設置簽到提醒頻率"
 
 msgid "Configure custom rules for Jira issue key matching"
 msgstr "為 Jira 議題鍵匹配設定自定義規則"
+
+msgid "Configure import sources and settings related to import and export features."
+msgstr "設定匯入來源以及與匯入及匯出功能相關的設定。"
 
 msgid "Configure pipeline"
 msgstr "流水線設定"
@@ -12451,7 +12574,7 @@ msgid "Consistency guarantee method"
 msgstr "一致性保障方法"
 
 msgid "Contact sales"
-msgstr ""
+msgstr "聯絡銷售團隊"
 
 msgid "Contact support"
 msgstr "聯繫支援"
@@ -13470,9 +13593,6 @@ msgstr "無法復原個人存取令牌 %{personal_access_token_name}。"
 msgid "Could not save configuration. Please refresh the page, or try again later."
 msgstr "無法保存組態，請重新載入此頁，或稍後再試。"
 
-msgid "Could not update the LDAP settings"
-msgstr "無法更新LDAP設定"
-
 msgid "Could not update wiki page"
 msgstr "無法更新 wiki 頁面"
 
@@ -13559,6 +13679,9 @@ msgstr "建立新議題"
 
 msgid "Create a new project"
 msgstr "建立一個新專案"
+
+msgid "Create a new project on GitLab. Store your files, plan your work, and collaborate on code."
+msgstr "在 GitLab 上建立一個新專案，儲存您的文件、規劃您的工作並協作編寫程式碼。"
 
 msgid "Create a new repository"
 msgstr "建立一個新版本庫"
@@ -13655,6 +13778,9 @@ msgstr "建立新的機密%{issuableType}"
 
 msgid "Create new directory"
 msgstr "建立新目錄"
+
+msgid "Create new emoji"
+msgstr "建立新的表情符號"
 
 msgid "Create new file"
 msgstr "建立新檔案"
@@ -13914,6 +14040,9 @@ msgstr "價值流名稱"
 msgid "Created"
 msgstr "建立時間"
 
+msgid "Created %{date} ago"
+msgstr "建立於 %{date} 前"
+
 msgid "Created %{epicTimeagoDate}"
 msgstr "已建立於 %{epicTimeagoDate}"
 
@@ -14103,6 +14232,15 @@ msgstr "帶引號字段的尾隨引號格式不正確"
 msgid "CsvParser|Unable to auto-detect delimiter; defaulted to \",\""
 msgstr "無法自動檢測分隔符;預設為\"，\""
 
+msgid "CsvViewer|No CSV data to display."
+msgstr "沒有可顯示的 CSV 資料。"
+
+msgid "CsvViewer|The file is too large to render all the rows. To see the entire file, switch to the raw view."
+msgstr "該文件過大，無法呈現所有行。要查看整個文件，請切換到原始視圖。"
+
+msgid "CsvViewer|View raw data"
+msgstr "查看原始資料"
+
 msgid "Current"
 msgstr "目前"
 
@@ -14151,6 +14289,9 @@ msgstr "切換到 GitLab Next"
 msgid "Currently unable to fetch data for this pipeline."
 msgstr "目前無法取得該流水線資料"
 
+msgid "Custom"
+msgstr "自訂"
+
 msgid "Custom (%{language})"
 msgstr "自訂 (%{language})"
 
@@ -14166,8 +14307,8 @@ msgstr "自訂分析器：支援語系"
 msgid "Custom emoji"
 msgstr "自訂表情符號"
 
-msgid "Custom emoji will be available to use in every project in group."
-msgstr "自訂的表情符號將可在群組的每個專案中使用。"
+msgid "Custom emoji will be available to use in every project in the group."
+msgstr "自訂表情符號將可用於該群組中的每個專案。"
 
 msgid "Custom hostname (for private commit emails)"
 msgstr "自訂主機名稱（用於私有提交電子郵件）"
@@ -14189,9 +14330,6 @@ msgstr "尚未為您所屬的群組設定自訂項目範本。請在群組的設
 
 msgid "Custom range"
 msgstr "自訂範圍"
-
-msgid "Custom range (UTC)"
-msgstr "自訂範圍 (UTC)"
 
 msgid "Customer contacts"
 msgstr "客戶聯繫方式"
@@ -15770,6 +15908,9 @@ msgstr "元件依賴路徑基於鎖定文件，可能有多個路徑。在這些
 msgid "Dependencies|There may be multiple paths"
 msgstr "可能有多個路徑"
 
+msgid "Dependencies|There was a problem fetching the licenses for this group."
+msgstr "取得該群組的許可證時出現問題。"
+
 msgid "Dependencies|This group exceeds the maximum number of sub-groups of 600. We cannot accurately display a project list at this time. Please access a sub-group dependency list to view this information or see the %{linkStart}dependency list help %{linkEnd} page to learn more."
 msgstr "此群組的下層群組數超過 600 個的上限。目前我們無法準確顯示專案清單。請存取子群組依賴關係清單以檢視此資訊，或參閱%{linkStart}依賴關係清單說明%{linkEnd}頁面以取得更多資訊。"
 
@@ -17004,6 +17145,9 @@ msgstr[0] "解除 (%d 原因)"
 msgid "Display"
 msgstr "顯示"
 
+msgid "Display %{viewer_type}"
+msgstr "顯示 %{viewer_type}"
+
 msgid "Display alerts from all configured monitoring tools."
 msgstr "顯示來自所有設定監控工具的警報。"
 
@@ -17033,6 +17177,9 @@ msgstr "不要顯示用於改善客戶體驗的內容和來自第三方的優惠
 
 msgid "Do not force push over diverged refs. After the mirror is created, this setting can only be modified using the API. %{mirroring_docs_link_start}Learn more about this option%{link_closing_tag} and %{mirroring_api_docs_link_start}the API.%{link_closing_tag}"
 msgstr "不要強行推動已分歧的ref。建立映像後，只能使用 API 修改此設置。 %{mirroring_docs_link_start}瞭解有關此選項%{link_closing_tag} 和 %{mirroring_api_docs_link_start}API 的更多訊息。%{link_closing_tag}"
+
+msgid "Do not include the username in the URL, use the username field below if required: %{code_open}https://gitlab.company.com/group/project.git%{code_close}."
+msgstr "不要在 URL 中包含使用者名稱，若需要，請使用下面的使用者名稱欄位：%{code_open}https://gitlab.company.com/group/project.git%{code_close}。"
 
 msgid "Do you want to remove this deploy key?"
 msgstr "您是否要移除此部署金鑰？"
@@ -17580,6 +17727,9 @@ msgstr "電子郵件已傳送"
 msgid "Email the pipeline status to a list of recipients."
 msgstr "將流水線狀態透過電子郵件發送給清單上的收件人。"
 
+msgid "Email updates (optional)"
+msgstr "發送電子郵件更新（可選）"
+
 msgid "Email:"
 msgstr "電子郵件："
 
@@ -17703,9 +17853,6 @@ msgstr "啟用PlantUML"
 msgid "Enable SSL verification"
 msgstr "啟用 SSL 驗證"
 
-msgid "Enable Sentry error tracking"
-msgstr "啟用 Sentry 錯誤追蹤"
-
 msgid "Enable Snowplow tracking"
 msgstr "啟用 Snowplow 追蹤"
 
@@ -17780,6 +17927,9 @@ msgstr "啟用 multipart 郵件"
 
 msgid "Enable only for confidential applications exclusively used by a trusted backend server that can securely store the client secret. Do not enable for native-mobile, single-page, or other JavaScript applications because they cannot keep the client secret confidential."
 msgstr "僅對可安全存儲客戶端機密的受信任後端服務器專用的機密應用程式啟用。 不要為原生移動、單頁或其他 JavaScript 應用程式啟用，因為它們無法為客戶端保密。"
+
+msgid "Enable or disable keyboard shortcuts in your %{linkStart}user preferences%{linkEnd}."
+msgstr "在您的%{linkStart}使用者偏好設定%{linkEnd}中啟用或停用鍵盤快捷鍵。"
 
 msgid "Enable or disable version check and Service Ping."
 msgstr "啟用或禁用版本檢查和Service Ping。"
@@ -17994,8 +18144,11 @@ msgstr "企業使用者"
 msgid "Enterprise User Account on GitLab"
 msgstr "GitLab 上的企業使用者帳號"
 
-msgid "EnterpriseUsers|The user detail cannot be updated"
-msgstr "無法更新使用者詳細資訊"
+msgid "Enterprise user associated at: "
+msgstr "關聯的企業使用者： "
+
+msgid "Enterprise user of: "
+msgstr "企業使用者: "
 
 msgid "EnterpriseUsers|The user does not match the \"Enterprise User\" definition for the group"
 msgstr "使用者與群組的「企業使用者」定義不相符"
@@ -18429,8 +18582,14 @@ msgstr "您確定要從 %{bStart}%{parentEpicTitle}%{bEnd} 移除 %{bStart}%{tar
 msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
 msgstr "確定要從%{bStart}%{parentEpicTitle}%{bEnd}刪除%{bStart}%{targetIssueTitle}%{bEnd}嗎?"
 
+msgid "Epics|Learn more about linking child issues and epics"
+msgstr "了解更多關於連結子問題和史詩的資訊"
+
 msgid "Epics|Leave empty to inherit from milestone dates"
 msgstr "留空以繼承里程碑日期"
+
+msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
+msgstr "將子問題和史詩連結在一起，以顯示它們之間的關聯性，或者其中一個封鎖了另一個。"
 
 msgid "Epics|Remove epic"
 msgstr "刪除史詩 (epic) "
@@ -19168,6 +19327,30 @@ msgstr "實驗"
 msgid "Experiment features' settings not allowed."
 msgstr "不允許實驗功能的設定。"
 
+msgid "ExperimentBadge|An Experiment is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback."
+msgstr "實驗是仍在開發中的功能。其尚未準備好供生產用途使用。我們鼓勵使用者嘗試實驗性功能並提供回饋。"
+
+msgid "ExperimentBadge|An Experiment:"
+msgstr "實驗："
+
+msgid "ExperimentBadge|Can be removed at any time."
+msgstr "可以隨時移除。"
+
+msgid "ExperimentBadge|Can cause data loss."
+msgstr "可能導致資料遺失。"
+
+msgid "ExperimentBadge|Experiment"
+msgstr "實驗"
+
+msgid "ExperimentBadge|Has no support and might not be documented."
+msgstr "沒有支援，且可能沒有文件紀錄。"
+
+msgid "ExperimentBadge|May be unstable."
+msgstr "可能不穩定。"
+
+msgid "ExperimentBadge|What's an Experiment?"
+msgstr "實驗是什麼？"
+
 msgid "Experiments"
 msgstr "實驗"
 
@@ -19370,7 +19553,7 @@ msgid "Facebook"
 msgstr "Facebook"
 
 msgid "Factually incorrect"
-msgstr ""
+msgstr "事實不正確"
 
 msgid "Fail"
 msgstr "失敗"
@@ -19466,6 +19649,9 @@ msgstr "建立Wiki失敗"
 
 msgid "Failed to delete custom emoji. Please try again."
 msgstr "刪除自訂表情符號失敗。請再試一次。"
+
+msgid "Failed to delete target branch rule"
+msgstr "刪除目標分支規則失敗"
 
 msgid "Failed to deploy to"
 msgstr "無法部署到"
@@ -20395,11 +20581,11 @@ msgstr "更新分叉"
 msgid "ForksDivergence|View merge request"
 msgstr "查看合併請求"
 
-msgid "Format: %{dateFormat}"
-msgstr "格式：%{dateFormat}"
-
 msgid "Framework successfully deleted"
 msgstr "框架刪除成功"
+
+msgid "Frameworks"
+msgstr "框架"
 
 msgid "Frameworks can not be added to projects in personal namespaces. %{linkStart}What are personal namespaces?%{linkEnd}"
 msgstr "個人命名空間中的專案無法增加框架。%{linkStart}個人命名空間是什麼？%{linkEnd}"
@@ -20557,6 +20743,9 @@ msgid "Geo|%d shard selected"
 msgid_plural "Geo|%d shards selected"
 msgstr[0] "已選擇 %d 碎片"
 
+msgid "Geo|%{action} %{replicableType}"
+msgstr "%{action} %{replicableType}"
+
 msgid "Geo|%{boldStart}Not applicable%{boldEnd}: Geo does not verify this component yet. See the %{linkStart}data types we plan to support%{linkEnd}."
 msgstr "%{boldStart}不適用%{boldEnd}：Geo 尚未驗證此元件。請參閱 %{linkStart}我們計劃支援的資料類型%{linkEnd}。"
 
@@ -20575,12 +20764,6 @@ msgstr "%{label}不能為空"
 msgid "Geo|%{label} should be between 1-999"
 msgstr "%{label}應該在1-999之間"
 
-msgid "Geo|%{name} is scheduled for re-sync"
-msgstr "%{name} 已計劃重新同步"
-
-msgid "Geo|%{name} is scheduled for re-verify"
-msgstr "%{name}已計劃重新驗證"
-
 msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
 msgstr "%{timeAgoStr} (%{pendingEvents} 事件)"
 
@@ -20596,17 +20779,14 @@ msgstr "加入站點"
 msgid "Geo|All"
 msgstr "全部"
 
+msgid "Geo|All %{replicableType} are being scheduled for %{action}"
+msgstr "所有 %{replicableType} 都被排入 %{action} 排程"
+
 msgid "Geo|All %{replicable_name}"
 msgstr "全部 %{replicable_name}"
 
 msgid "Geo|All projects"
 msgstr "全部專案"
-
-msgid "Geo|All projects are being scheduled for resync"
-msgstr "所有專案都已安排重新同步"
-
-msgid "Geo|All projects are being scheduled for reverify"
-msgstr "Geo|所有專案都已安排重新驗證"
 
 msgid "Geo|Allow this secondary site to replicate content on Object Storage"
 msgstr "允許此輔助站點複製物件儲存的內容"
@@ -20652,9 +20832,6 @@ msgstr "諮詢 Geo 故障排除資訊"
 
 msgid "Geo|Container repositories synchronization concurrency limit"
 msgstr "容器庫同步並行限制"
-
-msgid "Geo|Could not remove tracking entry for an existing project."
-msgstr "無法移除現有專案的追蹤條目。"
 
 msgid "Geo|Data replication lag"
 msgstr "資料複製延遲"
@@ -20704,9 +20881,6 @@ msgstr "依狀態過濾"
 msgid "Geo|Geo Settings"
 msgstr "Geo 設定"
 
-msgid "Geo|Geo Status"
-msgstr "Geo狀態"
-
 msgid "Geo|Geo allows you to choose specific groups or storage shards to replicate."
 msgstr "Geo 允許您選擇要復製的特定群組或儲存分片。"
 
@@ -20752,15 +20926,6 @@ msgstr "來自主畫面的最後一個事件 ID"
 msgid "Geo|Last event ID processed"
 msgstr "最後處理的事件ID"
 
-msgid "Geo|Last repository check run"
-msgstr "上次版本庫的執行檢查"
-
-msgid "Geo|Last successful sync"
-msgstr "最近一次成功的同步"
-
-msgid "Geo|Last sync attempt"
-msgstr "最近一次嘗試同步"
-
 msgid "Geo|Last time verified"
 msgstr "最近一次驗證"
 
@@ -20784,12 +20949,6 @@ msgstr "必須與 %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd} 中的 %{codeStart
 
 msgid "Geo|Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr "必須符合 %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd} 中的 %{codeStart}geo_node_name%{codeEnd}。"
-
-msgid "Geo|Never"
-msgstr "從不"
-
-msgid "Geo|Next sync scheduled at"
-msgstr "下一次同步安排在"
 
 msgid "Geo|No %{replicable_type} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr "未發現 %{replicable_type}。如果您認為這可能是一個錯誤，請參考 %{linkStart}Geo 故障排除%{linkEnd} 文件以了解更多資訊。"
@@ -20833,9 +20992,6 @@ msgstr "主要的"
 msgid "Geo|Primary site"
 msgstr "主要站點"
 
-msgid "Geo|Project (ID: %{project_id}) no longer exists on the primary. It is safe to remove this entry, as this will not remove any data on disk."
-msgstr "專案(ID: %{project_id})已不再存在於主節點。目前項目可以被安全的移除，因為這並不會移除任何磁碟上的有用資料。"
-
 msgid "Geo|Projects in certain groups"
 msgstr "指定群組中的專案"
 
@@ -20847,9 +21003,6 @@ msgstr "佇列中"
 
 msgid "Geo|Re-verification interval"
 msgstr "重新驗證間隔"
-
-msgid "Geo|Remove"
-msgstr "移除"
 
 msgid "Geo|Remove %{siteType} site"
 msgstr "移除 %{siteType} 站點"
@@ -20898,9 +21051,6 @@ msgstr "重新同步所有"
 
 msgid "Geo|Resync all %{projects_count} projects"
 msgstr "重新同步全部 %{projects_count} 個專案"
-
-msgid "Geo|Resync all %{total}%{replicableType}"
-msgstr "重新同步所有 %{total}%{replicableType}"
 
 msgid "Geo|Resync project"
 msgstr "重新同步專案"
@@ -20965,9 +21115,6 @@ msgstr "站點名稱應介於1~255個字元間"
 msgid "Geo|Site's status was updated %{timeAgo}."
 msgstr "站點狀態更新於%{timeAgo}。"
 
-msgid "Geo|Status"
-msgstr "狀態"
-
 msgid "Geo|Storage config"
 msgstr "儲存配置"
 
@@ -21019,14 +21166,17 @@ msgstr "讀取站點群組時發生錯誤"
 msgid "Geo|There was an error saving this Geo Site"
 msgstr "儲存該Geo站點時發生錯誤"
 
+msgid "Geo|There was an error scheduling action %{action} for %{replicableType}"
+msgstr "在為 %{replicableType} 的 %{action} 排入排程時發生了錯誤"
+
 msgid "Geo|There was an error updating the Geo Settings"
 msgstr "更新Geo設定時發生錯誤"
 
 msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tier. Geo is only available for users who have at least a Premium subscription."
 msgstr "這個 GitLab 執行個體已訂閱為 %{insufficient_license} 層級，Geo 僅適用於至少擁有進階訂閱的使用者。"
 
-msgid "Geo|This will resync all %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
-msgstr "將要重新同步所有%{replicableType}。可能需要一些時間完成。確定繼續嗎？"
+msgid "Geo|This will %{action} %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
+msgstr "這將 %{action} %{replicableType}，可能需要一些時間才能完成，您確定要繼續嗎？"
 
 msgid "Geo|This will resync all projects. It may take some time to complete. Are you sure you want to continue?"
 msgstr "將要重新同步所有專案。可能需要一些時間完成。確定繼續嗎？"
@@ -21039,9 +21189,6 @@ msgstr "以秒為單位的時間"
 
 msgid "Geo|Tracking database entry will be removed. Are you sure?"
 msgstr "追蹤資料庫條目將被刪除。確定繼續嗎？"
-
-msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
-msgstr "已成功刪除專案 (%{project_id}) 的追蹤項。"
 
 msgid "Geo|Tuning settings"
 msgstr "調整設定"
@@ -21081,9 +21228,6 @@ msgstr "驗證狀態"
 
 msgid "Geo|Verified"
 msgstr "已驗證"
-
-msgid "Geo|Waiting for scheduler"
-msgstr "等待調度"
 
 msgid "Geo|With GitLab Geo, you can install a special read-only and replicated instance anywhere."
 msgstr "使用Gitlab Geo，您可以在任何地方安裝一個特殊的讀取和復制執行個體。"
@@ -21264,9 +21408,6 @@ msgstr "GitLab Shell"
 
 msgid "GitLab Support Bot"
 msgstr "GitLab支援機器人"
-
-msgid "GitLab Ultimate trial"
-msgstr "GitLab 旗艦版試用"
 
 msgid "GitLab User"
 msgstr "GitLab使用者"
@@ -21517,17 +21658,20 @@ msgstr "議題鏈結"
 msgid "GithubImporter|Merge request %{merge_request_iid} attachment"
 msgstr "合併請求 %{merge_request_iid} 附件"
 
-msgid "GithubImporter|Merge request links"
-msgstr "合併請求鏈結"
-
 msgid "GithubImporter|Note attachment"
 msgstr "註釋附件"
 
 msgid "GithubImporter|Note links"
 msgstr "註釋鏈結"
 
+msgid "GithubImporter|PR attachments"
+msgstr "PR 附件"
+
 msgid "GithubImporter|PR mergers"
 msgstr "PR 合併"
+
+msgid "GithubImporter|PR reviewers"
+msgstr "PR 審查"
 
 msgid "GithubImporter|PR reviews"
 msgstr "PR 審查"
@@ -21656,7 +21800,7 @@ msgid "GlobalSearch|Fetching aggregations error."
 msgstr "GlobalSearch擷取聚合錯誤。"
 
 msgid "GlobalSearch|Filters"
-msgstr ""
+msgstr "過濾條件"
 
 msgid "GlobalSearch|Group"
 msgstr "群組"
@@ -21672,6 +21816,12 @@ msgstr "在該專案內"
 
 msgid "GlobalSearch|Include archived"
 msgstr "包含已封存"
+
+msgid "GlobalSearch|Incremental indexing queue length"
+msgstr "增量索引佇列長度"
+
+msgid "GlobalSearch|Initial indexing queue length"
+msgstr "初始索引佇列長度"
 
 msgid "GlobalSearch|Issues I've created"
 msgstr "我建立的議題"
@@ -21696,6 +21846,9 @@ msgstr "我作為審核者的合併請求"
 
 msgid "GlobalSearch|No labels found"
 msgstr "未找到標記 (labels)"
+
+msgid "GlobalSearch|Only first %{max_shown} of not indexed projects is shown"
+msgstr "只顯示前 %{max_shown} 個未索引的專案"
 
 msgid "GlobalSearch|Places"
 msgstr "地點"
@@ -21780,6 +21933,9 @@ msgstr "整個 GitLab"
 
 msgid "GlobalSearch|in %{scope}"
 msgstr "在 %{scope}"
+
+msgid "GlobalSearch|projects not indexed"
+msgstr "尚未索引的專案"
 
 msgid "GlobalShortcuts|Copied reference to clipboard."
 msgstr "已將參考複製到剪貼簿中。"
@@ -22531,6 +22687,9 @@ msgstr "查詢群組"
 msgid "GroupSelect|Select a group"
 msgstr "選擇一個群組"
 
+msgid "GroupSettings| %{link_start}What do Experiment and Beta mean?%{link_end}"
+msgstr "%{link_start}實驗和 Beta 是什麼意思？%{link_end}"
+
 msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}."
 msgstr "當執行個體達到使用者上限後，任何新增的使用者或請求訪問的使用者都需要由管理員進行審核才能批准。若要無限制使用者上限，請留空該欄位。如果您將使用者上限改為無限制，您必須重新啟用專案分享和群組分享。詳細資訊請參考 %{project_sharing_docs_link_start}專案分享%{link_end} 和 %{group_sharing_docs_link_start}群組分享%{link_end}。"
 
@@ -22602,6 +22761,12 @@ msgstr "電子郵件通知已禁用"
 
 msgid "GroupSettings|Enable overview background aggregation for Value Streams Dashboard"
 msgstr "為價值流儀表板啟用概觀背景聚合"
+
+msgid "GroupSettings|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
+msgstr "啟用這些功能即表示您接受 %{link_start}GitLab 測試協議%{link_end}。"
+
+msgid "GroupSettings|Experiment and Beta features"
+msgstr "實驗與 Beta 功能"
 
 msgid "GroupSettings|Export group"
 msgstr "匯出群組"
@@ -22681,6 +22846,9 @@ msgstr "更新 Auto DevOps 流水線時出現問題： %{error_messages}。"
 msgid "GroupSettings|There was a problem updating the pipeline settings: %{error_messages}."
 msgstr "更新流水線設定時出現問題: %{error_messages}。"
 
+msgid "GroupSettings|These features are being developed and might be unstable."
+msgstr "這些功能正在開發中，可能不穩定。"
+
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
 msgstr "此設定已經應用於 %{ancestor_group}，並已覆蓋此子群組的設定。"
 
@@ -22692,6 +22860,9 @@ msgstr "此設定已應用於 %{ancestor_group}。您可以覆蓋此設定或 %{
 
 msgid "GroupSettings|Transfer group"
 msgstr "轉移群組"
+
+msgid "GroupSettings|Use Experiment and Beta features"
+msgstr "使用實驗和 Beta 功能"
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
 msgstr "使用者可以在該群組中建立 %{link_start_project}專案存取令牌%{link_end} 和 %{link_start_group}群組存取令牌%{link_end}。"
@@ -23215,7 +23386,7 @@ msgid "Help translate to your language"
 msgstr "協助翻譯為您的語言"
 
 msgid "Helpful"
-msgstr ""
+msgstr "有幫助"
 
 msgid "Helps prevent bots from brute-force attacks."
 msgstr "協助防止機器人暴力攻擊。"
@@ -23479,8 +23650,14 @@ msgstr "我想儲存我的程式碼碼"
 msgid "I want to use GitLab CI with my existing repository"
 msgstr "我想在我的現有版本庫上使用GitLab CI"
 
+msgid "I'd like to receive updates about GitLab via email"
+msgstr "我希望通過電子郵件接收GitLab的更新"
+
 msgid "I'm signing up for GitLab because:"
 msgstr "我註冊GitLab是因為："
+
+msgid "I'm sorry, I was not able to find any documentation to answer your question."
+msgstr "抱歉，我找不到任何文件來回答您的問題。"
 
 msgid "ID"
 msgstr "ID"
@@ -23560,6 +23737,10 @@ msgstr "識別碼"
 msgid "Identities"
 msgstr "身份標識"
 
+msgid "IdentityVerification|%d country found"
+msgid_plural "IdentityVerification|%d countries found"
+msgstr[0] "找到 %d 個國家"
+
 msgid "IdentityVerification|%{linkStart}Enter a new phone number%{linkEnd}"
 msgstr "%{linkStart}輸入一個新的電話號碼%{linkEnd}"
 
@@ -23583,6 +23764,9 @@ msgstr "完成登入驗證。"
 
 msgid "IdentityVerification|Confirm your email address"
 msgstr "請確認您的電子郵件地址"
+
+msgid "IdentityVerification|Country or region"
+msgstr "國家或地區"
 
 msgid "IdentityVerification|Didn't receive a code?"
 msgstr "沒有收到驗證碼？"
@@ -23626,9 +23810,6 @@ msgstr "如果您最近沒有嚐試登入 GitLab，我們建議更改您的密�
 msgid "IdentityVerification|If you've lost access to the email associated to this account or having trouble with the code, %{link_start}here are some other steps you can take.%{link_end}"
 msgstr "如果您無法存取與該帳號關聯的電子郵件或驗證碼有問題， %{link_start}這裡是您可以採取的其他一些步驟。%{link_end}"
 
-msgid "IdentityVerification|International dial code"
-msgstr "國際撥號代碼"
-
 msgid "IdentityVerification|Maximum login attempts exceeded. Wait %{interval} and try again."
 msgstr "已超過最大登入嘗試次數。等待 %{interval} 後再重試。"
 
@@ -23652,6 +23833,9 @@ msgstr "請輸入有效的電子郵件地址。"
 
 msgid "IdentityVerification|Resend code"
 msgstr "重新發送驗證碼"
+
+msgid "IdentityVerification|Select country or region"
+msgstr "選擇國家或地區"
 
 msgid "IdentityVerification|Send a new code"
 msgstr "發送新的驗證碼"
@@ -23742,6 +23926,9 @@ msgstr "您的帳號已驗證完成，稍候您將被導向到您的帳號。 �
 
 msgid "IdentityVerification|Your verification code expires after %{expires_in_minutes} minutes."
 msgstr "您的驗證碼將在 %{expires_in_minutes} 分鐘後過期。"
+
+msgid "Identity|Active"
+msgstr "活躍"
 
 msgid "Identity|Provider ID"
 msgstr "提供者 ID"
@@ -23924,6 +24111,9 @@ msgstr "匯入一個從GitLab匯出的項目"
 
 msgid "Import and export rate limits"
 msgstr "匯入/匯出速率限制"
+
+msgid "Import and export settings"
+msgstr "匯入或匯出設定"
 
 msgid "Import failed due to a GitHub error: %{original} (HTTP %{code})"
 msgstr "由於 GitHub 錯誤，匯入失敗： %{original}（HTTP %{code}）"
@@ -24124,7 +24314,7 @@ msgstr "GitHub 匯入細節"
 msgid "Import|Maximum decompressed file size for archives from imports (MiB)"
 msgstr "匯入存檔的最大解壓縮檔案大小 (MiB)"
 
-msgid "Import|Maximum import remote file size (MB)"
+msgid "Import|Maximum import remote file size (MiB)"
 msgstr "最大遠端文件匯入大小 (MB)"
 
 msgid "Import|Maximum remote file size for imports from external object storages. For example, AWS S3."
@@ -24193,35 +24383,23 @@ msgstr "在這個專案"
 msgid "In use"
 msgstr "使用中"
 
-msgid "InProductMarketing|%{organization_name} logo"
-msgstr "%{organization_name} 標誌"
-
 msgid "InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA"
 msgstr "%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA"
-
-msgid "InProductMarketing|Advanced security testing"
-msgstr "進階安全測試"
 
 msgid "InProductMarketing|Blog"
 msgstr "部落格"
 
-msgid "InProductMarketing|Building for iOS? We've got you covered."
-msgstr "為 iOS 構建？ 我們為您提供保障"
+msgid "InProductMarketing|Built-in security"
+msgstr "內建安全性"
 
-msgid "InProductMarketing|Deliver Better Products Faster"
-msgstr "更快地交付更好的產品"
+msgid "InProductMarketing|Ensure compliance"
+msgstr "確保合規"
 
 msgid "InProductMarketing|Facebook"
 msgstr "Facebook"
 
-msgid "InProductMarketing|Free 30-day trial"
-msgstr "30 天免費試用"
-
 msgid "InProductMarketing|Free guest users"
 msgstr "免費訪客使用者"
-
-msgid "InProductMarketing|Get set up to build for iOS"
-msgstr "為iOS構建進行設置"
 
 msgid "InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}."
 msgstr "如果您不想直接接收我們的營銷電子郵件，則 %{marketing_preference_link}."
@@ -24229,29 +24407,17 @@ msgstr "如果您不想直接接收我們的營銷電子郵件，則 %{marketing
 msgid "InProductMarketing|If you no longer wish to receive marketing emails from us,"
 msgstr "如果您不再希望收到我們的營銷電子郵件，"
 
-msgid "InProductMarketing|Increase Operational Efficiencies"
-msgstr "提高運營效率"
-
 msgid "InProductMarketing|Invite unlimited colleagues"
 msgstr "無限制邀請同事"
 
-msgid "InProductMarketing|Learn how to build for iOS"
-msgstr "學習如何為iOS構建"
-
-msgid "InProductMarketing|No credit card required."
-msgstr "不需要信用卡。"
-
-msgid "InProductMarketing|Portfolio management"
-msgstr "投資組合管理"
-
-msgid "InProductMarketing|Reduce Security and Compliance Risk"
-msgstr "降低安全與合規風險"
-
-msgid "InProductMarketing|Security risk mitigation"
-msgstr "降低安全風險"
+msgid "InProductMarketing|No credit card required"
+msgstr "不需要信用卡"
 
 msgid "InProductMarketing|Start a Self-Managed trial"
 msgstr "開始試用"
+
+msgid "InProductMarketing|Start your 30-day free trial"
+msgstr "開始您的免費30天試用"
 
 msgid "InProductMarketing|Team members collaborating"
 msgstr "團隊成員合作"
@@ -24262,20 +24428,8 @@ msgstr "選擇退出Onboarding郵件，%{unsubscribe_link}。"
 msgid "InProductMarketing|Twitter"
 msgstr "Twitter"
 
-msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
-msgstr "全球超過10萬個組織使用："
-
-msgid "InProductMarketing|Value stream management"
-msgstr "價值流管理"
-
-msgid "InProductMarketing|Want to get your iOS app up and running, including publishing all the way to TestFlight? Follow our guide to set up GitLab and fastlane to publish iOS apps to the App Store."
-msgstr "想要啟動並運行您的 iOS 應用程序，包括一直發布到 TestFlight？ 按照我們的指南設置 GitLab 和 fastlane 以將 iOS 應用程式發布到 App Store。"
-
 msgid "InProductMarketing|Want to host GitLab on your servers?"
 msgstr "想在您的服務器上託管 GitLab？"
-
-msgid "InProductMarketing|Watch iOS building in action."
-msgstr "觀看運行中的 iOS 構建。"
 
 msgid "InProductMarketing|YouTube"
 msgstr "YouTube"
@@ -24586,9 +24740,6 @@ msgstr "包含所有級別的新功能。"
 msgid "Include the name of the author of the issue, merge request or comment in the email body. By default, GitLab overrides the email sender's name. Some email servers don't support that option."
 msgstr "在郵件正文中包括議題、合併請求或評論的作者名稱。預設情況下，GitLab會覆蓋電子郵件發件人的名字。有些電子郵件服務器不支援這個選項。"
 
-msgid "Include the username in the URL if required: %{code_open}https://username@gitlab.company.com/group/project.git%{code_close}."
-msgstr "如果需要，請在URL中包含使用者名：%{code_open}https://username@gitlab.company.com/group/project.git%{code_close}。"
-
 msgid "Includes LFS objects. It can be overridden per group, or per project. Set to 0 for no limit."
 msgstr "包括 LFS 物件，它可以被每個群組或每個專案覆寫，設定為 0 表示沒有限制。"
 
@@ -24648,6 +24799,9 @@ msgstr "索引所有專案"
 
 msgid "Index deletion is canceled"
 msgstr "索引刪除已取消"
+
+msgid "Indexing status"
+msgstr "索引狀態"
 
 msgid "Indicates whether this runner can pick jobs without tags"
 msgstr "指示此runner是否可以選擇無標記的作業"
@@ -24862,8 +25016,8 @@ msgstr "建立、關閉或重新開啟議題"
 msgid "Integrations"
 msgstr "整合"
 
-msgid "Integrations|%{integrationTitle}: active"
-msgstr "%{integrationTitle}：啟用"
+msgid "Integrations|%{integrationTitle}: %{status}"
+msgstr "%{integrationTitle}: %{status}"
 
 msgid "Integrations|%{integration} settings saved and active."
 msgstr "%{integration}設定已保存並啟用。"
@@ -25144,9 +25298,6 @@ msgstr "無效日期"
 msgid "Invalid date format. Please use UTC format as YYYY-MM-DD"
 msgstr "日期格式無效。請使用UTC格式 YYYY-MM-DD"
 
-msgid "Invalid date range"
-msgstr "無效的日期範圍"
-
 msgid "Invalid dates set"
 msgstr "設置的日期無效"
 
@@ -25264,12 +25415,6 @@ msgstr "您被邀請以%{role}身份加入%{strong_start}%{project_or_group_name
 msgid "InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} as a %{role}"
 msgstr "您被邀請以%{role}身份加入%{project_or_group_name}%{project_or_group}"
 
-msgid "InviteEmail|You were assigned the following tasks:"
-msgstr "您被指派了以下任務："
-
-msgid "InviteEmail|and has assigned you the following tasks:"
-msgstr "並為您指派了以下任務："
-
 msgid "InviteMembersBanner|Collaborate with your team"
 msgstr "與您的團隊協同合作"
 
@@ -25294,17 +25439,11 @@ msgstr "在您的試用版中增加無限制的成員"
 msgid "InviteMembersModal|Cancel"
 msgstr "取消"
 
-msgid "InviteMembersModal|Choose a project for the issues"
-msgstr "選擇議題的專案"
-
 msgid "InviteMembersModal|Close invite team members"
 msgstr "關閉邀請團隊成員"
 
 msgid "InviteMembersModal|Congratulations on creating your project, you're almost there!"
 msgstr "恭喜您建立了您的專案！"
-
-msgid "InviteMembersModal|Create issues for your new team member to work on (optional)"
-msgstr "為您的新團隊成員建立議題 (可選)"
 
 msgid "InviteMembersModal|During your trial, you can invite as many members to %{groupName} as you like. When the trial ends, you'll have a maximum of %{dashboardLimit} members on the Free tier. To get more members, %{linkStart}upgrade to a paid plan%{linkEnd}."
 msgstr "在試用期間，您可以邀請任意數量的成員加入 %{groupName}。試用期結束後，您的免費等級最多可擁有 %{dashboardLimit} 名成員。要獲得更多會員，請%{linkStart}升級到付費計劃%{linkEnd}。"
@@ -25369,9 +25508,6 @@ msgstr "以下 %{errorMembersLength} 位成員中有 %{totalMembersCount} 位無
 msgid "InviteMembersModal|The following member couldn't be invited"
 msgid_plural "InviteMembersModal|The following %d members couldn't be invited"
 msgstr[0] "下列 %d 個成員無法被邀請"
-
-msgid "InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}"
-msgstr "要向新團隊成員分配議題，您需要一個議題所屬的專案。 %{linkStart}從建立一個專案開始。%{linkEnd}"
 
 msgid "InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr "要取得更多成員，群組的擁有者可以 %{trialLinkStart}開始試用%{trialLinkEnd} 或 %{upgradeLinkStart}升級%{upgradeLinkEnd} 到付費等級。"
@@ -25685,6 +25821,9 @@ msgstr "刪除看板"
 msgid "IssueBoards|No matching boards found"
 msgstr "未找到符合的看板"
 
+msgid "IssueBoards|Select board"
+msgstr "選取看板"
+
 msgid "IssueBoards|Some of your boards are hidden, add a license to see them again."
 msgstr "您的一些看板被隱藏，請加入許可證後再次查看。"
 
@@ -25877,6 +26016,9 @@ msgstr "斜體文字"
 
 msgid "Item with ID: %{id} cannot be added. You don't have permission to perform this action."
 msgstr "無法加入 ID 為 %{id} 的項目，您無權執行此操作。"
+
+msgid "Items are already linked"
+msgstr "項目已連結"
 
 msgid "Iteration"
 msgstr "迭代"
@@ -26472,9 +26614,6 @@ msgstr "您必須在啟用此整合之前設定 Jira。%{jira_doc_link_start}瞭
 msgid "Job"
 msgstr "作業"
 
-msgid "Job %{jobName}"
-msgstr "作業 %{jobName}"
-
 msgid "Job Failed #%{build_id}"
 msgstr "#%{build_id} 作業失敗 "
 
@@ -26664,6 +26803,9 @@ msgstr "對任務過濾後的搜尋功能，當前不支援搜尋原始文本。
 msgid "Jobs|Root cause analysis"
 msgstr "根本原因分析"
 
+msgid "Jobs|Stage"
+msgstr "階段"
+
 msgid "Jobs|There was a problem fetching the failed jobs."
 msgstr "讀取失敗的作業時出現問題。"
 
@@ -26673,17 +26815,17 @@ msgstr "使用作業自動執行任務"
 msgid "Jobs|You're about to retry a job that failed because it attempted to deploy code that is older than the latest deployment. Retrying this job could result in overwriting the environment with the older source code."
 msgstr "你即將重試一個作業，此作業因試圖部署舊的程式碼而失敗。 重試此任務可能導致用舊版本來源程式碼覆蓋環境。"
 
-msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id}"
-msgstr "%{boldStart}流水線%{boldEnd} %{id}"
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status}"
+msgstr "%{boldStart}流水線%{boldEnd} %{id} %{status}"
 
-msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source}"
-msgstr "對於具有 %{source} 的 %{mrId} 的 %{boldStart}流水線%{boldEnd} %{id}"
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status} for %{mrId} with %{source}"
+msgstr "對於具有 %{mrId} 的 %{source} %{boldStart}流水線%{boldEnd} %{id} %{status} "
+
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status} for %{ref}"
+msgstr "對於 %{ref} 的 %{boldStart}流水線%{boldEnd} %{id} %{status}"
 
 msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source} into %{target}"
 msgstr "對於從 %{source} 到 %{target} 的 %{mrId} 的 %{boldStart}流水線%{boldEnd} %{id}"
-
-msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{ref}"
-msgstr "對於 %{ref} 的 %{boldStart}流水線%{boldEnd} %{id}"
 
 msgid "Job|%{searchLength} results found for %{searchTerm}"
 msgstr "依據 %{searchTerm} 找到 %{searchLength} 個結果"
@@ -26716,7 +26858,7 @@ msgid "Job|Erase job log and artifacts"
 msgstr "擦除作業日誌和產物"
 
 msgid "Job|External links"
-msgstr ""
+msgstr "外部連結"
 
 msgid "Job|Failed"
 msgstr "失敗"
@@ -26901,6 +27043,9 @@ msgstr "保留最近成功作業的產物"
 msgid "Keep divergent refs"
 msgstr "保留分叉的refs"
 
+msgid "Keep sidebar visible"
+msgstr "維持側邊欄可見"
+
 msgid "Kerberos access denied"
 msgstr "Kerberos存取被拒絕"
 
@@ -26988,14 +27133,8 @@ msgstr "LDAP"
 msgid "LDAP Synchronization"
 msgstr "LDAP同步"
 
-msgid "LDAP group settings"
-msgstr "LDAP組設定"
-
 msgid "LDAP settings"
 msgstr "LDAP 設定"
-
-msgid "LDAP settings updated"
-msgstr "LDAP設定已更新"
 
 msgid "LDAP sync in progress. This could take a few minutes. Refresh the page to see the changes."
 msgstr "LDAP同步正在進行中。此過程可能需要幾分鐘。請重新整理頁面以查看更改。"
@@ -27215,9 +27354,6 @@ msgstr "上星期"
 msgid "Last year"
 msgstr "去年"
 
-msgid "LastCommit|authored"
-msgstr "編輯於"
-
 msgid "LastPushEvent|You pushed to"
 msgstr "您推送了"
 
@@ -27331,9 +27467,6 @@ msgstr "了解更多關於欠缺席次的資訊"
 
 msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced Search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
 msgstr "在 %{configuration_link_start}進階搜尋設定%{configuration_link_end} 中了解更多關於切片和副本的訊息，直到您 %{recreated_link_start}重新建立%{recreated_link_end} 索引，才能進行更改。"
-
-msgid "Learn more in the"
-msgstr "了解更多"
 
 msgid "Learn more."
 msgstr "了解更多。"
@@ -27511,6 +27644,9 @@ msgstr "Let's Encrypt不接受example.com的電子郵件"
 
 msgid "Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
 msgstr "Let's Encrypt是一個免費、自動化和開放的憑證授權(CA)機構。它可以提供網站啟用HTTPS (SSL/TLS)所需的數字憑證。透過%{docs_link_start}GitLab Pages上的文件%{docs_link_end}來了解Let's Encrypt配置的更多訊息。"
+
+msgid "License"
+msgstr "授權許可"
 
 msgid "License Compliance"
 msgstr "授權條款合規"
@@ -28026,6 +28162,9 @@ msgstr "MB"
 msgid "MD5"
 msgstr "MD5"
 
+msgid "MLExperimentTracking|CI Info"
+msgstr "CI 資訊"
+
 msgid "MLExperimentTracking|Delete candidate?"
 msgstr "刪除候選項？"
 
@@ -28157,6 +28296,9 @@ msgstr "管理專案標記 (label)"
 
 msgid "Manage projects."
 msgstr "管理專案。"
+
+msgid "Manage rules"
+msgstr "管理規則"
 
 msgid "Manage two-factor authentication"
 msgstr "管理雙因子驗證"
@@ -28596,6 +28738,9 @@ msgstr "每分鐘最大專案匯出請求"
 msgid "Maximum project import requests per minute"
 msgstr "每分鐘最大專案匯入請求"
 
+msgid "Maximum projects allowed in the filter is %{count}"
+msgstr "過濾器中允許的最大專案數量為 %{count}"
+
 msgid "Maximum push size"
 msgstr "最大推送大小"
 
@@ -28695,8 +28840,8 @@ msgstr "新增角色"
 msgid "MemberRoles|Admin vulnerability"
 msgstr "管理員漏洞"
 
-msgid "MemberRoles|Allows admin access to the vulnerability reports. 'Read vulnerability' must be selected in order to take effect."
-msgstr "允許管理員存取漏洞報告。必須選取「讀取漏洞」才會生效。"
+msgid "MemberRoles|Allows admin access to the vulnerability reports. Select 'Read vulnerability' for this to take effect."
+msgstr "允許管理員存取漏洞報告，選取「讀取漏洞」才會生效。"
 
 msgid "MemberRoles|Allows read-only access to the source code."
 msgstr "允許唯讀存取原始碼。"
@@ -28743,8 +28888,8 @@ msgstr "ID"
 msgid "MemberRoles|Incident manager"
 msgstr "事件管理員"
 
-msgid "MemberRoles|Make sure the group has an Ultimate license."
-msgstr "確保群組擁有 Ultimate 授權。"
+msgid "MemberRoles|Make sure the group is in the Ultimate tier."
+msgstr "確保該群組位於 Ultimate 層級。"
 
 msgid "MemberRoles|Name"
 msgstr "名稱"
@@ -28761,9 +28906,6 @@ msgstr "讀取程式碼"
 msgid "MemberRoles|Read vulnerability"
 msgstr "讀取漏洞"
 
-msgid "MemberRoles|Removing a custom role also removes all members with this custom role from the group. If you decide to delete a custom role, you must re-add these users to the group."
-msgstr "移除自訂角色也會從群組中移除具有此自訂角色的所有成員。若您決定刪除自訂角色，則必須將這些使用者重新新增到群組中。"
-
 msgid "MemberRoles|Role name"
 msgstr "角色名稱"
 
@@ -28777,10 +28919,13 @@ msgid "MemberRoles|Select a standard role to add permissions."
 msgstr "選取標準角色以新增權限。"
 
 msgid "MemberRoles|To add a new role select 'Add new role'."
-msgstr ""
+msgstr "要新增角色，請選取「新增角色」。"
 
 msgid "MemberRoles|To add a new role select a group and then 'Add new role'."
 msgstr "要新增角色，請選取一個群組，然後選取「新增角色」。"
+
+msgid "MemberRoles|To delete the custom role make sure no group member has this custom role"
+msgstr "要刪除自訂角色，請確保沒有群組成員擁有此自訂角色"
 
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}."
 msgstr "必須先啟用%{requirement} 才能啟用 %{permission}。"
@@ -28799,9 +28944,6 @@ msgstr "無法被刪除，因為它已分派給使用者，刪除前請解除成
 
 msgid "MemberRole|maximum number of Member Roles are already in use by the group hierarchy. Please delete an existing Member Role."
 msgstr "最大數量的成員角色已被群組層級使用，請刪除現有的成員角色。"
-
-msgid "MemberRole|minimal base access level must be %{min_access_level}."
-msgstr "最低基本存取等級必須是 %{min_access_level}。"
 
 msgid "MemberRole|must be top-level namespace"
 msgstr "必須是最上層的命名空間"
@@ -29072,6 +29214,9 @@ msgstr "合併請求分析"
 
 msgid "Merge request approvals"
 msgstr "批准合併請求"
+
+msgid "Merge request author cannot push to target project"
+msgstr "合併請求作者無法推送到目標專案"
 
 msgid "Merge request change summary"
 msgstr "合併請求變更摘要"
@@ -29426,9 +29571,6 @@ msgstr "指標:"
 
 msgid "MetricChart|Please select a metric"
 msgstr "請選擇一個指標"
-
-msgid "MetricChart|Selected"
-msgstr "選取的"
 
 msgid "MetricChart|There is no data available. Please change your selection."
 msgstr "沒有可用資料。請更改選擇。"
@@ -29875,6 +30017,9 @@ msgstr "作者"
 msgid "MlExperimentTracking|CI Job"
 msgstr "CI 作業"
 
+msgid "MlExperimentTracking|Candidate not linked to a CI build"
+msgstr "候選並未連結至 CI 建構"
+
 msgid "MlExperimentTracking|Candidate removed"
 msgstr "候選人已移除"
 
@@ -29947,8 +30092,8 @@ msgstr "候選模型詳細資訊"
 msgid "MlExperimentTracking|Model experiments"
 msgstr "模型實驗"
 
-msgid "MlExperimentTracking|Model registry"
-msgstr "模型庫"
+msgid "MlExperimentTracking|Model performance"
+msgstr "模型效能"
 
 msgid "MlExperimentTracking|Name"
 msgstr "名稱"
@@ -29962,6 +30107,15 @@ msgstr "沒有候選人"
 msgid "MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client."
 msgstr "該查詢沒有候選人記錄，請使用 MLflow 客戶端建立新候選人。"
 
+msgid "MlExperimentTracking|No logged metadata"
+msgstr "沒有記錄的元數據"
+
+msgid "MlExperimentTracking|No logged metrics"
+msgstr "沒有記錄的指標"
+
+msgid "MlExperimentTracking|No logged parameters"
+msgstr "沒有記錄的參數"
+
 msgid "MlExperimentTracking|No name"
 msgstr "沒有名稱"
 
@@ -29973,6 +30127,12 @@ msgstr "狀態"
 
 msgid "MlExperimentTracking|Triggered by"
 msgstr "觸發者"
+
+msgid "MlModelRegistry|Model registry"
+msgstr "模型註冊表"
+
+msgid "MlModelRegistry|No models registered in this project"
+msgstr "此專案中沒有註冊模型"
 
 msgid "Modal updated"
 msgstr "模態更新"
@@ -30301,6 +30461,12 @@ msgstr "排除的命名空間"
 msgid "NamespaceLimits|Exclusion added successfully"
 msgstr "排除已成功加入"
 
+msgid "NamespaceLimits|Export .csv"
+msgstr "匯出 .csv"
+
+msgid "NamespaceLimits|Export a csv file with Free Tier anonymized namespace storage usage statistics. This is an asynchronous operation, once the file is generated we will send it to your registered email."
+msgstr "匯出一個 CSV 文件，其中包含免費層匿名命名空間的儲存使用統計資料。這是一個異步操作，一旦產生文件，我們將發送到您註冊的電子郵件。"
+
 msgid "NamespaceLimits|Free Tier"
 msgstr "免費層級"
 
@@ -30309,6 +30475,9 @@ msgstr "NONE"
 
 msgid "NamespaceLimits|Namespace limits could not be loaded. Reload the page to try again."
 msgstr "無法載入命名空間限制，請重新載入頁面重試。"
+
+msgid "NamespaceLimits|Namespaces Statistics"
+msgstr "命名空間統計資料"
 
 msgid "NamespaceLimits|Notifications Limit"
 msgstr "通知限制"
@@ -30404,11 +30573,14 @@ msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_si
 msgid_plural "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{readonly_project_count} projects"
 msgstr[0] "您已達到 %{readonly_project_count} 個專案上的 %{free_size_limit} 免費儲存限制"
 
-msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the storage quota for %{namespace_name}"
-msgstr "您已使用 %{namespace_name} 儲存配額的 %{usage_in_percent} 。"
+msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the purchased storage for %{namespace_name}"
+msgstr "您已在 %{namespace_name} 中使用了 %{usage_in_percent} 已購買儲存空間"
 
 msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the storage quota for %{namespace_name} (%{used_storage} of %{storage_limit})"
 msgstr "您已使用 %{namespace_name} 儲存空間的 %{usage_in_percent}（總計 %{storage_limit}，已使用%{used_storage}）"
+
+msgid "NamespaceStorageSize|You have used all available storage for %{namespace_name}"
+msgstr "您已使用 %{namespace_name} 的所有可用儲存空間"
 
 msgid "NamespaceStorage|%{name_with_link} is now read-only. Projects under this namespace are locked and actions are restricted."
 msgstr "%{name_with_link} 現在是唯讀的，此命名空間下的專案已被鎖定，且操作受限。"
@@ -30485,9 +30657,6 @@ msgstr "前往該專案以關閉里程碑。"
 msgid "Navigation bar"
 msgstr "導覽欄"
 
-msgid "Navigation sidebar"
-msgstr "導覽側邊欄"
-
 msgid "NavigationTheme|Blue"
 msgstr "藍色"
 
@@ -30536,9 +30705,6 @@ msgstr "CI/CD 設定"
 msgid "Navigation|Code"
 msgstr "原始碼"
 
-msgid "Navigation|Context navigation"
-msgstr "上下文導覽"
-
 msgid "Navigation|Deploy"
 msgstr "部署"
 
@@ -30553,9 +30719,6 @@ msgstr "經常訪問的群組"
 
 msgid "Navigation|Frequently visited projects"
 msgstr "經常訪問的專案"
-
-msgid "Navigation|Groups"
-msgstr "群組"
 
 msgid "Navigation|Groups you visit often will appear here."
 msgstr "您經常訪問的群組會顯示在這裡。"
@@ -30575,14 +30738,11 @@ msgstr "監控"
 msgid "Navigation|Monitor settings"
 msgstr "監控設定"
 
-msgid "Navigation|No group matches found"
-msgstr "未找到相符的群組"
-
-msgid "Navigation|No project matches found"
-msgstr "未找到相符的專案"
-
 msgid "Navigation|Operate"
 msgstr "操作"
+
+msgid "Navigation|Pin %{title}"
+msgstr "釘選 %{title}"
 
 msgid "Navigation|Pin item"
 msgstr "釘選項目"
@@ -30593,11 +30753,8 @@ msgstr "已釘選"
 msgid "Navigation|Plan"
 msgstr "計劃"
 
-msgid "Navigation|Primary"
-msgstr "主要"
-
-msgid "Navigation|Projects"
-msgstr "專案"
+msgid "Navigation|Primary navigation"
+msgstr "主要導航"
 
 msgid "Navigation|Projects you visit often will appear here."
 msgstr "您經常訪問的專案會顯示在這裡。"
@@ -30605,20 +30762,11 @@ msgstr "您經常訪問的專案會顯示在這裡。"
 msgid "Navigation|Repository settings"
 msgstr "版本庫設定"
 
-msgid "Navigation|Retrieving search results"
-msgstr "尋找查詢結果"
-
-msgid "Navigation|Search your projects or groups"
-msgstr "查詢您的專案或群組"
-
 msgid "Navigation|Secure"
 msgstr "安全"
 
-msgid "Navigation|Switch context"
-msgstr "切換上下文"
-
-msgid "Navigation|There was an error fetching search results."
-msgstr "取得搜尋結果時發生錯誤。"
+msgid "Navigation|Unpin %{title}"
+msgstr "取消釘選 %{title}"
 
 msgid "Navigation|Unpin item"
 msgstr "取消釘選項目"
@@ -30628,12 +30776,6 @@ msgstr "查看我所有的群組"
 
 msgid "Navigation|View all my projects"
 msgstr "查看我所有的專案"
-
-msgid "Navigation|View all your groups"
-msgstr "查看您的所有群組"
-
-msgid "Navigation|View all your projects"
-msgstr "查看您的所有專案"
 
 msgid "Navigation|Your pinned items appear here."
 msgstr "您的釘選項目會出現在這裡"
@@ -30911,9 +31053,6 @@ msgstr "此請求沒有%{header}。"
 
 msgid "No %{providerTitle} repositories found"
 msgstr "找不到%{providerTitle}的版本庫"
-
-msgid "No CSV data to display."
-msgstr "沒有要顯示的 CSV 資料。"
 
 msgid "No Epic"
 msgstr "無史詩 (Epic) "
@@ -31275,9 +31414,6 @@ msgstr "導覽重新設定"
 
 msgid "NorthstarNavigation|New navigation"
 msgstr "新導覽"
-
-msgid "NorthstarNavigation|Provide feedback"
-msgstr "提供回饋"
 
 msgid "NorthstarNavigation|Toggle new navigation"
 msgstr "切換新導覽"
@@ -31949,6 +32085,12 @@ msgstr "非程式碼索引的分片數量"
 msgid "OK"
 msgstr "確定"
 
+msgid "OKRs|%{author_link}'s OKR %{work_item_link} requires an update."
+msgstr "%{author_link} 的 OKR %{work_item_link} 需要更新。"
+
+msgid "OKRs|An update is due on: %{update_due_date}"
+msgstr "更新截止日期：%{update_due_date}"
+
 msgid "OKR|Existing key result"
 msgstr "現存的關鍵結果"
 
@@ -31966,21 +32108,6 @@ msgstr "物件在伺服器上不存在, 或者您沒有存取它的權限"
 
 msgid "Objective"
 msgstr "目標 "
-
-msgid "Observability"
-msgstr "可觀察性"
-
-msgid "Observability|Dashboards"
-msgstr "儀表板"
-
-msgid "Observability|Data sources"
-msgstr "資料來源"
-
-msgid "Observability|Explore telemetry data"
-msgstr "探索遙測資料"
-
-msgid "Observability|Manage dashboards"
-msgstr "管理儀表板"
 
 msgid "Oct"
 msgstr "10月"
@@ -32452,11 +32579,17 @@ msgstr "僅專案成員"
 msgid "Only SSH"
 msgstr "僅 SSH"
 
+msgid "Only SSH Certificates"
+msgstr "僅 SSH 證書"
+
 msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted to each user."
 msgstr "僅 %{membersPageLinkStart} 專案成員 %{membersPageLinkEnd} 可以存取。成員資格必須明確授予每個使用者。"
 
 msgid "Only active projects show up in the search and on the dashboard."
 msgstr "僅啟用的專案顯示在搜尋和儀表板上。"
+
+msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
+msgstr "僅在啟用遠程儲存時有效。設定為 0 表示沒有大小限制。"
 
 msgid "Only include features new to your current subscription tier."
 msgstr "僅包括您當前訂閱級別的新功能。"
@@ -32621,13 +32754,13 @@ msgid "Ordered list"
 msgstr "項目清單"
 
 msgid "Organization"
-msgstr ""
+msgstr "組織"
 
 msgid "Organizations"
 msgstr "組織"
 
 msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
-msgstr ""
+msgstr "群組是多個專案的集合。若您將專案放在一個群組下，其運作方式就如同資料夾。"
 
 msgid "Organization|An error occurred loading the groups. Please refresh the page to try again."
 msgstr "載入群組時發生錯誤。請重新整理頁面並重試。"
@@ -32635,14 +32768,26 @@ msgstr "載入群組時發生錯誤。請重新整理頁面並重試。"
 msgid "Organization|An error occurred loading the projects. Please refresh the page to try again."
 msgstr "組織載入專案時發生錯誤。請刷新頁面重試。"
 
+msgid "Organization|An error occurred loading user organizations. Please refresh the page to try again."
+msgstr "載入使用者組織時發生錯誤。請重新整理頁面以重試。"
+
 msgid "Organization|Copy organization ID"
 msgstr "複製組織 ID"
+
+msgid "Organization|Create an organization to contain all of your groups and projects."
+msgstr "建立一個組織來包含您所有的群組與專案。"
 
 msgid "Organization|Frequently visited groups"
 msgstr "經常訪問的群組"
 
 msgid "Organization|Frequently visited projects"
 msgstr "經常訪問的專案"
+
+msgid "Organization|Get started with organizations"
+msgstr "開始使用組織"
+
+msgid "Organization|Manage"
+msgstr "管理"
 
 msgid "Organization|New organization"
 msgstr "新組織"
@@ -32669,10 +32814,10 @@ msgid "Organization|View all"
 msgstr "查看全部"
 
 msgid "Organization|You don't have any groups yet."
-msgstr ""
+msgstr "您還沒有任何群組。"
 
 msgid "Organization|You don't have any projects yet."
-msgstr ""
+msgstr "您還沒有任何專案。"
 
 msgid "Orphaned member"
 msgstr "孤兒成員"
@@ -33608,6 +33753,12 @@ msgstr "後台"
 msgid "PerformanceBar|Bullet notifications"
 msgstr "子彈通知"
 
+msgid "PerformanceBar|CPU"
+msgstr "CPU"
+
+msgid "PerformanceBar|CPU flamegraph"
+msgstr "CPU 火焰圖"
+
 msgid "PerformanceBar|ClickHouse queries"
 msgstr "ClickHouse 查詢"
 
@@ -33616,6 +33767,12 @@ msgstr "DOM 內容已載入"
 
 msgid "PerformanceBar|Download"
 msgstr "下載"
+
+msgid "PerformanceBar|Download memory report"
+msgstr "下載記憶體報告"
+
+msgid "PerformanceBar|Download report"
+msgstr "下載報告"
 
 msgid "PerformanceBar|Elasticsearch calls"
 msgstr "Elasticsearch調用"
@@ -33638,6 +33795,12 @@ msgstr "記憶體"
 msgid "PerformanceBar|Memory report"
 msgstr "記憶體報告"
 
+msgid "PerformanceBar|Object"
+msgstr "物件"
+
+msgid "PerformanceBar|Object flamegraph"
+msgstr "物件火焰圖"
+
 msgid "PerformanceBar|Redis calls"
 msgstr "Redis調用"
 
@@ -33646,6 +33809,9 @@ msgstr "Rugged調用"
 
 msgid "PerformanceBar|SQL queries"
 msgstr "SQL查詢"
+
+msgid "PerformanceBar|Show stats"
+msgstr "顯示統計資料"
 
 msgid "PerformanceBar|Sort by duration"
 msgstr "依持續時間排序"
@@ -33662,17 +33828,17 @@ msgstr "總持續時間"
 msgid "PerformanceBar|Trace"
 msgstr "追蹤"
 
+msgid "PerformanceBar|Wall"
+msgstr "牆"
+
+msgid "PerformanceBar|Wall flamegraph"
+msgstr "牆面火焰圖"
+
 msgid "PerformanceBar|Zoekt calls"
 msgstr "Zoekt 調用"
 
-msgid "PerformanceBar|cpu"
-msgstr "cpu"
-
-msgid "PerformanceBar|object"
-msgstr "物件"
-
-msgid "PerformanceBar|wall"
-msgstr "牆"
+msgid "PerformanceBar|flamegraph"
+msgstr "火焰圖"
 
 msgid "Period in seconds"
 msgstr "週期（秒）"
@@ -33980,8 +34146,14 @@ msgstr "重試觸發作業將建立一個新的下游流水線。"
 msgid "PipelineGraph|What is a downstream pipeline?"
 msgstr "何謂下游流水線？"
 
-msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more%{linkEnd}.)"
-msgstr "自訂（%{linkStart}了解更多%{linkEnd}。）"
+msgid "PipelineScheduleIntervalPattern|Custom"
+msgstr "自訂"
+
+msgid "PipelineScheduleIntervalPattern|Set a custom interval with Cron syntax."
+msgstr "使用 Cron 語法設定自訂間隔。"
+
+msgid "PipelineScheduleIntervalPattern|What is Cron syntax?"
+msgstr "什麼是 Cron 語法？"
 
 msgid "PipelineSchedules|A scheduled pipeline starts automatically at regular intervals, like daily or weekly. The pipeline: "
 msgstr "排定的流水線會定期自動啟動，例如每天或每週。流水線： "
@@ -34664,6 +34836,9 @@ msgstr "如果合併，此更改不會更改整體測試覆蓋率。"
 msgid "Pipeline|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch."
 msgstr "此流水線在此合併請求的內容上執行，並結合所有其它排隊等待合併到目標分支的合併請求的內容。"
 
+msgid "Pipeline|This pipeline ran on the contents of this merge request combined with the contents of the target branch."
+msgstr "此流水線執行此合併請求的內容以及目標分支的內容。"
+
 msgid "Pipeline|This pipeline ran on the contents of this merge request's source branch, not the target branch."
 msgstr "此流水線在此合併請求的來源分支的內容上執行，而不是目標分支。"
 
@@ -34688,8 +34863,8 @@ msgstr "查看流水線"
 msgid "Pipeline|We are currently unable to fetch pipeline data"
 msgstr "我們目前無法取得流水線資料"
 
-msgid "Pipeline|You’re about to stop pipeline #%{pipelineId}."
-msgstr "您即將要停止流水線 #%{pipelineId}。"
+msgid "Pipeline|You're about to stop pipeline #%{pipelineId}."
+msgstr "您將要停止流水線 #%{pipelineId}。"
 
 msgid "Pipeline|for"
 msgstr "使用提交"
@@ -34699,6 +34874,9 @@ msgstr "合併請求"
 
 msgid "Pipeline|merge train"
 msgstr "合併佇列"
+
+msgid "Pipeline|merged results"
+msgstr "合併結果"
 
 msgid "Pipeline|on"
 msgstr "於"
@@ -34901,17 +35079,14 @@ msgstr "請提供要更新的屬性"
 msgid "Please reach out if you have any questions and we'll be happy to assist."
 msgstr "若有任何問題請聯絡我們，我們將竭誠為您服務。"
 
-msgid "Please review the %{linkStart}contribution guidelines%{linkEnd} for this project."
-msgstr "請審閱此專案的%{linkStart}貢獻指南%{linkEnd}。"
+msgid "Please review the %{strong_start}%{contribution_guidelines_start}contribution guidelines%{contribution_guidelines_end}%{strong_end} for this project."
+msgstr "請審閱此專案的%{strong_start}%{contribution_guidelines_start}貢獻指南%{contribution_guidelines_end}%{strong_end}。"
 
 msgid "Please review the updated escalation policies for %{project_link}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr "請審核 %{project_link} 的更新升級政策。建議您聯絡當前的 on-call 回應者，以確保 on-call 覆蓋的連續性。"
 
 msgid "Please review the updated escalation policies for %{project}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr "請審核 %{project} 的更新升級政策。建議您聯絡當前的 on-call 回應者，以確保 on-call 覆蓋的連續性。"
-
-msgid "Please select"
-msgstr "請選擇"
 
 msgid "Please select a Jira project"
 msgstr "請選擇一個Jira專案"
@@ -35105,6 +35280,9 @@ msgstr "偏好設定"
 msgid "Preferences saved."
 msgstr "偏好設定已儲存。"
 
+msgid "Preferences|%{link_start}List of keyboard shortcuts%{link_end}"
+msgstr "%{link_start}鍵盤快捷鍵清單%{link_end}"
+
 msgid "Preferences|Automatically add new list items"
 msgstr "自動加入新的列表項目"
 
@@ -35174,6 +35352,9 @@ msgstr "啟用關注使用者功能"
 msgid "Preferences|Enable integrated code intelligence on code views"
 msgstr "啟用程式碼視圖的整合程式碼智慧功能"
 
+msgid "Preferences|Enable keyboard shortcuts"
+msgstr "啟用鍵盤快捷鍵"
+
 msgid "Preferences|Failed to save preferences."
 msgstr "無法保存偏好設定"
 
@@ -35191,6 +35372,9 @@ msgstr "一次僅顯示一個文件，而不是所有更改的文件；要在文
 
 msgid "Preferences|Integrations"
 msgstr "整合"
+
+msgid "Preferences|Keyboard shortcuts"
+msgstr "鍵盤快捷鍵"
 
 msgid "Preferences|Layout width"
 msgstr "佈局寬度"
@@ -35333,6 +35517,9 @@ msgstr "優先標記"
 msgid "Priority"
 msgstr "優先級"
 
+msgid "Privacy"
+msgstr "隱私"
+
 msgid "Private"
 msgstr "私有"
 
@@ -35399,9 +35586,6 @@ msgstr "已比較所有點擊"
 msgid "ProductAnalytics|All Events Compared"
 msgstr "已比較所有事件"
 
-msgid "ProductAnalytics|All Features"
-msgstr "所有功能"
-
 msgid "ProductAnalytics|All Pages"
 msgstr "所有頁面"
 
@@ -35444,14 +35628,8 @@ msgstr "相互比較所有使用者會話"
 msgid "ProductAnalytics|Compares click events against each other"
 msgstr "將點擊事件互相比較"
 
-msgid "ProductAnalytics|Compares feature usage of all features against each other"
-msgstr "比較所有功能的功能使用情況"
-
 msgid "ProductAnalytics|Compares page views of all pages against each other"
 msgstr "比較所有頁面的瀏覽量"
-
-msgid "ProductAnalytics|Create a visualization"
-msgstr "建立視覺化"
 
 msgid "ProductAnalytics|Creating your product analytics instance..."
 msgstr "正在建立您的產品分析執行個體..."
@@ -35476,9 +35654,6 @@ msgstr "按 %{granularity} 分組的事件"
 
 msgid "ProductAnalytics|Events over time"
 msgstr "隨時間變化的事件"
-
-msgid "ProductAnalytics|Feature Usages"
-msgstr "功能使用狀況"
 
 msgid "ProductAnalytics|For more information, see the %{linkStart}docs%{linkEnd}."
 msgstr "更多資訊請參閱 %{linkStart}文件%{linkEnd}。"
@@ -35567,9 +35742,6 @@ msgstr "這可能需要一段時間，請隨時離開此頁面並稍後返回。
 msgid "ProductAnalytics|To instrument your application, select one of the options below. After an option has been instrumented and data is being collected, this page will progress to the next step."
 msgstr "要檢測您的應用程式，請選取以下的其中一個選項。檢測選項並蒐集資料後，此頁面會進入下一步。"
 
-msgid "ProductAnalytics|Track specific features"
-msgstr "追蹤特定功能"
-
 msgid "ProductAnalytics|Unique Users"
 msgstr "獨立使用者"
 
@@ -35591,8 +35763,8 @@ msgstr "使用 JS 模組\n"
 msgid "ProductAnalytics|Waiting for events"
 msgstr "等候事件"
 
-msgid "ProductAnalytics|What do you want to measure?"
-msgstr "您想測量什麼？"
+msgid "ProductAnalytics|What metric do you want to visualize?"
+msgstr "您想要視覺化什麼指標？"
 
 msgid "ProductAnalytics|You can instrument your application using a JS module or an HTML script. Follow the instructions below for the option you prefer."
 msgstr "您可以使用 JS 模組或 HTML 腳本檢測您的應用程式，按照以下說明選擇您喜歡的選項。"
@@ -36311,9 +36483,6 @@ msgstr "名稱"
 msgid "ProjectFileTree|Show more"
 msgstr "顯示更多"
 
-msgid "ProjectLastActivity|Never"
-msgstr "從未"
-
 msgid "ProjectList|Starred"
 msgstr "已加星號"
 
@@ -36530,6 +36699,9 @@ msgstr "推送到版本庫的新標籤觸發事件。"
 msgid "ProjectService|Trigger event for pushes to the repository."
 msgstr "推送到版本庫的觸發事件。"
 
+msgid "ProjectService|Trigger event when a build is created."
+msgstr "建立建構時觸發事件。"
+
 msgid "ProjectService|Trigger event when a commit is created or updated."
 msgstr "在建立或更新提交時觸發事件。"
 
@@ -36592,6 +36764,9 @@ msgstr "允許"
 
 msgid "ProjectSettings|Allow anyone to pull from Package Registry"
 msgstr "允許任何人從軟體包註冊庫中拉取"
+
+msgid "ProjectSettings|Allow skipping the merge train"
+msgstr "允許跳過合併鏈"
 
 msgid "ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets."
 msgstr "總是在問題、合併請求和程式碼片段上顯示讚成和反對的表情符號按鈕。"
@@ -36811,6 +36986,9 @@ msgstr "合併請求"
 
 msgid "ProjectSettings|Merge requests approved for merge are queued, and pipelines validate the combined results of the source and target branches before merge. %{link_start}What are merge trains?%{link_end}"
 msgstr "已核准的合併請求已排入佇列，流水線在合併前驗證來源和目標分支的合併結果。 %{link_start}什麼是合併佇列？%{link_end}"
+
+msgid "ProjectSettings|Merge requests can be set to merge immediately without interrupting the merge train. Commits in earlier merge train pipelines might not get validated with immediately merged commits."
+msgstr "合併請求可以設定為立即合併，而不會中斷合併鏈。較早合併鏈流水線中的提交可能不會與立即合併的提交進行驗證。"
 
 msgid "ProjectSettings|Merge suggestions"
 msgstr "合併建議"
@@ -37429,9 +37607,6 @@ msgstr "無環境變數"
 
 msgid "PrometheusService|Monitor application health with Prometheus metrics and dashboards"
 msgstr "使用 Prometheus 指標和儀表板監控應用程式執行狀況"
-
-msgid "PrometheusService|More information"
-msgstr "更多的訊息"
 
 msgid "PrometheusService|New metric"
 msgstr "新建指標"
@@ -38056,6 +38231,9 @@ msgstr "提供回饋意見"
 msgid "Provider"
 msgstr "提供者"
 
+msgid "Provider ID"
+msgstr "提供者 ID"
+
 msgid "Provision instructions"
 msgstr "提供說明"
 
@@ -38320,9 +38498,6 @@ msgstr "可以在描述和留言框中使用快速操作。"
 msgid "Quick help"
 msgstr "快速幫助"
 
-msgid "Quick range"
-msgstr "快捷範圍"
-
 msgid "README"
 msgstr "README"
 
@@ -38388,6 +38563,9 @@ msgstr "在套用變更之前，請閱讀文檔。"
 
 msgid "Read their documentation."
 msgstr "閱讀他們的文件。"
+
+msgid "Readme"
+msgstr "讀我檔案"
 
 msgid "Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
 msgstr "準備好開始使用 GitLab 了嗎？按照以下步驟設定您的工作區、計劃和提交更改以及部署您的專案。"
@@ -38599,6 +38777,9 @@ msgstr "相關的特性標籤"
 
 msgid "Related issues"
 msgstr "相關議題"
+
+msgid "Related jobs"
+msgstr "相關的作業"
 
 msgid "Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}"
 msgstr "相關的 %{link_to_merge_request} 合併請求用於將 %{link_to_merge_request_source_branch} 合併"
@@ -39111,6 +39292,9 @@ msgstr "已將所有標記取代為%{label_references}%{label_text}。"
 msgid "Replaces the clone URL root."
 msgstr "取代克隆 (Clone) URL根地址。"
 
+msgid "ReplicateService|Failed to verify %{type} repository checksum from %{old} to %{new}"
+msgstr "無法驗證從 %{old} 到 %{new} 的 %{type} 版本庫校驗和"
+
 msgid "Reply"
 msgstr "回複"
 
@@ -39318,9 +39502,6 @@ msgstr "漏洞名稱"
 
 msgid "Reports|metrics report"
 msgstr "指標報告"
-
-msgid "Repositories"
-msgstr "版本庫"
 
 msgid "Repositories Analytics"
 msgstr "版本庫分析"
@@ -39999,6 +40180,12 @@ msgid "Runners|%{highlightStart}%{duration}%{highlightEnd} second"
 msgid_plural "Runners|%{highlightStart}%{duration}%{highlightEnd} seconds"
 msgstr[0] "%{highlightStart}%{duration}%{highlightEnd} 秒"
 
+msgid "Runners|%{installLinkStart}Upgrade GitLab Runner%{installLinkEnd} to match your GitLab version. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
+msgstr "%{installLinkStart}升級 GitLab 執行器(Runner)%{installLinkEnd} 以符合您的 GitLab 版本。 %{versionLinkStart}主要版本和次要版本%{versionLinkEnd} 必須匹配。"
+
+msgid "Runners|%{installLinkStart}Upgrade GitLab Runner%{installLinkEnd} to match your GitLab version. This upgrade is highly recommended for this runner and may contain security or compatibilty fixes. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
+msgstr "%{installLinkStart}升級 GitLab 執行器(Runner)%{installLinkEnd} 以符合您的 GitLab 版本。強烈建議此執行程式進行該升級，並且可能包含安全性或相容性修復。 %{versionLinkStart}主要版本和次要版本%{versionLinkEnd} 必須匹配。"
+
 msgid "Runners|%{linkStart}Create a new runner%{linkEnd} to get started."
 msgstr "%{linkStart}建立新的執行器%{linkEnd}來開始使用。"
 
@@ -40043,8 +40230,8 @@ msgstr "已啟用的執行器"
 msgid "Runners|Add notes such as the runner owner or what it should be used for."
 msgstr "增加註釋，例如執行器的所有者或它的用途。"
 
-msgid "Runners|Add tags for the types of jobs the runner processes to ensure that the runner only runs jobs that you intend it to. %{helpLinkStart}Learn more.%{helpLinkEnd}"
-msgstr "為執行器處理的作業類型增加標籤，以確保執行器僅執行您希望它執行的作業。 %{helpLinkStart}了解更多。%{helpLinkEnd}"
+msgid "Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more.%{helpLinkEnd}"
+msgstr "加入標籤以指定可運行的作業，%{helpLinkStart}了解更多。%{helpLinkEnd}"
 
 msgid "Runners|Add your feedback to this issue"
 msgstr "在議題中加入您的回饋"
@@ -40224,8 +40411,8 @@ msgstr "啟用過時的執行器清理"
 msgid "Runners|Enable stale runner cleanup?"
 msgstr "啟用過時的執行器清理?"
 
-msgid "Runners|Enter the number of seconds."
-msgstr "輸入秒數。"
+msgid "Runners|Enter the job timeout in seconds. Must be a minimum of 600 seconds."
+msgstr "請輸入工作超時時間（以秒為單位）。必須至少為600秒。"
 
 msgid "Runners|Environment"
 msgstr "環境"
@@ -40271,9 +40458,6 @@ msgstr "群組區 › 執行器"
 
 msgid "Runners|How do runners pick up jobs?"
 msgstr "執行器如何揀選工作?"
-
-msgid "Runners|How do we upgrade GitLab runner?"
-msgstr "如何升級 GitLab 執行器？"
 
 msgid "Runners|IP Address"
 msgstr "IP 位址"
@@ -40341,9 +40525,6 @@ msgstr "已提供次要版本升級。"
 msgid "Runners|Most recent failures"
 msgstr "最近的失敗"
 
-msgid "Runners|Multiple tags must be separated by a comma. For example, %{example}."
-msgstr "多個標籤必須用逗號分隔，例如，%{example}。"
-
 msgid "Runners|Name"
 msgstr "名稱"
 
@@ -40382,6 +40563,9 @@ msgstr "新執行器"
 
 msgid "Runners|No description"
 msgstr "沒有描述"
+
+msgid "Runners|No jobs have been run by instance runners in the past 3 hours."
+msgstr "在過去的3小時內，執行器未執行任何作業。"
 
 msgid "Runners|No results found"
 msgstr "未找到結果"
@@ -40625,6 +40809,9 @@ msgstr "選擇要指派給該執行器(runner)的專案"
 msgid "Runners|Select your preferred runner, then choose the capacity for the runner in the AWS CloudFormation console."
 msgstr "在此處選擇您的偏好執行器，然後在 AWS CloudFormation 主控台中選擇執行器的容量。"
 
+msgid "Runners|Separate multiple tags with a comma. For example, %{example}."
+msgstr "用逗號分隔多個標籤，例如，%{example}。"
+
 msgid "Runners|Shared runners are disabled in the group settings."
 msgstr "共享執行器在群組設定中被禁用。"
 
@@ -40765,6 +40952,9 @@ msgstr "前往%{runnerListName}查看執行器 (Runner)"
 msgid "Runners|Token expiry"
 msgstr "令牌到期"
 
+msgid "Runners|UTC Time"
+msgstr "UTC 時間"
+
 msgid "Runners|Understand how long it takes for runners to pick up a job. %{linkStart}How is this calculated?%{linkEnd}"
 msgstr "了解執行器揀取作業需要多久的時間。%{linkStart}這個是怎麼計算的？%{linkEnd}"
 
@@ -40773,9 +40963,6 @@ msgstr "取消全選"
 
 msgid "Runners|Up to date"
 msgstr "最新的"
-
-msgid "Runners|Upgrade GitLab Runner to match the version of GitLab you're running. Both %{linkStart}major and minor versions%{linkEnd} should match."
-msgstr "升級 GitLab Runner 以符合您正在運行的 GitLab 版本。 %{linkStart} 主要和次要版本%{linkEnd} 二者應該相符合。"
 
 msgid "Runners|Upgrade Status"
 msgstr "升級狀態"
@@ -40815,6 +41002,9 @@ msgstr "檢視安裝說明"
 
 msgid "Runners|View metrics"
 msgstr "查看指標"
+
+msgid "Runners|Wait time (secs)"
+msgstr "等待時間（秒）"
 
 msgid "Runners|Wait time to pick a job"
 msgstr "等待挑選作業的時間"
@@ -41185,6 +41375,9 @@ msgstr "清除全部"
 msgid "ScanResultPolicy|Customized CI Variables"
 msgstr "自定義 CI 變數"
 
+msgid "ScanResultPolicy|Don't show me this again"
+msgstr "不要再次顯示這個"
+
 msgid "ScanResultPolicy|Except"
 msgstr "除外"
 
@@ -41200,6 +41393,9 @@ msgstr "可用的修復僅適用於容器和依賴項掃描"
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
 msgstr "若選取，以下選項將會覆寫%{linkStart}專案設定%{linkEnd}，但僅影響政策中選取的分支。"
 
+msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} for approval rules created by this policy."
+msgstr "若選取，以下選擇將會覆寫此策略建立的核准規則的%{linkStart}專案設定%{linkEnd}。"
+
 msgid "ScanResultPolicy|Is"
 msgstr "是"
 
@@ -41214,6 +41410,9 @@ msgstr "許可證掃描僅允許一個條件：狀態"
 
 msgid "ScanResultPolicy|Matching"
 msgstr "符合"
+
+msgid "ScanResultPolicy|Merge request approval settings"
+msgstr "合併請求核准設定"
 
 msgid "ScanResultPolicy|New age"
 msgstr "新年齡為:"
@@ -41242,11 +41441,26 @@ msgstr "覆寫專案審核設定"
 msgid "ScanResultPolicy|Pre-existing"
 msgstr "預先存在"
 
+msgid "ScanResultPolicy|Prevent approval by anyone who added a commit"
+msgstr "防止任何新增提交的人批准"
+
+msgid "ScanResultPolicy|Prevent approval by merge request's author"
+msgstr "防止合併請求作者批准"
+
 msgid "ScanResultPolicy|Prevent branch protection modification"
 msgstr "防止修改分支保護"
 
 msgid "ScanResultPolicy|Protected branch settings"
 msgstr "受保護的分支設定"
+
+msgid "ScanResultPolicy|Recommended setting"
+msgstr "建議設定"
+
+msgid "ScanResultPolicy|Remove all approvals when commit is added"
+msgstr "新增提交時刪除所有批准"
+
+msgid "ScanResultPolicy|Require the user's password to approve"
+msgstr "需要使用者密碼才能批准"
 
 msgid "ScanResultPolicy|Select a scan type before adding criteria"
 msgstr "在增加條件之前選擇掃描類型"
@@ -41280,6 +41494,12 @@ msgstr "當 %{scanType} 在開啟一個針對使用 %{commitType} 的 %{branches
 
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
 msgstr "當%{scanners}在針對%{branches} %{branchExceptions} 的開放合併請求中找到指定的掃描器條件，並符合以下標準的 %{boldDescription}時"
+
+msgid "ScanResultPolicy|When enabled, two person approval will be required on all MRs as merge request authors cannot approve their own MRs and merge them unilaterally"
+msgstr "啟用後，所有合併請求都需要兩個人批准，因為合併請求的作者無法批准自己的合併請求並擅自合併它們"
+
+msgid "ScanResultPolicy|You have selected any protected branch option as a condition. To better protect your project, it is recommended to enable the protect branch settings. %{linkStart}Learn more.%{linkEnd}"
+msgstr "您已選取任何受保護的分支作為條件。為了更好地保護您的專案，建議啟用保護分支設定。%{linkStart}取得更多資訊。%{linkEnd}"
 
 msgid "ScanResultPolicy|any commits"
 msgstr "任何提交"
@@ -41343,9 +41563,6 @@ msgstr "排程"
 
 msgid "Schedules to merge this merge request (%{strategy})."
 msgstr "計劃合併此合併請求 (%{strategy})。"
-
-msgid "Scheduling Pipelines"
-msgstr "流水線排程"
 
 msgid "Scope"
 msgstr "範圍"
@@ -41469,6 +41686,9 @@ msgstr "搜尋里程碑"
 
 msgid "Search or filter commits"
 msgstr "搜尋或篩選提交"
+
+msgid "Search or filter dependencies..."
+msgstr "搜尋或篩選依賴關係……"
 
 msgid "Search or filter results…"
 msgstr "搜尋或過濾結果…"
@@ -42256,6 +42476,9 @@ msgstr "這是群組層級的政策"
 msgid "SecurityOrchestration|This is a project-level policy"
 msgstr "這是一個專案級別的政策"
 
+msgid "SecurityOrchestration|This policy is inherited"
+msgstr "此政策是繼承的"
+
 msgid "SecurityOrchestration|This policy is inherited from %{namespace}"
 msgstr "該政策繼承自 %{namespace}"
 
@@ -42321,6 +42544,9 @@ msgstr "安全編輯使用以下自定義 CI 變量："
 
 msgid "SecurityOrchestration|YAML"
 msgstr "YAML"
+
+msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} policies."
+msgstr "您已經擁有最大數量的 %{policyType} 政策，數量為 %{maximumAllowed}。"
 
 msgid "SecurityOrchestration|You don't have any security policies yet"
 msgstr "您還沒有任何安全政策"
@@ -42535,6 +42761,9 @@ msgstr "被解除為..."
 msgid "SecurityReports|Does not have issue"
 msgstr "沒有議題"
 
+msgid "SecurityReports|Does not have merge request"
+msgstr "沒有合併請求"
+
 msgid "SecurityReports|Download %{artifactName}"
 msgstr "下載 %{artifactName}"
 
@@ -42580,6 +42809,9 @@ msgstr "無法更新具有以下 ID 的漏洞： %{ids}"
 msgid "SecurityReports|Has issue"
 msgstr "有議題"
 
+msgid "SecurityReports|Has merge request"
+msgstr "有合併請求"
+
 msgid "SecurityReports|Hide dismissed"
 msgstr "隱藏已忽略項"
 
@@ -42612,6 +42844,9 @@ msgstr "管理和追蹤在您選擇的專案中發現的漏洞。此處顯示了
 
 msgid "SecurityReports|Maximum selected projects limit reached"
 msgstr "已達到最大選定專案限制"
+
+msgid "SecurityReports|Merge Request"
+msgstr "合併請求"
 
 msgid "SecurityReports|Monitor vulnerabilities in all of your projects"
 msgstr "監控您所有專案中的漏洞"
@@ -43151,6 +43386,9 @@ msgstr "服務帳號"
 msgid "Service usage data"
 msgstr "服務使用資料"
 
+msgid "ServiceAccount|No more seats are available to create Service Account User"
+msgstr "無更多席次可用於建立服務帳號使用者"
+
 msgid "ServiceAccount|User does not have permission to create a service account in this namespace."
 msgstr "使用者沒有權限在此命名空間中建立服務帳號。"
 
@@ -43181,8 +43419,8 @@ msgstr "在使用TLS時，常見的端口是587，而不使用TLS時則是25。"
 msgid "ServiceDesk|Configure a custom email address"
 msgstr "設定自定義電子郵件地址"
 
-msgid "ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials."
-msgstr "連結您的客戶可用於建立服務台問題的自訂電子郵件地址。將所有電子郵件從您的自訂電子郵件地址轉寄到該專案的服務台電子郵件地址。GitLab 將使用您的 SMTP 憑證代表您從自訂地址寄送服務台電子郵件。"
+msgid "ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials. %{linkStart}Learn more about prerequisites and the verification process%{linkEnd}."
+msgstr "連結您的客戶可用於建立服務台問題的自訂電子郵件地址。將所有電子郵件從您的自訂電子郵件地址轉寄到該專案的服務台電子郵件地址。GitLab 將使用您的 SMTP 憑證代表您從自訂地址寄送服務台電子郵件%{linkStart}取得更多關於先決條件與驗證流程的資訊%{linkEnd}。"
 
 msgid "ServiceDesk|Copy Service Desk email address"
 msgstr "複製服務台電子郵件地址"
@@ -43379,9 +43617,6 @@ msgstr "會話 ID"
 msgid "Session duration (minutes)"
 msgstr "會話(session)持續時間(分鐘)"
 
-msgid "Session|Unable to verify the user. An error occurred when loading the user verification challenge. Refresh to try again."
-msgstr "無法驗證使用者，載入使用者驗證質詢時發生錯誤，請重新整理重試。"
-
 msgid "Set %{epic_ref} as the parent epic."
 msgstr "將%{epic_ref}設定為父史詩 (epic) 。"
 
@@ -43534,9 +43769,6 @@ msgstr "設定新密碼"
 
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr "設定專案以自動推送和/或從另一個版本庫中提取變更。分支，標籤和提交將自動同步。"
-
-msgid "Set visibility of project contents. Configure import sources and Git access protocols."
-msgstr "設定專案內容的可見性，配置匯入來源和 Git 存取協議。"
 
 msgid "Set weight"
 msgstr "設定權重"
@@ -43770,6 +44002,9 @@ msgstr "僅顯示留言"
 msgid "Show complete raw log"
 msgstr "顯示完整的原始日誌"
 
+msgid "Show current status of indexing"
+msgstr "顯示索引的目前狀態"
+
 msgid "Show details"
 msgstr "顯示詳情"
 
@@ -43811,9 +44046,6 @@ msgstr "顯示密碼"
 
 msgid "Show project milestones"
 msgstr "顯示專案里程碑"
-
-msgid "Show sidebar"
-msgstr "顯示側邊欄"
 
 msgid "Show sub-group milestones"
 msgstr "顯示子群組里程碑"
@@ -44064,6 +44296,27 @@ msgstr "使用 %{label} 登入已被禁用"
 
 msgid "Signing in using your %{label} account without a pre-existing GitLab account is not allowed."
 msgstr "沒有預先存在的GitLab帳號的情況下無法使用您的%{label}帳號登入。"
+
+msgid "SilentMode|All outbound communications are blocked. %{link_start}Learn more%{link_end}."
+msgstr "所有連外通信均被阻擋， %{link_start}了解更多%{link_end}。"
+
+msgid "SilentMode|Enable silent mode"
+msgstr "啟用靜音模式"
+
+msgid "SilentMode|Silent mode"
+msgstr "靜音模式"
+
+msgid "SilentMode|Silent mode %{status}"
+msgstr "靜音模式 %{status}"
+
+msgid "SilentMode|Silent mode is enabled"
+msgstr "靜音模式已啟用"
+
+msgid "SilentMode|Suppress outbound communication, such as emails, from GitLab."
+msgstr "禁止來自 GItLab 的連外通訊，例如電子郵件。"
+
+msgid "SilentMode|There was an error updating the Silent Mode Settings."
+msgstr "更新安靜模式設定時發生錯誤。"
 
 msgid "Similar issues"
 msgstr "相似議題"
@@ -44365,6 +44618,9 @@ msgstr "片段被限制為 %{total} 個文件。"
 msgid "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them."
 msgstr "片段不能包含空文件。確保所有文件都有內容，或者刪除它們。"
 
+msgid "Snippets|This snippet is hidden because its author has been banned"
+msgstr "這個片段被隱藏，因為它的作者已被封禁"
+
 msgid "Snowplow"
 msgstr "Snowplow"
 
@@ -44420,7 +44676,7 @@ msgid "Someone, hopefully you, has requested to reset the password for your GitL
 msgstr "有人（希望是您）要求在 %{link_to_gitlab} 上重設您的 GitLab 帳號的密碼。"
 
 msgid "Something else"
-msgstr ""
+msgstr "其他原因"
 
 msgid "Something went wrong"
 msgstr "發生錯誤了"
@@ -45031,9 +45287,6 @@ msgstr "星號"
 msgid "Start Date"
 msgstr "開始日期"
 
-msgid "Start GitLab Ultimate free trial"
-msgstr "開始 GitLab Ultimate 免費試用"
-
 msgid "Start Time"
 msgstr "開始時間"
 
@@ -45129,9 +45382,6 @@ msgstr "開始於： %{startsAt}"
 
 msgid "State your message to activate"
 msgstr "輸入訊息以啟用"
-
-msgid "State/Province"
-msgstr "州/省"
 
 msgid "State/Province/City"
 msgstr "州/省/市"
@@ -45280,6 +45530,9 @@ msgstr "您的狀態頁面前端"
 msgid "Step %{currentStep} of %{stepCount}"
 msgstr "第 %{currentStep} 步，共 %{stepCount} 步"
 
+msgid "Step %{step}"
+msgstr "步驟 %{step}"
+
 msgid "Step 1."
 msgstr "步驟 1 ."
 
@@ -45321,9 +45574,6 @@ msgstr "儲存:"
 
 msgid "StorageSize|Unknown"
 msgstr "未知"
-
-msgid "Store your files, plan your work, collaborate on code, and more."
-msgstr "儲存您的文件、規劃您的工作、程式碼協作等等。"
 
 msgid "Strikethrough (%{modifierKey}%{shiftKey}X)"
 msgstr "刪除線 (%{modifierKey}%{shiftKey}X)"
@@ -46175,9 +46425,6 @@ msgstr "使用「%{message}」將此提交設定%{tag_name}標籤。"
 msgid "Tags this commit to %{tag_name}."
 msgstr "將此提交設定%{tag_name}標籤。"
 
-msgid "Tags:"
-msgstr "標籤："
-
 msgid "TagsPage|Are you sure you want to delete this tag?"
 msgstr "您確定要刪除此標籤嗎？"
 
@@ -46280,9 +46527,6 @@ msgstr "已保護"
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr "查看文件以了解 GitLab 的所有功能。"
 
-msgid "TanukiBot|Ask GitLab Duo"
-msgstr "詢問 GitLab Duo"
-
 msgid "TanukiBot|Ask a question about GitLab"
 msgstr "問一個關於GitLab的問題"
 
@@ -46305,9 +46549,6 @@ msgstr "與GitLab Duo Chat通訊時發生錯誤，請稍後再試。"
 msgid "TanukiBot|What is a fork?"
 msgstr "什麼是分叉？"
 
-msgid "Targe branch"
-msgstr "目標分支"
-
 msgid "Target"
 msgstr "目標"
 
@@ -46325,6 +46566,12 @@ msgstr "目標分支規則"
 
 msgid "Target branch rule created."
 msgstr "目標分支規則已建立。"
+
+msgid "Target branch rule deleted."
+msgstr "目標分支規則已刪除。"
+
+msgid "Target branch rule does not exist"
+msgstr "目標分支不存在"
 
 msgid "Target branch rules"
 msgstr "目標分支規則"
@@ -46346,15 +46593,6 @@ msgstr "任務ID: %{elastic_task}"
 
 msgid "Task list"
 msgstr "工作清單"
-
-msgid "TasksToBeDone|Create/import code into a project (repository)"
-msgstr "建立/匯入程式碼到專案（版本庫）"
-
-msgid "TasksToBeDone|Create/import issues (tickets) to collaborate on ideas and plan work"
-msgstr "建立/匯入 議題（工單）以就想法和規劃工作進行協同合作"
-
-msgid "TasksToBeDone|Set up CI/CD pipelines to build, test, deploy, and monitor code"
-msgstr "設定 CI/CD 流水線來構建、測試、部署和監控程式碼"
 
 msgid "Tasks|%{complete_count} of %{total_count} %{checklist_item_noun} completed"
 msgstr "%{complete_count} / %{total_count} %{checklist_item_noun} 已完成"
@@ -46418,6 +46656,9 @@ msgstr "環境終端"
 
 msgid "Terminal sync service is running"
 msgstr "終端同步服務正在執行"
+
+msgid "Terms"
+msgstr "條款"
 
 msgid "Terms of Service Agreement and Privacy Policy"
 msgstr "服務條款協議和隱私政策"
@@ -46777,11 +47018,11 @@ msgstr "好的，我不想續訂"
 msgid "That's it, well done!"
 msgstr "就是這樣，做得好！"
 
-msgid "The %{link_start}true-up model%{link_end} allows having more users, and additional users will incur a retroactive charge on renewal."
-msgstr "%{link_start}校準模式%{link_end}允許有額外使用者，這些額外使用者在更新訂閱時將會產生追溯費用。"
-
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr "%{plan_name} 已無法購買。欲了解更多關於這將如何影響您的訊息，請查看我們的 %{faq_link_start}常見問題%{faq_link_end}。"
+
+msgid "The %{true_up_start}true-up model%{true_up_end} allows having more users, and additional users will incur a retroactive charge on renewal."
+msgstr "%{true_up_start}校準模式%{true_up_end}允許有額外使用者，這些額外使用者在更新訂閱時將會產生追溯費用。"
 
 msgid "The %{type} contains the following error:"
 msgid_plural "The %{type} contains the following errors:"
@@ -46792,9 +47033,6 @@ msgstr "用於存取垃圾郵件檢查服務端點的 API 金鑰."
 
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{email} in an attachment."
 msgstr "CSV匯出將在背景建立。完成後，它將以附件形式發送到%{email}。"
-
-msgid "The Code Suggestions add-on is not available."
-msgstr "程式碼建議附加元件不可用。"
 
 msgid "The GitLab subscription service (customers.gitlab.com) is currently experiencing an outage. You can monitor the status and get updates at %{linkStart}status.gitlab.com%{linkEnd}."
 msgstr "GitLab 訂閱服務 (customers.gitlab.com) 目前正在中斷。您可以通過 %{linkStart}status.gitlab.com%{linkEnd}監控狀態並取得更新。"
@@ -46996,9 +47234,6 @@ msgstr[0] "該表單包含以下錯誤："
 msgid "The form contains the following warning:"
 msgstr "該表單包含以下警告："
 
-msgid "The full package metadata sync can add up to 30 GB to GitLab PostgreSQL database. Ensure you have provisioned enough disk space for the database before enabling this feature. We are actively working on reducing this data size in %{link_start}epic 10415%{link_end}."
-msgstr "完整軟體包元資料同步可能將會多達 30 GB 的資料加入到 GitLab 的 PostgreSQL 資料庫中，在啟用此功能之前，請確保已為資料庫預留足夠的磁碟空間。我們正在積極努力減少這些資料的大小，相關的進展可以在 %{link_start}epic 10415%{link_end} 中查看。"
-
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr "git 伺服器 Gitaly 目前不可用。請聯絡您的管理員。"
 
@@ -47016,6 +47251,9 @@ msgstr "%{group_links} 的群組設定要求您為帳號啟用雙因子驗證。
 
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr "group_project_ids 參數只允許用於一個群組"
+
+msgid "The hook URL has changed, and this log entry cannot be retried"
+msgstr "掛勾 URL 已變更，無法重試此紀錄條目"
 
 msgid "The hostname of your PlantUML server."
 msgstr "您的 PlantUML 伺服器的主機名。"
@@ -47164,9 +47402,6 @@ msgstr "您在 %{link_to_gitlab} 的 GitLab 帳號密碼已成功更改。"
 msgid "The pipeline has been deleted"
 msgstr "流水線已被刪除"
 
-msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
-msgstr "流水線排程會在特定分支或標籤上自動定期執行流水線。這些排程的流水線將從關聯的使用者繼承有限的專案存取權限。"
-
 msgid "The project has already been added to your dashboard."
 msgstr "此專案已被加入到您的儀表板。"
 
@@ -47238,6 +47473,9 @@ msgstr "選定的圖像不是應用程式上傳的資產"
 
 msgid "The selected image is too large."
 msgstr "選定的圖像太大。"
+
+msgid "The selected project is not available"
+msgstr "所選取的專案不可用"
 
 msgid "The snippet can be accessed without any authentication."
 msgstr "無需任何身份驗證即可存取該程式碼片段。"
@@ -47533,6 +47771,9 @@ msgstr "取得使用者時出現問題。"
 msgid "There was a problem handling the pipeline data."
 msgstr "取得流水線資料時出現問題。"
 
+msgid "There was a problem loading this project's readme content."
+msgstr "載入此專案的讀我內容時出現問題。"
+
 msgid "There was a problem sending the confirmation email"
 msgstr "發送確認郵件時出現問題"
 
@@ -47644,9 +47885,6 @@ msgstr "訂閱此標記時發生錯誤。"
 msgid "There was an error syncing project %{name}"
 msgstr "同步專案%{name}時發生錯誤"
 
-msgid "There was an error syncing the %{replicableType}"
-msgstr "同步%{replicableType}時發生錯誤"
-
 msgid "There was an error trying to validate your query"
 msgstr "嘗試驗證您的查詢時發生錯誤"
 
@@ -47716,14 +47954,17 @@ msgstr "不允許第三方 AI 設置。"
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
 msgstr "此%{issuableDisplayName}被鎖定。只有專案成員可以留言。"
 
-msgid "This %{issuable} is hidden because its author has been banned"
-msgstr "此 %{issuable} 已隱藏，因為其作者已被封鎖"
+msgid "This %{issuable} is hidden because its author has been banned."
+msgstr "此 %{issuable} 已隱藏，因為其作者已被封鎖。"
 
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
 msgstr "此%{issuable}已被鎖定。只有%{strong_open}專案成員%{strong_close}才可以發表留言。"
 
 msgid "This %{issuable} is locked. Only project members can comment."
 msgstr "這個 %{issuable} 已被鎖定，僅專案成員可以進行評論。"
+
+msgid "This %{issuable} would exceed the maximum number of linked %{issuables} (%{limit})."
+msgstr "此 %{issuable} 將會超過連結 %{issuables} (%{limit})的最大數量。"
 
 msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and %{lockedLinkStart}locked%{lockedLinkEnd}."
 msgstr "此 %{noteableTypeText} 是%{confidentialLinkStart}機密的%{confidentialLinkEnd}且%{lockedLinkStart}已鎖定%{lockedLinkEnd}。"
@@ -47926,9 +48167,6 @@ msgstr "無法增加該史詩 (epic) ，您無權執行此動作。"
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr "此史詩 (epic) 不存在或者您沒有足夠的權限。"
 
-msgid "This epic would exceed maximum number of related epics."
-msgstr "此史詩 (epic) 將超過相關史詩 (epics)  的最大數量。"
-
 msgid "This feature requires local storage to be enabled"
 msgstr "此功能需要啟用本地儲存"
 
@@ -48028,8 +48266,8 @@ msgstr "這是 GitLab Incubation Engineering 開發的一項實驗性功能。"
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr "此數字為自授權許可啟動以來使用者數目的最高值。"
 
-msgid "This is the number of %{billable_users_link_start}billable users%{link_end} on your installation, and this is the minimum number you need to purchase when you renew your license."
-msgstr "此數目為您伺服器當前%{billable_users_link_start}收費使用者%{link_end}的數量， 也是更新授權許可時需要購買的最低數量。"
+msgid "This is the number of %{billable_users_link_start}billable users%{billable_users_link_end} on your installation, and this is the minimum number you need to purchase when you renew your license."
+msgstr "此數目為您伺服器當前%{billable_users_link_start}收費使用者%{billable_users_link_end}的數量， 也是更新授權許可時需要購買的最低數量。"
 
 msgid "This is the only time the secret is accessible. Copy the secret and store it securely."
 msgstr "這是密鑰唯一可以存取的時間， 複製該密鑰並安全的保管它。"
@@ -48049,14 +48287,11 @@ msgstr "此議題是機密的，只能顯示給擁有至少「報告人」存取
 msgid "This issue is currently blocked by the following issues:"
 msgstr "此議題目前被以下議題封阻："
 
-msgid "This issue is hidden because its author has been banned"
-msgstr "此議題已隱藏，因為其作者已被禁止"
+msgid "This issue is hidden because its author has been banned."
+msgstr "此議題已隱藏，因為其作者已被封鎖。"
 
 msgid "This issue is in a child epic of the filtered epic"
 msgstr "此議題在過濾史詩 (epic) 的子史詩 (epic) 中"
-
-msgid "This issue is locked. Only project members can comment."
-msgstr "該議問題已鎖定，只有專案成員可以進行評論。"
 
 msgid "This job could not start because it could not retrieve the needed artifacts%{punctuation}%{invalid_dependencies}"
 msgstr "此作業無法啟動，因為它無法檢索所需的工件%{punctuation}%{invalid_dependencies}"
@@ -48190,14 +48425,8 @@ msgstr "該合併請求是從私有專案到內部專案。"
 msgid "This merge request is from an internal project to a public project."
 msgstr "該合併請求是從內部專案到公開專案。"
 
-msgid "This merge request is hidden because its author has been banned"
-msgstr "此合併請求已隱藏，因為其作者已被封鎖"
-
 msgid "This merge request is locked."
 msgstr "該合併請求已鎖定。"
-
-msgid "This merge request is locked. Only project members can comment."
-msgstr "此合併請求已鎖定。僅專案成員可以進行評論。"
 
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."
 msgstr "合併請求已合併。要應用此建議，請直接編輯此文件。"
@@ -48810,9 +49039,6 @@ msgstr "要接受此邀請，請登入。"
 msgid "To access this domain create a new DNS record"
 msgstr "要存取此網域，請建立新的DNS記錄"
 
-msgid "To activate your trial, we need additional details from you."
-msgstr "要啟用您的試用版，我們需要您提供更多詳細信息。"
-
 msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
 msgstr "要加入自訂後綴，請設定服務台電子郵件地址。 %{linkStart}了解更多。%{linkEnd}"
 
@@ -48821,9 +49047,6 @@ msgstr "如需手動加入條目，請在手機應用中提供以下訊息。"
 
 msgid "To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
 msgstr "要核准該合併請求，請輸入您的密碼，該專案需要對所有核准進行驗證。"
-
-msgid "To complete registration, we need additional details from you."
-msgstr "要完成註冊，我們需要您提供更多詳細信息。"
 
 msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to connect."
 msgstr "可以使用 %{personal_access_token_link} 連接GitHub版本庫。當建立個人存取令牌時，需要選擇%{code_open}repo%{code_close}範圍，以顯示可供連接的公開和私有的版本庫列表。"
@@ -48906,9 +49129,6 @@ msgstr "要了解更多關於此專案的訊息，請閱讀 %{link_to_wiki}"
 
 msgid "To manage seats for all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
 msgstr "要管理與該群組及其子群組和專案相關聯的所有成員席次，請訪問%{link_start}使用配額頁面%{link_end}。"
-
-msgid "To minimize the impact of storage limits to Free top-level groups, for a limited time, GitLab is offering a %{promotion_link_start}one-time 70 percent discount%{link_end} off the list price for %{offer_availability_link_start}qualifying top-level groups%{link_end} when you purchase a new, one year subscription of GitLab Premium SaaS. This offer is valid until 2023-10-31."
-msgstr "為了最小化儲存限制對免費頂級群組的影響，GitLab 在有線時間內為%{offer_availability_link_start}合格的頂級群組在購買新的、GitLab Premium Saas 一年訂閱時%{link_end}提供了%{promotion_link_start}錯過不再的標價 70%% 折扣%{link_end}。此優惠有限期限至2023年10月31日。"
 
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr "如需將整個GitLab專案從另一個GitLab伺服器移動或複製到此伺服器，請存取原專案的設定頁面，產生匯出文件，然後在此處上載。"
@@ -49045,6 +49265,9 @@ msgstr "無法合併"
 msgid "Todos|Design"
 msgstr "設計"
 
+msgid "Todos|Do you want to remove the filters?"
+msgstr "您想要移除篩選條件嗎？"
+
 msgid "Todos|Due %{due_date}"
 msgstr "截止日期 %{due_date}"
 
@@ -49131,6 +49354,9 @@ msgstr "提及 %{who}"
 
 msgid "Todos|requested a review"
 msgstr "已要求審閱"
+
+msgid "Todos|requested an OKR update for %{what}"
+msgstr "請求 OKR 更新 %{what}"
 
 msgid "Todos|reviewed your merge request"
 msgstr "已審核您的合併請求"
@@ -49220,7 +49446,7 @@ msgid "Tomorrow"
 msgstr "明日"
 
 msgid "Too long"
-msgstr ""
+msgstr "太長"
 
 msgid "Too many namespaces enabled. Manage them through the console or the API."
 msgstr "啟用了太多的命名空間，通過控制台或API管理它們。"
@@ -49379,8 +49605,8 @@ msgstr "開始使用追踪"
 msgid "Tracing|Last 1 hour"
 msgstr "最近1小時"
 
-msgid "Tracing|Last 1 minute"
-msgstr "最後1分鐘"
+msgid "Tracing|Last 12 hours"
+msgstr "過去12小時"
 
 msgid "Tracing|Last 14 days"
 msgstr "過去 14 天"
@@ -49397,6 +49623,12 @@ msgstr "過去 30 天"
 msgid "Tracing|Last 30 minutes"
 msgstr "最後30分鐘"
 
+msgid "Tracing|Last 4 hours"
+msgstr "過去4小時"
+
+msgid "Tracing|Last 5 minutes"
+msgstr "最後5分鐘"
+
 msgid "Tracing|Last 7 days"
 msgstr "最近 7 天"
 
@@ -49409,9 +49641,6 @@ msgstr "沒有可顯示的跟踪。"
 msgid "Tracing|Operation"
 msgstr "操作"
 
-msgid "Tracing|Period"
-msgstr "週期"
-
 msgid "Tracing|Service"
 msgstr "服務"
 
@@ -49423,6 +49652,9 @@ msgstr "跨度 ID"
 
 msgid "Tracing|Status Code"
 msgstr "狀態碼"
+
+msgid "Tracing|Time Range"
+msgstr "時間範圍"
 
 msgid "Tracing|Toggle children spans"
 msgstr "切換子跨度"
@@ -49538,6 +49770,15 @@ msgstr "樹狀圖"
 msgid "Trending"
 msgstr "趨勢"
 
+msgid "TrialRegistration|Start GitLab Ultimate free trial"
+msgstr "開始 GitLab Ultimate 免費試用"
+
+msgid "TrialRegistration|To complete registration, we need additional details from you."
+msgstr "要完成註冊，我們需要您提供更多詳細資訊。"
+
+msgid "TrialRegistration|Your GitLab Ultimate free trial lasts for 30 days. After this period, you can maintain a GitLab Free account forever or upgrade to a paid plan."
+msgstr "您的 GitLab Ultimate 免費試用期為30天，試用期結束後，您可以永久保留 GitLab Free 帳號，或升級到付費方案。"
+
 msgid "Trials|%{planName} Trial"
 msgstr "%{planName} 試用"
 
@@ -49578,6 +49819,15 @@ msgstr "允許的字元：+、0-9、- 和空格。"
 msgid "Trial|Continue"
 msgstr "繼續"
 
+msgid "Trial|Please select"
+msgstr "請選擇"
+
+msgid "Trial|State/Province"
+msgstr "州/省"
+
+msgid "Trial|To activate your trial, we need additional details from you."
+msgstr "要啟動您的試用版，我們需要您提供更多詳細資訊。"
+
 msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
 msgstr "您的 GitLab Ultimate 試用期為 30 天，但您可以永久保留免費的 GitLab 帳號。我們只需要一些額外的訊息來啟用您的試用版。"
 
@@ -49611,8 +49861,8 @@ msgstr "觸發版本庫檢查"
 msgid "Trigger token:"
 msgstr "觸發令牌："
 
-msgid "Trigger variables:"
-msgstr "觸發變數："
+msgid "Trigger variables"
+msgstr "觸發變數"
 
 msgid "Trigger was created successfully."
 msgstr "觸發器已成功建立。"
@@ -49644,9 +49894,6 @@ msgstr "請重試"
 msgid "Try again?"
 msgstr "重試？"
 
-msgid "Try all GitLab features for free for 30 days. No credit card required."
-msgstr "免費試用 GitLab 的所有功能 30 天。無需信用卡。"
-
 msgid "Try all GitLab has to offer for 30 days."
 msgstr "30天內體驗GitLab的所有功能。"
 
@@ -49656,14 +49903,8 @@ msgstr "請嘗試更改或移除過濾器。"
 msgid "Try grouping with different labels"
 msgstr "嘗試使用不同的標記分組"
 
-msgid "Try out **styling** _your_ content right here or read the [direction](%{directionUrl})."
-msgstr "試著在此處對您的內容進行**樣式設定**，或閱讀[direction](%{directionUrl})。"
-
 msgid "Try out GitLab Pipelines"
 msgstr "試用 GitLab 流水線"
-
-msgid "Try the rich text editor now"
-msgstr "立即嘗試富文本編輯器"
 
 msgid "Try the troubleshooting steps here."
 msgstr "嘗試此處的故障排除步驟。"
@@ -49947,6 +50188,9 @@ msgstr "未經身份驗證的 Web 速率限制時間（以秒為單位）"
 msgid "Unauthorized to access the cluster agent in this project"
 msgstr "沒有權限存取這個專案的叢集代理"
 
+msgid "Unauthorized to create a package protection rule"
+msgstr "未授權建立軟體包保護規則"
+
 msgid "Unauthorized to create an environment"
 msgstr "未授權建立環境"
 
@@ -49993,7 +50237,7 @@ msgid "Unhappy?"
 msgstr "不滿意?"
 
 msgid "Unhelpful or irrelevant"
-msgstr ""
+msgstr "沒有幫助或不相關"
 
 msgid "Units|d"
 msgstr "天"
@@ -50247,9 +50491,6 @@ msgstr "徹除無法存取的物件"
 msgid "UpdateProject|Pruning unreachable objects can lead to repository corruption."
 msgstr "徹除無法存取的物件會導致版本庫損壞。"
 
-msgid "UpdateRepositoryStorage|Failed to verify %{type} repository checksum from %{old} to %{new}"
-msgstr "從%{old}到%{new}的%{type}版本庫檢查碼驗證失敗"
-
 msgid "UpdateRepositoryStorage|Timeout waiting for %{type} repository pushes"
 msgstr "等待%{type}版本庫推送逾時"
 
@@ -50357,6 +50598,9 @@ msgstr "%{linkTitle} 幫助連結"
 
 msgid "UsageQuota|%{percentageRemaining}%% namespace storage remaining."
 msgstr "命名空間儲存容量剩餘 %{percentageRemaining}%%。"
+
+msgid "UsageQuota|%{percentageRemaining}%% purchased storage remaining."
+msgstr "購買的儲存容量剩餘 %{percentageRemaining}%%。"
 
 msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr "%{storage_limit_link_start}命名空間儲存限制%{link_end} 將很快對 %{strong_start}%{namespace_name}%{strong_end} 命名空間實施。 %{extra_message}"
@@ -50529,8 +50773,14 @@ msgstr "這個命名空間有 %{planLimit} 的儲存空間。%{linkStart}如何�
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
 msgstr "此命名空間目前沒有使用共享執行器的專案"
 
+msgid "UsageQuota|This namespace is under project-level limits, so only repository and LFS storage usage above the limit included in the plan is counted as excess storage. You can increase excess storage limit by purchasing storage packages."
+msgstr "此命名空間處於專案層級限制下，因此只有儲存庫與 LFS 儲存空間使用量超過方案中包含的限制才算作超過儲存空間限制。您可以透過購買儲存套裝來增加超額儲存空間限制。"
+
 msgid "UsageQuota|This table omits projects that used 0 compute minutes or 0 shared runners duration"
 msgstr "該表格省略了使用 0 個計算分鐘或 0 個共享執行器持續時間的專案"
+
+msgid "UsageQuota|Total excess storage"
+msgstr "超額總存儲空間"
 
 msgid "UsageQuota|Total purchased storage"
 msgstr "使用配額購買總存儲量"
@@ -50747,9 +50997,6 @@ msgstr "使用以下連結確認您的電子郵件地址 (%{email})"
 
 msgid "Use the link below to confirm your email address."
 msgstr "使用下面的連結確認您的電子郵件地址。"
-
-msgid "Use the new rich text editor to see your text and tables fully formatted as you type. No need to remember any formatting syntax, or switch between preview and editing modes!"
-msgstr "使用新的富文本編輯器，您可以在輸入時完全格式化您的內文和表格，無需記住任何格式化語法，或在預覽和編輯模式之間切換！"
 
 msgid "Use the public cloud instance URL (%{kroki_public_url}) or %{install_link_start}install Kroki%{install_link_end} on your own infrastructure and use your own instance URL."
 msgstr "使用公共雲執行個體 URL (%{kroki_public_url}) 或 %{install_link_start}在您自己的基礎架構上安裝 Kroki%{install_link_end} 並使用您自己的執行個體 URL。"
@@ -51184,6 +51431,9 @@ msgstr "使用者名稱"
 msgid "Username (optional)"
 msgstr "使用者名稱 (可選)"
 
+msgid "Username and Password"
+msgstr "使用者名稱與密碼"
+
 msgid "Username is already taken."
 msgstr "使用者名稱已被使用。"
 
@@ -51615,6 +51865,9 @@ msgstr "查看警報詳細訊息於"
 
 msgid "View alert details."
 msgstr "查看警報詳細訊息。"
+
+msgid "View all"
+msgstr "查看全部"
 
 msgid "View all environments."
 msgstr "查看所有環境。"
@@ -52167,6 +52420,9 @@ msgstr "說明這個漏洞"
 msgid "Vulnerability|Explain this vulnerability and how to mitigate it with AI"
 msgstr "使用 AI 解釋此漏洞及如何緩解"
 
+msgid "Vulnerability|Explain vulnerability"
+msgstr "漏洞說明"
+
 msgid "Vulnerability|External Security Report"
 msgstr "外部安全報告"
 
@@ -52313,9 +52569,6 @@ msgstr "培訓"
 
 msgid "Vulnerability|Training not available for this vulnerability."
 msgstr "沒有針對此漏洞的培訓。"
-
-msgid "Vulnerability|Try it out"
-msgstr "試用一下"
 
 msgid "Vulnerability|URL:"
 msgstr "網址:"
@@ -53121,14 +53374,11 @@ msgstr "正在進行中(開啟且未指派)"
 msgid "Work in progress limit"
 msgstr "WIP 限制"
 
+msgid "Work item parent set successfully"
+msgstr "工作項父項設定成功"
+
 msgid "Work item promoted successfully."
 msgstr "工作項目升級成功。"
-
-msgid "Work items are already linked"
-msgstr "工作項已鏈結"
-
-msgid "WorkItems|This work item would exceed the maximum number of linked items."
-msgstr "這個工作項目將超過最大連結項目數量。"
 
 msgid "WorkItem|%{count} more assignees"
 msgstr "及其他 %{count} 名指派人"
@@ -53153,6 +53403,9 @@ msgstr "加入 %{workItemType}"
 
 msgid "WorkItem|Add %{workItemType}s"
 msgstr "加入 %{workItemType}"
+
+msgid "WorkItem|Add a maximum of 3 items at a time."
+msgstr "一次最多新增 3 個項目。"
 
 msgid "WorkItem|Add a title"
 msgstr "增加標題"
@@ -53190,6 +53443,12 @@ msgstr "您確定要刪除 %{workItemType} 嗎？該操作無法撤消。"
 msgid "WorkItem|Assignee"
 msgid_plural "WorkItem|Assignees"
 msgstr[0] "指派者"
+
+msgid "WorkItem|Blocked by"
+msgstr "被阻擋"
+
+msgid "WorkItem|Blocking"
+msgstr "阻擋"
 
 msgid "WorkItem|Cancel"
 msgstr "取消"
@@ -53257,11 +53516,14 @@ msgstr "關鍵結果"
 msgid "WorkItem|Key result"
 msgstr "關鍵結果"
 
-msgid "WorkItem|Link work items together to show that they're related or that one is blocking others."
-msgstr "將工作項目連結在一起以表示它們有相關，或是其中一個正在阻擋其他的。"
+msgid "WorkItem|Link items together to show that they're related or that one is blocking others."
+msgstr "將項目連結在一起以顯示它們的相關性或其中一個項目封鎖了其他項目。"
 
 msgid "WorkItem|Linked Items"
 msgstr "已連結的項目"
+
+msgid "WorkItem|Linked item removed"
+msgstr "連結項目已移除"
 
 msgid "WorkItem|Mark as done"
 msgstr "標記為完成"
@@ -53305,6 +53567,9 @@ msgstr "已開啟通知。"
 msgid "WorkItem|Objective"
 msgstr "目標"
 
+msgid "WorkItem|Only 3 items can be added at a time."
+msgstr "一次僅能新增 3 個項目。"
+
 msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}."
 msgstr "只有至少具有報告者角色的專案成員、作者和受指派者可以查看或收到有關此 %{workItemType} 的通知。"
 
@@ -53313,6 +53578,9 @@ msgstr "開啟"
 
 msgid "WorkItem|Promoted to objective."
 msgstr "提升為目標。"
+
+msgid "WorkItem|Related to"
+msgstr "相關的"
 
 msgid "WorkItem|Remove"
 msgstr "移除"
@@ -53341,6 +53609,9 @@ msgstr "刪除 %{workItemType} 時發生錯誤，請重試。"
 msgid "WorkItem|Something went wrong when deleting the task. Please try again."
 msgstr "刪除任務時發生錯誤，請重試。"
 
+msgid "WorkItem|Something went wrong when fetching items. Please refresh this page."
+msgstr "擷取項目時發生錯誤。請重新整理此頁面。"
+
 msgid "WorkItem|Something went wrong when fetching iterations. Please try again."
 msgstr "導入迭代時發生錯誤， 請再試一次。"
 
@@ -53356,11 +53627,17 @@ msgstr "取得工作項類型時出現錯誤，請再試一次。"
 msgid "WorkItem|Something went wrong when fetching work items. Please try again."
 msgstr "擷取工作項目時發生問題，請再試一次。"
 
+msgid "WorkItem|Something went wrong when removing item. Please refresh this page."
+msgstr "移除項目時發生錯誤。請重新整理此頁面。"
+
 msgid "WorkItem|Something went wrong when trying to add a child. Please try again."
 msgstr "嘗試加入子項時發生錯誤，請重試。"
 
 msgid "WorkItem|Something went wrong when trying to create a child. Please try again."
 msgstr "嘗試建立子項時發生錯誤，請再試一次。"
+
+msgid "WorkItem|Something went wrong when trying to link a item. Please try again."
+msgstr "嘗試連結項目時發生錯誤。請重試。"
 
 msgid "WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again."
 msgstr "複製 %{workItemType} 電子郵件地址時發生錯誤，請再試一次。"
@@ -53410,6 +53687,15 @@ msgstr "任務"
 msgid "WorkItem|Test case"
 msgstr "測試案例"
 
+msgid "WorkItem|The current key result"
+msgstr "目前的關鍵結果"
+
+msgid "WorkItem|The current objective"
+msgstr "目前的目標"
+
+msgid "WorkItem|The current task"
+msgstr "目前的工作項目"
+
 msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access"
 msgstr "此 %{workItemType} 是機密的，只能顯示給擁有至少「報告人」存取權限的團隊成員。"
 
@@ -53439,6 +53725,21 @@ msgstr "工作項目"
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr "您只能在頁面上看到 %{boldStart}其他活動%{boldEnd}，要發表評論，請切換到以下選項之一。"
+
+msgid "WorkItem|blocks"
+msgstr "封鎖"
+
+msgid "WorkItem|is blocked by"
+msgstr "被封鎖"
+
+msgid "WorkItem|item"
+msgstr "項目"
+
+msgid "WorkItem|relates to"
+msgstr "相關於"
+
+msgid "WorkItem|the following item(s)"
+msgstr "以下項目"
 
 msgid "Workspaces"
 msgstr "工作區"
@@ -53584,9 +53885,6 @@ msgstr "寫入里程碑描述..."
 msgid "Write your release notes or drag your files here…"
 msgstr "撰寫發行說明(Release Notes) 或將文件拖動到此處..."
 
-msgid "Writing just got easier"
-msgstr "編輯變得更容易"
-
 msgid "Wrong extern UID provided. Make sure Auth0 is configured correctly."
 msgstr "提供了錯誤的外部UID。請正確設定Auth0。"
 
@@ -53678,8 +53976,8 @@ msgstr "您正在將 %{group_name} 轉移到另一個命名空間，您確定嗎
 msgid "You are going to transfer %{project_full_name} to another namespace. Are you ABSOLUTELY sure?"
 msgstr "您正在將 %{project_full_name} 轉移到另一個名稱空間。您完全確定嗎？"
 
-msgid "You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}."
-msgstr "即將關閉機密性。這將使得%{strongStart}所有使用者%{strongEnd}都可以查看並且留言於該%{issuableType}。"
+msgid "You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see%{commentText} this %{issuableType}."
+msgstr "即將關閉機密性。這將使得%{strongStart}所有使用者%{strongEnd}都可以檢視%{commentText}並且留言於該%{issuableType}。"
 
 msgid "You are going to turn on confidentiality. Only %{context} members with %{strongStart}%{permissions}%{strongEnd} can view or be notified about this %{issuableType}."
 msgstr "您將開啟機密功能。只有擁有 %{strongStart} %{permissions} %{strongEnd}權限以上的 %{context} 個成員可以查看或收到有關此%{issuableType}的通知。"
@@ -53734,6 +54032,12 @@ msgstr "您正在使用%{username}的身份"
 
 msgid "You are on a read-only GitLab instance."
 msgstr "目前正在存取唯讀 GitLab 實體。"
+
+msgid "You are receiving this email because you are a Maintainer of the Project."
+msgstr "您收到此電子郵件是因為您是專案的維護者。"
+
+msgid "You are receiving this email because you are an Owner of the Group."
+msgstr "您收到此電子郵件是因為您是群組的擁有者。"
 
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr "您收到此消息是因為您是 %{url} 的GitLab管理員。"
@@ -53945,6 +54249,9 @@ msgstr "環境建立後不能重新命名。"
 msgid "You cannot set yourself to awaiting"
 msgstr "您不能將自已設為等待"
 
+msgid "You cannot verify %{value} because it is a popular public email domain."
+msgstr "您無法驗證 %{value}，因為其為流行的公共電子郵件網域。"
+
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
 msgstr "您不能寫入唯讀的次要 GitLab Geo 實體。請改用%{link_to_primary_node}。"
 
@@ -54092,6 +54399,9 @@ msgstr "您沒有足夠的權限為此專案建立HTTP整合"
 
 msgid "You have insufficient permissions to create an on-call schedule for this project"
 msgstr "您沒有足夠的權限來建立此專案的 on-call 排程"
+
+msgid "You have insufficient permissions to delete a target branch rule"
+msgstr "您沒有足夠的權限可以刪除目標分支規則"
 
 msgid "You have insufficient permissions to manage alerts for this project"
 msgstr "您的權限不足以管理該專案的警示"
@@ -54267,8 +54577,8 @@ msgstr "只接收留言中提及(@)您的通知"
 msgid "You won't be able to create new projects because you have reached your project limit."
 msgstr "您將無法建立新專案，因為您已經達到了專案數限制。"
 
-msgid "You'll be charged for %{true_up_link_start}users over license%{link_end} on a quarterly or annual basis, depending on the terms of your agreement."
-msgstr "根據協議條款，您將需要按季度或年度支付%{true_up_link_start}超出授權許可使用者%{link_end}的費用。"
+msgid "You'll be charged for %{true_up_start}users over license%{true_up_end} on a quarterly or annual basis, depending on the terms of your agreement."
+msgstr "根據協議條款，您將需要按季度或年度支付%{true_up_start}超出授權許可使用者%{true_up_end}的費用。"
 
 msgid "You'll be signed out from your current account automatically."
 msgstr "您將自動從目前帳號退出。"
@@ -54397,14 +54707,11 @@ msgstr "您的 DevOps 報告從功能角度概述了您如何使用 GitLab。使
 msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To ensure that your group does not become read-only, you should contact a user with the Owner role for this group to upgrade to a paid tier, or manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}."
 msgstr "您免費的最上層群組 %{group_name} 已超過 %{free_users_limit} 位使用者，並使用超過 %{free_storage_limit} 的資料。在免費的最上層群組中套用使用限制後，該群組中的專案將處於 %{read_only_link_start}唯讀狀態%{link_end}。為了確保您的群組不會變為唯讀，您應該聯繫擁有者角色的使用者升級到付費等級，或管理您的使用情況。有關即將到來的使用限制更多信息，請參閱我們的 %{faq_link_start}常見問題解答%{link_end}。"
 
-msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. You should reduce the number of users or upgrade to a paid tier %{strong_start}before%{strong_end} you manage your storage usage. Otherwise, your Free top-level group will become read-only immediately because the 5-user limit applies. For more information, see our %{faq_link_start}FAQ%{link_end}.%{br_tag}%{br_tag}To minimize the impact of storage limits to Free top-level groups, for a limited time, GitLab is offering a %{promotion_link_start}one-time 70 percent discount%{link_end} off the list price for %{offer_availability_link_start}qualifying top-level groups%{link_end} when you purchase a new, one year subscription of GitLab Premium SaaS. This offer is valid until 2023-10-31."
-msgstr "您免費的最上層%{group_name}群組超過了%{free_users_limit}個使用者的限制，並使用了超過%{free_storage_limit}的資料。對於免費的最上層群組套用使用限制後，該群組中的專案將進入%{read_only_link_start}唯讀狀態%{link_end}」。您應該減少使用者數量或在處理儲存使用量%{strong_start}之前%{strong_end}升級到付費等級，否則，由於5個使用者的限制，您的免費最上層群組將立即變為唯讀狀態。有關詳細信息，請參閱我們的%{faq_link_start}常見問題%{link_end}。%{br_tag}%{br_tag}為了將儲存限制對免費最上層群組的影響降至最低，在有限的時間內，GitLab為%{offer_availability_link_start}符合條件的最上層群組%{link_end}購買新的一年訂閱GitLab Premium SaaS時，提供%{promotion_link_start}一次性70%%折扣%{link_end}。此優惠有效期至2023年10月31日。"
+msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. You should reduce the number of users or upgrade to a paid tier %{strong_start}before%{strong_end} you manage your storage usage. Otherwise, your Free top-level group will become read-only immediately because the 5-user limit applies. For more information, see our %{faq_link_start}FAQ%{link_end}."
+msgstr "您的免費頂級群組 (%{group_name}) 擁有超過 %{free_users_limit} 個使用者，並使用超過 %{free_storage_limit} 的資料。在對免費的醉上層群組套用使用限制後，該群組中的專案將處於%{read_only_link_start}唯讀狀態%{link_end}。您應在減少使用者數量或升級到付費方案%{strong_start}之前%{strong_end}管理您的儲存空間使用量。否則，您的免費頂級群組將立即變為唯讀，因為套用了 5 個使用者的限制。要取得更多資訊，請見我們的 %{faq_link_start}FAQ%{link_end}。"
 
 msgid "Your GPG keys"
 msgstr "您的 GPG 密鑰"
-
-msgid "Your GitLab Ultimate free trial lasts for 30 days. After this period, you can maintain a GitLab Free account forever or upgrade to a paid plan."
-msgstr "您的 GitLab Ultimate 免費試用期為 30 天，試用期結束後，您可以永久保留 GitLab Free 帳戶，或升級到付費方案。"
 
 msgid "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in %{duration} or you can click the link below to unlock now."
 msgstr "由於大量不成功的嘗試登入，您的 GitLab 帳號已被鎖定。您的帳號將在 %{duration} 自動解鎖，或者您可以單擊下面的連結立即解鎖。"
@@ -54616,6 +54923,9 @@ msgstr "您的密碼"
 
 msgid "Your password reset token has expired."
 msgstr "您的密碼重設令牌已過期。"
+
+msgid "Your personal access token has been revoked"
+msgstr "您的個人存取令牌已被撤銷"
 
 msgid "Your personal access tokens have expired"
 msgstr "您的個人存取令牌 已過期"
@@ -55416,9 +55726,6 @@ msgstr "為此專案做出貢獻。"
 
 msgid "could not read private key, is the passphrase correct?"
 msgstr "無法讀取私鑰，密碼口令是否正確？"
-
-msgid "created"
-msgstr "已建立"
 
 msgid "created %{issuable_created} by %{author}"
 msgstr "%{issuable_created}由%{author}建立"
@@ -56248,8 +56555,8 @@ msgstr "顯示 %{widget} 詳情"
 msgid "mrWidget|The %{type} branch %{codeStart}%{name}%{codeEnd} does not exist."
 msgstr "%{type} 分支 %{codeStart}%{name}%{codeEnd} 不存在。"
 
-msgid "mrWidget|The source branch is %{link} the target branch"
-msgstr "來源分支是 %{link} 的目標分支"
+msgid "mrWidget|The source branch is %{link} the target branch."
+msgstr "來源分支是 %{link} 的目標分支。"
 
 msgid "mrWidget|This merge request failed to be merged automatically"
 msgstr "該合併請求未能自動合併"
@@ -56450,6 +56757,9 @@ msgstr[0] "開啟的議題"
 msgid "or"
 msgstr "或"
 
+msgid "or sign in with"
+msgstr "或使用其他方式登入"
+
 msgid "organizations can only be added to root groups"
 msgstr "組織只能被加入到根(root)群組"
 
@@ -56469,8 +56779,8 @@ msgstr[0] "父級"
 msgid "parent already has maximum number of children."
 msgstr "父級已經有最大數量的子級。"
 
-msgid "parent must be in the same project as child."
-msgstr "父級必須與子級在同一個專案中。"
+msgid "parent must be in the same project or group as child."
+msgstr "父節點必須與子節點在同一個專案或群組中。"
 
 msgid "password"
 msgstr "密碼"
@@ -56489,9 +56799,6 @@ msgstr "個人存取令牌"
 
 msgid "pipeline"
 msgstr "流水線"
-
-msgid "pipeline schedules documentation"
-msgstr "流水線排程文件"
 
 msgid "pipelineEditorWalkthrough|Let's do this!"
 msgstr "讓我們這樣做！"
@@ -56646,6 +56953,9 @@ msgstr[0] "席次"
 msgid "security Reports|There was an error creating the merge request"
 msgstr "建立合併請求時發生錯誤"
 
+msgid "security policy bot users cannot be added to other projects"
+msgstr "安全性策略 bot 使用者無法新增至其他專案"
+
 msgid "selective_code_owner_removals can only be enabled when retain_approvals_on_push is enabled"
 msgstr "只有在啟用了 retain_approvals_on_push 時才能啟用 selective_code_owner_removals"
 
@@ -56726,9 +57036,6 @@ msgstr "%{slash_command} 增加或減少已經花費的時間。"
 
 msgid "ssh:"
 msgstr "ssh:"
-
-msgid "started"
-msgstr "已開始"
 
 msgid "started a discussion on %{design_link}"
 msgstr "開始討論%{design_link}"

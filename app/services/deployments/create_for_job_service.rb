@@ -38,8 +38,6 @@ module Deployments
       return unless deployment.valid? && deployment.environment.persisted?
 
       if cluster = deployment.environment.deployment_platform&.cluster # rubocop: disable Lint/AssignmentInCondition
-        # double write cluster_id until 12.9: https://gitlab.com/gitlab-org/gitlab/issues/202628
-        deployment.cluster_id = cluster.id
         deployment.deployment_cluster = ::DeploymentCluster.new(
           cluster_id: cluster.id,
           kubernetes_namespace: cluster.kubernetes_namespace_for(deployment.environment, deployable: job)

@@ -618,7 +618,6 @@ Layout/LineLength:
     - 'app/services/system_notes/issuables_service.rb'
     - 'app/services/system_notes/zoom_service.rb'
     - 'app/services/tags/destroy_service.rb'
-    - 'app/services/tasks_to_be_done/base_service.rb'
     - 'app/services/users/approve_service.rb'
     - 'app/services/users/banned_user_base_service.rb'
     - 'app/services/users/build_service.rb'

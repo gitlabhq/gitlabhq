@@ -16,7 +16,6 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:member_namespace) }
-    it { is_expected.to have_one(:member_task) }
   end
 
   describe 'Validation' do

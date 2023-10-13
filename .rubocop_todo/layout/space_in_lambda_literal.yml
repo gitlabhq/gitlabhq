@@ -65,7 +65,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/loose_foreign_keys/deleted_record.rb'
     - 'app/models/member.rb'
     - 'app/models/members/group_member.rb'
-    - 'app/models/members/member_task.rb'
     - 'app/models/merge_request.rb'
     - 'app/models/merge_request_diff.rb'
     - 'app/models/milestone.rb'

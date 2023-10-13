@@ -1535,7 +1535,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/snippets/create_service_spec.rb'
     - 'spec/services/snippets/destroy_service_spec.rb'
     - 'spec/services/snippets/update_service_spec.rb'
-    - 'spec/services/tasks_to_be_done/base_service_spec.rb'
     - 'spec/services/todo_service_spec.rb'
     - 'spec/services/todos/destroy/entity_leave_service_spec.rb'
     - 'spec/services/uploads/destroy_service_spec.rb'

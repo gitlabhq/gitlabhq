@@ -4807,7 +4807,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/models/loose_foreign_keys/modification_tracker_spec.rb'
     - 'spec/models/members/group_member_spec.rb'
     - 'spec/models/members/last_group_owner_assigner_spec.rb'
-    - 'spec/models/members/member_task_spec.rb'
     - 'spec/models/members/project_member_spec.rb'
     - 'spec/models/merge_request/approval_removal_settings_spec.rb'
     - 'spec/models/merge_request/diff_commit_user_spec.rb'

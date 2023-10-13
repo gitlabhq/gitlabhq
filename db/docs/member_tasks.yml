@@ -1,7 +1,5 @@
 ---
 table_name: member_tasks
-classes:
-- MemberTask
 feature_categories:
 - activation
 description: TODO

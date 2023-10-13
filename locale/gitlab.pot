@@ -56454,13 +56454,7 @@ msgstr ""
 msgid "is not in the group enforcing Group Managed Account"
 msgstr ""
 
-msgid "is not in the member group"
-msgstr ""
-
 msgid "is not one of"
-msgstr ""
-
-msgid "is not the member project"
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."

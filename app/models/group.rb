@@ -423,15 +423,13 @@ class Group < Namespace
     owners.include?(user)
   end
 
-  def add_members(users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
+  def add_members(users, access_level, current_user: nil, expires_at: nil)
     Members::Groups::CreatorService.add_members( # rubocop:disable CodeReuse/ServiceClass
       self,
       users,
       access_level,
       current_user: current_user,
-      expires_at: expires_at,
-      tasks_to_be_done: tasks_to_be_done,
-      tasks_project_id: tasks_project_id
+      expires_at: expires_at
     )
   end
 

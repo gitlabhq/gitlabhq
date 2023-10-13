@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Onboarding::Status, feature_category: :onboarding do
   let_it_be(:member) { create(:group_member) }
   let_it_be(:user) { member.user }
-  let_it_be(:tasks_to_be_done) { %w[ci code] }
   let_it_be(:source) { member.group }
 
   describe '#single_invite?' do

@@ -72,7 +72,6 @@ Lint/AssignmentInCondition:
     - 'app/services/system_notes/incident_service.rb'
     - 'app/services/system_notes/merge_requests_service.rb'
     - 'app/services/task_list_toggle_service.rb'
-    - 'app/services/tasks_to_be_done/base_service.rb'
     - 'app/services/users/last_push_event_service.rb'
     - 'app/services/users/refresh_authorized_projects_service.rb'
     - 'app/services/users/update_service.rb'

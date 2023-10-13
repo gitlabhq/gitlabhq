@@ -43,15 +43,5 @@ FactoryBot.define do
         member.update!(state: ::Member::STATE_ACTIVE)
       end
     end
-
-    transient do
-      tasks_to_be_done { [] }
-    end
-
-    after(:build) do |project_member, evaluator|
-      if evaluator.tasks_to_be_done.present?
-        build(:member_task, member: project_member, project: project_member.source, tasks_to_be_done: evaluator.tasks_to_be_done)
-      end
-    end
   end
 end

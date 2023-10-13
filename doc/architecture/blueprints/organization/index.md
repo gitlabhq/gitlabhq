@@ -108,7 +108,7 @@ The Organization MVC will contain the following functionality:
 - Organization Owner. The creation of an Organization appoints that User as the Organization Owner. Once established, the Organization Owner can appoint other Organization Owners.
 - Organization Users. A User is managed by one Organization, but can be part of multiple Organizations. Users are able to navigate between the different Organizations they are part of.
 - Setup settings. Containing the Organization name, ID, description, and avatar. Settings are editable by the Organization Owner.
-- Setup flow. Users are able to build new Organizations and transfer existing top-level Groups into them. They can also create new top-level Groups in an Organization.
+- Setup flow. Users are able to build new Organizations. They can also create new top-level Groups in an Organization.
 - Visibility. Initially, Organizations can only be `public`. Public Organizations can be seen by everyone. They can contain public and private Groups and Projects.
 - Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented.
 - Groups. This includes the ability to create, edit, and delete Groups, as well as a Groups overview that can be accessed by the Organization Owner and Users.
@@ -326,13 +326,12 @@ In iteration 2, an Organization MVC Experiment will be released. We will test th
 
 ### Iteration 3: Organization MVC Beta (FY25Q1)
 
-In iteration 3, the Organization MVC Beta will be released. Users will be able to transfer existing top-level Groups into an Organization.
+In iteration 3, the Organization MVC Beta will be released.
 
 - Multiple Organization Owners can be assigned.
 - Organization avatars can be changed in the Organization settings.
 - Organization Owners can create, edit and delete Groups from the Groups overview.
 - Organization Owners can create, edit and delete Projects from the Projects overview.
-- Top-level Groups can be transferred into an Organization.
 - The Organization URL path can be changed.
 
 ### Iteration 4: Organization MVC GA (FY25Q2)
@@ -343,6 +342,7 @@ In iteration 4, the Organization MVC will be rolled out.
 
 After the initial rollout of Organizations, the following functionality will be added to address customer needs relating to their implementation of GitLab:
 
+1. [Users can transfer existing top-level Groups into Organizations](https://gitlab.com/groups/gitlab-org/-/epics/11711).
 1. [Organizations can invite Users](https://gitlab.com/gitlab-org/gitlab/-/issues/420166).
 1. Internal visibility will be made available on Organizations that are part of GitLab.com.
 1. Restrict inviting Users outside of the Organization.

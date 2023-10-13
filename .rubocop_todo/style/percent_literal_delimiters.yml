@@ -203,7 +203,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/models/integrations/jira_spec.rb'
     - 'spec/models/integrations/teamcity_spec.rb'
     - 'spec/models/issue_spec.rb'
-    - 'spec/models/members/member_task_spec.rb'
     - 'spec/models/merge_request_diff_spec.rb'
     - 'spec/models/namespace_statistics_spec.rb'
     - 'spec/models/packages/package_spec.rb'

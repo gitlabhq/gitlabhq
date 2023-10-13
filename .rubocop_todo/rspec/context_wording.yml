@@ -2817,7 +2817,6 @@ RSpec/ContextWording:
     - 'spec/services/system_notes/design_management_service_spec.rb'
     - 'spec/services/system_notes/issuables_service_spec.rb'
     - 'spec/services/system_notes/merge_requests_service_spec.rb'
-    - 'spec/services/tasks_to_be_done/base_service_spec.rb'
     - 'spec/services/terraform/remote_state_handler_spec.rb'
     - 'spec/services/terraform/states/destroy_service_spec.rb'
     - 'spec/services/terraform/states/trigger_destroy_service_spec.rb'
