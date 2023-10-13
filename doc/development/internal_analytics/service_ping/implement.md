@@ -725,7 +725,7 @@ Three kinds of components may export data to Prometheus, and are included in Ser
 
 - [`node_exporter`](https://github.com/prometheus/node_exporter): Exports node metrics
   from the host machine.
-- [`gitlab-exporter`](https://gitlab.com/gitlab-org/gitlab-exporter): Exports process metrics
+- [`gitlab-exporter`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter): Exports process metrics
   from various GitLab components.
 - Other various GitLab services, such as Sidekiq and the Rails server, which export their own metrics.
 

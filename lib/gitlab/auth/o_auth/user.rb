@@ -225,7 +225,7 @@ module Gitlab
           if creating_linked_ldap_user?
             username = ldap_person.username.presence
             name = ldap_person.name.presence
-            email = ldap_person.email.first.presence
+            email = ldap_person.email&.first.presence
           end
 
           username ||= auth_hash.username
@@ -272,7 +272,7 @@ module Gitlab
 
           if creating_linked_ldap_user?
             metadata.set_attribute_synced(:name, true) if gl_user.name == ldap_person.name
-            metadata.set_attribute_synced(:email, true) if gl_user.email == ldap_person.email.first
+            metadata.set_attribute_synced(:email, true) if gl_user.email == ldap_person.email&.first
             metadata.provider = ldap_person.provider
           end
         end

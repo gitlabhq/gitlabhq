@@ -36,9 +36,9 @@ To unlock your account, sign in and enter the verification code. You can also
 
 ## Accounts with 2FA or OAuth
 
-An account is locked when there are five or more failed sign-in attempts in 10 minutes.
+An account is locked when there are three or more failed sign-in attempts.
 
-Accounts with 2FA or OAuth are automatically unlocked after 10 minutes. To unlock an account manually,
+Accounts with 2FA or OAuth are automatically unlocked after 30 minutes. To unlock an account manually,
 reset your password.
 
 ## Related topics

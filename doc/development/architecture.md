@@ -490,7 +490,7 @@ Geo is a premium feature built to help speed up the development of distributed t
 
 #### GitLab Exporter
 
-- [Project page](https://gitlab.com/gitlab-org/gitlab-exporter)
+- [Project page](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/gitlab_exporter.md)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-exporter/index.html)
@@ -498,7 +498,7 @@ Geo is a premium feature built to help speed up the development of distributed t
 - Process: `gitlab-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://about.gitlab.com/handbook/engineering/monitoring/)
 
-GitLab Exporter is a process designed in house that allows us to export metrics about GitLab application internals to Prometheus. You can read more [in the project's README](https://gitlab.com/gitlab-org/gitlab-exporter).
+GitLab Exporter is a process designed in house that allows us to export metrics about GitLab application internals to Prometheus. You can read more [in the project's README](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter).
 
 #### GitLab agent
 

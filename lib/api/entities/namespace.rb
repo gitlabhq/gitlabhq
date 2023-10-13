@@ -11,11 +11,15 @@ module API
         namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
       end
 
-      expose :root_repository_size, documentation: { type: 'integer', example: 123 }, if: -> (namespace, opts) { expose_root_repository_size?(namespace, opts) } do |namespace, _|
+      expose :root_repository_size, documentation: { type: 'integer', example: 123 }, if: -> (namespace, opts) { admin_request_for_group?(namespace, opts) } do |namespace, _|
         namespace.root_storage_statistics&.repository_size
       end
 
-      def expose_root_repository_size?(namespace, opts)
+      expose :projects_count, documentation: { type: 'integer', example: 123 }, if: -> (namespace, opts) { admin_request_for_group?(namespace, opts) } do |namespace, _|
+        namespace.all_projects.count
+      end
+
+      def admin_request_for_group?(namespace, opts)
         namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
       end
     end

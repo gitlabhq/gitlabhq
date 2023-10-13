@@ -29,7 +29,7 @@ ClickHouse::Client.configure do |config|
     options = {
       multipart: true,
       headers: headers,
-      allow_local_requests: Rails.env.development? || Rails.env.test?
+      allow_local_requests: true
     }
 
     body_key = body.is_a?(IO) ? :body_stream : :body

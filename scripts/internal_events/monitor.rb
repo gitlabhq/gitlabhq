@@ -133,6 +133,15 @@ def generate_metrics_table
   )
 end
 
+begin
+  snowplow_data
+rescue Errno::ECONNREFUSED
+  puts "Could not connect to Snowplow Micro."
+  puts "Please follow these instruction to set up Snowplow Micro:"
+  puts "https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md"
+  exit 1
+end
+
 print "\e[?1049h" # Stores the original screen buffer
 print "\e[H" # Moves the cursor home
 begin

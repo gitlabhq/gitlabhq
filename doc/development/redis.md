@@ -137,7 +137,7 @@ concern.
 <!-- vale gitlab.Substitutions = YES -->
 
 The
-[`fluent-plugin-redis-slowlog`](https://gitlab.com/gitlab-org/fluent-plugin-redis-slowlog)
+[`fluent-plugin-redis-slowlog`](https://gitlab.com/gitlab-org/ruby/gems/fluent-plugin-redis-slowlog)
 project is responsible for taking the `slowlog` entries from Redis and
 passing to Fluentd (and ultimately Elasticsearch).
 

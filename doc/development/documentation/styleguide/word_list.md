@@ -208,6 +208,14 @@ Instead, use **assign**. For example:
 
 Use **authenticated user** instead of other variations, like **signed in user** or **logged in user**.
 
+## before you begin
+
+Use **before you begin** when documenting the tasks that must be completed or the conditions that must be met before a user can complete a tutorial. Do not use **requirements** or **prerequisites**.
+
+For more information, see [the tutorial page type](../topic_types/tutorial.md).
+
+For task topic types, use [**prerequisites**](#prerequisites) instead.
+
 ## below
 
 Try to avoid **below** when referring to an example or table in a documentation page. If required, use **following** instead. For example:
@@ -1253,9 +1261,11 @@ in the context of other subscription tiers, follow [the subscription tier](#subs
 
 ## prerequisites
 
-Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+Use **prerequisites** when documenting the tasks that must be completed or the conditions that must be met before a user can complete a task. Do not use **requirements**.
 
 For more information, see [the task topic type](../topic_types/task.md).
+
+For tutorial page types, use [**before you begin**](#before-you-begin) instead.
 
 ## press
 
@@ -1321,9 +1331,12 @@ Use title case for **Repository Mirroring**.
 
 ## requirements
 
-Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+When documenting the tasks that must be completed or the conditions that must be met before a user can complete the steps:
 
-For more information, see [the task topic type](../topic_types/task.md).
+- Use **prerequisites** for tasks. For more information, see [the task topic type](../topic_types/task.md).
+- Use **before you begin** for tutorials. For more information, see [the tutorial page type](../topic_types/tutorial.md).
+
+Do not use **requirements**.
 
 ## respectively
 
