@@ -1,12 +1,11 @@
-import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlTooltip } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlTooltip } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import UserNameGroup from '~/super_sidebar/components/user_name_group.vue';
+import UserMenuProfileItem from '~/super_sidebar/components/user_menu_profile_item.vue';
 import { userMenuMockData, userMenuMockStatus } from '../mock_data';
 
-describe('UserNameGroup component', () => {
+describe('UserMenuProfileItem component', () => {
   let wrapper;
 
-  const findGlDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findGlDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findGlTooltip = () => wrapper.findComponent(GlTooltip);
   const findUserStatus = () => wrapper.findByTestId('user-menu-status');
@@ -14,7 +13,7 @@ describe('UserNameGroup component', () => {
   const GlEmoji = { template: '<img/>' };
 
   const createWrapper = (userDataChanges = {}) => {
-    wrapper = shallowMountExtended(UserNameGroup, {
+    wrapper = shallowMountExtended(UserMenuProfileItem, {
       propsData: {
         user: {
           ...userMenuMockData,
@@ -30,10 +29,6 @@ describe('UserNameGroup component', () => {
 
   beforeEach(() => {
     createWrapper();
-  });
-
-  it('renders the menu item in a separate group', () => {
-    expect(findGlDisclosureDropdownGroup().exists()).toBe(true);
   });
 
   it('renders menu item', () => {

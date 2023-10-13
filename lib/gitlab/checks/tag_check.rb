@@ -11,7 +11,8 @@ module Gitlab
         delete_protected_tag_non_web: 'You can only delete protected tags using the web interface.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
         default_branch_collision: 'You cannot use default branch name to create a tag',
-        prohibited_tag_name: 'You cannot create a tag with a prohibited pattern.'
+        prohibited_tag_name: 'You cannot create a tag with a prohibited pattern.',
+        prohibited_tag_name_encoding: 'Tag names must be valid when converted to UTF-8 encoding'
       }.freeze
 
       LOG_MESSAGES = {
@@ -46,6 +47,16 @@ module Gitlab
         if tag_name.start_with?("refs/tags/") # rubocop: disable Style/GuardClause
           raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_tag_name]
         end
+
+        # rubocop: disable Style/GuardClause
+        # rubocop: disable Style/SoleNestedConditional
+        if Feature.enabled?(:prohibited_tag_name_encoding_check, project)
+          unless Gitlab::EncodingHelper.force_encode_utf8(tag_name).valid_encoding?
+            raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_tag_name_encoding]
+          end
+        end
+        # rubocop: enable Style/SoleNestedConditional
+        # rubocop: enable Style/GuardClause
       end
 
       def protected_tag_checks

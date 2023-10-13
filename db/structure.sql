@@ -20196,7 +20196,7 @@ CREATE TABLE packages_protection_rules (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    push_protected_up_to_access_level integer NOT NULL,
+    push_protected_up_to_access_level smallint NOT NULL,
     package_type smallint NOT NULL,
     package_name_pattern text NOT NULL,
     CONSTRAINT check_d2d75d206d CHECK ((char_length(package_name_pattern) <= 255))

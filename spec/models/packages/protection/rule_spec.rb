@@ -10,9 +10,19 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
   end
 
   describe 'enums' do
-    describe '#package_type' do
-      it { is_expected.to define_enum_for(:package_type).with_values(npm: Packages::Package.package_types[:npm]) }
-    end
+    it { is_expected.to define_enum_for(:package_type).with_values(npm: Packages::Package.package_types[:npm]) }
+
+    it {
+      is_expected.to(
+        define_enum_for(:push_protected_up_to_access_level)
+          .with_values(
+            developer: Gitlab::Access::DEVELOPER,
+            maintainer: Gitlab::Access::MAINTAINER,
+            owner: Gitlab::Access::OWNER
+          )
+          .with_prefix(:push_protected_up_to)
+      )
+    }
   end
 
   describe 'validations' do
@@ -30,11 +40,6 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
 
     describe '#push_protected_up_to_access_level' do
       it { is_expected.to validate_presence_of(:push_protected_up_to_access_level) }
-
-      it {
-        is_expected.to validate_inclusion_of(:push_protected_up_to_access_level).in_array([Gitlab::Access::DEVELOPER,
-          Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER])
-      }
     end
   end
 end

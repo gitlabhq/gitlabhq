@@ -112,8 +112,19 @@ mutation above.
 
 ```graphql
 mutation {
-  auditEventsStreamingHeadersCreate(input: { destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/24601", key: "foo", value: "bar" }) {
+  auditEventsStreamingHeadersCreate(input: {
+    destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
+     key: "foo",
+     value: "bar",
+     active: false
+  }) {
     errors
+    header {
+      id
+      key
+      value
+      active
+    }
   }
 }
 ```
@@ -146,6 +157,7 @@ query {
             key
             value
             id
+            active
           }
         }
         eventTypeFilters
@@ -500,13 +512,15 @@ mutation {
     {
       destinationId: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/42",
       key: "foo",
-      value: "bar"
+      value: "bar",
+      active: true
     }) {
     errors
     header {
       id
       key
       value
+      active
     }
   }
 }
@@ -538,6 +552,7 @@ query {
           id
           key
           value
+          active
         }
       }
       eventTypeFilters
@@ -590,12 +605,13 @@ by [listing all the custom HTTP headers](#list-streaming-destinations-1) for the
 
 ```graphql
 mutation {
-  auditEventsStreamingInstanceHeadersUpdate(input: { headerId: "gid://gitlab/AuditEvents::Streaming::InstanceHeader/2", key: "new-key", value: "new-value" }) {
+  auditEventsStreamingInstanceHeadersUpdate(input: { headerId: "gid://gitlab/AuditEvents::Streaming::InstanceHeader/2", key: "new-key", value: "new-value", active: false }) {
     errors
     header {
       id
       key
       value
+      active
     }
   }
 }

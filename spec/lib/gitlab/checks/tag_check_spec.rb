@@ -41,6 +41,36 @@ RSpec.describe Gitlab::Checks::TagCheck, feature_category: :source_code_manageme
           expect { subject.validate! }.not_to raise_error
         end
       end
+
+      it "prohibits tag names that include characters incompatible with UTF-8" do
+        allow(subject).to receive(:tag_name).and_return("v6.0.0-\xCE.BETA")
+
+        expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "Tag names must be valid when converted to UTF-8 encoding")
+      end
+
+      it "doesn't prohibit UTF-8 compatible characters" do
+        allow(subject).to receive(:tag_name).and_return("v6.0.0-Ü.BETA")
+
+        expect { subject.validate! }.not_to raise_error
+      end
+
+      context "when prohibited_tag_name_encoding_check feature flag is disabled" do
+        before do
+          stub_feature_flags(prohibited_tag_name_encoding_check: false)
+        end
+
+        it "doesn't prohibit tag names that include characters incompatible with UTF-8" do
+          allow(subject).to receive(:tag_name).and_return("v6.0.0-\xCE.BETA")
+
+          expect { subject.validate! }.not_to raise_error
+        end
+
+        it "doesn't prohibit UTF-8 compatible characters" do
+          allow(subject).to receive(:tag_name).and_return("v6.0.0-Ü.BETA")
+
+          expect { subject.validate! }.not_to raise_error
+        end
+      end
     end
 
     context 'with protected tag' do

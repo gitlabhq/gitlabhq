@@ -60,7 +60,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
-    data-qa-selector="apply_suggestion_dropdown"
+    data-testid="apply-suggestion-dropdown"
     fluid-width
     placement="right"
     size="small"
@@ -81,7 +81,7 @@ export default {
         class="apply-suggestions-input-min-width"
         :placeholder="defaultCommitMessage"
         submit-on-enter
-        data-qa-selector="commit_message_field"
+        data-testid="commit-message-field"
         @submit="onApply"
       />
 
@@ -93,7 +93,7 @@ export default {
         class="gl-w-auto! gl-mt-3 gl-align-self-end"
         category="primary"
         variant="confirm"
-        data-qa-selector="commit_with_custom_message_button"
+        data-testid="commit-with-custom-message-button"
         @click="onApply"
       >
         {{ __('Apply') }}

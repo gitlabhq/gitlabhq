@@ -75,7 +75,6 @@ export default {
         actions.push({
           text: this.cancelButtonText,
           loading: this.isCancellingAutoMerge,
-          dataQaSelector: 'cancel_auto_merge_button',
           class: 'js-cancel-auto-merge',
           testId: 'cancelAutomaticMergeButton',
           onClick: () => this.cancelAutomaticMerge(),

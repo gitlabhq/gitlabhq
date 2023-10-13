@@ -32,7 +32,7 @@ export default {
   >
     <span
       class="gl-md-mr-3 gl-flex-grow-1 gl-ml-0! gl-text-body!"
-      data-qa-selector="head_mismatch_content"
+      data-testid="head-mismatch-content"
     >
       <bold-text :message="$options.i18n.I18N_SHA_MISMATCH.warningMessage" />
     </span>

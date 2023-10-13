@@ -144,13 +144,13 @@ export default {
         <gl-icon name="question-o" css-classes="link-highlight" />
       </a>
     </div>
-    <gl-badge v-if="isApplied" variant="success" data-qa-selector="applied_badge">
+    <gl-badge v-if="isApplied" variant="success" data-testid="applied-badge">
       {{ __('Applied') }}
     </gl-badge>
     <div
       v-else-if="isApplying"
       class="gl-display-flex gl-align-items-center text-secondary"
-      data-qa-selector="applying_badge"
+      data-testid="applying-badge"
     >
       <gl-loading-icon size="sm" class="gl-align-items-center gl-justify-content-center gl-mr-3" />
       <span>{{ applyingSuggestionsMessage }}</span>
@@ -169,7 +169,7 @@ export default {
       <div v-else-if="!isDisableButton && suggestionsCount > 1">
         <gl-button
           class="btn-inverted js-add-to-batch-btn btn-grouped"
-          data-qa-selector="add_suggestion_batch_button"
+          data-testid="add-suggestion-batch-button"
           :disabled="isDisableButton"
           size="small"
           @click="addSuggestionToBatch"

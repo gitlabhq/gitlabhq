@@ -263,12 +263,46 @@ following sections for information on solving:
 
 ### Large number of references
 
-A reference in Git (a branch or tag) is used to refer to a commit. If you are
-curious, you can go to any `.git` directory and look under the `refs` directory.
+[References in Git](https://git-scm.com/book/en/v2/Git-Internals-Git-References)
+are branch and tag names that point to a particular commit. You can use the `git
+for-each-ref` command to list all references present in a repository. A large
+number of references in a repository can have detrimental impact on the command's
+performance. To understand why, we need to understand how Git stores references
+and uses them.
 
-A large number of references can cause performance problems because, with more
-references, object walks that Git does are larger for various operations such as
-clones, pushes, and housekeeping tasks.
+In general, Git stores all references as loose files in the `.git/refs` folder of
+the repository. As the number of references grows, the seek time to find a
+particular reference in the folder also increases. Therefore, every time Git has
+to parse a reference, there is an increased latency due to the added seek time
+of the file system.
+
+To resolve this issue, Git uses [pack-refs](https://git-scm.com/docs/git-pack-refs). In short, instead of storing each
+reference in a single file, Git creates a single `.git/packed-refs` file that
+contains all the references for that repository. This file reduces storage space
+while also increasing performance because seeking within a single file is faster
+than seeking a file within a directory. However, creating and updating new references
+is still done through loose files and are not added to the `packed-refs` file. To
+recreate the `packed-refs` file, run `git pack-refs`.
+
+Gitaly runs `git pack-refs` during [housekeeping](../../../administration/housekeeping.md#heuristical-housekeeping)
+to move loose references into `packed-refs` files. While this is very beneficial
+for most repositories, write-heavy repositories still have the problem that:
+
+- Creating or updating references creates new loose files.
+- Deleting references involves modifying the existing `packed-refs` file
+  altogether to remove the existing reference.
+
+These problems still cause the same performance issues.
+
+In addition, fetches and clones from repositories includes the transfer
+of missing objects from the server to the client. When there are numerous
+references, Git iterates over all references and walks the internal graph
+structure for each reference to find the missing objects to transfer to
+the client. Iteration and walking are CPU-intensive operations that increase
+the latency of these commands.
+
+In repositories with a lot of activity, this often causes a domino effect because
+every operation is slower and each operation stalls subsequent operations.
 
 #### Mitigation strategies
 

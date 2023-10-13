@@ -46,7 +46,7 @@ export default {
       :disabled="isDisabled"
       name="squash"
       class="js-squash-checkbox gl-mr-2"
-      data-qa-selector="squash_checkbox"
+      data-testid="squash-checkbox"
       :title="tooltipTitle"
       @change="(checked) => $emit('input', checked)"
     >

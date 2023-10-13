@@ -281,7 +281,7 @@ export default {
             :tag-content="lineContent"
             tracking-property="codeSuggestion"
             icon="doc-code"
-            data-qa-selector="suggestion_button"
+            data-testid="suggestion-button"
             class="js-suggestion-btn"
             @click="handleSuggestDismissed"
           />
@@ -305,7 +305,7 @@ export default {
               variant="confirm"
               category="primary"
               size="small"
-              data-qa-selector="dismiss_suggestion_popover_button"
+              data-testid="dismiss-suggestion-popover-button"
               @click="handleSuggestDismissed"
             >
               {{ __('Got it') }}

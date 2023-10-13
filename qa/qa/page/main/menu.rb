@@ -21,7 +21,7 @@ module QA
           element :edit_profile_link
         end
 
-        view 'app/assets/javascripts/super_sidebar/components/user_name_group.vue' do
+        view 'app/assets/javascripts/super_sidebar/components/user_menu_profile_item.vue' do
           element 'user-profile-link'
         end
 

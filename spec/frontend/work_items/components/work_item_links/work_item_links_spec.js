@@ -54,7 +54,6 @@ describe('WorkItemLinks', () => {
         [issueDetailsQuery, issueDetailsQueryHandler],
       ],
       resolvers,
-      { addTypename: true },
     );
 
     wrapper = shallowMountExtended(WorkItemLinks, {

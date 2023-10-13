@@ -230,7 +230,6 @@ export default {
             v-if="!rebasingError"
             class="gl-w-100 gl-md-w-auto gl-flex-grow-1 gl-ml-0! gl-text-body! gl-md-mr-3"
             data-testid="rebase-message"
-            data-qa-selector="no_fast_forward_message_content"
           >
             <bold-text :message="$options.i18n.rebaseError" />
           </span>
@@ -247,7 +246,6 @@ export default {
           :loading="isMakingRequest"
           variant="confirm"
           size="small"
-          data-qa-selector="mr_rebase_button"
           data-testid="standard-rebase-button"
           class="gl-align-self-start"
           @click="tryRebase"

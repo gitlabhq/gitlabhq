@@ -23,7 +23,7 @@ module QA
 
         after do
           Parallel.each((0..(total_runners_count - 1)), in_threads: 3) do |i|
-            runners[i].remove_via_api!
+            runners[i]&.remove_via_api!
           end
         end
 
@@ -46,7 +46,7 @@ module QA
 
       def launch_runners
         Parallel.each((1..total_runners_count), in_threads: 3) do |i|
-          runners << create(:project_runner, project: project, name: "executor-#{i}", tags: [executor])
+          runners << create(:project_runner, project: project, name: "#{executor}-#{i}", tags: [executor])
         end
       end
 
