@@ -18,6 +18,8 @@ RSpec.describe Integrations::Discord, feature_category: :integrations do
         ]
       }
     end
+
+    it_behaves_like 'supports group mentions', :discord_integration
   end
 
   describe 'validations' do

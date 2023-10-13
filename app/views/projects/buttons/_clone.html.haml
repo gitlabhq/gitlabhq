@@ -15,7 +15,7 @@
           .input-group.btn-group
             = text_field_tag :ssh_project_clone, ssh_clone_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'ssh_clone_url_content' }
             .input-group-append
-              = deprecated_clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), class: "input-group-text gl-button btn btn-icon btn-default")
+              = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), category: :primary, size: :medium)
               = render_if_exists 'projects/buttons/geo'
       - if http_enabled?
         %li.pt-2{ class: 'gl-px-4!' }
@@ -24,7 +24,7 @@
           .input-group.btn-group
             = text_field_tag :http_project_clone, http_clone_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'http_clone_url_content' }
             .input-group-append
-              = deprecated_clipboard_button(target: '#http_project_clone', title: _("Copy URL"), class: "input-group-text gl-button btn btn-icon btn-default")
+              = clipboard_button(target: '#http_project_clone', title: _("Copy URL"), category: :primary, size: :medium)
               = render_if_exists 'projects/buttons/geo'
         = render_if_exists 'projects/buttons/kerberos_clone_field'
       %li.divider.mt-2

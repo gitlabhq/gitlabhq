@@ -22,9 +22,14 @@ module Gitlab
       "#{Gitlab::Observability.observability_url}/v3/tenant/#{project.id}"
     end
 
-    def should_enable_observability_auth_scopes?(group)
-      # Enable the needed auth scopes if tracing is enabled.
-      Feature.enabled?(:observability_tracing, group.root_ancestor)
+    def should_enable_observability_auth_scopes?(resource)
+      # Enable the needed oauth scopes if tracing is enabled.
+      if resource.is_a?(Group) || resource.is_a?(Project)
+        return Feature.enabled?(:observability_tracing,
+          resource.root_ancestor)
+      end
+
+      false
     end
   end
 end

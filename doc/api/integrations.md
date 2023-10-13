@@ -485,6 +485,10 @@ Parameters:
 | `confidential_note_channel` | string | false | The webhook override to receive notifications for confidential note events. |
 | `deployment_events` | boolean | false | Enable notifications for deployment events. |
 | `deployment_channel` | string | false | The webhook override to receive notifications for deployment events. |
+| `group_confidential_mentions_events` | boolean | false | Enable notifications for group confidential mention events. |
+| `group_confidential_mentions_channel` | string | false | The webhook override to receive notifications for group confidential mention events. |
+| `group_mentions_events` | boolean | false | Enable notifications for group mention events. |
+| `group_mentions_channel` | string | false | The webhook override to receive notifications for group mention events. |
 | `issues_events` | boolean | false | Enable notifications for issue events. |
 | `issue_channel` | string | false | The webhook override to receive notifications for issue events. |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events. |

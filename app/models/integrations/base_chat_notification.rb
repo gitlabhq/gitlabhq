@@ -13,6 +13,8 @@ module Integrations
       tag_push pipeline wiki_page deployment incident
     ].freeze
 
+    GROUP_ONLY_SUPPORTED_EVENTS = %w[group_mention group_confidential_mention].freeze
+
     SUPPORTED_EVENTS_FOR_LABEL_FILTER = %w[issue confidential_issue merge_request note confidential_note].freeze
 
     EVENT_CHANNEL = proc { |event| "#{event}_channel" }
@@ -30,6 +32,7 @@ module Integrations
 
     # Custom serialized properties initialization
     prop_accessor(*SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
+    prop_accessor(*GROUP_ONLY_SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
 
     boolean_accessor :notify_only_default_branch
 
@@ -251,6 +254,8 @@ module Integrations
         Integrations::ChatMessage::DeploymentMessage.new(data) if notify_for_ref?(data)
       when "incident"
         Integrations::ChatMessage::IssueMessage.new(data) unless update?(data)
+      when "group_mention"
+        Integrations::ChatMessage::GroupMentionMessage.new(data)
       end
     end
     # rubocop:enable Metrics/CyclomaticComplexity

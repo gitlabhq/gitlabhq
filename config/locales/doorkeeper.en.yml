@@ -162,6 +162,10 @@ en:
         Grants read access (pull) to the Container Registry images if a project is private and authorization is required.
       write_registry:
         Grants write access (push) to the Container Registry.
+      read_observability:
+        Grants read-only access to GitLab Observability.
+      write_observability:
+        Grants write access to GitLab Observability.
       create_runner:
         Grants create access to the runners.
       k8s_proxy:

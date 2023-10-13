@@ -47,10 +47,10 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
   end
 
   describe '.should_enable_observability_auth_scopes?' do
-    subject { described_class.should_enable_observability_auth_scopes?(group) }
+    subject { described_class.should_enable_observability_auth_scopes?(resource) }
 
     let(:parent) { build_stubbed(:group) }
-    let(:group) do
+    let(:resource) do
       build_stubbed(:group, parent: parent).tap do |g|
         g.namespace_settings = build_stubbed(:namespace_settings, namespace: g)
       end
@@ -60,14 +60,38 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
       stub_feature_flags(observability_tracing: parent)
     end
 
-    context 'if observability_tracing FF enabled' do
-      it { is_expected.to be true }
+    describe 'when resource is group' do
+      context 'if observability_tracing FF enabled' do
+        it { is_expected.to be true }
+      end
+
+      context 'if observability_tracing FF disabled' do
+        before do
+          stub_feature_flags(observability_tracing: false)
+        end
+
+        it { is_expected.to be false }
+      end
     end
 
-    context 'if observability_tracing FF disabled' do
-      before do
-        stub_feature_flags(observability_tracing: false)
+    describe 'when resource is project' do
+      let(:resource) { build_stubbed(:project, namespace: parent) }
+
+      context 'if observability_tracing FF enabled' do
+        it { is_expected.to be true }
       end
+
+      context 'if observability_tracing FF disabled' do
+        before do
+          stub_feature_flags(observability_tracing: false)
+        end
+
+        it { is_expected.to be false }
+      end
+    end
+
+    describe 'when resource is not a group or project' do
+      let(:resource) { build_stubbed(:user) }
 
       it { is_expected.to be false }
     end

@@ -42,6 +42,13 @@ module Integrations
       s_('DiscordService|Override the default webhook (e.g. https://discord.com/api/webhooks/…)')
     end
 
+    override :supported_events
+    def supported_events
+      additional = group_level? ? %w[group_mention group_confidential_mention] : []
+
+      (self.class.supported_events + additional).freeze
+    end
+
     def self.supported_events
       %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page deployment]
     end

@@ -1,8 +1,0 @@
----
-name: advance_stage_timeout
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131312
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425490
-milestone: '16.5'
-type: development
-group: group::import and integrate
-default_enabled: false

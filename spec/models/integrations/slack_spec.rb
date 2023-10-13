@@ -9,4 +9,6 @@ RSpec.describe Integrations::Slack, feature_category: :integrations do
       stub_request(:post, integration.webhook)
     end
   end
+
+  it_behaves_like 'supports group mentions', :integrations_slack
 end

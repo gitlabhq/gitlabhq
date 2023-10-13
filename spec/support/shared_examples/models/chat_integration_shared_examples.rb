@@ -389,3 +389,39 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
     end
   end
 end
+
+RSpec.shared_examples 'supports group mentions' do |integration_factory|
+  it 'supports group mentions' do
+    allow(subject).to receive(:webhook).and_return('http://example.com')
+    allow(subject).to receive(:group_id).and_return(1)
+    expect(subject).to receive(:notify).with(an_instance_of(Integrations::ChatMessage::GroupMentionMessage), {})
+
+    subject.execute(
+      object_kind: 'group_mention',
+      object_attributes: { action: 'new', object_kind: 'issue' },
+      mentioned: { name: 'John Doe', url: 'http://example.com' }
+    )
+  end
+
+  describe '#supported_events' do
+    context 'when used in a project' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:integration) { build(integration_factory, project: project) }
+
+      it 'does not support group mentions', :aggregate_failures do
+        expect(integration.supported_events).not_to include('group_mention')
+        expect(integration.supported_events).not_to include('group_confidential_mention')
+      end
+    end
+
+    context 'when used in a group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:integration) { build(integration_factory, group: group) }
+
+      it 'supports group mentions', :aggregate_failures do
+        expect(integration.supported_events).to include('group_mention')
+        expect(integration.supported_events).to include('group_confidential_mention')
+      end
+    end
+  end
+end

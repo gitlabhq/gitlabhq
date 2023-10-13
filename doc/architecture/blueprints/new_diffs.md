@@ -37,6 +37,22 @@ optional.
 - What is out of scope for this blueprint?
 -->
 
+### Priority of Goals
+
+In an effort to provide guidance on which goals are more important than others to assist in making
+consistent choices, despite all goals being important, we defined the following order.
+
+**Perceived performance** is above **improved maintainability** is above **consistent coverage**.
+
+Examples:
+
+- a proposal improves maintainability at the cost of perceived performance: ❌ we should consider an alternative.
+- a proposal removes a feature from certain contexts, hurting coverage, and has no impact on perceived performance or maintanability: ❌ we should re-consider.
+- a proposal improves perceived performance but removes features from certain contexts of usage: ✅ it's valid and should be discussed with Product/UX.
+- a proposal guarantees consistent coverage and has no impact on perceived performance or maintainability: ✅ it's valid.
+
+In essence, we'll strive to meet every goal at each decision but prioritise the higher ones.
+
 ## Proposal
 
 <!--

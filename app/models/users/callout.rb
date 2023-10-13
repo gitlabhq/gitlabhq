@@ -75,7 +75,8 @@ module Users
       namespace_over_storage_users_combined_alert: 73, # EE-only
       # 74 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132751
       vsd_feedback_banner: 75, # EE-only
-      security_policy_protected_branch_modification: 76 # EE-only
+      security_policy_protected_branch_modification: 76, # EE-only
+      vulnerability_report_grouping: 77 # EE-only
     }
 
     validates :feature_name,

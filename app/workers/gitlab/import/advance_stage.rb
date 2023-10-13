@@ -30,7 +30,6 @@ module Gitlab
           return
         end
 
-        project = Project.find_by_id(project_id)
         new_waiters = wait_for_jobs(waiters)
         new_job_count = new_waiters.values.sum
 
@@ -42,8 +41,7 @@ module Gitlab
 
         if new_waiters.empty?
           proceed_to_next_stage(import_state_jid, next_stage, project_id)
-        elsif Feature.enabled?(:advance_stage_timeout, project) && timeout_reached?(timeout_timer) &&
-            new_job_count == previous_job_count
+        elsif timeout_reached?(timeout_timer) && new_job_count == previous_job_count
 
           handle_timeout(import_state_jid, next_stage, project_id, new_waiters, new_job_count)
         else

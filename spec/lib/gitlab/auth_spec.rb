@@ -55,8 +55,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy]
     end
 
-    it 'contains for project all resource bot scopes without observability scopes and ai_features' do
-      expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+    it 'contains for project all resource bot scopes without ai_features' do
+      expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy]
     end
 
     it 'contains for group all resource bot scopes' do
@@ -114,6 +114,15 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
         end
+
+        it 'contains for project all resource bot scopes without observability scopes' do
+          group = build_stubbed(:group).tap do |g|
+            g.namespace_settings = build_stubbed(:namespace_settings, namespace: g)
+          end
+          project = build_stubbed(:project, namespace: group)
+
+          expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+        end
       end
 
       context 'when enabled for specific root group' do
@@ -122,11 +131,13 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           build_stubbed(:group, parent: parent).tap { |g| g.namespace_settings = build_stubbed(:namespace_settings, namespace: g) }
         end
 
+        let(:project) { build_stubbed(:project, namespace: group) }
+
         before do
           stub_feature_flags(observability_tracing: parent)
         end
 
-        it 'contains for other group all resource bot scopes including observability scopes' do
+        it 'contains for group all resource bot scopes including observability scopes' do
           expect(subject.available_scopes_for(group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy]
         end
 
@@ -136,8 +147,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy]
         end
 
-        it 'contains for project all resource bot scopes without observability scopes' do
-          expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+        it 'contains for project all resource bot scopes including observability scopes' do
+          expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy]
         end
 
         it 'contains for other group all resource bot scopes without observability scopes' do
@@ -147,6 +158,16 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           end
 
           expect(subject.available_scopes_for(other_group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+        end
+
+        it 'contains for other project all resource bot scopes without observability scopes' do
+          other_parent = build_stubbed(:group)
+          other_group = build_stubbed(:group, parent: other_parent).tap do |g|
+            g.namespace_settings = build_stubbed(:namespace_settings, namespace: g)
+          end
+          other_project = build_stubbed(:project, namespace: other_group)
+
+          expect(subject.available_scopes_for(other_project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
         end
       end
     end

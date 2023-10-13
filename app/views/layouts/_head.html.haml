@@ -4,7 +4,7 @@
 
 -# This is a temporary place for the page specific style migrations to be included on all pages like page_specific_files
 - if Feature.disabled?(:page_specific_styles, current_user)
-  - add_page_specific_style('page_bundles/labels')
+  - add_page_specific_style('page_bundles/projects')
 
 %head{ omit_og ? { } : { prefix: "og: http://ogp.me/ns#" } }
   %meta{ charset: "utf-8" }
