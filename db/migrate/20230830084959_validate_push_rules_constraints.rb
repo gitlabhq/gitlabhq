@@ -15,6 +15,8 @@ class ValidatePushRulesConstraints < Gitlab::Database::Migration[2.1]
 
   def up
     REGEX_COLUMNS.each do |column_name|
+      next unless column_exists?(:push_rules, column_name)
+
       validate_check_constraint :push_rules, "#{column_name}_size_constraint"
     end
   end

@@ -21,6 +21,8 @@ class ExtendPushRulesRegexLimits < Gitlab::Database::Migration[2.1]
     end
 
     LONG_REGEX_COLUMNS.each do |column_name|
+      next unless column_exists?(:push_rules, column_name)
+
       add_check_constraint :push_rules, "char_length(#{column_name}) <= 2047", "#{column_name}_size_constraint",
         validate: false
     end
@@ -32,6 +34,8 @@ class ExtendPushRulesRegexLimits < Gitlab::Database::Migration[2.1]
     end
 
     LONG_REGEX_COLUMNS.each do |column_name|
+      next unless column_exists?(:push_rules, column_name)
+
       remove_check_constraint :push_rules, "#{column_name}_size_constraint"
     end
   end
