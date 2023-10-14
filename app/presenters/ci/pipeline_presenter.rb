@@ -134,16 +134,6 @@ module Ci
       end
     end
 
-    def all_related_merge_request_links(limit: nil)
-      limit ||= all_related_merge_requests.count
-
-      all_related_merge_requests.first(limit).map do |merge_request|
-        mr_path = project_merge_request_path(merge_request.project, merge_request)
-
-        ApplicationController.helpers.link_to "#{merge_request.to_reference} #{merge_request.title}", mr_path, class: 'mr-iid ref-container'
-      end
-    end
-
     def all_related_merge_requests
       strong_memoize(:all_related_merge_requests) do
         if pipeline.ref && can?(current_user, :read_merge_request, pipeline.project)

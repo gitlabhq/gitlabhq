@@ -139,8 +139,11 @@ export default {
         :hide-environment-scope="hideEnvironmentScope"
         :selected-variable="selectedVariable"
         :mode="mode"
-        v-on="$listeners"
+        @add-variable="addVariable"
+        @delete-variable="deleteVariable"
         @close-form="closeForm"
+        @update-variable="updateVariable"
+        @search-environment-scope="$emit('search-environment-scope', $event)"
       />
     </div>
   </div>

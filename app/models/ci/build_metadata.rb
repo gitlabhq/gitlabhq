@@ -14,7 +14,7 @@ module Ci
     self.table_name = 'p_ci_builds_metadata'
     self.primary_key = 'id'
 
-    partitionable scope: :build
+    partitionable scope: :build, partitioned: true
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project

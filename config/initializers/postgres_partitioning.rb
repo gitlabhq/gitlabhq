@@ -8,6 +8,7 @@ Gitlab::Database::Partitioning.register_models(
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     Ci::RunnerManagerBuild,
     Ci::JobAnnotation,
+    Ci::BuildMetadata,
     BatchedGitRefUpdates::Deletion,
     Users::ProjectVisit,
     Users::GroupVisit
