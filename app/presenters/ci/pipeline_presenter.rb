@@ -133,16 +133,6 @@ module Ci
         end
       end
     end
-
-    def all_related_merge_requests
-      strong_memoize(:all_related_merge_requests) do
-        if pipeline.ref && can?(current_user, :read_merge_request, pipeline.project)
-          pipeline.all_merge_requests_by_recency.to_a
-        else
-          []
-        end
-      end
-    end
   end
 end
 

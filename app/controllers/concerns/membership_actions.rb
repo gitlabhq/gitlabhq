@@ -5,7 +5,6 @@ module MembershipActions
   extend ActiveSupport::Concern
 
   def update
-    update_params = params.require(root_params_key).permit(:access_level, :expires_at)
     member = members_and_requesters.find(params[:id])
     result = Members::UpdateService
       .new(current_user, update_params)
@@ -146,6 +145,10 @@ module MembershipActions
 
   def requesters
     membershipable.requesters
+  end
+
+  def update_params
+    params.require(root_params_key).permit(:access_level, :expires_at)
   end
 
   def requested_relations(inherited_permissions = :with_inherited_permissions)
