@@ -396,6 +396,19 @@ RSpec.describe Todo do
     end
   end
 
+  describe '.not_in_users' do
+    it 'returns the expected todos' do
+      user1 = create(:user)
+      user2 = create(:user)
+
+      todo1 = create(:todo, user: user1)
+      todo2 = create(:todo, user: user1)
+      create(:todo, user: user2)
+
+      expect(described_class.not_in_users(user2)).to contain_exactly(todo1, todo2)
+    end
+  end
+
   describe '.for_group_ids_and_descendants' do
     it 'returns the todos for a group and its descendants' do
       parent_group = create(:group)

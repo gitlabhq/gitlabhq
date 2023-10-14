@@ -2174,7 +2174,7 @@ Example response:
     "user_id": 42,
     "active": true,
     "expires_at": "2020-10-15",
-    "token": "ggbfKkC4n-Lujy8jwCR2"
+    "token": "<your_new_access_token>"
 }
 ```
 

@@ -80,6 +80,7 @@ class Todo < ApplicationRecord
   scope :for_type, -> (type) { where(target_type: type) }
   scope :for_target, -> (id) { where(target_id: id) }
   scope :for_commit, -> (id) { where(commit_id: id) }
+  scope :not_in_users, -> (user_ids) { where.not('todos.user_id' => user_ids) }
   scope :with_entity_associations, -> do
     preload(:target, :author, :note, group: :route, project: [:route, :group, { namespace: [:route, :owner] }, :project_setting])
   end

@@ -177,6 +177,24 @@ You need at least the Developer role to move a wiki page:
    change the **Title** from `about` to `/about`.
 1. Select **Save changes**.
 
+## Export a wiki page
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `print_wiki`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `print_wiki`.
+On GitLab.com, this feature is not available.
+
+You can export a wiki page as a PDF file:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Plan > Wiki**.
+1. Go to the page you want to export.
+1. Select the vertical ellipsis (**{ellipsis_v}**), and then select **Print as PDF**.
+
+A PDF of the wiki page is created.
+
 ## View history of a wiki page
 
 The changes of a wiki page over time are recorded in the wiki's Git repository.

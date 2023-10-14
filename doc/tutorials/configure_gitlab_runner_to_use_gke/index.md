@@ -21,7 +21,7 @@ To configure GitLab Runner to use the GKE:
 1. [Install and configure the Kubernetes Operator](#install-and-configure-the-kubernetes-operator).
 1. Optional. [Verify that the configuration was successful](#verify-your-configuration).
 
-## Prerequisites
+## Before you begin
 
 Before you can configure GitLab Runner to use the GKE you must:
 

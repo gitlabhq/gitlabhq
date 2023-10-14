@@ -18,9 +18,9 @@ In this tutorial, you:
 1. Create a [new project and apply the compliance framework](#create-a-new-project-and-apply-the-compliance-framework) to it.
 1. Combine [compliance pipeline configuration and regular pipeline configuration](#combine-pipeline-configurations).
 
-Prerequisites:
+## Before you begin
 
-- Permission to create new top-level groups.
+- You need permission to create new top-level groups.
 
 ## Create a new group
 

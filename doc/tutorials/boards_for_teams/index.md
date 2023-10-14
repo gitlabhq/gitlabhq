@@ -23,6 +23,11 @@ To set up issue boards for multiple teams:
 1. [Create team issue boards](#create-team-issue-boards)
 1. [Create issues for features](#create-issues-for-features)
 
+## Before you begin
+
+- If you're using an existing group for this tutorial, make sure you have at least the Reporter role for the group.
+- If you're using an existing project for this tutorial, make sure you have at least the Reporter role for the project.
+
 ## The goal workflow
 
 After you set up everything, the two teams will be able to hand off issues from one board to another, for example, like this:
@@ -55,11 +60,6 @@ To prepare for when your project grows, start by creating a group.
 You use groups to manage one or more related projects at the same time.
 You add your users as members in the group, and assign them a role.
 
-Prerequisites:
-
-- If you're using an existing group for this tutorial, make sure you have at least the Reporter role
-  for the group.
-
 To create a group:
 
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
@@ -74,11 +74,6 @@ You've created an empty group. Next, you'll create a project that will store you
 The main code development work happens in projects and their repositories.
 A project contains your code and pipelines, but also the issues that are used for planning your
 upcoming code changes.
-
-Prerequisites:
-
-- If you're using an existing project for this tutorial, make sure you have at least the Reporter role
-  for the project.
 
 To create a blank project:
 

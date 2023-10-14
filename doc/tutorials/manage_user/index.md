@@ -35,9 +35,9 @@ You're going to create:
 1. A project in the organization for a specific piece of work, and add users to
    that project.
 
-Prerequisites:
+## Before you begin
 
-- You have administrator access to your self-managed GitLab instance.
+- Make sure you have administrator access to your self-managed GitLab instance.
 
 ## Create the organization parent group and subgroups
 

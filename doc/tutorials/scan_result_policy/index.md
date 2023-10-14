@@ -9,18 +9,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This tutorial shows you how to create and configure a [scan result policy](../../user/application_security/policies/scan-result-policies.md). These policies can be set to take action based on scan results.
 For example, in this tutorial, you'll set up a policy that requires approval from two specified users if a vulnerability is detected in a merge request.
 
-Prerequisites:
-
-The namespace used for this tutorial must:
-
-- Contain a minimum of three users, including your own. If you don't have two other users, you must first
-  create them. For details, see [Creating users](../../user/profile/account/create_accounts.md).
-
 To set up a scan result policy:
 
 1. [Create a test project](#create-a-test-project).
 1. [Add a scan result policy](#add-a-scan-result-policy).
 1. [Test the scan result policy](#test-the-scan-result-policy).
+
+## Before you begin
+
+The namespace used for this tutorial must:
+
+- Contain a minimum of three users, including your own. If you don't have two other users, you must first
+  create them. For details, see [Creating users](../../user/profile/account/create_accounts.md).
 
 ## Create a test project
 

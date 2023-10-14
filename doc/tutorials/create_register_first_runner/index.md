@@ -25,7 +25,7 @@ configuration:
 1. [Create and register a project runner](#create-and-register-a-project-runner).
 1. [Trigger a pipeline to run your runner](#trigger-a-pipeline-to-run-your-runner).
 
-## Prerequisite
+## Before you begin
 
 Before you can create, register, and run a runner,  [GitLab Runner](https://docs.gitlab.com/runner/install/) must be installed on a local computer.
 

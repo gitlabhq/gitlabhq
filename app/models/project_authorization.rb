@@ -11,6 +11,7 @@ class ProjectAuthorization < ApplicationRecord
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
   validates :user, uniqueness: { scope: :project }, presence: true
 
+  scope :for_project, ->(projects) { where(project: projects) }
   scope :non_guests, -> { where('access_level > ?', ::Gitlab::Access::GUEST) }
 
   # TODO: To be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/418205

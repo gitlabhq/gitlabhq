@@ -62,13 +62,15 @@ To enable the Facebook OmniAuth provider, you must:
 
 1. On your GitLab server, open the configuration file:
 
-   - For Linux package installations:
+   ::Tabs
+
+   :::TabTitle Linux package installations
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   - For self-compiled installations:
+   :::TabTitle Self-compiled installations
 
    ```shell
    cd /home/git/gitlab
@@ -76,13 +78,17 @@ To enable the Facebook OmniAuth provider, you must:
    sudo -u git -H editor config/gitlab.yml
    ```
 
+   ::EndTabs
+
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `facebook` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 
 1. Add the provider configuration:
 
-   - For Linux package installations:
+   ::Tabs
+
+   :::TabTitle Linux package installations
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -95,7 +101,7 @@ To enable the Facebook OmniAuth provider, you must:
    ]
    ```
 
-   - For self-compiled installations:
+   :::TabTitle Self-compiled installations
 
    ```yaml
    - { name: 'facebook',
@@ -103,6 +109,8 @@ To enable the Facebook OmniAuth provider, you must:
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET' }
    ```
+
+   ::EndTabs
 
 1. In the provide configuration, paste the following values:
 

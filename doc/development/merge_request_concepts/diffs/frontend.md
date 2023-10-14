@@ -23,10 +23,192 @@ The Vue app for rendering diffs uses many different Vue components, some of whic
 with other areas of the GitLab app. The below chart shows the direction for which components
 get rendered.
 
-NOTE:
-[Issue #388843](https://gitlab.com/gitlab-org/gitlab/-/issues/388843) is open to
-generate a Mermaid graph of the components diagram. An image version of the
-diagram is available in the issue.
+This chart contains several types of items:
+
+| Legend item | Interpretation |
+| ----------- | -------------- |
+| `xxx~~`, `ee-xxx~~` | A shortened directory path name. Can be found in `[ee]/app/assets/javascripts`, and omits `0..n` nested folders. |
+| Rectangular nodes | Files. |
+| Oval nodes | Plain language describing a deeper concept. |
+| Double-rectangular nodes | Simplified code branch. |
+| Diamond and circle nodes | Branches that have 2 (diamond) or 3+ (circle) options. |
+| Pendant / banner nodes (left notch, right square) | A parent directory to shorten nested paths. |
+| `./` | A path relative to the closest parent directory pendant node. Non-relative paths nested under parent pendant nodes are not in that directory. |
+
+```mermaid
+  flowchart TB
+    classDef code font-family: monospace;
+
+    A["diffs~~app.vue"]
+    descVirtualScroller(["Virtual Scroller"])
+    codeForFiles[["v-for(diffFiles)"]]
+    B["diffs~~diff_file.vue"]
+    C["diffs~~diff_file_header.vue"]
+    D["diffs~~diff_stats.vue"]
+    E["diffs~~diff_content.vue"]
+    boolFileIsText{isTextFile}
+    boolOnlyWhitespace{isWhitespaceOnly}
+    boolNotDiffable{notDiffable}
+    boolNoPreview{noPreview}
+    descShowChanges(["Show button to &quot;Show changes&quot;"])
+    %% Non-text changes
+    dirDiffViewer>"vue_shared~~diff_viewer"]
+    F["./viewers/not_diffable.vue"]
+    G["./viewers/no_preview.vue"]
+    H["./diff_viewer.vue"]
+    I["diffs~~diff_view.vue"]
+    boolIsRenamed{isRenamed}
+    boolIsModeChanged{isModeChanged}
+    boolFileHasNoPath{hasNewPath}
+    boolIsImage{isImage}
+    J["./viewers/renamed.vue"]
+    K["./viewers/mode_changed.vue"]
+    descNoViewer(["No viewer is rendered"])
+    L["./viewers/image_diff_viewer.vue"]
+    M["./viewers/download.vue"]
+    N["vue_shared~~download_diff_viewer.vue"]
+    boolImageIsReplaced{isReplaced}
+    O["vue_shared~~image_viewer.vue"]
+    switchImageMode((image_diff_viewer.mode))
+    P["./viewers/image_diff/onion_skin_viewer.vue"]
+    Q["./viewers/image_diff/swipe_viewer.vue"]
+    R["./viewers/image_diff/two_up_viewer.vue"]
+    S["diffs~~image_diff_overlay.vue"]
+    codeForImageDiscussions[["v-for(discussions)"]]
+    T["vue_shared~~design_note_pin.vue"]
+    U["vue_shared~~user_avatar_link.vue"]
+    V["diffs~~diff_discussions.vue"]
+    W["batch_comments~~diff_file_drafts.vue"]
+    codeForTwoUpDiscussions[["v-for(discussions)"]]
+    codeForTwoUpDrafts[["v-for(drafts)"]]
+    X["notes~~notable_discussion.vue"]
+    %% Text-file changes
+    codeForDiffLines[["v-for(diffLines)"]]
+    Y["diffs~~diff_expansion_cell.vue"]
+    Z["diffs~~diff_row.vue"]
+    AA["diffs~~diff_line.vue"]
+    AB["batch_comments~~draft_note.vue"]
+    AC["diffs~~diff_comment_cell.vue"]
+    AD["diffs~~diff_gutter_avatars.vue"]
+    AE["ee-diffs~~inline_findings_flag_switcher.vue"]
+    AF["notes~~noteable_note.vue"]
+    AG["unknown~~publish_button.vue"]
+    AH["notes~~note_actions.vue"]
+    AI["notes~~note_body.vue"]
+    AJ["notes~~note_header.vue"]
+    AK["notes~~reply_button.vue"]
+    AL["notes~~note_awards_list.vue"]
+    AM["notes~~note_edited_text.vue"]
+    AN["notes~~note_form.vue"]
+    AO["vue_shared~~awards_list.vue"]
+    AP["emoji~~picker.vue"]
+    AQ["emoji~~emoji_list.vue"]
+    descEmojiVirtualScroll(["Virtual Scroller"])
+    AR["emoji~~category.vue"]
+    AS["emoji~emoji_category.vue"]
+    AT["vue_shared~~markdown_editor.vue"]
+
+    class codeForFiles,codeForImageDiscussions code;
+    class codeForTwoUpDiscussions,codeForTwoUpDrafts code;
+    class codeForDiffLines code;
+    %% Also apply code styling to this switch node
+    class switchImageMode code;
+    %% Also apply code styling to these boolean nodes
+    class boolFileIsText,boolOnlyWhitespace,boolNotDiffable,boolNoPreview code;
+    class boolIsRenamed,boolIsModeChanged,boolFileHasNoPath,boolIsImage code;
+    class boolImageIsReplaced code;
+
+    A --> descVirtualScroller
+    A -->|"Virtual Scroller is
+    disabled when
+    Find in page search
+    (Cmd/Ctrl+f) is used."|codeForFiles
+    descVirtualScroller --> codeForFiles
+    codeForFiles --> B
+    B --> C
+    C --> D
+    B --> E
+
+    %% File view flags cascade
+    E --> boolFileIsText
+    boolFileIsText --> |yes| I
+    boolFileIsText --> |no| boolOnlyWhitespace
+
+    boolOnlyWhitespace --> |yes| descShowChanges
+    boolOnlyWhitespace --> |no| dirDiffViewer
+
+    dirDiffViewer --> H
+
+    H --> boolNotDiffable
+
+    boolNotDiffable --> |yes| F
+    boolNotDiffable --> |no| boolNoPreview
+
+    boolNoPreview --> |yes| G
+    boolNoPreview --> |no| boolIsRenamed
+
+    boolIsRenamed --> |yes| J
+    boolIsRenamed --> |no| boolIsModeChanged
+
+    boolIsModeChanged --> |yes| K
+    boolIsModeChanged --> |no| boolFileHasNoPath
+
+    boolFileHasNoPath --> |yes| boolIsImage
+    boolFileHasNoPath --> |no| descNoViewer
+
+    boolIsImage --> |yes| L
+    boolIsImage --> |no| M
+    M --> N
+
+    %% Image diff viewer
+    L --> boolImageIsReplaced
+
+    boolImageIsReplaced --> |yes| switchImageMode
+    boolImageIsReplaced --> |no| O
+
+    switchImageMode -->|"'twoup' (default)"| R
+    switchImageMode -->|'onion'| P
+    switchImageMode -->|'swipe'| Q
+
+    P & Q --> S
+    S --> codeForImageDiscussions
+    S --> AN
+
+    R-->|"Rendered in
+    note container div"|U & W & V
+    R --> S
+
+    V --> codeForTwoUpDiscussions
+    W --> codeForTwoUpDrafts
+
+    %% This invisible link forces `noteable_discussion`
+    %%     to render above `design_note_pin`
+    X ~~~ T
+
+    codeForTwoUpDrafts --> AB
+    codeForImageDiscussions & codeForTwoUpDiscussions & codeForTwoUpDrafts --> T
+    codeForTwoUpDiscussions --> X
+
+    %% Text file diff viewer
+    I --> codeForDiffLines
+    codeForDiffLines --> Z
+    codeForDiffLines -->|"isMatchLine?"| Y
+    codeForDiffLines -->|"hasCodeQuality?"| AA
+    codeForDiffLines -->|"hasDraftNote(s)?"| AB
+
+    Z -->|"hasCodeQuality?"| AE
+    Z -->|"hasDiscussions?"| AD
+
+    AA --> AC
+
+    %% Draft notes
+    AB --> AF
+    AF --> AH & AI & AJ
+    AH --> AK
+    AI --> AL & AM & AN
+    AL --> AO --> AP --> AQ --> descEmojiVirtualScroll --> AR --> AS
+    AN --> AT
+```
 
 Some of the components are rendered more than others, but the main component is `diff_row.vue`.
 This component renders every diff line in a diff file. For performance reasons, this

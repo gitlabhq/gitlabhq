@@ -13,18 +13,33 @@ module Todos
 
       attr_reader :issues
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def initialize(issue_id: nil, project_id: nil)
         @issues =
           if issue_id
-            Issue.where(id: issue_id)
+            Issue.id_in(issue_id)
           elsif project_id
             project_confidential_issues(project_id)
           end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
+
+      def execute
+        return unless todos_to_remove?
+
+        ::Gitlab::Database.allow_cross_joins_across_databases(
+          url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045') do
+          delete_todos
+        end
+      end
 
       private
+
+      def delete_todos
+        authorized_users = ProjectAuthorization.select(:user_id)
+          .for_project(project_ids)
+          .non_guests
+
+        todos.not_in_users(authorized_users).delete_all
+      end
 
       def project_confidential_issues(project_id)
         project = Project.find(project_id)
@@ -32,35 +47,23 @@ module Todos
         project.issues.confidential_only
       end
 
-      override :todos
       # rubocop: disable CodeReuse/ActiveRecord
       def todos
         Todo.joins_issue_and_assignees
-          .where(target: issues)
-          .where(issues: { confidential: true })
+          .for_target(issues)
+          .merge(Issue.confidential_only)
           .where('todos.user_id != issues.author_id')
           .where('todos.user_id != issue_assignees.user_id')
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      override :todos_to_remove?
       def todos_to_remove?
         issues&.any?(&:confidential?)
       end
 
-      override :project_ids
       def project_ids
         issues&.distinct&.select(:project_id)
       end
-
-      override :authorized_users
-      # rubocop: disable CodeReuse/ActiveRecord
-      def authorized_users
-        ProjectAuthorization.select(:user_id)
-          .where(project_id: project_ids)
-          .where('access_level >= ?', Gitlab::Access::REPORTER)
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

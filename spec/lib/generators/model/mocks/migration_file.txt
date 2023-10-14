@@ -17,6 +17,9 @@ class CreateModelGeneratorTestFoos < Gitlab::Database::Migration[2.1]
   # comments:
   # disable_ddl_transaction!
 
+  # Add dependent 'batched_background_migrations.queued_migration_version' values.
+  # DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = []
+
   def change
     create_table :model_generator_test_foos do |t|
 

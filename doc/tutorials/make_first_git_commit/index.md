@@ -12,9 +12,7 @@ committing changes to a Git repository from the command line.
 
 When you're done, you'll have a project where you can practice using Git.
 
-## What you need
-
-Before you begin:
+## Before you begin
 
 - [Install Git on your local machine](../../topics/git/how_to_install_git/index.md).
 - Ensure you can sign in to an instance of GitLab. If your organization doesn't

@@ -466,6 +466,12 @@ Migration/BatchMigrationsPostOnly:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'
 
+Migration/UnfinishedDependencies:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+
 BackgroundMigration/FeatureCategory:
   Enabled: true
   Include:

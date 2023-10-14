@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'stringio'
-
-require_relative '../support/helpers/next_instance_of'
+require 'rubocop_spec_helper'
 require_relative '../../rubocop/check_graceful_task'
 
 RSpec.describe RuboCop::CheckGracefulTask do
-  include NextInstanceOf
-
   let(:output) { StringIO.new }
 
   subject(:task) { described_class.new(output) }
