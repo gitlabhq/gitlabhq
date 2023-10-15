@@ -81,7 +81,7 @@ direction for iterations and improvements to the solution.
   the bar for new users.
 - Customers are already trying to rollout their ad-hoc catalog of shared configurations. We could provide a
   standardized way to write, package and share pipeline constructs directly in the product.
-- As we implement new pipeline constructs (for example, reusable job steps) they could be items of the
+- As we implement new pipeline constructs (for example, [reusable job steps](../gitlab_steps/index.md)) they could be items of the
   catalog. The catalog can boost the adoption of new constructs.
 - The catalog can be a place where we strengthen our relationship with partners, having components offered
   and maintained by our partners.
@@ -96,14 +96,15 @@ direction for iterations and improvements to the solution.
 This section defines some terms that are used throughout this document. With these terms we are only
 identifying abstract concepts and are subject to changes as we refine the design by discovering new insights.
 
-- **Component** Is the reusable unit of pipeline configuration.
-- **Components repository** represents a collection of CI components stored in the same project.
+- **Component** Is the generic term for a reusable unit of pipeline configuration. The component can be a template (usable via the `include` syntax) or a [step](../gitlab_steps/index.md).
+- **Components repository** is a GitLab repository that contains 1 or more components.
 - **Project** is the GitLab project attached to a single components repository.
+- **Catalog resource** is the generic term for a single item displayed in the catalog. A components repository is a catalog resource.
 - **Catalog** is a collection of resources like components repositories.
-- **Catalog resource** is the single item displayed in the catalog. A components repository is a catalog resource.
-- **Version** is a specific revision of catalog resource. It maps to the released tag in the project,
-  which allows components to be pinned to a specific revision.
-- **Steps** is a collection of instructions for how jobs can be executed.
+- **Version** is a specific revision of the catalog resource. It maps to a project release and
+  allows components to be pinned to a specific revision.
+- **Step** is a type of component that contains a collection of instructions for job execution.
+- **Template** is a type of component that contains a snippet of CI/CD configuration that can be [included](../../../ci/yaml/includes.md) in a project's pipeline configuration.
 
 ## Definition of pipeline component
 
