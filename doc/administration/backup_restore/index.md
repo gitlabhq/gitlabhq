@@ -230,3 +230,6 @@ Issues are stored in the database, and can't be stored in Git itself.
 - [Disaster Recovery (Geo)](../geo/disaster_recovery/index.md)
 - [Migrating GitLab groups](../../user/group/import/index.md)
 - [Import and migrate projects](../../user/project/import/index.md)
+- [GitLab Linux package (Omnibus) - Backup and Restore](https://docs.gitlab.com/omnibus/settings/backups.html)
+- [GitLab Helm chart - Backup and Restore](https://docs.gitlab.com/charts/backup-restore/)
+- [GitLab Operator - Backup and Restore](https://docs.gitlab.com/operator/backup_and_restore.html)

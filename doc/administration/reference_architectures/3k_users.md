@@ -40,7 +40,7 @@ For a full list of reference architectures, see
 | Gitaly<sup>5</sup>                        | 3     | 4 vCPU, 15 GB memory<sup>6</sup> | `n1-standard-4` | `m5.xlarge`  |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Sidekiq<sup>7</sup>                       | 4     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
+| Sidekiq<sup>7</sup>                       | 2     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
 | GitLab Rails<sup>7</sup>                  | 3     | 8 vCPU, 7.2 GB memory | `n1-highcpu-8`  | `c5.2xlarge` |
 | Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Object storage<sup>4</sup>                | -     | -                     | -               | -            |
@@ -71,7 +71,7 @@ card "**Internal Load Balancer**" as ilb #9370DB
 
 together {
   collections "**GitLab Rails** x3" as gitlab #32CD32
-  collections "**Sidekiq** x4" as sidekiq #ff8dd1
+  collections "**Sidekiq** x2" as sidekiq #ff8dd1
 }
 
 together {
@@ -202,8 +202,6 @@ The following list includes descriptions of each server and its assigned IP:
 - `10.6.0.141`: Praefect PostgreSQL 1 (non HA)
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
-- `10.6.0.73`: Sidekiq 3
-- `10.6.0.74`: Sidekiq 4
 - `10.6.0.41`: GitLab application 1
 - `10.6.0.42`: GitLab application 2
 - `10.6.0.43`: GitLab application 3
@@ -1694,8 +1692,6 @@ The following IPs will be used as an example:
 
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
-- `10.6.0.73`: Sidekiq 3
-- `10.6.0.74`: Sidekiq 4
 
 To configure the Sidekiq nodes, one each one:
 
@@ -1756,7 +1752,7 @@ Updates to example must be made at:
    sidekiq['listen_address'] = "0.0.0.0"
 
    ## Set number of Sidekiq queue processes to the same number as available CPUs
-   sidekiq['queue_groups'] = ['*'] * 2
+   sidekiq['queue_groups'] = ['*'] * 4
 
    ## Set number of Sidekiq threads per queue process to the recommend number of 20
    sidekiq['max_concurrency'] = 20

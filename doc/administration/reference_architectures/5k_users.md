@@ -37,7 +37,7 @@ costly-to-operate environment by using the
 | Gitaly<sup>5</sup>                        | 3     | 8 vCPU, 30 GB memory<sup>6</sup> | `n1-standard-8` | `m5.2xlarge` |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
-| Sidekiq<sup>7</sup>                       | 4     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   |
+| Sidekiq<sup>7</sup>                       | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  |
 | GitLab Rails<sup>7</sup>                  | 3     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` |
 | Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
 | Object storage<sup>4</sup>                | -     | -                       | -               | -            |
@@ -68,7 +68,7 @@ card "**Internal Load Balancer**" as ilb #9370DB
 
 together {
   collections "**GitLab Rails** x3" as gitlab #32CD32
-  collections "**Sidekiq** x4" as sidekiq #ff8dd1
+  collections "**Sidekiq** x2" as sidekiq #ff8dd1
 }
 
 together {
@@ -199,8 +199,6 @@ The following list includes descriptions of each server and its assigned IP:
 - `10.6.0.141`: Praefect PostgreSQL 1 (non HA)
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
-- `10.6.0.73`: Sidekiq 3
-- `10.6.0.74`: Sidekiq 4
 - `10.6.0.41`: GitLab application 1
 - `10.6.0.42`: GitLab application 2
 - `10.6.0.43`: GitLab application 3
@@ -1682,8 +1680,6 @@ examples include the Object storage configuration.
 
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
-- `10.6.0.73`: Sidekiq 3
-- `10.6.0.74`: Sidekiq 4
 
 To configure the Sidekiq nodes, one each one:
 

@@ -26,6 +26,7 @@ For a full list of reference architectures, see
 | PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
 | Gitaly                     | 1     | 4 vCPU, 15 GB memory<sup>5</sup>   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| Sidekiq<sup>6</sup>        | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
 | GitLab Rails<sup>6</sup>   | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node            | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>4</sup> | -     | -                      | -               | -            | -        |
@@ -587,6 +588,136 @@ To configure Gitaly with TLS:
   </a>
 </div>
 
+## Configure Sidekiq
+
+Sidekiq requires connection to the [Redis](#configure-redis),
+[PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
+It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
+
+To configure the Sidekiq server, on the server node you want to use for Sidekiq:
+
+1. SSH in to the Sidekiq server.
+1. [Download and install](https://about.gitlab.com/install/) the Linux
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
+1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
+
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
+- all reference architecture pages
+-->
+
+   ```ruby
+   roles ["sidekiq_role"]
+
+   # External URL
+   external_url 'https://gitlab.example.com'
+
+   ## Redis connection details
+   gitlab_rails['redis_port'] = '6379'
+   gitlab_rails['redis_host'] = '10.1.0.6' # IP/hostname of Redis server
+   gitlab_rails['redis_password'] = 'Redis Password'
+
+   # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
+   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
+   # The following two values must be the same as their respective values
+   # of the Gitaly setup
+   gitlab_rails['gitaly_token'] = 'gitalysecret'
+   gitlab_shell['secret_token'] = 'shellsecret'
+
+   git_data_dirs({
+     'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+     'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+     'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
+   })
+
+   ## PostgreSQL connection details
+   gitlab_rails['db_adapter'] = 'postgresql'
+   gitlab_rails['db_encoding'] = 'unicode'
+   gitlab_rails['db_host'] = '10.1.0.5' # IP/hostname of database server
+   gitlab_rails['db_password'] = 'DB password'
+
+   ## Prevent database migrations from running on upgrade automatically
+   gitlab_rails['auto_migrate'] = false
+
+   # Sidekiq
+   sidekiq['enable'] = true
+   sidekiq['listen_address'] = "0.0.0.0"
+
+   ## Set number of Sidekiq queue processes to the same number as available CPUs
+   sidekiq['queue_groups'] = ['*'] * 4
+
+   ## Set number of Sidekiq threads per queue process to the recommend number of 20
+   sidekiq['max_concurrency'] = 20
+
+   ## Set the network addresses that the exporters will listen on
+   node_exporter['listen_address'] = '0.0.0.0:9100'
+
+   # Object Storage
+   ## This is an example for configuring Object Storage on GCP
+   ## Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['enabled'] = true
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-artifacts-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-external-diffs-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-lfs-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-uploads-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-packages-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-dependency-proxy-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-terraform-state-bucket-name>"
+
+   gitlab_rails['backup_upload_connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+   ```
+
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
+
+1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
+
+   ```shell
+   sudo touch /etc/gitlab/skip-auto-reconfigure
+   ```
+
+   Only a single designated node should handle migrations as detailed in the
+   [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+1. Verify the GitLab services are running:
+
+   ```shell
+   sudo gitlab-ctl status
+   ```
+
+   The output should be similar to the following:
+
+   ```plaintext
+   run: logrotate: (pid 192292) 2990s; run: log: (pid 26374) 93048s
+   run: node-exporter: (pid 26864) 92997s; run: log: (pid 26446) 93036s
+   run: sidekiq: (pid 26870) 92996s; run: log: (pid 26391) 93042s
+   ```
+
+NOTE:
+If you find that the environment's Sidekiq job processing is slow with long queues,
+more nodes can be added as required. You can also tune your Sidekiq nodes to
+run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
+
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
@@ -644,7 +775,6 @@ On each node perform the following:
    node_exporter['listen_address'] = '0.0.0.0:9100'
    gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
    puma['listen'] = '0.0.0.0'
-   sidekiq['listen_address'] = "0.0.0.0"
 
    # Configure Sidekiq with 2 workers and 20 max concurrency
    sidekiq['max_concurrency'] = 20

@@ -111,7 +111,16 @@ sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 
 If there's a GitLab version mismatch between your backup tar file and the
 installed version of GitLab, the restore command aborts with an error
-message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
+message:
+
+```plaintext
+GitLab version mismatch:
+  Your current GitLab version (16.5.0-ee) differs from the GitLab version in the backup!
+  Please switch to the following version and try again:
+  version: 16.4.3-ee
+```
+
+Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
 and then try again.
 
 WARNING:
