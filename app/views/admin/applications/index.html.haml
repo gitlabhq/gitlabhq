@@ -14,7 +14,7 @@
         = s_('AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
 
     .gl-new-card-actions
-      = render Pajamas::ButtonComponent.new(size: :small, href: new_admin_application_path, button_options: { data: { qa_selector: 'new_application_button' } }) do
+      = render Pajamas::ButtonComponent.new(size: :small, href: new_admin_application_path, button_options: { data: { testid: 'new-application-button' } }) do
         = _('Add new application')
   - c.with_body do
     - if @applications.empty?

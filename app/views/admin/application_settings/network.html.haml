@@ -14,7 +14,7 @@
   .settings-content
     = render 'performance'
 
-%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'ip_limits_content' } }
+%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'ip-limits-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('User and IP rate limits')
@@ -87,7 +87,7 @@
 
 = render 'gitlab_shell_operation_limits'
 
-%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'outbound_requests_content' } }
+%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'outbound-requests-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_('OutboundRequests|Outbound requests')

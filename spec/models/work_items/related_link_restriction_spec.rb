@@ -9,6 +9,11 @@ RSpec.describe WorkItems::RelatedLinkRestriction, feature_category: :portfolio_m
   end
 
   describe 'validations' do
+    before do
+      # delete seeded records to prevent non-unique record error
+      described_class.delete_all
+    end
+
     subject { build(:related_link_restriction) }
 
     it { is_expected.to validate_presence_of(:source_type) }

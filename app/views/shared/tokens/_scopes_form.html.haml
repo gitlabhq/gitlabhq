@@ -9,7 +9,7 @@
     - help_text = t scope, scope: scope_description(description_prefix)
     = f.gitlab_ui_checkbox_component :scopes, scope,
       help_text: help_text,
-      checkbox_options: { checked: token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}", multiple: true, data: { qa_selector: "#{scope}_checkbox" } },
+      checkbox_options: { checked: token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}", multiple: true, data: { testid: "#{scope}-checkbox" } },
       checked_value: scope,
       unchecked_value: nil,
-      label_options: { data: { qa_selector: "#{scope}_label" } }
+      label_options: { data: { testid: "#{scope}-label" } }

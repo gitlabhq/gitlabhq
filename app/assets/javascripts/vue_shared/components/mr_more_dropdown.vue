@@ -19,7 +19,6 @@ import MergeRequest from '~/merge_request';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import NewHeaderActionsPopover from '~/issues/show/components/new_header_actions_popover.vue';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 
 Vue.use(VueApollo);
@@ -50,7 +49,6 @@ export default {
     GlDisclosureDropdownGroup,
     SidebarSubscriptionsWidget,
     AbuseCategorySelector,
-    NewHeaderActionsPopover,
     SummaryNotesToggle: () =>
       import('ee_component/merge_requests/components/summary_notes_toggle.vue'),
   },
@@ -365,8 +363,6 @@ export default {
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
-
-    <new-header-actions-popover v-if="isMovedMrSidebar" :issue-type="issuableType" />
 
     <abuse-category-selector
       v-if="!isCurrentUser && isReportAbuseDrawerOpen"

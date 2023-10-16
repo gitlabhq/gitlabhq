@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
-  include CookieHelper
   include Features::AutocompleteHelpers
 
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
@@ -48,7 +47,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
 
     before do
       sign_in(user)
-      set_cookie('new-actions-popover-viewed', 'true')
       visit project_issue_path(project, issue_to_edit)
 
       wait_for_requests

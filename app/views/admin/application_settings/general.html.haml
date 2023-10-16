@@ -14,7 +14,7 @@
   .settings-content
     = render 'visibility_and_access'
 
-%section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'account_and_limit_settings_content', testid: 'account-limit' } }
+%section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'account-and-limit-settings-content'} }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Account and limit')
@@ -47,7 +47,7 @@
   .settings-content
     = render 'diff_limits'
 
-%section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'sign_up_restrictions_settings_content' } }
+%section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'sign-up-restrictions-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Sign-up restrictions')

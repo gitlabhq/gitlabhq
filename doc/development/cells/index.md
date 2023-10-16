@@ -1,0 +1,37 @@
+---
+stage: Data Stores
+group: Tenant Scale
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+
+# GitLab Cells Development Guidelines
+
+For background of GitLab Cells, refer to the [blueprint](../../architecture/blueprints/cells/index.md).
+
+## Essential and additional workflows
+
+To make the application work within the GitLab Cells architecture, we need to fix various
+[workflows](../../architecture/blueprints/cells/index.md#2-essential-workflows).
+
+Here is the suggested approach:
+
+1. Pick a workflow to fix.
+1. For each table affected for the chosen workflow, choose the approriate
+   [GitLab schema](../database/multiple_databases.md#gitlab-schema).
+1. Identify all cross-joins, cross-transactions, and cross-database foreign keys for
+   these tables.
+   See the [multiple databases guide](../database/multiple_databases.md)
+   on how to identify, and allowlist these items.
+1. Fix the cross-joins and cross-database foreign keys necessary for the
+   workflow to work with GitLab Cells.
+   See the [multiple databases guide](../database/multiple_databases.md)
+   on how to fix these items.
+1. For the cross-joins, cross-transactions, and cross-database foreign keys that
+   were not fixed, open and schedule issues to fix later.
+1. Confirm the fixes work by completing the workflow successfully in a local
+   GDK running multiple cells.
+
+Refer to following epics for examples:
+
+- [User can create group on Cell 2 while users are shared between Cells](https://gitlab.com/groups/gitlab-org/-/epics/9813)
+- [Essential workflows: User can create Project](https://gitlab.com/groups/gitlab-org/-/epics/11683)

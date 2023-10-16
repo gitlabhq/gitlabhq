@@ -396,6 +396,7 @@ module TestEnv
   def seed_db
     Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
     Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
+    Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter.upsert_restrictions
   end
 
   private

@@ -5,5 +5,10 @@ FactoryBot.define do
     source_type { association :work_item_type, :default }
     target_type { association :work_item_type, :default }
     link_type { 0 }
+
+    initialize_with do
+      WorkItems::RelatedLinkRestriction
+        .find_or_initialize_by(source_type: source_type, target_type: target_type, link_type: link_type)
+    end
   end
 end

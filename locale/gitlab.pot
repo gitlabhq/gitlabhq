@@ -23564,12 +23564,6 @@ msgstr ""
 msgid "Header message"
 msgstr ""
 
-msgid "HeaderAction|Notifications and other %{issueType} actions have moved to this menu."
-msgstr ""
-
-msgid "HeaderAction|Okay!"
-msgstr ""
-
 msgid "Headers"
 msgstr ""
 

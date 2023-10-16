@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'issue state', :js, feature_category: :team_planning do
-  include CookieHelper
-
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
@@ -12,7 +10,6 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
   before do
     project.add_developer(user)
     sign_in(user)
-    set_cookie('new-actions-popover-viewed', 'true')
   end
 
   shared_examples 'issue closed' do |selector|

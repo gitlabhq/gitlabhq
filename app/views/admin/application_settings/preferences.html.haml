@@ -3,7 +3,7 @@
 - add_page_specific_style 'page_bundles/settings'
 - @force_desktop_expanded_sidebar = true
 
-%section.settings.as-email.no-animate#js-email-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'email_content' } }
+%section.settings.as-email.no-animate#js-email-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'email-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Email')

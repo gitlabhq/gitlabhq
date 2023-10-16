@@ -1298,6 +1298,30 @@ Input type: `AmazonS3ConfigurationCreateInput`
 | <a id="mutationamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationamazons3configurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.amazonS3ConfigurationUpdate`
+
+Input type: `AmazonS3ConfigurationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationamazons3configurationupdateaccesskeyxid"></a>`accessKeyXid` | [`String`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="mutationamazons3configurationupdateawsregion"></a>`awsRegion` | [`String`](#string) | AWS region where the bucket is created. |
+| <a id="mutationamazons3configurationupdatebucketname"></a>`bucketName` | [`String`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="mutationamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationamazons3configurationupdateid"></a>`id` | [`AuditEventsAmazonS3ConfigurationID!`](#auditeventsamazons3configurationid) | ID of the Amazon S3 configuration to update. |
+| <a id="mutationamazons3configurationupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationamazons3configurationupdatesecretaccesskey"></a>`secretAccessKey` | [`String`](#string) | Secret access key of the Amazon S3 account. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationamazons3configurationupdateamazons3configuration"></a>`amazonS3Configuration` | [`AmazonS3ConfigurationType`](#amazons3configurationtype) | Updated Amazon S3 configuration. |
+| <a id="mutationamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.approveDeployment`
 
 Input type: `ApproveDeploymentInput`
@@ -29877,6 +29901,12 @@ An example `AnalyticsDevopsAdoptionEnabledNamespaceID` is: `"gid://gitlab/Analyt
 A `AppSecFuzzingCoverageCorpusID` is a global ID. It is encoded as a string.
 
 An example `AppSecFuzzingCoverageCorpusID` is: `"gid://gitlab/AppSec::Fuzzing::Coverage::Corpus/1"`.
+
+### `AuditEventsAmazonS3ConfigurationID`
+
+A `AuditEventsAmazonS3ConfigurationID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsAmazonS3ConfigurationID` is: `"gid://gitlab/AuditEvents::AmazonS3Configuration/1"`.
 
 ### `AuditEventsExternalAuditEventDestinationID`
 

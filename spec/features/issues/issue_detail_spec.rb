@@ -130,7 +130,6 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     describe 'when an issue `issue_type` is edited' do
       before do
         sign_in(user)
-        set_cookie('new-actions-popover-viewed', 'true')
         visit project_issue_path(project, issue)
         wait_for_requests
       end
@@ -164,7 +163,6 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     describe 'when an incident `issue_type` is edited' do
       before do
         sign_in(user)
-        set_cookie('new-actions-popover-viewed', 'true')
         visit project_issue_path(project, incident)
         wait_for_requests
       end

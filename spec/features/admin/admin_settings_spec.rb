@@ -103,7 +103,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Account and Limit Settings' do
-        page.within(find('[data-testid="account-limit"]')) do
+        page.within(find('[data-testid="account-and-limit-settings-content"]')) do
           uncheck 'Gravatar enabled'
           click_button 'Save changes'
         end
@@ -169,7 +169,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
-            page.within(find('[data-testid="account-limit"]')) do
+            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
               check _('Deactivate dormant users after a period of inactivity')
               click_button _('Save changes')
             end
@@ -185,7 +185,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           it 'change dormant users period', :js do
             expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: true)
 
-            page.within(find('[data-testid="account-limit"]')) do
+            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
               check _('Deactivate dormant users after a period of inactivity')
               fill_in _('Days of inactivity before deactivation'), with: '180'
               click_button _('Save changes')
@@ -202,7 +202,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             selector = '#application_setting_deactivate_dormant_users_period_error'
             expect(page).not_to have_selector(selector, visible: :visible)
 
-            page.within(find('[data-testid="account-limit"]')) do
+            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
               check 'application_setting_deactivate_dormant_users'
               fill_in _('application_setting_deactivate_dormant_users_period'), with: '30'
               click_button 'Save changes'

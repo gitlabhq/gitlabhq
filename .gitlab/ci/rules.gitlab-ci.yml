@@ -362,6 +362,10 @@
   - "{,ee/,jh/}{,spec/}lib/feature.rb"
   - "config/feature_flags/**/*"
 
+# AI patterns:
+.ai-patterns: &ai-patterns
+  - "{,ee/,jh/}lib/gitlab/llm/**/*"
+
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
   - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
@@ -2087,6 +2091,20 @@
     - !reference [".rails:rules:system-default-rules", rules]
     - <<: *if-default-refs
       changes: *code-backstage-patterns
+
+.rails:rules:ee-gitlab-duo-chat:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - if: '$REAL_AI_REQUEST == null'
+      when: never
+    - if: '$ANTHROPIC_API_KEY == null'
+      when: never
+    - if: '$OPENAI_EMBEDDINGS == null'
+      when: never
+    - <<: *if-merge-request
+      changes: *ai-patterns
+      when: manual
+      allow_failure: true
 
 .rails:rules:as-if-foss-migration:
   rules:
