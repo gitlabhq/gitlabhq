@@ -120,6 +120,7 @@ fragment WorkItemWidgets on WorkItemWidget {
           state
           createdAt
           closedAt
+          webUrl
           widgets {
             ...WorkItemMetadataWidgets
           }

@@ -92,21 +92,20 @@ This chart contains several types of items:
     AD["diffs~~diff_gutter_avatars.vue"]
     AE["ee-diffs~~inline_findings_flag_switcher.vue"]
     AF["notes~~noteable_note.vue"]
-    AG["unknown~~publish_button.vue"]
-    AH["notes~~note_actions.vue"]
-    AI["notes~~note_body.vue"]
-    AJ["notes~~note_header.vue"]
-    AK["notes~~reply_button.vue"]
-    AL["notes~~note_awards_list.vue"]
-    AM["notes~~note_edited_text.vue"]
-    AN["notes~~note_form.vue"]
-    AO["vue_shared~~awards_list.vue"]
-    AP["emoji~~picker.vue"]
-    AQ["emoji~~emoji_list.vue"]
+    AG["notes~~note_actions.vue"]
+    AH["notes~~note_body.vue"]
+    AI["notes~~note_header.vue"]
+    AJ["notes~~reply_button.vue"]
+    AK["notes~~note_awards_list.vue"]
+    AL["notes~~note_edited_text.vue"]
+    AM["notes~~note_form.vue"]
+    AN["vue_shared~~awards_list.vue"]
+    AO["emoji~~picker.vue"]
+    AP["emoji~~emoji_list.vue"]
     descEmojiVirtualScroll(["Virtual Scroller"])
-    AR["emoji~~category.vue"]
-    AS["emoji~emoji_category.vue"]
-    AT["vue_shared~~markdown_editor.vue"]
+    AQ["emoji~~category.vue"]
+    AR["emoji~emoji_category.vue"]
+    AS["vue_shared~~markdown_editor.vue"]
 
     class codeForFiles,codeForImageDiscussions code;
     class codeForTwoUpDiscussions,codeForTwoUpDrafts code;
@@ -124,9 +123,7 @@ This chart contains several types of items:
     Find in page search
     (Cmd/Ctrl+f) is used."|codeForFiles
     descVirtualScroller --> codeForFiles
-    codeForFiles --> B
-    B --> C
-    C --> D
+    codeForFiles --> B --> C --> D
     B --> E
 
     %% File view flags cascade
@@ -172,10 +169,13 @@ This chart contains several types of items:
 
     P & Q --> S
     S --> codeForImageDiscussions
-    S --> AN
+    S --> AM
 
     R-->|"Rendered in
     note container div"|U & W & V
+    %% Do not combine this with the "P & Q --> S" statement above
+    %%     The order of these node relationships defines the
+    %%     layout of the graph, and we need it in this order.
     R --> S
 
     V --> codeForTwoUpDiscussions
@@ -203,11 +203,11 @@ This chart contains several types of items:
 
     %% Draft notes
     AB --> AF
-    AF --> AH & AI & AJ
-    AH --> AK
-    AI --> AL & AM & AN
-    AL --> AO --> AP --> AQ --> descEmojiVirtualScroll --> AR --> AS
-    AN --> AT
+    AF --> AG & AH & AI
+    AG --> AJ
+    AH --> AK & AL & AM
+    AK --> AN --> AO --> AP --> descEmojiVirtualScroll --> AQ --> AR
+    AM --> AS
 ```
 
 Some of the components are rendered more than others, but the main component is `diff_row.vue`.

@@ -1,4 +1,4 @@
-import { autocompleteDataSources, markdownPreviewPath, workItemPath } from '~/work_items/utils';
+import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 
 describe('autocompleteDataSources', () => {
   beforeEach(() => {
@@ -23,16 +23,5 @@ describe('markdownPreviewPath', () => {
     expect(markdownPreviewPath('project/group', '2')).toEqual(
       '/foobar/project/group/preview_markdown?target_type=WorkItem&target_id=2',
     );
-  });
-});
-
-describe('workItemPath', () => {
-  it('returns corrrect data sources', () => {
-    expect(workItemPath('project/group', '2')).toEqual('/project/group/-/work_items/2');
-  });
-
-  it('returns corrrect data sources with relative url root', () => {
-    gon.relative_url_root = '/foobar';
-    expect(workItemPath('project/group', '2')).toEqual('/foobar/project/group/-/work_items/2');
   });
 });

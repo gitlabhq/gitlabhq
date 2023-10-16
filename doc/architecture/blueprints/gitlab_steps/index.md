@@ -139,4 +139,4 @@ TBD
 
 ## References
 
-- [GitLab Issue #215511](https://gitlab.com/gitlab-org/gitlab/-/issues/215511)
+- [GitLab Epic 11535](https://gitlab.com/groups/gitlab-org/-/epics/11535)

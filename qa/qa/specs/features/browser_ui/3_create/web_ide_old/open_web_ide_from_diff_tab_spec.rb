@@ -36,12 +36,7 @@ module QA
       end
 
       let(:merge_request) do
-        Resource::MergeRequest.fabricate_via_api! do |mr|
-          mr.source = source
-          mr.project = project
-          mr.source_branch = 'new-mr'
-          mr.target_new_branch = false
-        end
+        create(:merge_request, source: source, project: project, source_branch: 'new-mr', target_new_branch: false)
       end
 
       before do

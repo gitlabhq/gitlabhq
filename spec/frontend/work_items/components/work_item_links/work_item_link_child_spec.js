@@ -62,9 +62,6 @@ describe('WorkItemLinkChild', () => {
           [getWorkItemTreeQuery, getWorkItemTreeQueryHandler],
           [updateWorkItemMutation, mutationChangeParentHandler],
         ]),
-      provide: {
-        fullPath: 'gitlab-org/gitlab-test',
-      },
       propsData: {
         canUpdate,
         issuableGid,
@@ -93,24 +90,7 @@ describe('WorkItemLinkChild', () => {
       expect(findWorkItemLinkChildContents().props()).toEqual({
         childItem: workItemObjectiveWithChild,
         canUpdate: true,
-        childPath: '/gitlab-org/gitlab-test/-/work_items/12',
         showTaskIcon: false,
-      });
-    });
-
-    describe('with relative instance', () => {
-      beforeEach(() => {
-        window.gon = { relative_url_root: '/test' };
-        createComponent({
-          childItem: workItemObjectiveWithChild,
-          workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-        });
-      });
-
-      it('adds the relative url to child path value', () => {
-        expect(findWorkItemLinkChildContents().props('childPath')).toBe(
-          '/test/gitlab-org/gitlab-test/-/work_items/12',
-        );
       });
     });
   });

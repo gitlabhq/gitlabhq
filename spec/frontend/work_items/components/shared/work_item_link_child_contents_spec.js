@@ -1,4 +1,4 @@
-import { GlLabel, GlIcon } from '@gitlab/ui';
+import { GlLabel, GlIcon, GlLink } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -33,7 +33,7 @@ describe('WorkItemLinkChildContents', () => {
   const findStatusIconComponent = () =>
     wrapper.findByTestId('item-status-icon').findComponent(GlIcon);
   const findConfidentialIconComponent = () => wrapper.findByTestId('confidential-icon');
-  const findTitleEl = () => wrapper.findByTestId('item-title');
+  const findTitleEl = () => wrapper.findComponent(GlLink);
   const findStatusTooltipComponent = () => wrapper.findComponent(RichTimestampTooltip);
   const findMetadataComponent = () => wrapper.findComponent(WorkItemLinkChildMetadata);
   const findAllLabels = () => wrapper.findAllComponents(GlLabel);
@@ -46,7 +46,6 @@ describe('WorkItemLinkChildContents', () => {
       propsData: {
         canUpdate,
         childItem,
-        childPath: '/gitlab-org/gitlab-test/-/work_items/4',
       },
     });
   };

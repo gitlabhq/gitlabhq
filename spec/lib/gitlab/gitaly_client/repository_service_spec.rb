@@ -440,4 +440,19 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       client.object_pool
     end
   end
+
+  describe '#get_file_attributes' do
+    let(:rev) { 'master' }
+    let(:paths) { ['file.txt'] }
+    let(:attrs) { ['text'] }
+
+    it 'sends a get_file_attributes message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:get_file_attributes)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_call_original
+
+      expect(client.get_file_attributes(rev, paths, attrs)).to be_a Gitaly::GetFileAttributesResponse
+    end
+  end
 end

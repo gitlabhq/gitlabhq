@@ -19,21 +19,9 @@ RSpec.describe Users::NamespaceVisitsController, type: :request, feature_categor
 
     context "when user is signed-in" do
       let_it_be(:user) { create(:user) }
-      let(:server_side_frecent_namespaces) { true }
 
       before do
-        stub_feature_flags(server_side_frecent_namespaces: server_side_frecent_namespaces)
         sign_in(user)
-      end
-
-      context "when the server_side_frecent_namespaces feature flag is disabled" do
-        let(:server_side_frecent_namespaces) { false }
-
-        it 'throws an error 302' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
       end
 
       context "when entity type is not provided" do

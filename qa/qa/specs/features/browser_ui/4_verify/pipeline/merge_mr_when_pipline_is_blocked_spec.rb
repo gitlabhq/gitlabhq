@@ -45,13 +45,12 @@ module QA
       end
 
       let(:merge_request) do
-        Resource::MergeRequest.fabricate_via_api! do |merge_request|
-          merge_request.project = project
-          merge_request.description = Faker::Lorem.sentence
-          merge_request.target_new_branch = false
-          merge_request.file_name = 'custom_file.txt'
-          merge_request.file_content = Faker::Lorem.sentence
-        end
+        create(:merge_request,
+          project: project,
+          description: Faker::Lorem.sentence,
+          target_new_branch: false,
+          file_name: 'custom_file.txt',
+          file_content: Faker::Lorem.sentence)
       end
 
       before do

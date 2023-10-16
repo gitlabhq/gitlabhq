@@ -637,4 +637,27 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
       end
     end
   end
+
+  describe '#submodule_diff_compare_link' do
+    context 'when the diff includes submodule changes' do
+      it 'generates a link to compare a diff for a submodule' do
+        allow(helper).to receive(:submodule_links).and_return(
+          Gitlab::SubmoduleLinks::Urls.new(nil, nil, '/comparison-path')
+        )
+
+        output = helper.submodule_diff_compare_link(diff_file)
+        expect(output).to match(%r{href="/comparison-path"})
+        expect(output).to match(
+          %r{Compare <span class="commit-sha">5b812ff1</span>...<span class="commit-sha">7e3e39eb</span>}
+        )
+      end
+    end
+
+    context 'when the diff does not include submodule changes' do
+      it 'returns an empty string' do
+        output = helper.submodule_diff_compare_link(diff_file)
+        expect(output).to eq('')
+      end
+    end
+  end
 end

@@ -22,7 +22,7 @@ remote: GitLab: You are attempting to check in one or more files which exceed th
 - 257cc5642cb1a054f08cc83f2d943e56fd3ebe99 (123 MiB)
 - 5716ca5987cbf97d6bb54920bea6adde242d87e6 (396 MiB)
 
-Please refer to $URL for further information.
+Please refer to https://docs.gitlab.com/ee/user/free_user_limit.html for further information.
 To https://gitlab.com/group/my-project.git
  ! [remote rejected] main -> main (pre-receive hook declined)
 error: failed to push some refs to 'https://gitlab.com/group/my-project.git'
@@ -36,6 +36,11 @@ tree -r | grep <id>
 
 Because Git is not designed to handle large non-text-based data well, you should use [Git LFS](../topics/git/lfs/index.md) for these files.
 Git LFS is designed to work with Git to track large files.
+
+## Feedback
+
+If you have any feedback to share about this limit, please do so in
+[issue 428188](https://gitlab.com/gitlab-org/gitlab/-/issues/428188).
 
 ## Related topics
 

@@ -118,4 +118,27 @@ RSpec.describe Ml::Model, feature_category: :mlops do
       end
     end
   end
+
+  describe '#by_project_and_id' do
+    let(:id) { existing_model.id }
+    let(:project_id) { existing_model.project.id }
+
+    subject { described_class.by_project_id_and_id(project_id, id) }
+
+    context 'if exists' do
+      it { is_expected.to eq(existing_model) }
+    end
+
+    context 'if id has no match' do
+      let(:id) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+
+    context 'if project id does not match' do
+      let(:project_id) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+  end
 end

@@ -1210,6 +1210,14 @@ module Gitlab
         end
       end
 
+      def get_file_attributes(revision, file_paths, attributes)
+        wrapped_gitaly_errors do
+          gitaly_repository_client
+            .get_file_attributes(revision, file_paths, attributes)
+            .attribute_infos
+        end
+      end
+
       private
 
       def repository_info_size_megabytes

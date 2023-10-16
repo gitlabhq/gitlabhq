@@ -6,14 +6,13 @@ module QA
       let(:commit_message) { 'Applying suggested change for testing purposes.' }
       let(:project) { create(:project, name: 'mr-suggestions-project') }
       let(:merge_request) do
-        Resource::MergeRequest.fabricate_via_api! do |merge_request|
-          merge_request.project = project
-          merge_request.title = 'Needs some suggestions'
-          merge_request.description = '... so please add them.'
-          merge_request.file_content = File.read(
+        create(:merge_request,
+          project: project,
+          title: 'Needs some suggestions',
+          description: '... so please add them.',
+          file_content: File.read(
             Runtime::Path.fixture('metrics_dashboards', 'templating.yml')
-          )
-        end
+          ))
       end
 
       let(:dev_user) do

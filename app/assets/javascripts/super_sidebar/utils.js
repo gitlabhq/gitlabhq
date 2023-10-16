@@ -59,19 +59,17 @@ const updateItemAccess = (
   const neverAccessed = !lastAccessedOn;
   const shouldUpdate = neverAccessed || Math.abs(now - lastAccessedOn) / FIFTEEN_MINUTES_IN_MS > 1;
 
-  if (shouldUpdate && gon.features?.serverSideFrecentNamespaces) {
-    try {
-      axios({
-        url: trackVisitsPath,
-        method: 'POST',
-        data: {
-          type: namespace,
-          id: contextItem.id,
-        },
-      });
-    } catch (e) {
+  if (shouldUpdate) {
+    axios({
+      url: trackVisitsPath,
+      method: 'POST',
+      data: {
+        type: namespace,
+        id: contextItem.id,
+      },
+    }).catch((e) => {
       Sentry.captureException(e);
-    }
+    });
   }
 
   return {

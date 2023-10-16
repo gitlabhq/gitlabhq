@@ -48,12 +48,11 @@ module QA
             QA::Runtime::Logger.info("Transient bug test - Trial #{i + 1}") if transient_test
 
             # Create a merge request to trigger pipeline
-            merge_request = Resource::MergeRequest.fabricate_via_api! do |merge_request|
-              merge_request.project = project
-              merge_request.description = Faker::Lorem.sentence
-              merge_request.target_new_branch = false
-              merge_request.source_branch = "mr-test-#{SecureRandom.hex(6)}-#{i + 1}"
-            end
+            merge_request = create(:project,
+              project: project,
+              description: Faker::Lorem.sentence,
+              target_new_branch: false,
+              source_branch: "mr-test-#{SecureRandom.hex(6)}-#{i + 1}")
 
             # Load the page so that the browser is as prepared as possible to display the pipeline in progress when we
             # start it.

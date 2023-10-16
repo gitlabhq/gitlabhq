@@ -3,12 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Merged merge request', :requires_admin, product_group: :code_review do
-      let(:project) { create(:project) }
-      let(:revertible_merge_request) do
-        Resource::MergeRequest.fabricate_via_api! do |merge_request|
-          merge_request.project = project
-        end
-      end
+      let(:revertible_merge_request) { create(:merge_request) }
 
       before do
         Flow::Login.sign_in

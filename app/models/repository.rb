@@ -1265,6 +1265,12 @@ class Repository
     Gitlab::Git::ObjectPool.init_from_gitaly(gitaly_object_pool, source_project&.repository)
   end
 
+  def get_file_attributes(revision, paths, attributes)
+    raw_repository
+      .get_file_attributes(revision, paths, attributes)
+      .map(&:to_h)
+  end
+
   private
 
   def ancestor_cache_key(ancestor_id, descendant_id)

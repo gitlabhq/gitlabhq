@@ -43,13 +43,9 @@ export default {
       type: Boolean,
       required: true,
     },
-    childPath: {
-      type: String,
-      required: true,
-    },
-    /* 
+    /*
       This flag is added to manage between two different work items; Task and Objective/Key result.
-      Status icon is shown on the task while the actual task icon is shown on any Objective/Key result. 
+      Status icon is shown on the task while the actual task icon is shown on any Objective/Key result.
     */
     showTaskIcon: {
       type: Boolean,
@@ -157,9 +153,8 @@ export default {
             />
           </span>
           <gl-link
-            :href="childPath"
+            :href="childItem.webUrl"
             class="gl-overflow-break-word gl-font-weight-semibold"
-            data-testid="item-title"
             @click="$emit('click', $event)"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"

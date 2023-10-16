@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Merge request rebasing', product_group: :code_review do
-      let(:merge_request) { Resource::MergeRequest.fabricate_via_api! }
+      let(:merge_request) { create(:merge_request) }
 
       before do
         Flow::Login.sign_in

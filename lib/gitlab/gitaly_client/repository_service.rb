@@ -353,6 +353,13 @@ module Gitlab
         )
       end
 
+      def get_file_attributes(revision, paths, attributes)
+        request = Gitaly::GetFileAttributesRequest
+          .new(repository: @gitaly_repo, revision: revision, paths: paths, attributes: attributes)
+
+        gitaly_client_call(@repository.storage, :repository_service, :get_file_attributes, request, timeout: GitalyClient.fast_timeout)
+      end
+
       private
 
       def search_results_from_response(gitaly_response, options = {})

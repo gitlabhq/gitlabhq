@@ -4,12 +4,7 @@ module QA
   RSpec.describe 'Create' do
     describe 'Merge request squashing', :reliable, product_group: :code_review do
       let(:project) { create(:project, name: 'squash-before-merge') }
-      let(:merge_request) do
-        Resource::MergeRequest.fabricate_via_api! do |merge_request|
-          merge_request.project = project
-          merge_request.title = 'Squashing commits'
-        end
-      end
+      let(:merge_request) { create(:merge_request, project: project, title: 'Squashing commits') }
 
       before do
         Flow::Login.sign_in

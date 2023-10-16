@@ -2780,4 +2780,14 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
   end
+
+  describe '#get_file_attributes' do
+    let(:rev) { 'master' }
+    let(:paths) { ['file.txt'] }
+    let(:attrs) { ['text'] }
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :get_file_attributes do
+      subject { repository.get_file_attributes(rev, paths, attrs) }
+    end
+  end
 end

@@ -32,5 +32,9 @@ module Ml
       create_with(default_experiment: experiment)
         .find_or_create_by(project: project, name: name)
     end
+
+    def self.by_project_id_and_id(project_id, id)
+      find_by(project_id: project_id, id: id)
+    end
   end
 end

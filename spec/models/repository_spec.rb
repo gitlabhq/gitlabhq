@@ -3981,4 +3981,61 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#get_file_attributes' do
+    let(:project) do
+      create(:project, :custom_repo, files: {
+        '.gitattributes' => gitattr_content,
+        'file1.txt' => 'test content'
+      })
+    end
+
+    let(:gitattr_content) { '' }
+    let(:rev) { 'master' }
+    let(:paths) { ['file1.txt', 'README'] }
+    let(:attrs) { %w[text diff] }
+
+    subject(:file_attributes) { repository.get_file_attributes(rev, paths, attrs) }
+
+    context 'when the given attributes are defined' do
+      let(:gitattr_content) { "* -text\n*.txt text\n*.txt diff" }
+
+      it 'returns expected attributes' do
+        expect(file_attributes.count).to eq 3
+        expect(file_attributes[0]).to eq({ path: 'file1.txt', attribute: 'text', value: 'set' })
+        expect(file_attributes[1]).to eq({ path: 'file1.txt', attribute: 'diff', value: 'set' })
+        expect(file_attributes[2]).to eq({ path: 'README', attribute: 'text', value: 'unset' })
+      end
+    end
+
+    context 'when the attribute is not defined for a given file' do
+      let(:gitattr_content) { "*.txt text" }
+
+      let(:rev) { 'master' }
+      let(:paths) { ['README'] }
+      let(:attrs) { ['text'] }
+
+      it 'returns an empty array' do
+        expect(file_attributes).to eq []
+      end
+    end
+
+    context 'when revision is an empty string' do
+      let(:rev) { '' }
+
+      it { expect { file_attributes }.to raise_error(ArgumentError) }
+    end
+
+    context 'when paths list is empty' do
+      let(:paths) { [] }
+
+      it { expect { file_attributes }.to raise_error(ArgumentError) }
+    end
+
+    context 'when attributes list is empty' do
+      let(:attrs) { [] }
+
+      it { expect { file_attributes }.to raise_error(ArgumentError) }
+    end
+  end
 end

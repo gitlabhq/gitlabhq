@@ -23,7 +23,7 @@ Event type                                   | Trigger
 [Group member event](#group-member-events)   | A user is added or removed from a group, or a user's access level or access expiration date changes.
 [Subgroup event](#subgroup-events)           | A subgroup is created or removed from a group.
 [Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
-[Release event](#release-events)             | A release is created or updated.
+[Release event](#release-events)             | A release is created, updated, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 
 NOTE:

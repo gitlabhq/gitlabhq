@@ -10,9 +10,6 @@ info: For assistance with this tutorial, see https://about.gitlab.com/handbook/p
 
 Follow this tutorial to learn how to use the new left sidebar to navigate the UI.
 
-Provide feedback in
-[issue 409005](https://gitlab.com/gitlab-org/gitlab/-/issues/409005).
-
 ## Enable the new left sidebar
 
 To view the new sidebar:
@@ -80,6 +77,8 @@ On the left sidebar, you can also choose a more focused view into the areas you 
 Select **Search or go to** and then select **Your work**:
 
 ![Your work](img/your_work_v16_4.png)
+
+Then, on the left sidebar, **Your work** is displayed.
 
 ## Go to the Admin Area
 

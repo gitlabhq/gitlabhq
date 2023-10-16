@@ -32,9 +32,7 @@ module QA
 
       it 'sends a merge request event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349720' do
         Resource::ProjectWebHook.setup(session: session, merge_requests: true) do |webhook, smocker|
-          Resource::MergeRequest.fabricate_via_api! do |merge_request|
-            merge_request.project = webhook.project
-          end
+          create(:merge_request, project: webhook.project)
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'merge_request')
         end

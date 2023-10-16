@@ -195,8 +195,7 @@ module QA
         # the project without ever knowing what is in it.
         @file_name = "added_file-00000000.txt"
         @source_branch = "large_merge_request"
-        visit("#{project.web_url}/-/merge_requests/1")
-        current_url
+        @web_url = "#{project.web_url}/-/merge_requests/1"
       end
 
       # Return subset of fields for comparing merge requests

@@ -13,5 +13,9 @@ module Ml
 
       Gitlab::Routing.url_helpers.project_package_path(model.project, model.latest_version.package_id)
     end
+
+    def path
+      Gitlab::Routing.url_helpers.project_ml_model_path(model.project, model.id)
+    end
   end
 end
