@@ -3,13 +3,6 @@
 module Gitlab
   module Pagination
     module CursorBasedKeyset
-      SUPPORTED_ORDERING = {
-        Group => { name: :asc },
-        AuditEvent => { id: :desc },
-        ::Ci::Build => { id: :desc },
-        ::Packages::BuildInfo => { id: :desc }
-      }.freeze
-
       SUPPORTED_MULTI_ORDERING = {
         Group => { name: [:asc] },
         AuditEvent => { id: [:desc] },
@@ -33,11 +26,7 @@ module Gitlab
       ENFORCED_TYPES = [Group].freeze
 
       def self.available_for_type?(relation)
-        if Feature.enabled?(:api_keyset_pagination_multi_order)
-          SUPPORTED_MULTI_ORDERING.key?(relation.klass)
-        else
-          SUPPORTED_ORDERING.key?(relation.klass)
-        end
+        SUPPORTED_MULTI_ORDERING.key?(relation.klass)
       end
 
       def self.available?(cursor_based_request_context, relation)
@@ -50,16 +39,10 @@ module Gitlab
       end
 
       def self.order_satisfied?(relation, cursor_based_request_context)
-        if Feature.enabled?(:api_keyset_pagination_multi_order)
-          order_by_from_request = cursor_based_request_context.order
-          sort_from_request = cursor_based_request_context.sort
+        order_by_from_request = cursor_based_request_context.order
+        sort_from_request = cursor_based_request_context.sort
 
-          SUPPORTED_MULTI_ORDERING[relation.klass][order_by_from_request]&.include?(sort_from_request)
-        else
-          order_by_from_request = cursor_based_request_context.order_by
-
-          SUPPORTED_ORDERING[relation.klass] == order_by_from_request
-        end
+        SUPPORTED_MULTI_ORDERING[relation.klass][order_by_from_request]&.include?(sort_from_request)
       end
       private_class_method :order_satisfied?
     end

@@ -28,6 +28,7 @@ RSpec.describe WorkItems::RelatedWorkItemLinks::CreateService, feature_category:
 
     it_behaves_like 'issuable link creation', use_references: false do
       let(:response_keys) { [:status, :created_references, :message] }
+      let(:async_notes) { true }
       let(:already_assigned_error_msg) { "Items are already linked" }
       let(:no_found_error_msg) do
         'No matching work item found. Make sure you are adding a valid ID and you have access to the item.'

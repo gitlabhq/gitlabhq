@@ -18,10 +18,7 @@ RSpec.describe ResolvesGroups do
 
   let_it_be(:query_type) do
     query_factory do |query|
-      query.field :groups,
-                  Types::GroupType.connection_type,
-                  null: true,
-                  resolver: resolver
+      query.field :groups, Types::GroupType.connection_type, null: true, resolver: resolver
     end
   end
 

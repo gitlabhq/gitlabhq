@@ -60,7 +60,7 @@ GET /users
 ]
 ```
 
-This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination). Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5 [with a flag](../user/feature_flags.md) named `api_keyset_pagination_multi_order`. Disabled by default.
+This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination). Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5.
 
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 

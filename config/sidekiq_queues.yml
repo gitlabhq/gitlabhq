@@ -381,6 +381,8 @@
   - 1
 - - issuable_label_links_destroy
   - 1
+- - issuable_related_links_create
+  - 1
 - - issuables_clear_groups_issue_counter
   - 1
 - - issues_close

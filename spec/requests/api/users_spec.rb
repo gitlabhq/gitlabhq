@@ -260,46 +260,16 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           end
         end
 
-        context 'when api_keyset_pagination_multi_order FF is enabled' do
-          before do
-            stub_feature_flags(api_keyset_pagination_multi_order: true)
-          end
-
-          it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil do
-            let(:first_record) { user }
-            let(:second_record) { admin }
-            let(:api_call) { api(path, user) }
-          end
-
-          it 'still supports offset pagination when keyset pagination params are not provided' do
-            get api(path, user)
-
-            expect(response).to include_pagination_headers
-          end
+        it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil do
+          let(:first_record) { user }
+          let(:second_record) { admin }
+          let(:api_call) { api(path, user) }
         end
 
-        context 'when api_keyset_pagination_multi_order FF is disabled' do
-          before do
-            stub_feature_flags(api_keyset_pagination_multi_order: false)
-          end
+        it 'still supports offset pagination when keyset pagination params are not provided' do
+          get api(path, user)
 
-          it 'paginates the records correctly using offset pagination' do
-            get api(path, user), params: { pagination: 'keyset', per_page: 1 }
-
-            params_for_next_page = pagination_params_from_next_url(response)
-            expect(response).to include_pagination_headers
-            expect(params_for_next_page).not_to include('cursor')
-          end
-
-          context 'on making requests with unsupported ordering structure' do
-            it 'does not return error' do
-              get api(path, user),
-                params: { pagination: 'keyset', per_page: 1, order_by: 'created_at', sort: 'asc' }
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-            end
-          end
+          expect(response).to include_pagination_headers
         end
       end
     end

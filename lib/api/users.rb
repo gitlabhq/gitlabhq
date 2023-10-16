@@ -141,11 +141,7 @@ module API
 
         users = users.preload(:user_detail)
 
-        if Feature.enabled?(:api_keyset_pagination_multi_order)
-          present paginate_with_strategies(users), options
-        else
-          present paginate(users), options
-        end
+        present paginate_with_strategies(users), options
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

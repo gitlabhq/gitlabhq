@@ -39,8 +39,12 @@ RSpec.describe Resolvers::Ci::JobsResolver, feature_category: :continuous_integr
           ::Types::Security::ReportTypeEnum.values['SAST'].value,
           ::Types::Security::ReportTypeEnum.values['DAST'].value
         ]
-        jobs = resolve(described_class, obj: pipeline, args: { security_report_types: report_types },
-                                        arg_style: :internal)
+        jobs = resolve(
+          described_class,
+          obj: pipeline,
+          args: { security_report_types: report_types },
+          arg_style: :internal
+        )
 
         expect(jobs).to contain_exactly(
           have_attributes(name: 'DAST job'),

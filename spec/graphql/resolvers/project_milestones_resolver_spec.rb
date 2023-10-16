@@ -44,10 +44,14 @@ RSpec.describe 'Resolvers::ProjectMilestonesResolver' do
       end
 
       it 'calls MilestonesFinder with correct parameters' do
-        expect(MilestonesFinder).to receive(:new)
-          .with(args(project_ids: project.id, group_ids: contain_exactly(group, parent_group),
-                     state: 'all', sort: :due_date_asc))
-          .and_call_original
+        expect(MilestonesFinder).to receive(:new).with(
+          args(
+            project_ids: project.id,
+            group_ids: contain_exactly(group, parent_group),
+            state: 'all',
+            sort: :due_date_asc
+          )
+        ).and_call_original
 
         resolve_project_milestones(include_ancestors: true)
       end
@@ -99,10 +103,15 @@ RSpec.describe 'Resolvers::ProjectMilestonesResolver' do
           start_date = now_date
           end_date = now_date + 5.days
 
-          expect(MilestonesFinder).to receive(:new)
-            .with(args(project_ids: project.id, state: 'all',
-                       sort: :due_date_asc, start_date: start_date, end_date: end_date))
-            .and_call_original
+          expect(MilestonesFinder).to receive(:new).with(
+            args(
+              project_ids: project.id,
+              state: 'all',
+              sort: :due_date_asc,
+              start_date: start_date,
+              end_date: end_date
+            )
+          ).and_call_original
 
           resolve_project_milestones(timeframe: { start: start_date, end: end_date })
         end

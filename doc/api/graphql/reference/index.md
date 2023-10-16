@@ -7649,7 +7649,7 @@ Input type: `WorkItemAddLinkedItemsInput`
 | <a id="mutationworkitemaddlinkeditemsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemaddlinkeditemsid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="mutationworkitemaddlinkeditemslinktype"></a>`linkType` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Type of link. Defaults to `RELATED`. |
-| <a id="mutationworkitemaddlinkeditemsworkitemsids"></a>`workItemsIds` | [`[WorkItemID!]!`](#workitemid) | Global IDs of the items to link. Maximum number of IDs you can provide: 3. |
+| <a id="mutationworkitemaddlinkeditemsworkitemsids"></a>`workItemsIds` | [`[WorkItemID!]!`](#workitemid) | Global IDs of the items to link. Maximum number of IDs you can provide: 10. |
 
 #### Fields
 
@@ -7844,7 +7844,7 @@ Input type: `WorkItemRemoveLinkedItemsInput`
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemremovelinkeditemsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemremovelinkeditemsid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
-| <a id="mutationworkitemremovelinkeditemsworkitemsids"></a>`workItemsIds` | [`[WorkItemID!]!`](#workitemid) | Global IDs of the items to unlink. Maximum number of IDs you can provide: 3. |
+| <a id="mutationworkitemremovelinkeditemsworkitemsids"></a>`workItemsIds` | [`[WorkItemID!]!`](#workitemid) | Global IDs of the items to unlink. Maximum number of IDs you can provide: 10. |
 
 #### Fields
 

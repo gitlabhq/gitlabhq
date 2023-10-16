@@ -23,12 +23,14 @@ RSpec.describe Resolvers::EnvironmentsResolver do
 
     describe '#resolve' do
       it 'finds all environments' do
-        expect(resolve_environments).to contain_exactly(environment1,
-                                                        environment2,
-                                                        environment3,
-                                                        environment4,
-                                                        environment5,
-                                                        environment6)
+        expect(resolve_environments).to contain_exactly(
+          environment1,
+          environment2,
+          environment3,
+          environment4,
+          environment5,
+          environment6
+        )
       end
 
       context 'with name' do
@@ -51,11 +53,13 @@ RSpec.describe Resolvers::EnvironmentsResolver do
 
       context 'with states' do
         it 'searches environments by state' do
-          expect(resolve_environments(states: ['available'])).to contain_exactly(environment1,
-                                                                                 environment3,
-                                                                                 environment4,
-                                                                                 environment5,
-                                                                                 environment6)
+          expect(resolve_environments(states: ['available'])).to contain_exactly(
+            environment1,
+            environment3,
+            environment4,
+            environment5,
+            environment6
+          )
         end
 
         it 'generates an error if requested state is invalid' do

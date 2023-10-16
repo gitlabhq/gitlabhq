@@ -5,8 +5,7 @@ module Mutations
     module LinkedItems
       class Base < BaseMutation
         # Limit maximum number of items that can be linked at a time to avoid overloading the DB
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/419555
-        MAX_WORK_ITEMS = 3
+        MAX_WORK_ITEMS = 10
 
         argument :id, ::Types::GlobalIDType[::WorkItem],
           required: true, description: 'Global ID of the work item.'

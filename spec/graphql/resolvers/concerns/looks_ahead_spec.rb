@@ -57,10 +57,12 @@ RSpec.describe LooksAhead do
   end
 
   def query(doc = document)
-    GraphQL::Query.new(schema,
-                       document: doc,
-                       context: { user_db: [the_user] },
-                       variables: { username: the_user.username })
+    GraphQL::Query.new(
+      schema,
+      document: doc,
+      context: { user_db: [the_user] },
+      variables: { username: the_user.username }
+    )
   end
 
   let(:document) do

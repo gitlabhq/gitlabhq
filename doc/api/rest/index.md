@@ -543,7 +543,7 @@ options:
 | [Project jobs](../jobs.md#list-project-jobs)                                   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Project audit events](../audit_events.md#retrieve-all-project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Projects](../projects.md)                                                     | `order_by=id` only               | Authenticated and unauthenticated users. |
-| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`               | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 15.4 [with a flag](../../user/feature_flags.md)) named `api_keyset_pagination_multi_order`. Disabled by default. |
+| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`               | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5. |
 
 ### Pagination response headers
 

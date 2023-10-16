@@ -14221,14 +14221,14 @@ ALTER SEQUENCE ci_secure_files_id_seq OWNED BY ci_secure_files.id;
 CREATE TABLE ci_sources_pipelines (
     id integer NOT NULL,
     project_id integer,
-    pipeline_id integer,
+    pipeline_id_convert_to_bigint integer,
     source_project_id integer,
-    source_pipeline_id integer,
+    source_pipeline_id_convert_to_bigint integer,
     source_job_id bigint,
     partition_id bigint NOT NULL,
     source_partition_id bigint NOT NULL,
-    pipeline_id_convert_to_bigint bigint,
-    source_pipeline_id_convert_to_bigint bigint
+    pipeline_id bigint,
+    source_pipeline_id bigint
 );
 
 CREATE SEQUENCE ci_sources_pipelines_id_seq
@@ -25424,6 +25424,11 @@ CREATE TABLE zoekt_shards (
     search_base_url text NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    uuid uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL,
+    last_seen_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
+    used_bytes bigint DEFAULT 0 NOT NULL,
+    total_bytes bigint DEFAULT 0 NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_61794bac26 CHECK ((char_length(search_base_url) <= 1024)),
     CONSTRAINT check_c65bb85a32 CHECK ((char_length(index_base_url) <= 1024))
 );
@@ -34779,6 +34784,8 @@ CREATE UNIQUE INDEX index_zoekt_shard_and_namespace ON zoekt_indexed_namespaces 
 
 CREATE UNIQUE INDEX index_zoekt_shards_on_index_base_url ON zoekt_shards USING btree (index_base_url);
 
+CREATE INDEX index_zoekt_shards_on_last_seen_at ON zoekt_shards USING btree (last_seen_at);
+
 CREATE UNIQUE INDEX index_zoekt_shards_on_search_base_url ON zoekt_shards USING btree (search_base_url);
 
 CREATE INDEX index_zoom_meetings_on_issue_id ON zoom_meetings USING btree (issue_id);
@@ -34976,6 +34983,8 @@ CREATE UNIQUE INDEX unique_streaming_event_type_filters_destination_id ON audit_
 CREATE UNIQUE INDEX unique_streaming_instance_event_type_filters_destination_id ON audit_events_streaming_instance_event_type_filters USING btree (instance_external_audit_event_destination_id, audit_event_type);
 
 CREATE UNIQUE INDEX unique_vuln_merge_request_link_vuln_id_and_mr_id ON vulnerability_merge_request_links USING btree (vulnerability_id, merge_request_id);
+
+CREATE UNIQUE INDEX unique_zoekt_shards_uuid ON zoekt_shards USING btree (uuid);
 
 CREATE INDEX user_follow_users_followee_id_idx ON user_follow_users USING btree (followee_id);
 

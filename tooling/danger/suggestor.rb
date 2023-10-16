@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Tooling
   module Danger
     module Suggestor
