@@ -85,6 +85,8 @@
   - 1
 - - bitbucket_import_import_issue_notes
   - 1
+- - bitbucket_import_import_lfs_object
+  - 1
 - - bitbucket_import_import_pull_request
   - 1
 - - bitbucket_import_import_pull_request_notes
@@ -94,6 +96,8 @@
 - - bitbucket_import_stage_import_issues
   - 1
 - - bitbucket_import_stage_import_issues_notes
+  - 1
+- - bitbucket_import_stage_import_lfs_objects
   - 1
 - - bitbucket_import_stage_import_pull_requests
   - 1

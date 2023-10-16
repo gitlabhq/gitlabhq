@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class ProjectPipeline
         include Pipeline
+        include HexdigestCacheStrategy
 
         abort_on_failure!
 

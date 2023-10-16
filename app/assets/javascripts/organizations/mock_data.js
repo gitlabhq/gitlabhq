@@ -8,25 +8,27 @@ export const organizations = [
   {
     id: 'gid://gitlab/Organization/1',
     name: 'My First Organization',
-    description: 'This is where an organization can be explained in detail',
-    avatarUrl: null,
-    webUrl: null,
+    descriptionHtml:
+      '<p>This is where an organization can be explained in <strong>detail</strong></p>',
+    avatarUrl: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61',
+    webUrl: '/-/organizations/default',
     __typename: 'Organization',
   },
   {
     id: 'gid://gitlab/Organization/2',
     name: 'Vegetation Co.',
-    description: 'Lorem ipsum dolor sit amet',
+    descriptionHtml:
+      '<p> Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolt   Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt<script>alert(1)</script></p>',
     avatarUrl: null,
-    webUrl: null,
+    webUrl: '/-/organizations/default',
     __typename: 'Organization',
   },
   {
     id: 'gid://gitlab/Organization/3',
     name: 'Dude where is my car?',
-    description: 'Bacon ipsum dolor amet short ribs',
+    descriptionHtml: null,
     avatarUrl: null,
-    webUrl: null,
+    webUrl: '/-/organizations/default',
     __typename: 'Organization',
   },
 ];

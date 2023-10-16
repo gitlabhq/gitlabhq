@@ -10,10 +10,12 @@ RSpec.describe Types::Ci::DetailedStatusType do
   specify { expect(described_class.graphql_name).to eq('DetailedStatus') }
 
   it 'has all fields' do
-    expect(described_class).to have_graphql_fields(:id, :group, :icon, :favicon,
-                                                   :details_path, :has_details,
-                                                   :label, :name, :text, :tooltip,
-                                                   :action)
+    expect(described_class).to have_graphql_fields(
+      :id, :group, :icon, :favicon,
+      :details_path, :has_details,
+      :label, :name, :text, :tooltip,
+      :action
+    )
   end
 
   describe 'id field' do
@@ -30,12 +32,12 @@ RSpec.describe Types::Ci::DetailedStatusType do
       status = stage.detailed_status(stage.pipeline.user)
 
       expected_status = {
-          button_title: status.action_button_title,
-          icon: status.action_icon,
-          method: status.action_method,
-          path: status.action_path,
-          title: status.action_title
-        }
+        button_title: status.action_button_title,
+        icon: status.action_icon,
+        method: status.action_method,
+        path: status.action_path,
+        title: status.action_title
+      }
 
       expect(resolve_field('action', status, arg_style: :internal)).to eq(expected_status)
     end

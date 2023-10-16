@@ -33,8 +33,9 @@ RSpec.describe Types::BaseField, feature_category: :api do
     it 'only tests the resolver authorization if it authorizes_object?' do
       resolver = Class.new(Resolvers::BaseResolver)
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
-                                  resolver_class: resolver)
+      field = described_class.new(
+        name: 'test', type: GraphQL::Types::String, null: true, resolver_class: resolver
+      )
 
       expect(field).to be_authorized(object, nil, ctx)
     end
@@ -46,8 +47,9 @@ RSpec.describe Types::BaseField, feature_category: :api do
         authorizes_object!
       end
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
-                                  resolver_class: resolver)
+      field = described_class.new(
+        name: 'test', type: GraphQL::Types::String, null: true, resolver_class: resolver
+      )
 
       expect(resolver).to receive(:authorized?).with(object, ctx).and_return(false)
 
@@ -61,9 +63,13 @@ RSpec.describe Types::BaseField, feature_category: :api do
         authorizes_object!
       end
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
-                                  authorize: :foo,
-                                  resolver_class: resolver)
+      field = described_class.new(
+        name: 'test',
+        type: GraphQL::Types::String,
+        null: true,
+        authorize: :foo,
+        resolver_class: resolver
+      )
 
       expect(Ability).to receive(:allowed?).with(current_user, :foo, object).and_return(false)
       expect(resolver).not_to receive(:authorized?)
@@ -78,9 +84,13 @@ RSpec.describe Types::BaseField, feature_category: :api do
         authorizes_object!
       end
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
-                                  authorize: :foo,
-                                  resolver_class: resolver)
+      field = described_class.new(
+        name: 'test',
+        type: GraphQL::Types::String,
+        null: true,
+        authorize: :foo,
+        resolver_class: resolver
+      )
 
       expect(Ability).to receive(:allowed?).with(current_user, :foo, object).and_return(true)
       expect(resolver).to receive(:authorized?).with(object, ctx).and_return(false)

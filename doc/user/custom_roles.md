@@ -14,6 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Feature flag `custom_roles_vulnerability` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124049) in GitLab 16.2.
 > - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 > - Ability to manage group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) in GitLab 16.5 under `admin_group_member` Feature flag.
+> - Ability to manage project access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) in GitLab 16.5 under `manage_project_access_tokens` Feature flag.
 
 Custom roles allow group members who are assigned the Owner role to create roles
 specific to the needs of their organization.
@@ -102,6 +103,7 @@ You can see the abilities requirements in the following table.
 | `admin_merge_request` | - |
 | `admin_vulnerability` | `read_vulnerability` |
 | `admin_group_member` | - |
+| `manage_project_access_tokens` | - |
 
 ## Associate a custom role with an existing group member
 

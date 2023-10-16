@@ -794,28 +794,6 @@ module Gitlab
 
                 it_behaves_like 'returns errors', 'test_job_1 has the following needs duplicated: test_job_2.'
               end
-
-              context 'when needed job name is too long' do
-                let(:job_name) { 'a' * (::Ci::BuildNeed::MAX_JOB_NAME_LENGTH + 1) }
-
-                let(:config) do
-                  <<-EOYML
-                    lint_job:
-                      script: 'echo lint_job'
-                      rules:
-                        - if: $var == null
-                          needs: [#{job_name}]
-                    #{job_name}:
-                      script: 'echo job'
-                  EOYML
-                end
-
-                it 'returns an error' do
-                  expect(subject.errors).to include(
-                    "lint_job job: need `#{job_name}` name is too long (maximum is #{::Ci::BuildNeed::MAX_JOB_NAME_LENGTH} characters)"
-                  )
-                end
-              end
             end
 
             context 'rule needs as hash' do

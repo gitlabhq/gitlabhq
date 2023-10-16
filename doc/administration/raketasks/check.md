@@ -283,6 +283,54 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
 <!-- vale gitlab.SentenceSpacing = YES -->
 
+## Reset encrypted tokens when they can't be recovered
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131893) in GitLab 16.6.
+
+WARNING:
+This operation is dangerous and can result in data-loss. Proceed with extreme caution.
+You must have knowledge about GitLab internals before you perform this operation.
+
+In some cases, encrypted tokens can no longer be recovered and cause issues.
+Most often, runner registration tokens for groups and projects might be broken on very large instances.
+
+To reset broken tokens:
+
+1. Identify the database models that have broken encrypted tokens. For example, it can be `Group` and `Project`.
+1. Identify the broken tokens. For example `runners_token`.
+1. To reset broken tokens, run `gitlab:doctor:reset_encrypted_tokens` with `VERBOSE=true MODEL_NAMES=Model1,Model2 TOKEN_NAMES=broken_token1,broken_token2`. For example:
+
+    ```shell
+    VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token bundle exec rake gitlab:doctor:reset_encrypted_tokens
+    ```
+
+    You will see every action this task would try to perform:
+
+    ```plain
+    I, [2023-09-26T16:20:23.230942 #88920]  INFO -- : Resetting runners_token on Project, Group if they can not be read
+    I, [2023-09-26T16:20:23.230975 #88920]  INFO -- : Executing in DRY RUN mode, no records will actually be updated
+    D, [2023-09-26T16:20:30.151585 #88920] DEBUG -- : > Fix Project[1].runners_token
+    I, [2023-09-26T16:20:30.151617 #88920]  INFO -- : Checked 1/9 Projects
+    D, [2023-09-26T16:20:30.151873 #88920] DEBUG -- : > Fix Project[3].runners_token
+    D, [2023-09-26T16:20:30.152975 #88920] DEBUG -- : > Fix Project[10].runners_token
+    I, [2023-09-26T16:20:30.152992 #88920]  INFO -- : Checked 11/29 Projects
+    I, [2023-09-26T16:20:30.153230 #88920]  INFO -- : Checked 21/29 Projects
+    I, [2023-09-26T16:20:30.153882 #88920]  INFO -- : Checked 29 Projects
+    D, [2023-09-26T16:20:30.195929 #88920] DEBUG -- : > Fix Group[22].runners_token
+    I, [2023-09-26T16:20:30.196125 #88920]  INFO -- : Checked 1/19 Groups
+    D, [2023-09-26T16:20:30.196192 #88920] DEBUG -- : > Fix Group[25].runners_token
+    D, [2023-09-26T16:20:30.197557 #88920] DEBUG -- : > Fix Group[82].runners_token
+    I, [2023-09-26T16:20:30.197581 #88920]  INFO -- : Checked 11/19 Groups
+    I, [2023-09-26T16:20:30.198455 #88920]  INFO -- : Checked 19 Groups
+    I, [2023-09-26T16:20:30.198462 #88920]  INFO -- : Done!
+    ```
+
+1. If you are confident that this operation resets the correct tokens, disable dry-run mode and run the operation again:
+
+    ```shell
+    DRY_RUN=false VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token bundle exec rake gitlab:doctor:reset_encrypted_tokens
+    ```
+
 ## Troubleshooting
 
 The following are solutions to problems you might discover using the Rake tasks documented

@@ -164,7 +164,7 @@ body.gl-dark {
   // rendered and cached in the backend (labels_helper.rb)
   &.gl-label-scoped {
     .gl-label-text-scoped,
-    .gl-label-close {
+    .gl-label-close.gl-button .gl-icon {
       color: $gray-900;
     }
   }
@@ -183,7 +183,7 @@ body.gl-dark {
 .gl-label.gl-label-scoped.gl-label-text-dark,
 .gl-label.gl-label-scoped.gl-label-text-light {
   .gl-label-text-scoped,
-  .gl-label-close {
+  .gl-label-close.gl-button .gl-icon {
     color: $gray-900;
   }
 }

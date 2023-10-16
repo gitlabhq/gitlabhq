@@ -31,7 +31,7 @@ export default {
         return data?.k8sServices || [];
       },
       error(error) {
-        this.$emit('cluster-error', error);
+        this.$emit('cluster-error', error.message);
       },
     },
   },
@@ -140,6 +140,7 @@ export default {
       :configuration="configuration"
       @loading="$emit('loading', $event)"
       @failed="$emit('failed')"
+      @cluster-error="$emit('cluster-error', $event)"
     />
 
     <gl-tab>

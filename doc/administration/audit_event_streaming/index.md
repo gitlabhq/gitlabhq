@@ -261,9 +261,13 @@ To delete Google Cloud Logging streaming destinations to a top-level group:
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 > - Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
 
+Manage streaming destinations for an entire instance.
+
+### HTTP destinations
+
 Manage HTTP streaming destinations for an entire instance.
 
-### Add a new HTTP destination
+#### Add a new HTTP destination
 
 Add a new HTTP streaming destination to an instance.
 
@@ -285,7 +289,7 @@ To add a streaming destination for an instance:
    20 headers per streaming destination.
 1. After all headers have been filled out, select **Add** to add the new streaming destination.
 
-### List HTTP destinations
+#### List HTTP destinations
 
 Prerequisites:
 
@@ -299,7 +303,7 @@ To list the streaming destinations for an instance:
 1. On the main area, select **Streams** tab.
 1. Select the stream to expand it and see all the custom HTTP headers.
 
-### Update an HTTP destination
+#### Update an HTTP destination
 
 Prerequisites:
 
@@ -329,7 +333,7 @@ To update a instance streaming destination's custom HTTP headers:
    20 headers per streaming destination.
 1. Select **Save** to update the streaming destination.
 
-### Delete an HTTP destination
+#### Delete an HTTP destination
 
 Delete streaming destinations for an entire instance. When the last destination is successfully deleted, streaming is
 disabled for the instance.
@@ -360,7 +364,7 @@ To delete only the custom HTTP headers for a streaming destination:
 1. To the right of the header, select **Delete** (**{remove}**).
 1. Select **Save** to update the streaming destination.
 
-### Verify event authenticity
+#### Verify event authenticity
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
@@ -384,7 +388,7 @@ To list streaming destinations for an instance and see the verification tokens:
 1. On the main area, select the **Streams** tab.
 1. View the verification token on the right side of each item.
 
-### Update event filters
+#### Update event filters
 
 > Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415013) in GitLab 16.3.
 
@@ -404,7 +408,7 @@ To update a streaming destination's event filters:
 1. Select the dropdown list and select or clear the required event types.
 1. Select **Save** to update the event filters.
 
-### Override default content type header
+#### Override default content type header
 
 By default, streaming destinations use a `content-type` header of `application/x-www-form-urlencoded`. However, you
 might want to set the `content-type` header to something else. For example ,`application/json`.
@@ -413,6 +417,84 @@ To override the `content-type` header default value for an instance streaming de
 
 - The [GitLab UI](#update-an-http-destination-1).
 - The [GraphQL API](graphql_api.md#update-streaming-destinations).
+
+### Google Cloud Logging destinations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131851) in GitLab 16.5.
+
+Manage Google Cloud Logging destinations for an entire instance.
+
+#### Prerequisites
+
+Before setting up Google Cloud Logging streaming audit events, you must:
+
+1. Create a service account for Google Cloud with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
+   For more information, see [Creating and managing service accounts in the Google Cloud documentation](https://cloud.google.com/iam/docs/service-accounts-create#creating).
+1. Enable the **Logs Writer** role for the service account to enable logging on Google Cloud. For more information, see [Access control with IAM](https://cloud.google.com/logging/docs/access-control#logging.logWriter).
+1. Create a JSON key for the service account. For more information, see [Creating a service account key](https://cloud.google.com/iam/docs/keys-create-delete#creating).
+
+#### Add a new Google Cloud Logging destination
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To add Google Cloud Logging streaming destinations to an instance:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. On the left sidebar, select **Monitoring > Audit Events**.
+1. On the main area, select **Streams** tab.
+1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
+1. Enter the Google project ID, Google client email, log ID, and Google private key to add.
+1. Select **Add** to add the new streaming destination.
+
+#### List Google Cloud Logging destinations
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To list Google Cloud Logging streaming destinations for an instance:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. On the left sidebar, select **Monitoring > Audit Events**.
+1. On the main area, select **Streams** tab.
+1. Select the Google Cloud Logging stream to expand and see all the fields.
+
+#### Update a Google Cloud Logging destination
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To update Google Cloud Logging streaming destinations to an instance:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. On the left sidebar, select **Monitoring > Audit Events**.
+1. On the main area, select **Streams** tab.
+1. Select the Google Cloud Logging stream to expand.
+1. Enter the Google project ID, Google client email, and log ID to update.
+1. Select **Add a new private key** and enter a Google private key to update the private key.
+1. Select **Save** to update the streaming destination.
+
+#### Delete a Google Cloud Logging streaming destination
+
+Prerequisites:
+
+- Administrator access on the instance.
+
+To delete Google Cloud Logging streaming destinations to an instance:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. On the left sidebar, select **Monitoring > Audit Events**.
+1. On the main area, select **Streams** tab.
+1. Select the Google Cloud Logging stream to expand.
+1. Select **Delete destination**.
+1. Confirm by selecting **Delete destination** in the dialog.
 
 ## Payload schema
 

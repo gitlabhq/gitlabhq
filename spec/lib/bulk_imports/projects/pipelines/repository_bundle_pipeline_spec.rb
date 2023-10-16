@@ -41,6 +41,16 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
       expect(Dir.exist?(tmpdir)).to eq(false)
     end
 
+    it 'skips import if already cached' do
+      expect(portable.repository).to receive(:create_from_bundle).with(bundle_path).and_call_original
+
+      pipeline.run
+
+      expect(pipeline).not_to receive(:load)
+
+      pipeline.run
+    end
+
     context 'when something goes wrong during import' do
       it 'marks entity as failed' do
         allow(pipeline).to receive(:load).and_raise(StandardError)

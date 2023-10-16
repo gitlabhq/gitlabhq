@@ -1,8 +1,0 @@
----
-name: remove_legacy_github_client
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37555
-rollout_issue_url:
-milestone: '13.3'
-type: development
-group: group::import and integrate
-default_enabled: false

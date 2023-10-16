@@ -110,6 +110,18 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
             .to change { Gitlab::GlRepository::SNIPPET.repository_for(matched_snippet).exists? }.to true
         end
 
+        it 'skips already cached snippets' do
+          pipeline.run
+
+          data.first.tap { |d| d['createdAt'] = matched_snippet.created_at.to_s } # Reset data to original state
+
+          expect(pipeline).not_to receive(:load)
+
+          pipeline.run
+
+          expect(Gitlab::GlRepository::SNIPPET.repository_for(matched_snippet).exists?).to be true
+        end
+
         it 'updates snippets statistics' do
           allow_next_instance_of(Repository) do |repository|
             allow(repository).to receive(:fetch_as_mirror)

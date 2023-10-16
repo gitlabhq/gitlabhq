@@ -27,10 +27,11 @@ const provide = {
 
 const configuration = {
   basePath: provide.kasTunnelUrl.replace(/\/$/, ''),
-  baseOptions: {
-    headers: { 'GitLab-Agent-Id': '1' },
-    withCredentials: true,
+  headers: {
+    'GitLab-Agent-Id': '1',
+    'Content-Type': 'application/json',
   },
+  credentials: 'include',
 };
 
 describe('~/environments/components/kubernetes_overview.vue', () => {

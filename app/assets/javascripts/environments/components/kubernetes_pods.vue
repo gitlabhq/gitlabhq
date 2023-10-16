@@ -23,7 +23,7 @@ export default {
         return data?.k8sPods || [];
       },
       error(error) {
-        this.error = error;
+        this.error = error.message;
         this.$emit('cluster-error', this.error);
       },
       watchLoading(isLoading) {

@@ -455,4 +455,109 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
     end
     # rubocop:enable Layout/LineLength
   end
+
+  describe 'skip_verify_project_sha' do
+    let(:user) { project.owner }
+    let(:sha) { project.commit.sha }
+    let(:skip_verify_project_sha) { nil }
+    let(:content) { YAML.dump(build: { script: 'echo' }) }
+    let(:required_args) { { projectPath: project.full_path, content: content } }
+    let(:optional_args) { { sha: sha, skip_verify_project_sha: skip_verify_project_sha }.compact }
+
+    let(:query) do
+      graphql_query_for(
+        'ciConfig',
+        required_args.merge(optional_args),
+        %w[errors mergedYaml]
+      )
+    end
+
+    before do
+      post_graphql_query
+    end
+
+    shared_examples 'content is valid' do
+      it 'returns the expected data without validation errors' do
+        expect(graphql_data_at(:ciConfig)).to eq(
+          'errors' => [],
+          'mergedYaml' => "---\nbuild:\n  script: echo\n"
+        )
+      end
+    end
+
+    shared_examples 'returning error' do
+      it 'returns an error' do
+        expect(graphql_data_at(:ciConfig, :errors)).to include(
+          /configuration originates from an external project or a commit not associated with a Git reference/)
+      end
+    end
+
+    shared_examples 'when the sha exists in the main project' do
+      context 'when skip_verify_project_sha is not provided' do
+        let(:skip_verify_project_sha) { nil }
+
+        it_behaves_like 'content is valid'
+      end
+
+      context 'when skip_verify_project_sha is false' do
+        let(:skip_verify_project_sha) { false }
+
+        it_behaves_like 'content is valid'
+      end
+
+      context 'when skip_verify_project_sha is true' do
+        let(:skip_verify_project_sha) { true }
+
+        it_behaves_like 'content is valid'
+      end
+    end
+
+    context 'when the sha is from the main project' do
+      it_behaves_like 'when the sha exists in the main project'
+    end
+
+    context 'when the sha is from a fork project' do
+      include_context 'when a project repository contains a forked commit'
+
+      let(:sha) { forked_commit_sha }
+
+      context 'when the sha is associated with a main project ref' do
+        before_all do
+          repository.add_branch(project.owner, 'branch1', forked_commit_sha)
+        end
+
+        after(:all) do
+          repository.rm_branch(project.owner, 'branch1')
+        end
+
+        it_behaves_like 'when the sha exists in the main project'
+      end
+
+      context 'when the sha is not associated with a main project ref' do
+        context 'when skip_verify_project_sha is not provided' do
+          let(:skip_verify_project_sha) { nil }
+
+          it_behaves_like 'returning error'
+        end
+
+        context 'when skip_verify_project_sha is false' do
+          let(:skip_verify_project_sha) { false }
+
+          it_behaves_like 'returning error'
+        end
+
+        context 'when skip_verify_project_sha is true' do
+          let(:skip_verify_project_sha) { true }
+
+          it_behaves_like 'content is valid'
+        end
+      end
+    end
+
+    context 'when the sha is invalid' do
+      let(:sha) { 'invalid-sha' }
+
+      it_behaves_like 'when the sha exists in the main project'
+    end
+  end
 end

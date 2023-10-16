@@ -40,6 +40,20 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
       expect(portable.design_repository.exists?).to eq(true)
     end
+
+    it 'skips import if already cached' do
+      allow(pipeline)
+        .to receive(:extract)
+        .and_return(BulkImports::Pipeline::ExtractedData.new(data: [design_bundle_path]))
+
+      expect(portable.design_repository).to receive(:create_from_bundle).with(design_bundle_path).and_call_original
+
+      pipeline.run
+
+      expect(pipeline).not_to receive(:load)
+
+      pipeline.run
+    end
   end
 
   describe '#extract' do

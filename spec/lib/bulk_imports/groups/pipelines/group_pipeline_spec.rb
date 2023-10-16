@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
-  describe '#run' do
+  describe '#run', :clean_gitlab_redis_cache do
     let_it_be(:user) { create(:user) }
     let_it_be(:parent) { create(:group) }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
@@ -62,6 +62,11 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
       expect(imported_group.lfs_enabled?).to eq(group_data['lfs_enabled'])
       expect(imported_group.emails_disabled?).to eq(group_data['emails_disabled'])
       expect(imported_group.mentions_disabled?).to eq(group_data['mentions_disabled'])
+    end
+
+    it 'skips duplicates on pipeline rerun' do
+      expect { subject.run }.to change { Group.count }.by(1)
+      expect { subject.run }.not_to change { Group.count }
     end
   end
 

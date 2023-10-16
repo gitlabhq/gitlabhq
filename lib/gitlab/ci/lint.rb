@@ -25,12 +25,12 @@ module Gitlab
 
       LOG_MAX_DURATION_THRESHOLD = 2.seconds
 
-      def initialize(project:, current_user:, sha: nil)
+      def initialize(project:, current_user:, sha: nil, verify_project_sha: true)
         @project = project
         @current_user = current_user
         # If the `sha` is not provided, the default is the project's head commit (or nil). In such case, we
         # don't need to call `YamlProcessor.verify_project_sha!`, which prevents redundant calls to Gitaly.
-        @verify_project_sha = sha.present?
+        @verify_project_sha = verify_project_sha && sha.present?
         @sha = sha || project&.repository&.commit&.sha
       end
 

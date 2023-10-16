@@ -55,7 +55,7 @@ To bring the former **primary** site up to date:
    [block all the writes to this site](planned_failover.md#prevent-updates-to-the-primary-site)
    during this procedure.
 
-1. [Set up database replication](../setup/database.md). In this case, the **secondary** site
+1. [Set up Geo](../setup/index.md). In this case, the **secondary** site
    refers to the former **primary** site.
    1. If [PgBouncer](../../postgresql/pgbouncer.md) was enabled on the **current secondary** site
       (when it was a primary site) disable it by editing `/etc/gitlab/gitlab.rb`

@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class RepositoryBundlePipeline
         include Pipeline
+        include IndexCacheStrategy
 
         abort_on_failure!
         file_extraction_pipeline!

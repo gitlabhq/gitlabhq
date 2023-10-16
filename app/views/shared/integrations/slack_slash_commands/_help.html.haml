@@ -38,7 +38,7 @@
         .form-group
           = label_tag :url, 'URL', class: 'col-12 col-form-label label-bold'
           .col-12.input-group
-            = text_field_tag :url, service_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
+            = text_field_tag :url, integration_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
               = clipboard_button(target: '#url', category: :primary, size: :medium)
 

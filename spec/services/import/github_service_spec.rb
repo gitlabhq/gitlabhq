@@ -26,99 +26,131 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     }
   end
 
+  let(:client) { Gitlab::GithubImport::Client.new(token) }
+  let(:project_double) { instance_double(Project, persisted?: true) }
+
   subject(:github_importer) { described_class.new(client, user, params) }
 
-  shared_examples 'handles errors' do |klass|
-    let(:client) { klass.new(token) }
-    let(:project_double) { instance_double(Project, persisted?: true) }
+  before do
+    allow(Gitlab::GithubImport::Settings).to receive(:new).with(project_double).and_return(settings)
+    allow(settings)
+      .to receive(:write)
+      .with(
+        optional_stages: optional_stages,
+        additional_access_tokens: access_params[:additional_access_tokens],
+        timeout_strategy: timeout_strategy
+      )
+  end
+
+  context 'do not raise an exception on input error' do
+    let(:exception) { Octokit::ClientError.new(status: 404, body: 'Not Found') }
 
     before do
-      allow(Gitlab::GithubImport::Settings).to receive(:new).with(project_double).and_return(settings)
-      allow(settings)
-        .to receive(:write)
-        .with(
-          optional_stages: optional_stages,
-          additional_access_tokens: access_params[:additional_access_tokens],
-          timeout_strategy: timeout_strategy
-        )
-    end
-
-    context 'do not raise an exception on input error' do
-      let(:exception) { Octokit::ClientError.new(status: 404, body: 'Not Found') }
-
-      before do
-        expect(client).to receive(:repository).and_raise(exception)
-      end
-
-      it 'logs the original error' do
-        expect(Gitlab::Import::Logger).to receive(:error).with({
-          message: 'Import failed due to a GitHub error',
-          status: 404,
-          error: 'Not Found'
-        }).and_call_original
-
-        subject.execute(access_params, :github)
-      end
-
-      it 'returns an error with message and code' do
-        result = subject.execute(access_params, :github)
-
-        expect(result).to include(
-          message: 'Import failed due to a GitHub error: Not Found (HTTP 404)',
-          status: :error,
-          http_status: :unprocessable_entity
-        )
-      end
-    end
-
-    it 'raises an exception for unknown error causes' do
-      exception = StandardError.new('Not Implemented')
-
       expect(client).to receive(:repository).and_raise(exception)
-
-      expect(Gitlab::Import::Logger).not_to receive(:error)
-
-      expect { subject.execute(access_params, :github) }.to raise_error(exception)
     end
 
-    context 'repository size validation' do
-      let(:repository_double) { { name: 'repository', size: 99 } }
+    it 'logs the original error' do
+      expect(Gitlab::Import::Logger).to receive(:error).with({
+        message: 'Import failed due to a GitHub error',
+        status: 404,
+        error: 'Not Found'
+      }).and_call_original
+
+      subject.execute(access_params, :github)
+    end
+
+    it 'returns an error with message and code' do
+      result = subject.execute(access_params, :github)
+
+      expect(result).to include(
+        message: 'Import failed due to a GitHub error: Not Found (HTTP 404)',
+        status: :error,
+        http_status: :unprocessable_entity
+      )
+    end
+  end
+
+  it 'raises an exception for unknown error causes' do
+    exception = StandardError.new('Not Implemented')
+
+    expect(client).to receive(:repository).and_raise(exception)
+
+    expect(Gitlab::Import::Logger).not_to receive(:error)
+
+    expect { subject.execute(access_params, :github) }.to raise_error(exception)
+  end
+
+  context 'repository size validation' do
+    let(:repository_double) { { name: 'repository', size: 99 } }
+
+    before do
+      allow(subject).to receive(:authorized?).and_return(true)
+      expect(client).to receive(:repository).and_return(repository_double)
+
+      allow_next_instance_of(Gitlab::LegacyGithubImport::ProjectCreator) do |creator|
+        allow(creator).to receive(:execute).and_return(project_double)
+      end
+    end
+
+    context 'when there is no repository size limit defined' do
+      it 'skips the check, succeeds, and tracks an access level' do
+        expect(subject.execute(access_params, :github)).to include(status: :success)
+        expect(settings)
+          .to have_received(:write)
+          .with(optional_stages: nil,
+            additional_access_tokens: access_params[:additional_access_tokens],
+            timeout_strategy: timeout_strategy
+          )
+        expect_snowplow_event(
+          category: 'Import::GithubService',
+          action: 'create',
+          label: 'import_access_level',
+          user: user,
+          extra: { import_type: 'github', user_role: 'Owner' }
+        )
+      end
+    end
+
+    context 'when the target namespace repository size limit is defined' do
+      let_it_be(:group) { create(:group, repository_size_limit: 100) }
 
       before do
-        allow(subject).to receive(:authorized?).and_return(true)
-        expect(client).to receive(:repository).and_return(repository_double)
-
-        allow_next_instance_of(Gitlab::LegacyGithubImport::ProjectCreator) do |creator|
-          allow(creator).to receive(:execute).and_return(project_double)
-        end
+        params[:target_namespace] = group.full_path
       end
 
-      context 'when there is no repository size limit defined' do
-        it 'skips the check, succeeds, and tracks an access level' do
-          expect(subject.execute(access_params, :github)).to include(status: :success)
-          expect(settings)
-            .to have_received(:write)
-            .with(optional_stages: nil,
-              additional_access_tokens: access_params[:additional_access_tokens],
-              timeout_strategy: timeout_strategy
-            )
-          expect_snowplow_event(
-            category: 'Import::GithubService',
-            action: 'create',
-            label: 'import_access_level',
-            user: user,
-            extra: { import_type: 'github', user_role: 'Owner' }
+      it 'succeeds when the repository is smaller than the limit' do
+        expect(subject.execute(access_params, :github)).to include(status: :success)
+        expect(settings)
+          .to have_received(:write)
+          .with(
+            optional_stages: nil,
+            additional_access_tokens: access_params[:additional_access_tokens],
+            timeout_strategy: timeout_strategy
           )
-        end
+        expect_snowplow_event(
+          category: 'Import::GithubService',
+          action: 'create',
+          label: 'import_access_level',
+          user: user,
+          extra: { import_type: 'github', user_role: 'Not a member' }
+        )
       end
 
-      context 'when the target namespace repository size limit is defined' do
-        let_it_be(:group) { create(:group, repository_size_limit: 100) }
+      it 'returns error when the repository is larger than the limit' do
+        repository_double[:size] = 101
 
-        before do
-          params[:target_namespace] = group.full_path
-        end
+        expect(subject.execute(access_params, :github)).to include(size_limit_error)
+      end
+    end
 
+    context 'when target namespace repository limit is not defined' do
+      let_it_be(:group) { create(:group) }
+
+      before do
+        stub_application_setting(repository_size_limit: 100)
+      end
+
+      context 'when application size limit is defined' do
         it 'succeeds when the repository is smaller than the limit' do
           expect(subject.execute(access_params, :github)).to include(status: :success)
           expect(settings)
@@ -133,7 +165,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
             action: 'create',
             label: 'import_access_level',
             user: user,
-            extra: { import_type: 'github', user_role: 'Not a member' }
+            extra: { import_type: 'github', user_role: 'Owner' }
           )
         end
 
@@ -143,192 +175,142 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           expect(subject.execute(access_params, :github)).to include(size_limit_error)
         end
       end
-
-      context 'when target namespace repository limit is not defined' do
-        let_it_be(:group) { create(:group) }
-
-        before do
-          stub_application_setting(repository_size_limit: 100)
-        end
-
-        context 'when application size limit is defined' do
-          it 'succeeds when the repository is smaller than the limit' do
-            expect(subject.execute(access_params, :github)).to include(status: :success)
-            expect(settings)
-              .to have_received(:write)
-              .with(
-                optional_stages: nil,
-                additional_access_tokens: access_params[:additional_access_tokens],
-                timeout_strategy: timeout_strategy
-              )
-            expect_snowplow_event(
-              category: 'Import::GithubService',
-              action: 'create',
-              label: 'import_access_level',
-              user: user,
-              extra: { import_type: 'github', user_role: 'Owner' }
-            )
-          end
-
-          it 'returns error when the repository is larger than the limit' do
-            repository_double[:size] = 101
-
-            expect(subject.execute(access_params, :github)).to include(size_limit_error)
-          end
-        end
-      end
-
-      context 'when optional stages params present' do
-        let(:optional_stages) do
-          {
-            single_endpoint_issue_events_import: true,
-            single_endpoint_notes_import: 'false',
-            attachments_import: false,
-            collaborators_import: true
-          }
-        end
-
-        it 'saves optional stages choice to import_data' do
-          subject.execute(access_params, :github)
-
-          expect(settings)
-            .to have_received(:write)
-            .with(
-              optional_stages: optional_stages,
-              additional_access_tokens: access_params[:additional_access_tokens],
-              timeout_strategy: timeout_strategy
-            )
-        end
-      end
-
-      context 'when timeout strategy param is present' do
-        let(:timeout_strategy) { 'pessimistic' }
-
-        it 'saves timeout strategy to import_data' do
-          subject.execute(access_params, :github)
-
-          expect(settings)
-            .to have_received(:write)
-            .with(
-              optional_stages: optional_stages,
-              additional_access_tokens: access_params[:additional_access_tokens],
-              timeout_strategy: timeout_strategy
-            )
-        end
-      end
-
-      context 'when additional access tokens are present' do
-        it 'saves additional access tokens to import_data' do
-          subject.execute(access_params, :github)
-
-          expect(settings)
-            .to have_received(:write)
-            .with(
-              optional_stages: optional_stages,
-              additional_access_tokens: %w[foo bar],
-              timeout_strategy: timeout_strategy
-            )
-        end
-      end
     end
 
-    context 'when import source is disabled' do
-      let(:repository_double) do
+    context 'when optional stages params present' do
+      let(:optional_stages) do
         {
-          name: 'vim',
-          description: 'test',
-          full_name: 'test/vim',
-          clone_url: 'http://repo.com/repo/repo.git',
-          private: false,
-          has_wiki?: false
+          single_endpoint_issue_events_import: true,
+          single_endpoint_notes_import: 'false',
+          attachments_import: false,
+          collaborators_import: true
         }
       end
 
-      before do
-        stub_application_setting(import_sources: nil)
-        allow(client).to receive(:repository).and_return(repository_double)
-      end
+      it 'saves optional stages choice to import_data' do
+        subject.execute(access_params, :github)
 
-      it 'returns forbidden' do
-        result = subject.execute(access_params, :github)
-
-        expect(result).to include(
-          status: :error,
-          http_status: :forbidden
-        )
+        expect(settings)
+          .to have_received(:write)
+          .with(
+            optional_stages: optional_stages,
+            additional_access_tokens: access_params[:additional_access_tokens],
+            timeout_strategy: timeout_strategy
+          )
       end
     end
 
-    context 'when a blocked/local URL is used as github_hostname' do
-      let(:message) { 'Error while attempting to import from GitHub' }
-      let(:error) { "Invalid URL: #{url}" }
+    context 'when timeout strategy param is present' do
+      let(:timeout_strategy) { 'pessimistic' }
 
-      before do
-        stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
-      end
+      it 'saves timeout strategy to import_data' do
+        subject.execute(access_params, :github)
 
-      where(url: %w[https://localhost https://10.0.0.1])
-
-      with_them do
-        it 'returns and logs an error' do
-          allow(github_importer).to receive(:url).and_return(url)
-
-          expect(Gitlab::Import::Logger).to receive(:error).with({
-                                                                   message: message,
-                                                                   error: error
-                                                                 }).and_call_original
-          expect(github_importer.execute(access_params, :github)).to include(blocked_url_error(url))
-        end
+        expect(settings)
+          .to have_received(:write)
+          .with(
+            optional_stages: optional_stages,
+            additional_access_tokens: access_params[:additional_access_tokens],
+            timeout_strategy: timeout_strategy
+          )
       end
     end
 
-    context 'when target_namespace is blank' do
-      before do
-        params[:target_namespace] = ''
-      end
+    context 'when additional access tokens are present' do
+      it 'saves additional access tokens to import_data' do
+        subject.execute(access_params, :github)
 
-      it 'raises an exception' do
-        expect { subject.execute(access_params, :github) }.to raise_error(ArgumentError, 'Target namespace is required')
-      end
-    end
-
-    context 'when namespace to import repository into does not exist' do
-      before do
-        params[:target_namespace] = 'unknown_path'
-      end
-
-      it 'returns an error' do
-        expect(github_importer.execute(access_params, :github)).to include(not_existed_namespace_error)
-      end
-    end
-
-    context 'when user has no permissions to import repository into the specified namespace' do
-      let_it_be(:group) { create(:group) }
-
-      before do
-        params[:target_namespace] = group.full_path
-      end
-
-      it 'returns an error' do
-        expect(github_importer.execute(access_params, :github)).to include(taken_namespace_error)
+        expect(settings)
+          .to have_received(:write)
+          .with(
+            optional_stages: optional_stages,
+            additional_access_tokens: %w[foo bar],
+            timeout_strategy: timeout_strategy
+          )
       end
     end
   end
 
-  context 'when remove_legacy_github_client feature flag is enabled' do
-    before do
-      stub_feature_flags(remove_legacy_github_client: true)
+  context 'when import source is disabled' do
+    let(:repository_double) do
+      {
+        name: 'vim',
+        description: 'test',
+        full_name: 'test/vim',
+        clone_url: 'http://repo.com/repo/repo.git',
+        private: false,
+        has_wiki?: false
+      }
     end
 
-    include_examples 'handles errors', Gitlab::GithubImport::Client
+    before do
+      stub_application_setting(import_sources: nil)
+      allow(client).to receive(:repository).and_return(repository_double)
+    end
+
+    it 'returns forbidden' do
+      result = subject.execute(access_params, :github)
+
+      expect(result).to include(
+        status: :error,
+        http_status: :forbidden
+      )
+    end
   end
 
-  context 'when remove_legacy_github_client feature flag is disabled' do
+  context 'when a blocked/local URL is used as github_hostname' do
+    let(:message) { 'Error while attempting to import from GitHub' }
+    let(:error) { "Invalid URL: #{url}" }
+
     before do
-      stub_feature_flags(remove_legacy_github_client: false)
+      stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
     end
 
-    include_examples 'handles errors', Gitlab::LegacyGithubImport::Client
+    where(url: %w[https://localhost https://10.0.0.1])
+
+    with_them do
+      it 'returns and logs an error' do
+        allow(github_importer).to receive(:url).and_return(url)
+
+        expect(Gitlab::Import::Logger).to receive(:error).with({
+                                                                 message: message,
+                                                                 error: error
+                                                               }).and_call_original
+        expect(github_importer.execute(access_params, :github)).to include(blocked_url_error(url))
+      end
+    end
+  end
+
+  context 'when target_namespace is blank' do
+    before do
+      params[:target_namespace] = ''
+    end
+
+    it 'raises an exception' do
+      expect { subject.execute(access_params, :github) }.to raise_error(ArgumentError, 'Target namespace is required')
+    end
+  end
+
+  context 'when namespace to import repository into does not exist' do
+    before do
+      params[:target_namespace] = 'unknown_path'
+    end
+
+    it 'returns an error' do
+      expect(github_importer.execute(access_params, :github)).to include(not_existed_namespace_error)
+    end
+  end
+
+  context 'when user has no permissions to import repository into the specified namespace' do
+    let_it_be(:group) { create(:group) }
+
+    before do
+      params[:target_namespace] = group.full_path
+    end
+
+    it 'returns an error' do
+      expect(github_importer.execute(access_params, :github)).to include(taken_namespace_error)
+    end
   end
 
   def size_limit_error

@@ -63,7 +63,7 @@ export const pageViewsOverTime = {
   // Chart options defined by the charting library being used by the panel.
   options: {
     xAxis: { name: __('Time'), type: 'time' },
-    yAxis: { name: __('Counts'), type: 'time' },
+    yAxis: { name: __('Counts'), type: 'value' },
   },
   // The data to query
   data: {
@@ -100,6 +100,7 @@ To add a new visualization render type:
 1. Create a new Vue component that accepts `data` and `options` properties.
 See [`line_chart.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.vue) as an example.
 1. Add your component to the list of conditional imports in [`panel_base.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue#L13).
+1. Add your component to the schema's list of `AnalyticsVisualization` types in [`analytics_visualizations.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
 
 #### Adding a new visualization data source
 
@@ -107,6 +108,7 @@ To add a new data source:
 
 1. Create a new JavaScript module that exports a `fetch` method. See [`cube_analytics.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/cube_analytics.js#L122) as an example.
 1. Add your module to the list exports in [`data_sources/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/index.js).
+1. Add your data source to the schema's list of `Data` types in [`analytics_visualizations.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
 
 NOTE:
 Your data source must respect the filters so that all panels show data for

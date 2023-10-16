@@ -329,6 +329,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/notifications.css"
     config.assets.precompile << "page_bundles/oncall_schedules.css"
     config.assets.precompile << "page_bundles/operations.css"
+    config.assets.precompile << "page_bundles/organizations.css"
     config.assets.precompile << "page_bundles/escalation_policies.css"
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/pipeline_schedules.css"

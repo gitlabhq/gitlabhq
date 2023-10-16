@@ -5,6 +5,7 @@ module BulkImports
     extend ActiveSupport::Concern
 
     include Pipeline
+    include Pipeline::IndexCacheStrategy
 
     included do
       file_extraction_pipeline!
@@ -126,15 +127,6 @@ module BulkImports
 
       def relation_definition
         import_export_config.top_relation_tree(relation)
-      end
-
-      def already_processed?(_, index)
-        last_index = Gitlab::Cache::Import::Caching.read(cache_key)
-        last_index && last_index.to_i >= index
-      end
-
-      def save_processed_entry(_, index)
-        Gitlab::Cache::Import::Caching.write(cache_key, index)
       end
 
       def capture_invalid_subrelations(invalid_subrelations)

@@ -21,11 +21,11 @@ RSpec.describe Ci::TriggersHelper do
     end
   end
 
-  describe '.service_trigger_url' do
-    subject { helper.service_trigger_url(service) }
+  describe '.integration_trigger_url' do
+    subject { helper.integration_trigger_url(integration) }
 
-    let(:service) { double(project_id: 1, to_param: 'param') }
+    let(:integration) { double(project_id: 1, to_param: 'param') }
 
-    specify { expect(subject).to eq "#{Settings.gitlab.url}/api/v4/projects/1/services/param/trigger" }
+    specify { expect(subject).to eq "#{Settings.gitlab.url}/api/v4/projects/1/integrations/param/trigger" }
   end
 end

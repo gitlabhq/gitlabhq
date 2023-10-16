@@ -177,9 +177,14 @@ To populate the metadata, include this information:
 
 ### Additional metadata
 
-Each page can have additional, optional metadata (set in the
-[default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
-Nanoc layout), which is displayed at the top of the page if defined.
+The following metadata is optional and is not actively maintained.
+
+- `description`: A short description of what the page is about. See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for writing tips. This content can be used in search result snippets and is shown in social media previews.
+- `feedback`: Set to `false` to not include the "Help & Feedback" footer.
+- `noindex`: Set to `false` to prevent the page from being indexed by search engines.
+- `redirect_to`: Used to control redirects. For more information, see [Redirects in GitLab documentation](../redirects.md).
+- `searchbar`: Set to `false` to not include the search bar in the page header.
+- `toc`: Set to `false` to not include the "On this page" navigation.
 
 ### Deprecated metadata
 

@@ -29,9 +29,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('k8sPods', () => {
     const mockPodsListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
-        data: {
-          items: k8sPodsMock,
-        },
+        items: k8sPodsMock,
       });
     });
 
@@ -50,7 +48,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should request namespaced pods from the cluster_client library if namespace is specified', async () => {
       const pods = await mockResolvers.Query.k8sPods(null, { configuration, namespace });
 
-      expect(mockNamespacedPodsListFn).toHaveBeenCalledWith(namespace);
+      expect(mockNamespacedPodsListFn).toHaveBeenCalledWith({ namespace });
       expect(mockAllPodsListFn).not.toHaveBeenCalled();
 
       expect(pods).toEqual(k8sPodsMock);
@@ -76,9 +74,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('k8sServices', () => {
     const mockServicesListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
-        data: {
-          items: k8sServicesMock,
-        },
+        items: k8sServicesMock,
       });
     });
 
@@ -181,7 +177,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace });
 
       namespacedMocks.forEach((workloadMock) => {
-        expect(workloadMock.spy).toHaveBeenCalledWith(namespace);
+        expect(workloadMock.spy).toHaveBeenCalledWith({ namespace });
       });
     });
 
@@ -216,9 +212,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('k8sNamespaces', () => {
     const mockNamespacesListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
-        data: {
-          items: k8sNamespacesMock,
-        },
+        items: k8sNamespacesMock,
       });
     });
 
@@ -243,13 +237,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     ])(
       'should throw an error if the API call fails with the reason "%s"',
       async (reason, message) => {
-        jest.spyOn(CoreV1Api.prototype, 'listCoreV1Namespace').mockRejectedValue({
-          response: {
-            data: {
-              reason,
-            },
-          },
-        });
+        jest.spyOn(CoreV1Api.prototype, 'listCoreV1Namespace').mockRejectedValue({ reason });
 
         await expect(mockResolvers.Query.k8sNamespaces(null, { configuration })).rejects.toThrow(
           message,

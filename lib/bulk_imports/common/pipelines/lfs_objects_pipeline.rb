@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class LfsObjectsPipeline
         include Pipeline
+        include IndexCacheStrategy
 
         file_extraction_pipeline!
 

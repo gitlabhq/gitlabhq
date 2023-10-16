@@ -85,7 +85,6 @@ class Import::GiteaController < Import::GithubController
     @client ||= Gitlab::LegacyGithubImport::Client.new(session[access_token_key], **client_options)
   end
 
-  override :client_options
   def client_options
     verified_url, provider_hostname = verify_blocked_uri
 

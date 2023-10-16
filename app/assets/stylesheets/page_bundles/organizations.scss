@@ -1,0 +1,6 @@
+@import 'mixins_and_variables_and_functions';
+
+// Modeled after projects.scss and groups.scss
+.organization-row .organization-description p {
+  @include gl-mb-0;
+}

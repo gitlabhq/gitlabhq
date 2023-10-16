@@ -32,13 +32,15 @@ RSpec.describe GitlabSchema.types['Todo'] do
 
   describe 'project field' do
     let(:todo) do
-      create(:todo,
-             user: current_user,
-             project: project,
-             state: :done,
-             action: Todo::ASSIGNED,
-             author: author,
-             target: issue)
+      create(
+        :todo,
+        user: current_user,
+        project: project,
+        state: :done,
+        action: Todo::ASSIGNED,
+        author: author,
+        target: issue
+      )
     end
 
     let(:query) do
@@ -86,13 +88,15 @@ RSpec.describe GitlabSchema.types['Todo'] do
 
   describe 'group field' do
     let(:todo) do
-      create(:todo,
-             user: current_user,
-             group: group,
-             state: :done,
-             action: Todo::MENTIONED,
-             author: author,
-             target: issue)
+      create(
+        :todo,
+        user: current_user,
+        group: group,
+        state: :done,
+        action: Todo::MENTIONED,
+        author: author,
+        target: issue
+      )
     end
 
     let(:query) do

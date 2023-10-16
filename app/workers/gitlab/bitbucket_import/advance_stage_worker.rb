@@ -25,6 +25,7 @@ module Gitlab
         pull_requests_notes: Stage::ImportPullRequestsNotesWorker,
         issues: Stage::ImportIssuesWorker,
         issues_notes: Stage::ImportIssuesNotesWorker,
+        lfs_objects: Stage::ImportLfsObjectsWorker,
         finish: Stage::FinishImportWorker
       }.freeze
 

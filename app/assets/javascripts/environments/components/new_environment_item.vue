@@ -185,7 +185,7 @@ export default {
         },
         update(data) {
           this.clusterAgent = data?.project?.environment?.clusterAgent;
-          this.kubernetesNamespace = data?.project?.environment?.kubernetesNamespace;
+          this.kubernetesNamespace = data?.project?.environment?.kubernetesNamespace || '';
           this.fluxResourcePath = data?.project?.environment?.fluxResourcePath || '';
         },
       });

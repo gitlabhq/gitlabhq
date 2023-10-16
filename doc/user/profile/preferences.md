@@ -260,7 +260,7 @@ Customize the format used to display times of activities on your group and proje
 - Relative format, for example `30 minutes ago`.
 - Absolute format, for example `September 3, 2022, 3:57 PM`.
 
-To use relative times on the GitLab UI:
+To use exact times on the GitLab UI:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.

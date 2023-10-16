@@ -38,7 +38,8 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
         expect(response[:merged_yaml]).to eq(content)
         expect(response[:includes]).to eq([])
         expect(response[:errors]).to be_empty
-        expect(::Gitlab::Ci::Lint).to have_received(:new).with(current_user: user, project: project, sha: sha)
+        expect(::Gitlab::Ci::Lint).to have_received(:new)
+          .with(current_user: user, project: project, sha: sha, verify_project_sha: true)
       end
     end
 

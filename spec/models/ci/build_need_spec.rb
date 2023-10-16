@@ -9,7 +9,7 @@ RSpec.describe Ci::BuildNeed, model: true, feature_category: :continuous_integra
 
   it { is_expected.to validate_presence_of(:build) }
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_length_of(:name).is_at_most(128) }
+  it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
   describe '.artifacts' do
     let_it_be(:with_artifacts)    { create(:ci_build_need, artifacts: true) }

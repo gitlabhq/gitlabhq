@@ -203,6 +203,7 @@ in a custom way? Two reasons:
 
 ### Non-Goals
 
+- federation of private resources
 - allowing to perform a network wide search?
 
 ## Proposal
@@ -275,6 +276,10 @@ There are 5 actors we want to implement:
 - the `project` actor, regarding all activities from a project
 - the `group` actor, regarding all activities from a group
 - the `user` actor, regarding all activities from a user
+
+We're only dealing with public resources for now. Allowing federation of
+private resources is a tricky subject that will be solved later, if it's
+possible at all.
 
 #### Endpoints
 
@@ -411,6 +416,34 @@ This is asymmetrical cryptography, with a private key and a public key,
 like SSH or PGP. We will need to implement both signing requests, and
 verifying them. This will be of considerable help when we'll want to have
 various GitLab instances communicate later in the epic.
+
+### Host allowlist and denylist
+
+To give GitLab instance owners control over potential spam, we need to
+allow to maintain two mutually exclusive lists of hosts:
+
+- the allowlist : only hosts mentioned in this list can be federated with.
+- the denylist : all hosts can be federated with but the ones mentioned in
+  that list.
+
+A setting should allow the owner to switch between the allowlist and the denylist.
+In the beginning, this can be managed in rails console, but it will
+ultimately need a section in the admin interface.
+
+### Limits and rollout
+
+In order to control the load when releasing the feature in the first
+months, we're going to set `gitlab.com` to use the allowlist and rollout
+federation to a few Fediverse servers at a time, so that we can see how it
+takes the load progressively, before ultimately switching to denylist
+(note: there are
+[some ongoing discussions](https://gitlab.com/gitlab-org/gitlab/-/issues/426373#note_1584232842)
+regarding if federation should be activated on `gitlab.com` or not).
+
+We also need to implement limits to make sure the federation is not abused:
+
+- limit to the number of subscriptions a resource can receive.
+- limit to the number of subscriptions a third party server can generate.
 
 ### The cross-instance issues and merge requests part
 

@@ -174,6 +174,7 @@ Returns [`CiConfig`](#ciconfig).
 | <a id="queryciconfigdryrun"></a>`dryRun` | [`Boolean`](#boolean) | Run pipeline creation simulation, or only do static check. |
 | <a id="queryciconfigprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the CI config. |
 | <a id="queryciconfigsha"></a>`sha` | [`String`](#string) | Sha for the pipeline. |
+| <a id="queryciconfigskipverifyprojectsha"></a>`skipVerifyProjectSha` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. If the provided `sha` is found in the project's repository but is not associated with a Git reference (a detached commit), the verification fails and a validation error is returned. Otherwise, verification passes, even if the `sha` is invalid. Set to `true` to skip this verification process. |
 
 ### `Query.ciMinutesUsage`
 

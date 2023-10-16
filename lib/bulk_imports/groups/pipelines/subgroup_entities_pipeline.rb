@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class SubgroupEntitiesPipeline
         include Pipeline
+        include HexdigestCacheStrategy
 
         extractor BulkImports::Groups::Extractors::SubgroupsExtractor
         transformer Common::Transformers::ProhibitedAttributesTransformer

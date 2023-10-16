@@ -14,6 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Name and description fields added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
 > - [Admin merge request introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `admin_merge_request`. Disabled by default.
 > - [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `admin_group_member`. Disabled by default.
+> - [Manage project access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) in GitLab 16.5 in [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default these two features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_merge_request` and `admin_member_custom_role`.
@@ -33,19 +34,20 @@ GET /groups/:id/member_roles
 
 If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
 
-| Attribute                | Type    | Description           |
-|:-------------------------|:--------|:----------------------|
-| `[].id`                  | integer | The ID of the member role. |
-| `[].name`                | string  | The name of the member role. |
-| `[].description`         | string  | The description of the member role. |
-| `[].group_id`            | integer | The ID of the group that the member role belongs to. |
-| `[].base_access_level`   | integer | Base access level for member role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
-| `[].admin_merge_request` | boolean | Permission to admin project merge requests and enables the ability to `download_code`. |
-| `[].admin_vulnerability` | boolean | Permission to admin project vulnerabilities. |
-| `[].read_code`           | boolean | Permission to read project code. |
-| `[].read_dependency`     | boolean | Permission to read project dependencies. |
-| `[].read_vulnerability`  | boolean | Permission to read project vulnerabilities. |
-| `[].admin_group_member`  | boolean | Permission to admin members of a group. |
+| Attribute                          | Type    | Description           |
+|:-----------------------------------|:--------|:----------------------|
+| `[].id`                            | integer | The ID of the member role. |
+| `[].name`                          | string  | The name of the member role. |
+| `[].description`                   | string  | The description of the member role. |
+| `[].group_id`                      | integer | The ID of the group that the member role belongs to. |
+| `[].base_access_level`             | integer | Base access level for member role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
+| `[].admin_merge_request`           | boolean | Permission to admin project merge requests and enables the ability to `download_code`. |
+| `[].admin_vulnerability`           | boolean | Permission to admin project vulnerabilities. |
+| `[].read_code`                     | boolean | Permission to read project code. |
+| `[].read_dependency`               | boolean | Permission to read project dependencies. |
+| `[].read_vulnerability`            | boolean | Permission to read project vulnerabilities. |
+| `[].admin_group_member`            | boolean | Permission to admin members of a group. |
+| `[].manage_project_access_tokens`  | boolean | Permission to manage project access tokens. |
 
 Example request:
 
@@ -67,7 +69,8 @@ Example response:
     "admin_vulnerability": false,
     "read_code": true,
     "read_dependency": false,
-    "read_vulnerability": false
+    "read_vulnerability": false,
+    "manage_project_access_tokens": false
   },
   {
     "id": 3,
@@ -79,7 +82,8 @@ Example response:
     "admin_vulnerability": true,
     "read_code": false,
     "read_dependency": true,
-    "read_vulnerability": true
+    "read_vulnerability": true,
+    "manage_project_access_tokens": false
   }
 ]
 ```

@@ -46,7 +46,7 @@ RSpec.describe 'Slack slash commands', :js, feature_category: :integrations do
 
   it 'shows the correct trigger url' do
     value = find_field('url').value
-    expect(value).to match("api/v4/projects/#{project.id}/services/slack_slash_commands/trigger")
+    expect(value).to match("api/v4/projects/#{project.id}/integrations/slack_slash_commands/trigger")
   end
 
   it 'shows help content' do

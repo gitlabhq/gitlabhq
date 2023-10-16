@@ -7,8 +7,7 @@ RSpec.describe Types::BaseEdge, feature_category: :api do
 
   let_it_be(:test_schema) do
     project_edge_type = Class.new(described_class) do
-      field :proof_of_admin_rights, String,
-            null: true, authorize: :admin_project
+      field :proof_of_admin_rights, String, null: true, authorize: :admin_project
 
       def proof_of_admin_rights
         'ok'

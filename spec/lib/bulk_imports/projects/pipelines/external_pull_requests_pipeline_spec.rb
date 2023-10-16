@@ -28,7 +28,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline do
 
   subject(:pipeline) { described_class.new(context) }
 
-  describe '#run' do
+  describe '#run', :clean_gitlab_redis_cache do
     before do
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
         allow(extractor).to receive(:remove_tmp_dir)

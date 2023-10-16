@@ -30,7 +30,7 @@ export default {
         return data?.k8sWorkloads || {};
       },
       error(error) {
-        this.$emit('cluster-error', error);
+        this.$emit('cluster-error', error.message);
       },
       result() {
         this.checkFailed();

@@ -41,6 +41,17 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
       expect(portable.lfs_objects_projects.count).to eq(4)
       expect(Dir.exist?(tmpdir)).to eq(false)
     end
+
+    it 'does not call load on duplicates' do
+      allow(pipeline)
+        .to receive(:extract)
+        .and_return(BulkImports::Pipeline::ExtractedData.new(data: [lfs_json_file_path, lfs_file_path]))
+
+      pipeline.run
+
+      expect(pipeline).not_to receive(:load)
+      pipeline.run
+    end
   end
 
   describe '#extract' do

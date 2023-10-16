@@ -40,6 +40,14 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
         expect(Dir.exist?(tmpdir)).to eq(false)
       end
 
+      it 'skips loads on duplicates' do
+        pipeline.run
+
+        expect(pipeline).not_to receive(:load)
+
+        pipeline.run
+      end
+
       context 'when importing avatar' do
         let(:uploads_dir_path) { File.join(tmpdir, 'avatar') }
 

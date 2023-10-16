@@ -261,6 +261,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Gitlab::BitbucketImport::Stage::FinishImportWorker' => 3,
         'Gitlab::BitbucketImport::Stage::ImportIssuesWorker' => 3,
         'Gitlab::BitbucketImport::Stage::ImportIssuesNotesWorker' => 3,
+        'Gitlab::BitbucketImport::Stage::ImportLfsObjectsWorker' => 3,
         'Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker' => 3,
         'Gitlab::BitbucketImport::Stage::ImportPullRequestsNotesWorker' => 3,
         'Gitlab::BitbucketImport::Stage::ImportRepositoryWorker' => 3,

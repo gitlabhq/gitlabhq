@@ -1,11 +1,19 @@
 <script>
-import { GlAvatarLabeled } from '@gitlab/ui';
+import { GlAvatarLabeled, GlTruncateText } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   name: 'OrganizationsListItem',
   components: {
     GlAvatarLabeled,
+    GlTruncateText,
+  },
+  safeHtmlConfig: {
+    ADD_TAGS: ['gl-emoji'],
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     organization: {
@@ -19,7 +27,7 @@ export default {
 </script>
 
 <template>
-  <li class="gl-py-3 gl-border-b gl-display-flex gl-align-items-flex-start">
+  <li class="organization-row gl-py-3 gl-border-b gl-display-flex gl-align-items-flex-start">
     <gl-avatar-labeled
       :size="$options.avatarSize"
       :src="organization.avatarUrl"
@@ -29,7 +37,18 @@ export default {
       :label-link="organization.webUrl"
       shape="rect"
     >
-      <span class="gl-mt-2 gl-text-gray-500">{{ organization.description }}</span>
+      <gl-truncate-text
+        v-if="organization.descriptionHtml"
+        :lines="2"
+        :mobile-lines="2"
+        class="gl-mt-2"
+      >
+        <div
+          v-safe-html:[$options.safeHtmlConfig]="organization.descriptionHtml"
+          data-testid="organization-description-html"
+          class="organization-description gl-text-secondary gl-font-sm"
+        ></div>
+      </gl-truncate-text>
     </gl-avatar-labeled>
   </li>
 </template>

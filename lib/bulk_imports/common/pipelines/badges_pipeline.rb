@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class BadgesPipeline
         include Pipeline
+        include HexdigestCacheStrategy
 
         extractor BulkImports::Common::Extractors::RestExtractor,
           query: BulkImports::Common::Rest::GetBadgesQuery
@@ -31,15 +32,6 @@ module BulkImports
           else
             context.portable.badges.create!(data)
           end
-        end
-
-        def already_processed?(data, _)
-          values = Gitlab::Cache::Import::Caching.values_from_set(cache_key)
-          values.include?(OpenSSL::Digest::SHA256.hexdigest(data.to_s))
-        end
-
-        def save_processed_entry(data, _)
-          Gitlab::Cache::Import::Caching.set_add(cache_key, OpenSSL::Digest::SHA256.hexdigest(data.to_s))
         end
 
         private

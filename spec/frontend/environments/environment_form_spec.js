@@ -28,12 +28,11 @@ const userAccessAuthorizedAgents = [
 
 const configuration = {
   basePath: mockKasTunnelUrl.replace(/\/$/, ''),
-  baseOptions: {
-    headers: {
-      'GitLab-Agent-Id': 2,
-    },
-    withCredentials: true,
+  headers: {
+    'GitLab-Agent-Id': 2,
+    'Content-Type': 'application/json',
   },
+  credentials: 'include',
 };
 
 describe('~/environments/components/form.vue', () => {
