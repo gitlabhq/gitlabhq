@@ -106,7 +106,7 @@ bundle exec rspec <path/to/spec.rb>
 Note:
 - If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 - If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, export the password as `GITLAB_INITIAL_ROOT_PASSWORD`.
-- By default the tests will run in a headless browser. If you'd like to watch the test exectution, you can export `WEBDRIVER_HEADLESS=false`.
+- By default the tests will run in a headless browser. If you'd like to watch the test execution, you can export `WEBDRIVER_HEADLESS=false`.
 - Tests that are tagged `:orchestrated` require special setup (e.g., custom GitLab configuration, or additional services such as LDAP). All [orchestrated tests can be run via `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md). There are also [setup instructions](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html) for running some of those tests against GDK or another local GitLab instance.
 
 #### Generic command for a typical GDK installation
@@ -199,7 +199,7 @@ When running EE tests you'll need to have a license available. GitLab engineers 
 Once you have the license file you can export it as an environment variable and then the framework can use it. If you do so it will be installed automatically.
 
 ```shell
-export EE_LICENSE=$(cat /path/to/gitlab_license)
+export QA_EE_LICENSE=$(cat /path/to/gitlab_license)
 ```
 
 #### Running specific tests

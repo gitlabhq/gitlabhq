@@ -40,7 +40,7 @@
           .col-12.input-group
             = text_field_tag :url, service_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = deprecated_clipboard_button(target: '#url', class: 'input-group-text')
+              = clipboard_button(target: '#url', category: :primary, size: :medium)
 
         .form-group
           = label_tag nil, _('Method'), class: 'col-12 col-form-label label-bold'
@@ -51,7 +51,7 @@
           .col-12.input-group
             = text_field_tag :customize_name, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = deprecated_clipboard_button(target: '#customize_name', class: 'input-group-text')
+              = clipboard_button(target: '#customize_name', category: :primary, size: :medium)
 
         .form-group
           = label_tag nil, _('Customize icon'), class: 'col-12 col-form-label label-bold'
@@ -68,21 +68,21 @@
           .col-12.input-group
             = text_field_tag :autocomplete_description, run_actions_text.html_safe, class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = deprecated_clipboard_button(target: '#autocomplete_description', class: 'input-group-text')
+              = clipboard_button(target: '#autocomplete_description', category: :primary, size: :medium)
 
         .form-group
           = label_tag :autocomplete_usage_hint, _('Autocomplete usage hint'), class: 'col-12 col-form-label label-bold'
           .col-12.input-group
             = text_field_tag :autocomplete_usage_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = deprecated_clipboard_button(target: '#autocomplete_usage_hint', class: 'input-group-text')
+              = clipboard_button(target: '#autocomplete_usage_hint', category: :primary, size: :medium)
 
         .form-group
           = label_tag :descriptive_label, _('Descriptive label'), class: 'col-12 col-form-label label-bold'
           .col-12.input-group
             = text_field_tag :descriptive_label, _('Perform common operations on GitLab project'), class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
-              = deprecated_clipboard_button(target: '#descriptive_label', class: 'input-group-text')
+              = clipboard_button(target: '#descriptive_label', category: :primary, size: :medium)
 
       %hr
 
