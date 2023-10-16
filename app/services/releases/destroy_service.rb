@@ -9,6 +9,8 @@ module Releases
       if release.destroy
         update_catalog_resource!
 
+        execute_hooks(release, 'delete')
+
         success(tag: existing_tag, release: release)
       else
         error(release.errors.messages || '400 Bad request', 400)

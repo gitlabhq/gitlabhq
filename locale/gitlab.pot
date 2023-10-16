@@ -53164,7 +53164,7 @@ msgstr ""
 msgid "Webhooks|A pipeline's status changes."
 msgstr ""
 
-msgid "Webhooks|A release is created or updated."
+msgid "Webhooks|A release is created, updated, or deleted."
 msgstr ""
 
 msgid "Webhooks|A subgroup is created or removed."

@@ -1790,12 +1790,15 @@ Payload example:
 
 ## Release events
 
-Release events are triggered when a release is created or updated.
+> Delete release event [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418113) in GitLab 16.5.
+
+Release events are triggered when a release is created, updated, or deleted.
 
 The available values for `object_attributes.action` in the payload are:
 
 - `create`
 - `update`
+- `delete`
 
 Request header:
 

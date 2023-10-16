@@ -83,5 +83,11 @@ RSpec.describe Releases::DestroyService, feature_category: :release_orchestratio
         expect(milestone.reload).to be_persisted
       end
     end
+
+    it 'executes hooks' do
+      expect(service.release).to receive(:execute_hooks).with('delete')
+
+      service.execute
+    end
   end
 end
