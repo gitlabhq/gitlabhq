@@ -37,3 +37,5 @@ module Branches
     end
   end
 end
+
+Branches::DeleteService.prepend_mod

@@ -294,5 +294,17 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
         )
       end
     end
+
+    context 'when the pattern is unsafe' do
+      let(:specs) { { test_input: { regex: 'a++' } } }
+      let(:args) { { test_input: 'aaaaaaaaaaaaaaaaaaaaa' } }
+
+      it 'is invalid' do
+        expect(inputs).not_to be_valid
+        expect(inputs.errors).to contain_exactly(
+          '`test_input` input: invalid regular expression'
+        )
+      end
+    end
   end
 end

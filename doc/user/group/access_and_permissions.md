@@ -190,7 +190,7 @@ prevent a project from being shared with other groups:
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
 
-This setting applies to all subgroups unless overridden by a group Owner. Groups already
+This setting, when enabled, applies to all subgroups unless overridden by a group Owner. Groups already
 added to a project lose access when the setting is enabled.
 
 ## Prevent users from requesting access to a group

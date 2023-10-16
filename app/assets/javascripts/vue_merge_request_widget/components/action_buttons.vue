@@ -150,7 +150,7 @@ export default {
           :title="setTooltip(btn)"
           :href="btn.href"
           :target="btn.target"
-          :class="[{ 'gl-mr-1': index !== tertiaryButtons.length - 1 }, btn.class]"
+          :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
           :data-clipboard-text="btn.dataClipboardText"
           :data-method="btn.dataMethod"
           :icon="btn.icon"

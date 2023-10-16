@@ -13,11 +13,19 @@ export default {
       type: String,
       required: true,
     },
+    provisioningUrl: {
+      type: String,
+      required: true,
+    },
     tracingUrl: {
       type: String,
       required: true,
     },
-    provisioningUrl: {
+    servicesUrl: {
+      type: String,
+      required: true,
+    },
+    operationsUrl: {
       type: String,
       required: true,
     },
@@ -58,6 +66,8 @@ export default {
           this.observabilityClient = buildClient({
             provisioningUrl: this.provisioningUrl,
             tracingUrl: this.tracingUrl,
+            servicesUrl: this.servicesUrl,
+            operationsUrl: this.operationsUrl,
           });
           this.$refs.observabilitySkeleton?.onContentLoaded();
         } else if (status === 'error') {

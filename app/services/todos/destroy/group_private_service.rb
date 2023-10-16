@@ -20,10 +20,13 @@ module Todos
       private
 
       def delete_todos
-        authorized_users = User.from_union([
-          group.project_users_with_descendants.select(:id),
-          group.members_with_parents.select(:user_id)
-        ], remove_duplicates: false)
+        authorized_users = Member.from_union(
+          [
+            group.descendant_project_members_with_inactive.select(:user_id),
+            group.members_with_parents.select(:user_id)
+          ],
+          remove_duplicates: false
+        ).select(:user_id)
 
         todos.not_in_users(authorized_users).delete_all
       end

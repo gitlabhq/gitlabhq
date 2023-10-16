@@ -26,7 +26,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:cluster_project) }
   it { is_expected.to have_many(:deployment_clusters) }
-  it { is_expected.to have_many(:successful_deployments) }
   it { is_expected.to have_many(:environments).through(:deployments) }
 
   it { is_expected.to delegate_method(:status).to(:provider) }

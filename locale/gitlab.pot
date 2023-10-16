@@ -548,6 +548,17 @@ msgstr ""
 msgid "%{board_target} not found"
 msgstr ""
 
+msgid "%{boldStart}Merge blocked:%{boldEnd} %{count} check failed"
+msgid_plural "%{boldStart}Merge blocked:%{boldEnd} %{count} checks failed"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{boldStart}Ready to merge by members who can write to the target branch.%{boldEnd}"
+msgstr ""
+
+msgid "%{boldStart}Ready to merge!%{boldEnd}"
+msgstr ""
+
 msgid "%{bold_start}%{count}%{bold_end} issue"
 msgid_plural "%{bold_start}%{count}%{bold_end} issues"
 msgstr[0] ""
@@ -11817,6 +11828,9 @@ msgstr ""
 msgid "Collapse jobs"
 msgstr ""
 
+msgid "Collapse merge checks"
+msgstr ""
+
 msgid "Collapse merge details"
 msgstr ""
 
@@ -16018,6 +16032,9 @@ msgstr ""
 msgid "Deleting a project places it into a read-only state until %{date}, at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"
 msgstr ""
 
+msgid "Deleting protected branches is blocked by security policies"
+msgstr ""
+
 msgid "Deleting the project will delete its repository and all related resources, including issues and merge requests."
 msgstr ""
 
@@ -19547,6 +19564,9 @@ msgid "Expand issues"
 msgstr ""
 
 msgid "Expand jobs"
+msgstr ""
+
+msgid "Expand merge checks"
 msgstr ""
 
 msgid "Expand merge details"

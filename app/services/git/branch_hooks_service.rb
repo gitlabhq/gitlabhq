@@ -156,7 +156,7 @@ module Git
 
       return if branch_to_sync.nil? && commits_to_sync.empty?
 
-      if commits_to_sync.any? && Feature.enabled?(:batch_delay_jira_branch_sync_worker, project)
+      if commits_to_sync.any?
         commits_to_sync.each_slice(JIRA_SYNC_BATCH_SIZE).with_index do |commits, i|
           JiraConnect::SyncBranchWorker.perform_in(
             JIRA_SYNC_BATCH_DELAY * i,

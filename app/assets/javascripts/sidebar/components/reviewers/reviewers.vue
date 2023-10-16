@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import { GlButton } from '@gitlab/ui';
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
 import { TYPE_ISSUE } from '~/issues/constants';
@@ -11,6 +12,7 @@ export default {
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'Reviewers',
   components: {
+    GlButton,
     CollapsedReviewerList,
     UncollapsedReviewerList,
   },
@@ -64,15 +66,16 @@ export default {
         {{ __('None') }}
         <template v-if="editable">
           -
-          <button
-            type="button"
-            class="gl-button btn-link gl-reset-color!"
+          <gl-button
+            category="tertiary"
+            variant="link"
+            class="gl-ml-2"
             data-testid="assign-yourself"
             data-qa-selector="assign_yourself_button"
             @click="assignSelf"
           >
-            {{ __('assign yourself') }}
-          </button>
+            <span class="gl-text-gray-500 gl-hover-text-blue-800">{{ __('assign yourself') }}</span>
+          </gl-button>
         </template>
       </span>
 

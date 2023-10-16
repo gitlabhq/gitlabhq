@@ -12,7 +12,8 @@ describe('buildClient', () => {
 
   const tracingUrl = 'https://example.com/tracing';
   const provisioningUrl = 'https://example.com/provisioning';
-
+  const servicesUrl = 'https://example.com/services';
+  const operationsUrl = 'https://example.com/services/$SERVICE_NAME$/operations';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   beforeEach(() => {
@@ -22,11 +23,34 @@ describe('buildClient', () => {
     client = buildClient({
       tracingUrl,
       provisioningUrl,
+      servicesUrl,
+      operationsUrl,
     });
   });
 
   afterEach(() => {
     axiosMock.restore();
+  });
+
+  describe('buildClient', () => {
+    it('rejects if params are missing', () => {
+      const e = new Error(
+        'missing required params. provisioningUrl, tracingUrl, servicesUrl, operationsUrl are required',
+      );
+      expect(() =>
+        buildClient({ tracingUrl: 'test', servicesUrl: 'test', operationsUrl: 'test' }),
+      ).toThrow(e);
+      expect(() =>
+        buildClient({ provisioningUrl: 'test', servicesUrl: 'test', operationsUrl: 'test' }),
+      ).toThrow(e);
+      expect(() =>
+        buildClient({ provisioningUrl: 'test', tracingUrl: 'test', operationsUrl: 'test' }),
+      ).toThrow(e);
+      expect(() =>
+        buildClient({ provisioningUrl: 'test', tracingUrl: 'test', servicesUrl: 'test' }),
+      ).toThrow(e);
+      expect(() => buildClient({})).toThrow(e);
+    });
   });
 
   describe('isTracingEnabled', () => {
@@ -299,6 +323,79 @@ describe('buildClient', () => {
 
         expect(getQueryParam()).toBe('');
       });
+    });
+  });
+
+  describe('fetchServices', () => {
+    it('fetches services from the services URL', async () => {
+      const mockResponse = {
+        services: [{ name: 'service-1' }, { name: 'service-2' }],
+      };
+
+      axiosMock.onGet(servicesUrl).reply(200, mockResponse);
+
+      const result = await client.fetchServices();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(servicesUrl, {
+        withCredentials: true,
+      });
+      expect(result).toEqual(mockResponse.services);
+    });
+
+    it('rejects if services are missing', async () => {
+      axiosMock.onGet(servicesUrl).reply(200, {});
+
+      const e = 'failed to fetch services. invalid response';
+      await expect(client.fetchServices()).rejects.toThrow(e);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+    });
+  });
+
+  describe('fetchOperations', () => {
+    const serviceName = 'test-service';
+    const parsedOperationsUrl = `https://example.com/services/${serviceName}/operations`;
+
+    it('fetches operations from the operations URL', async () => {
+      const mockResponse = {
+        operations: [{ name: 'operation-1' }, { name: 'operation-2' }],
+      };
+
+      axiosMock.onGet(parsedOperationsUrl).reply(200, mockResponse);
+
+      const result = await client.fetchOperations(serviceName);
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(parsedOperationsUrl, {
+        withCredentials: true,
+      });
+      expect(result).toEqual(mockResponse.operations);
+    });
+
+    it('rejects if serviceName is missing', async () => {
+      const e = 'fetchOperations() - serviceName is required.';
+      await expect(client.fetchOperations()).rejects.toThrow(e);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+    });
+
+    it('rejects if operationUrl does not contain $SERVICE_NAME$', async () => {
+      client = buildClient({
+        tracingUrl,
+        provisioningUrl,
+        servicesUrl,
+        operationsUrl: 'something',
+      });
+      const e = 'fetchOperations() - operationsUrl must contain $SERVICE_NAME$';
+      await expect(client.fetchOperations(serviceName)).rejects.toThrow(e);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+    });
+
+    it('rejects if operations are missing', async () => {
+      axiosMock.onGet(parsedOperationsUrl).reply(200, {});
+
+      const e = 'failed to fetch operations. invalid response';
+      await expect(client.fetchOperations(serviceName)).rejects.toThrow(e);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
     });
   });
 });

@@ -2000,15 +2000,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def base_pipeline
-    @base_pipeline ||= project.ci_pipelines
-      .order(id: :desc)
-      .find_by(sha: diff_base_sha, ref: target_branch)
+    @base_pipeline ||= base_pipelines.last
   end
 
   def merge_base_pipeline
-    @merge_base_pipeline ||= project.ci_pipelines
-      .order(id: :desc)
-      .find_by(sha: actual_head_pipeline.target_sha, ref: target_branch)
+    @merge_base_pipeline ||= merge_base_pipelines.last
   end
 
   def discussions_rendered_on_frontend?
@@ -2175,6 +2171,19 @@ class MergeRequest < ApplicationRecord
   private
 
   attr_accessor :skip_fetch_ref
+
+  def merge_base_pipelines
+    target_branch_pipelines_for(sha: actual_head_pipeline.target_sha)
+  end
+
+  def base_pipelines
+    target_branch_pipelines_for(sha: diff_base_sha)
+  end
+
+  def target_branch_pipelines_for(sha:)
+    project.ci_pipelines
+           .where(sha: sha, ref: target_branch)
+  end
 
   def set_draft_status
     self.draft = draft?

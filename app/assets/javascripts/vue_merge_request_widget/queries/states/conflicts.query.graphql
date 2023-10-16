@@ -5,6 +5,9 @@ query workInProgress($projectPath: ID!, $iid: String!) {
       id
       shouldBeRebased
       sourceBranchProtected
+      userPermissions {
+        pushToSourceBranch
+      }
     }
   }
 }

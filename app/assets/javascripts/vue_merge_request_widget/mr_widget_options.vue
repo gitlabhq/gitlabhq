@@ -153,10 +153,6 @@ export default {
     },
   },
   mixins: [mergeRequestQueryVariablesMixin],
-  provide: {
-    expandDetailsTooltip: __('Expand merge details'),
-    collapseDetailsTooltip: __('Collapse merge details'),
-  },
   props: {
     mrData: {
       type: Object,

@@ -29,7 +29,9 @@ export default {
   <div class="content-editor-switcher gl-display-inline-flex gl-align-items-center">
     <gl-button
       :id="$options.richTextEditorButtonId"
-      class="btn btn-default btn-sm gl-button btn-default-tertiary gl-font-sm! gl-text-secondary! gl-px-4!"
+      size="small"
+      category="tertiary"
+      class="gl-font-sm! gl-text-secondary! gl-px-4!"
       data-testid="editing-mode-switcher"
       @click="$emit('switch')"
       >{{ text }}</gl-button
