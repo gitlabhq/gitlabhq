@@ -71,7 +71,7 @@ To edit a test case:
 
 ## Make a test case confidential
 
-> Ability to make a test case confidential from the right sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422120) in GitLab 16.5.
+> Introduced for [new](https://gitlab.com/gitlab-org/gitlab/-/issues/422121) and [existing](https://gitlab.com/gitlab-org/gitlab/-/issues/422120) test cases in GitLab 16.5.
 
 If you're working on a test case that contains private information, you can make it confidential.
 
@@ -79,7 +79,10 @@ Prerequisites:
 
 - You must have at least the Reporter role.
 
-To make a test case confidential: on the right sidebar, select **Edit** next to **Confidentiality**, and then select **Turn on**.
+To make a test case confidential:
+
+- When you [create a test case](#create-a-test-case): under **Confidentiality**, select the **This test case is confidential...** checkbox.
+- When you [edit a test case](#edit-a-test-case): on the right sidebar, next to **Confidentiality**, select **Edit**, then select **Turn on**.
 
 You can also use the `/confidential` [quick action](../../user/project/quick_actions.md) when both creating a new test case
 or editing an existing one.

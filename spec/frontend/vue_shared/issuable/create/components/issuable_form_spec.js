@@ -1,9 +1,10 @@
-import { GlFormInput } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlFormInput, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import IssuableForm from '~/vue_shared/issuable/create/components/issuable_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
+import { TYPE_TEST_CASE } from '~/issues/constants';
 import { __ } from '~/locale';
 
 const createComponent = ({
@@ -11,13 +12,15 @@ const createComponent = ({
   descriptionHelpPath = '/help/user/markdown',
   labelsFetchPath = '/gitlab-org/gitlab-shell/-/labels.json',
   labelsManagePath = '/gitlab-org/gitlab-shell/-/labels',
+  issuableType = TYPE_TEST_CASE,
 } = {}) => {
-  return shallowMount(IssuableForm, {
+  return shallowMountExtended(IssuableForm, {
     propsData: {
       descriptionPreviewPath,
       descriptionHelpPath,
       labelsFetchPath,
       labelsManagePath,
+      issuableType,
     },
     slots: {
       actions: `
@@ -58,7 +61,7 @@ describe('IssuableForm', () => {
 
   describe('template', () => {
     it('renders issuable title input field', () => {
-      const titleFieldEl = wrapper.find('[data-testid="issuable-title"]');
+      const titleFieldEl = wrapper.findByTestId('issuable-title');
 
       expect(titleFieldEl.exists()).toBe(true);
       expect(titleFieldEl.find('label').text()).toBe('Title');
@@ -68,7 +71,7 @@ describe('IssuableForm', () => {
     });
 
     it('renders issuable description input field', () => {
-      const descriptionFieldEl = wrapper.find('[data-testid="issuable-description"]');
+      const descriptionFieldEl = wrapper.findByTestId('issuable-description');
 
       expect(descriptionFieldEl.exists()).toBe(true);
       expect(descriptionFieldEl.find('label').text()).toBe('Description');
@@ -88,8 +91,23 @@ describe('IssuableForm', () => {
       });
     });
 
+    it('renders issuable confidential checkbox', () => {
+      const confidentialCheckboxEl = wrapper.findByTestId('issuable-confidential');
+      expect(confidentialCheckboxEl.exists()).toBe(true);
+
+      expect(confidentialCheckboxEl.findComponent(GlFormGroup).exists()).toBe(true);
+      expect(confidentialCheckboxEl.findComponent(GlFormGroup).attributes('label')).toBe(
+        'Confidentiality',
+      );
+
+      expect(confidentialCheckboxEl.findComponent(GlFormCheckbox).exists()).toBe(true);
+      expect(confidentialCheckboxEl.findComponent(GlFormCheckbox).text()).toBe(
+        'This test case is confidential and should only be visible to team members with at least Reporter access.',
+      );
+    });
+
     it('renders labels select field', () => {
-      const labelsSelectEl = wrapper.find('[data-testid="issuable-labels"]');
+      const labelsSelectEl = wrapper.findByTestId('issuable-labels');
 
       expect(labelsSelectEl.exists()).toBe(true);
       expect(labelsSelectEl.find('label').text()).toBe('Labels');
@@ -111,7 +129,7 @@ describe('IssuableForm', () => {
 
     it('renders contents for slot "actions"', () => {
       const buttonEl = wrapper
-        .find('[data-testid="issuable-create-actions"]')
+        .findByTestId('issuable-create-actions')
         .find('button.js-issuable-save');
 
       expect(buttonEl.exists()).toBe(true);

@@ -48314,6 +48314,9 @@ msgstr ""
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
 msgstr ""
 
+msgid "This %{issuableType} is confidential and should only be visible to team members with at least Reporter access."
+msgstr ""
+
 msgid "This %{issuable} is hidden because its author has been banned."
 msgstr ""
 
