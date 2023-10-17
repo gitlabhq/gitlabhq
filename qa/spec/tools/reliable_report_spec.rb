@@ -118,7 +118,7 @@ describe QA::Tools::ReliableReport do
     end
 
     def name_column(spec_name, exceptions_and_job_urls = {})
-      "**name**: #{spec_name}<br>**file**: spec.rb#{exceptions_markdown(exceptions_and_job_urls)}"
+      "**Name**: #{spec_name}<br>**File**: [spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb)#{exceptions_markdown(exceptions_and_job_urls)}"
     end
 
     def exceptions_markdown(exceptions_and_job_urls)

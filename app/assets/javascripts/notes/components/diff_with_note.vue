@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -19,6 +19,7 @@ export default {
     GlSkeletonLoader,
     DiffViewer,
     ImageDiffOverlay,
+    GlButton,
   },
   directives: {
     SafeHtml,
@@ -127,12 +128,12 @@ export default {
             <td class="new_line diff-line-num"></td>
             <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
               {{ __('Unable to load the diff') }}
-              <button
-                class="gl-button btn-link btn-link-retry gl-p-0 js-toggle-lazy-diff-retry-button gl-reset-font-size!"
+              <gl-button
+                class="btn-link-retry gl-font-regular js-toggle-lazy-diff-retry-button"
                 @click="fetchDiff"
               >
                 {{ __('Try again') }}
-              </button>
+              </gl-button>
             </td>
             <td v-else class="line_content js-success-lazy-load">
               <span></span>

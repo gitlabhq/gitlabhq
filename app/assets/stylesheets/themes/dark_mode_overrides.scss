@@ -172,11 +172,17 @@ body.gl-dark {
 
 // white-ish text for light labels
 .gl-label-text-light.gl-label-text-light {
-  color: $gray-900;
+  &,
+  .gl-label-close .gl-icon {
+    color: $gray-900;
+  }
 }
 
 .gl-label-text-dark.gl-label-text-dark {
-  color: $gray-10;
+  &,
+  .gl-label-close .gl-icon {
+    color: $gray-10;
+  }
 }
 
 // This applies to "gl-labels" from "gitlab-ui"

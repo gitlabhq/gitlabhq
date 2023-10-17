@@ -402,23 +402,23 @@ export default {
 
     <div
       v-if="idState.forkMessageVisible"
-      class="js-file-fork-suggestion-section file-fork-suggestion"
+      class="js-file-fork-suggestion-section file-fork-suggestion gl-border-1 gl-border-solid gl-border-gray-100 gl-border-top-0"
     >
       <span v-safe-html="forkMessage" class="file-fork-suggestion-note"></span>
       <gl-button
         :href="file.fork_path"
-        class="js-fork-suggestion-button"
+        class="js-fork-suggestion-button gl-mr-3"
         category="secondary"
         variant="confirm"
         >{{ $options.i18n.fork }}</gl-button
       >
-      <button
-        class="js-cancel-fork-suggestion-button btn btn-grouped"
-        type="button"
+      <gl-button
+        class="js-cancel-fork-suggestion-button"
+        category="secondary"
         @click="hideForkMessage"
       >
         {{ $options.i18n.cancel }}
-      </button>
+      </gl-button>
     </div>
     <template v-else>
       <div

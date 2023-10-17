@@ -29,6 +29,7 @@ module QA
 
       # Project for report creation: https://gitlab.com/gitlab-org/gitlab
       PROJECT_ID = 278964
+      FEATURES_DIR = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/'
 
       def initialize(range)
         @range = range.to_i
@@ -261,8 +262,9 @@ module QA
             markdown: markdown,
             rows: specs.map do |k, v|
               [
-                name_column(name: k, file: v[:file], exceptions_and_job_urls: v[:exceptions_and_job_urls],
-                  markdown: markdown), *table_params(v.values)
+                name_column(name: k, file: v[:file], link: v[:link],
+                  exceptions_and_job_urls: v[:exceptions_and_job_urls], markdown: markdown),
+                *table_params(v.values)
               ]
             end
           )]
@@ -322,20 +324,24 @@ module QA
       # @param [Array] parameters
       # @return [Array]
       def table_params(parameters)
-        [*parameters[1..2], "#{parameters.last}%"]
+        [*parameters[2..3], "#{parameters.last}%"]
       end
 
       # Name column content
       #
       # @param [String] name
       # @param [String] file
+      # @param [String] link
+      # @param [Hash] exceptions_and_job_urls
       # @param [Boolean] markdown
       # @return [String]
-      def name_column(name:, file:, exceptions_and_job_urls:, markdown: false)
-        return "**name**: #{name}<br>**file**: #{file}#{exceptions_markdown(exceptions_and_job_urls)}" if markdown
+      def name_column(name:, file:, link:, exceptions_and_job_urls:, markdown: false)
+        if markdown
+          return "**Name**: #{name}<br>**File**: [#{file}](#{link})#{exceptions_markdown(exceptions_and_job_urls)}"
+        end
 
         wrapped_name = name.length > 150 ? "#{name} ".scan(/.{1,150} /).map(&:strip).join("\n") : name
-        "name: '#{wrapped_name}'\nfile: #{file.ljust(160)}"
+        "Name: '#{wrapped_name}'\nFile: #{file.ljust(160)}"
       end
 
       # Formatted exceptions with link to job url
@@ -370,6 +376,7 @@ module QA
           last_record = records.last.values
           name = last_record["name"]
           file = last_record["file_path"].split("/").last
+          link = FEATURES_DIR + last_record["file_path"]
           stage = last_record["stage"] || "unknown"
 
           runs = records.count
@@ -389,6 +396,7 @@ module QA
 
           result[stage][name] = {
             file: file,
+            link: link,
             runs: runs,
             failed: failed,
             exceptions_and_job_urls: exceptions_and_job_urls,

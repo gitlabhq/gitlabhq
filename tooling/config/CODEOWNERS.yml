@@ -2,8 +2,8 @@
 #     tooling/bin/find_codeowners tooling/config/CODEOWNERS.yml
 # And paste the contents into .gitlab/CODEOWNERS
 
-'[Authentication and Authorization]':
-  '@gitlab-org/govern/authentication-and-authorization/approvers':
+'[Authentication]':
+  '@gitlab-org/govern/authentication/approvers':
     allow:
       keywords:
         - 'password'

@@ -1005,7 +1005,7 @@ lib/gitlab/checks/**
 /doc/user/workspace/ @ashrafkhamis
 # End rake-managed-docs-block
 
-[Authentication and Authorization] @gitlab-org/govern/authentication-and-authorization/approvers
+[Authentication] @gitlab-org/govern/authentication/approvers
 /app/assets/javascripts/access_tokens/
 /app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql
 /app/assets/javascripts/authentication/

@@ -391,6 +391,20 @@ with a new push.
 Threads are now resolved if a push makes a diff section outdated.
 Threads on lines that don't change and top-level resolvable threads are not resolved.
 
+## Move notifications and to-dos **(FREE SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
+> - [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`.
+On GitLab.com, this feature is not available.
+
+When this feature flag is enabled, the notifications and to-do item buttons are moved to the upper right corner of the page.
+
+- On merge requests, these buttons are located to the far right of the tabs.
+- On issues, incidents, and epics, these buttons are located at the top of the right sidebar.
+
 ## Related topics
 
 - [Create a merge request](creating_merge_requests.md)
