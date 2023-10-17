@@ -11,6 +11,10 @@ module WorkItems
         work_item.work_item_children_by_relative_position
       end
 
+      def ancestors
+        work_item.ancestors
+      end
+
       def self.quick_action_commands
         [:set_parent, :add_child]
       end

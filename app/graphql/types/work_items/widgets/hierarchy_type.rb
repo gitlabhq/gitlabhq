@@ -20,6 +20,12 @@ module Types
           null: true, complexity: 5,
           description: 'Child work items.'
 
+        field :ancestors, ::Types::WorkItemType.connection_type,
+          null: true, complexity: 5,
+          description: 'Ancestors (parents) of the work item.',
+          extras: [:lookahead],
+          resolver: Resolvers::WorkItems::AncestorsResolver
+
         field :has_children, GraphQL::Types::Boolean,
               null: false, description: 'Indicates if the work item has children.'
 

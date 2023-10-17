@@ -83,28 +83,6 @@ RSpec.describe Tooling::Danger::FeatureFlag do
     end
   end
 
-  describe '#stage_label' do
-    before do
-      allow(fake_helper).to receive(:mr_labels).and_return(labels)
-    end
-
-    context 'when there is no stage label' do
-      let(:labels) { [] }
-
-      it 'returns nil' do
-        expect(feature_flag.stage_label).to be_nil
-      end
-    end
-
-    context 'when there is a stage label' do
-      let(:labels) { ['devops::verify', 'group::pipeline execution'] }
-
-      it 'returns the stage label' do
-        expect(feature_flag.stage_label).to eq(labels.first)
-      end
-    end
-  end
-
   describe described_class::Found do
     let(:feature_flag_path) { 'config/feature_flags/development/entry.yml' }
     let(:group) { 'group::source code' }

@@ -87,13 +87,22 @@ class JwtController < ApplicationController
 
   # We have to parse scope here, because Docker Client does not send an array of scopes,
   # but rather a flat list and we loose second scope when being processed by Rails:
-  # scope=scopeA&scope=scopeB
+  # scope=scopeA&scope=scopeB.
+  #
+  # Additionally, according to RFC6749 (https://datatracker.ietf.org/doc/html/rfc6749#section-3.3), some clients may use
+  # a scope parameter expressed as a list of space-delimited elements. Therefore, we must account for this and split the
+  # scope parameter value(s) appropriately.
   #
   # This method makes to always return an array of scopes
   def scopes_param
     return unless params[:scope].present?
 
-    Array(Rack::Utils.parse_query(request.query_string)['scope'])
+    scopes = Array(Rack::Utils.parse_query(request.query_string)['scope'])
+    if Feature.enabled?(:jwt_auth_space_delimited_scopes, Feature.current_request)
+      scopes.flat_map(&:split)
+    else
+      scopes
+    end
   end
 
   def auth_user

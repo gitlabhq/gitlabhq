@@ -48,7 +48,8 @@ module Mutations
               raise_resource_not_available_error!("'packages_protected_packages' feature flag is disabled")
             end
 
-            response = ::Packages::Protection::CreateRuleService.new(project, current_user, kwargs).execute
+            response = ::Packages::Protection::CreateRuleService.new(project: project, current_user: current_user,
+              params: kwargs).execute
 
             { package_protection_rule: response.payload[:package_protection_rule], errors: response.errors }
           end

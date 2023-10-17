@@ -6,7 +6,7 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
 
-  let(:service) { described_class.new(project, current_user, params) }
+  let(:service) { described_class.new(project: project, current_user: current_user, params: params) }
   let(:current_user) { maintainer }
   let(:params) { attributes_for(:package_protection_rule) }
 

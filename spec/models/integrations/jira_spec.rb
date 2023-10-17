@@ -1372,4 +1372,12 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       end
     end
   end
+
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(
+        ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/jira.svg')
+      )
+    end
+  end
 end

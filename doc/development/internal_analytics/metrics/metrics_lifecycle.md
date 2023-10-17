@@ -4,13 +4,13 @@ group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Ping metric lifecycle
+# Metric lifecycle
 
 The following guidelines explain the steps to follow at each stage of a metric's lifecycle.
 
 ## Add a new metric
 
-Follow the [Implement Service Ping](../service_ping/implement.md) guide.
+Follow the [metrics instrumentation](metrics_instrumentation.md) guide.
 
 ## Change an existing metric
 
@@ -65,7 +65,7 @@ To remove a metric:
 
 1. Remove data from Redis
 
-   For [Ordinary Redis](../service_ping/implement.md#ordinary-redis-counters) counters remove data stored in Redis.
+   For deprecated Redis counters remove data stored in Redis.
 
    - Add a migration to remove the data from Redis for the related Redis keys. For more details, see [this MR example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82604/diffs).
 

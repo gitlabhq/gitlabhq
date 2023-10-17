@@ -66,10 +66,6 @@ We recommend to add the metric in one of the top-level keys:
 - `counts_monthly`: for counters that have data for the most recent 28 days.
 - `counts`: for counters that have data for all time.
 
-NOTE:
-We can't control what the metric's `key_path` is, because some of them are generated dynamically in `usage_data.rb`.
-For example, see [Redis HLL metrics](../service_ping/implement.md#redis-hll-counters).
-
 ### Metric statuses
 
 Metric definitions can have one of the following statuses:
@@ -100,9 +96,9 @@ A metric's time frame is calculated based on the `time_frame` field and the `dat
 | `database`             | `all`      | The whole time the metric has been active (all-time interval) |
 | `database`             | `7d`       | 9 days ago to 2 days ago |
 | `database`             | `28d`      | 30 days ago to 2 days ago |
-| `redis`                | `all`      | The whole time the metric has been active (all-time interval) |
-| `redis_hll`            | `7d`       | Most recent complete week |
-| `redis_hll`            | `28d`      | Most recent 4 complete weeks |
+| `internal_events`      | `all`      | The whole time the metric has been active (all-time interval) |
+| `internal_events`      | `7d`       | Most recent complete week |
+| `internal_events`      | `28d`      | Most recent 4 complete weeks |
 
 ### Data category
 
@@ -146,78 +142,12 @@ tier:
 
 ### Create a new metric definition
 
-The GitLab codebase provides a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_definition_generator.rb) to create new metric definitions.
+The GitLab codebase provides dedicated generators to create new metrics, which also create valid metric definition files:
+
+- [internal events generator](../internal_event_instrumentation/quick_start.md)
+- [metric instrumentation class generator](metrics_instrumentation.md#create-a-new-metric-instrumentation-class)
 
 For uniqueness, the generated files include a timestamp prefix in ISO 8601 format.
-
-The generator takes a list of key paths and 3 options as arguments. It creates metric YAML definitions in the corresponding location:
-
-- `--ee`, `--no-ee` Indicates if metric is for EE.
-- `--dir=DIR` Indicates the metric directory. It must be one of: `counts_7d`, `7d`, `counts_28d`, `28d`, `counts_all`, `all`, `settings`, `license`.
-- `--class_name=CLASS_NAME` Indicates the instrumentation class. For example `UsersCreatingIssuesMetric`, `UuidMetric`
-
-**Single metric example**
-
-```shell
-bundle exec rails generate gitlab:usage_metric_definition counts.issues --dir=7d --class_name=CountIssues
-// Creates 1 file
-// create  config/metrics/counts_7d/issues.yml
-```
-
-**Multiple metrics example**
-
-```shell
-bundle exec rails generate gitlab:usage_metric_definition counts.issues counts.users --dir=7d --class_name=CountUsersCreatingIssues
-// Creates 2 files
-// create  config/metrics/counts_7d/issues.yml
-// create  config/metrics/counts_7d/users.yml
-```
-
-NOTE:
-To create a metric definition used in EE, add the `--ee` flag.
-
-```shell
-bundle exec rails generate gitlab:usage_metric_definition counts.issues --ee --dir=7d --class_name=CountUsersCreatingIssues
-// Creates 1 file
-// create  ee/config/metrics/counts_7d/issues.yml
-```
-
-### Metrics added dynamic to Service Ping payload
-
-The [Redis HLL metrics](../service_ping/implement.md#known-events-are-added-automatically-in-service-data-payload) are added automatically to Service Ping payload.
-
-A YAML metric definition is required for each metric. A dedicated generator is provided to create metric definitions for Redis HLL events.
-
-The generator takes `category` and `events` arguments, as the root key is `redis_hll_counters`, and creates two metric definitions for each of the events (for weekly and monthly time frames):
-
-**Single metric example**
-
-```shell
-bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues count_users_closing_issues
-// Creates 2 files
-// create  config/metrics/counts_7d/count_users_closing_issues_weekly.yml
-// create  config/metrics/counts_28d/count_users_closing_issues_monthly.yml
-```
-
-**Multiple metrics example**
-
-```shell
-bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues count_users_closing_issues count_users_reopening_issues
-// Creates 4 files
-// create  config/metrics/counts_7d/count_users_closing_issues_weekly.yml
-// create  config/metrics/counts_28d/count_users_closing_issues_monthly.yml
-// create  config/metrics/counts_7d/count_users_reopening_issues_weekly.yml
-// create  config/metrics/counts_28d/count_users_reopening_issues_monthly.yml
-```
-
-To create a metric definition used in EE, add the `--ee` flag.
-
-```shell
-bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues users_closing_issues --ee
-// Creates 2 files
-// create  config/metrics/counts_7d/i_closed_weekly.yml
-// create  config/metrics/counts_28d/i_closed_monthly.yml
-```
 
 ### Performance Indicator Metrics
 

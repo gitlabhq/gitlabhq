@@ -48,7 +48,7 @@ such as the value of a setting or the count of rows in a database table.
 ## Instrumentation
 
 - To instrument an event-based metric, see the [internal event tracking quick start guide](internal_event_instrumentation/quick_start.md).
-- To instrument a metric that observes the GitLab instances state, see [the service ping implementation](service_ping/implement.md).
+- To instrument a metric that observes the GitLab instances state, see [the metrics instrumentation](metrics/metrics_instrumentation.md).
 
 ## Data flow
 

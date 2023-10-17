@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -3089,7 +3089,7 @@ To configure group SAML SSO:
 ::EndTabs
 
 As a multi-tenant solution, group SAML on a self-managed instance is limited compared
-to the recommended [instance-wide SAML](../user/group/saml_sso/index.md). Use
+to the recommended [instance-wide SAML](../integration/saml.md). Use
 instance-wide SAML to take advantage of:
 
 - [LDAP compatibility](../administration/auth/ldap/index.md).

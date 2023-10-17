@@ -43,7 +43,7 @@
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
-      border: 1px solid $border-color;
+      border: 1px solid var(--border-color, $border-color);
       max-width: 100%;
       flex-grow: 1;
     }
@@ -57,7 +57,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: $gray-700;
+  color: var(--gray-700, $gray-700);
 }
 
 .deploy-key {
@@ -87,23 +87,23 @@
 }
 
 .vs-public {
-  color: $blue-500;
+  color: var(--blue-500, $blue-500);
 }
 
 .vs-internal {
-  color: $orange-500;
+  color: var(--orange-500, $orange-500);
 }
 
 .vs-private {
-  color: $green-500;
+  color: var(--green-500, $green-500);
 }
 
 .lfs-enabled {
-  color: $green-500;
+  color: var(--green-500, $green-500);
 }
 
 .lfs-disabled {
-  color: $orange-500;
+  color: var(--orange-500, $orange-500);
 }
 
 .breadcrumb.repo-breadcrumb {
@@ -115,7 +115,7 @@
   margin: 0;
 
   a {
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
   }
 
   .dropdown-menu {
@@ -137,7 +137,7 @@
     padding: 16px 0;
 
     &:not(:first-child) {
-      border-top: 1px solid $border-color;
+      border-top: 1px solid var(--border-color, $border-color);
     }
 
     .controls {
@@ -168,7 +168,7 @@
 
     .input-group-text {
       width: 100%;
-      background-color: $white;
+      background-color: var(--white, $white);
     }
 
     .selected-icon {
@@ -237,7 +237,7 @@
 .repository-languages-bar {
   height: 8px;
   margin-bottom: $gl-padding;
-  background-color: $white;
+  background-color: var(--white, $white);
   border-radius: $border-radius-default;
 
   .progress-bar {
@@ -255,7 +255,7 @@
 }
 
 .repository-language-bar-tooltip-share {
-  color: $gray-200;
+  color: var(--gray-200, $gray-200);
 }
 
 /*
@@ -265,7 +265,7 @@
 .project-row {
   .description p {
     margin-bottom: 0;
-    color: $gl-text-color-secondary;
+    color: var(--gl-text-color-secondary, $gl-text-color-secondary);
     @include str-truncated(100%);
   }
 }
@@ -282,7 +282,7 @@
     @include gl-display-table-cell;
     @include gl-vertical-align-top;
     @include gl-py-4;
-    border-bottom: 1px solid $gray-50;
+    border-bottom: 1px solid var(--gray-50, $gray-50);
   }
 
   .project-row:last-of-type {
@@ -472,8 +472,8 @@
 
   .form-control {
     @include gl-font-monospace;
-    background-color: $white;
-    border-color: $border-color;
+    background-color: var(--white, $white);
+    border-color: var(--border-color, $border-color);
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;

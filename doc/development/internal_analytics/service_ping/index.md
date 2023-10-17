@@ -155,10 +155,6 @@ We also collect metrics specific to [Geo](../../../administration/geo/index.md) 
    ]
    ```
 
-## Implementing Service Ping
-
-See the [implement Service Ping](implement.md) guide.
-
 ## Example Service Ping payload
 
 The following is example content of the Service Ping payload.
@@ -492,14 +488,24 @@ skip_db_write:
 GitlabServicePingWorker.new.perform('triggered_from_cron' => false, 'skip_db_write' => true)
 ```
 
+### Fallback values for Service Ping
+
+We return fallback values in these cases:
+
+| Case                        | Value |
+|-----------------------------|-------|
+| Deprecated Metric ([Removed with version 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/335894)) | -1000 |
+| Timeouts, general failures  | -1    |
+| Standard errors in counters | -2    |
+| Histogram metrics failure   | { '-1' => -1 } |
+
 ## Monitoring
 
 Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
 
 ## Related topics
 
-- [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Product Intelligence Direction](https://about.gitlab.com/direction/analytics/product-intelligence/)
+- [Analytics Instrumentation Direction](https://about.gitlab.com/direction/analytics/analytics-instrumentation/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
 - [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
 - [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

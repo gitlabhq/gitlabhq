@@ -13981,6 +13981,18 @@ Represents how the blob content should be displayed.
 | <a id="blobviewertoolarge"></a>`tooLarge` | [`Boolean!`](#boolean) | Shows whether the blob is too large to be displayed. |
 | <a id="blobviewertype"></a>`type` | [`BlobViewersType!`](#blobviewerstype) | Type of blob viewer. |
 
+### `BlockingMergeRequests`
+
+Information about the rules that must be satisfied to merge this merge request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="blockingmergerequestshiddencount"></a>`hiddenCount` | [`Int!`](#int) | Blocking merge requests not visible to the user. |
+| <a id="blockingmergerequeststotalcount"></a>`totalCount` | [`Int!`](#int) | Total number of blocking merge requests. |
+| <a id="blockingmergerequestsvisiblemergerequests"></a>`visibleMergeRequests` | [`[MergeRequest!]`](#mergerequest) | Blocking merge requests visible to the user. |
+
 ### `Board`
 
 Represents a project or group issue board.
@@ -19770,6 +19782,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestautomergestrategy"></a>`autoMergeStrategy` | [`String`](#string) | Selected auto merge strategy. |
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
 | <a id="mergerequestawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the merge request. (see [Connections](#connections)) |
+| <a id="mergerequestblockingmergerequests"></a>`blockingMergeRequests` **{warning-solid}** | [`BlockingMergeRequests`](#blockingmergerequests) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Merge requests that block another merge request from merging. |
 | <a id="mergerequestcodequalityreportscomparer"></a>`codequalityReportsComparer` **{warning-solid}** | [`CodequalityReportsComparer`](#codequalityreportscomparer) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Code quality reports comparison reported on the merge request. Returns `null` if `sast_reports_in_inline_diff` feature flag is disabled. |
 | <a id="mergerequestcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="mergerequestcommitcount"></a>`commitCount` | [`Int`](#int) | Number of commits in the merge request. |
@@ -21662,6 +21675,7 @@ Represents a package with pipelines in the Package Registry.
 | <a id="packagepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packageproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
 | <a id="packagestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
+| <a id="packagestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packageupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 | <a id="packageversion"></a>`version` | [`String`](#string) | Version string. |
@@ -21683,6 +21697,7 @@ Represents a package in the Package Registry.
 | <a id="packagebasepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagebaseproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
 | <a id="packagebasestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
+| <a id="packagebasestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagebasetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packagebaseupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 | <a id="packagebaseversion"></a>`version` | [`String`](#string) | Version string. |
@@ -21755,6 +21770,7 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypepypisetupurl"></a>`pypiSetupUrl` | [`String`](#string) | Url of the PyPi project setup endpoint. |
 | <a id="packagedetailstypepypiurl"></a>`pypiUrl` | [`String`](#string) | Url of the PyPi project endpoint. |
 | <a id="packagedetailstypestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
+| <a id="packagedetailstypestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagedetailstypetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packagedetailstypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 | <a id="packagedetailstypeversion"></a>`version` | [`String`](#string) | Version string. |
@@ -26923,6 +26939,7 @@ Represents a hierarchy widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemwidgethierarchyancestors"></a>`ancestors` | [`WorkItemConnection`](#workitemconnection) | Ancestors (parents) of the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgethierarchychildren"></a>`children` | [`WorkItemConnection`](#workitemconnection) | Child work items. (see [Connections](#connections)) |
 | <a id="workitemwidgethierarchyhaschildren"></a>`hasChildren` | [`Boolean!`](#boolean) | Indicates if the work item has children. |
 | <a id="workitemwidgethierarchyparent"></a>`parent` | [`WorkItem`](#workitem) | Parent work item. |

@@ -427,6 +427,7 @@ export default {
           variant="confirm"
           :disabled="!canSubmit"
           data-testid="ci-variable-confirm-btn"
+          data-qa-selector="ci_variable_save_button"
           @click="submit"
           >{{ modalActionText }}
         </gl-button>

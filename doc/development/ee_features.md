@@ -31,6 +31,8 @@ context rich definitions around the reason the feature is SaaS only.
 
 ### Implementing a SaaS only feature with `Gitlab::Saas.feature_available?`
 
+#### Adding to the FEATURES constant
+
 1. See the [namespacing concepts guide](software_design.md#use-namespaces-to-define-bounded-contexts)
    for help in naming a new SaaS only feature.
 1. Add the new feature to `FEATURE` in `ee/lib/ee/gitlab/saas.rb`.
@@ -40,6 +42,26 @@ context rich definitions around the reason the feature is SaaS only.
    ```
 
 1. Use the new feature in code with `Gitlab::Saas.feature_available?('some_domain/new_feature_name')`.
+
+#### SaaS only feature definition and validation
+
+This process is meant to ensure consistent SaaS feature usage in the codebase. All SaaS features **must**:
+
+- Be known. Only use SaaS features that are explicitly defined.
+- Have an owner.
+
+All SaaS features are self-documented in YAML files stored in:
+
+- [`ee/config/saas_features`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/config/saas_features)
+
+Each SaaS feature is defined in a separate YAML file consisting of a number of fields:
+
+| Field               | Required | Description                                                                                                  |
+|---------------------|----------|--------------------------------------------------------------------------------------------------------------|
+| `name`              | yes      | Name of the SaaS feature.                                                                                    |
+| `introduced_by_url` | no       | The URL to the merge request that introduced the SaaS feature.                                               |
+| `milestone`         | no       | Milestone in which the SaaS feature was created.                                                             |
+| `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
 ### Opting out of a SaaS only feature on another SaaS instance (JiHu)
 

@@ -67,10 +67,28 @@ This feature is not ready for production use.
 
 You can use the dashboard designer to:
 
-- Create custom dashboards.
-- Rename custom dashboards.
-- Add visualizations to new and existing custom dashboards.
-- Resize or move panels in custom dashboards.
+- [Create custom dashboards](#create-a-custom-dashboard).
+- [Edit custom dashboards](#edit-a-custom-dashboard) to:
+  - Rename the dashboard.
+  - Add and remove visualizations.
+  - Resize or move panels.
+
+## Visualization designer
+
+> Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+NOTE:
+This feature is only compatible with the [product analytics](../product_analytics/index.md) data source.
+
+You can use the dashboard designer to:
+
+- [Create custom visualizations](#create-a-custom-visualization).
+- Explore available data.
 
 ## View project dashboards
 
@@ -200,6 +218,21 @@ To edit an existing custom dashboard:
 1. Optional. From the **Add visualizations** list on the right, select other visualizations to add to the dashboard.
 1. Optional. In the dashboard, select a panel and drag or resize it how you prefer.
 1. Select **Save**.
+
+## Create a custom visualization
+
+To create a custom visualization:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. Select **Visualization Designer**.
+1. In the **Visualization title** field, enter the name of your visualization.
+1. From the **Visualization type** dropdown list, select a visualization type.
+1. In the **What metric do you want to visualize?** section, select the metric you want to query.
+1. Optional. To refine your query, select a dimension.
+1. Select **Save**.
+
+After you saved a visualization, you can add it to a new or existing custom dashboard in the same project.
 
 ## Troubleshooting
 

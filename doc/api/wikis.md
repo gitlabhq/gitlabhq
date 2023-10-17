@@ -90,7 +90,7 @@ Example response:
 
 ## Create a new wiki page
 
-Creates a new wiki page for the given repository with the given title, slug and content.
+Creates a new wiki page for the given repository with the given title, slug, and content.
 
 ```plaintext
 POST /projects/:id/wikis
@@ -101,7 +101,7 @@ POST /projects/:id/wikis
 | `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `content` | string         | Yes      | The content of the wiki page. |
 | `title`   | string         | Yes      | The title of the wiki page. |
-| `format`  | string         | No       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org`. |
+| `format`  | string         | No       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc`, and `org`. |
 
 ```shell
 curl --data "format=rdoc&title=Hello&content=Hello world" \
@@ -128,13 +128,13 @@ Updates an existing wiki page. At least one parameter is required to update the 
 PUT /projects/:id/wikis/:slug
 ```
 
-| Attribute | Type           | Required                           | Description |
-| --------- | -------        | ---------------------------------- | ----------- |
-| `id`      | integer/string | Yes                                | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `content` | string         | Yes, if `title` is not provided.   | The content of the wiki page. |
-| `title`   | string         | Yes, if `content` is not provided. | The title of the wiki page. |
-| `format`  | string         | No                                 | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org`. |
-| `slug`    | string         | Yes                                | URL-encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`. |
+| Attribute | Type           | Required                          | Description |
+| --------- | -------        | --------------------------------- | ----------- |
+| `id`      | integer/string | Yes                               | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `content` | string         | Yes, if `title` is not provided   | The content of the wiki page. |
+| `title`   | string         | Yes, if `content` is not provided | The title of the wiki page. |
+| `format`  | string         | No                                | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc`, and `org`. |
+| `slug`    | string         | Yes                               | URL-encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`. |
 
 ```shell
 curl --request PUT --data "format=rdoc&content=documentation&title=Docs" \

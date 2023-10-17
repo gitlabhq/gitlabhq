@@ -394,6 +394,10 @@ module Integrations
       jira_auth_type == AUTH_TYPE_PAT
     end
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/jira.svg')
+    end
+
     private
 
     def jira_issue_match_regex

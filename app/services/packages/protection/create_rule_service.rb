@@ -2,7 +2,7 @@
 
 module Packages
   module Protection
-    class CreateRuleService < BaseService
+    class CreateRuleService < BaseProjectService
       ALLOWED_ATTRIBUTES = %i[
         package_name_pattern
         package_type
