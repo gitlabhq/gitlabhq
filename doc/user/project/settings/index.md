@@ -100,7 +100,6 @@ When you disable a feature, the following additional features are also disabled:
 
   - **Merge requests**
   - **CI/CD**
-  - **Container Registry**
   - **Git Large File Storage**
   - **Packages**
 

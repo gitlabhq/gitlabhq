@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :keep, feature_category: :web_ide do
+RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, factory_default: :keep, feature_category: :web_ide do
   let_it_be(:user) { create_default(:user) }
   let_it_be(:user_token) { create(:personal_access_token) }
 
@@ -14,10 +14,10 @@ RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :k
     end
   end
 
-  shared_examples "returns 200 when authenticated" do
-    it 'returns 200 when authenticated' do
+  shared_examples "returns 20x when authenticated" do |http_status|
+    it "returns #{http_status || :ok} when authenticated" do
       get api(path, personal_access_token: user_token)
-      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to have_gitlab_http_status(http_status || :ok)
     end
   end
 
@@ -25,7 +25,7 @@ RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :k
     let(:path) { "/vscode/settings_sync/v1/manifest" }
 
     it_behaves_like "returns unauthorized when not authenticated"
-    it_behaves_like "returns 200 when authenticated"
+    it_behaves_like "returns 20x when authenticated"
 
     context 'when no settings record is present' do
       it 'returns a session id' do
@@ -39,6 +39,11 @@ RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :k
         expect(json_response).to have_key('latest')
         expect(json_response['latest']).not_to have_key('settings')
       end
+
+      it 'includes default machine id' do
+        get api(path, personal_access_token: user_token)
+        expect(json_response['latest']).to have_key('machines')
+      end
     end
 
     context 'when settings record is present' do
@@ -49,7 +54,7 @@ RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :k
         expect(json_response).to have_key('latest')
         expect(json_response).to have_key('session')
         expect(json_response['latest']).to have_key('settings')
-        expect(json_response.dig('latest', 'settings')).to eq settings.id
+        expect(json_response.dig('latest', 'settings')).to eq settings.uuid
       end
     end
   end
@@ -58,7 +63,7 @@ RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :k
     let(:path) { "/vscode/settings_sync/v1/resource/machines/latest" }
 
     it_behaves_like "returns unauthorized when not authenticated"
-    it_behaves_like "returns 200 when authenticated"
+    it_behaves_like "returns 20x when authenticated"
 
     it 'returns a list of machines' do
       get api(path, personal_access_token: user_token)
@@ -72,15 +77,15 @@ RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :k
   describe 'GET /vscode/settings_sync/v1/resource/:resource_name/:id' do
     let(:path) { "/vscode/settings_sync/v1/resource/settings/1" }
 
-    it_behaves_like "returns 200 when authenticated"
+    it_behaves_like "returns 20x when authenticated", :no_content
     it_behaves_like "returns unauthorized when not authenticated"
 
     context 'when settings with that type are not present' do
-      it 'returns settings with empty json content' do
+      it 'returns 204 no content and no content ETag header' do
         get api(path, personal_access_token: user_token)
-        expect(json_response).to have_key('content')
-        expect(json_response).to have_key('version')
-        expect(json_response['content']).to eq('{}')
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response.header['ETag']).to eq(::VsCode::Settings::NO_CONTENT_ETAG)
       end
     end
 
@@ -91,6 +96,7 @@ RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :k
         get api(path, personal_access_token: user_token)
         expect(json_response).to have_key('content')
         expect(json_response).to have_key('version')
+        expect(json_response).to have_key('machineId')
         expect(json_response['content']).to eq('{ "key": "value" }')
       end
     end
@@ -100,7 +106,7 @@ RSpec.describe API::VsCodeSettingsSync, :aggregate_failures, factory_default: :k
     let(:path) { "/vscode/settings_sync/v1/resource/settings" }
 
     subject(:request) do
-      post api(path, personal_access_token: user_token), params: { content: '{ "editor.fontSize": 12 }' }
+      post api(path, personal_access_token: user_token), params: { content: '{ "editor.fontSize": 12 }', version: 1 }
     end
 
     it 'returns unauthorized when not authenticated' do

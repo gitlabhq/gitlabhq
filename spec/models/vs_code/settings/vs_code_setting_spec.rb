@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe VsCode::VsCodeSetting, feature_category: :web_ide do
+RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
   let!(:user) { create(:user) }
   let!(:setting) { create(:vscode_setting, user: user, setting_type: 'settings') }
 

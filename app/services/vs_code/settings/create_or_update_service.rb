@@ -9,13 +9,18 @@ module VsCode
       end
 
       def execute
-        setting = VsCode::VsCodeSetting.by_user(current_user).by_setting_type(params[:setting_type]).first
+        # The GitLab VSCode settings API does not support creating or updating
+        # machines.
+        return ServiceResponse.success(payload: DEFAULT_MACHINE) if @params[:setting_type] == 'machines'
+
+        setting = VsCodeSetting.by_user(current_user).by_setting_type(params[:setting_type]).first
 
         if setting.nil?
-          merged_params = params.merge(user: current_user)
-          setting = VsCode::VsCodeSetting.new(merged_params)
+          merged_params = params.merge(user: current_user, uuid: SecureRandom.uuid)
+          setting = VsCodeSetting.new(merged_params)
         else
           setting.content = params[:content]
+          setting.uuid = SecureRandom.uuid
         end
 
         if setting.save

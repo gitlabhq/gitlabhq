@@ -240,8 +240,7 @@ If you are having issues configuring GitLab, see the [troubleshooting documentat
 
 ## User access and management
 
-> - SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an ][**Enterprise**](../../enterprise_user/index.md) badge in the **Members** view.
+> SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
 
 After group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard.
 If [SCIM](scim_setup.md) is configured, see [user access](scim_setup.md#user-access) on the SCIM page.

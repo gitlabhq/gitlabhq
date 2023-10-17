@@ -15,6 +15,15 @@ RSpec.describe VsCode::Settings::CreateOrUpdateService, feature_category: :web_i
 
     subject { described_class.new(current_user: user, params: opts).execute }
 
+    context 'when setting_type is machines' do
+      it 'returns default machine as a successful response' do
+        opts = { setting_type: "machines", machines: '[]' }
+        result = described_class.new(current_user: user, params: opts).execute
+
+        expect(result.payload).to eq(VsCode::Settings::DEFAULT_MACHINE)
+      end
+    end
+
     it 'creates a new record when a record with the setting does not exist' do
       expect { subject }.to change { User.find(user.id).vscode_settings.count }.from(0).to(1)
       record = User.find(user.id).vscode_settings.by_setting_type('settings').first
@@ -25,7 +34,7 @@ RSpec.describe VsCode::Settings::CreateOrUpdateService, feature_category: :web_i
       setting = create(:vscode_setting, user: user)
 
       expect { subject }.to change {
-        VsCode::VsCodeSetting.find(setting.id).content
+        VsCode::Settings::VsCodeSetting.find(setting.id).content
       }.from(setting.content).to(opts[:content])
     end
 

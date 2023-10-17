@@ -16,10 +16,12 @@ RSpec.describe Mutations::MergeRequests::SetReviewers do
     let(:mode) { described_class.arguments['operationMode'].default_value }
 
     subject do
-      mutation.resolve(project_path: merge_request.project.full_path,
-                       iid: merge_request.iid,
-                       operation_mode: mode,
-                       reviewer_usernames: reviewer_usernames)
+      mutation.resolve(
+        project_path: merge_request.project.full_path,
+        iid: merge_request.iid,
+        operation_mode: mode,
+        reviewer_usernames: reviewer_usernames
+      )
     end
 
     it 'does not change reviewers if the merge_request is not accessible to the reviewers' do

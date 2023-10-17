@@ -822,12 +822,12 @@ RSpec.shared_examples 'a container registry auth service' do
     context 'for project that disables repository' do
       let_it_be(:project) { create(:project, :public, :repository_disabled) }
 
-      context 'disallow when pulling' do
+      context 'allow when pulling' do
         let(:current_params) do
           { scopes: ["repository:#{project.full_path}:pull"] }
         end
 
-        it_behaves_like 'an inaccessible'
+        it_behaves_like 'a pullable'
         it_behaves_like 'not a container repository factory'
       end
     end

@@ -7,6 +7,41 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Issues workflow
 
+## Creating an issue
+
+**Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)**
+for similar entries. Someone else might have already had the same bug or feature proposal.
+If you find an existing issue, show your support with an emoji reaction and add your notes to the discussion.
+
+### Bugs
+
+To submit a bug:
+
+- Use the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Bug.md).
+  The text in the comments (`<!-- ... -->`) should help you with which information to include.
+- To report a suspected security vulnerability, follow the
+  [disclosure process on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
+
+WARNING:
+Do **not** create publicly viewable issues for suspected security vulnerabilities.
+
+### Feature proposals
+
+To create a feature proposal, open an issue in the issue tracker using the 
+[**Feature Proposal - detailed** issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed).
+
+In order to help track feature proposals, we use the
+[`~"type::feature"`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=type::feature) label.
+Users that are not members of the project cannot add labels via the UI.
+Instead, use [reactive label commands](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#reactive-label-and-unlabel-commands).
+
+Please keep feature proposals as small and simple as possible, complex ones
+might be edited to make them small and simple.
+
+For changes to the user interface (UI), follow our [design and UI guidelines](design.md),
+and include a visual example (screenshot, wireframe, or mockup). Such issues should
+be given the `~UX"` label (using the [reactive label commands](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#reactive-label-and-unlabel-commands)) for the Product Design team to provide input and guidance.
+
 ## Finding issues to work on
 
 GitLab has over 75,000 issues that you can work on.
@@ -36,20 +71,6 @@ Leave a note to indicate you wish to work on the issue and would like to be assi
 If you are stuck or did not properly understand the issue you can ask the author or
 the community for help.
 
-**Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)**
-for similar entries. Someone else might have already had the same bug or feature proposal.
-If you find an existing issue, show your support with an emoji reaction and add your notes to the discussion.
-
-To submit a bug:
-
-- Use the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Bug.md).
-  The text in the comments (`<!-- ... -->`) should help you with which information to include.
-- To report a suspected security vulnerability, follow the
-  [disclosure process on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
-
-WARNING:
-Do **not** create publicly viewable issues for suspected security vulnerabilities.
-
 ## Issue triaging
 
 Our issue triage policies are [described in our handbook](https://about.gitlab.com/handbook/engineering/quality/issue-triage/).
@@ -65,32 +86,6 @@ the affected files to find someone.
 We also have triage automation in place, described [in our handbook](https://about.gitlab.com/handbook/engineering/quality/triage-operations/).
 
 For information about which labels to apply to issues, see [Labels](../labels/index.md).
-
-## Feature proposals
-
-To create a feature proposal, open an issue on the
-[issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
-
-In order to help track the feature proposals, we have created a
-[`~"type::feature"`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=type::feature) label.
-For the time being, users that are not members of the project cannot add labels.
-You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
-members to add the label `~"type::feature"` to the issue or add the following
-code snippet right after your description in a new line: `~"type::feature"`.
-
-Please keep feature proposals as small and simple as possible, complex ones
-might be edited to make them small and simple.
-
-Please submit feature proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md) provided on the issue tracker.
-
-For changes to the user interface (UI), follow our [design and UI guidelines](design.md),
-and include a visual example (screenshot, wireframe, or mockup). Such issues should
-be given the `~UX"` label for the Product Design team to provide input and guidance.
-You may need to ask one of the [core team](https://about.gitlab.com/community/core-team/)
-members to add the label, if you do not have permissions to do it by yourself.
-
-If you want to create something yourself, consider opening an issue first to
-discuss whether it is interesting to include this in GitLab.
 
 ## Issue weight
 

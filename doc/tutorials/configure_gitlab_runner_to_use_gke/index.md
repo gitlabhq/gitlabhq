@@ -9,10 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This tutorial describes how to configure GitLab Runner to use the Google Kubernetes Engine (GKE)
 to run jobs.
 
-In this tutorial, you configure GitLab Runner to run jobs in the following [GKE cluster modes](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters):
-
-- Autopilot
-- Standard
+In this tutorial, you configure GitLab Runner to run jobs in the [Standard cluster mode](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters).
 
 To configure GitLab Runner to use the GKE:
 
@@ -38,10 +35,9 @@ Install the tools to configure and use GitLab Runner in the GKE.
 
 ## Create and connect to a cluster
 
-This step describes how to create a cluster and connect to it. After you connect to the cluster, you use kubectl to interact with it
-and, for autopilot clusters, to add configurations that specify which jobs to run.
+This step describes how to create a cluster and connect to it. After you connect to the cluster, you use kubectl to interact with it.
 
-1. In the Google Cloud Platform, create an [autopilot](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-an-autopilot-cluster) or [standard](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-zonal-cluster) cluster.
+1. In the Google Cloud Platform, create a [standard](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-zonal-cluster) cluster.
 
 1. Install the kubectl authentication plugin:
 
@@ -109,8 +105,8 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
       name: gitlab-runner-secret
     type: Opaque
     stringData:
-   runner-registration-token: YOUR_RUNNER_REGISTRATION_TOKEN
-   EOF
+      runner-registration-token: YOUR_RUNNER_REGISTRATION_TOKEN
+    EOF
    ```
 
 1. Apply the secret:
@@ -119,49 +115,19 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
    kubectl apply -f gitlab-runner-secret.yml
    ```
 
-1. For autopilot clusters, you must create a YAML file with additional
-   configuration details. Autopilot clusters use this file to instruct the
-   GKE about what resources the Pod needs so it can run the jobs. You don't
-   need to create this file for standard clusters. Here is an example configuration:
-
-   ```shell
-   cat > config.yml << EOF
-   apiVersion: v1
-   kind: configMaps
-   metadata:
-     name: config.toml
-   config: |
-   [[runners]]
-     [runners.kubernetes]
-       image = "alpine"
-       cpu_limit = "1"
-       memory_limit = "128Mi"
-       service_cpu_limit = "1"
-       service_memory_limit = "128Mi"
-       helper_cpu_limit = "500m"
-       helper_memory_limit = "100Mi"
-   ```
-
-1. Apply the `config.yml`:
-
-   ```shell
-   kubectl apply -f config.yml
-   ```
-
 1. Create the custom resource definition file and include the following information:
 
    ```shell
-   cat > gitlab-runner.yml << EOF
-      apiVersion: apps.gitlab.com/v1beta2
-         kind: Runner
-         metadata:
-         name: gitlab-runner
-      spec:
-         gitlabUrl: https://gitlab.example.com
-         buildImage: alpine
-         config: "config.toml"  # <---- Reference to the config.toml configMap
-         token: gitlab-runner-secret
-      EOF
+    cat > gitlab-runner.yml << EOF
+    apiVersion: apps.gitlab.com/v1beta2
+    kind: Runner
+    metadata:
+      name: gitlab-runner
+    spec:
+      gitlabUrl: https://gitlab.example.com
+      buildImage: alpine
+      token: gitlab-runner-secret
+    EOF
    ```
 
 1. Apply the custom resource definition file:

@@ -24467,6 +24467,8 @@ CREATE TABLE vs_code_settings (
     updated_at timestamp with time zone NOT NULL,
     setting_type text NOT NULL,
     content text NOT NULL,
+    uuid uuid,
+    version integer DEFAULT 0,
     CONSTRAINT check_5da3b2910b CHECK ((char_length(content) <= 524288)),
     CONSTRAINT check_994c503fc4 CHECK ((char_length(setting_type) <= 256))
 );

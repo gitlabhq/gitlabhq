@@ -232,7 +232,6 @@ module Auth
     # Overridden in EE
     def can_access?(requested_project, requested_action)
       return false unless requested_project.container_registry_enabled?
-      return false if requested_project.repository_access_level == ::ProjectFeature::DISABLED
 
       case requested_action
       when 'pull'

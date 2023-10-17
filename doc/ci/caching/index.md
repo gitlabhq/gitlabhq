@@ -57,7 +57,9 @@ For runners to work with caches efficiently, you must do one of the following:
 - Use multiple runners that have
   [distributed caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching),
   where the cache is stored in S3 buckets. Shared runners on GitLab.com behave this way. These runners can be in autoscale mode,
-  but they don't have to be.
+  but they don't have to be. To manage cache objects,
+  apply lifecycle rules to delete the cache objects after a period of time.
+  Lifecycle rules are available on the object storage server.
 - Use multiple runners with the same architecture and have these runners
   share a common network-mounted directory to store the cache. This directory should use NFS or something similar.
   These runners must be in autoscale mode.

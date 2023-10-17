@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe VsCode::SettingsFinder, feature_category: :web_ide do
+RSpec.describe VsCode::Settings::SettingsFinder, feature_category: :web_ide do
   let_it_be(:user) { create(:user) }
 
   describe '#execute' do
