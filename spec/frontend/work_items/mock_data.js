@@ -194,6 +194,7 @@ export const workItemQueryResponse = {
                 confidential: false,
                 title: '123',
                 state: 'OPEN',
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                 workItemType: {
                   id: '1',
                   name: 'Task',
@@ -271,6 +272,7 @@ export const updateWorkItemMutationResponse = {
                   confidential: false,
                   title: '123',
                   state: 'OPEN',
+                  webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                   workItemType: {
                     id: '1',
                     name: 'Task',
@@ -381,6 +383,7 @@ export const convertWorkItemMutationResponse = {
                   confidential: false,
                   title: '123',
                   state: 'OPEN',
+                  webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                   workItemType: {
                     id: '1',
                     name: 'Task',
@@ -765,6 +768,7 @@ export const workItemResponseFactory = ({
                 confidential: false,
                 title: '123',
                 state: 'OPEN',
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
                 workItemType: {
                   id: '1',
                   name: 'Task',
@@ -1092,6 +1096,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
                 widgets: [
                   {
                     type: 'HIERARCHY',
@@ -1144,6 +1149,7 @@ export const confidentialWorkItemTask = {
   confidential: true,
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
   widgets: [],
   __typename: 'WorkItem',
 };
@@ -1162,6 +1168,7 @@ export const closedWorkItemTask = {
   confidential: false,
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: '2022-08-12T13:07:52Z',
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/3',
   widgets: [],
   __typename: 'WorkItem',
 };
@@ -1184,6 +1191,7 @@ export const childrenWorkItems = [
     confidential: false,
     createdAt: '2022-08-03T12:41:54Z',
     closedAt: null,
+    webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
     widgets: [],
     __typename: 'WorkItem',
   },
@@ -1422,6 +1430,7 @@ export const workItemHierarchyTreeResponse = {
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/13',
                 widgets: [
                   {
                     type: 'HIERARCHY',

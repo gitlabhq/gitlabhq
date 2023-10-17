@@ -9168,4 +9168,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       name: name
     )
   end
+
+  context 'with loose foreign key on projects.creator_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:project, creator: parent) }
+    end
+  end
 end

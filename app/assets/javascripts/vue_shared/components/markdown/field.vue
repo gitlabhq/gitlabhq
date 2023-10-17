@@ -12,6 +12,8 @@ import { __, sprintf } from '~/locale';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { MARKDOWN_EDITOR_READY_EVENT } from '~/vue_shared/constants';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
 
@@ -259,7 +261,8 @@ export default {
   },
   mounted() {
     // GLForm class handles all the toolbar buttons
-    return new GLForm(
+    // eslint-disable-next-line no-new
+    new GLForm(
       $(this.$refs['gl-form']),
       {
         emojis: this.enableAutocomplete,
@@ -276,6 +279,8 @@ export default {
       true,
       this.autocompleteDataSources,
     );
+
+    markdownEditorEventHub.$emit(MARKDOWN_EDITOR_READY_EVENT);
   },
   beforeDestroy() {
     const glForm = $(this.$refs['gl-form']).data('glForm');

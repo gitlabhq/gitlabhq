@@ -302,6 +302,12 @@ projects:
   - table: organizations
     column: organization_id
     on_delete: async_nullify
+  - table: users
+    column: marked_for_deletion_by_user_id
+    on_delete: async_nullify
+  - table: users
+    column: creator_id
+    on_delete: async_nullify
 projects_visits:
   - table: projects
     column: entity_id

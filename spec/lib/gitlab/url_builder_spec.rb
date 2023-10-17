@@ -60,7 +60,8 @@ RSpec.describe Gitlab::UrlBuilder do
       :discussion_note_on_project_snippet  | ->(note) { "/#{note.project.full_path}/-/snippets/#{note.noteable_id}#note_#{note.id}" }
       :discussion_note_on_personal_snippet | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
       :note_on_personal_snippet            | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
-      :package                             | ->(package) { "/#{package.project.full_path}/-/packages/#{package.id}" }
+      :note_on_abuse_report | ->(note) { "/admin/abuse_reports/#{note.noteable_id}#note_#{note.id}" }
+      :package | ->(package) { "/#{package.project.full_path}/-/packages/#{package.id}" }
     end
 
     with_them do

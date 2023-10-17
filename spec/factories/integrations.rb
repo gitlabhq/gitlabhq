@@ -39,7 +39,7 @@ FactoryBot.define do
     recipients { 'foo@bar.com' }
     disable_diffs { true }
     send_from_committer_email { true }
-    branches_to_be_notified { nil }
+    branches_to_be_notified { 'all' }
   end
 
   factory :gitlab_slack_application_integration, class: 'Integrations::GitlabSlackApplication' do

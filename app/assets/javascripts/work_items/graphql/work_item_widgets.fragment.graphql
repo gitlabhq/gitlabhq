@@ -66,6 +66,7 @@ fragment WorkItemWidgets on WorkItemWidget {
         state
         createdAt
         closedAt
+        webUrl
         widgets {
           ... on WorkItemWidgetHierarchy {
             type

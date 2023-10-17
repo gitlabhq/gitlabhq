@@ -35,10 +35,7 @@ module Admin
         end
       end
 
-      expose :credit_card, if: ->(report) { report.user.credit_card_validation&.holder_name } do
-        expose :name do |report|
-          report.user.credit_card_validation.holder_name
-        end
+      expose :credit_card, if: ->(report) { report.user.credit_card_validation.present? } do
         expose :similar_records_count do |report|
           report.user.credit_card_validation.similar_records.count
         end

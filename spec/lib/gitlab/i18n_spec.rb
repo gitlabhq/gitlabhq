@@ -62,4 +62,18 @@ RSpec.describe Gitlab::I18n, feature_category: :internationalization do
       end
     end
   end
+
+  describe '.trimmed_language_name' do
+    it 'trims the language name', :aggregate_failures do
+      expect(described_class.trimmed_language_name('en')).to eq('English')
+      expect(described_class.trimmed_language_name('bg')).to eq('Bulgarian')
+      expect(described_class.trimmed_language_name('id_ID')).to eq('Indonesian')
+      expect(described_class.trimmed_language_name('nb_NO')).to eq('Norwegian (Bokmål)')
+      expect(described_class.trimmed_language_name('zh_HK')).to eq('Chinese, Traditional (Hong Kong)')
+    end
+
+    it 'return nil for unknown language code' do
+      expect(described_class.trimmed_language_name('_invalid_code_')).to be_nil
+    end
+  end
 end

@@ -60,9 +60,6 @@ export default {
       data-testid="credit-card-verification"
       :label="$options.i18n.creditCard"
     >
-      <gl-sprintf :message="$options.i18n.registeredWith">
-        <template #name>{{ user.creditCard.name }}</template>
-      </gl-sprintf>
       <gl-sprintf v-if="showSimilarRecords" :message="$options.i18n.similarRecords">
         <template #cardMatchesLink="{ content }">
           <gl-link :href="user.creditCard.cardMatchesLink">

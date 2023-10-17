@@ -179,12 +179,13 @@ You need at least the Developer role to move a wiki page:
 
 ## Export a wiki page
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `print_wiki`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `print_wiki`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134251/) in GitLab 16.5.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `print_wiki`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `print_wiki`.
+On GitLab.com, this feature is available.
 
 You can export a wiki page as a PDF file:
 

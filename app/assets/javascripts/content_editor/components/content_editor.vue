@@ -4,6 +4,8 @@ import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
+import { CONTENT_EDITOR_READY_EVENT } from '~/vue_shared/constants';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { createContentEditor } from '../services/create_content_editor';
 import { ALERT_EVENT, TIPTAP_AUTOFOCUS_OPTIONS } from '../constants';
 import ContentEditorAlert from './content_editor_alert.vue';
@@ -161,9 +163,10 @@ export default {
       },
     });
   },
-  mounted() {
+  async mounted() {
     this.$emit('initialized');
-    this.setSerializedContent(this.markdown);
+    await this.setSerializedContent(this.markdown);
+    markdownEditorEventHub.$emit(CONTENT_EDITOR_READY_EVENT);
   },
   beforeDestroy() {
     this.contentEditor.dispose();

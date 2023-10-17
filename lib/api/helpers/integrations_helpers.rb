@@ -698,6 +698,12 @@ module API
           ],
           'prometheus' => [
             {
+              required: false,
+              name: :manual_configuration,
+              type: ::Grape::API::Boolean,
+              desc: 'When enabled, the default settings will be overridden with your custom configuration'
+            },
+            {
               required: true,
               name: :api_url,
               type: String,

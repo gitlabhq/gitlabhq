@@ -78,7 +78,6 @@ export const USER_DETAILS_I18N = {
   reportedFor: s__(
     'AbuseReport|%{reportLinkStart}Reported%{reportLinkEnd} for %{category} %{timeAgo}.',
   ),
-  registeredWith: s__('AbuseReport|Registered with name %{name}.'),
   similarRecords: s__(
     'AbuseReport|Card matches %{cardMatchesLinkStart}%{count} accounts%{cardMatchesLinkEnd}',
   ),

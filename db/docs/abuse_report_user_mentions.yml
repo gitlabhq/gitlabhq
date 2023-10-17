@@ -1,0 +1,10 @@
+---
+table_name: abuse_report_user_mentions
+classes:
+- Abuse::Reports::UserMention
+feature_categories:
+- insider_threat
+description: User mentions in abuse report notes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132505
+milestone: '16.5'
+gitlab_schema: gitlab_main

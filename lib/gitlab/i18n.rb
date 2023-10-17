@@ -81,6 +81,13 @@ module Gitlab
       TRANSLATION_LEVELS.fetch(code, 0)
     end
 
+    def trimmed_language_name(code)
+      language_name = AVAILABLE_LANGUAGES[code]
+      return if language_name.blank?
+
+      language_name.sub(/\s-\s.*/, '')
+    end
+
     def available_locales
       AVAILABLE_LANGUAGES.keys
     end

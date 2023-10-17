@@ -158,7 +158,6 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
 
         it 'exposes the credit card' do
           expect(credit_card_hash.keys).to match_array([
-            :name,
             :similar_records_count,
             :card_matches_link
           ])

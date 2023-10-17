@@ -5,6 +5,6 @@
     - unless Feature.enabled?(:user_profile_overflow_menu_vue)
       = render 'middle_dot_divider', stacking: true do
         = s_('UserProfile|User ID: %{id}') % { id: @user.id }
-        = deprecated_clipboard_button(title: s_('UserProfile|Copy user ID'), text: @user.id)
+        = clipboard_button(title: s_('UserProfile|Copy user ID'), text: @user.id)
     = render 'middle_dot_divider', stacking: true do
       = s_('Member since %{date}') % { date: l(@user.created_at.to_date, format: :long) }

@@ -33,7 +33,6 @@ const Api = {
   forkedProjectsPath: '/api/:version/projects/:id/forks',
   projectLabelsPath: '/:namespace_path/:project_path/-/labels',
   projectFileSchemaPath: '/:namespace_path/:project_path/-/schema/:ref/:filename',
-  projectGroupsPath: '/api/:version/projects/:id/groups.json',
   projectUsersPath: '/api/:version/projects/:id/users',
   projectInvitationsPath: '/api/:version/projects/:id/invitations',
   projectMembersPath: '/api/:version/projects/:id/members',
@@ -178,19 +177,6 @@ const Api = {
     });
   },
 
-  projectGroups(id, options) {
-    const url = Api.buildUrl(this.projectGroupsPath).replace(':id', encodeURIComponent(id));
-
-    return axios
-      .get(url, {
-        params: {
-          ...options,
-        },
-      })
-      .then(({ data }) => {
-        return data;
-      });
-  },
   /**
    * @deprecated This method will be removed soon. Use the
    * `getGroups` method in `~/rest_api` instead.

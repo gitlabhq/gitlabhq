@@ -2403,9 +2403,6 @@ msgstr ""
 msgid "AbuseReport|Reason"
 msgstr ""
 
-msgid "AbuseReport|Registered with name %{name}."
-msgstr ""
-
 msgid "AbuseReport|Reported by"
 msgstr ""
 
@@ -9505,12 +9502,6 @@ msgstr ""
 msgid "Capacity threshold"
 msgstr ""
 
-msgid "Card holder name"
-msgstr ""
-
-msgid "Card number:"
-msgstr ""
-
 msgid "CascadingSettings|Enforce for all subgroups"
 msgstr ""
 
@@ -14165,6 +14156,9 @@ msgid "CreateValueStreamForm|Add stage"
 msgstr ""
 
 msgid "CreateValueStreamForm|All default stages are currently visible"
+msgstr ""
+
+msgid "CreateValueStreamForm|An error occurred while creating the custom value stream. Try again."
 msgstr ""
 
 msgid "CreateValueStreamForm|Code stage start"
@@ -19632,9 +19626,6 @@ msgstr ""
 msgid "Expiration date (optional)"
 msgstr ""
 
-msgid "Expiration date:"
-msgstr ""
-
 msgid "Expired"
 msgstr ""
 
@@ -23809,9 +23800,6 @@ msgid "History"
 msgstr ""
 
 msgid "History of authentications"
-msgstr ""
-
-msgid "Holder name:"
 msgstr ""
 
 msgid "Home page URL"
@@ -31114,9 +31102,6 @@ msgid "Needs attention"
 msgstr ""
 
 msgid "Network"
-msgstr ""
-
-msgid "Network:"
 msgstr ""
 
 msgid "Never"

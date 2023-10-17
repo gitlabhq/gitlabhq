@@ -105,7 +105,7 @@ class Note < ApplicationRecord
   validates :note, presence: true
   validates :note, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
   validates :project, presence: true, if: :for_project_noteable?
-  validates :namespace, presence: true
+  validates :namespace, presence: true, unless: :for_abuse_report?
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -383,7 +383,7 @@ class Note < ApplicationRecord
   end
 
   def for_project_noteable?
-    !for_personal_snippet?
+    !(for_personal_snippet? || for_abuse_report?)
   end
 
   def for_design?
@@ -392,6 +392,10 @@ class Note < ApplicationRecord
 
   def for_issuable?
     for_issue? || for_merge_request?
+  end
+
+  def for_abuse_report?
+    noteable_type == AbuseReport.name
   end
 
   def skip_project_check?

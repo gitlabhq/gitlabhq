@@ -6,6 +6,8 @@ class AbuseReport < ApplicationRecord
   include Gitlab::FileTypeDetection
   include WithUploads
   include Gitlab::Utils::StrongMemoize
+  include Mentionable
+  include Noteable
 
   MAX_CHAR_LIMIT_URL = 512
   MAX_FILE_SIZE = 1.megabyte
@@ -22,6 +24,9 @@ class AbuseReport < ApplicationRecord
   has_many :labels, through: :label_links
 
   has_many :abuse_events, class_name: 'Abuse::Event', inverse_of: :abuse_report
+
+  has_many :notes, as: :noteable
+  has_many :user_mentions, class_name: 'Abuse::Reports::UserMention'
 
   validates :reporter, presence: true, on: :create
   validates :user, presence: true, on: :create

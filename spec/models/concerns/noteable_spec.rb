@@ -493,4 +493,24 @@ RSpec.describe Noteable, feature_category: :code_review_workflow do
       end
     end
   end
+
+  describe '#supports_resolvable_notes' do
+    context 'when noteable is an abuse report' do
+      let(:abuse_report) { build(:abuse_report) }
+
+      it 'returns true' do
+        expect(abuse_report.supports_resolvable_notes?).to be(true)
+      end
+    end
+  end
+
+  describe '#supports_replying_to_individual_notes' do
+    context 'when noteable is an abuse report' do
+      let(:abuse_report) { build(:abuse_report) }
+
+      it 'returns true' do
+        expect(abuse_report.supports_replying_to_individual_notes?).to be(true)
+      end
+    end
+  end
 end

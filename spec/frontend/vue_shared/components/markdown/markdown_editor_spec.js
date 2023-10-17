@@ -7,6 +7,8 @@ import {
   EDITING_MODE_MARKDOWN_FIELD,
   EDITING_MODE_CONTENT_EDITOR,
   CLEAR_AUTOSAVE_ENTRY_EVENT,
+  CONTENT_EDITOR_READY_EVENT,
+  MARKDOWN_EDITOR_READY_EVENT,
 } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -83,22 +85,23 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findContentEditor = () => {
     const result = wrapper.findComponent(ContentEditor);
-
     // In Vue.js 3 there are nuances stubbing component with custom stub on mount
     // So we try to search for stub also
     return result.exists() ? result : wrapper.findComponent(ContentEditorStub);
   };
 
-  const enableContentEditor = async () => {
-    findMarkdownField().vm.$emit('enableContentEditor');
-    await nextTick();
-    await waitForPromises();
+  const enableContentEditor = () => {
+    return new Promise((resolve) => {
+      markdownEditorEventHub.$once(CONTENT_EDITOR_READY_EVENT, resolve);
+      findMarkdownField().vm.$emit('enableContentEditor');
+    });
   };
 
-  const enableMarkdownEditor = async () => {
-    findContentEditor().vm.$emit('enableMarkdownEditor');
-    await nextTick();
-    await waitForPromises();
+  const enableMarkdownEditor = () => {
+    return new Promise((resolve) => {
+      markdownEditorEventHub.$once(MARKDOWN_EDITOR_READY_EVENT, resolve);
+      findContentEditor().vm.$emit('enableMarkdownEditor');
+    });
   };
 
   beforeEach(() => {
@@ -128,9 +131,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
-  // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/412618
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
+  it('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
     buildWrapper({ propsData: { supportsQuickActions: true } });
 
     await enableContentEditor();
@@ -139,9 +140,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(mock.history.post[0].url).toContain(`render_quick_actions=true`);
   });
 
-  // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/411565
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled', async () => {
+  it('does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled', async () => {
     buildWrapper({ propsData: { supportsQuickActions: false } });
 
     await enableContentEditor();
@@ -213,9 +212,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(findMarkdownField().find('textarea').attributes('disabled')).toBe(undefined);
     });
 
-    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/404734
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('disables content editor when disabled prop is true', async () => {
+    it('disables content editor when disabled prop is true', async () => {
       buildWrapper({ propsData: { disabled: true } });
 
       await enableContentEditor();
@@ -358,9 +355,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   it(`emits ${EDITING_MODE_MARKDOWN_FIELD} event when enableMarkdownEditor emitted from content editor`, async () => {
-    buildWrapper({
-      stubs: { ContentEditor: ContentEditorStub },
-    });
+    buildWrapper();
 
     await enableContentEditor();
     await enableMarkdownEditor();

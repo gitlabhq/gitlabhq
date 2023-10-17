@@ -63,28 +63,8 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
         include_context 'with integration'
 
-        # NOTE: Some attributes are not supported for PUT requests, even though they probably should be.
-        # We can fix these manually, or with a generic approach like https://gitlab.com/gitlab-org/gitlab/-/issues/348208
-        let(:missing_attributes) do
-          {
-            datadog: %i[archive_trace_events],
-            emails_on_push: %i[branches_to_be_notified],
-            hangouts_chat: %i[notify_only_broken_pipelines],
-            jira: %i[issues_enabled project_key jira_issue_regex jira_issue_prefix vulnerabilities_enabled vulnerabilities_issuetype],
-            mattermost: %i[labels_to_be_notified],
-            mock_ci: %i[enable_ssl_verification],
-            prometheus: %i[manual_configuration],
-            pumble: %i[branches_to_be_notified notify_only_broken_pipelines],
-            slack: %i[labels_to_be_notified],
-            unify_circuit: %i[branches_to_be_notified notify_only_broken_pipelines],
-            webex_teams: %i[branches_to_be_notified notify_only_broken_pipelines]
-          }
-        end
-
         it "updates #{integration} settings and returns the correct fields" do
-          supported_attrs = attributes_for(integration_factory)
-            .without(:active, :type)
-            .without(missing_attributes.fetch(integration.to_sym, []))
+          supported_attrs = attributes_for(integration_factory).without(:active, :type)
 
           put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: supported_attrs
 
