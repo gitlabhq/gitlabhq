@@ -2775,6 +2775,24 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
 
 - [Specify a parallelized job using needs with multiple parallelized jobs](../jobs/job_control.md#specify-a-parallelized-job-using-needs-with-multiple-parallelized-jobs).
 
+**Additional details**:
+
+- The order of the matrix variables in `needs:parallel:matrix` must match the order
+  of the matrix variables in the needed job. For example, reversing the order of
+  the variables in the `linux:rspec` job in the earlier example above would be invalid:
+
+  ```yaml
+  linux:rspec:
+    stage: test
+    needs:
+      - job: linux:build
+        parallel:
+          matrix:
+            - STACK: app1        # The variable order does not match `linux:build` and is invalid.
+              PROVIDER: aws
+    script: echo "Running rspec on linux..."
+  ```
+
 ### `only` / `except`
 
 NOTE:
@@ -3164,6 +3182,25 @@ deploystacks: [vultr, processing]
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
 - [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
 - [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
+
+**Additional details**:
+
+- You cannot create multiple matrix configurations with the same variable values but different variable names.
+  Job names are generated from the variable values, not the variable names, so matrix entries
+  with identical values generate identical job names that overwrite each other.
+
+  For example, this `test` configuration would try to create two series of identical jobs,
+  but the `OS2` versions overwrite the `OS` versions:
+
+  ```yaml
+  test:
+    parallel:
+      matrix:
+        - OS: [ubuntu]
+          PROVIDER: [aws, gcp]
+        - OS2: [ubuntu]
+          PROVIDER: [aws, gcp]
+  ```
 
 ### `release`
 

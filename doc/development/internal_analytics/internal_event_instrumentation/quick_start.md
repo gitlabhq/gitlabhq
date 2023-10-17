@@ -17,8 +17,11 @@ In order to instrument your code with Internal Events Tracking you need to do th
 
 ## Defining event and metrics
 
+<div class="video-fallback">
+  See the video about <a href="https://www.youtube.com/watch?v=QICKWznLyy0">adding events and metrics using the generator</a>
+</div>
 <figure class="video_container">
-  <iframe src="https://youtu.be/QICKWznLyy0" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/QICKWznLyy0" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
 To create an event and metric definitions you can use the `internal_events` generator.
