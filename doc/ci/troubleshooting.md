@@ -230,7 +230,7 @@ The configuration can be added to:
   job_name:
     hooks:
       pre_get_sources_script:
-        - git config --local http.version "HTTP/1.1"
+        - git config --global http.version "HTTP/1.1"
   ```
 
 - The [runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)

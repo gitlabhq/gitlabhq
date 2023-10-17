@@ -54,11 +54,7 @@ module QA
           ])
         end
 
-        Resource::Tag.fabricate_via_api! do |tag|
-          tag.project = imported_project
-          tag.ref = imported_project.default_branch
-          tag.name = "1.0.0"
-        end
+        create(:tag, project: imported_project, ref: imported_project.default_branch, name: '1.0.0')
 
         Flow::Pipeline.visit_latest_pipeline
 

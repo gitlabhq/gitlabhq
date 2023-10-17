@@ -34,7 +34,7 @@ If a component requires different versioning from other components, the componen
 To create a components repository, you must:
 
 1. [Create a new project](../../user/project/index.md#create-a-blank-project) with a `README.md` file.
-1. Create either a single file or a templates directory according to the [directory structure](#directory-structure).
+1. Add a YAML configuration file for each component, following the [required directory structure](#directory-structure).
 
    For example:
 

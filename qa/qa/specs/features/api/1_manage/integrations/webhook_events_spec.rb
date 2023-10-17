@@ -78,11 +78,7 @@ module QA
             project_push.project = webhook.project
           end
 
-          Resource::Tag.fabricate_via_api! do |tag|
-            tag.project = project_push.project
-            tag.ref = project_push.branch_name
-            tag.name = tag_name
-          end
+          create(:tag, project: project_push.project, ref: project_push.branch_name, name: tag_name)
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'tag_push')
         end

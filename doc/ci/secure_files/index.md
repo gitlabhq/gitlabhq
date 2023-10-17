@@ -56,3 +56,8 @@ test:
   script:
     - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
 ```
+
+WARNING:
+The content of files loaded with the `download-secure-files` tool are not [masked](../variables/index.md#mask-a-cicd-variable)
+in the job log output. Make sure to avoid outputting secure file contents in the job log,
+especially when logging output that could contain sensitive information.
