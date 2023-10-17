@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LimitedCapacity
   class JobTracker # rubocop:disable Scalability/IdempotentWorker
     include Gitlab::Utils::StrongMemoize

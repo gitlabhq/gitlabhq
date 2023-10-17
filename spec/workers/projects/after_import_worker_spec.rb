@@ -83,7 +83,7 @@ RSpec.describe Projects::AfterImportWorker, feature_category: :importers do
             message: 'Project housekeeping failed',
             project_full_path: project.full_path,
             project_id: project.id,
-            'error.message' => exception.to_s
+            'exception.message' => exception.to_s
           }).and_call_original
 
         subject

@@ -10,7 +10,7 @@ import routes from '~/crm/contacts/routes';
 import createContactMutation from '~/crm/contacts/components/graphql/create_contact.mutation.graphql';
 import updateContactMutation from '~/crm/contacts/components/graphql/update_contact.mutation.graphql';
 import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
-import createOrganizationMutation from '~/crm/organizations/components/graphql/create_organization.mutation.graphql';
+import createOrganizationMutation from '~/crm/organizations/components/graphql/create_customer_relations_organization.mutation.graphql';
 import getGroupOrganizationsQuery from '~/crm/organizations/components/graphql/get_group_organizations.query.graphql';
 import {
   createContactMutationErrorResponse,

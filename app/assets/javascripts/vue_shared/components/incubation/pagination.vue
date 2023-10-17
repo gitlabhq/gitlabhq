@@ -57,6 +57,7 @@ export default {
       :next-text="$options.i18n.nextPageButtonLabel"
       :prev-button-link="previousPageLink"
       :next-button-link="nextPageLink"
+      class="gl-mt-4"
     />
   </div>
 </template>

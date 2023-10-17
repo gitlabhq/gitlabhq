@@ -10,10 +10,12 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
   let(:shared) { project.import_export_shared }
   let(:exporter) { Gitlab::ImportExport::SnippetsRepoSaver.new(project: project, shared: shared, current_user: user) }
   let(:restorer) do
-    described_class.new(user: user,
-                        shared: shared,
-                        snippet: snippet,
-                        path_to_bundle: snippet_bundle_path)
+    described_class.new(
+      user: user,
+      shared: shared,
+      snippet: snippet,
+      path_to_bundle: snippet_bundle_path
+    )
   end
 
   after do

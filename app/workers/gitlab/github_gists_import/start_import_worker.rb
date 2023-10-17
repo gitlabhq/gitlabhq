@@ -51,7 +51,7 @@ module Gitlab
       end
 
       def log_error_and_raise!(user_id, error)
-        logger.error(structured_payload(user_id: user_id, message: 'import failed', 'error.message': error.message))
+        logger.error(structured_payload(user_id: user_id, message: 'import failed', 'exception.message': error.message))
 
         raise(error)
       end

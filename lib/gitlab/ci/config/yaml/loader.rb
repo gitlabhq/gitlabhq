@@ -33,15 +33,15 @@ module Gitlab
             end
           end
 
-          private
-
-          attr_reader :content, :inputs, :variables
-
           def load_uninterpolated_yaml
             Yaml::Result.new(config: load_yaml!, error: nil)
           rescue ::Gitlab::Config::Loader::FormatError => e
             Yaml::Result.new(error: e.message, error_class: e)
           end
+
+          private
+
+          attr_reader :content, :inputs, :variables
 
           def load_yaml!
             ensure_custom_tags

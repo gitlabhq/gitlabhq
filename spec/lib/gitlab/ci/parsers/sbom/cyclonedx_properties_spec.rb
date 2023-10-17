@@ -42,16 +42,15 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
     it { is_expected.to be_nil }
   end
 
-  context 'when no dependency_scanning or container_scanning properties are present' do
+  context 'when no dependency_scanning properties are present' do
     let(:properties) do
       [
         { 'name' => 'gitlab:meta:schema_version', 'value' => '1' }
       ]
     end
 
-    it 'does not call source parsers' do
+    it 'does not call dependency_scanning parser' do
       expect(Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning).not_to receive(:source)
-      expect(Gitlab::Ci::Parsers::Sbom::Source::ContainerScanning).not_to receive(:source)
 
       parse_source_from_properties
     end
@@ -82,37 +81,6 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
 
     it 'passes only supported properties to the dependency scanning parser' do
       expect(Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning).to receive(:source).with(expected_input)
-
-      parse_source_from_properties
-    end
-  end
-
-  context 'when container_scanning properties are present' do
-    let(:properties) do
-      [
-        { 'name' => 'gitlab:meta:schema_version', 'value' => '1' },
-        { 'name' => 'gitlab:container_scanning:image:name', 'value' => 'photon' },
-        { 'name' => 'gitlab:container_scanning:image:tag', 'value' => '5.0-20231007' },
-        { 'name' => 'gitlab:container_scanning:operating_system:name', 'value' => 'Photon OS' },
-        { 'name' => 'gitlab:container_scanning:operating_system:version', 'value' => '5.0' }
-      ]
-    end
-
-    let(:expected_input) do
-      {
-        'image' => {
-          'name' => 'photon',
-          'tag' => '5.0-20231007'
-        },
-        'operating_system' => {
-          'name' => 'Photon OS',
-          'version' => '5.0'
-        }
-      }
-    end
-
-    it 'passes only supported properties to the container scanning parser' do
-      expect(Gitlab::Ci::Parsers::Sbom::Source::ContainerScanning).to receive(:source).with(expected_input)
 
       parse_source_from_properties
     end

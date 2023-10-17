@@ -62,4 +62,12 @@ RSpec.describe Integrations::Pushover do
       expect(WebMock).to have_requested(:post, 'https://8.8.8.8/1/messages.json').once
     end
   end
+
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(
+        ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/pushover.svg')
+      )
+    end
+  end
 end

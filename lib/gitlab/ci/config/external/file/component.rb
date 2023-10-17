@@ -20,7 +20,7 @@ module Gitlab
 
               ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('cicd_component_usage', values: context.user.id)
 
-              component_result.payload.fetch(:content)
+              component_payload.fetch(:content)
             end
             strong_memoize_attr :content
 
@@ -65,30 +65,30 @@ module Gitlab
             override :expand_context_attrs
             def expand_context_attrs
               {
-                project: component_path.project,
-                sha: component_path.sha,
+                project: component_payload.fetch(:project),
+                sha: component_payload.fetch(:sha),
                 user: context.user,
                 variables: context.variables
               }
             end
 
             def masked_blob
-              return unless component_path
+              return unless component_payload
 
               context.mask_variables_from(
                 Gitlab::Routing.url_helpers.project_blob_url(
-                  component_path.project,
-                  ::File.join(component_path.sha, component_path.project_file_path))
+                  component_payload.fetch(:project),
+                  ::File.join(component_payload.fetch(:sha), component_payload.fetch(:path)))
               )
             end
             strong_memoize_attr :masked_blob
 
-            def component_path
+            def component_payload
               return unless component_result.success?
 
-              component_result.payload.fetch(:path)
+              component_result.payload
             end
-            strong_memoize_attr :component_path
+            strong_memoize_attr :component_payload
           end
         end
       end

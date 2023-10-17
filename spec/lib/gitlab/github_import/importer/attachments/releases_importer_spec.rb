@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter do
+RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project) }
@@ -17,6 +17,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter do
     let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
 
     it 'imports each project release' do
+      expect(project.releases).to receive(:id_not_in).with([]).and_return(project.releases)
       expect(project.releases).to receive(:select).with(:id, :description, :tag).and_call_original
 
       expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).to receive(:new)
@@ -30,6 +31,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter do
       it "doesn't import this release" do
         importer.mark_as_imported(release_1)
 
+        expect(project.releases).to receive(:id_not_in).with([release_1.id.to_s]).and_call_original
         expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).to receive(:new)
           .with(*importer_attrs).once.and_return(importer_stub)
         expect(importer_stub).to receive(:execute).once

@@ -58,4 +58,36 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
       end
     end
   end
+
+  describe '#load_uninterpolated_yaml' do
+    let(:yaml) do
+      <<~YAML
+      ---
+      spec:
+        inputs:
+          test_input:
+      ---
+      test_job:
+        script:
+          - echo "$[[ inputs.test_input ]]"
+      YAML
+    end
+
+    subject(:result) { described_class.new(yaml).load_uninterpolated_yaml }
+
+    it 'returns the config' do
+      expected_content = { test_job: { script: ["echo \"$[[ inputs.test_input ]]\""] } }
+      expect(result).to be_valid
+      expect(result.content).to eq(expected_content)
+    end
+
+    context 'when there is a format error in the yaml' do
+      let(:yaml) { 'invalid: yaml: all the time' }
+
+      it 'returns an error' do
+        expect(result).not_to be_valid
+        expect(result.error).to include('mapping values are not allowed in this context')
+      end
+    end
+  end
 end

@@ -6,12 +6,15 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
   let!(:group) { create(:group, :private) }
   let!(:subgroup) { create(:group, :private, parent: group) }
   let!(:project) do
-    create(:project, :repository,
-           :builds_disabled,
-           :issues_disabled,
-           name: 'project',
-           path: 'project',
-           group: subgroup)
+    create(
+      :project,
+      :repository,
+      :builds_disabled,
+      :issues_disabled,
+      name: 'project',
+      path: 'project',
+      group: subgroup
+    )
   end
 
   let(:lru_cache) { subject.send(:lru_cache) }
@@ -19,10 +22,7 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
 
   context 'request store is not active' do
     subject do
-      described_class.new(Label,
-                          'title' => 'group label',
-                          'project' => project,
-                          'group' => project.group)
+      described_class.new(Label, 'title' => 'group label', 'project' => project, 'group' => project.group)
     end
 
     it 'ignore cache initialize' do
@@ -33,10 +33,7 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
 
   context 'request store is active', :request_store do
     subject do
-      described_class.new(Label,
-                          'title' => 'group label',
-                          'project' => project,
-                          'group' => project.group)
+      described_class.new(Label, 'title' => 'group label', 'project' => project, 'group' => project.group)
     end
 
     it 'initialize cache in memory' do
@@ -71,27 +68,33 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     it 'finds the existing group label' do
       group_label = create(:group_label, name: 'group label', group: project.group)
 
-      expect(described_class.build(Label,
-                                  'title' => 'group label',
-                                  'project' => project,
-                                  'group' => project.group)).to eq(group_label)
+      expect(described_class.build(
+        Label,
+        'title' => 'group label',
+        'project' => project,
+        'group' => project.group
+      )).to eq(group_label)
     end
 
     it 'finds the existing group label in root ancestor' do
       group_label = create(:group_label, name: 'group label', group: group)
 
-      expect(described_class.build(Label,
-                                   'title' => 'group label',
-                                   'project' => project,
-                                   'group' => group)).to eq(group_label)
+      expect(described_class.build(
+        Label,
+        'title' => 'group label',
+        'project' => project,
+        'group' => group
+      )).to eq(group_label)
     end
 
     it 'creates a new project label' do
-      label = described_class.build(Label,
-                                   'title' => 'group label',
-                                   'project' => project,
-                                   'group' => project.group,
-                                   'group_id' => project.group.id)
+      label = described_class.build(
+        Label,
+        'title' => 'group label',
+        'project' => project,
+        'group' => project.group,
+        'group_id' => project.group.id
+      )
 
       expect(label.persisted?).to be true
       expect(label).to be_an_instance_of(ProjectLabel)
@@ -103,26 +106,32 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     it 'finds the existing group milestone' do
       milestone = create(:milestone, name: 'group milestone', group: project.group)
 
-      expect(described_class.build(Milestone,
-                                  'title' => 'group milestone',
-                                  'project' => project,
-                                  'group' => project.group)).to eq(milestone)
+      expect(described_class.build(
+        Milestone,
+        'title' => 'group milestone',
+        'project' => project,
+        'group' => project.group
+      )).to eq(milestone)
     end
 
     it 'finds the existing group milestone in root ancestor' do
       milestone = create(:milestone, name: 'group milestone', group: group)
 
-      expect(described_class.build(Milestone,
-                                   'title' => 'group milestone',
-                                   'project' => project,
-                                   'group' => group)).to eq(milestone)
+      expect(described_class.build(
+        Milestone,
+        'title' => 'group milestone',
+        'project' => project,
+        'group' => group
+      )).to eq(milestone)
     end
 
     it 'creates a new milestone' do
-      milestone = described_class.build(Milestone,
-                                       'title' => 'group milestone',
-                                       'project' => project,
-                                       'group' => project.group)
+      milestone = described_class.build(
+        Milestone,
+        'title' => 'group milestone',
+        'project' => project,
+        'group' => project.group
+      )
 
       expect(milestone.persisted?).to be true
     end
@@ -132,12 +141,14 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
         clashing_iid = 1
         create(:milestone, iid: clashing_iid, project: project)
 
-        milestone = described_class.build(Milestone,
-                                          'iid' => clashing_iid,
-                                          'title' => 'milestone',
-                                          'project' => project,
-                                          'group' => nil,
-                                          'group_id' => nil)
+        milestone = described_class.build(
+          Milestone,
+          'iid' => clashing_iid,
+          'title' => 'milestone',
+          'project' => project,
+          'group' => nil,
+          'group_id' => nil
+        )
 
         expect(milestone.persisted?).to be true
         expect(Milestone.count).to eq(2)
@@ -173,34 +184,45 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
 
   context 'merge_request' do
     it 'finds the existing merge_request' do
-      merge_request = create(:merge_request, title: 'MergeRequest', iid: 7, target_project: project, source_project: project)
-      expect(described_class.build(MergeRequest,
-                                   'title' => 'MergeRequest',
-                                   'source_project_id' => project.id,
-                                   'target_project_id' => project.id,
-                                   'source_branch' => 'SourceBranch',
-                                   'iid' => 7,
-                                   'target_branch' => 'TargetBranch',
-                                   'author_id' => project.creator.id)).to eq(merge_request)
+      merge_request = create(
+        :merge_request,
+        title: 'MergeRequest',
+        iid: 7,
+        target_project: project,
+        source_project: project
+      )
+
+      expect(described_class.build(
+        MergeRequest,
+        'title' => 'MergeRequest',
+        'source_project_id' => project.id,
+        'target_project_id' => project.id,
+        'source_branch' => 'SourceBranch',
+        'iid' => 7,
+        'target_branch' => 'TargetBranch',
+        'author_id' => project.creator.id
+      )).to eq(merge_request)
     end
 
     it 'creates a new merge_request' do
-      merge_request = described_class.build(MergeRequest,
-                                            'title' => 'MergeRequest',
-                                            'iid' => 8,
-                                            'source_project_id' => project.id,
-                                            'target_project_id' => project.id,
-                                            'source_branch' => 'SourceBranch',
-                                            'target_branch' => 'TargetBranch',
-                                            'author_id' => project.creator.id)
+      merge_request = described_class.build(
+        MergeRequest,
+        'title' => 'MergeRequest',
+        'iid' => 8,
+        'source_project_id' => project.id,
+        'target_project_id' => project.id,
+        'source_branch' => 'SourceBranch',
+        'target_branch' => 'TargetBranch',
+        'author_id' => project.creator.id
+      )
+
       expect(merge_request.persisted?).to be true
     end
   end
 
   context 'merge request diff commit users' do
     it 'finds the existing user' do
-      user = MergeRequest::DiffCommitUser
-        .find_or_create('Alice', 'alice@example.com')
+      user = MergeRequest::DiffCommitUser.find_or_create('Alice', 'alice@example.com')
 
       found = described_class.build(
         MergeRequest::DiffCommitUser,

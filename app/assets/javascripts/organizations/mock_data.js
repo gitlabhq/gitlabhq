@@ -280,3 +280,11 @@ export const organizationGroups = {
     },
   ],
 };
+
+export const createOrganizationResponse = {
+  organization: {
+    name: 'Default',
+    path: '/-/organizations/default',
+  },
+  errors: [],
+};

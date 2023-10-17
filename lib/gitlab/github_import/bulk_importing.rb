@@ -32,7 +32,7 @@ module Gitlab
             log_error(github_identifiers, build_record.errors.full_messages)
             errors << {
               validation_errors: build_record.errors,
-              github_identifiers: github_identifiers
+              external_identifiers: github_identifiers
             }
             next
           end
@@ -69,7 +69,7 @@ module Gitlab
             correlation_id_value: correlation_id_value,
             retry_count: nil,
             created_at: Time.zone.now,
-            external_identifiers: error[:github_identifiers]
+            external_identifiers: error[:external_identifiers]
           }
         end
 
@@ -79,8 +79,7 @@ module Gitlab
       private
 
       def log_and_increment_counter(value, operation)
-        Gitlab::Import::Logger.info(
-          import_type: :github,
+        Logger.info(
           project_id: project.id,
           importer: self.class.name,
           message: "#{value} #{object_type.to_s.pluralize} #{operation}"
@@ -95,12 +94,11 @@ module Gitlab
       end
 
       def log_error(github_identifiers, messages)
-        Gitlab::Import::Logger.error(
-          import_type: :github,
+        Logger.error(
           project_id: project.id,
           importer: self.class.name,
           message: messages,
-          github_identifiers: github_identifiers
+          external_identifiers: github_identifiers
         )
       end
 

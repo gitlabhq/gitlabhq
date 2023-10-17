@@ -126,7 +126,7 @@ module Gitlab
           Logger.info(
             project_id: project.id,
             importer: self.class.name,
-            github_identifiers: note.github_identifiers,
+            external_identifiers: note.github_identifiers,
             model: model
           )
         end

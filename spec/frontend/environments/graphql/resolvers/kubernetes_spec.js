@@ -97,7 +97,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should request namespaced services from the cluster_client library if namespace is specified', async () => {
       const services = await mockResolvers.Query.k8sServices(null, { configuration, namespace });
 
-      expect(mockNamespacedServicesListFn).toHaveBeenCalledWith(namespace);
+      expect(mockNamespacedServicesListFn).toHaveBeenCalledWith({ namespace });
       expect(mockAllServicesListFn).not.toHaveBeenCalled();
 
       expect(services).toEqual(k8sServicesMock);

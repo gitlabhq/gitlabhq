@@ -121,7 +121,8 @@ Example response:
   "jira_connect_proxy_url": null,
   "silent_mode_enabled": false,
   "package_registry_allow_anyone_to_pull_option": true,
-  "bulk_import_max_download_file_size": 5120
+  "bulk_import_max_download_file_size": 5120,
+  "project_jobs_api_rate_limit": 600
 }
 ```
 
@@ -265,7 +266,8 @@ Example response:
   "silent_mode_enabled": false,
   "security_policy_global_group_approvers_enabled": true,
   "package_registry_allow_anyone_to_pull_option": true,
-  "bulk_import_max_download_file_size": 5120
+  "bulk_import_max_download_file_size": 5120,
+  "project_jobs_api_rate_limit": 600
 }
 ```
 
@@ -510,6 +512,7 @@ listed in the descriptions of the relevant settings.
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
+| `project_jobs_api_rate_limit`            | integer          |no                                   | Maximum authenticated requests to `/project/:id/jobs` per minute. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5. Default: 600.
 | `projects_api_rate_limit_unauthenticated` | integer         | no                                   | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10. Max number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](projects.md#list-all-projects). Default: 400. To disable throttling set to 0.|
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |

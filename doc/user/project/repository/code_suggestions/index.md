@@ -9,6 +9,7 @@ type: index, reference
 
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 > - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
+> - [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 
 WARNING:
 This feature is in [Beta](../../../../policy/experiment-beta-support.md#beta).
@@ -22,12 +23,46 @@ GitLab Duo Code Suggestions are available:
 - In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.
 - In the GitLab WebIDE.
 
-Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+<div class="video-fallback">
+  <a href="https://youtu.be/wAYiy05fjF0">View how to setup and use GitLab Duo Code Suggestions</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/wAYiy05fjF0" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
+During Beta, usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage).
+
+## Use Code Suggestions
+
+Prerequisites:
+
+- Code Suggestions must be enabled for [SaaS](saas.md#enable-code-suggestions) or for [self-managed](self_managed.md#enable-code-suggestions-on-self-managed-gitlab).
+- You must have installed and configured a [supported IDE editor extension](index.md#supported-editor-extensions).
+
+To use Code Suggestions:
+
+1. Author your code. As you type, suggestions are displayed. Code Suggestions, depending on the cursor position, either provides code snippets or completes the current line.
+1. Describe the requirements in natural language. Be concise and specific. Code Suggestions generates functions and code snippets as appropriate.
+1. To accept a suggestion, press <kbd>Tab</kbd>.
+1. To ignore a suggestion, keep typing as you usually would.
+1. To explicitly reject a suggestion, press <kbd>esc</kbd>.
+
+Things to remember:
+
+- AI is non-deterministic, so you may not get the same suggestion every time with the same input.
+- Just like product requirements, writing clear, descriptive, and specific tasks results in quality generated code.
+
+### Progressive enhancement
+
+This feature is designed as a progressive enhancement to developer's IDEs.
+Code Suggestions offer a completion if a suitable recommendation is provided to the user in a timely matter.
+In the event of a connection issue or model inference failure, the feature gracefully degrades.
+Code Suggestions do not prevent you from writing code in your IDE.
 
 ## Supported languages
 
-The best results from Code Suggestions are expected [for languages the Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_coding_languages) directly support:
+The best results from Code Suggestions are expected for languages that [Anthropic Claude](https://www.anthropic.com/product) and the [Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_coding_languages) directly support:
 
 - C++
 - C#
@@ -43,16 +78,6 @@ The best results from Code Suggestions are expected [for languages the Google Ve
 - Scala
 - Swift
 - TypeScript
-
-### Supported code infrastructure interfaces
-
-Code Suggestions includes [Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_code_infrastructure_interfaces) support for the following infrastructure as code interfaces:
-
-- Google Cloud CLI
-- Kubernetes Resource Model (KRM)
-- Terraform
-
-Suggestion quality for other languages and using natural language code comments to request completions may not yet result in high-quality suggestions.
 
 ### Supported languages in IDEs
 
@@ -101,13 +126,12 @@ This improvement should result in:
 
 ## Code Suggestions data usage
 
-Code Suggestions is a generative artificial intelligence (AI) model.
+Code Suggestions is powered by a generative AI model.
 
-Your personal access token enables a secure API connection to GitLab.com.
-This API connection securely transmits a context window from your IDE/editor to the Code Suggestions GitLab hosted service which calls Google Vertex AI Codey APIs,
-and the generated suggestion is transmitted back to your IDE/editor.
+Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
+This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The gateway calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
 
-GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview). Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance).
+GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Code Models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) and [Anthropic Claude](https://www.anthropic.com/product) for Code Suggestions.
 
 ### Telemetry
 
@@ -124,48 +148,16 @@ For self-managed instances that have enabled Code Suggestions and SaaS accounts,
 
 ### Inference window context
 
-Code Suggestions currently inferences against the currently opened file and has a context window of 2,048 tokens and 8,192 character limits. This limit includes content before and after the cursor, the file name, and the extension type.
-Learn more about Google Vertex AI [code-gecko](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models).
-
-The maximum number of tokens that is generated in the response is default 64. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
-Learn more about Google Vertex AI [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion).
+Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
 
 ### Training data
 
-Code Suggestions are routed through Google Vertex AI Codey APIs. Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [Responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
+GitLab does not train generative AI models based on private (non-public) data. The vendors we work with also do not train models based on private data.
 
-Google Vertex AI Codey APIs are not trained on private non-public GitLab customer or user data.
+For more information on GitLab Code Suggestions data [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
 
-Google has [shared the following](https://ai.google/discover/foundation-models/) about the data Codey models are trained on:
-
-> Codey is our family of foundational coding models built on PaLM 2. Codey was fine-tuned on a large dataset of high quality, permissively licensed code from external sources
-
-## Progressive enhancement
-
-This feature is designed as a progressive enhancement to developer's IDEs.
-Code Suggestions offer a completion if the machine learning engine can generate a recommendation.
-In the event of a connection issue or model inference failure, the feature gracefully degrades.
-Code Suggestions do not prevent you from writing code in your IDE.
-
-### Internet connectivity
-
-Code Suggestions does not work with offline environments.
-
-To use Code Suggestions:
-
-- On GitLab.com, you must have an internet connection and be able to access GitLab.
-- In GitLab 16.1 and later, on self-managed GitLab, you must have an internet connection.
-
-### Model accuracy and quality
-
-Code Suggestions can generate low-quality, incomplete, and possibly insecure code.
-We strongly encourage all beta users to leverage GitLab native
-[Code Quality Scanning](../../../../ci/testing/code_quality.md) and
-[Security Scanning](../../../application_security/index.md) capabilities.
-
-GitLab currently does not retrain Google Vertex AI Codey APIs. GitLab makes no claims
-to the accuracy or quality of Code Suggestions generated by Google Vertex AI Codey API.
-Read more about [Google Vertex AI foundation model capabilities](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models).
+- Google Vertex AI Codey APIs [data governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
+- Anthropic Claude's [constitution](https://www.anthropic.com/index/claudes-constitution).
 
 ## Known limitations
 
@@ -177,12 +169,6 @@ However, Code Suggestions may generate suggestions that are:
 - Produce failed pipelines
 - Insecure code
 - Offensive or insensitive
-
-We are also aware of specific situations that can produce unexpected or incoherent results including:
-
-- Suggestions written in the middle of existing functions, or "fill in the middle."
-- Suggestions based on natural language code comments.
-- Suggestions that mixed programming languages in unexpected ways.
 
 ## Feedback
 

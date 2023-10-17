@@ -18,7 +18,6 @@ describe('ImportTargetDropdown', () => {
 
   const defaultProps = {
     selected: mockUserNamespace,
-    userNamespace: mockUserNamespace,
   };
 
   const createComponent = ({ props = {} } = {}) => {
@@ -39,7 +38,7 @@ describe('ImportTargetDropdown', () => {
   };
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findListboxUsersItems = () => findListbox().props('items')[0].options;
+  const findListboxFirstGroupItems = () => findListbox().props('items')[0].options;
   const findListboxGroupsItems = () => findListbox().props('items')[1].options;
 
   const waitForQuery = async () => {
@@ -63,12 +62,54 @@ describe('ImportTargetDropdown', () => {
     expect(findListbox().props('toggleText')).toBe('a-group-path-that-is-lo…');
   });
 
-  it('passes userNamespace as "Users" group item', () => {
-    createComponent();
+  describe('when used on group import', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-    expect(findListboxUsersItems()).toEqual([
-      { text: mockUserNamespace, value: mockUserNamespace },
-    ]);
+    it('adds "No parent" in "Parent" group', () => {
+      expect(findListboxFirstGroupItems()).toEqual([{ text: 'No parent', value: '' }]);
+    });
+
+    it('emits "select" event with { fullPath: "", id: null } when "No parent" is selected', () => {
+      findListbox().vm.$emit('select', '');
+
+      expect(wrapper.emitted('select')[0]).toEqual([{ fullPath: '', id: null }]);
+    });
+
+    it('emits "select" event with { fullPath, id } when a group is selected', async () => {
+      await waitForQuery();
+
+      const mockGroupPath = 'match1';
+
+      findListbox().vm.$emit('select', mockGroupPath);
+
+      expect(wrapper.emitted('select')[0]).toEqual([
+        { fullPath: mockGroupPath, id: `gid://gitlab/Group/${mockGroupPath}` },
+      ]);
+    });
+  });
+
+  describe('when used on project import', () => {
+    beforeEach(() => {
+      createComponent({
+        props: { userNamespace: mockUserNamespace },
+      });
+    });
+
+    it('passes userNamespace as "Users" group item', () => {
+      expect(findListboxFirstGroupItems()).toEqual([
+        { text: mockUserNamespace, value: mockUserNamespace },
+      ]);
+    });
+
+    it('emits "select" event with path as value', () => {
+      const mockProjectPath = 'mock-project';
+
+      findListbox().vm.$emit('select', mockProjectPath);
+
+      expect(wrapper.emitted('select')[0]).toEqual([mockProjectPath]);
+    });
   });
 
   it('passes namespaces from GraphQL as "Groups" group item', async () => {

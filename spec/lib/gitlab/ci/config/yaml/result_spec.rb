@@ -3,10 +3,42 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Yaml::Result, feature_category: :pipeline_composition do
+  it 'raises an error when reading a header when there is none' do
+    result = described_class.new(config: { b: 2 })
+
+    expect { result.header }.to raise_error(ArgumentError)
+  end
+
+  it 'stores an error / exception when initialized with it' do
+    result = described_class.new(error: ArgumentError.new('abc'))
+
+    expect(result).not_to be_valid
+    expect(result.error).to be_a ArgumentError
+  end
+
   it 'does not have a header when config is a single hash' do
     result = described_class.new(config: { a: 1, b: 2 })
 
     expect(result).not_to have_header
+  end
+
+  describe '#inputs' do
+    it 'returns the value of the spec inputs' do
+      result = described_class.new(config: [{ spec: { inputs: { website: nil } } }, { b: 2 }])
+
+      expect(result).to have_header
+      expect(result.inputs).to eq({ website: nil })
+    end
+  end
+
+  describe '#interpolated?' do
+    it 'defaults to false' do
+      expect(described_class.new).not_to be_interpolated
+    end
+
+    it 'returns the value passed to the initializer' do
+      expect(described_class.new(interpolated: true)).to be_interpolated
+    end
   end
 
   context 'when config is an array of hashes' do
@@ -36,29 +68,6 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Result, feature_category: :pipeline_com
 
       expect(result).not_to have_header
       expect(result.content).to be_empty
-    end
-  end
-
-  it 'raises an error when reading a header when there is none' do
-    result = described_class.new(config: { b: 2 })
-
-    expect { result.header }.to raise_error(ArgumentError)
-  end
-
-  it 'stores an error / exception when initialized with it' do
-    result = described_class.new(error: ArgumentError.new('abc'))
-
-    expect(result).not_to be_valid
-    expect(result.error).to be_a ArgumentError
-  end
-
-  describe '#interpolated?' do
-    it 'defaults to false' do
-      expect(described_class.new).not_to be_interpolated
-    end
-
-    it 'returns the value passed to the initializer' do
-      expect(described_class.new(interpolated: true)).to be_interpolated
     end
   end
 end

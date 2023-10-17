@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Gitlab
   module Import
     class StuckProjectImportJobsWorker # rubocop:disable Scalability/IdempotentWorker

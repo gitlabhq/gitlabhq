@@ -30,10 +30,6 @@ module IntegrationsHelper
       _("Alert")
     when "incident"
       _("Incident")
-    when "group_mention"
-      _("Group mention in public")
-    when "group_confidential_mention"
-      _("Group mention in private")
     end
   end
   # rubocop:enable Metrics/CyclomaticComplexity
@@ -295,10 +291,6 @@ module IntegrationsHelper
       s_("ProjectService|Trigger event when a new, unique alert is recorded.")
     when "incident", "incident_events"
       s_("ProjectService|Trigger event when an incident is created.")
-    when "group_mention"
-      s_("ProjectService|Trigger event when a group is mentioned in a public context.")
-    when "group_confidential_mention"
-      s_("ProjectService|Trigger event when a group is mentioned in a confidential context.")
     when "build_events"
       s_("ProjectService|Trigger event when a build is created.")
     when "archive_trace_events"

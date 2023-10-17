@@ -11,6 +11,7 @@ module Projects
         ::Ml::Model
           .by_project(@project)
           .including_latest_version
+          .with_version_count
       end
     end
   end

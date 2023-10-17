@@ -16,6 +16,13 @@ module Organizations
       }.merge(shared_groups_and_projects_app_data).to_json
     end
 
+    def organization_new_app_data
+      {
+        organizations_path: organizations_path,
+        root_url: root_url
+      }.to_json
+    end
+
     def organization_groups_and_projects_app_data
       shared_groups_and_projects_app_data.to_json
     end

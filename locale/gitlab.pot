@@ -8891,9 +8891,6 @@ msgstr ""
 msgid "BulkImport|Direct transfer maximum download file size (MiB)"
 msgstr ""
 
-msgid "BulkImport|Existing groups"
-msgstr ""
-
 msgid "BulkImport|Filter by source group"
 msgstr ""
 
@@ -22623,12 +22620,6 @@ msgstr ""
 msgid "Group membership expiration date removed"
 msgstr ""
 
-msgid "Group mention in private"
-msgstr ""
-
-msgid "Group mention in public"
-msgstr ""
-
 msgid "Group milestone"
 msgstr ""
 
@@ -25266,6 +25257,12 @@ msgid "IntegrationEvents|A confidential issue is created, closed, or reopened"
 msgstr ""
 
 msgid "IntegrationEvents|A deployment is started or finished"
+msgstr ""
+
+msgid "IntegrationEvents|A group is mentioned in a confidential context"
+msgstr ""
+
+msgid "IntegrationEvents|A group is mentioned in a public context"
 msgstr ""
 
 msgid "IntegrationEvents|A merge request is created, merged, closed, or reopened"
@@ -30434,10 +30431,18 @@ msgstr ""
 msgid "MlExperimentTracking|Triggered by"
 msgstr ""
 
+msgid "MlModelRegistry|%{version} · No other versions"
+msgid_plural "MlModelRegistry|%{version} · %{versionCount} versions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "MlModelRegistry|Model registry"
 msgstr ""
 
 msgid "MlModelRegistry|No models registered in this project"
+msgstr ""
+
+msgid "MlModelRegistry|No registered versions"
 msgstr ""
 
 msgid "Modal updated"
@@ -33074,7 +33079,13 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
+msgid "Organization|%{linkStart}Organizations%{linkEnd} are a top-level container to hold your groups and projects."
+msgstr ""
+
 msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
+msgstr ""
+
+msgid "Organization|An error occurred creating an organization. Please try again."
 msgstr ""
 
 msgid "Organization|An error occurred loading the groups. Please refresh the page to try again."
@@ -33092,6 +33103,9 @@ msgstr ""
 msgid "Organization|Create an organization to contain all of your groups and projects."
 msgstr ""
 
+msgid "Organization|Create organization"
+msgstr ""
+
 msgid "Organization|Frequently visited groups"
 msgstr ""
 
@@ -33104,10 +33118,28 @@ msgstr ""
 msgid "Organization|Manage"
 msgstr ""
 
+msgid "Organization|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
+msgstr ""
+
+msgid "Organization|My organization"
+msgstr ""
+
 msgid "Organization|New organization"
 msgstr ""
 
 msgid "Organization|Org ID"
+msgstr ""
+
+msgid "Organization|Organization URL"
+msgstr ""
+
+msgid "Organization|Organization URL is required."
+msgstr ""
+
+msgid "Organization|Organization name"
+msgstr ""
+
+msgid "Organization|Organization name is required."
 msgstr ""
 
 msgid "Organization|Organization navigation"
@@ -33132,6 +33164,9 @@ msgid "Organization|You don't have any groups yet."
 msgstr ""
 
 msgid "Organization|You don't have any projects yet."
+msgstr ""
+
+msgid "Organization|my-organization"
 msgstr ""
 
 msgid "Orphaned member"
@@ -37019,12 +37054,6 @@ msgid "ProjectService|Trigger event when a confidential issue is created, update
 msgstr ""
 
 msgid "ProjectService|Trigger event when a deployment starts or finishes."
-msgstr ""
-
-msgid "ProjectService|Trigger event when a group is mentioned in a confidential context."
-msgstr ""
-
-msgid "ProjectService|Trigger event when a group is mentioned in a public context."
 msgstr ""
 
 msgid "ProjectService|Trigger event when a merge request is created, updated, or merged."

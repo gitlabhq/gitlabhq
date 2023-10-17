@@ -47,10 +47,9 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           .with(object)
           .and_return(false)
 
-        expect(Gitlab::Import::Logger)
+        expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(
-            import_type: :github,
             project_id: 1,
             importer: 'MyImporter',
             message: '1 object_types fetched'
@@ -82,10 +81,9 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           .with(object)
           .and_return(true)
 
-        expect(Gitlab::Import::Logger)
+        expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(
-            import_type: :github,
             project_id: 1,
             importer: 'MyImporter',
             message: '0 object_types fetched'
@@ -145,14 +143,13 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
               }
             )
 
-          expect(Gitlab::Import::Logger)
+          expect(Gitlab::GithubImport::Logger)
             .to receive(:error)
             .with(
-              import_type: :github,
               project_id: 1,
               importer: 'MyImporter',
               message: ['Title is invalid'],
-              github_identifiers: { id: 12345, title: 'bug,bug', object_type: :object_type }
+              external_identifiers: { id: 12345, title: 'bug,bug', object_type: :object_type }
             )
 
           expect(Gitlab::GithubImport::ObjectCounter)
@@ -172,7 +169,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           expect(errors).not_to be_empty
 
           expect(errors[0][:validation_errors].full_messages).to match_array(['Title is invalid'])
-          expect(errors[0][:github_identifiers]).to eq({ id: 12345, title: 'bug,bug', object_type: :object_type })
+          expect(errors[0][:external_identifiers]).to eq({ id: 12345, title: 'bug,bug', object_type: :object_type })
         end
       end
     end
@@ -182,11 +179,10 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
     it 'bulk inserts rows into the database' do
       rows = [{ title: 'Foo' }] * 10
 
-      expect(Gitlab::Import::Logger)
+      expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .twice
         .with(
-          import_type: :github,
           project_id: 1,
           importer: 'MyImporter',
           message: '5 object_types imported'
@@ -243,7 +239,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
 
         importer.bulk_insert_failures([{
           validation_errors: error,
-          github_identifiers: { id: 123456 }
+          external_identifiers: { id: 123456 }
         }])
       end
     end

@@ -31,7 +31,7 @@ module Projects
         message: 'Project housekeeping failed',
         project_full_path: @project.full_path,
         project_id: @project.id,
-        'error.message' => e.message
+        'exception.message' => e.message
       )
     end
 

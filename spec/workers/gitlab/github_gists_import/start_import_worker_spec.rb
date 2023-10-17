@@ -70,7 +70,7 @@ RSpec.describe Gitlab::GithubGistsImport::StartImportWorker, feature_category: :
 
         expect(Gitlab::GithubImport::Logger)
           .to receive(:error)
-          .with(log_attributes.merge('message' => 'import failed', 'error.message' => exception.message))
+          .with(log_attributes.merge('message' => 'import failed', 'exception.message' => exception.message))
 
         expect { worker.perform(user.id, token) }.to raise_error(StandardError)
       end

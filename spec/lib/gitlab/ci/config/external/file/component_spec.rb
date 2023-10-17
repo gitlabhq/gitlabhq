@@ -99,7 +99,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         let(:response) do
           ServiceResponse.success(payload: {
             content: content,
-            path: instance_double(::Gitlab::Ci::Components::InstancePath, project: project, sha: '12345')
+            path: 'templates/component.yml',
+            project: project,
+            sha: '12345'
           })
         end
 
@@ -132,7 +134,9 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       let(:response) do
         ServiceResponse.success(payload: {
           content: content,
-          path: instance_double(::Gitlab::Ci::Components::InstancePath, project: project, sha: '12345')
+          path: 'templates/component.yml',
+          project: project,
+          sha: '12345'
         })
       end
 
@@ -158,15 +162,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
   describe '#metadata' do
     subject(:metadata) { external_resource.metadata }
 
-    let(:component_path) do
-      instance_double(::Gitlab::Ci::Components::InstancePath,
-        project: project,
-        sha: '12345',
-        project_file_path: 'my-component/template.yml')
-    end
-
     let(:response) do
-      ServiceResponse.success(payload: { path: component_path })
+      ServiceResponse.success(payload: { path: 'my-component/template.yml', project: project, sha: '12345' })
     end
 
     it 'returns the metadata' do
@@ -183,14 +180,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
   end
 
   describe '#expand_context' do
-    let(:component_path) do
-      instance_double(::Gitlab::Ci::Components::InstancePath,
-        project: project,
-        sha: '12345')
-    end
-
     let(:response) do
-      ServiceResponse.success(payload: { path: component_path })
+      ServiceResponse.success(payload: { path: 'templates/component.yml', project: project, sha: '12345' })
     end
 
     subject { external_resource.send(:expand_context_attrs) }
@@ -207,11 +198,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
   describe '#to_hash' do
     context 'when interpolation is being used' do
       let(:response) do
-        ServiceResponse.success(payload: { content: content, path: path })
-      end
-
-      let(:path) do
-        instance_double(::Gitlab::Ci::Components::InstancePath, project: project, sha: '12345')
+        ServiceResponse.success(payload: { content: content, path: 'templates/component.yml', project: project,
+                                           sha: '12345' })
       end
 
       let(:content) do

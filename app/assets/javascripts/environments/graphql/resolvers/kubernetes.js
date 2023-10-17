@@ -73,7 +73,7 @@ export default {
   k8sServices(_, { configuration, namespace }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));
     const servicesApi = namespace
-      ? coreV1Api.listCoreV1NamespacedService(namespace)
+      ? coreV1Api.listCoreV1NamespacedService({ namespace })
       : coreV1Api.listCoreV1ServiceForAllNamespaces();
 
     return servicesApi

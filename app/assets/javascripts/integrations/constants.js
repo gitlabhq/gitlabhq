@@ -59,6 +59,8 @@ export const integrationTriggerEvents = {
   DEPLOYMENT: 'deployment_events',
   ALERT: 'alert_events',
   INCIDENT: 'incident_events',
+  GROUP_MENTION: 'group_mention_events',
+  GROUP_CONFIDENTIAL_MENTION: 'group_confidential_mention_events',
 };
 
 export const integrationTriggerEventTitles = {
@@ -87,6 +89,12 @@ export const integrationTriggerEventTitles = {
   [integrationTriggerEvents.ALERT]: s__('IntegrationEvents|A new, unique alert is recorded'),
   [integrationTriggerEvents.INCIDENT]: s__(
     'IntegrationEvents|An incident is created, closed, or reopened',
+  ),
+  [integrationTriggerEvents.GROUP_MENTION]: s__(
+    'IntegrationEvents|A group is mentioned in a public context',
+  ),
+  [integrationTriggerEvents.GROUP_CONFIDENTIAL_MENTION]: s__(
+    'IntegrationEvents|A group is mentioned in a confidential context',
   ),
 };
 

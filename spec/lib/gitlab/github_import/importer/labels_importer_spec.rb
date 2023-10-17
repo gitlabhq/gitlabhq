@@ -50,13 +50,12 @@ feature_category: :importers do
       label = { id: 1, name: 'bug,bug', color: 'ffffff' }
 
       expect(importer).to receive(:each_label).and_return([label])
-      expect(Gitlab::Import::Logger).to receive(:error)
+      expect(Gitlab::GithubImport::Logger).to receive(:error)
         .with(
-          import_type: :github,
           project_id: project.id,
           importer: described_class.name,
           message: ['Title is invalid'],
-          github_identifiers: { title: 'bug,bug', object_type: :label }
+          external_identifiers: { title: 'bug,bug', object_type: :label }
         )
 
       rows, errors = importer.build_labels

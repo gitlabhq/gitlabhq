@@ -25,6 +25,7 @@ module Projects
           {
             name: m.name,
             version: m.latest_version_name,
+            version_count: m.version_count,
             path: m.latest_package_path
           }
         end

@@ -57,7 +57,7 @@ describe('import table', () => {
     ];
   const findPaginationDropdown = () => wrapper.findByTestId('page-size');
   const findTargetNamespaceDropdown = (rowWrapper) =>
-    extendedWrapper(rowWrapper).findByTestId('target-namespace-selector');
+    extendedWrapper(rowWrapper).findByTestId('target-namespace-dropdown');
   const findTargetNamespaceInput = (rowWrapper) =>
     extendedWrapper(rowWrapper).findByTestId('target-namespace-input');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();

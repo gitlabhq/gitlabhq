@@ -106,9 +106,9 @@ module Gitlab
       def error(user_id, error_message, github_identifiers)
         attributes = {
           user_id: user_id,
-          github_identifiers: github_identifiers,
+          external_identifiers: github_identifiers,
           message: 'importer failed',
-          'error.message': error_message
+          'exception.message': error_message
         }
 
         Gitlab::GithubImport::Logger.error(structured_payload(attributes))
@@ -120,7 +120,7 @@ module Gitlab
         attributes = {
           user_id: user_id,
           message: message,
-          github_identifiers: gist_id
+          external_identifiers: gist_id
         }
 
         Gitlab::GithubImport::Logger.info(structured_payload(attributes))

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 module ChaosQueue
   extend ActiveSupport::Concern
 

@@ -284,10 +284,10 @@ module Gitlab
 
       def on_retry
         proc do |exception, try, elapsed_time, next_interval|
-          Gitlab::Import::Logger.info(
+          Logger.info(
             message: "GitHub connection retry triggered",
             'error.class': exception.class,
-            'error.message': exception.message,
+            'exception.message': exception.message,
             try_count: try,
             elapsed_time_s: elapsed_time,
             wait_to_retry_s: next_interval

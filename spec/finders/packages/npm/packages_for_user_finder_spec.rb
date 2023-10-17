@@ -36,6 +36,24 @@ RSpec.describe ::Packages::Npm::PackagesForUserFinder, feature_category: :packag
       end
 
       it_behaves_like 'searches for packages'
+
+      context 'when an user is a reporter of both projects' do
+        before_all do
+          project2.add_reporter(user)
+        end
+
+        it { is_expected.to contain_exactly(package, package_with_diff_project) }
+
+        context 'when the second project has the package registry disabled' do
+          before_all do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+            project2.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+              package_registry_access_level: 'disabled', packages_enabled: false)
+          end
+
+          it_behaves_like 'searches for packages'
+        end
+      end
     end
   end
 end

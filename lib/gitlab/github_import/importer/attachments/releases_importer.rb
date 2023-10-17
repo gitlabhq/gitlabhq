@@ -24,7 +24,7 @@ module Gitlab
           private
 
           def collection
-            project.releases.select(:id, :description, :tag)
+            project.releases.id_not_in(already_imported_ids).select(:id, :description, :tag)
           end
         end
       end

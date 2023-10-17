@@ -30,6 +30,8 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
     let(:element) { page.find("#js-index-ml-models") }
 
     before do
+      allow(model1).to receive(:version_count).and_return(1)
+      allow(model2).to receive(:version_count).and_return(0)
       render_inline component
     end
 
@@ -41,12 +43,14 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
           {
             'name' => model1.name,
             'version' => model1.latest_version.version,
-            'path' => "/#{project.full_path}/-/packages/#{model1.latest_version.package_id}"
+            'path' => "/#{project.full_path}/-/packages/#{model1.latest_version.package_id}",
+            'versionCount' => 1
           },
           {
             'name' => model2.name,
             'version' => nil,
-            'path' => nil
+            'path' => nil,
+            'versionCount' => 0
           }
         ],
         'pageInfo' => {

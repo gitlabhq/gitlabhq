@@ -37,7 +37,7 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
   let(:log_attributes) do
     {
       'user_id' => user.id,
-      'github_identifiers' => { 'id': gist_object.id },
+      'external_identifiers' => { 'id': gist_object.id },
       'class' => 'Gitlab::GithubGistsImport::ImportGistWorker',
       'correlation_id' => 'new-correlation-id',
       'jid' => nil,
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
         it 'raises an error' do
           expect(Gitlab::GithubImport::Logger)
             .to receive(:error)
-            .with(log_attributes.merge('message' => 'importer failed', 'error.message' => '_some_error_'))
+            .with(log_attributes.merge('message' => 'importer failed', 'exception.message' => '_some_error_'))
           expect(Gitlab::ErrorTracking).to receive(:track_exception)
 
           expect { subject.perform(user.id, gist_hash, 'some_key') }.to raise_error(StandardError)
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
         it 'tracks and logs error' do
           expect(Gitlab::GithubImport::Logger)
             .to receive(:error)
-            .with(log_attributes.merge('message' => 'importer failed', 'error.message' => 'error_message'))
+            .with(log_attributes.merge('message' => 'importer failed', 'exception.message' => 'error_message'))
           expect(Gitlab::JobWaiter)
             .to receive(:notify)
             .with('some_key', subject.jid, ttl: Gitlab::Import::JOB_WAITER_TTL)

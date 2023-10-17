@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop: disable Gitlab/ServiceResponse
 
 require 'spec_helper'

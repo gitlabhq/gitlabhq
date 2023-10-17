@@ -674,6 +674,10 @@ Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trad
 
 ## GitLab Dedicated
 
+Use **GitLab Dedicated** to refer to the product offering. It refers to a GitLab instance that's hosted and managed by GitLab for customers.
+
+GitLab Dedicated can be referred to as a single-tenant SaaS service.
+
 Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
 
 ## GitLab Duo
@@ -740,16 +744,16 @@ See also:
 
 ## GitLab SaaS
 
-**GitLab SaaS** refers to the product license that provides access to GitLab.com. It does not refer to the
-GitLab instance managed by GitLab itself.
+Use **GitLab SaaS** to refer to the product offering.
+It does not refer to the GitLab instance, which is [GitLab.com](#gitlabcom).
 
 ## GitLab self-managed
 
-Use **GitLab self-managed** to refer to the product license for GitLab instances managed by customers themselves.
+Use **GitLab self-managed** to refer to the product offering. It refers to a GitLab instance managed by customers themselves.
 
 ## GitLab.com
 
-**GitLab.com** refers to the GitLab instance managed by GitLab itself.
+Use **GitLab.com** to refer to the URL. GitLab.com is the instance that's managed by GitLab.
 
 ## guide
 
@@ -1131,6 +1135,16 @@ Use:
 Instead of:
 
 - Note that you can change the settings.
+
+## offerings
+
+The current product offerings are:
+
+- [GitLab SaaS](#gitlab-saas)
+- [GitLab self-managed](#gitlab-self-managed)
+- [GitLab Dedicated](#gitlab-dedicated)
+
+The [tier badges](index.md#available-product-tier-badges) reflect these offerings.
 
 ## older
 

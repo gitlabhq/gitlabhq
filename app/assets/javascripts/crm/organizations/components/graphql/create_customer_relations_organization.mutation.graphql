@@ -1,6 +1,6 @@
 #import "./crm_organization_fields.fragment.graphql"
 
-mutation createOrganization($input: CustomerRelationsOrganizationCreateInput!) {
+mutation createCustomerRelationsOrganization($input: CustomerRelationsOrganizationCreateInput!) {
   customerRelationsOrganizationCreate(input: $input) {
     organization {
       ...OrganizationFragment

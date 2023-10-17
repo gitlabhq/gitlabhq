@@ -103,6 +103,20 @@ To use a custom response:
 1. In the **Plain-text response to send to clients that hit a rate limit** text box,
    add the plain-text response message.
 
+## Maximum authenticated requests to `project/:id/jobs` per minute
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5.
+
+To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](../../security/rate_limits.md#project-jobs-api-endpoint) of 600 calls per authenticated user.
+
+To modify the maximum number of requests:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
+1. Expand **User and IP rate limits**.
+1. Update the **Maximum authenticated requests to `project/:id/jobs` per minute** value.
+
 ## Response headers
 
 > [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/731) in GitLab 13.8, the `RateLimit` headers. `Retry-After` was introduced in an earlier version.

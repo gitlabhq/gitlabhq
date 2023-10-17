@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporter do
+RSpec.describe Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporter, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project) }
@@ -17,6 +17,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporte
     let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
 
     it 'imports each project merge request attachments' do
+      expect(project.merge_requests).to receive(:id_not_in).with([]).and_return(project.merge_requests)
       expect(project.merge_requests).to receive(:select).with(:id, :description, :iid).and_call_original
 
       expect_next_instances_of(
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporte
       it "doesn't import this merge request attachments" do
         importer.mark_as_imported(merge_request_1)
 
+        expect(project.merge_requests).to receive(:id_not_in).with([merge_request_1.id.to_s]).and_call_original
         expect_next_instance_of(
           Gitlab::GithubImport::Importer::NoteAttachmentsImporter, *importer_attrs
         ) do |note_attachments_importer|

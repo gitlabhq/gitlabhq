@@ -1,14 +1,14 @@
 <script>
-import { GlLink } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import * as translations from '~/ml/model_registry/routes/models/index/translations';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
+import ModelRow from './model_row.vue';
 
 export default {
-  name: 'MlExperimentsIndexApp',
+  name: 'MlModelRegistryApp',
   components: {
-    GlLink,
     Pagination,
+    ModelRow,
   },
   props: {
     models: {
@@ -40,10 +40,7 @@ export default {
     </div>
 
     <template v-if="hasModels">
-      <div v-for="model in models" :key="model.name">
-        <gl-link :href="model.path"> {{ model.name }} / {{ model.version }} </gl-link>
-      </div>
-
+      <model-row v-for="model in models" :key="model.name" :model="model" />
       <pagination v-bind="pageInfo" />
     </template>
 

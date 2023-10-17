@@ -4,11 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Base::ObjectBuilder do
   let(:project) do
-    create(:project, :repository,
-           :builds_disabled,
-           :issues_disabled,
-           name: 'project',
-           path: 'project')
+    create(
+      :project, :repository,
+      :builds_disabled,
+      :issues_disabled,
+      name: 'project',
+      path: 'project'
+    )
   end
 
   let(:klass) { Milestone }

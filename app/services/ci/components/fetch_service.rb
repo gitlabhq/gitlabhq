@@ -5,8 +5,6 @@ module Ci
     class FetchService
       include Gitlab::Utils::StrongMemoize
 
-      TEMPLATE_FILE = 'template.yml'
-
       COMPONENT_PATHS = [
         ::Gitlab::Ci::Components::InstancePath
       ].freeze
@@ -23,11 +21,16 @@ module Ci
             reason: :unsupported_path)
         end
 
-        component_path = component_path_class.new(address: address, content_filename: TEMPLATE_FILE)
-        content = component_path.fetch_content!(current_user: current_user)
+        component_path = component_path_class.new(address: address)
+        result = component_path.fetch_content!(current_user: current_user)
 
-        if content.present?
-          ServiceResponse.success(payload: { content: content, path: component_path })
+        if result
+          ServiceResponse.success(payload: {
+            content: result.content,
+            path: result.path,
+            project: component_path.project,
+            sha: component_path.sha
+          })
         else
           ServiceResponse.error(message: "#{error_prefix} content not found", reason: :content_not_found)
         end
