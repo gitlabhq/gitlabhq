@@ -8,7 +8,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
   let_it_be(:user) { create(:user) }
 
   it 'has the correct fields' do
-    expected_fields = [:id, :title, :project, :author,
+    expected_fields = [:id, :title, :project, :author, :hidden,
                        :file_name, :description,
                        :visibility_level, :created_at, :updated_at,
                        :web_url, :raw_url, :ssh_url_to_repo, :http_url_to_repo,

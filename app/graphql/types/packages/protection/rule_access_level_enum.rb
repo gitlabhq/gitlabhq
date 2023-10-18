@@ -7,9 +7,10 @@ module Types
         graphql_name 'PackagesProtectionRuleAccessLevel'
         description 'Access level of a package protection rule resource'
 
-        value 'DEVELOPER', value: Gitlab::Access::DEVELOPER, description: 'Developer access.'
-        value 'MAINTAINER', value: Gitlab::Access::MAINTAINER, description: 'Maintainer access.'
-        value 'OWNER', value: Gitlab::Access::OWNER, description: 'Owner access.'
+        ::Packages::Protection::Rule.push_protected_up_to_access_levels.each_key do |access_level_key|
+          value access_level_key.upcase, value: access_level_key.to_s,
+            description: "#{access_level_key.capitalize} access."
+        end
       end
     end
   end

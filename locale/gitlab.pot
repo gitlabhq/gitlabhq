@@ -53789,7 +53789,7 @@ msgstr ""
 msgid "WorkItem|Add %{workItemType}s"
 msgstr ""
 
-msgid "WorkItem|Add a maximum of 3 items at a time."
+msgid "WorkItem|Add a maximum of %{MAX_WORK_ITEMS} items at a time."
 msgstr ""
 
 msgid "WorkItem|Add a title"
@@ -53953,7 +53953,7 @@ msgstr ""
 msgid "WorkItem|Objective"
 msgstr ""
 
-msgid "WorkItem|Only 3 items can be added at a time."
+msgid "WorkItem|Only %{MAX_WORK_ITEMS} items can be added at a time."
 msgstr ""
 
 msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}."

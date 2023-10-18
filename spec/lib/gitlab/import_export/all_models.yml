@@ -829,6 +829,7 @@ project:
 - security_policy_bots
 - target_branch_rules
 - organization
+- dora_performance_scores
 award_emoji:
 - awardable
 - user

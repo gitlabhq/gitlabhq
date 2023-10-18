@@ -219,13 +219,6 @@ class Integration < ApplicationRecord
   # Also keep track of updated properties in a similar way as ActiveModel::Dirty
   def self.boolean_accessor(*args)
     args.each do |arg|
-      # TODO: Allow legacy usage of `.boolean_accessor`, once all integrations
-      # are converted to the field DSL we can remove this and only call
-      # `.boolean_accessor` through `.field`.
-      #
-      # See https://gitlab.com/groups/gitlab-org/-/epics/7652
-      prop_accessor(arg) unless method_defined?(arg)
-
       class_eval <<~RUBY, __FILE__, __LINE__ + 1
         # Make the original getter available as a private method.
         alias_method :#{arg}_before_type_cast, :#{arg}
@@ -242,6 +235,7 @@ class Integration < ApplicationRecord
       RUBY
     end
   end
+  private_class_method :boolean_accessor
 
   def self.to_param
     raise NotImplementedError

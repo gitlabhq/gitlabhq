@@ -2,18 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::EnableSslVerification do
+RSpec.describe Integrations::EnableSslVerification, feature_category: :integrations do
   let(:described_class) do
     Class.new(Integration) do
       prepend Integrations::EnableSslVerification
 
-      def fields
-        [
-          { name: 'main_url' },
-          { name: 'other_url' },
-          { name: 'username' }
-        ]
-      end
+      field :main_url
+      field :other_url
+      field :username
     end
   end
 

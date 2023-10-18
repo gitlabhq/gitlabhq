@@ -7,6 +7,7 @@ RSpec.describe ProjectSnippetPolicy do
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:regular_user) { create(:user) }
   let_it_be(:external_user) { create(:user, :external) }
+  let_it_be(:admin_user) { create(:user, :admin) }
   let_it_be(:author) { create(:user) }
   let_it_be(:author_permissions) do
     [
@@ -296,7 +297,7 @@ RSpec.describe ProjectSnippetPolicy do
 
       context 'admin user' do
         let(:snippet_visibility) { :private }
-        let(:current_user) { create(:admin) }
+        let(:current_user) { admin_user }
 
         context 'when admin mode is enabled', :enable_admin_mode do
           it do
@@ -325,6 +326,59 @@ RSpec.describe ProjectSnippetPolicy do
       let(:membership_target) { group }
 
       it_behaves_like 'regular user member permissions'
+    end
+  end
+
+  context 'when the author of the snippet is banned', feature_category: :insider_threat do
+    let(:banned_user) { build(:user, :banned) }
+    let(:project) { build(:project, :public, group: group) }
+    let(:snippet) { build(:project_snippet, :public, project: project, author: banned_user) }
+
+    context 'no user' do
+      let(:current_user) { nil }
+
+      it do
+        expect_disallowed(:read_snippet)
+        expect_disallowed(:read_note)
+        expect_disallowed(:create_note)
+        expect_disallowed(*author_permissions)
+      end
+    end
+
+    context 'regular user' do
+      let(:current_user) { regular_user }
+      let(:membership_target) { project }
+
+      it do
+        expect_disallowed(:read_snippet)
+        expect_disallowed(:read_note)
+        expect_disallowed(:create_note)
+        expect_disallowed(*author_permissions)
+      end
+    end
+
+    context 'external user' do
+      let(:current_user) { external_user }
+      let(:membership_target) { project }
+
+      it do
+        expect_disallowed(:read_snippet)
+        expect_disallowed(:read_note)
+        expect_disallowed(:create_note)
+        expect_disallowed(*author_permissions)
+      end
+    end
+
+    context 'admin user', :enable_admin_mode do
+      let(:current_user) { admin_user }
+      let(:membership_target) { project }
+
+      it do
+        expect_allowed(:read_snippet)
+        expect_allowed(:read_note)
+        expect_allowed(:create_note)
+        expect_allowed(*author_permissions)
+      end
     end
   end
 end

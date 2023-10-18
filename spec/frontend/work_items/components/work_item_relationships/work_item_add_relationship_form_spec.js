@@ -9,9 +9,9 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemAddRelationshipForm from '~/work_items/components/work_item_relationships/work_item_add_relationship_form.vue';
 import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
 import addLinkedItemsMutation from '~/work_items/graphql/add_linked_items.mutation.graphql';
-import { LINKED_ITEM_TYPE_VALUE } from '~/work_items/constants';
+import { LINKED_ITEM_TYPE_VALUE, MAX_WORK_ITEMS } from '~/work_items/constants';
 
-import { linkedWorkItemResponse } from '../../mock_data';
+import { linkedWorkItemResponse, generateWorkItemsListWithId } from '../../mock_data';
 
 describe('WorkItemAddRelationshipForm', () => {
   Vue.use(VueApollo);
@@ -65,7 +65,7 @@ describe('WorkItemAddRelationshipForm', () => {
       { text: 'is blocked by', value: LINKED_ITEM_TYPE_VALUE.BLOCKED_BY },
     ]);
     expect(findLinkWorkItemButton().attributes('disabled')).toBe('true');
-    expect(findMaxWorkItemNote().text()).toBe('Add a maximum of 3 items at a time.');
+    expect(findMaxWorkItemNote().text()).toBe('Add a maximum of 10 items at a time.');
   });
 
   it('renders work item token input with default props', () => {
@@ -92,21 +92,8 @@ describe('WorkItemAddRelationshipForm', () => {
       expect(findLinkWorkItemButton().attributes('disabled')).toBeUndefined();
     });
 
-    it('disables button when more than 3 work items are selected', async () => {
-      await selectWorkItemTokens([
-        {
-          id: 'gid://gitlab/WorkItem/641',
-        },
-        {
-          id: 'gid://gitlab/WorkItem/642',
-        },
-        {
-          id: 'gid://gitlab/WorkItem/643',
-        },
-        {
-          id: 'gid://gitlab/WorkItem/644',
-        },
-      ]);
+    it('disables button when more than 10 work items are selected', async () => {
+      await selectWorkItemTokens(generateWorkItemsListWithId(MAX_WORK_ITEMS + 1));
 
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(false);
       expect(findLinkWorkItemButton().attributes('disabled')).toBe('true');

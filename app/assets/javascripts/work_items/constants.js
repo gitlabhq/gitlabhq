@@ -112,6 +112,17 @@ export const I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL = s__(
   'WorkItem|Copy %{workItemType} email address',
 );
 
+export const MAX_WORK_ITEMS = 10;
+
+export const I18N_MAX_WORK_ITEMS_ERROR_MESSAGE = sprintf(
+  s__('WorkItem|Only %{MAX_WORK_ITEMS} items can be added at a time.'),
+  { MAX_WORK_ITEMS },
+);
+export const I18N_MAX_WORK_ITEMS_NOTE_LABEL = sprintf(
+  s__('WorkItem|Add a maximum of %{MAX_WORK_ITEMS} items at a time.'),
+  { MAX_WORK_ITEMS },
+);
+
 export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
   const workItemType = workItemTypeArg || s__('WorkItem|item');
   return capitalizeFirstCharacter(

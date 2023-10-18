@@ -9921,8 +9921,10 @@ The connection type for [`DoraPerformanceScoreCount`](#doraperformancescorecount
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="doraperformancescorecountconnectionedges"></a>`edges` | [`[DoraPerformanceScoreCountEdge]`](#doraperformancescorecountedge) | A list of edges. |
+| <a id="doraperformancescorecountconnectionnodoradataprojectscount"></a>`noDoraDataProjectsCount` | [`Int!`](#int) | Count of projects without any DORA scores within the scope. |
 | <a id="doraperformancescorecountconnectionnodes"></a>`nodes` | [`[DoraPerformanceScoreCount]`](#doraperformancescorecount) | A list of nodes. |
 | <a id="doraperformancescorecountconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+| <a id="doraperformancescorecountconnectiontotalprojectscount"></a>`totalProjectsCount` | [`Int!`](#int) | Count of total projects. |
 
 #### `DoraPerformanceScoreCountEdge`
 
@@ -11282,6 +11284,29 @@ The edge type for [`PackageTag`](#packagetag).
 | ---- | ---- | ----------- |
 | <a id="packagetagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="packagetagedgenode"></a>`node` | [`PackageTag`](#packagetag) | The item at the end of the edge. |
+
+#### `PackagesProtectionRuleConnection`
+
+The connection type for [`PackagesProtectionRule`](#packagesprotectionrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagesprotectionruleconnectionedges"></a>`edges` | [`[PackagesProtectionRuleEdge]`](#packagesprotectionruleedge) | A list of edges. |
+| <a id="packagesprotectionruleconnectionnodes"></a>`nodes` | [`[PackagesProtectionRule]`](#packagesprotectionrule) | A list of nodes. |
+| <a id="packagesprotectionruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PackagesProtectionRuleEdge`
+
+The edge type for [`PackagesProtectionRule`](#packagesprotectionrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagesprotectionruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="packagesprotectionruleedgenode"></a>`node` | [`PackagesProtectionRule`](#packagesprotectionrule) | The item at the end of the edge. |
 
 #### `PagesDeploymentRegistryConnection`
 
@@ -16574,7 +16599,7 @@ Aggregated DORA score counts for projects for the last complete month.
 | <a id="doraperformancescorecountlowprojectscount"></a>`lowProjectsCount` | [`Int`](#int) | Number of projects that score "low" on the metric. |
 | <a id="doraperformancescorecountmediumprojectscount"></a>`mediumProjectsCount` | [`Int`](#int) | Number of projects that score "medium" on the metric. |
 | <a id="doraperformancescorecountmetricname"></a>`metricName` | [`String!`](#string) | Name of the DORA metric. |
-| <a id="doraperformancescorecountnodataprojectscount"></a>`noDataProjectsCount` | [`Int`](#int) | Number of projects with no data. |
+| <a id="doraperformancescorecountnodataprojectscount"></a>`noDataProjectsCount` | [`Int`](#int) | Number of projects with no data for the metric. |
 
 ### `EgressNode`
 
@@ -22387,6 +22412,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="projectopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
 | <a id="projectpackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
+| <a id="projectpackagesprotectionrules"></a>`packagesProtectionRules` | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | Packages protection rules for the project. (see [Connections](#connections)) |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
@@ -25119,6 +25145,7 @@ Represents a snippet entry.
 | <a id="snippetdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="snippetdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="snippetfilename"></a>`fileName` | [`String`](#string) | File Name of the snippet. |
+| <a id="snippethidden"></a>`hidden` | [`Boolean!`](#boolean) | Indicates the snippet is hidden because the author has been banned. |
 | <a id="snippethttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | HTTP URL to the snippet repository. |
 | <a id="snippetid"></a>`id` | [`SnippetID!`](#snippetid) | ID of the snippet. |
 | <a id="snippetproject"></a>`project` | [`Project`](#project) | Project the snippet is associated with. |

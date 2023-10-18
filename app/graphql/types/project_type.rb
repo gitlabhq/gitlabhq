@@ -311,6 +311,12 @@ module Types
       null: true,
       description: 'Packages cleanup policy for the project.'
 
+    field :packages_protection_rules,
+      Types::Packages::Protection::RuleType.connection_type,
+      null: true,
+      description: 'Packages protection rules for the project.',
+      resolver: Resolvers::ProjectPackagesProtectionRulesResolver
+
     field :jobs,
       type: Types::Ci::JobType.connection_type,
       null: true,

@@ -49,9 +49,7 @@ RSpec.shared_examples 'groups routing' do
 
   it 'routes to the avatars controller' do
     expect(delete("/groups/#{group_path}/-/avatar"))
-      .to route_to(group_id: group_path,
-                   controller: 'groups/avatars',
-                   action: 'destroy')
+      .to route_to(group_id: group_path, controller: 'groups/avatars', action: 'destroy')
   end
 
   it 'routes to the boards controller' do

@@ -34,8 +34,6 @@ module Integrations
     prop_accessor(*SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
     prop_accessor(*GROUP_ONLY_SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
 
-    boolean_accessor :notify_only_default_branch
-
     validates :webhook,
       presence: true,
       public_url: true,
@@ -50,7 +48,7 @@ module Integrations
         self.notify_only_broken_pipelines = true if self.respond_to?(:notify_only_broken_pipelines)
         self.branches_to_be_notified = "default"
         self.labels_to_be_notified_behavior = MATCH_ANY_LABEL
-      elsif !self.notify_only_default_branch.nil?
+      elsif !properties['notify_only_default_branch'].nil?
         # In older versions, there was only a boolean property named
         # `notify_only_default_branch`. Now we have a string property named
         # `branches_to_be_notified`. Instead of doing a background migration, we
@@ -58,7 +56,7 @@ module Integrations
         # users haven't specified one already. When users edit the integration and
         # select a value for this new property, it will override everything.
 
-        self.branches_to_be_notified ||= notify_only_default_branch? ? "default" : "all"
+        self.branches_to_be_notified ||= properties['notify_only_default_branch'] ? "default" : "all"
       end
     end
 

@@ -9,6 +9,9 @@ import {
   LINK_ITEM_FORM_HEADER_LABEL,
   WIDGET_TYPE_LINKED_ITEMS,
   LINKED_ITEM_TYPE_VALUE,
+  MAX_WORK_ITEMS,
+  I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
+  I18N_MAX_WORK_ITEMS_NOTE_LABEL,
 } from '../../constants';
 
 export default {
@@ -69,6 +72,7 @@ export default {
       showWorkItemsToAddInvalidMessage: false,
       isSubmitting: false,
       searchInProgress: false,
+      maxWorkItems: MAX_WORK_ITEMS,
     };
   },
   computed: {
@@ -82,10 +86,10 @@ export default {
       return this.workItemsToAdd.length <= 0 || !this.areWorkItemsToAddValid;
     },
     areWorkItemsToAddValid() {
-      return this.workItemsToAdd.length < 4;
+      return this.workItemsToAdd.length <= this.maxWorkItems;
     },
     errorMessage() {
-      return !this.areWorkItemsToAddValid ? this.$options.i18n.max3ItemsErrorMessage : '';
+      return !this.areWorkItemsToAddValid ? this.$options.i18n.maxItemsErrorMessage : '';
     },
   },
   methods: {
@@ -166,12 +170,12 @@ export default {
     relatedToLabel: s__('WorkItem|relates to'),
     blockingLabel: s__('WorkItem|blocks'),
     blockedByLabel: s__('WorkItem|is blocked by'),
-    max3ItemsNoteLabel: s__('WorkItem|Add a maximum of 3 items at a time.'),
     linkItemInputLabel: s__('WorkItem|the following item(s)'),
     addLinkedItemErrorMessage: s__(
       'WorkItem|Something went wrong when trying to link a item. Please try again.',
     ),
-    max3ItemsErrorMessage: s__('WorkItem|Only 3 items can be added at a time.'),
+    maxItemsNoteLabel: I18N_MAX_WORK_ITEMS_NOTE_LABEL,
+    maxItemsErrorMessage: I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
   },
 };
 </script>
@@ -209,14 +213,14 @@ export default {
         :children-ids="childrenIds"
         :are-work-items-to-add-valid="areWorkItemsToAddValid"
         :full-path="workItemFullPath"
-        :max-selection-limit="3"
+        :max-selection-limit="maxWorkItems"
         @searching="searchInProgress = $event"
       />
       <div v-if="errorMessage" class="gl-mb-2 gl-text-red-500">
-        {{ $options.i18n.max3ItemsErrorMessage }}
+        {{ $options.i18n.maxItemsErrorMessage }}
       </div>
       <div v-if="!errorMessage" data-testid="max-work-item-note" class="gl-text-gray-500">
-        {{ $options.i18n.max3ItemsNoteLabel }}
+        {{ $options.i18n.maxItemsNoteLabel }}
       </div>
       <div
         v-if="showWorkItemsToAddInvalidMessage"

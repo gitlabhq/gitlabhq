@@ -1190,11 +1190,10 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
-  describe 'boolean_accessor' do
+  describe 'Checkbox field booleans' do
     let(:klass) do
       Class.new(Integration) do
-        prop_accessor :test_value
-        boolean_accessor :test_value
+        field :test_value, type: :checkbox
       end
     end
 
@@ -1267,24 +1266,6 @@ RSpec.describe Integration, feature_category: :integrations do
         test_value: be(nil),
         test_value?: be(false)
       )
-    end
-
-    context 'when getter is not defined' do
-      let(:input) { true }
-      let(:klass) do
-        Class.new(Integration) do
-          boolean_accessor :test_value
-        end
-      end
-
-      it 'defines a prop_accessor' do
-        expect(integration).to have_attributes(
-          test_value: true,
-          test_value?: true
-        )
-
-        expect(integration.properties['test_value']).to be(true)
-      end
     end
   end
 
