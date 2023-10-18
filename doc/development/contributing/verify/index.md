@@ -1,7 +1,7 @@
 ---
 type: reference, dev
-stage: none
-group: Verify
+stage: Verify
+group: Pipeline Execution
 ---
 
 # Contribute to Verify stage codebase

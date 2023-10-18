@@ -57,9 +57,7 @@ To approve or reject a user sign up:
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select the **Pending approval** tab.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Approve** or **Reject**.
+1. For the user sign up you want to approve or reject, select the vertical ellipsis (**{ellipsis_v}**), then **Approve** or **Reject**.
 
 Approving a user:
 
@@ -88,7 +86,7 @@ To block a user:
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
-1. For the user you want to deactivate, select the vertical ellipsis (**{ellipsis_v}**) and then **Block**.
+1. For the user you want to block, select the vertical ellipsis (**{ellipsis_v}**), then **Block**.
 
 To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the Admin area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
 
@@ -100,9 +98,7 @@ A blocked user can be unblocked from the Admin Area. To do this:
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select the **Blocked** tab.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Unblock**.
+1. For the user you want to unblock, select the vertical ellipsis (**{ellipsis_v}**), then **Unblock**.
 
 The user's state is set to active and they consume a
 [seat](../subscriptions/self_managed/index.md#billable-users).
@@ -137,7 +133,7 @@ The user you deactivate must be dormant. When you deactivate a user, their proje
 - Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
 
-Deactiviation is similar to blocking, but there are a few important differences. Deactivating a user does not prohibit the user from signing into the GitLab UI. A deactivated user can become active again by signing in. 
+Deactivation is similar to blocking, but there are a few important differences. Deactivating a user does not prohibit the user from signing into the GitLab UI. A deactivated user can become active again by signing in.
 
 To deactivate a user from the Admin Area:
 
@@ -220,9 +216,7 @@ To do this:
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select the **Deactivated** tab.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Activate**.
+1. For the user you want to activate, select the vertical ellipsis (**{ellipsis_v}**), then **Activate**.
 
 The user's state is set to active and they consume a
 [seat](../subscriptions/self_managed/index.md#billable-users).
@@ -250,9 +244,7 @@ Users can be banned using the Admin Area. To do this:
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Ban user**.
+1. For the user you want to ban, select the vertical ellipsis (**{ellipsis_v}**), then **Ban user**.
 
 The banned user does not consume a [seat](../subscriptions/self_managed/index.md#billable-users).
 
@@ -264,24 +256,19 @@ A banned user can be unbanned using the Admin Area. To do this:
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select the **Banned** tab.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Unban user**.
+1. For the user you want to unban, select the vertical ellipsis (**{ellipsis_v}**), then **Unban user**.
 
 The user's state is set to active and they consume a
 [seat](../subscriptions/self_managed/index.md#billable-users).
 
-### Delete a user
+## Delete a user
 
 Use the Admin Area to delete users.
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Banned** tab.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Delete user**.
+1. For the user you want to delete, select the vertical ellipsis (**{ellipsis_v}**), then **Delete user**.
 1. Type the username.
 1. Select **Delete user**.
 
@@ -293,10 +280,7 @@ You can also delete a user and their contributions, such as merge requests, issu
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Banned** tab.
-1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown list.
-1. Select **Delete user and contributions**.
+1. For the user you want to delete, select the vertical ellipsis (**{ellipsis_v}**), then **Delete user and contributions**.
 1. Type the username.
 1. Select **Delete user and contributions**.
 

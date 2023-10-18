@@ -18,7 +18,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
   [EE features list](https://about.gitlab.com/features/).
 <!-- markdownlint-enable MD044 -->
 
-## SaaS only feature
+## SaaS-only feature
 
 Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
 
@@ -27,14 +27,14 @@ However, there are cases when a feature should only be available on SaaS and thi
 accomplished.
 
 It is recommended you use `Gitlab::Saas.feature_available?`. This enables
-context rich definitions around the reason the feature is SaaS only.
+context rich definitions around the reason the feature is SaaS-only.
 
-### Implementing a SaaS only feature with `Gitlab::Saas.feature_available?`
+### Implementing a SaaS-only feature with `Gitlab::Saas.feature_available?`
 
 #### Adding to the FEATURES constant
 
 1. See the [namespacing concepts guide](software_design.md#use-namespaces-to-define-bounded-contexts)
-   for help in naming a new SaaS only feature.
+   for help in naming a new SaaS-only feature.
 1. Add the new feature to `FEATURE` in `ee/lib/ee/gitlab/saas.rb`.
 
    ```ruby
@@ -43,7 +43,7 @@ context rich definitions around the reason the feature is SaaS only.
 
 1. Use the new feature in code with `Gitlab::Saas.feature_available?('some_domain/new_feature_name')`.
 
-#### SaaS only feature definition and validation
+#### SaaS-only feature definition and validation
 
 This process is meant to ensure consistent SaaS feature usage in the codebase. All SaaS features **must**:
 
@@ -63,7 +63,7 @@ Each SaaS feature is defined in a separate YAML file consisting of a number of f
 | `milestone`         | no       | Milestone in which the SaaS feature was created.                                                             |
 | `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
-### Opting out of a SaaS only feature on another SaaS instance (JiHu)
+### Opting out of a SaaS-only feature on another SaaS instance (JiHu)
 
 Prepend the `ee/lib/ee/gitlab/saas.rb` module and override the `Gitlab::Saas.feature_available?` method.
 
@@ -76,10 +76,45 @@ def feature_available?(feature)
 end
 ```
 
-### Do not use SaaS only features for functionality in CE
+### Do not use SaaS-only features for functionality in CE
 
 `Gitlab::Saas.feature_vailable?` must not appear in CE.
 See [extending CE with EE guide](#extend-ce-features-with-ee-backend-code).
+
+### SaaS-only features in tests
+
+Introducing a SaaS-only feature into the codebase creates an additional code path that should be tested.
+It is strongly advised to include automated tests for all code affected by a SaaS-only feature, both when **enabled** and **disabled**
+to ensure the feature works properly.
+
+To enable a SaaS-only feature in a test, use the `stub_saas_features`
+helper. For example, to globally disable the `purchases/additional_minutes` feature
+flag in a test:
+
+```ruby
+stub_saas_features('purchases/additional_minutes' => false)
+
+::Gitlab::Saas.feature_available?('purchases/additional_minutes') # => false
+```
+
+A common pattern of testing both paths looks like:
+
+```ruby
+it 'purchases/additional_minutes is not available' do
+  # tests assuming purchases/additional_minutes is not enabled by default
+  ::Gitlab::Saas.feature_available?('purchases/additional_minutes') # => false
+end
+
+context 'when purchases/additional_minutes is available' do
+  before do
+    stub_saas_features('purchases/additional_minutes' => true)
+  end
+
+  it 'returns true' do
+    ::Gitlab::Saas.feature_available?('purchases/additional_minutes') # => true
+  end
+end
+```
 
 ### Simulate a SaaS instance
 

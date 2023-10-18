@@ -33151,6 +33151,9 @@ msgstr ""
 msgid "Organization|Organization overview"
 msgstr ""
 
+msgid "Organization|Organization successfully created."
+msgstr ""
+
 msgid "Organization|Organizations"
 msgstr ""
 
@@ -33161,6 +33164,9 @@ msgid "Organization|Search or filter list"
 msgstr ""
 
 msgid "Organization|View all"
+msgstr ""
+
+msgid "Organization|You can now start using your new organization."
 msgstr ""
 
 msgid "Organization|You don't have any groups yet."

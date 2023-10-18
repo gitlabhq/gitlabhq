@@ -1457,6 +1457,7 @@ Parameters:
 | `token`   | string | true | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
 | `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134361) in GitLab 16.5). Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | true | Enable notifications for push events. |
 | `issues_events` | boolean | true | Enable notifications for issue events. |
 | `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events. |

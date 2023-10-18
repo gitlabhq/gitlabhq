@@ -214,7 +214,7 @@ See [Recommended cloud providers and services](index.md#recommended-cloud-provid
 
 The reference architectures were tested with repositories of varying sizes that follow best practices.
 
-**However, [large monorepos](../../user/project/repository/managing_large_repositories.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.**
+**However, [large monorepos](../../user/project/repository/monorepos/optimize_settings.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.**
 Their presence, as well as how they are used, can put a significant strain on the entire system from Gitaly through to the underlying infrastructure.
 
 WARNING:
@@ -223,12 +223,12 @@ If this applies to you, we strongly recommended referring to the linked document
 As such, large monorepos come with notable cost. If you have such a repository we strongly recommend
 the following guidance is followed to ensure the best chance of good performance and to keep costs in check:
 
-- [Optimize the large monorepo](../../user/project/repository/managing_large_repositories.md#optimize-gitlab-settings). Using features such as
-  [LFS](../../user/project/repository/managing_large_repositories.md#use-lfs-for-large-blobs) to not store binaries, and other approaches for reducing repository size, can
+- [Optimize the large monorepo](../../user/project/repository/monorepos/optimize_settings.md#optimize-gitlab-settings). Using features such as
+  [LFS](../../user/project/repository/monorepos/optimize_settings.md#use-lfs-for-large-blobs) to not store binaries, and other approaches for reducing repository size, can
   dramatically improve performance and reduce costs.
 - Depending on the monorepo, increased environment specifications may be required to compensate. Gitaly in particular will likely require additional resources along with Praefect, GitLab Rails, and Load Balancers. This depends notably on the monorepo itself and the usage against it.
 - When the monorepo is significantly large (20 gigabytes or more) further additional strategies maybe required such as even further increased specifications or in some cases a separate Gitaly backend for the monorepo alone.
-- Network and disk bandwidth is another potential consideration with large monorepos. In very heavy cases, it's possible to see bandwidth saturation if there's a high amount of concurrent clones (such as with CI). It's strongly recommended [reducing full clones wherever possible](../../user/project/repository/managing_large_repositories.md#reduce-concurrent-clones-in-cicd) in this scenario. Otherwise, additional environment specifications may be required to increase bandwidth, but this differs between cloud providers.
+- Network and disk bandwidth is another potential consideration with large monorepos. In very heavy cases, it's possible to see bandwidth saturation if there's a high amount of concurrent clones (such as with CI). It's strongly recommended [reducing full clones wherever possible](../../user/project/repository/monorepos/optimize_settings.md#reduce-concurrent-clones-in-cicd) in this scenario. Otherwise, additional environment specifications may be required to increase bandwidth, but this differs between cloud providers.
 
 ### Additional workloads
 
@@ -239,7 +239,7 @@ However, additional workloads can multiply the impact of operations by triggerin
 You may need to adjust the suggested specifications to compensate if you use, for example:
 
 - Security software on the nodes.
-- Hundreds of concurrent CI jobs for [large repositories](../../user/project/repository/managing_large_repositories.md).
+- Hundreds of concurrent CI jobs for [large repositories](../../user/project/repository/monorepos/optimize_settings.md).
 - Custom scripts that [run at high frequency](../logs/log_parsing.md#print-top-api-user-agents).
 - [Integrations](../../integration/index.md) in many large projects.
 - [Server hooks](../server_hooks.md).

@@ -5,7 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/organizations/new/components/app.vue';
 import resolvers from '~/organizations/shared/graphql/resolvers';
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createOrganizationResponse } from '~/organizations/mock_data';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -71,7 +71,17 @@ describe('OrganizationNewApp', () => {
       });
 
       it('redirects user to organization path', () => {
-        expect(visitUrl).toHaveBeenCalledWith(createOrganizationResponse.organization.path);
+        expect(visitUrlWithAlerts).toHaveBeenCalledWith(
+          createOrganizationResponse.organization.path,
+          [
+            {
+              id: 'organization-successfully-created',
+              title: 'Organization successfully created.',
+              message: 'You can now start using your new organization.',
+              variant: 'success',
+            },
+          ],
+        );
       });
     });
 

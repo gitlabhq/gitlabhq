@@ -26,6 +26,12 @@ module Integrations
       section: SECTION_TYPE_CONFIGURATION,
       help: 'If selected, successful pipelines do not trigger a notification event.'
 
+    field :branches_to_be_notified,
+      type: :select,
+      section: SECTION_TYPE_CONFIGURATION,
+      title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      choices: -> { branch_choices }
+
     with_options if: :activated? do
       validates :token, :room, presence: true
     end

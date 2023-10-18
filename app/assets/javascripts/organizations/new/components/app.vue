@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import createOrganizationMutation from '../graphql/mutations/create_organization.mutation.graphql';
@@ -16,6 +16,8 @@ export default {
       'Organization|%{linkStart}Organizations%{linkEnd} are a top-level container to hold your groups and projects.',
     ),
     errorMessage: s__('Organization|An error occurred creating an organization. Please try again.'),
+    successAlertTitle: s__('Organization|Organization successfully created.'),
+    successAlertMessage: s__('Organization|You can now start using your new organization.'),
   },
   data() {
     return {
@@ -47,7 +49,14 @@ export default {
           return;
         }
 
-        visitUrl(organization.path);
+        visitUrlWithAlerts(organization.path, [
+          {
+            id: 'organization-successfully-created',
+            title: this.$options.i18n.successAlertTitle,
+            message: this.$options.i18n.successAlertMessage,
+            variant: 'success',
+          },
+        ]);
       } catch (error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
       } finally {

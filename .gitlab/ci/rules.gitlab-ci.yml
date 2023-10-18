@@ -44,6 +44,12 @@
 .if-merge-request-approved: &if-merge-request-approved
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
+.if-merge-request-approved-and-specific-devops-stage: &if-merge-request-approved-and-specific-devops-stage
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS =~ /devops::create/)'
+
+.if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::create/'
+
 .if-merge-request-not-approved: &if-merge-request-not-approved
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
@@ -1579,6 +1585,9 @@
     - <<: *if-force-ci
       when: manual
       allow_failure: true
+    - <<: *if-merge-request-approved-and-specific-devops-stage
+      changes: *code-patterns
+      allow_failure: true
     # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
     # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
     # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
@@ -1697,11 +1706,15 @@
     - !reference [".qa:rules:package-and-test-nightly", rules]
     - !reference [".qa:rules:package-and-test-ce", rules]
 
-# These are based on `.qa:rules:trigger-omnibus` but with automatic jobs changed to `when: never.`
+# These are based on `.qa:rules:trigger-omnibus` except:
+# 1. Automatic jobs changed to `when: never.`
+# 2. For specific devops stage, do not run for code-patterns
 # If any changes are made to this rule, `.qa:rules:follow-up-e2e` should also be updated.
 .qa:rules:manual-omnibus-and-follow-up-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-merge-request-and-specific-devops-stage
+      when: never
     - !reference [".qa:rules:code-merge-request-manual", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       when: never
@@ -1745,6 +1758,8 @@
 .qa:rules:follow-up-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-merge-request-and-specific-devops-stage
+      when: never
     - <<: *if-merge-request
       changes: *code-patterns
       allow_failure: true
@@ -1821,6 +1836,8 @@
       changes: *code-patterns
       when: never
     - <<: *if-force-ci
+      when: never
+    - <<: *if-merge-request-and-specific-devops-stage
       when: never
     # From .qa:rules:package-and-test-schedule
     - <<: *if-dot-com-gitlab-org-schedule

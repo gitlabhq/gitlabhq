@@ -218,15 +218,33 @@ RSpec.shared_examples 'work items assignees' do
 
     expect(work_item.reload.assignees).not_to include(user)
   end
+
+  it 'updates the assignee in real-time' do
+    Capybara::Session.new(:other_session)
+
+    using_session :other_session do
+      visit work_items_path
+      expect(work_item.reload.assignees).not_to include(user)
+    end
+
+    find('[data-testid="work-item-assignees-input"]').hover
+    find('[data-testid="assign-self"]').click
+    wait_for_requests
+
+    expect(work_item.reload.assignees).to include(user)
+
+    using_session :other_session do
+      expect(work_item.reload.assignees).to include(user)
+    end
+  end
 end
 
 RSpec.shared_examples 'work items labels' do
   let(:label_title_selector) { '[data-testid="labels-title"]' }
+  let(:labels_input_selector) { '[data-testid="work-item-labels-input"]' }
 
   it 'successfully assigns a label' do
-    label = create(:label, project: work_item.project, title: "testing-label")
-
-    find('[data-testid="work-item-labels-input"]').fill_in(with: label.title)
+    find(labels_input_selector).fill_in(with: label.title)
     wait_for_requests
 
     # submit and simulate blur to save
@@ -235,6 +253,88 @@ RSpec.shared_examples 'work items labels' do
     wait_for_requests
 
     expect(work_item.labels).to include(label)
+  end
+
+  it 'successfully assigns multiple labels' do
+    label2 = create(:label, project: project, title: "testing-label-2")
+
+    find(labels_input_selector).fill_in(with: label.title)
+    wait_for_requests
+    send_keys(:enter)
+
+    find(labels_input_selector).fill_in(with: label2.title)
+    wait_for_requests
+    send_keys(:enter)
+
+    find(label_title_selector).click
+    wait_for_requests
+
+    expect(work_item.labels).to include(label)
+    expect(work_item.labels).to include(label2)
+  end
+
+  it 'removes all labels on clear all button click' do
+    find(labels_input_selector).fill_in(with: label.title)
+    wait_for_requests
+
+    send_keys(:enter)
+    find(label_title_selector).click
+    wait_for_requests
+
+    expect(work_item.labels).to include(label)
+
+    within(labels_input_selector) do
+      find('input').click
+      find('[data-testid="clear-all-button"]').click
+    end
+
+    find(label_title_selector).click
+    wait_for_requests
+
+    expect(work_item.labels).not_to include(label)
+  end
+
+  it 'removes label on clicking badge cross button' do
+    find(labels_input_selector).fill_in(with: label.title)
+    wait_for_requests
+
+    send_keys(:enter)
+    find(label_title_selector).click
+    wait_for_requests
+
+    expect(page).to have_text(label.title)
+
+    within(labels_input_selector) do
+      find('[data-testid="close-icon"]').click
+    end
+
+    find(label_title_selector).click
+    wait_for_requests
+
+    expect(work_item.labels).not_to include(label)
+  end
+
+  it 'updates the labels in real-time' do
+    Capybara::Session.new(:other_session)
+
+    using_session :other_session do
+      visit work_items_path
+      expect(page).not_to have_text(label.title)
+    end
+
+    find(labels_input_selector).fill_in(with: label.title)
+    wait_for_requests
+
+    send_keys(:enter)
+    find(label_title_selector).click
+    wait_for_requests
+
+    expect(page).to have_text(label.title)
+
+    using_session :other_session do
+      wait_for_requests
+      expect(page).to have_text(label.title)
+    end
   end
 end
 

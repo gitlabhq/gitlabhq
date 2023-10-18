@@ -13313,6 +13313,7 @@ CREATE TABLE p_ci_builds (
     id bigint NOT NULL,
     stage_id bigint,
     partition_id bigint NOT NULL,
+    auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
@@ -13362,6 +13363,7 @@ CREATE TABLE ci_builds (
     id bigint NOT NULL,
     stage_id bigint,
     partition_id bigint NOT NULL,
+    auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -13920,7 +13922,7 @@ CREATE TABLE ci_pipelines (
     duration integer,
     user_id integer,
     lock_version integer DEFAULT 0,
-    auto_canceled_by_id_convert_to_bigint integer,
+    auto_canceled_by_id integer,
     pipeline_schedule_id integer,
     source integer,
     config_source integer,
@@ -13935,7 +13937,7 @@ CREATE TABLE ci_pipelines (
     locked smallint DEFAULT 1 NOT NULL,
     partition_id bigint NOT NULL,
     id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
-    auto_canceled_by_id bigint,
+    auto_canceled_by_id_convert_to_bigint bigint,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 
@@ -14275,7 +14277,7 @@ ALTER SEQUENCE ci_sources_projects_id_seq OWNED BY ci_sources_projects.id;
 
 CREATE TABLE ci_stages (
     project_id integer,
-    pipeline_id_convert_to_bigint integer,
+    pipeline_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     name character varying,
@@ -14284,7 +14286,7 @@ CREATE TABLE ci_stages (
     "position" integer,
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
-    pipeline_id bigint,
+    pipeline_id_convert_to_bigint bigint,
     CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 );
 

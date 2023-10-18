@@ -15,12 +15,14 @@ RSpec.describe Types::Ci::PipelineType do
       stages user retryable cancelable jobs source_job job job_artifacts downstream
       upstream path project active user_permissions warnings commit commit_path uses_needs
       test_report_summary test_suite ref ref_path warning_messages merge_request_event_type
+      name total_jobs triggered_by_path child source stuck
+      latest merge_request ref_text failure_reason
     ]
 
     if Gitlab.ee?
       expected_fields += %w[
         security_report_summary security_report_findings security_report_finding
-        code_quality_reports dast_profile code_quality_report_summary
+        code_quality_reports dast_profile code_quality_report_summary compute_minutes
       ]
     end
 

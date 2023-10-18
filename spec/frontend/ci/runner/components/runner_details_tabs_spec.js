@@ -54,7 +54,7 @@ describe('RunnerDetailsTabs', () => {
       ...options,
     });
 
-    routerPush = jest.spyOn(wrapper.vm.$router, 'push').mockImplementation(() => {});
+    routerPush = jest.spyOn(wrapper.vm.$router, 'push');
 
     return waitForPromises();
   };
@@ -67,9 +67,8 @@ describe('RunnerDetailsTabs', () => {
   });
 
   it('shows runner jobs', async () => {
-    setWindowLocation(`#${JOBS_ROUTE_PATH}`);
-
-    await createComponent({ mountFn: mountExtended });
+    createComponent({ mountFn: mountExtended });
+    await wrapper.vm.$router.push({ path: JOBS_ROUTE_PATH });
 
     expect(findRunnerDetails().exists()).toBe(false);
     expect(findRunnerJobs().props('runner')).toBe(mockRunner);
@@ -101,10 +100,9 @@ describe('RunnerDetailsTabs', () => {
     }
   });
 
-  it.each(['#/', '#/unknown-tab'])('shows details when location hash is `%s`', async (hash) => {
-    setWindowLocation(hash);
-
-    await createComponent({ mountFn: mountExtended });
+  it.each(['#/', '#/unknown-tab'])('shows details when location hash is `%s`', async (path) => {
+    createComponent({ mountFn: mountExtended });
+    await wrapper.vm.$router.push({ path });
 
     expect(findTabs().props('value')).toBe(0);
     expect(findRunnerDetails().exists()).toBe(true);

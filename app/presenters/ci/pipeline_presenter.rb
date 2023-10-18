@@ -120,6 +120,10 @@ module Ci
       end
     end
 
+    def triggered_by_path
+      pipeline.child? ? project_pipeline_path(pipeline.triggered_by_pipeline.project, pipeline.triggered_by_pipeline) : ''
+    end
+
     private
 
     def plain_ref_name

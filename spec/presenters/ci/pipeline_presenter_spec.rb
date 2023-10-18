@@ -259,4 +259,24 @@ RSpec.describe Ci::PipelinePresenter do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#triggered_by_path' do
+    subject { presenter.triggered_by_path }
+
+    context 'when the pipeline is a child ' do
+      let(:upstream_pipeline) { create(:ci_pipeline) }
+      let(:pipeline) { create(:ci_pipeline, child_of: upstream_pipeline) }
+      let(:expected_path) { project_pipeline_path(upstream_pipeline.project, upstream_pipeline) }
+
+      it 'returns the pipeline path' do
+        expect(subject).to eq(expected_path)
+      end
+    end
+
+    context 'when the pipeline is not a child ' do
+      it 'returns the pipeline path' do
+        expect(subject).to eq('')
+      end
+    end
+  end
 end

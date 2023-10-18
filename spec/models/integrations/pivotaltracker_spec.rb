@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Pivotaltracker do
+RSpec.describe Integrations::Pivotaltracker, feature_category: :integrations do
   include StubRequests
 
   describe 'Validations' do
@@ -91,6 +91,16 @@ RSpec.describe Integrations::Pivotaltracker do
 
         expect(WebMock).not_to have_requested(:post, stubbed_hostname(url))
       end
+    end
+  end
+
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(
+        ActionController::Base.helpers.image_path(
+          'illustrations/third-party-logos/integrations-logos/pivotal-tracker.svg'
+        )
+      )
     end
   end
 end
