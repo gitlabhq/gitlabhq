@@ -195,7 +195,7 @@ describe('Pipelines Table', () => {
 
         it('passes the expected props', () => {
           expect(findPipelineFailureWidget().props()).toStrictEqual({
-            failedJobsCount: firstPipeline.failed_builds.length,
+            failedJobsCount: firstPipeline.failed_builds_count,
             isPipelineActive: firstPipeline.active,
             pipelineIid: firstPipeline.iid,
             pipelinePath: firstPipeline.path,

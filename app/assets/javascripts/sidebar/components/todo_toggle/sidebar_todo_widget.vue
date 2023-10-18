@@ -188,15 +188,14 @@ export default {
 <template>
   <div data-testid="sidebar-todo" :class="{ 'inline-block': !isMergeRequest }">
     <todo-button
+      v-if="isNotificationsTodosButtons"
       v-gl-tooltip.hover.top
-      :title="isNotificationsTodosButtons ? tootltipTitle : undefined"
+      :title="tootltipTitle"
       :issuable-type="issuableType"
       :issuable-id="issuableId"
       :is-todo="hasTodo"
-      :loading="isLoading"
-      :size="isMergeRequest || isNotificationsTodosButtons ? 'medium' : 'small'"
-      :class="{ 'btn-icon': isNotificationsTodosButtons }"
-      class="hide-collapsed"
+      :disabled="isLoading"
+      class="hide-collapsed btn-icon"
       @click.stop.prevent="toggleTodo"
     >
       <gl-icon
@@ -205,6 +204,16 @@ export default {
         :name="collapsedButtonIcon"
       />
     </todo-button>
+    <todo-button
+      v-else
+      :issuable-type="issuableType"
+      :issuable-id="issuableId"
+      :is-todo="hasTodo"
+      :loading="isLoading"
+      :size="isMergeRequest ? 'medium' : 'small'"
+      class="hide-collapsed"
+      @click.stop.prevent="toggleTodo"
+    />
     <gl-button
       v-if="isClassicSidebar && !isMergeRequest"
       v-gl-tooltip.left.viewport

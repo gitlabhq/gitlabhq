@@ -21,8 +21,12 @@ export default {
   components: {
     WorkItemLinkChild,
   },
-  inject: ['fullPath', 'isGroup'],
+  inject: ['isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemType: {
       type: String,
       required: false,

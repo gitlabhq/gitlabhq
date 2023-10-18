@@ -265,6 +265,7 @@ export default {
             v-if="isShownAddForm"
             ref="wiLinksForm"
             data-testid="add-links-form"
+            :full-path="fullPath"
             :issuable-gid="issuableGid"
             :work-item-iid="iid"
             :children-ids="childrenIds"
@@ -278,6 +279,7 @@ export default {
           <work-item-children-wrapper
             :children="children"
             :can-update="canUpdate"
+            :full-path="fullPath"
             :work-item-id="issuableGid"
             :work-item-iid="iid"
             @error="error = $event"

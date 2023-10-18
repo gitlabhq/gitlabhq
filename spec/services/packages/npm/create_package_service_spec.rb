@@ -235,7 +235,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
         # TODO (technical debt): Extract the package size calculation outside the service and add separate specs for it.
         # Right now we have several contexts here to test the calculation's different scenarios.
-        context "when encoded package data is not padded" do
+        context 'when encoded package data is not padded' do
           # 'Hello!' (size = 6 bytes) => 'SGVsbG8h'
           let(:encoded_package_data) { 'SGVsbG8h' }
 
@@ -260,18 +260,18 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
     end
 
-    [
-      '@inv@lid_scope/package',
-      '@scope/sub/group',
-      '@scope/../../package',
-      '@scope%2e%2e%2fpackage'
-    ].each do |invalid_package_name|
-      context "with invalid name #{invalid_package_name}" do
-        let(:package_name) { invalid_package_name }
+    context 'with invalid name' do
+      where(:package_name) do
+        [
+          '@inv@lid_scope/package',
+          '@scope/sub/group',
+          '@scope/../../package',
+          '@scope%2e%2e%2fpackage'
+        ]
+      end
 
-        it 'raises a RecordInvalid error' do
-          expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-        end
+      with_them do
+        it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
       end
     end
 
@@ -283,8 +283,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     end
 
     context 'with invalid versions' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:version) do
         [
           '1',

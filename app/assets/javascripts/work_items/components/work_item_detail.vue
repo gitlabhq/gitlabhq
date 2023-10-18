@@ -468,6 +468,7 @@ export default {
             @error="updateError = $event"
           />
           <work-item-actions
+            :full-path="fullPath"
             :work-item-id="workItem.id"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
@@ -505,6 +506,7 @@ export default {
             @error="updateError = $event"
           />
           <work-item-created-updated
+            :full-path="fullPath"
             :work-item-iid="workItemIid"
             :update-in-progress="updateInProgress"
           />
@@ -542,6 +544,7 @@ export default {
                   @error="updateError = $event"
                 />
                 <work-item-actions
+                  :full-path="fullPath"
                   :work-item-id="workItem.id"
                   :subscribed-to-notifications="workItemNotificationsSubscribed"
                   :work-item-type="workItemType"
@@ -572,12 +575,14 @@ export default {
             <work-item-attributes-wrapper
               :class="{ 'gl-md-display-none!': workItemsMvc2Enabled }"
               class="gl-border-b"
+              :full-path="fullPath"
               :work-item="workItem"
               :work-item-parent-id="workItemParentId"
               @error="updateError = $event"
             />
             <work-item-description
               v-if="hasDescriptionWidget"
+              :full-path="fullPath"
               :work-item-id="workItem.id"
               :work-item-iid="workItem.iid"
               class="gl-pt-5"
@@ -594,6 +599,7 @@ export default {
             />
             <work-item-tree
               v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
+              :full-path="fullPath"
               :work-item-type="workItemType"
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
@@ -614,6 +620,7 @@ export default {
             />
             <work-item-notes
               v-if="workItemNotes"
+              :full-path="fullPath"
               :work-item-id="workItem.id"
               :work-item-iid="workItem.iid"
               :work-item-type="workItemType"
@@ -642,6 +649,7 @@ export default {
             :class="{ 'is-modal': isModal }"
           >
             <work-item-attributes-wrapper
+              :full-path="fullPath"
               :work-item="workItem"
               :work-item-parent-id="workItemParentId"
               @error="updateError = $event"

@@ -22,6 +22,7 @@ describe('Sidebar Todo Widget', () => {
 
   const createComponent = ({
     todosQueryHandler = jest.fn().mockResolvedValue(noTodosResponse),
+    provide = {},
   } = {}) => {
     fakeApollo = createMockApollo([[epicTodoQuery, todosQueryHandler]]);
 
@@ -30,6 +31,7 @@ describe('Sidebar Todo Widget', () => {
       provide: {
         canUpdate: true,
         isClassicSidebar: true,
+        ...provide,
       },
       propsData: {
         fullPath: 'group',
@@ -120,6 +122,25 @@ describe('Sidebar Todo Widget', () => {
 
       await nextTick();
       expect(wrapper.emitted('todoUpdated')).toEqual([[false]]);
+    });
+  });
+
+  describe('when the query is pending', () => {
+    it('is in the loading state', () => {
+      createComponent();
+
+      expect(findTodoButton().attributes('loading')).toBe('true');
+    });
+
+    it('is not in the loading state if notificationsTodosButtons and movedMrSidebar feature flags are enabled', () => {
+      createComponent({
+        provide: {
+          glFeatures: { notificationsTodosButtons: true, movedMrSidebar: true },
+        },
+      });
+
+      expect(findTodoButton().attributes('loading')).toBeUndefined();
+      expect(findTodoButton().attributes('disabled')).toBe('true');
     });
   });
 });

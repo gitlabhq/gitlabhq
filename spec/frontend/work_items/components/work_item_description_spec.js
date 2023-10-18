@@ -70,11 +70,11 @@ describe('WorkItemDescription', () => {
         [updateWorkItemMutation, mutationHandler],
       ]),
       propsData: {
+        fullPath: 'test-project-path',
         workItemId: id,
         workItemIid,
       },
       provide: {
-        fullPath: 'test-project-path',
         isGroup,
       },
     });

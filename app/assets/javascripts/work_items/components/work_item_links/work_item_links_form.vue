@@ -37,8 +37,12 @@ export default {
     GlTooltip,
     WorkItemTokenInput,
   },
-  inject: ['fullPath', 'hasIterationsFeature', 'isGroup'],
+  inject: ['hasIterationsFeature', 'isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     issuableGid: {
       type: String,
       required: false,

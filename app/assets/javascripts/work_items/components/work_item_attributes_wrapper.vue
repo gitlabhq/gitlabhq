@@ -29,8 +29,11 @@ export default {
       import('ee_component/work_items/components/work_item_health_status.vue'),
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItem: {
       type: Object,
       required: true,
@@ -98,6 +101,7 @@ export default {
     <work-item-assignees
       v-if="workItemAssignees"
       :can-update="canUpdate"
+      :full-path="fullPath"
       :work-item-id="workItem.id"
       :assignees="workItemAssignees.assignees.nodes"
       :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
@@ -108,6 +112,7 @@ export default {
     <work-item-labels
       v-if="workItemLabels"
       :can-update="canUpdate"
+      :full-path="fullPath"
       :work-item-id="workItem.id"
       :work-item-iid="workItem.iid"
       @error="$emit('error', $event)"
@@ -123,6 +128,7 @@ export default {
     />
     <work-item-milestone
       v-if="workItemMilestone"
+      :full-path="fullPath"
       :work-item-id="workItem.id"
       :work-item-milestone="workItemMilestone.milestone"
       :work-item-type="workItemType"
@@ -151,6 +157,7 @@ export default {
     <work-item-iteration
       v-if="workItemIteration"
       class="gl-mb-5"
+      :full-path="fullPath"
       :iteration="workItemIteration.iteration"
       :can-update="canUpdate"
       :work-item-id="workItem.id"

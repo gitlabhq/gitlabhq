@@ -1,0 +1,8 @@
+---
+name: ci_fix_performance_pipelines_json_endpoint
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132990
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427255
+milestone: '16.5'
+type: development
+group: group::pipeline authoring
+default_enabled: false

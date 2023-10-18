@@ -19,8 +19,12 @@ export default {
     ConfidentialityBadge,
     GlLoadingIcon,
   },
-  inject: ['fullPath', 'isGroup'],
+  inject: ['isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemIid: {
       type: String,
       required: false,

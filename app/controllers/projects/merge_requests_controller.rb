@@ -156,7 +156,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
         .with_pagination(request, response)
-        .represent(@pipelines, preload: true),
+        .represent(
+          @pipelines,
+          preload: true,
+          disable_failed_builds: ::Feature.enabled?(:ci_fix_performance_pipelines_json_endpoint, @project)
+        ),
       count: {
         all: @pipelines.count
       }

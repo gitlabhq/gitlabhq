@@ -90,11 +90,11 @@ describe('WorkItemAssignees component', () => {
 
     wrapper = mountExtended(WorkItemAssignees, {
       provide: {
-        fullPath: 'test-project-path',
         isGroup,
       },
       propsData: {
         assignees,
+        fullPath: 'test-project-path',
         workItemId,
         allowsMultipleAssignees,
         workItemType: TASK_TYPE_NAME,

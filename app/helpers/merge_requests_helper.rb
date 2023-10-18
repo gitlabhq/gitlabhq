@@ -201,7 +201,8 @@ module MergeRequestsHelper
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       source_project_full_path: merge_request.source_project&.full_path,
       is_forked: project.forked?.to_s,
-      new_comment_template_path: profile_comment_templates_path
+      new_comment_template_path: profile_comment_templates_path,
+      iid: merge_request.iid
     }
   end
 

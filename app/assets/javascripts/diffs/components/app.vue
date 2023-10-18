@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import api from '~/api';
 import {
@@ -22,6 +23,7 @@ import { __ } from '~/locale';
 
 import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
+import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   MR_TREE_SHOW_KEY,
   ALERT_OVERFLOW_HIDDEN,
@@ -53,6 +55,7 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 import DiffsFileTree from './diffs_file_tree.vue';
+import getMRCodequalityReports from './graphql/get_mr_codequality_reports.query.graphql';
 
 export default {
   name: 'DiffsApp',
@@ -75,6 +78,7 @@ export default {
     GenerateTestFileDrawer: () =>
       import('ee_component/ai/components/generate_test_file_drawer.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
@@ -82,6 +86,16 @@ export default {
   },
   props: {
     endpointCoverage: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    projectPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    iid: {
       type: String,
       required: false,
       default: '',
@@ -122,6 +136,32 @@ export default {
       virtualScrollCurrentIndex: -1,
       subscribedToVirtualScrollingEvents: false,
     };
+  },
+  apollo: {
+    getMRCodequalityReports: {
+      query: getMRCodequalityReports,
+      variables() {
+        return { fullPath: this.projectPath, iid: this.iid };
+      },
+      skip() {
+        return !this.endpointCodequality || !this.sastReportsInInlineDiff;
+      },
+      update(data) {
+        if (data?.project?.mergeRequest?.codequalityReportsComparer?.report?.newErrors) {
+          this.$store.commit(
+            'diffs/SET_CODEQUALITY_DATA',
+            sortFindingsByFile(
+              data.project.mergeRequest.codequalityReportsComparer.report.newErrors,
+            ),
+          );
+        }
+      },
+      error() {
+        createAlert({
+          message: __('Something went wrong fetching the CodeQuality Findings. Please try again!'),
+        });
+      },
+    },
   },
   computed: {
     ...mapState('diffs', {
@@ -219,6 +259,9 @@ export default {
     },
     resourceId() {
       return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
+    },
+    sastReportsInInlineDiff() {
+      return this.glFeatures.sastReportsInInlineDiff;
     },
   },
   watch: {
@@ -465,7 +508,7 @@ export default {
         this.fetchCoverageFiles();
       }
 
-      if (this.endpointCodequality) {
+      if (this.endpointCodequality && !this.sastReportsInInlineDiff) {
         this.fetchCodequality();
       }
 

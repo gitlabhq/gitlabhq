@@ -17425,9 +17425,6 @@ msgstr[1] ""
 msgid "Display"
 msgstr ""
 
-msgid "Display %{viewer_type}"
-msgstr ""
-
 msgid "Display alerts from all configured monitoring tools."
 msgstr ""
 
@@ -45068,6 +45065,9 @@ msgid "Something else"
 msgstr ""
 
 msgid "Something went wrong"
+msgstr ""
+
+msgid "Something went wrong fetching the CodeQuality Findings. Please try again!"
 msgstr ""
 
 msgid "Something went wrong on our end"

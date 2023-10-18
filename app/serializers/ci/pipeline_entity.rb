@@ -84,10 +84,16 @@ class Ci::PipelineEntity < Grape::Entity
     project_pipeline_path(pipeline.project, pipeline)
   end
 
-  expose :failed_builds, if: -> (*) { can_retry? }, using: Ci::JobEntity do |pipeline|
+  expose :failed_builds,
+    if: -> (_, options) { !options[:disable_failed_builds] && can_retry? },
+    using: Ci::JobEntity do |pipeline|
     pipeline.failed_builds.each do |build|
       build.project = pipeline.project
     end
+  end
+
+  expose :failed_builds_count do |pipeline|
+    pipeline.failed_builds.size
   end
 
   private

@@ -59,10 +59,10 @@ describe('WorkItemLabels component', () => {
         [updateWorkItemMutation, updateWorkItemMutationHandler],
       ]),
       provide: {
-        fullPath: 'test-project-path',
         isGroup,
       },
       propsData: {
+        fullPath: 'test-project-path',
         workItemId,
         workItemIid,
         canUpdate,

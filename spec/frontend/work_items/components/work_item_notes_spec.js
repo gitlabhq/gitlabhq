@@ -98,10 +98,8 @@ describe('WorkItemNotes component', () => {
         [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
         [workItemNoteDeletedSubscription, notesDeleteSubscriptionHandler],
       ]),
-      provide: {
-        fullPath: 'test-path',
-      },
       propsData: {
+        fullPath: 'test-path',
         workItemId,
         workItemIid,
         workItemType: 'task',

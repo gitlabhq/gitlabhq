@@ -46,8 +46,11 @@ export default {
     WorkItemNotesActivityHeader,
     WorkItemHistoryOnlyFilterNote,
   },
-  inject: ['fullPath'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemId: {
       type: String,
       required: true,

@@ -38,7 +38,6 @@ describe('WorkItemActions component', () => {
 
   let wrapper;
   const mockWorkItemReference = 'gitlab-org/gitlab-test#1';
-  const mockFullPath = 'gitlab-org/gitlab-test';
   const mockWorkItemCreateNoteEmail =
     'gitlab-incoming+gitlab-org-gitlab-test-2-ddpzuq0zd2wefzofcpcdr3dg7-issue-1@gmail.com';
 
@@ -109,6 +108,7 @@ describe('WorkItemActions component', () => {
         [updateWorkItemNotificationsMutation, notificationsMutationHandler],
       ]),
       propsData: {
+        fullPath: 'gitlab-org/gitlab-test',
         workItemId: 'gid://gitlab/WorkItem/1',
         canUpdate,
         canDelete,
@@ -120,7 +120,6 @@ describe('WorkItemActions component', () => {
         workItemCreateNoteEmail,
       },
       provide: {
-        fullPath: mockFullPath,
         isGroup: false,
         glFeatures: { workItemsMvc2: true },
       },

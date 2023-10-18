@@ -54,10 +54,13 @@ describe('WorkItemCreatedUpdated component', () => {
         [groupWorkItemByIidQuery, groupSuccessHandler],
       ]),
       provide: {
-        fullPath: '/some/project',
         isGroup,
       },
-      propsData: { workItemIid, updateInProgress },
+      propsData: {
+        fullPath: '/some/project',
+        workItemIid,
+        updateInProgress,
+      },
       stubs: {
         GlAvatarLink,
         GlSprintf,

@@ -20,6 +20,7 @@ describe('WorkItemAttributesWrapper component', () => {
   const createComponent = ({ workItem = workItemQueryResponse.data.workItem } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
       propsData: {
+        fullPath: 'group/project',
         workItem,
       },
       provide: {
@@ -28,7 +29,6 @@ describe('WorkItemAttributesWrapper component', () => {
         hasOkrsFeature: true,
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
-        fullPath: 'group/project',
       },
       stubs: {
         WorkItemWeight: true,

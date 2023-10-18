@@ -67,8 +67,12 @@ export default {
   copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   deleteActionTestId: TEST_ID_DELETE_ACTION,
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
-  inject: ['fullPath', 'isGroup'],
+  inject: ['isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemId: {
       type: String,
       required: false,

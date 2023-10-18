@@ -54,6 +54,7 @@ describe('WorkItemLinksForm', () => {
         [createWorkItemMutation, createMutationResolver],
       ]),
       propsData: {
+        fullPath: 'project/path',
         issuableGid: 'gid://gitlab/WorkItem/1',
         parentConfidential,
         parentIteration,
@@ -62,7 +63,6 @@ describe('WorkItemLinksForm', () => {
         formType,
       },
       provide: {
-        fullPath: 'project/path',
         hasIterationsFeature,
         isGroup: false,
       },

@@ -22,8 +22,11 @@ export default {
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
   },
-  inject: ['fullPath'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemType: {
       type: String,
       required: true,
@@ -139,6 +142,7 @@ export default {
         v-if="isShownAddForm"
         ref="wiLinksForm"
         data-testid="add-tree-form"
+        :full-path="fullPath"
         :issuable-gid="workItemId"
         :work-item-iid="workItemIid"
         :form-type="formType"
@@ -152,6 +156,7 @@ export default {
       <work-item-children-wrapper
         :children="children"
         :can-update="canUpdate"
+        :full-path="fullPath"
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
