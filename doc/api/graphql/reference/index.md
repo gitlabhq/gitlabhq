@@ -21736,7 +21736,7 @@ Represents a pipeline schedule.
 | <a id="pipelinescheduleid"></a>`id` | [`ID!`](#id) | ID of the pipeline schedule. |
 | <a id="pipelineschedulelastpipeline"></a>`lastPipeline` | [`Pipeline`](#pipeline) | Last pipeline object. |
 | <a id="pipelineschedulenextrunat"></a>`nextRunAt` | [`Time!`](#time) | Time when the next pipeline will run. |
-| <a id="pipelinescheduleowner"></a>`owner` | [`UserCore!`](#usercore) | Owner of the pipeline schedule. |
+| <a id="pipelinescheduleowner"></a>`owner` | [`UserCore`](#usercore) | Owner of the pipeline schedule. |
 | <a id="pipelinescheduleproject"></a>`project` | [`Project`](#project) | Project of the pipeline schedule. |
 | <a id="pipelineschedulerealnextrun"></a>`realNextRun` | [`Time!`](#time) | Time when the next pipeline will run. |
 | <a id="pipelinescheduleref"></a>`ref` | [`String`](#string) | Ref of the pipeline schedule. |

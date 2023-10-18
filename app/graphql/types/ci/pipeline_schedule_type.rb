@@ -17,7 +17,7 @@ module Types
 
       field :description, GraphQL::Types::String, null: true, description: 'Description of the pipeline schedule.'
 
-      field :owner, ::Types::UserType, null: false, description: 'Owner of the pipeline schedule.'
+      field :owner, ::Types::UserType, null: true, description: 'Owner of the pipeline schedule.'
 
       field :active, GraphQL::Types::Boolean, null: false, description: 'Indicates if the pipeline schedule is active.'
 
