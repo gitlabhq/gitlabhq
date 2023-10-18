@@ -9,6 +9,7 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: database
+instrumentation_class: CountPackagesMetric
 distribution:
 - ee
 - ce

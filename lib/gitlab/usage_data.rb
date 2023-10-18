@@ -135,15 +135,6 @@ module Gitlab
         }
       end
       # rubocop: enable Metrics/AbcSize
-
-      def system_usage_data_monthly
-        {
-          counts_monthly: {
-            projects: count(Project.where(monthly_time_range_db_params), start: minimum_id(Project), finish: maximum_id(Project)),
-            packages: count(::Packages::Package.where(monthly_time_range_db_params))
-          }
-        }
-      end
       # rubocop: enable CodeReuse/ActiveRecord
 
       def system_usage_data_license
@@ -496,7 +487,6 @@ module Gitlab
       def usage_data_metrics
         system_usage_data_license
           .merge(system_usage_data)
-          .merge(system_usage_data_monthly)
           .merge(system_usage_data_weekly)
           .merge(features_usage_data)
           .merge(components_usage_data)

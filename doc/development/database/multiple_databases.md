@@ -47,6 +47,13 @@ The usage of schema enforces the base class to be used:
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
 
+### Guidelines on choosing between `gitlab_main_cell` and `gitlab_main_clusterwide` schema
+
+When you choose the appropriate schema for tables, consider the following guidelines as part of the [Cells](../../architecture/blueprints/cells/index.md) architecture:
+
+- Default to `gitlab_main_cell`: We expect most tables to be assigned to the `gitlab_main_cell` schema by default. Choose this schema if the data in the table is related to `projects` or `namespaces`.
+- Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group This is crucial because it has scaling implications and may require reconsideration of the schema choice.
+
 ### The impact of `gitlab_schema`
 
 The usage of `gitlab_schema` has a significant impact on the application.

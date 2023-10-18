@@ -17,7 +17,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
 
     it 'includes basic top and second level keys' do
       is_expected.to include(:counts)
-      is_expected.to include(:counts_monthly)
       is_expected.to include(:counts_weekly)
       is_expected.to include(:license)
 
@@ -588,28 +587,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
 
     it 'includes a recording_ce_finished_at timestamp' do
       expect(subject[:recording_ce_finished_at]).to be_a(Time)
-    end
-  end
-
-  describe '.system_usage_data_monthly' do
-    let_it_be(:project) { create(:project, created_at: 3.days.ago) }
-
-    before do
-      create(:package, project: project, created_at: 3.days.ago)
-      create(:package, created_at: 2.months.ago, project: project)
-
-      for_defined_days_back do
-        create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
-      end
-    end
-
-    subject { described_class.system_usage_data_monthly }
-
-    it 'gathers monthly usage counts correctly' do
-      counts_monthly = subject[:counts_monthly]
-
-      expect(counts_monthly[:projects]).to eq(1)
-      expect(counts_monthly[:packages]).to eq(1)
     end
   end
 

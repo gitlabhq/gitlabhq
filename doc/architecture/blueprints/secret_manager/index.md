@@ -120,6 +120,10 @@ Hence, GCP Key Management is the natural choice for a cloud-based key management
 To extend this service to self-managed GitLab instances, we would consider using GitLab Cloud Connector as a proxy between
 self-managed GitLab instances and the GitLab Secrets Manager.
 
+## Decision Records
+
+- [001: Use envelope encryption](decisions/001_envelop_encryption.md)
+
 ## Alternative Solutions
 
 Other solutions we have explored:

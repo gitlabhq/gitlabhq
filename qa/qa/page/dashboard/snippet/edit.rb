@@ -25,7 +25,9 @@ module QA
           def add_to_file_content(content)
             text_area.click
             text_area.send_keys(:home, content) # starts in the beginning of the line
-            text_area.has_text?(content) # wait for changes to take effect
+            wait_until(message: "add_to_file_content", max_duration: Capybara.default_max_wait_time, reload: false) do
+              text_area.value.include?(content) # wait for changes to take effect
+            end
           end
 
           def change_visibility_to(visibility_type)

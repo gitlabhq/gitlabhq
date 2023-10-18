@@ -140,7 +140,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def build_qr_code
     uri = current_user.otp_provisioning_uri(account_string, issuer: issuer_host)
-    RQRCode.render_qrcode(uri, :svg, level: :m, unit: 3)
+    RQRCode::QRCode.new(uri, level: :m).as_svg(
+      shape_rendering: "crispEdges",
+      module_size: 3
+    )
   end
 
   def account_string
