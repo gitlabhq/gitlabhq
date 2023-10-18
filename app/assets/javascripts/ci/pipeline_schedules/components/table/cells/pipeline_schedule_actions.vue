@@ -34,7 +34,7 @@ export default {
       return this.schedule.userPermissions.playPipelineSchedule;
     },
     isCurrentUserOwner() {
-      return this.schedule.owner.username === this.currentUser.username;
+      return this.schedule.owner?.username === this.currentUser.username;
     },
     canTakeOwnership() {
       return !this.isCurrentUserOwner && this.schedule.userPermissions.adminPipelineSchedule;

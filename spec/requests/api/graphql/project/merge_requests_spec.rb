@@ -445,9 +445,14 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
 
     before_all do
       project.add_developer(current_user)
-      mrs = create_list(:merge_request, 10, :closed, :with_head_pipeline,
-                        source_project: project,
-                        author: current_user)
+      mrs = create_list(
+        :merge_request,
+        10,
+        :closed,
+        :with_head_pipeline,
+        source_project: project,
+        author: current_user
+      )
       mrs.each do |mr|
         mr.assignees << create(:user)
         mr.assignees << current_user

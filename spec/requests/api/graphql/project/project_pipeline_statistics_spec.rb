@@ -21,9 +21,11 @@ RSpec.describe 'rendering project pipeline statistics', feature_category: :conti
   end
 
   let(:query) do
-    graphql_query_for('project',
-                      { 'fullPath' => project.full_path },
-                      query_graphql_field('pipelineAnalytics', {}, fields))
+    graphql_query_for(
+      'project',
+      { 'fullPath' => project.full_path },
+      query_graphql_field('pipelineAnalytics', {}, fields)
+    )
   end
 
   before do

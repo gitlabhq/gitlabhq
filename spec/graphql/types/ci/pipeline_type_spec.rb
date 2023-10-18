@@ -9,7 +9,7 @@ RSpec.describe Types::Ci::PipelineType do
 
   it 'contains attributes related to a pipeline' do
     expected_fields = %w[
-      id iid sha before_sha complete status detailed_status config_source
+      id iid sha before_sha complete status detailed_status config_source name
       duration queued_duration
       coverage created_at updated_at started_at finished_at committed_at
       stages user retryable cancelable jobs source_job job job_artifacts downstream

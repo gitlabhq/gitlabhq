@@ -11,39 +11,42 @@ RSpec.describe 'query terraform states', feature_category: :infrastructure_as_co
   let_it_be(:latest_version) { terraform_state.latest_version }
 
   let(:query) do
-    graphql_query_for(:project, { fullPath: project.full_path },
-    %{
-      terraformStates {
-        count
-        nodes {
-          id
-          name
-          lockedAt
-          createdAt
-          updatedAt
-
-          latestVersion {
+    graphql_query_for(
+      :project,
+      { fullPath: project.full_path },
+      %{
+        terraformStates {
+          count
+          nodes {
             id
-            downloadPath
-            serial
+            name
+            lockedAt
             createdAt
             updatedAt
 
-            createdByUser {
+            latestVersion {
+              id
+              downloadPath
+              serial
+              createdAt
+              updatedAt
+
+              createdByUser {
+                id
+              }
+
+              job {
+                name
+              }
+            }
+
+            lockedByUser {
               id
             }
-
-            job {
-              name
-            }
-          }
-
-          lockedByUser {
-            id
           }
         }
       }
-    })
+    )
   end
 
   let(:current_user) { project.creator }

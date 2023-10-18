@@ -18,6 +18,9 @@ module Types
       field :iid, GraphQL::Types::String, null: false,
                                           description: 'Internal ID of the pipeline.'
 
+      field :name, GraphQL::Types::String, null: true,
+                                          description: 'Name of the pipeline.'
+
       field :sha, GraphQL::Types::String, null: true,
                                           method: :sha,
                                           description: "SHA of the pipeline's commit." do

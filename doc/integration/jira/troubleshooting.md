@@ -8,7 +8,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This page contains a list of common issues you might encounter when working with Jira integrations.
 
-## GitLab cannot comment on a Jira issue
+## Jira issue integration
+
+When working with the [Jira issue integration](configure.md), you might encounter the following issues.
+
+### GitLab cannot link to a Jira issue
+
+When you mention a Jira issue ID in GitLab, the issue link might be missing.
+[`sidekiq.log`](../../administration/logs/index.md#sidekiq-logs) might contain the following exception:
+
+```plaintext
+No Link Issue Permission for issue 'JIRA-1234'
+```
+
+To resolve this issue, ensure the Jira user you created for the [Jira issue integration](configure.md) has permission to link issues.
+
+### GitLab cannot comment on a Jira issue
 
 If GitLab cannot comment on a Jira issue, ensure the Jira user you created for the [Jira issue integration](configure.md) has permission to:
 
@@ -38,7 +53,7 @@ In the following example, Jira responds with a `404` because the Jira issue `ALP
 }
 ```
 
-## GitLab cannot close a Jira issue
+### GitLab cannot close a Jira issue
 
 If GitLab cannot close a Jira issue:
 
@@ -49,9 +64,9 @@ If GitLab cannot close a Jira issue:
   - Check the Jira issue resolution field is not set.
   - Check the issue is not struck through in Jira lists.
 
-## CAPTCHA
+### CAPTCHA after failed sign-in attempts
 
-CAPTCHA might be triggered after several consecutive failed login attempts,
+CAPTCHA might be triggered after several consecutive failed sign-in attempts,
 which might lead to a `401 unauthorized` error when testing your Jira integration.
 If CAPTCHA has been triggered, you can't use the Jira REST API to
 authenticate with the Jira site.
@@ -59,18 +74,18 @@ authenticate with the Jira site.
 To fix this error, sign in to your Jira instance
 and complete the CAPTCHA.
 
-## Jira integration does not work for imported project
+### Integration does not work for an imported project
 
 There is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/341571)
 where the Jira integration sometimes does not work for a project that has been imported.
 As a workaround, disable the integration and then re-enable it.
 
-## Bulk change all Jira integrations to Jira instance-level or group-level values
+### Change all Jira projects to instance-level or group-level values
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-### Change all projects instance wide
+#### Change all projects instance wide
 
 To change all Jira projects to use instance-level integration settings:
 
@@ -101,7 +116,7 @@ To change all Jira projects to use instance-level integration settings:
 
 1. Modify and save the instance-level integration from the UI to propagate the changes to all group-level and project-level integrations.
 
-### Change all projects in a group
+#### Change all projects in a group
 
 To change all Jira projects in a group (and its subgroups) to use group-level integration settings:
 
@@ -137,7 +152,7 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
   end
   ```
 
-## Bulk update the service integration password for all projects
+### Update the Jira integration password for all projects
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -153,7 +168,11 @@ p.each do |project|
 end
 ```
 
-## `500 We're sorry` when accessing a Jira issue in GitLab
+## Jira issue list
+
+When [viewing Jira issues](issues.md#view-jira-issues) in GitLab, you might encounter the following issues.
+
+### `500 We're sorry` when accessing a Jira issue in GitLab
 
 When accessing a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
 Check [`production.log`](../../administration/logs/index.md#productionlog) to see if it contains the following exception:
@@ -164,7 +183,7 @@ Check [`production.log`](../../administration/logs/index.md#productionlog) to se
 
 If that's the case, ensure the [**Due date** field is visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
 
-## `An error occurred while requesting data from Jira` when viewing the Jira issue list in GitLab
+### `An error occurred while requesting data from Jira`
 
 When you try to view the Jira issue list in GitLab, you might see this message:
 
@@ -181,7 +200,7 @@ The Jira issue list does not load if the project key contains a reserved JQL wor
 For more information, see [issue 426176](https://gitlab.com/gitlab-org/gitlab/-/issues/426176).
 Your Jira project key must not have [restricted words and characters](https://confluence.atlassian.com/jirasoftwareserver/advanced-searching-939938733.html#Advancedsearching-restrictionsRestrictedwordsandcharacters).
 
-## Jira credentials not allowed to access the data
+### Jira credentials not allowed to access the data
 
 When you try to view the Jira issue list in GitLab, you might see this message:
 
@@ -214,14 +233,3 @@ Both methods should return a JSON response:
 
 - `total` gives a count of the issues that match the Jira project key.
 - `issues` contains an array of the issues that match the Jira project key.
-
-## GitLab cannot link to a Jira issue
-
-When you mention a Jira issue ID in GitLab, the issue link might be missing.
-[`sidekiq.log`](../../administration/logs/index.md#sidekiq-logs) might contain the following exception:
-
-```plaintext
-No Link Issue Permission for issue 'JIRA-1234'
-```
-
-To resolve this issue, ensure the Jira user you created for the [Jira issue integration](configure.md) has permission to link issues.

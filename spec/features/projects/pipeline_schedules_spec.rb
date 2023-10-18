@@ -29,6 +29,19 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
         expect(page).to have_content(s_('PipelineSchedules|Edit pipeline schedule'))
       end
+
+      context 'when the owner is nil' do
+        before do
+          pipeline_schedule.update!(owner_id: nil, description: "#{FFaker::Product.product_name} pipeline schedule")
+          visit_pipelines_schedules
+        end
+
+        it 'shows the pipeline' do
+          within_testid('pipeline-schedule-table-row') do
+            expect(page).to have_content(pipeline_schedule.description)
+          end
+        end
+      end
     end
 
     describe 'PATCH /projects/pipelines_schedules/:id/edit' do

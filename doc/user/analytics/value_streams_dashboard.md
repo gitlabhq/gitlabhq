@@ -202,6 +202,8 @@ panels:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of editing label filters in the configuration file, see [GitLab Value Streams Dashboard - Label filters demo](https://www.youtube.com/watch?v=4qDAHCxCfik).
 
+Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
+
 ## Dashboard metrics and drill-down reports
 
 | Metric | Description | Drill-down report | Documentation page | ID |
