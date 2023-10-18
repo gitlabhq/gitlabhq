@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, :skip_live_env, :reliable do
+  RSpec.describe 'Govern', :requires_admin, :skip_live_env, :reliable do
     describe '2FA', product_group: :authentication_and_authorization do
       let(:owner_user) { create(:user, api_client: admin_api_client) }
 

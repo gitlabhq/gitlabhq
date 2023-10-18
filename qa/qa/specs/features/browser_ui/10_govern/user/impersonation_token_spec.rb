@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
+  RSpec.describe 'Govern' do
     describe 'Impersonation tokens', :requires_admin, product_group: :authentication_and_authorization do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 

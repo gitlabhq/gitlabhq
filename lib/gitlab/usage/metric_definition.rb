@@ -52,18 +52,16 @@ module Gitlab
       end
 
       def validate!
-        unless skip_validation?
-          self.class.schemer.validate(attributes.deep_stringify_keys).each do |error|
-            error_message = <<~ERROR_MSG
-              Error type: #{error['type']}
-              Data: #{error['data']}
-              Path: #{error['data_pointer']}
-              Details: #{error['details']}
-              Metric file: #{path}
-            ERROR_MSG
+        self.class.schemer.validate(attributes.deep_stringify_keys).each do |error|
+          error_message = <<~ERROR_MSG
+            Error type: #{error['type']}
+            Data: #{error['data']}
+            Path: #{error['data_pointer']}
+            Details: #{error['details']}
+            Metric file: #{path}
+          ERROR_MSG
 
-            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(error_message))
-          end
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(error_message))
         end
       end
 
@@ -86,8 +84,7 @@ module Gitlab
           @paths ||= [Rails.root.join('config', 'metrics', '[^agg]*', '*.yml')]
         end
 
-        def definitions(skip_validation: false)
-          @skip_validation = skip_validation
+        def definitions
           @definitions ||= load_all!
         end
 
@@ -115,19 +112,6 @@ module Gitlab
           @metrics_yaml ||= definitions.values.map(&:to_h).map(&:deep_stringify_keys).to_yaml
         end
 
-        def metric_definitions_changed?
-          return false unless Rails.env.development?
-
-          return false if @last_change_check && @last_change_check > 3.seconds.ago
-
-          @last_change_check = Time.current
-
-          last_change = Dir.glob(paths).map { |f| File.mtime(f) }.max
-          did_change = @last_metric_update != last_change
-          @last_metric_update = last_change
-          did_change
-        end
-
         private
 
         def load_all!
@@ -141,7 +125,7 @@ module Gitlab
           definition = YAML.safe_load(definition)
           definition.deep_symbolize_keys!
 
-          self.new(path, definition).tap(&:validate!).tap(&:category_to_lowercase)
+          self.new(path, definition).tap(&:category_to_lowercase)
         rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(e.message))
         end
@@ -167,10 +151,6 @@ module Gitlab
 
       def respond_to_missing?(method, *args)
         attributes[method].present? || super
-      end
-
-      def skip_validation?
-        !!attributes[:skip_validation] || @skip_validation
       end
 
       def events_from_new_structure

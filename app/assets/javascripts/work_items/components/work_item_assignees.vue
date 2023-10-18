@@ -13,7 +13,8 @@ import {
 import { debounce, uniqueId } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
-import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
+import usersSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import { n__, s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -54,7 +55,7 @@ export default {
     GlIntersectionObserver,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -99,7 +100,7 @@ export default {
   apollo: {
     users: {
       query() {
-        return userSearchQuery;
+        return this.isGroup ? groupUsersSearchQuery : usersSearchQuery;
       },
       variables() {
         return {

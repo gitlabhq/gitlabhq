@@ -18,10 +18,7 @@ module Gitlab
 
         sidekiq_retries_exhausted do |msg|
           args = msg['args']
-          correlation_id = msg['correlation_id']
           jid = msg['jid']
-
-          new.perform_failure(args[0], args[1], correlation_id)
 
           # If a job is being exhausted we still want to notify the
           # Gitlab::Import::AdvanceStageWorker to prevent the entire import from getting stuck
@@ -70,18 +67,6 @@ module Gitlab
         track_exception(project, e)
       rescue StandardError => e
         track_and_raise_exception(project, e)
-      end
-
-      # hash - A Hash containing the details of the object to import.
-      def perform_failure(project_id, hash, correlation_id)
-        project = Project.find_by_id(project_id)
-        return unless project
-
-        failure = project.import_failures.failures_by_correlation_id(correlation_id).first
-        return unless failure
-
-        object = representation_class.from_json_hash(hash)
-        failure.update_column(:external_identifiers, object.github_identifiers)
       end
 
       def increment_object_counter?(_object)

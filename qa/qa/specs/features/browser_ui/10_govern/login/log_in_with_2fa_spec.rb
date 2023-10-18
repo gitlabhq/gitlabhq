@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, product_group: :authentication_and_authorization do
+  RSpec.describe 'Govern', :requires_admin, product_group: :authentication_and_authorization do
     describe '2FA' do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
       let(:owner_api_client) { Runtime::API::Client.new(:gitlab, user: owner_user) }
@@ -21,10 +21,12 @@ module QA
           path: "group-with-2fa-#{SecureRandom.hex(8)}")
       end
 
-      let(:developer_user) { create(:user, username: "developer_user_#{SecureRandom.hex(4)}", api_client: admin_api_client) }
+      let(:developer_user) do
+        create(:user, username: "developer_user_#{SecureRandom.hex(4)}", api_client: admin_api_client)
+      end
 
       let(:two_fa_expected_text) do
-        /The group settings for.*require you to enable Two-Factor Authentication for your account.*You need to do this before/
+        /The group settings for.*require you to enable Two-Factor Authentication for your account.*You need to do this/
       end
 
       before do
@@ -45,7 +47,7 @@ module QA
       ) do
         enforce_two_factor_authentication_on_group(group)
 
-        enable_two_factor_authentication_for_user(developer_user)
+        otp = enable_two_factor_authentication_for_user(developer_user)
 
         Flow::Login.sign_in(as: developer_user, skip_page_validation: true)
 
@@ -57,7 +59,7 @@ module QA
         expect(page).to have_text('Invalid two-factor code')
 
         Page::Main::TwoFactorAuth.perform do |two_fa_auth|
-          two_fa_auth.set_2fa_code(@otp.fresh_otp)
+          two_fa_auth.set_2fa_code(otp.fresh_otp)
           two_fa_auth.click_verify_code_button
         end
 
@@ -88,15 +90,17 @@ module QA
           expect(page).to have_text(two_fa_expected_text)
 
           Page::Profile::TwoFactorAuth.perform do |two_fa_auth|
-            @otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
+            otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
 
-            two_fa_auth.set_pin_code(@otp.fresh_otp)
+            two_fa_auth.set_pin_code(otp.fresh_otp)
             two_fa_auth.set_current_password(user.password)
             two_fa_auth.click_register_2fa_app_button
 
             two_fa_auth.click_copy_and_proceed
 
             expect(two_fa_auth).to have_text('You have set up 2FA for your account!')
+
+            otp
           end
         end
       end

@@ -325,15 +325,5 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
         sidekiq_retries_exhausted
       end
     end
-
-    it 'updates external_identifiers of the correct failure' do
-      failure_1, failure_2 = create_list(:import_failure, 2, project: project)
-      failure_2.update_column(:correlation_id_value, correlation_id)
-
-      sidekiq_retries_exhausted
-
-      expect(failure_1.reload.external_identifiers).to be_empty
-      expect(failure_2.reload.external_identifiers).to eq(github_identifiers.with_indifferent_access)
-    end
   end
 end

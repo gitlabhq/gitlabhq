@@ -3,7 +3,9 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :product_analytics_data_management do
-  after(:all) do
+  around do |example|
+    described_class.instance_variable_set(:@events, nil)
+    example.run
     described_class.instance_variable_set(:@events, nil)
   end
 
@@ -20,7 +22,6 @@ RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :prod
     let(:events2) { { 'event2' => nil } }
 
     before do
-      allow(Gitlab::Usage::MetricDefinition).to receive(:metric_definitions_changed?).and_return(true)
       allow(Gitlab::Usage::MetricDefinition).to receive(:all).and_return([definition1, definition2])
       allow(definition1).to receive(:available?).and_return(true)
       allow(definition2).to receive(:available?).and_return(true)

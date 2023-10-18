@@ -32,7 +32,7 @@ module Gitlab
         private
 
         def events
-          load_configurations if @events.nil? || Gitlab::Usage::MetricDefinition.metric_definitions_changed?
+          load_configurations if @events.nil?
 
           @events
         end

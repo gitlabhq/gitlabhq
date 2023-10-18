@@ -6,7 +6,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
+import usersSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -53,6 +54,9 @@ describe('WorkItemAssignees component', () => {
   const successSearchQueryHandler = jest
     .fn()
     .mockResolvedValue(projectMembersResponseWithCurrentUser);
+  const successGroupSearchQueryHandler = jest
+    .fn()
+    .mockResolvedValue(projectMembersResponseWithCurrentUser);
   const successSearchQueryHandlerWithMoreAssignees = jest
     .fn()
     .mockResolvedValue(projectMembersResponseWithCurrentUserWithNextPage);
@@ -75,9 +79,11 @@ describe('WorkItemAssignees component', () => {
     allowsMultipleAssignees = true,
     canInviteMembers = false,
     canUpdate = true,
+    isGroup = false,
   } = {}) => {
     const apolloProvider = createMockApollo([
-      [userSearchQuery, searchQueryHandler],
+      [usersSearchQuery, searchQueryHandler],
+      [groupUsersSearchQuery, successGroupSearchQueryHandler],
       [currentUserQuery, currentUserQueryHandler],
       [updateWorkItemMutation, updateWorkItemMutationHandler],
     ]);
@@ -85,6 +91,7 @@ describe('WorkItemAssignees component', () => {
     wrapper = mountExtended(WorkItemAssignees, {
       provide: {
         fullPath: 'test-project-path',
+        isGroup,
       },
       propsData: {
         assignees,
@@ -539,5 +546,37 @@ describe('WorkItemAssignees component', () => {
     await waitForPromises();
 
     expect(findTokenSelector().props('dropdownItems')).toHaveLength(2);
+  });
+
+  describe('when project context', () => {
+    beforeEach(() => {
+      createComponent();
+      findTokenSelector().vm.$emit('focus');
+      findTokenSelector().vm.$emit('text-input', 'jane');
+    });
+
+    it('calls the project users search query', () => {
+      expect(successSearchQueryHandler).toHaveBeenCalled();
+    });
+
+    it('does not call the group users search query', () => {
+      expect(successGroupSearchQueryHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when group context', () => {
+    beforeEach(() => {
+      createComponent({ isGroup: true });
+      findTokenSelector().vm.$emit('focus');
+      findTokenSelector().vm.$emit('text-input', 'jane');
+    });
+
+    it('does not call the project users search query', () => {
+      expect(successSearchQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls the group users search query', () => {
+      expect(successGroupSearchQueryHandler).toHaveBeenCalled();
+    });
   });
 });

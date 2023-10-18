@@ -185,9 +185,6 @@
         ]
       }
     },
-    "skip_validation": {
-      "type": "boolean"
-    },
     "value_json_schema": {
       "type": "string"
     }

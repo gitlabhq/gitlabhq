@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
+  RSpec.describe 'Govern' do
     # TODO: `:reliable` should be added back once https://gitlab.com/gitlab-org/gitlab/-/issues/359278 is resolved
     describe 'User', :requires_admin, product_group: :authentication_and_authorization do
       # rubocop:disable RSpec/InstanceVariable

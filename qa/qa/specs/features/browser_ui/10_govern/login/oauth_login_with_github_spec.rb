@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :orchestrated, :oauth, product_group: :authentication_and_authorization do
+  RSpec.describe 'Govern', :orchestrated, :oauth, product_group: :authentication_and_authorization do
     describe 'OAuth' do
       it 'connects and logs in with GitHub OAuth',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/402405' do

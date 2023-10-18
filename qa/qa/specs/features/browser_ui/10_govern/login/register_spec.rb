@@ -15,7 +15,7 @@ module QA
     end
   end
 
-  RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin, product_group: :authentication_and_authorization do
+  RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication_and_authorization do
     describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
       testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934',
       quarantine: {
@@ -23,13 +23,14 @@ module QA
         issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
         type: :investigating
       } do
-      before do
-        # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not an admin
-        # So we need to set it to nil in order to create a new token for admin user so that we are able to set_application_settings
-        # Also, when GITLAB_LDAP_USERNAME is provided, it is used to create a token. This also needs to be set to nil temporarily
-        # for the same reason as above.
+      let!(:personal_access_token) { Runtime::Env.personal_access_token }
 
-        @personal_access_token = Runtime::Env.personal_access_token
+      before do
+        # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not
+        # an admin. So we need to set it to nil in order to create a new token for admin user so that we are able
+        # to set_application_settings. Also, when GITLAB_LDAP_USERNAME is provided, it is used to create a token.
+        # This also needs to be set to nil temporarily for the same reason as above.
+
         Runtime::Env.personal_access_token = nil
 
         ldap_username = Runtime::Env.ldap_username
@@ -41,7 +42,7 @@ module QA
       end
 
       after do
-        Runtime::Env.personal_access_token = @personal_access_token
+        Runtime::Env.personal_access_token = personal_access_token
       end
 
       it_behaves_like 'registration and login'
@@ -61,7 +62,18 @@ module QA
         it_behaves_like 'registration and login'
 
         context 'when user account is deleted' do
-          let(:user) { create(:user, api_client: admin_api_client) }
+          let(:admin_api_client) { Runtime::API::Client.as_admin }
+          let(:name) { "FirstName Last#{SecureRandom.hex(6)}" }
+          let(:email) { "email_#{SecureRandom.hex(6)}@example.com" }
+          let(:username) { "username_#{SecureRandom.hex(6)}" }
+          let(:user) { create(:user, api_client: admin_api_client, name: name, email: email, username: username) }
+          let(:recreated_user) do
+            Resource::User.fabricate_via_browser_ui! do |resource|
+              resource.name = name
+              resource.username = username
+              resource.email = email
+            end
+          end
 
           before do
             # Use the UI instead of API to delete the account since
@@ -78,9 +90,9 @@ module QA
           end
 
           after do
-            if @recreated_user
-              @recreated_user.api_client = admin_api_client
-              @recreated_user.remove_via_api!
+            if recreated_user
+              recreated_user.api_client = admin_api_client
+              recreated_user.remove_via_api!
             end
           end
 
@@ -92,17 +104,9 @@ module QA
 
             expect(page).to have_text("Invalid login or password")
 
-            @recreated_user = Resource::User.fabricate_via_browser_ui! do |resource|
-              resource.name = user.name
-              resource.username = user.username
-              resource.email = user.email
-            end
+            recreated_user
 
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy
-          end
-
-          def admin_api_client
-            @admin_api_client ||= Runtime::API::Client.as_admin
           end
         end
       end
@@ -115,11 +119,13 @@ module QA
           type: :investigating
         } do
         let(:signed_up_waiting_approval_text) do
-          'You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator.'
+          'You have signed up successfully. However, we could not sign you in because your account ' \
+            'is awaiting approval from your GitLab administrator.'
         end
 
         let(:pending_approval_blocked_text) do
-          'Your account is pending approval from your GitLab administrator and hence blocked. Please contact your GitLab administrator if you think this is an error.'
+          'Your account is pending approval from your GitLab administrator and hence blocked. ' \
+            'Please contact your GitLab administrator if you think this is an error.'
         end
 
         let(:user) do

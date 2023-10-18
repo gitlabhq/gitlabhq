@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :reliable, :requires_admin, :skip_live_env, product_group: :authentication_and_authorization do
+  RSpec.describe 'Govern', :reliable, :requires_admin, :skip_live_env,
+    product_group: :authentication_and_authorization do
     describe '2FA' do
       let!(:user) { create(:user) }
       let!(:user_api_client) { Runtime::API::Client.new(:gitlab, user: user) }
@@ -19,7 +20,8 @@ module QA
         enable_2fa_for_user(user)
       end
 
-      it 'allows 2FA code recovery via ssh', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347938' do
+      it 'allows 2FA code recovery via ssh',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347938' do
         recovery_code = Support::SSH.perform do |ssh|
           ssh.key = ssh_key
           ssh.uri = address.gsub(/(?<=:)(#{uri.port})/, ssh_port)
