@@ -65,10 +65,10 @@ describe('Work item add note', () => {
         [createNoteMutation, mutationHandler],
       ]),
       provide: {
-        fullPath: 'test-project-path',
         isGroup,
       },
       propsData: {
+        fullPath: 'test-project-path',
         workItemId: id,
         workItemIid,
         workItemType,

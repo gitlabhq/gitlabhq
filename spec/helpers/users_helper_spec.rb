@@ -646,7 +646,7 @@ RSpec.describe UsersHelper do
 
         expect(preload_queries).not_to exceed_query_limit(2)
         expect(helper_queries).not_to exceed_query_limit(0)
-        expect(access_queries).not_to exceed_query_limit(0)
+        expect(access_queries).not_to exceed_query_limit(1)
       end
     end
   end

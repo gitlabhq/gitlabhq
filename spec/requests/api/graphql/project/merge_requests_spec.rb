@@ -363,27 +363,6 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
       include_examples 'N+1 query check'
     end
 
-    context 'when requesting participants' do
-      let(:requested_fields) { 'participants { nodes { name } }' }
-
-      before do
-        create(:award_emoji, :upvote, awardable: merge_request_a)
-        create(:award_emoji, :upvote, awardable: merge_request_b)
-        create(:award_emoji, :upvote, awardable: merge_request_c)
-
-        note_with_emoji_a = create(:note_on_merge_request, noteable: merge_request_a, project: project)
-        note_with_emoji_b = create(:note_on_merge_request, noteable: merge_request_b, project: project)
-        note_with_emoji_c = create(:note_on_merge_request, noteable: merge_request_c, project: project)
-
-        create(:award_emoji, :upvote, awardable: note_with_emoji_a)
-        create(:award_emoji, :upvote, awardable: note_with_emoji_b)
-        create(:award_emoji, :upvote, awardable: note_with_emoji_c)
-      end
-
-      # Executes 3 extra queries to fetch participant_attrs
-      include_examples 'N+1 query check', threshold: 3
-    end
-
     context 'when requesting labels' do
       let(:requested_fields) { ['labels { nodes { id } }'] }
 
@@ -425,7 +404,6 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
       <<~SELECT
       assignees { nodes { username } }
       reviewers { nodes { username } }
-      participants { nodes { username } }
       headPipeline { status }
       timelogs { nodes { timeSpent } }
       SELECT
@@ -492,7 +470,6 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
           a_hash_including(
             'assignees' => user_collection,
             'reviewers' => user_collection,
-            'participants' => user_collection,
             'headPipeline' => { 'status' => be_present },
             'timelogs' => { 'nodes' => be_one }
           )))

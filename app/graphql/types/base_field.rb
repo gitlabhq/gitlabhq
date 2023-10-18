@@ -11,13 +11,15 @@ module Types
     attr_reader :doc_reference
 
     def initialize(**kwargs, &block)
-      init_gitlab_deprecation(kwargs)
-      @calls_gitaly = !!kwargs.delete(:calls_gitaly)
+      @requires_argument = kwargs.delete(:requires_argument)
+      @calls_gitaly = kwargs.delete(:calls_gitaly)
       @doc_reference = kwargs.delete(:see)
-      @constant_complexity = kwargs[:complexity].is_a?(Integer) && kwargs[:complexity] > 0
-      @requires_argument = !!kwargs.delete(:requires_argument)
+
+      given_complexity = kwargs[:complexity] || kwargs[:resolver_class].try(:complexity)
+      @constant_complexity = given_complexity.is_a?(Integer) && given_complexity > 0
+      kwargs[:complexity] = field_complexity(kwargs[:resolver_class], given_complexity)
+
       @authorize = Array.wrap(kwargs.delete(:authorize))
-      kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       after_connection_extensions = kwargs.delete(:late_extensions) || []
 
       super(**kwargs, &block)
@@ -31,11 +33,12 @@ module Types
     end
 
     def may_call_gitaly?
-      @constant_complexity || @calls_gitaly
+      @constant_complexity || calls_gitaly?
     end
 
     def requires_argument?
-      @requires_argument || arguments.values.any? { |argument| argument.type.non_null? }
+      value = @requires_argument.nil? ? @resolver_class.try(:requires_argument?) : @requires_argument
+      !!value || arguments.values.any? { |argument| argument.type.non_null? }
     end
 
     # By default fields authorize against the current object, but that is not how our
@@ -82,7 +85,7 @@ module Types
     end
 
     def calls_gitaly?
-      @calls_gitaly
+      !!(@calls_gitaly.nil? ? @resolver_class.try(:calls_gitaly?) : @calls_gitaly)
     end
 
     def constant_complexity?

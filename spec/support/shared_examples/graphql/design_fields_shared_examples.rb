@@ -32,7 +32,7 @@ RSpec.shared_examples 'a GraphQL type with design fields' do
     let(:query) { GraphQL::Query.new(schema) }
     let(:context) { query.context }
     let(:field) { described_class.fields['image'] }
-    let(:args) { GraphQL::Query::Arguments::NO_ARGS }
+    let(:args) { { parent: nil } }
     let(:instance) { instantiate(object_id) }
     let(:instance_b) { instantiate(object_id_b) }
 
@@ -42,13 +42,12 @@ RSpec.shared_examples 'a GraphQL type with design fields' do
     end
 
     def resolve_image(instance)
-      field.resolve_field(instance, args, context)
+      field.resolve(instance, args, context)
     end
 
     before do
       context[:current_user] = current_user
       allow(Ability).to receive(:allowed?).with(current_user, :read_design, anything).and_return(true)
-      allow(context).to receive(:parent).and_return(nil)
     end
 
     it 'resolves to the design image URL' do

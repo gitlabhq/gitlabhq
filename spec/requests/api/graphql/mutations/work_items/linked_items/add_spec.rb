@@ -8,7 +8,7 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
   let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
-  let_it_be(:project_work_item) { create(:work_item, project: project) }
+  let_it_be(:project_work_item) { create(:work_item, :issue, project: project) }
   let_it_be(:related1) { create(:work_item, project: project) }
   let_it_be(:related2) { create(:work_item, project: project) }
 
@@ -113,6 +113,20 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
           end.not_to change { WorkItems::RelatedWorkItemLink.count }
 
           expect_graphql_errors_to_include("Couldn't find WorkItem with 'id'=#{non_existing_record_id}")
+        end
+      end
+
+      context 'when type cannot be linked' do
+        let_it_be(:req) { create(:work_item, :requirement, project: project) }
+
+        let(:input) { { 'id' => work_item.to_global_id.to_s, 'workItemsIds' => [req.to_global_id.to_s] } }
+
+        it 'returns an error message' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(mutation_response["errors"]).to eq([
+            "#{req.to_reference} cannot be added: issues cannot be related to requirements"
+          ])
         end
       end
 

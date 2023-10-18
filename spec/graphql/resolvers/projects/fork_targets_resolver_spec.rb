@@ -38,12 +38,8 @@ RSpec.describe Resolvers::Projects::ForkTargetsResolver do
   end
 
   def resolve_targets(args, opts = {})
-    field_options = described_class.field_options.merge(
-      owner: resolver_parent,
-      name: 'field_value'
-    ).merge(opts)
-
-    field = ::Types::BaseField.new(**field_options)
+    field_options = { owner: resolver_parent, resolver: described_class }.merge(opts)
+    field = ::Types::BaseField.from_options('field_value', **field_options)
     resolve_field(field, project, args: args, ctx: { current_user: user }, object_type: resolver_parent)
   end
 end

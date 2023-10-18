@@ -1209,6 +1209,10 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
+      def lock_tables(*tables, mode: :access_exclusive)
+        execute("LOCK TABLE #{tables.join(', ')} IN #{mode.to_s.upcase.tr('_', ' ')} MODE")
+      end
+
       private
 
       def multiple_columns(columns, separator: ', ')

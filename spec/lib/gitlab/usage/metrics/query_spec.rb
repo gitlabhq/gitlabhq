@@ -75,9 +75,9 @@ RSpec.describe Gitlab::Usage::Metrics::Query do
 
   describe '.histogram' do
     it 'returns the histogram sql' do
-      expect(described_class.for(:histogram, AlertManagement::HttpIntegration.active,
-            :project_id, buckets: 1..2, bucket_size: 101))
-        .to match(/^WITH "count_cte" AS MATERIALIZED/)
+      expect(described_class.for(
+        :histogram, AlertManagement::HttpIntegration.active, :project_id, buckets: 1..2, bucket_size: 101
+      )).to match(/^WITH "count_cte" AS MATERIALIZED/)
     end
   end
 

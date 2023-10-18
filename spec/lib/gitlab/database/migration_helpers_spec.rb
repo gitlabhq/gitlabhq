@@ -2935,4 +2935,20 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it { expect(recorder.log).to be_empty }
     end
   end
+
+  describe '#lock_tables' do
+    let(:lock_statement) do
+      /LOCK TABLE ci_builds, ci_pipelines IN ACCESS EXCLUSIVE MODE/
+    end
+
+    subject(:recorder) do
+      ActiveRecord::QueryRecorder.new do
+        model.lock_tables(:ci_builds, :ci_pipelines)
+      end
+    end
+
+    it 'locks the tables' do
+      expect(recorder.log).to include(lock_statement)
+    end
+  end
 end

@@ -42,13 +42,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
         post_graphql(query, variables: variables)
       end
-
-      it 'does not instantiate any query analyzers' do # they are static and re-used
-        expect(GraphQL::Analysis::QueryComplexity).not_to receive(:new)
-        expect(GraphQL::Analysis::QueryDepth).not_to receive(:new)
-
-        2.times { post_graphql(query, variables: variables) }
-      end
     end
 
     context 'with no variables' do

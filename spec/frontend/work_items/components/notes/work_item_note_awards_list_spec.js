@@ -61,10 +61,8 @@ describe('Work Item Note Awards List', () => {
     });
 
     wrapper = shallowMount(WorkItemNoteAwardsList, {
-      provide: {
-        fullPath,
-      },
       propsData: {
+        fullPath,
         workItemIid,
         note,
         isModal: false,

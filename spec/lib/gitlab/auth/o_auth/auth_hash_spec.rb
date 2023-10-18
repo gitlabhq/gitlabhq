@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::OAuth::AuthHash, feature_category: :user_management do
-  let(:provider) { 'ldap' }
+  let(:provider) { 'openid_connect' }
   let(:auth_hash) do
     described_class.new(
       OmniAuth::AuthHash.new(
@@ -19,7 +19,6 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, feature_category: :user_management
     )
   end
 
-  let(:provider_config) { { 'args' => { 'gitlab_username_claim' => 'first_name' } } }
   let(:uid_raw) do
     +"CN=Onur K\xC3\xBC\xC3\xA7\xC3\xBCk,OU=Test,DC=example,DC=net"
   end
@@ -117,8 +116,17 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, feature_category: :user_management
   end
 
   context 'custom username field provided' do
+    let(:provider_config) do
+      GitlabSettings::Options.build(
+        {
+          name: provider,
+          args: { 'gitlab_username_claim' => 'first_name' }
+        }
+      )
+    end
+
     before do
-      allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).and_return(provider_config)
+      stub_omniauth_setting(providers: [provider_config])
     end
 
     it 'uses the custom field for the username within info' do

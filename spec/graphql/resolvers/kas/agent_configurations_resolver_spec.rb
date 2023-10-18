@@ -7,7 +7,7 @@ RSpec.describe Resolvers::Kas::AgentConfigurationsResolver do
 
   it { expect(described_class.type).to eq(Types::Kas::AgentConfigurationType.connection_type) }
   it { expect(described_class.null).to be_truthy }
-  it { expect(described_class.field_options).to include(calls_gitaly: true) }
+  it { expect(described_class.calls_gitaly?).to eq(true) }
 
   describe '#resolve' do
     let_it_be(:project) { create(:project) }

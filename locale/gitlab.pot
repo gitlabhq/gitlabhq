@@ -1134,6 +1134,12 @@ msgstr ""
 msgid "%{source_project_path}:%{source_branch}"
 msgstr ""
 
+msgid "%{source_type} cannot be related to %{type_type}"
+msgstr ""
+
+msgid "%{source_type} cannot block %{type_type}"
+msgstr ""
+
 msgid "%{source} %{copyButton} into %{target}"
 msgstr ""
 
@@ -5488,6 +5494,9 @@ msgstr ""
 msgid "Analytics|Custom dashboards"
 msgstr ""
 
+msgid "Analytics|Custom events"
+msgstr ""
+
 msgid "Analytics|Dashboard not found"
 msgstr ""
 
@@ -5528,6 +5537,12 @@ msgid "Analytics|Error while saving dashboard"
 msgstr ""
 
 msgid "Analytics|Error while saving visualization."
+msgstr ""
+
+msgid "Analytics|Event Name"
+msgstr ""
+
+msgid "Analytics|Event Props"
 msgstr ""
 
 msgid "Analytics|Failed to fetch data"
@@ -5633,6 +5648,12 @@ msgid "Analytics|Updating visualization %{visualizationName}"
 msgstr ""
 
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
+msgstr ""
+
+msgid "Analytics|User Id"
+msgstr ""
+
+msgid "Analytics|User Props"
 msgstr ""
 
 msgid "Analytics|Users"
@@ -27832,6 +27853,9 @@ msgstr ""
 msgid "LearnGitLab|Set up your workspace"
 msgstr ""
 
+msgid "LearnGitLab|Start Learning GitLab"
+msgstr ""
+
 msgid "LearnGitLab|Start a free trial of GitLab Ultimate"
 msgstr ""
 
@@ -50022,7 +50046,16 @@ msgstr ""
 msgid "Tracing|Operation"
 msgstr ""
 
+msgid "Tracing|Select a service to load suggestions"
+msgstr ""
+
 msgid "Tracing|Service"
+msgstr ""
+
+msgid "Tracing|Something went wrong while fetching the operations"
+msgstr ""
+
+msgid "Tracing|Something went wrong while fetching the services"
 msgstr ""
 
 msgid "Tracing|Span Details"
@@ -50148,6 +50181,27 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "TrialBenefits|Container Scanning"
+msgstr ""
+
+msgid "TrialBenefits|Dynamic Applications Security Testing"
+msgstr ""
+
+msgid "TrialBenefits|Multi-Level Epics"
+msgstr ""
+
+msgid "TrialBenefits|Security Dashboards"
+msgstr ""
+
+msgid "TrialBenefits|Static Application Security Testing"
+msgstr ""
+
+msgid "TrialBenefits|Suggested Reviewers"
+msgstr ""
+
+msgid "TrialBenefits|Vulnerability Management"
+msgstr ""
+
 msgid "TrialRegistration|Start GitLab Ultimate free trial"
 msgstr ""
 
@@ -50163,6 +50217,9 @@ msgstr ""
 msgid "Trials|Compare all plans"
 msgstr ""
 
+msgid "Trials|Congrats on starting your 30-day free trial!"
+msgstr ""
+
 msgid "Trials|Create a new group to start your GitLab Ultimate trial."
 msgstr ""
 
@@ -50172,10 +50229,16 @@ msgstr ""
 msgid "Trials|Looking to do more with GitLab?"
 msgstr ""
 
+msgid "Trials|Trials benefits"
+msgstr ""
+
 msgid "Trials|Upgrade your plan for more security features"
 msgstr ""
 
 msgid "Trials|With GitLab Ultimate you can detect and address vulnerabilities in your application."
+msgstr ""
+
+msgid "Trials|With GitLab Ultimate, you'll have access to:"
 msgstr ""
 
 msgid "Trials|You can apply your trial to a new group or an existing group."

@@ -8,10 +8,9 @@ RSpec.describe Gitlab::Graphql::Timeout do
   end
 
   it 'sends the error to our GraphQL logger' do
-    parent_type = double(graphql_name: 'parent_type')
-    field = double(graphql_name: 'field')
+    field = double(path: 'parent_type.field')
     query = double(query_string: 'query_string', provided_variables: 'provided_variables')
-    error = GraphQL::Schema::Timeout::TimeoutError.new(parent_type, field)
+    error = GraphQL::Schema::Timeout::TimeoutError.new(field)
 
     expect(Gitlab::GraphqlLogger)
       .to receive(:error)

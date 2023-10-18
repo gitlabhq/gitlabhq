@@ -48,6 +48,7 @@ describe('Work item comment form component', () => {
   } = {}) => {
     wrapper = shallowMount(WorkItemCommentForm, {
       propsData: {
+        fullPath: 'test-project-path',
         workItemState,
         workItemId,
         workItemType,
@@ -58,9 +59,6 @@ describe('Work item comment form component', () => {
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
         isNewDiscussion,
-      },
-      provide: {
-        fullPath: 'test-project-path',
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),

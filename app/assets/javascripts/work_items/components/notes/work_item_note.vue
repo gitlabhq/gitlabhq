@@ -36,8 +36,12 @@ export default {
     EditedAt,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath', 'isGroup'],
+  inject: ['isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemId: {
       type: String,
       required: true,
@@ -338,6 +342,7 @@ export default {
           </note-header>
           <div class="gl-display-inline-flex">
             <note-actions
+              :full-path="fullPath"
               :show-award-emoji="hasAwardEmojiPermission"
               :work-item-iid="workItemIid"
               :note="note"
@@ -375,7 +380,12 @@ export default {
         />
       </div>
       <div class="note-awards" :class="isFirstNote ? '' : 'gl-pl-7'">
-        <work-item-note-awards-list :note="note" :work-item-iid="workItemIid" :is-modal="isModal" />
+        <work-item-note-awards-list
+          :full-path="fullPath"
+          :note="note"
+          :work-item-iid="workItemIid"
+          :is-modal="isModal"
+        />
       </div>
     </div>
   </timeline-entry-item>

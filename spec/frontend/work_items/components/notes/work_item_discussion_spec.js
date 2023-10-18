@@ -31,10 +31,8 @@ describe('Work Item Discussion', () => {
     workItemType = 'Task',
   } = {}) => {
     wrapper = shallowMount(WorkItemDiscussion, {
-      provide: {
-        fullPath: 'gitlab-org',
-      },
       propsData: {
+        fullPath: 'gitlab-org',
         discussion,
         workItemId,
         workItemIid: '1',

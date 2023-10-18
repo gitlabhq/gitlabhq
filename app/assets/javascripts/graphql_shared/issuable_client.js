@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { defaultDataIdFromObject } from '@apollo/client/core';
 import { concatPagination } from '@apollo/client/utilities';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
+import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
@@ -26,6 +27,11 @@ export const config = {
           isShowingLabels: {
             read(currentState) {
               return currentState ?? true;
+            },
+          },
+          selectedBoardItems: {
+            read(currentState) {
+              return currentState ?? [];
             },
           },
         },
@@ -218,6 +224,11 @@ export const config = {
                     return currentState ?? true;
                   },
                 },
+                selectedBoardItems: {
+                  read(currentState) {
+                    return currentState ?? [];
+                  },
+                },
               },
             },
           }
@@ -241,6 +252,21 @@ export const resolvers = {
         data: { activeBoardItem: boardItem },
       });
       return boardItem;
+    },
+    setSelectedBoardItems(_, { itemId }, { cache }) {
+      const sourceData = cache.readQuery({ query: selectedBoardItemsQuery });
+      cache.writeQuery({
+        query: selectedBoardItemsQuery,
+        data: { selectedBoardItems: [...sourceData.selectedBoardItems, itemId] },
+      });
+      return [...sourceData.selectedBoardItems, itemId];
+    },
+    unsetSelectedBoardItems(_, _variables, { cache }) {
+      cache.writeQuery({
+        query: selectedBoardItemsQuery,
+        data: { selectedBoardItems: [] },
+      });
+      return [];
     },
     setError(_, { error }, { cache }) {
       cache.writeQuery({

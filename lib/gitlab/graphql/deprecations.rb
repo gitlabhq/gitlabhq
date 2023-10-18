@@ -11,6 +11,14 @@ module Gitlab
         attr_accessor :deprecation
       end
 
+      def initialize(*args, **kwargs, &block)
+        init_gitlab_deprecation(kwargs)
+
+        super
+
+        update_deprecation_description
+      end
+
       def visible?(ctx)
         super && ctx[:remove_deprecated] == true ? deprecation.nil? : true
       end
@@ -37,7 +45,12 @@ module Gitlab
         end
 
         kwargs[:deprecation_reason] = deprecation.deprecation_reason
-        kwargs[:description] = deprecation.edit_description(kwargs[:description])
+      end
+
+      def update_deprecation_description
+        return if deprecation.nil?
+
+        description(deprecation.edit_description(description))
       end
     end
   end

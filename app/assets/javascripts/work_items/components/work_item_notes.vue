@@ -364,6 +364,7 @@ export default {
               <work-item-discussion
                 :key="getDiscussionKey(discussion)"
                 :discussion="discussion.notes.nodes"
+                :full-path="fullPath"
                 :work-item-id="workItemId"
                 :work-item-iid="workItemIid"
                 :work-item-type="workItemType"

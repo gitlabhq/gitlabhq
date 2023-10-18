@@ -68,7 +68,7 @@ module Gitlab
         end
 
         def provider_config
-          Gitlab::Auth::OAuth::Provider.config_for(@provider) || {}
+          Gitlab::Auth::OAuth::Provider.config_for(provider) || {}
         end
 
         def provider_args

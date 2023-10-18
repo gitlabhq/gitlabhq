@@ -11,24 +11,23 @@ module Resolvers
       @requires_argument = true
     end
 
+    def self.requires_argument?
+      !!@requires_argument
+    end
+
     def self.calls_gitaly!
       @calls_gitaly = true
     end
 
-    # This is a flag to allow us to use `complexity_multiplier` to compute complexity for connection
-    # fields(see BaseField#connection_complexity_multiplier) in resolvers that do external connection pagination,
-    # thus disabling the default `connection` option(see self.field_options method above).
-    def self.calculate_ext_conn_complexity
-      false
+    def self.calls_gitaly?
+      !!@calls_gitaly
     end
 
-    def self.field_options
-      extra_options = {
-        requires_argument: @requires_argument,
-        calls_gitaly: @calls_gitaly
-      }.compact
-
-      super.merge(extra_options)
+    # This is a flag to allow us to use `complexity_multiplier` to compute complexity for connection
+    # fields(see BaseField#connection_complexity_multiplier) in resolvers that do external connection pagination,
+    # thus disabling the default `connection` option.
+    def self.calculate_ext_conn_complexity
+      false
     end
 
     def self.singular_type

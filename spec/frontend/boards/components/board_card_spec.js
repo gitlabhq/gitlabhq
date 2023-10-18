@@ -4,11 +4,13 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 
+import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { inactiveId } from '~/boards/constants';
+import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
 
@@ -21,9 +23,11 @@ describe('Board card', () => {
   Vue.use(VueApollo);
 
   const mockSetActiveBoardItemResolver = jest.fn();
+  const mockSetSelectedBoardItemsResolver = jest.fn();
   const mockApollo = createMockApollo([], {
     Mutation: {
       setActiveBoardItem: mockSetActiveBoardItemResolver,
+      setSelectedBoardItems: mockSetSelectedBoardItemsResolver,
     },
   });
 
@@ -50,11 +54,18 @@ describe('Board card', () => {
     provide = {},
     stubs = { BoardCardInner },
     item = mockIssue,
+    selectedBoardItems = [],
   } = {}) => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: isShowingLabelsQuery,
       data: {
         isShowingLabels: true,
+      },
+    });
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: selectedBoardItemsQuery,
+      data: {
+        selectedBoardItems,
       },
     });
 
@@ -140,10 +151,9 @@ describe('Board card', () => {
     createStore({
       initialState: {
         activeId: inactiveId,
-        selectedBoardItems: [mockIssue],
       },
     });
-    mountComponent();
+    mountComponent({ selectedBoardItems: [mockIssue.id] });
 
     expect(wrapper.classes()).toContain('multi-select');
     expect(wrapper.classes()).not.toContain('is-active');
@@ -171,13 +181,17 @@ describe('Board card', () => {
         window.gon = { features: { boardMultiSelect: true } };
       });
 
-      it('should call vuex action "multiSelectBoardItem" with correct parameters', async () => {
+      it('should call setSelectedBoardItemsMutation with correct parameters', async () => {
         await multiSelectCard();
 
-        expect(mockActions.toggleBoardItemMultiSelection).toHaveBeenCalledTimes(1);
-        expect(mockActions.toggleBoardItemMultiSelection).toHaveBeenCalledWith(
+        expect(mockSetSelectedBoardItemsResolver).toHaveBeenCalledTimes(1);
+        expect(mockSetSelectedBoardItemsResolver).toHaveBeenCalledWith(
           expect.any(Object),
-          mockIssue,
+          {
+            itemId: mockIssue.id,
+          },
+          expect.anything(),
+          expect.anything(),
         );
       });
     });
@@ -248,6 +262,7 @@ describe('Board card', () => {
 
     it('set active board item on client when clicking on card', async () => {
       await selectCard();
+      await waitForPromises();
 
       expect(mockSetActiveBoardItemResolver).toHaveBeenCalledWith(
         {},

@@ -151,8 +151,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     it 'includes accurate usage_activity_by_stage data' do
       for_defined_days_back do
         user = create(:user)
-        project = create(:project, :repository_private,
-                         :test_repo, :remote_mirror, creator: user)
+        project = create(:project, :repository_private, :test_repo, :remote_mirror, creator: user)
         create(:merge_request, source_project: project)
         create(:deploy_key, user: user)
         create(:key, user: user)
@@ -830,8 +829,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     it 'gathers Service Desk data' do
       create_list(:issue, 2, :confidential, author: Users::Internal.support_bot, project: project)
 
-      expect(subject).to eq(service_desk_enabled_projects: 1,
-                            service_desk_issues: 2)
+      expect(subject).to eq(service_desk_enabled_projects: 1, service_desk_issues: 2)
     end
   end
 

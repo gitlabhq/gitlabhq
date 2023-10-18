@@ -33,8 +33,11 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['fullPath'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemIid: {
       type: String,
       required: true,

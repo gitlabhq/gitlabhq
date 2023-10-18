@@ -22,8 +22,12 @@ export default {
     WorkItemCommentForm,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath', 'isGroup'],
+  inject: ['isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemId: {
       type: String,
       required: true,

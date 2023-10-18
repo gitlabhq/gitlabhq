@@ -262,6 +262,7 @@ export default {
         {{ __('No matches found') }}
       </gl-dropdown-text>
       <gl-dropdown-text v-else-if="hasFetched">{{ __('No suggestions found') }}</gl-dropdown-text>
+      <slot name="footer"></slot>
     </template>
   </gl-filtered-search-token>
 </template>

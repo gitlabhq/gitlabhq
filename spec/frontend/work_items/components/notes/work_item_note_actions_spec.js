@@ -48,6 +48,7 @@ describe('Work Item Note Actions', () => {
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemNoteActions, {
       propsData: {
+        fullPath: 'gitlab-org',
         showReply,
         showEdit,
         workItemIid: '1',
@@ -63,7 +64,6 @@ describe('Work Item Note Actions', () => {
         projectName,
       },
       provide: {
-        fullPath: 'gitlab-org',
         glFeatures: {
           workItemsMvc2: true,
         },

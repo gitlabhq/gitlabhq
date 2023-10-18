@@ -13886,12 +13886,12 @@ CREATE TABLE ci_pipeline_variables (
     encrypted_value text,
     encrypted_value_salt character varying,
     encrypted_value_iv character varying,
-    pipeline_id integer NOT NULL,
+    pipeline_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
     partition_id bigint NOT NULL,
     raw boolean DEFAULT false NOT NULL,
     id bigint NOT NULL,
-    pipeline_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    pipeline_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_pipeline_variables_id_seq
@@ -33760,6 +33760,8 @@ CREATE INDEX index_projects_api_vis20_path ON projects USING btree (path, id) WH
 
 CREATE INDEX index_projects_api_vis20_updated_at ON projects USING btree (updated_at, id) WHERE (visibility_level = 20);
 
+CREATE INDEX index_projects_id_for_aimed_for_deletion ON projects USING btree (id, marked_for_deletion_at) WHERE ((marked_for_deletion_at IS NOT NULL) AND (pending_delete = false));
+
 CREATE INDEX index_projects_not_aimed_for_deletion ON projects USING btree (id) WHERE (marked_for_deletion_at IS NULL);
 
 CREATE INDEX index_projects_on_created_at_and_id ON projects USING btree (created_at, id);
@@ -34932,8 +34934,6 @@ CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 
-CREATE INDEX tmp_index_project_statistics_pipeline_artifacts_size ON project_statistics USING btree (project_id) WHERE (pipeline_artifacts_size <> 0);
-
 CREATE INDEX tmp_index_project_statistics_updated_at ON project_statistics USING btree (project_id, updated_at) WHERE (repository_size > 0);
 
 CREATE INDEX tmp_index_vulnerability_dismissal_info ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
@@ -34967,6 +34967,8 @@ CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite 
 CREATE UNIQUE INDEX unique_amazon_s3_configurations_namespace_id_and_bucket_name ON audit_events_amazon_s3_configurations USING btree (namespace_id, bucket_name);
 
 CREATE UNIQUE INDEX unique_amazon_s3_configurations_namespace_id_and_name ON audit_events_amazon_s3_configurations USING btree (namespace_id, name);
+
+CREATE UNIQUE INDEX unique_any_approver_merge_request_rule_type_post_merge ON approval_merge_request_rules USING btree (merge_request_id, rule_type, applicable_post_merge) WHERE (rule_type = 4);
 
 CREATE UNIQUE INDEX unique_batched_background_migrations_queued_migration_version ON batched_background_migrations USING btree (queued_migration_version);
 

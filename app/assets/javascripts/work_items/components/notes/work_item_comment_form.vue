@@ -35,7 +35,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,

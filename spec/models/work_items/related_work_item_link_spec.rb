@@ -30,4 +30,41 @@ RSpec.describe WorkItems::RelatedWorkItemLink, type: :model, feature_category: :
   describe '.issuable_name' do
     it { expect(described_class.issuable_name).to eq('work item') }
   end
+
+  describe 'validations' do
+    describe '#validate_related_link_restrictions' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:source_type_sym, :target_types, :valid) do
+        :incident  | [:incident, :test_case, :issue, :task, :ticket] | false
+        :ticket    | [:incident, :test_case, :issue, :task, :ticket] | false
+        :test_case | [:incident, :test_case, :issue, :task, :ticket] | false
+        :task      | [:incident, :test_case, :ticket]                | false
+        :issue     | [:incident, :test_case, :ticket]                | false
+        :task      | [:task, :issue]                                 | true
+        :issue     | [:task, :issue]                                 | true
+      end
+
+      with_them do
+        it 'validates the related link' do
+          target_types.each do |target_type_sym|
+            source_type = WorkItems::Type.default_by_type(source_type_sym)
+            target_type = WorkItems::Type.default_by_type(target_type_sym)
+            source = build(:work_item, work_item_type: source_type, project: project)
+            target = build(:work_item, work_item_type: target_type, project: project)
+            link = build(:work_item_link, source: source, target: target)
+            opposite_link = build(:work_item_link, source: target, target: source)
+
+            expect(link.valid?).to eq(valid)
+            expect(opposite_link.valid?).to eq(valid)
+            next if valid
+
+            expect(link.errors.messages[:source]).to contain_exactly(
+              "#{source_type.name.downcase.pluralize} cannot be related to #{target_type.name.downcase.pluralize}"
+            )
+          end
+        end
+      end
+    end
+  end
 end

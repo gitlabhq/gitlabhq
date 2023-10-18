@@ -118,18 +118,16 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
     end
 
     it 'does not apply the block to the resolver' do
-      expect(resolver.field_options).to include(
-        arguments: be_empty
-      )
+      expect(resolver.arguments).to be_empty
+
       result = resolve(resolver)
 
       expect(result).to eq([1])
     end
 
     it 'applies the block to the single version of the resolver' do
-      expect(resolver.single.field_options).to include(
-        arguments: match('foo' => an_instance_of(::Types::BaseArgument))
-      )
+      expect(resolver.single.arguments).to match('foo' => an_instance_of(::Types::BaseArgument))
+
       result = resolve(resolver.single, args: { foo: 7 })
 
       expect(result).to eq(49)
@@ -155,9 +153,8 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
       end
 
       it 'applies both blocks to the single version of the resolver' do
-        expect(resolver.single.field_options).to include(
-          arguments: match('foo' => ::Types::BaseArgument, 'bar' => ::Types::BaseArgument)
-        )
+        expect(resolver.single.arguments).to match('foo' => ::Types::BaseArgument, 'bar' => ::Types::BaseArgument)
+
         result = resolve(resolver.single, args: { foo: 7, bar: 5 })
 
         expect(result).to eq(35)
@@ -178,12 +175,9 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
       end
 
       it 'applies both blocks to the single version of the resolver' do
-        expect(resolver.single.field_options).to include(
-          arguments: match('foo' => ::Types::BaseArgument)
-        )
-        expect(subclass.single.field_options).to include(
-          arguments: match('foo' => ::Types::BaseArgument, 'inc' => ::Types::BaseArgument)
-        )
+        expect(resolver.single.arguments).to match('foo' => ::Types::BaseArgument)
+        expect(subclass.single.arguments).to match('foo' => ::Types::BaseArgument, 'inc' => ::Types::BaseArgument)
+
         result = resolve(subclass.single, args: { foo: 7, inc: 1 })
 
         expect(result).to eq(64)

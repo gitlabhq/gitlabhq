@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountIssuesCreatedManuallyFromAlertsMetric,
-feature_category: :service_ping do
+  feature_category: :service_ping do
   let_it_be(:issue) { create(:issue) }
   let_it_be(:issue_with_alert) { create(:issue, :with_alert) }
 

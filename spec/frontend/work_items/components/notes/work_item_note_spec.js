@@ -104,10 +104,10 @@ describe('Work Item Note', () => {
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       provide: {
-        fullPath: 'test-project-path',
         isGroup,
       },
       propsData: {
+        fullPath: 'test-project-path',
         workItemId,
         workItemIid: '1',
         note,

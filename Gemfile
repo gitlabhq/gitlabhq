@@ -104,7 +104,7 @@ gem 'akismet', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'invisible_captcha', '~> 2.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Two-factor authentication
-gem 'devise-two-factor', '~> 4.0.2' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'devise-two-factor', '~> 4.1.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rqrcode', '~> 2.0', feature_category: :system_access
 
 gem 'attr_encrypted', '~> 3.2.4', path: 'vendor/gems/attr_encrypted' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -139,8 +139,8 @@ gem 'grape-path-helpers', '~> 1.7.1', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GraphQL API
-gem 'graphql', '~> 1.13.19', feature_category: :api
-gem 'graphql-docs', '~> 2.1.0', group: [:development, :test], feature_category: :api
+gem 'graphql', '~> 2.0.27', feature_category: :api
+gem 'graphql-docs', '~> 4.0.0', group: [:development, :test], feature_category: :api
 gem 'graphiql-rails', '~> 1.8.0', feature_category: :api
 gem 'apollo_upload_server', '~> 2.1.0', feature_category: :api
 gem 'graphlient', '~> 0.5.0', feature_category: :importers # Used by BulkImport feature (group::import)

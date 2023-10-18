@@ -420,6 +420,12 @@ describe('BaseToken', () => {
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
+    it('renders  `footer` slot when present', () => {
+      wrapper = createComponent({ slots: { footer: "<div class='custom-footer' />" } });
+
+      expect(wrapper.find('.custom-footer').exists()).toBe(true);
+    });
+
     describe('events', () => {
       describe('when activeToken has been selected', () => {
         beforeEach(() => {
