@@ -28,7 +28,7 @@ module Mutations
         raise_resource_not_available_error! unless attributes.empty? || can_update?(work_item)
 
         update_result = ::WorkItems::UpdateService.new(
-          container: work_item.project,
+          container: work_item.resource_parent,
           current_user: current_user,
           params: attributes,
           widget_params: widget_params,

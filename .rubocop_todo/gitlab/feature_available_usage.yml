@@ -72,7 +72,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/services/ee/boards/lists/create_service.rb'
     - 'ee/app/services/ee/boards/update_service.rb'
     - 'ee/app/services/ee/ide/schemas_config_service.rb'
-    - 'ee/app/services/ee/issuable_base_service.rb'
     - 'ee/app/services/ee/issue_links/create_service.rb'
     - 'ee/app/services/ee/issues/build_service.rb'
     - 'ee/app/services/ee/lfs/lock_file_service.rb'

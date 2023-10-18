@@ -1400,13 +1400,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     it 'disallows creating a project with an import_url that is not reachable' do
       url = 'http://example.com'
       endpoint_url = "#{url}/info/refs?service=git-upload-pack"
-      stub_full_request(endpoint_url, method: :get).to_return({ status: 301, body: '', headers: nil })
+      error_response = { status: 301, body: '', headers: nil }
+      stub_full_request(endpoint_url, method: :get).to_return(error_response)
       project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
 
       expect { post api(path, user), params: project_params }.not_to change { Project.count }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      expect(json_response['message']).to eq("#{url} is not a valid HTTP Git repository")
+      expect(json_response['message']).to eq("#{url} endpoint error: #{error_response[:status]}")
     end
 
     it 'creates a project with an import_url that is valid' do

@@ -13,8 +13,8 @@ module Issuable
     urgency :high
     idempotent!
 
-    def perform(params)
-      @params = params.with_indifferent_access
+    def perform(args)
+      @params = args.with_indifferent_access
       @user = User.find_by_id(params[:user_id])
       @issuable = issuable_class.find_by_id(params[:issuable_id])
       @links = issuable_class.related_link_class&.where(id: params[:link_ids])

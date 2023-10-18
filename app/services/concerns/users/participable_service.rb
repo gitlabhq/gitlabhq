@@ -34,7 +34,7 @@ module Users
     def groups
       return [] unless current_user
 
-      current_user.authorized_groups.with_route.sort_by(&:path)
+      current_user.authorized_groups.with_route.sort_by(&:full_path)
     end
 
     def render_participants_as_hash(participants)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Release', product_group: :release do
+  RSpec.describe 'Release', product_group: :environments do
     describe 'Deploy token creation' do
       it 'user adds a deploy token', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348028' do
         Flow::Login.sign_in

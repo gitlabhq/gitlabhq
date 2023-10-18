@@ -14,6 +14,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
   let_it_be(:label3) { create(:label, title: 'c', project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
+  let(:container) { project }
   let(:issue) do
     create(
       :issue,
@@ -49,7 +50,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
     end
 
     def update_issue(opts)
-      described_class.new(container: project, current_user: user, params: opts).execute(issue)
+      described_class.new(container: container, current_user: user, params: opts).execute(issue)
     end
 
     it_behaves_like 'issuable update service updating last_edited_at values' do
@@ -1005,6 +1006,12 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       it_behaves_like 'updating issuable labels'
       it_behaves_like 'keeps issuable labels sorted after update'
       it_behaves_like 'broadcasting issuable labels updates'
+
+      context 'when the issue belongs directly to a group' do
+        let(:container) { group }
+
+        it_behaves_like 'updating issuable labels'
+      end
 
       def update_issuable(update_params)
         update_issue(update_params)

@@ -95,7 +95,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         {
             "key": "TEST_VARIABLE_1",
             "variable_type": "env_var",
-            "value": "TEST_1"
+            "value": "TEST_1",
+            "raw": false
         }
     ]
 }

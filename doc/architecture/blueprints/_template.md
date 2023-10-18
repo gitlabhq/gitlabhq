@@ -9,9 +9,13 @@ participating-stages: []
 ---
 
 <!--
-**Note:** Please remove comment blocks for sections you've filled in.
-When your blueprint ready for review, all of these comment blocks should be
-removed.
+Before you start:
+
+- Copy this file to a sub-directory and call it `index.md` for it to appear in
+  the blueprint directory.
+- Please remove comment blocks for sections you've filled in.
+  When your blueprint ready for review, all of these comment blocks should be
+  removed.
 
 To get started with a blueprint you can use this template to inform you about
 what you may want to document in it at the beginning. This content will change

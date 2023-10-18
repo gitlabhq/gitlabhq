@@ -18,6 +18,14 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       described_class.new(project, user).execute(noteable)
     end
 
+    it 'returns results in correct order' do
+      group = create(:group).tap { |g| g.add_owner(user) }
+
+      expect(run_service.pluck(:username)).to eq([
+        noteable.author.username, 'all', user.username, group.full_path
+      ])
+    end
+
     it 'includes `All Project and Group Members`' do
       expect(run_service).to include(a_hash_including({ username: "all", name: "All Project and Group Members" }))
     end
@@ -102,6 +110,24 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
 
           expect(group_items.size).to eq 1
           expect(group_items.first[:avatar_url]).to eq("/gitlab/uploads/-/system/group/avatar/#{group.id}/dk.png")
+        end
+      end
+
+      context 'with subgroups' do
+        let(:group_1) { create(:group, path: 'bb') }
+        let(:group_2) { create(:group, path: 'zz') }
+        let(:subgroup) { create(:group, path: 'aa', parent: group_1) }
+
+        before do
+          group_1.add_owner(user)
+          group_2.add_owner(user)
+          subgroup.add_owner(user)
+        end
+
+        it 'returns results ordered by full path' do
+          expect(group_items.pluck(:username)).to eq([
+            group_1.full_path, subgroup.full_path, group_2.full_path
+          ])
         end
       end
     end

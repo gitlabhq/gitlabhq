@@ -18,7 +18,7 @@ RSpec.describe Issuable::RelatedLinksCreateWorker, feature_category: :portfolio_
       link_ids: [link1.id, link2.id],
       link_type: 'relates_to',
       user_id: user.id
-    }
+    }.transform_keys(&:to_s)
   end
 
   before_all do
@@ -54,28 +54,28 @@ RSpec.describe Issuable::RelatedLinksCreateWorker, feature_category: :portfolio_
 
     context 'when params contain errors' do
       it 'does nothing when user is not found' do
-        params[:user_id] = non_existing_record_id
+        params['user_id'] = non_existing_record_id
 
         expect(Sidekiq.logger).not_to receive(:error)
         expect { subject }.not_to change { Note.count }
       end
 
       it 'does nothing when issuable is not found' do
-        params[:issuable_id] = non_existing_record_id
+        params['issuable_id'] = non_existing_record_id
 
         expect(Sidekiq.logger).not_to receive(:error)
         expect { subject }.not_to change { Note.count }
       end
 
       it 'does nothing when links are not found' do
-        params[:link_ids] = [non_existing_record_id]
+        params['link_ids'] = [non_existing_record_id]
 
         expect(Sidekiq.logger).not_to receive(:error)
         expect { subject }.not_to change { Note.count }
       end
 
       it 'logs error when issuable_class is invalid' do
-        params[:issuable_class] = 'FooBar'
+        params['issuable_class'] = 'FooBar'
 
         expect(Sidekiq.logger).to receive(:error).with({
           worker: described_class.to_s,

@@ -11,8 +11,8 @@ module Projects
         noteable_owner +
         participants_in_noteable +
         all_members +
-        groups +
-        project_members
+        project_members +
+        groups
 
       render_participants_as_hash(participants.uniq)
     end

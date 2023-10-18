@@ -9,7 +9,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:experiment) { create(:ml_experiments, user_id: project.creator, project: project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+  let_it_be(:build) { create(:ci_build, user: project.creator, pipeline: pipeline) }
   let_it_be(:candidate0) do
     create(:ml_candidates,
       :with_artifact,
@@ -46,7 +46,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
           'ci_job' => { 'path' => "/#{project.full_path}/-/jobs/#{build.id}", 'name' => 'test' },
           'name' => candidate0.name,
           'created_at' => candidate0.created_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
-          'user' => { 'username' => candidate0.user.username, 'path' => "/#{candidate0.user.username}" } },
+          'user' => { 'username' => build.user.username, 'path' => "/#{build.user.username}" } },
         { 'param2' => 'p3', 'param3' => 'p4', 'metric3' => '0.4000',
           'artifact' => nil, 'details' => "/#{project.full_path}/-/ml/candidates/#{candidate1.iid}",
           'ci_job' => nil,
@@ -66,6 +66,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
 
       before do
         allow(candidate0).to receive(:user).and_return(nil)
+        allow(candidate0.ci_build).to receive(:user).and_return(nil)
       end
 
       it 'has the user property, but is nil' do
@@ -80,8 +81,9 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
                             .and_return(false)
       end
 
-      it 'does not include ci info' do
+      it 'does not include ci info and user for candidate created through CI' do
         expect(subject[0]['ci_job']).to be_nil
+        expect(subject[0]['user']).to be_nil
       end
     end
   end

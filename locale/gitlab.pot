@@ -29874,12 +29874,6 @@ msgstr ""
 msgid "Metric"
 msgstr ""
 
-msgid "Metric was successfully added."
-msgstr ""
-
-msgid "Metric was successfully updated."
-msgstr ""
-
 msgid "Metric:"
 msgstr ""
 

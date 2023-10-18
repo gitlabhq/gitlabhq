@@ -18,7 +18,7 @@ replication and failover for GitLab.
 
 ## Architecture
 
-The Linux pacakage-recommended configuration for a PostgreSQL cluster with
+The Linux package-recommended configuration for a PostgreSQL cluster with
 replication failover requires:
 
 - A minimum of three PostgreSQL nodes.

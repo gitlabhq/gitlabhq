@@ -14,17 +14,17 @@ module Projects
         Gitlab::Json.generate(data)
       end
 
-      def candidates_table_items(candidates, user)
+      def candidates_table_items(candidates, current_user)
         items = candidates.map do |candidate|
           {
             **candidate.params.to_h { |p| [p.name, p.value] },
             **candidate.latest_metrics.to_h { |m| [m.name, number_with_precision(m.value, precision: 4)] },
-            ci_job: job_info(candidate, user),
+            ci_job: job_info(candidate, current_user),
             artifact: link_to_artifact(candidate),
             details: link_to_details(candidate),
             name: candidate.name,
             created_at: candidate.created_at,
-            user: user_info(candidate)
+            user: user_info(candidate, current_user)
           }
         end
 
@@ -87,8 +87,13 @@ module Projects
         project_ml_experiment_path(project, experiment.iid)
       end
 
-      def user_info(candidate)
-        user = candidate.user
+      def user_info(candidate, current_user)
+        user =
+          if candidate.from_ci?
+            candidate.ci_build.user if can?(current_user, :read_build, candidate.ci_build)
+          else
+            candidate.user
+          end
 
         return unless user.present?
 
