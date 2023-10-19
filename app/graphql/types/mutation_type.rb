@@ -39,6 +39,7 @@ module Types
     mount_mutation Mutations::Boards::Lists::Update
     mount_mutation Mutations::Boards::Lists::Destroy
     mount_mutation Mutations::Branches::Create, calls_gitaly: true
+    mount_mutation Mutations::Ci::Catalog::Resources::Create, alpha: { milestone: '15.11' }
     mount_mutation Mutations::Clusters::Agents::Create
     mount_mutation Mutations::Clusters::Agents::Delete
     mount_mutation Mutations::Clusters::AgentTokens::Create

@@ -303,6 +303,8 @@ class ProjectPolicy < BasePolicy
     enable :set_show_diff_preview_in_email
     enable :set_warn_about_potentially_unwanted_characters
     enable :manage_owners
+
+    enable :add_catalog_resource
   end
 
   rule { can?(:guest_access) }.policy do
@@ -906,10 +908,6 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:developer_access) & namespace_catalog_available }.policy do
     enable :read_namespace_catalog
-  end
-
-  rule { can?(:owner_access) & namespace_catalog_available }.policy do
-    enable :add_catalog_resource
   end
 
   rule { model_registry_enabled }.policy do

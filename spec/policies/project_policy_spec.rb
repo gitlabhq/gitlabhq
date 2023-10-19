@@ -3212,9 +3212,23 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'add_catalog_resource' do
-    let(:current_user) { owner }
+    using RSpec::Parameterized::TableSyntax
 
-    specify { is_expected.to be_disallowed(:read_namespace_catalog) }
+    let(:current_user) { public_send(role) }
+
+    where(:role, :allowed) do
+      :owner      | true
+      :maintainer | false
+      :developer  | false
+      :reporter   | false
+      :guest      | false
+    end
+
+    with_them do
+      it do
+        expect(subject.can?(:add_catalog_resource)).to be(allowed)
+      end
+    end
   end
 
   describe 'read_model_registry' do

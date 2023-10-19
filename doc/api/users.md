@@ -2142,9 +2142,14 @@ Example response:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5.
 
 Use this API to create a new personal access token for the currently authenticated user.
-For security purposes, the scopes are limited to only `k8s_proxy` and by default the token will expire by
-the end of the day it was created at.
-Token values are returned once so, make sure you save it as you can't access it again.
+For security purposes, the token:
+
+- Is limited to the [`k8s_proxy` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+  This scope grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+- By default, expires at the end of the day it was created on.
+
+Token values are returned once, so make sure you save the token as you cannot access
+it again.
 
 ```plaintext
 POST /user/personal_access_tokens

@@ -21,6 +21,20 @@ module Types
         required: true, description: 'Global ID of the CI stage.'
     end
 
+    field :ci_catalog_resources,
+          ::Types::Ci::Catalog::ResourceType.connection_type,
+          null: true,
+          alpha: { milestone: '15.11' },
+          description: 'All CI/CD Catalog resources under a common namespace, visible to an authorized user',
+          resolver: ::Resolvers::Ci::Catalog::ResourcesResolver
+
+    field :ci_catalog_resource,
+          ::Types::Ci::Catalog::ResourceType,
+          null: true,
+          alpha: { milestone: '16.1' },
+          description: 'A single CI/CD Catalog resource visible to an authorized user',
+          resolver: ::Resolvers::Ci::Catalog::ResourceResolver
+
     field :ci_variables,
           Types::Ci::InstanceVariableType.connection_type,
           null: true,

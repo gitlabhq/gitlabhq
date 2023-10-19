@@ -26,6 +26,7 @@ The following GitLab projects use TypeScript:
 - [`gitlab-web-ide`](https://gitlab.com/gitlab-org/gitlab-web-ide/)
 - [`gitlab-vscode-extension`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)
 - [`gitlab-language-server-for-code-suggestions`](https://gitlab.com/gitlab-org/editor-extensions/gitlab-language-server-for-code-suggestions)
+- [`gitlab-org/cluster-integration/javascript-client`](https://gitlab.com/gitlab-org/cluster-integration/javascript-client)
 
 ## Recommended configurations
 
