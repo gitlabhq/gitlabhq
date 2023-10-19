@@ -26,7 +26,7 @@ module QA
       end
 
       it(
-        'runs the pipeline with composed config',
+        'runs the pipeline with composed config', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396374'
       ) do
         Page::Project::Pipeline::Show.perform do |pipeline|

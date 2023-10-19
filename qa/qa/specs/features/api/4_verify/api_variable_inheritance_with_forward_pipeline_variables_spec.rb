@@ -11,7 +11,7 @@ module QA
       end
 
       it(
-        'is determined based on forward:pipeline_variables condition',
+        'is determined based on forward:pipeline_variables condition', :reliable,
         :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360745'
       ) do

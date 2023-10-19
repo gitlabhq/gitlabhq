@@ -322,74 +322,33 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       allow(connection).to receive(:select_value).and_return(nil, Time.current, Time.current)
     end
 
-    context 'when feature flag database_analyze_on_partitioned_tables is enabled' do
-      before do
-        stub_feature_flags(database_analyze_on_partitioned_tables: true)
-      end
+    it_behaves_like 'run only once analyze within interval'
 
-      it_behaves_like 'run only once analyze within interval'
+    context 'when analyze is false' do
+      let(:analyze) { false }
 
-      context 'when analyze is false' do
-        let(:analyze) { false }
-
-        it_behaves_like 'not to run the analyze at all'
-      end
-
-      context 'when model does not set analyze_interval' do
-        let(:my_model) do
-          Class.new(ApplicationRecord) do
-            include PartitionedTable
-
-            partitioned_by :partition_id,
-              strategy: :ci_sliding_list,
-              next_partition_if: proc { false },
-              detach_partition_if: proc { false }
-          end
-        end
-
-        it_behaves_like 'not to run the analyze at all'
-      end
-
-      context 'when no partition is created' do
-        let(:create_partition) { false }
-
-        it_behaves_like 'run only once analyze within interval'
-      end
+      it_behaves_like 'not to run the analyze at all'
     end
 
-    context 'when feature flag database_analyze_on_partitioned_tables is disabled' do
-      before do
-        stub_feature_flags(database_analyze_on_partitioned_tables: false)
+    context 'when model does not set analyze_interval' do
+      let(:my_model) do
+        Class.new(ApplicationRecord) do
+          include PartitionedTable
+
+          partitioned_by :partition_id,
+            strategy: :ci_sliding_list,
+            next_partition_if: proc { false },
+            detach_partition_if: proc { false }
+        end
       end
 
       it_behaves_like 'not to run the analyze at all'
+    end
 
-      context 'when analyze is false' do
-        let(:analyze) { false }
+    context 'when no partition is created' do
+      let(:create_partition) { false }
 
-        it_behaves_like 'not to run the analyze at all'
-      end
-
-      context 'when model does not set analyze_interval' do
-        let(:my_model) do
-          Class.new(ApplicationRecord) do
-            include PartitionedTable
-
-            partitioned_by :partition_id,
-              strategy: :ci_sliding_list,
-              next_partition_if: proc { false },
-              detach_partition_if: proc { false }
-          end
-        end
-
-        it_behaves_like 'not to run the analyze at all'
-      end
-
-      context 'when no partition is created' do
-        let(:create_partition) { false }
-
-        it_behaves_like 'not to run the analyze at all'
-      end
+      it_behaves_like 'run only once analyze within interval'
     end
   end
 
