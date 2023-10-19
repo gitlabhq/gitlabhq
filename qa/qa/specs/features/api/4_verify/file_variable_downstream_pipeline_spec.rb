@@ -170,12 +170,7 @@ module QA
           'TEST_PROJECT_FILE' => "hello, this is test\n",
           'DOCKER_CA_CERT' => "This is secret\n"
         }.each do |file_name, content|
-          Resource::CiVariable.fabricate_via_api! do |ci_variable|
-            ci_variable.project = upstream_project
-            ci_variable.key = file_name
-            ci_variable.value = content
-            ci_variable.variable_type = 'file'
-          end
+          create(:ci_variable, project: upstream_project, key: file_name, value: content, variable_type: 'file')
         end
       end
 

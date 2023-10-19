@@ -806,7 +806,7 @@ GraphQL queries are recorded in the file. For example:
 {"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration_s":7}
 ```
 
-## `clickhouse.log` **(SAAS)**
+## `clickhouse.log`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
 

@@ -34,18 +34,12 @@ module QA
       let!(:source_api_client) { source_admin_api_client }
 
       let!(:source_group) do
-        Resource::Sandbox.fabricate_via_api! do |group|
-          group.api_client = source_api_client
-          group.path = gitlab_source_group
-        end
+        create(:sandbox, api_client: source_api_client, path: gitlab_source_group)
       end
 
       # generate unique target group because source group has a static name
       let!(:target_sandbox) do
-        Resource::Sandbox.fabricate_via_api! do |group|
-          group.api_client = admin_api_client
-          group.path = "qa-sandbox-#{SecureRandom.hex(4)}"
-        end
+        create(:sandbox, api_client: admin_api_client, path: "qa-sandbox-#{SecureRandom.hex(4)}")
       end
 
       # Source objects

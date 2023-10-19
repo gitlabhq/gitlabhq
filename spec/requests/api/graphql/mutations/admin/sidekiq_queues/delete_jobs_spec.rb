@@ -43,7 +43,7 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
         raise 'Not enqueued!' if Sidekiq::Queue.new(queue).size.zero?
       end
 
-      it 'returns info about the deleted jobs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/425824' do
+      it 'returns info about the deleted jobs' do
         add_job(admin, [1])
         add_job(admin, [2])
         add_job(create(:user), [3])

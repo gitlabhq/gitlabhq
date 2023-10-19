@@ -10,7 +10,6 @@ module QA
     let!(:import_wait_duration) { { max_duration: 120, sleep_interval: 2 } }
 
     # source instance objects
-    #
     let!(:source_gitlab_address) { ENV["QA_IMPORT_SOURCE_URL"] || raise("QA_IMPORT_SOURCE_URL is required!") }
     let!(:source_admin_api_client) do
       Runtime::API::Client.new(
@@ -19,42 +18,42 @@ module QA
         is_new_session: false
       )
     end
+
     let!(:source_bulk_import_enabled) do
       Runtime::ApplicationSettings.get_application_settings(api_client: source_admin_api_client)[:bulk_import_enabled]
     end
+
     let!(:source_admin_user) do
       create(:user,
         :set_public_email,
         api_client: source_admin_api_client,
         username: Runtime::Env.admin_username || 'root')
     end
+
     let!(:source_group) do
-      Resource::Sandbox.fabricate_via_api! do |group|
-        group.api_client = source_admin_api_client
-        group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
-        group.avatar = File.new(Runtime::Path.fixture('designs', 'tanuki.jpg'), "r")
-      end
+      create(:sandbox,
+        api_client: source_admin_api_client,
+        path: "source-group-for-import-#{SecureRandom.hex(4)}",
+        avatar: File.new(Runtime::Path.fixture('designs', 'tanuki.jpg'), "r"))
     end
 
     # target instance objects
-    #
     let!(:admin_api_client) { Runtime::API::Client.as_admin }
+
     let!(:target_bulk_import_enabled) do
       Runtime::ApplicationSettings.get_application_settings(api_client: admin_api_client)[:bulk_import_enabled]
     end
+
     let!(:admin_user) do
       create(:user,
         :set_public_email,
         api_client: admin_api_client,
         username: Runtime::Env.admin_username || 'root')
     end
+
     let!(:user) { create(:user, api_client: admin_api_client, username: "target-user-#{SecureRandom.hex(6)}") }
     let!(:api_client) { Runtime::API::Client.new(user: user) }
-    let!(:target_sandbox) do
-      Resource::Sandbox.fabricate_via_api! do |group|
-        group.api_client = admin_api_client
-      end
-    end
+    let!(:target_sandbox) { create(:sandbox, api_client: admin_api_client) }
 
     let(:destination_group_path) { source_group.path }
     let(:imported_group) do

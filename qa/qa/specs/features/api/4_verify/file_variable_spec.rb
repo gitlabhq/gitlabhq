@@ -96,12 +96,7 @@ module QA
       private
 
       def add_file_variable_to_project(key, value)
-        Resource::CiVariable.fabricate_via_api! do |ci_variable|
-          ci_variable.project = project
-          ci_variable.key = key
-          ci_variable.value = value
-          ci_variable.variable_type = 'file'
-        end
+        create(:ci_variable, project: project, key: key, value: value, variable_type: 'file')
       end
 
       def trigger_pipeline

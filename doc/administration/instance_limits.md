@@ -1000,7 +1000,7 @@ The limits for issues, merge requests, wikis, and repositories:
 
 - Maximum number of nodes rendered: `50`.
 - Maximum number of macro expansions: `1000`.
-- Maximum user-specified size in em: `20`.
+- Maximum user-specified size in [em](https://en.wikipedia.org/wiki/Em_(typography)): `20`.
 
 The limits for issues and merge requests:
 

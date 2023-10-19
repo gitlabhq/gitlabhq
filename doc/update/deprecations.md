@@ -102,6 +102,28 @@ This change is a breaking change. You should [create a runner in the UI](../ci/r
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Running a single database is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.1</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411239).
+</div>
+
+From GitLab 18.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509).
+We recommend running both databases on the same Postgres instance(s) due to ease of management for most deployments.
+
+We are providing this as an informational advance notice but we do not recommend taking action yet.
+We will have another update communicated (as well as the deprecation note) when we recommend admins to start the migration process.
+
+This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
+This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
+Before upgrading to GitLab 18.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Support for REST API endpoints that reset runner registration tokens
 
 <div class="deprecation-notes">
@@ -817,28 +839,6 @@ Required Pipeline Configuration will be removed in the 17.0 release. This impact
 
 We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#compliance-pipelines)
 that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Running a single database is deprecated
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.1</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411239).
-</div>
-
-From GitLab 17.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509).
-We recommend running both databases on the same Postgres instance(s) due to ease of management for most deployments.
-
-We are providing this as an informational advance notice but we do not recommend taking action yet.
-We will have another update communicated (as well as the deprecation note) when we recommend admins to start the migration process.
-
-This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
-This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
-Before upgrading to GitLab 17.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
 
 </div>
 

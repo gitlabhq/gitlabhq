@@ -6,6 +6,8 @@ RSpec.configure do |config|
     Sidekiq.redis do |connection|
       connection.redis.flushdb
     end
+
+    redis_queues_metadata_cleanup!
   end
 
   Gitlab::Redis::ALL_CLASSES.each do |instance_class|
@@ -13,10 +15,12 @@ RSpec.configure do |config|
 
     config.around(:each, :"clean_gitlab_redis_#{underscored_name}") do |example|
       public_send("redis_#{underscored_name}_cleanup!")
+      redis_queues_metadata_cleanup! if underscored_name == 'queues'
 
       example.run
 
       public_send("redis_#{underscored_name}_cleanup!")
+      redis_queues_metadata_cleanup! if underscored_name == 'queues'
     end
   end
 
