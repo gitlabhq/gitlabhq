@@ -4,7 +4,6 @@ module Resolvers
   module ErrorTracking
     class SentryErrorsResolver < BaseResolver
       type Types::ErrorTracking::SentryErrorType.connection_type, null: true
-      extension Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
       argument :search_term, ::GraphQL::Types::String,
               description: 'Search query for the Sentry error details.',
@@ -30,10 +29,6 @@ module Resolvers
         return if issues.nil?
 
         Gitlab::Graphql::ExternallyPaginatedArray.new(previous_cursor, next_cursor, *issues)
-      end
-
-      def self.field_options
-        super.merge(connection: false) # we manage the pagination manually, so opt out of the connection field extension
       end
     end
   end

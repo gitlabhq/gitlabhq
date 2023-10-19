@@ -4,8 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees revert modal', :js, :sidekiq_might_not_need_inline,
   feature_category: :code_review_workflow do
-  include ContentEditorHelpers
-
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -24,7 +22,6 @@ RSpec.describe 'Merge request > User sees revert modal', :js, :sidekiq_might_not
     stub_feature_flags(unbatch_graphql_queries: false)
     sign_in(user)
     visit(project_merge_request_path(project, merge_request))
-    close_rich_text_promo_popover_if_present
 
     page.within('.mr-state-widget') do
       click_button 'Merge'
@@ -40,7 +37,6 @@ RSpec.describe 'Merge request > User sees revert modal', :js, :sidekiq_might_not
   context 'with page reload validates js correctly loaded' do
     before do
       visit(merge_request_path(merge_request))
-      close_rich_text_promo_popover_if_present
     end
 
     it_behaves_like 'showing the revert modal'

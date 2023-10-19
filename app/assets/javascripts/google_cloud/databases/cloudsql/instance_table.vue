@@ -57,6 +57,7 @@ export default {
       :title="$options.i18n.noInstancesTitle"
       :description="$options.i18n.noInstancesDescription"
       :svg-path="emptyIllustrationUrl"
+      :svg-height="null"
     />
 
     <div v-else>

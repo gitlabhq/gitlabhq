@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq s_('CiStatusText|created')
+      expect(status.text).to eq s_('CiStatusText|Created')
       expect(status.icon).to eq 'status_created'
       expect(status.favicon).to eq 'favicon_status_created'
       expect(status.label).to eq 'created'
@@ -49,11 +49,11 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq s_('CiStatusText|failed')
+      expect(status.text).to eq s_('CiStatusText|Failed')
       expect(status.icon).to eq 'status_failed'
       expect(status.favicon).to eq 'favicon_status_failed'
       expect(status.label).to eq 'failed'
-      expect(status.status_tooltip).to eq "#{s_('CiStatusText|failed')} - (unknown failure)"
+      expect(status.status_tooltip).to eq "#{s_('CiStatusLabel|failed')} - (unknown failure)"
       expect(status).not_to have_details
       expect(status).to have_action
     end
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
 
       it 'fabricates correct status_tooltip' do
         expect(status.status_tooltip).to eq(
-          "#{s_('CiStatusText|failed')} - (downstream pipeline can not be created, Pipeline will not run for the selected trigger. " \
+          "#{s_('CiStatusLabel|failed')} - (downstream pipeline can not be created, Pipeline will not run for the selected trigger. " \
           "The rules configuration prevented any jobs from being added to the pipeline., other error)"
         )
       end
@@ -93,7 +93,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq s_('CiStatusText|manual')
+      expect(status.text).to eq s_('CiStatusText|Manual')
       expect(status.group).to eq 'manual'
       expect(status.icon).to eq 'status_manual'
       expect(status.favicon).to eq 'favicon_status_manual'
@@ -128,7 +128,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'waiting'
+      expect(status.text).to eq 'Waiting'
       expect(status.group).to eq 'waiting-for-resource'
       expect(status.icon).to eq 'status_pending'
       expect(status.favicon).to eq 'favicon_status_pending'
@@ -154,7 +154,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq s_('CiStatusText|passed')
+      expect(status.text).to eq s_('CiStatusText|Passed')
       expect(status.icon).to eq 'status_success'
       expect(status.favicon).to eq 'favicon_status_success'
       expect(status).to have_action

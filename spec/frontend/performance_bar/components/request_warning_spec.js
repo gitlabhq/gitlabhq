@@ -1,5 +1,8 @@
+import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import RequestWarning from '~/performance_bar/components/request_warning.vue';
+
+Vue.config.ignoredElements = ['gl-emoji'];
 
 describe('request warning', () => {
   let wrapper;
@@ -16,8 +19,8 @@ describe('request warning', () => {
     });
 
     it('adds a warning emoji with the correct ID', () => {
-      expect(wrapper.find('span[id]').attributes('id')).toEqual(htmlId);
-      expect(wrapper.find('span[id] gl-emoji').element.dataset.name).toEqual('warning');
+      expect(wrapper.find('span gl-emoji[id]').attributes('id')).toEqual(htmlId);
+      expect(wrapper.find('span gl-emoji[id]').element.dataset.name).toEqual('warning');
     });
   });
 

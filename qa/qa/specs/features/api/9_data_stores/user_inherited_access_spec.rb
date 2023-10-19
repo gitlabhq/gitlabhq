@@ -69,14 +69,14 @@ module QA
           # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
           QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 2) do
             expect do
-              Resource::Repository::Commit.fabricate_via_api! do |commit|
-                commit.api_client = parent_group_user_api_client
-                commit.project = sub_group_project
-                commit.branch = "new_branch_#{SecureRandom.hex(8)}"
-                commit.start_branch = sub_group_project.default_branch
-                commit.commit_message = 'Add new file'
-                commit.add_files([{ file_path: 'test.txt', content: 'new file' }])
-              end
+              create(:commit,
+                api_client: parent_group_user_api_client,
+                project: sub_group_project,
+                branch: "new_branch_#{SecureRandom.hex(8)}",
+                start_branch: sub_group_project.default_branch,
+                commit_message: 'Add new file', actions: [
+                  { action: 'create', file_path: 'test.txt', content: 'new file' }
+                ])
             rescue StandardError => e
               QA::Runtime::Logger.error("Full failure message: #{e.message}")
               raise
@@ -139,14 +139,14 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363342'
         ) do
           expect do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              commit.api_client = sub_group_user_api_client
-              commit.project = parent_group_project
-              commit.branch = "new_branch_#{SecureRandom.hex(8)}"
-              commit.start_branch = parent_group_project.default_branch
-              commit.commit_message = 'Add new file'
-              commit.add_files([{ file_path: 'test.txt', content: 'new file' }])
-            end
+            create(:commit,
+              api_client: sub_group_user_api_client,
+              project: parent_group_project,
+              branch: "new_branch_#{SecureRandom.hex(8)}",
+              start_branch: parent_group_project.default_branch,
+              commit_message: 'Add new file', actions: [
+                { action: 'create', file_path: 'test.txt', content: 'new file' }
+              ])
           end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError,
             /403 Forbidden - You are not allowed to push into this branch/)
         end

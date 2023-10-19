@@ -16,7 +16,7 @@ module Gitlab
           # - the ```suggestion tag must be the first text of the line
           #   - it might have up to 3 spaces before the ```suggestion tag
           # - extra text on the ```suggestion tag line will be ignored
-          GITHUB_SUGGESTION = /^\ {,3}(?<suggestion>```suggestion\b).*(?<eol>\R)/.freeze
+          GITHUB_SUGGESTION = /^\ {,3}(?<suggestion>```suggestion\b).*(?<eol>\R)/
 
           def initialize(note:, start_line: nil, end_line: nil)
             @note = note

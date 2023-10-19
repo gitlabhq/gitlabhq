@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/ApplicationController
-class AcmeChallengesController < ActionController::Base
+class AcmeChallengesController < BaseActionController
   def show
     if acme_order
       render plain: acme_order.challenge_file_content, content_type: 'text/plain'
@@ -16,4 +15,3 @@ class AcmeChallengesController < ActionController::Base
     @acme_order ||= PagesDomainAcmeOrder.find_by_domain_and_token(params[:domain], params[:token])
   end
 end
-# rubocop:enable Rails/ApplicationController

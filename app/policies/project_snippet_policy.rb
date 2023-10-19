@@ -8,7 +8,7 @@ class ProjectSnippetPolicy < BasePolicy
   condition(:internal_snippet, scope: :subject) { @subject.internal? }
   condition(:private_snippet, scope: :subject) { @subject.private? }
   condition(:public_project, scope: :subject) { @subject.project.public? }
-
+  condition(:hidden, scope: :subject) { @subject.hidden_due_to_author_ban? }
   condition(:is_author) { @user && @subject.author == @user }
 
   # We have to check both project feature visibility and a snippet visibility and take the stricter one
@@ -48,6 +48,13 @@ class ProjectSnippetPolicy < BasePolicy
     enable :read_snippet
     enable :update_snippet
     enable :admin_snippet
+  end
+
+  rule { hidden & ~can?(:read_all_resources) }.policy do
+    prevent :read_snippet
+    prevent :update_snippet
+    prevent :admin_snippet
+    prevent :read_note
   end
 
   rule { ~can?(:read_snippet) }.prevent :create_note

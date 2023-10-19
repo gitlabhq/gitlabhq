@@ -6,23 +6,23 @@ module Gitlab
       INSTANCE_PACKAGES_PATH = %r{
         \A/api/v4/packages/npm/-/npm/v1/security/
         (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
-      }xi.freeze
+      }xi
       GROUP_PACKAGES_PATH = %r{
         \A/api/v4/groups/
         (?<id>
         [a-zA-Z0-9%-._]{1,255}
         )/-/packages/npm/-/npm/v1/security/
         (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
-      }xi.freeze
+      }xi
       PROJECT_PACKAGES_PATH = %r{
         \A/api/v4/projects/
         (?<id>
         [a-zA-Z0-9%-._]{1,255}
         )/packages/npm/-/npm/v1/security/
         (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
-      }xi.freeze
+      }xi
       MAXIMUM_BODY_SIZE = 200.kilobytes.to_i
-      UNSAFE_CHARACTERS = %r{[!"#&'()*+,./:;<>=?@\[\]^`{}|~$]}xi.freeze
+      UNSAFE_CHARACTERS = %r{[!"#&'()*+,./:;<>=?@\[\]^`{}|~$]}xi
 
       def initialize(app)
         @app = app

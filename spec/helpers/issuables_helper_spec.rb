@@ -268,7 +268,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           markdownPreviewPath: "/#{@project.full_path}/preview_markdown?target_id=#{issue.iid}&target_type=Issue",
           markdownDocsPath: '/help/user/markdown',
           lockVersion: issue.lock_version,
-          state: issue.state,
           issuableTemplateNamesPath: template_names_path(@project, issue),
           initialTitleHtml: issue.title,
           initialTitleText: issue.title,
@@ -284,7 +283,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           issuableId: issue.id,
           issueType: 'issue',
           isHidden: false,
-          sentryIssueIdentifier: nil,
           zoomMeetingUrl: nil
         }
 
@@ -381,26 +379,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
           expect(helper.issuable_initial_data(edited_issuable.reload)).to include(expected)
         end
-      end
-    end
-
-    describe '#sentryIssueIdentifier' do
-      let(:issue) { create(:issue, author: user) }
-
-      before do
-        assign(:project, issue.project)
-      end
-
-      it 'sets sentryIssueIdentifier to nil with no sentry issue' do
-        expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
-          .to be_nil
-      end
-
-      it 'sets sentryIssueIdentifier to sentry_issue_identifier' do
-        sentry_issue = create(:sentry_issue, issue: issue)
-
-        expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
-          .to eq(sentry_issue.sentry_issue_identifier)
       end
     end
 
@@ -564,41 +542,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         issuable = double(persisted?: issuable_persisted, squash: squash)
 
         expect(helper.issuable_squash_option?(issuable, project)).to eq(expectation)
-      end
-    end
-  end
-
-  describe '#state_name_with_icon' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    context 'for an issue' do
-      let_it_be(:issue) { create(:issue, project: project) }
-      let_it_be(:issue_closed) { create(:issue, :closed, project: project) }
-
-      it 'returns the correct state name and icon when issue is open' do
-        expect(helper.state_name_with_icon(issue)).to match_array([_('Open'), 'issues'])
-      end
-
-      it 'returns the correct state name and icon when issue is closed' do
-        expect(helper.state_name_with_icon(issue_closed)).to match_array([_('Closed'), 'issue-closed'])
-      end
-    end
-
-    context 'for a merge request' do
-      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-      let_it_be(:merge_request_merged) { create(:merge_request, :merged, source_project: project) }
-      let_it_be(:merge_request_closed) { create(:merge_request, :closed, source_project: project) }
-
-      it 'returns the correct state name and icon when merge request is open' do
-        expect(helper.state_name_with_icon(merge_request)).to match_array([_('Open'), 'merge-request-open'])
-      end
-
-      it 'returns the correct state name and icon when merge request is merged' do
-        expect(helper.state_name_with_icon(merge_request_merged)).to match_array([_('Merged'), 'merge'])
-      end
-
-      it 'returns the correct state name and icon when merge request is closed' do
-        expect(helper.state_name_with_icon(merge_request_closed)).to match_array([_('Closed'), 'merge-request-close'])
       end
     end
   end

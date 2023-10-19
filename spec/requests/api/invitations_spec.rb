@@ -130,15 +130,6 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
           end.to change { source.members.non_invite.count }.by(1)
         end
 
-        it 'adds a new member by unconfirmed primary email' do
-          expect do
-            post invitations_url(source, maintainer),
-                 params: { email: unconfirmed_stranger.email, access_level: Member::DEVELOPER }
-
-            expect(response).to have_gitlab_http_status(:created)
-          end.to change { source.members.non_invite.count }.by(1)
-        end
-
         it 'adds a new member by confirmed secondary email' do
           secondary_email = create(:email, :confirmed, email: 'secondary@example.com', user: stranger)
 
@@ -148,6 +139,15 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.non_invite.count }.by(1)
+        end
+
+        it 'adds a new member as an invite for unconfirmed primary email' do
+          expect do
+            post invitations_url(source, maintainer),
+                 params: { email: unconfirmed_stranger.email, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.invite.count }.by(1).and change { source.members.non_invite.count }.by(0)
         end
 
         it 'adds a new member as an invite for unconfirmed secondary email' do
@@ -266,34 +266,6 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         end
       end
 
-      context 'with tasks_to_be_done and tasks_project_id in the params' do
-        let(:project_id) { source_type == 'project' ? source.id : create(:project, namespace: source).id }
-
-        context 'when there is 1 invitation' do
-          it 'creates a member_task with the tasks_to_be_done and the project' do
-            post invitations_url(source, maintainer),
-                 params: { email: email, access_level: Member::DEVELOPER, tasks_to_be_done: %w(code ci), tasks_project_id: project_id }
-
-            member = source.members.find_by(invite_email: email)
-            expect(member.tasks_to_be_done).to match_array([:code, :ci])
-            expect(member.member_task.project_id).to eq(project_id)
-          end
-        end
-
-        context 'when there are multiple invitations' do
-          it 'creates a member_task with the tasks_to_be_done and the project' do
-            post invitations_url(source, maintainer),
-                 params: { email: [email, email2].join(','), access_level: Member::DEVELOPER, tasks_to_be_done: %w(code ci), tasks_project_id: project_id }
-
-            members = source.members.where(invite_email: [email, email2])
-            members.each do |member|
-              expect(member.tasks_to_be_done).to match_array([:code, :ci])
-              expect(member.member_task.project_id).to eq(project_id)
-            end
-          end
-        end
-      end
-
       context 'with invite_source considerations', :snowplow do
         let(:params) { { email: email, access_level: Member::DEVELOPER } }
 
@@ -407,8 +379,24 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'POST /projects/:id/invitations' do
-    it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
-      let(:source) { project }
+    context 'with admin_group_member FF disabled' do
+      before do
+        stub_feature_flags(admin_group_member: false)
+      end
+
+      it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
+        let(:source) { project }
+      end
+    end
+
+    context 'with admin_group_member FF enabled' do
+      before do
+        stub_feature_flags(admin_group_member: true)
+      end
+
+      it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
+        let(:source) { project }
+      end
     end
 
     it 'does not exceed expected queries count for emails', :request_store, :use_sql_query_cache do
@@ -470,8 +458,24 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'POST /groups/:id/invitations' do
-    it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
-      let(:source) { group }
+    context 'with admin_group_member FF disabled' do
+      before do
+        stub_feature_flags(admin_group_member: false)
+      end
+
+      it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
+        let(:source) { group }
+      end
+    end
+
+    context 'with admin_group_member FF enabled' do
+      before do
+        stub_feature_flags(admin_group_member: true)
+      end
+
+      it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
+        let(:source) { group }
+      end
     end
 
     it 'does not exceed expected queries count for emails', :request_store, :use_sql_query_cache do
@@ -583,14 +587,46 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'GET /projects/:id/invitations' do
-    it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
-      let(:source) { project }
+    context 'with admin_group_member FF disabled' do
+      before do
+        stub_feature_flags(admin_group_member: false)
+      end
+
+      it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
+        let(:source) { project }
+      end
+    end
+
+    context 'with admin_group_member FF enabled' do
+      before do
+        stub_feature_flags(admin_group_member: true)
+      end
+
+      it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
+        let(:source) { project }
+      end
     end
   end
 
   describe 'GET /groups/:id/invitations' do
-    it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
-      let(:source) { group }
+    context 'with admin_group_member FF disabled' do
+      before do
+        stub_feature_flags(admin_group_member: false)
+      end
+
+      it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
+        let(:source) { group }
+      end
+    end
+
+    context 'with admin_group_member FF enabled' do
+      before do
+        stub_feature_flags(admin_group_member: true)
+      end
+
+      it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
+        let(:source) { group }
+      end
     end
   end
 
@@ -676,14 +712,46 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'DELETE /projects/:id/inviations/:email' do
-    it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
-      let(:source) { project }
+    context 'with admin_group_member FF disabled' do
+      before do
+        stub_feature_flags(admin_group_member: false)
+      end
+
+      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
+        let(:source) { project }
+      end
+    end
+
+    context 'with admin_group_member FF enabled' do
+      before do
+        stub_feature_flags(admin_group_member: true)
+      end
+
+      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
+        let(:source) { project }
+      end
     end
   end
 
   describe 'DELETE /groups/:id/inviations/:email' do
-    it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
-      let(:source) { group }
+    context 'with admin_group_member FF disabled' do
+      before do
+        stub_feature_flags(admin_group_member: false)
+      end
+
+      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
+        let(:source) { group }
+      end
+    end
+
+    context 'with admin_group_member FF enabled' do
+      before do
+        stub_feature_flags(admin_group_member: true)
+      end
+
+      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
+        let(:source) { group }
+      end
     end
   end
 
@@ -792,14 +860,26 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'PUT /projects/:id/invitations' do
-    it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'project' do
-      let(:source) { project }
+    context 'with admin_group_member FF disabled' do
+      before do
+        stub_feature_flags(admin_group_member: false)
+      end
+
+      it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'project' do
+        let(:source) { project }
+      end
     end
   end
 
   describe 'PUT /groups/:id/invitations' do
-    it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'group' do
-      let(:source) { group }
+    context 'with admin_group_member FF enabled' do
+      before do
+        stub_feature_flags(admin_group_member: true)
+      end
+
+      it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'group' do
+        let(:source) { group }
+      end
     end
   end
 end

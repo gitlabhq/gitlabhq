@@ -61,10 +61,12 @@ export default {
     k8sAccessConfiguration() {
       return {
         basePath: this.kasTunnelUrl,
-        baseOptions: {
-          headers: { 'GitLab-Agent-Id': this.gitlabAgentId, ...csrf.headers },
-          withCredentials: true,
+        headers: {
+          'GitLab-Agent-Id': this.gitlabAgentId,
+          'Content-Type': 'application/json',
+          ...csrf.headers,
         },
+        credentials: 'include',
       };
     },
     clusterHealthStatus() {

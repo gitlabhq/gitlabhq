@@ -28,7 +28,7 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_plan
   it_behaves_like 'issue boards sidebar'
 
   def first_card
-    find('.board:nth-child(1)').first("[data-testid='board_card']")
+    find('.board:nth-child(1)').first("[data-testid='board-card']")
   end
 
   def click_first_issue_card

@@ -102,6 +102,12 @@ module Types
                                                                                    calls_gitaly: true,
                                                                                    description: 'Detailed merge status of the merge request.'
 
+    field :mergeability_checks, [::Types::MergeRequests::MergeabilityCheckType],
+          null: false,
+          description: 'Status of all mergeability checks of the merge request.',
+          method: :all_mergeability_checks_results,
+          alpha: { milestone: '16.5' }
+
     field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true,
                                                                  calls_gitaly: true,
                                                                  description: 'Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged.'

@@ -5,6 +5,7 @@ FactoryBot.define do
     user
     achievement
     awarded_by_user factory: :user
+    priority { nil }
 
     trait :revoked do
       revoked_by_user factory: :user

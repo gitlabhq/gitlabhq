@@ -46,11 +46,10 @@ module QA
 
       context 'with associated merge request' do
         let!(:source_mr) do
-          Resource::MergeRequest.fabricate_via_api! do |mr|
-            mr.project = source_project
-            mr.api_client = source_admin_api_client
-            mr.description = "Closes #{source_issue.web_url}"
-          end
+          create(:merge_request,
+            project: source_project,
+            api_client: source_admin_api_client,
+            description: "Closes #{source_issue.web_url}")
         end
 
         let(:imported_related_mrs) do

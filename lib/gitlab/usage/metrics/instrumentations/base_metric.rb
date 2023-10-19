@@ -10,6 +10,7 @@ module Gitlab
 
           attr_reader :time_frame
           attr_reader :options
+          attr_reader :events
 
           class << self
             def available?(&block)
@@ -26,6 +27,7 @@ module Gitlab
           def initialize(metric_definition)
             @time_frame = metric_definition.fetch(:time_frame)
             @options = metric_definition.fetch(:options, {})
+            @events = metric_definition.fetch(:events, {})
           end
 
           def instrumentation

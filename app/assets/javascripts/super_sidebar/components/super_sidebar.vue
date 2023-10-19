@@ -36,7 +36,7 @@ export default {
   mixins: [Tracking.mixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
-    primary: s__('Navigation|Primary'),
+    primaryNavigation: s__('Navigation|Primary navigation'),
   },
   inject: ['showTrialStatusWidget'],
   props: {
@@ -130,7 +130,9 @@ export default {
   <div>
     <div class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <gl-button
+      v-if="sidebarData.is_logged_in"
       class="super-sidebar-skip-to gl-sr-only-focusable gl-fixed gl-left-0 gl-m-3"
+      data-testid="super-sidebar-skip-to"
       href="#content-body"
       variant="confirm"
     >
@@ -138,7 +140,7 @@ export default {
     </gl-button>
     <nav
       id="super-sidebar"
-      :aria-label="$options.i18n.primary"
+      aria-labelledby="super-sidebar-heading"
       class="super-sidebar"
       :class="peekClasses"
       data-testid="super-sidebar"
@@ -147,6 +149,9 @@ export default {
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"
     >
+      <h2 id="super-sidebar-heading" class="gl-sr-only">
+        {{ $options.i18n.primaryNavigation }}
+      </h2>
       <user-bar :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
         <trial-status-widget
@@ -158,12 +163,12 @@ export default {
         class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
       >
         <div class="gl-flex-grow-1 gl-overflow-auto" data-testid="nav-container">
-          <h2
-            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-sm super-sidebar-context-header"
+          <div
+            id="super-sidebar-context-header"
+            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
           >
             {{ sidebarData.current_context_header }}
-          </h2>
-
+          </div>
           <sidebar-menu
             v-if="menuItems.length"
             :items="menuItems"

@@ -119,7 +119,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
       end
 
       it_behaves_like 'internal event tracking' do
-        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DUE_DATE_CHANGED }
+        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DUE_DATE_CHANGED }
         let(:user) { author }
         let(:namespace) { project.namespace }
       end
@@ -232,7 +232,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
       end
 
       it_behaves_like 'internal event tracking' do
-        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_ESTIMATE_CHANGED }
+        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_ESTIMATE_CHANGED }
         let(:user) { author }
         let(:namespace) { project.namespace }
       end
@@ -364,7 +364,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_SPENT_CHANGED }
+          let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_SPENT_CHANGED }
           let(:user) { author }
           let(:namespace) { project.namespace }
         end

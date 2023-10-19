@@ -21,7 +21,7 @@ import {
   registerExtension,
   registeredExtensions,
 } from '~/vue_merge_request_widget/components/extensions';
-import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
 import { STATE_QUERY_POLLING_INTERVAL_BACKOFF } from '~/vue_merge_request_widget/constants';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -30,6 +30,7 @@ import Approvals from '~/vue_merge_request_widget/components/approvals/approvals
 import ConflictsState from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
 import Preparing from '~/vue_merge_request_widget/components/states/mr_widget_preparing.vue';
 import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
+import MergedState from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import WidgetSuggestPipeline from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
@@ -78,23 +79,13 @@ describe('MrWidgetOptions', () => {
 
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
 
-  const setInitialData = (data) => {
-    gl.mrWidgetData = { ...mockData, ...data };
-    mock
-      .onGet(mockData.merge_request_widget_path)
-      .reply(() => [HTTP_STATUS_OK, { ...mockData, ...data }]);
-    mock
-      .onGet(mockData.merge_request_cached_widget_path)
-      .reply(() => [HTTP_STATUS_OK, { ...mockData, ...data }]);
-  };
-
   const createComponent = ({
     updatedMrData = {},
     options = {},
     data = {},
     mountFn = shallowMountExtended,
   } = {}) => {
-    setInitialData(updatedMrData);
+    gl.mrWidgetData = { ...mockData, ...updatedMrData };
     const mrData = { ...mockData, ...updatedMrData };
     const mockedApprovalsSubscription = createMockApolloSubscription();
     queryResponse = {
@@ -172,8 +163,10 @@ describe('MrWidgetOptions', () => {
   const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
 
   beforeEach(() => {
-    gon.features = { asyncMrWidget: true };
+    gon.features = {};
     mock = new MockAdapter(axios);
+    mock.onGet(mockData.merge_request_widget_path).reply(HTTP_STATUS_OK, {});
+    mock.onGet(mockData.merge_request_cached_widget_path).reply(HTTP_STATUS_OK, {});
   });
 
   afterEach(() => {
@@ -186,25 +179,13 @@ describe('MrWidgetOptions', () => {
   describe('default', () => {
     describe('computed', () => {
       describe('componentName', () => {
-        beforeEach(async () => {
-          await createComponent();
-        });
-
-        // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/409365
-        // eslint-disable-next-line jest/no-disabled-tests
-        it.skip.each`
-          ${'merged'}      | ${'mr-widget-merged'}
-        `('should translate $state into $componentName', ({ state, componentName }) => {
-          wrapper.vm.mr.state = state;
-
-          expect(wrapper.vm.componentName).toEqual(componentName);
-        });
-
         it.each`
           state            | componentName       | component
+          ${STATUS_MERGED} | ${'MergedState'}    | ${MergedState}
           ${'conflicts'}   | ${'ConflictsState'} | ${ConflictsState}
           ${'shaMismatch'} | ${'ShaMismatch'}    | ${ShaMismatch}
         `('should translate $state into $componentName component', async ({ state, component }) => {
+          await createComponent();
           Vue.set(wrapper.vm.mr, 'state', state);
           await nextTick();
           expect(wrapper.findComponent(component).exists()).toBe(true);
@@ -336,13 +317,23 @@ describe('MrWidgetOptions', () => {
 
     describe('methods', () => {
       describe('checkStatus', () => {
+        const updatedMrData = { foo: 1 };
+        beforeEach(() => {
+          mock
+            .onGet(mockData.merge_request_widget_path)
+            .reply(HTTP_STATUS_OK, { ...mockData, ...updatedMrData });
+          mock
+            .onGet(mockData.merge_request_cached_widget_path)
+            .reply(HTTP_STATUS_OK, { ...mockData, ...updatedMrData });
+        });
+
         it('checks the status of the pipelines', async () => {
           const callback = jest.fn();
-          await createComponent({ updatedMrData: { foo: 1 } });
+          await createComponent({ updatedMrData });
           await waitForPromises();
           eventHub.$emit('MRWidgetUpdateRequested', callback);
           await waitForPromises();
-          expect(callback).toHaveBeenCalledWith(expect.objectContaining({ foo: 1 }));
+          expect(callback).toHaveBeenCalledWith(expect.objectContaining(updatedMrData));
         });
 
         it('notifies the user of the pipeline status', async () => {
@@ -515,29 +506,42 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('handleNotification', () => {
+        const updatedMrData = { gitlabLogo: 'logo.png' };
         beforeEach(() => {
           jest.spyOn(notify, 'notifyMe').mockImplementation(() => {});
         });
 
-        it('should call notifyMe', async () => {
-          const logoFilename = 'logo.png';
-          await createComponent({ updatedMrData: { gitlabLogo: logoFilename } });
-          expect(notify.notifyMe).toHaveBeenCalledWith(
-            `Pipeline passed`,
-            `Pipeline passed for "${mockData.title}"`,
-            logoFilename,
-          );
+        describe('when pipeline has passed', () => {
+          beforeEach(() => {
+            mock
+              .onGet(mockData.merge_request_widget_path)
+              .reply(HTTP_STATUS_OK, { ...mockData, ...updatedMrData });
+            mock
+              .onGet(mockData.merge_request_cached_widget_path)
+              .reply(HTTP_STATUS_OK, { ...mockData, ...updatedMrData });
+          });
+
+          it('should call notifyMe', async () => {
+            await createComponent({ updatedMrData });
+            expect(notify.notifyMe).toHaveBeenCalledWith(
+              `Pipeline passed`,
+              `Pipeline passed for "${mockData.title}"`,
+              updatedMrData.gitlabLogo,
+            );
+          });
         });
 
-        it('should not call notifyMe if the status has not changed', async () => {
-          await createComponent({ updatedMrData: { ci_status: undefined } });
-          await eventHub.$emit('MRWidgetUpdateRequested');
-          expect(notify.notifyMe).not.toHaveBeenCalled();
-        });
+        describe('when pipeline has not passed', () => {
+          it('should not call notifyMe if the status has not changed', async () => {
+            await createComponent({ updatedMrData: { ci_status: undefined } });
+            await eventHub.$emit('MRWidgetUpdateRequested');
+            expect(notify.notifyMe).not.toHaveBeenCalled();
+          });
 
-        it('should not notify if no pipeline provided', async () => {
-          await createComponent({ updatedMrData: { pipeline: undefined } });
-          expect(notify.notifyMe).not.toHaveBeenCalled();
+          it('should not notify if no pipeline provided', async () => {
+            await createComponent({ updatedMrData: { pipeline: undefined } });
+            expect(notify.notifyMe).not.toHaveBeenCalled();
+          });
         });
       });
 

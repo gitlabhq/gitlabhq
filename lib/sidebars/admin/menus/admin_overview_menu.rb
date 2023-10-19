@@ -28,7 +28,7 @@ module Sidebars
 
         override :extra_container_html_options
         def extra_container_html_options
-          { 'data-qa-selector': 'admin_overview_submenu_content' }
+          { testid: 'admin-overview-submenu-content' }
         end
 
         private

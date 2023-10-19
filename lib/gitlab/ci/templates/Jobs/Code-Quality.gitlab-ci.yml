@@ -7,7 +7,9 @@ code_quality:
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
   variables:
     DOCKER_DRIVER: overlay2
+    DOCKER_CERT_PATH: ""
     DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_VERIFY: ""
     CODE_QUALITY_IMAGE_TAG: "0.96.0"
     CODE_QUALITY_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/codequality:$CODE_QUALITY_IMAGE_TAG"
     DOCKER_SOCKET_PATH: /var/run/docker.sock

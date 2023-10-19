@@ -3,7 +3,7 @@
 module Resolvers
   module Clusters
     class AgentTokensResolver < BaseResolver
-      type Types::Clusters::AgentTokenType, null: true
+      type Types::Clusters::AgentTokenType.connection_type, null: true
 
       alias_method :agent, :object
 

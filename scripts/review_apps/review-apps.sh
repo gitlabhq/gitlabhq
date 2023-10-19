@@ -451,24 +451,40 @@ function verify_commit_sha() {
 function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
 
-  # Install dig to inspect DNS entries
-  apk add -q bind-tools
+  echo
+  echoinfo "*************************************************************************************"
+  echoinfo "*********************************** DEBUGGING DATA **********************************"
+  echoinfo "*************************************************************************************"
+  echo
 
-  echoinfo "[debugging data] Check review-app webservice DNS entry:"
-  dig +short $(echo "${CI_ENVIRONMENT_URL}" | sed 's~http[s]*://~~g')
-
-  echoinfo "[debugging data] Check external IP for nginx-ingress-controller service (should be THE SAME AS the DNS entry IP above):"
-  kubectl -n "${namespace}" get svc "${namespace}-nginx-ingress-controller" -o jsonpath='{.status.loadBalancer.ingress[].ip}'
-
-  echoinfo "[debugging data] k8s resources:"
+  echoinfo "k8s resources:"
   kubectl -n "${namespace}" get pods
 
-  echoinfo "[debugging data] PostgreSQL logs:"
+  echoinfo "PostgreSQL logs:"
   kubectl -n "${namespace}" logs -l app=postgresql --all-containers
 
-  echoinfo "[debugging data] DB migrations logs:"
+  echoinfo "DB migrations logs:"
   kubectl -n "${namespace}" logs -l app=migrations --all-containers
 
-  echoinfo "[debugging data] Webservice logs:"
+  echoinfo "Webservice logs:"
   kubectl -n "${namespace}" logs -l app=webservice -c webservice
+
+  echo
+  echoinfo "*************************************************************************************"
+  echoinfo "********************** This job failed. Should you restart it? **********************"
+  echoinfo "*************************************************************************************"
+  echo
+  echo "If it seems to be an infrastructure issue from the job output, please restart this job."
+  echo
+  echo "IMPORTANT: Error: \"UPGRADE FAILED: Get XXX : context deadline exceeded\" is not necessarily an infrastructure issue."
+  echo "It just means that the review-app could not be deployed successfully (e.g. the app or one of its component could not boot successfully)"
+  echo
+  echo "If you're unsure, have a look at the errors raised in Sentry for this review-app:"
+  echo "https://new-sentry.gitlab.net/organizations/gitlab/releases/$(echo "${CI_COMMIT_SHA}" | cut -c1-11)/?project=19&issuesType=all"
+  echo ""
+  echo "if it does not look like an error due to some changes done in the MR, please restart this job."
+  echo
+  echoinfo "*************************************************************************************"
+  echoinfo "*************************************************************************************"
+  echoinfo "*************************************************************************************"
 }

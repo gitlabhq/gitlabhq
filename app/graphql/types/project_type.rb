@@ -311,6 +311,12 @@ module Types
       null: true,
       description: 'Packages cleanup policy for the project.'
 
+    field :packages_protection_rules,
+      Types::Packages::Protection::RuleType.connection_type,
+      null: true,
+      description: 'Packages protection rules for the project.',
+      resolver: Resolvers::ProjectPackagesProtectionRulesResolver
+
     field :jobs,
       type: Types::Ci::JobType.connection_type,
       null: true,
@@ -524,7 +530,7 @@ module Types
       complexity: 5,
       resolver: ::Resolvers::TimelogResolver
 
-    field :agent_configurations, ::Types::Kas::AgentConfigurationType.connection_type,
+    field :agent_configurations,
       null: true,
       description: 'Agent configurations defined by the project',
       resolver: ::Resolvers::Kas::AgentConfigurationsResolver

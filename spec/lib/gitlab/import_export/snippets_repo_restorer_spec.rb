@@ -14,9 +14,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer, :clean_gitlab_redis_r
     let(:bundle_dir) { ::Gitlab::ImportExport.snippets_repo_bundle_path(shared.export_path) }
     let(:service) { instance_double(Gitlab::ImportExport::SnippetRepoRestorer) }
     let(:restorer) do
-      described_class.new(user: user,
-                          shared: shared,
-                          project: project)
+      described_class.new(user: user, shared: shared, project: project)
     end
 
     after do

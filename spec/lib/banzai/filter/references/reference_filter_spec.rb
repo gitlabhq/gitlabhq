@@ -34,6 +34,13 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter, feature_category: :t
 
       expect { |b| filter.each_node(&b) }.not_to yield_control
     end
+
+    it 'skips text nodes in inline diff elements' do
+      document = Nokogiri::HTML.fragment('<span class="idiff">foo</span>')
+      filter = described_class.new(document, project: project)
+
+      expect { |b| filter.each_node(&b) }.not_to yield_control
+    end
   end
 
   describe '#nodes' do

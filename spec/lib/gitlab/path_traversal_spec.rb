@@ -93,6 +93,13 @@ RSpec.describe Gitlab::PathTraversal, feature_category: :shared do
     it 'raises for other non-strings' do
       expect { check_path_traversal!(%w[/tmp /tmp/../etc/passwd]) }.to raise_error(/Invalid path/)
     end
+
+    context 'when skip_decoding is used' do
+      it 'does not detect double encoded chars' do
+        expect(check_path_traversal!('foo%252F..%2Fbar', skip_decoding: true)).to eq('foo%252F..%2Fbar')
+        expect(check_path_traversal!('foo%252F%2E%2E%2Fbar', skip_decoding: true)).to eq('foo%252F%2E%2E%2Fbar')
+      end
+    end
   end
 
   describe '.check_allowed_absolute_path!' do

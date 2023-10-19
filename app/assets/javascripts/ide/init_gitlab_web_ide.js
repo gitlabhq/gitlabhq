@@ -1,9 +1,11 @@
 import { start } from '@gitlab/web-ide';
 import { __ } from '~/locale';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
 import csrf from '~/lib/utils/csrf';
+import Tracking from '~/tracking';
 import { getBaseConfig } from './lib/gitlab_web_ide/get_base_config';
 import { setupRootElement } from './lib/gitlab_web_ide/setup_root_element';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
@@ -39,13 +41,14 @@ export const initGitlabWebIDE = async (el) => {
     filePath,
     mergeRequest: mrId,
     forkInfo: forkInfoJSON,
-    editorFontSrcUrl,
-    editorFontFormat,
-    editorFontFamily,
+    editorFont: editorFontJSON,
     codeSuggestionsEnabled,
   } = el.dataset;
 
   const rootEl = setupRootElement(el);
+  const editorFont = editorFontJSON
+    ? convertObjectPropsToCamelCase(JSON.parse(editorFontJSON), { deep: true })
+    : null;
   const forkInfo = forkInfoJSON ? JSON.parse(forkInfoJSON) : null;
 
   // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
@@ -69,13 +72,11 @@ export const initGitlabWebIDE = async (el) => {
       userPreferences: el.dataset.userPreferencesPath,
       signIn: el.dataset.signInPath,
     },
-    editorFont: {
-      srcUrl: editorFontSrcUrl,
-      fontFamily: editorFontFamily,
-      format: editorFontFormat,
-    },
+    editorFont,
     codeSuggestionsEnabled,
     handleTracking,
+    // See https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L86
+    telemetryEnabled: Tracking.enabled(),
     async handleStartRemote({ remoteHost, remotePath, connectionToken }) {
       const confirmed = await confirmAction(
         __('Are you sure you want to leave the Web IDE? All unsaved changes will be lost.'),

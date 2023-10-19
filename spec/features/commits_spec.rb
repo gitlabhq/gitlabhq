@@ -81,7 +81,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
           it 'shows correct build status from default branch' do
             page.within("//li[@id='commit-#{pipeline.short_sha}']") do
-              expect(page).to have_css('.ci-status-link')
+              expect(page).to have_css("[data-testid='ci-status-badge-legacy']")
               expect(page).to have_css('.ci-status-icon-success')
             end
           end
@@ -115,7 +115,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           it 'cancels commit', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
             click_on 'Cancel pipeline'
-            expect(page).to have_content 'canceled'
+            expect(page).to have_content 'Canceled'
           end
         end
 
@@ -123,7 +123,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           it 'cancels build', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
             find('[data-testid="cancel-pipeline"]').click
-            expect(page).to have_content 'canceled'
+            expect(page).to have_content 'Canceled'
           end
         end
       end

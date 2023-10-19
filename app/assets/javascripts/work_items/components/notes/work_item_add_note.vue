@@ -5,6 +5,7 @@ import { ASC } from '~/notes/constants';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
+import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
@@ -21,8 +22,12 @@ export default {
     WorkItemCommentForm,
   },
   mixins: [Tracking.mixin()],
-  inject: ['fullPath'],
+  inject: ['isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemId: {
       type: String,
       required: true,
@@ -90,7 +95,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,
@@ -109,6 +116,9 @@ export default {
     },
   },
   computed: {
+    isLoading() {
+      return this.$apollo.queries.workItem.loading;
+    },
     signedIn() {
       return Boolean(window.gon.current_user_id);
     },
@@ -248,7 +258,7 @@ export default {
   <li :class="timelineEntryClass">
     <work-item-note-signed-out v-if="!signedIn" />
     <work-item-comment-locked
-      v-else-if="!canCreateNote"
+      v-else-if="!isLoading && !canCreateNote"
       :work-item-type="workItemType"
       :is-project-archived="isProjectArchived"
     />

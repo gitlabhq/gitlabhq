@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::ProjectRootAncestorPreloader do
+RSpec.describe Preloaders::ProjectRootAncestorPreloader, feature_category: :system_access do
   let_it_be(:root_parent1) { create(:group, :private, name: 'root-1', path: 'root-1') }
   let_it_be(:root_parent2) { create(:group, name: 'root-2', path: 'root-2') }
   let_it_be(:guest_project) { create(:project, name: 'public guest', path: 'public-guest') }
@@ -43,87 +43,47 @@ RSpec.describe Preloaders::ProjectRootAncestorPreloader do
     end
   end
 
-  context 'when use_traversal_ids FF is enabled' do
-    context 'when the preloader is used' do
-      context 'when no additional preloads are provided' do
-        before do
-          preload_ancestors(:group)
-        end
-
-        it_behaves_like 'executes N matching DB queries', 0
-      end
-
-      context 'when additional preloads are provided' do
-        let(:additional_preloads) { [:route] }
-        let(:root_query_regex) { /\ASELECT.+FROM "routes" WHERE "routes"."source_id" = \d+/ }
-
-        before do
-          preload_ancestors
-        end
-
-        it_behaves_like 'executes N matching DB queries', 0, :full_path
-      end
-
-      context 'when projects are an array and not an ActiveRecord::Relation' do
-        before do
-          described_class.new(projects, :namespace, additional_preloads).execute
-        end
-
-        it_behaves_like 'executes N matching DB queries', 4
-      end
-    end
-
-    context 'when the preloader is not used' do
-      it_behaves_like 'executes N matching DB queries', 4
-    end
-
-    context 'when using a :group sti name and passing projects in a user namespace' do
-      let(:projects) { [private_developer_project] }
-      let(:additional_preloads) { [:ip_restrictions, :saml_provider] }
-
-      it 'does not load a nil value for root_ancestor' do
+  context 'when the preloader is used' do
+    context 'when no additional preloads are provided' do
+      before do
         preload_ancestors(:group)
-
-        expect(pristine_projects.first.root_ancestor).to eq(private_developer_project.root_ancestor)
       end
-    end
-  end
 
-  context 'when use_traversal_ids FF is disabled' do
-    before do
-      stub_feature_flags(use_traversal_ids: false)
+      it_behaves_like 'executes N matching DB queries', 0
     end
 
-    context 'when the preloader is used' do
+    context 'when additional preloads are provided' do
+      let(:additional_preloads) { [:route] }
+      let(:root_query_regex) { /\ASELECT.+FROM "routes" WHERE "routes"."source_id" = \d+/ }
+
       before do
         preload_ancestors
       end
 
-      context 'when no additional preloads are provided' do
-        it_behaves_like 'executes N matching DB queries', 4
-      end
-
-      context 'when additional preloads are provided' do
-        let(:additional_preloads) { [:route] }
-        let(:root_query_regex) { /\ASELECT.+FROM "routes" WHERE "routes"."source_id" = \d+/ }
-
-        it_behaves_like 'executes N matching DB queries', 4, :full_path
-      end
+      it_behaves_like 'executes N matching DB queries', 0, :full_path
     end
 
-    context 'when the preloader is not used' do
+    context 'when projects are an array and not an ActiveRecord::Relation' do
+      before do
+        described_class.new(projects, :namespace, additional_preloads).execute
+      end
+
       it_behaves_like 'executes N matching DB queries', 4
     end
+  end
 
-    context 'when using a :group sti name and passing projects in a user namespace' do
-      let(:projects) { [private_developer_project] }
-      let(:additional_preloads) { [:ip_restrictions, :saml_provider] }
+  context 'when the preloader is not used' do
+    it_behaves_like 'executes N matching DB queries', 4
+  end
 
-      it 'does not load a nil value for root_ancestor' do
-        preload_ancestors(:group)
+  context 'when using a :group sti name and passing projects in a user namespace' do
+    let(:projects) { [private_developer_project] }
+    let(:additional_preloads) { [:ip_restrictions, :saml_provider] }
 
-        expect(pristine_projects.first.root_ancestor).to eq(private_developer_project.root_ancestor)
-      end
+    it 'does not load a nil value for root_ancestor' do
+      preload_ancestors(:group)
+
+      expect(pristine_projects.first.root_ancestor).to eq(private_developer_project.root_ancestor)
     end
   end
 

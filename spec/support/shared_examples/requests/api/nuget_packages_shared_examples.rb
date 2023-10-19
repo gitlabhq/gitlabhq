@@ -357,12 +357,7 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
     end
 
     context 'with normalized package version' do
-      let(:normalized_version) { '0.1.0' }
-      let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{normalized_version}/#{package.name}.#{package.version}.#{format}" }
-
-      before do
-        package.nuget_metadatum.update_column(:normalized_version, normalized_version)
-      end
+      let(:package_version) { '0.1.0' }
 
       it_behaves_like 'returning response status', status
 
@@ -734,6 +729,22 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
       end
 
       it_behaves_like 'returning response status', :created
+    end
+  end
+end
+
+RSpec.shared_examples 'process nuget delete request' do |user_type, status|
+  context "for user type #{user_type}" do
+    before do
+      target.send("add_#{user_type}", user) if user_type
+    end
+
+    it_behaves_like 'returning response status', status
+
+    it_behaves_like 'a package tracking event', 'API::NugetPackages', 'delete_package'
+
+    it 'marks package for deletion' do
+      expect { subject }.to change { package.reset.status }.from('default').to('pending_destruction')
     end
   end
 end

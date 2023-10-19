@@ -123,7 +123,7 @@ describe('HeaderActions component', () => {
   const findMobileDropdownItems = () => findMobileDropdown().findAllComponents(GlDropdownItem);
   const findDesktopDropdownItems = () => findDesktopDropdown().findAllComponents(GlDropdownItem);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
-  const findReportAbuseSelectorItem = () => wrapper.find(`[data-testid="report-abuse-item"]`);
+  const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-item"]`);
   const findNotificationWidget = () => wrapper.find(`[data-testid="notification-toggle"]`);
   const findLockIssueWidget = () => wrapper.find(`[data-testid="lock-issue-toggle"]`);
   const findCopyRefenceDropdownItem = () => wrapper.find(`[data-testid="copy-reference"]`);
@@ -239,24 +239,24 @@ describe('HeaderActions component', () => {
     });
 
     describe.each`
-      description           | isCloseIssueItemVisible | findDropdownItems           | findDropdown
-      ${'mobile dropdown'}  | ${true}                 | ${findMobileDropdownItems}  | ${findMobileDropdown}
-      ${'desktop dropdown'} | ${false}                | ${findDesktopDropdownItems} | ${findDesktopDropdown}
-    `('$description', ({ isCloseIssueItemVisible, findDropdownItems, findDropdown }) => {
+      description           | findDropdownItems
+      ${'mobile dropdown'}  | ${findMobileDropdownItems}
+      ${'desktop dropdown'} | ${findDesktopDropdownItems}
+    `('$description', ({ findDropdownItems }) => {
       describe.each`
-        description                               | itemText                           | isItemVisible              | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic | canDestroyIssue
-        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`}            | ${isCloseIssueItemVisible} | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`}            | ${false}                   | ${false}       | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user can create ${issueType}`}    | ${`New related ${issueType}`}      | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot create ${issueType}`} | ${`New related ${issueType}`}      | ${false}                   | ${true}        | ${false}       | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user can promote to epic'}        | ${'Promote to epic'}               | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user cannot promote to epic'}     | ${'Promote to epic'}               | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}       | ${false}         | ${true}
-        ${'when user can report abuse'}           | ${'Report abuse to administrator'} | ${true}                    | ${true}        | ${true}        | ${false}      | ${true}       | ${true}          | ${true}
-        ${'when user cannot report abuse'}        | ${'Report abuse to administrator'} | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user can submit as spam'}         | ${'Submit as spam'}                | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user cannot submit as spam'}      | ${'Submit as spam'}                | ${false}                   | ${true}        | ${true}        | ${true}       | ${false}      | ${true}          | ${true}
-        ${`when user can delete ${issueType}`}    | ${`Delete ${issueType}`}           | ${true}                    | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot delete ${issueType}`} | ${`Delete ${issueType}`}           | ${false}                   | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${false}
+        description                               | itemText                           | isItemVisible | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic | canDestroyIssue
+        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`}            | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`}            | ${false}      | ${false}       | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user can create ${issueType}`}    | ${`New related ${issueType}`}      | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot create ${issueType}`} | ${`New related ${issueType}`}      | ${false}      | ${true}        | ${false}       | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user can promote to epic'}        | ${'Promote to epic'}               | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user cannot promote to epic'}     | ${'Promote to epic'}               | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${false}         | ${true}
+        ${'when user can report abuse'}           | ${'Report abuse to administrator'} | ${true}       | ${true}        | ${true}        | ${false}      | ${true}       | ${true}          | ${true}
+        ${'when user cannot report abuse'}        | ${'Report abuse to administrator'} | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user can submit as spam'}         | ${'Submit as spam'}                | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user cannot submit as spam'}      | ${'Submit as spam'}                | ${false}      | ${true}        | ${true}        | ${true}       | ${false}      | ${true}          | ${true}
+        ${`when user can delete ${issueType}`}    | ${`Delete ${issueType}`}           | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot delete ${issueType}`} | ${`Delete ${issueType}`}           | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${false}
       `(
         '$description',
         ({
@@ -292,24 +292,6 @@ describe('HeaderActions component', () => {
           });
         },
       );
-
-      describe(`when user can update but not create ${issueType}`, () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            props: {
-              canUpdateIssue: true,
-              canCreateIssue: false,
-              isIssueAuthor: true,
-              issueType,
-              canReportSpam: false,
-              canPromoteToEpic: false,
-            },
-          });
-        });
-        it(`${isCloseIssueItemVisible ? 'shows' : 'hides'} the dropdown button`, () => {
-          expect(findDropdown().exists()).toBe(isCloseIssueItemVisible);
-        });
-      });
     });
 
     describe(`show edit button ${issueType}`, () => {
@@ -346,7 +328,7 @@ describe('HeaderActions component', () => {
     });
 
     it('tracks clicking on button', () => {
-      findDesktopDropdownItems().at(3).vm.$emit('click');
+      findDesktopDropdownItems().at(4).vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_dropdown', {
         label: 'delete_issue',
@@ -490,28 +472,40 @@ describe('HeaderActions component', () => {
     });
   });
 
-  describe('abuse category selector', () => {
+  describe('report abuse to admin button', () => {
     beforeEach(() => {
       wrapper = mountComponent({ props: { isIssueAuthor: false } });
     });
 
-    it("doesn't render", () => {
+    it('renders the button but not the abuse category drawer', () => {
+      expect(findReportAbuseButton().exists()).toBe(true);
       expect(findAbuseCategorySelector().exists()).toEqual(false);
     });
 
-    it('opens the drawer', async () => {
-      findReportAbuseSelectorItem().vm.$emit('click');
+    it('opens the abuse category drawer', async () => {
+      findReportAbuseButton().vm.$emit('click');
 
       await nextTick();
 
       expect(findAbuseCategorySelector().props('showDrawer')).toEqual(true);
     });
 
-    it('closes the drawer', async () => {
-      await findReportAbuseSelectorItem().vm.$emit('click');
-      await findAbuseCategorySelector().vm.$emit('close-drawer');
+    it('closes the abuse category drawer', async () => {
+      await findReportAbuseButton().vm.$emit('click');
+      expect(findAbuseCategorySelector().exists()).toEqual(true);
 
+      await findAbuseCategorySelector().vm.$emit('close-drawer');
       expect(findAbuseCategorySelector().exists()).toEqual(false);
+    });
+
+    describe('when the logged in user is the issue author', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({ props: { isIssueAuthor: true } });
+      });
+
+      it('does not render the button', () => {
+        expect(findReportAbuseButton().exists()).toBe(false);
+      });
     });
   });
 
@@ -694,7 +688,7 @@ describe('HeaderActions component', () => {
           expect(findDesktopDropdown().exists()).toBe(headerActionsVisible);
           expect(findCopyRefenceDropdownItem().exists()).toBe(headerActionsVisible);
           expect(findNotificationWidget().exists()).toBe(false);
-          expect(findReportAbuseSelectorItem().exists()).toBe(false);
+          expect(findReportAbuseButton().exists()).toBe(false);
           expect(findLockIssueWidget().exists()).toBe(false);
         });
       },
@@ -720,7 +714,7 @@ describe('HeaderActions component', () => {
         `${capitalizeFirstCharacter(expectedText)} actions`,
       );
       expect(findDropdownBy('copy-email').text()).toBe(`Copy ${expectedText} email address`);
-      expect(findDesktopDropdownItems().at(0).text()).toBe(`New related ${expectedText}`);
+      expect(findDesktopDropdownItems().at(1).text()).toBe(`New related ${expectedText}`);
     });
   });
 });

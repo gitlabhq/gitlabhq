@@ -119,8 +119,6 @@ To view the value streams dashboard:
 
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.
 
-A view can display maximum four subgroups or projects.
-
 ### Using query parameters
 
 To display multiple subgroups and projects, specify their path as a URL parameter.
@@ -203,6 +201,8 @@ panels:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of editing label filters in the configuration file, see [GitLab Value Streams Dashboard - Label filters demo](https://www.youtube.com/watch?v=4qDAHCxCfik).
+
+Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
 
 ## Dashboard metrics and drill-down reports
 

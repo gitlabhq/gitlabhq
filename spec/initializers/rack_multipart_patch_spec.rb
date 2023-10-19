@@ -37,7 +37,7 @@ EOF
       expect(described_class).not_to receive(:log_multipart_warning)
       params = described_class.parse_multipart(env)
 
-      expect(params.keys).to include(*%w(reply fileupload))
+      expect(params.keys).to include(*%w[reply fileupload])
     end
   end
 
@@ -56,7 +56,7 @@ EOF
                                                            })
         params = described_class.parse_multipart(env)
 
-        expect(params.keys).to include(*%w(reply fileupload))
+        expect(params.keys).to include(*%w[reply fileupload])
       end
     end
 

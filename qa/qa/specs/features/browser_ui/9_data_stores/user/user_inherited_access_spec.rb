@@ -46,7 +46,7 @@ module QA
           Page::File::Show.perform(&:click_edit)
 
           Page::File::Form.perform do |file_form|
-            expect(file_form).to have_element(:commit_button)
+            expect(file_form).to have_element('commit-button')
           end
         end
       end

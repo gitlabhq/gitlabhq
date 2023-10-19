@@ -1,18 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'json'
-require 'tempfile'
 
 RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, feature_category: :gitaly do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:feature_flag_name) { wrapper.rugged_feature_keys.first }
-  let(:temp_gitaly_metadata_file) { create_temporary_gitaly_metadata_file }
-
-  before_all do
-    create_gitaly_metadata_file
-  end
 
   subject(:wrapper) do
     klazz = Class.new do
@@ -22,11 +15,6 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, feature_category: :gitaly do
     end
 
     klazz.new
-  end
-
-  before do
-    allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_call_original
-    Gitlab::GitalyClient.instance_variable_set(:@can_use_disk, {})
   end
 
   describe '#execute_rugged_call', :request_store do
@@ -46,83 +34,9 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, feature_category: :gitaly do
     end
   end
 
-  context 'when feature flag is not persisted', stub_feature_flags: false do
-    context 'when running puma with multiple threads' do
-      before do
-        allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(true)
-      end
-
-      it 'returns false' do
-        expect(subject.use_rugged?(repository, feature_flag_name)).to be false
-      end
-    end
-
-    context 'when skip_rugged_auto_detect feature flag is enabled' do
-      context 'when not running puma with multiple threads' do
-        before do
-          allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(false)
-          stub_feature_flags(feature_flag_name => nil)
-          stub_feature_flags(skip_rugged_auto_detect: true)
-        end
-
-        it 'returns false' do
-          expect(subject.use_rugged?(repository, feature_flag_name)).to be false
-        end
-      end
-    end
-
-    context 'when skip_rugged_auto_detect feature flag is disabled' do
-      before do
-        stub_feature_flags(skip_rugged_auto_detect: false)
-      end
-
-      context 'when not running puma with multiple threads' do
-        before do
-          allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(false)
-        end
-
-        it 'returns true when gitaly matches disk' do
-          expect(subject.use_rugged?(repository, feature_flag_name)).to be true
-        end
-
-        it 'returns false when disk access fails' do
-          allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return("/fake/path/doesnt/exist")
-
-          expect(subject.use_rugged?(repository, feature_flag_name)).to be false
-        end
-
-        it "returns false when gitaly doesn't match disk" do
-          allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return(temp_gitaly_metadata_file)
-
-          expect(subject.use_rugged?(repository, feature_flag_name)).to be_falsey
-
-          File.delete(temp_gitaly_metadata_file)
-        end
-
-        it "doesn't lead to a second rpc call because gitaly client should use the cached value" do
-          expect(subject.use_rugged?(repository, feature_flag_name)).to be true
-
-          expect(Gitlab::GitalyClient).not_to receive(:filesystem_id)
-
-          subject.use_rugged?(repository, feature_flag_name)
-        end
-      end
-    end
-  end
-
-  context 'when feature flag is persisted' do
-    it 'returns false when the feature flag is off' do
-      Feature.disable(feature_flag_name)
-
-      expect(subject.use_rugged?(repository, feature_flag_name)).to be_falsey
-    end
-
-    it "returns true when feature flag is on" do
-      Feature.enable(feature_flag_name)
-
-      allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(false)
-
-      expect(subject.use_rugged?(repository, feature_flag_name)).to be true
+  describe '#use_rugged?' do
+    it 'returns false' do
+      expect(subject.use_rugged?(repository, feature_flag_name)).to be false
     end
   end
 
@@ -184,7 +98,7 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, feature_category: :gitaly do
     context 'all features are enabled' do
       let(:feature_keys) { [:feature_key_1, :feature_key_2] }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be_falsey }
     end
 
     context 'all features are not enabled' do
@@ -196,28 +110,7 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, feature_category: :gitaly do
     context 'some feature is enabled' do
       let(:feature_keys) { [:feature_key_4, :feature_key_2] }
 
-      it { is_expected.to be_truthy }
-    end
-  end
-
-  def create_temporary_gitaly_metadata_file
-    tmp = Tempfile.new('.gitaly-metadata')
-    gitaly_metadata = {
-      "gitaly_filesystem_id" => "some-value"
-    }
-    tmp.write(gitaly_metadata.to_json)
-    tmp.flush
-    tmp.close
-    tmp.path
-  end
-
-  def create_gitaly_metadata_file
-    metadata_filename = File.join(TestEnv.repos_path, '.gitaly-metadata')
-    File.open(metadata_filename, 'w+') do |f|
-      gitaly_metadata = {
-        "gitaly_filesystem_id" => SecureRandom.uuid
-      }
-      f.write(gitaly_metadata.to_json)
+      it { is_expected.to be_falsey }
     end
   end
 end

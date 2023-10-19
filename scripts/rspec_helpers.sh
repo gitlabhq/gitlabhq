@@ -23,9 +23,16 @@ function update_tests_metadata() {
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
   local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
 
-  echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
+  curl -f --location -o "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ||
+    echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
 
-  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${knapsack_folder_path:-unknown_folder}rspec*.json
+  if [[ "$AVERAGE_KNAPSACK_REPORT" == "true" ]]; then
+    # a comma separated list of file names matching the glob
+    local new_reports="$(printf '%s,' ${knapsack_folder_path:-unknown_folder}rspec*.json)"
+    scripts/pipeline/average_reports.rb -i "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}" -n "${new_reports}"
+  else
+    scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${knapsack_folder_path:-unknown_folder}rspec*.json
+  fi
 
   export FLAKY_RSPEC_GENERATE_REPORT="true"
   scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${rspec_flaky_folder_path:-unknown_folder}all_*.json
@@ -296,6 +303,9 @@ function retry_failed_rspec_examples() {
   if is_rspec_last_run_results_file_missing; then
     exit 1
   fi
+
+  # Job metrics for influxDB/Grafana
+  tooling/bin/update_job_metrics_tag rspec_retried_in_new_process "true" || true
 
   # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
   local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})

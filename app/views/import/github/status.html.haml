@@ -5,10 +5,8 @@
     = sprite_icon('github', css_class: 'gl-mr-2')
   = _('Import repositories from GitHub')
 
-- paginatable = Feature.enabled?(:remove_legacy_github_client)
-
 = render 'import/githubish_status',
-  provider: 'github', paginatable: paginatable,
+  provider: 'github', paginatable: true,
   default_namespace: @namespace,
   cancel_path: cancel_import_github_path,
   details_path: details_import_github_path,

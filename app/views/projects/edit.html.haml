@@ -18,7 +18,7 @@
     %p.gl-text-secondary= _('Update your project name, topics, description, and avatar.')
   .settings-content= render 'projects/settings/general'
 
-%section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { qa_selector: 'visibility_features_permissions_content' } }
+%section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { testid: 'visibility-features-permissions-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
@@ -38,7 +38,7 @@
       - c.with_body do
         = _('On the left sidebar, select %{merge_requests_link} to view them.').html_safe % { merge_requests_link: link_to('Settings > Merge requests', project_settings_merge_requests_path(@project)).html_safe }
 
-%section.settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'badges_settings_content' } }
+%section.settings.no-animate{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_('ProjectSettings|Badges')
@@ -56,7 +56,7 @@
 
 = render 'projects/service_desk_settings'
 
-%section.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded), data: { qa_selector: 'advanced_settings_content' } }
+%section.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded), data: { testid: 'advanced-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
@@ -107,8 +107,8 @@
                 .input-group-prepend
                   .input-group-text
                     #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
-                = f.text_field :path, class: 'form-control gl-form-input-xl', data: { qa_selector: 'project_path_field' }
-          = f.submit _('Change path'), class: "btn-danger", data: { qa_selector: 'change_path_button' }, pajamas_button: true
+                = f.text_field :path, class: 'form-control gl-form-input-xl', data: { testid: 'project-path-field' }
+          = f.submit _('Change path'), class: "btn-danger", data: { testid: 'change-path-button' }, pajamas_button: true
 
     = render 'transfer', project: @project
 

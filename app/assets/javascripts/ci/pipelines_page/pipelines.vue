@@ -1,5 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
+import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/pipelines_failed.svg?url';
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import * as Sentry from '@sentry/browser';
@@ -9,11 +11,12 @@ import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import {
   FILTER_TAG_IDENTIFIER,
-  PipelineKeyOptions,
+  PIPELINE_ID_KEY,
+  PIPELINE_IID_KEY,
   RAW_TEXT_WARNING,
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
-import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
+import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';
 import { validateParams } from '~/ci/pipeline_details/utils';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -27,7 +30,6 @@ import NavigationControls from './components/nav_controls.vue';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 
 export default {
-  PipelineKeyOptions,
   components: {
     NoCiEmptyState,
     GlCollapsibleListbox,
@@ -37,7 +39,7 @@ export default {
     NavigationTabs,
     NavigationControls,
     PipelinesFilteredSearch,
-    PipelinesTableComponent,
+    PipelinesTable,
     TablePagination,
   },
   mixins: [PipelinesMixin, Tracking.mixin()],
@@ -46,33 +48,7 @@ export default {
       type: Object,
       required: true,
     },
-    // Can be rendered in 3 different places, with some visual differences
-    // Accepts root | child
-    // `root` -> main view
-    // `child` -> rendered inside MR or Commit View
-    viewType: {
-      type: String,
-      required: false,
-      default: 'root',
-    },
     endpoint: {
-      type: String,
-      required: true,
-    },
-    pipelineScheduleUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    emptyStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    errorStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    noPipelinesSvgPath: {
       type: String,
       required: true,
     },
@@ -243,8 +219,9 @@ export default {
     },
     selectedPipelineKeyOption() {
       return (
-        this.$options.PipelineKeyOptions.find((e) => this.visibilityPipelineIdType === e.value) ||
-        this.$options.PipelineKeyOptions[0]
+        this.$options.pipelineKeyOptions.find(
+          (option) => this.visibilityPipelineIdType === option.value,
+        ) || this.$options.pipelineKeyOptions[0]
       );
     },
   },
@@ -334,11 +311,12 @@ export default {
     },
     changeVisibilityPipelineIDType(idType) {
       this.visibilityPipelineIdType = idType;
-      this.saveVisibilityPipelineIDType(idType);
+
+      if (isLoggedIn()) {
+        this.saveVisibilityPipelineIDType(idType);
+      }
     },
     saveVisibilityPipelineIDType(idType) {
-      if (!isLoggedIn()) return;
-
       this.$apollo
         .mutate({
           mutation: setSortPreferenceMutation,
@@ -354,6 +332,20 @@ export default {
         });
     },
   },
+  errorStateSvgPath: ERROR_STATE_SVG,
+  noPipelinesSvgPath: NO_PIPELINES_SVG,
+  pipelineKeyOptions: [
+    {
+      text: __('Show Pipeline ID'),
+      label: __('Pipeline ID'),
+      value: PIPELINE_ID_KEY,
+    },
+    {
+      text: __('Show Pipeline IID'),
+      label: __('Pipeline IID'),
+      value: PIPELINE_IID_KEY,
+    },
+  ],
 };
 </script>
 <template>
@@ -393,9 +385,8 @@ export default {
         />
         <gl-collapsible-listbox
           v-model="visibilityPipelineIdType"
-          data-testid="pipeline-key-collapsible-box"
           :toggle-text="selectedPipelineKeyOption.text"
-          :items="$options.PipelineKeyOptions"
+          :items="$options.pipelineKeyOptions"
           @select="changeVisibilityPipelineIDType"
         />
       </div>
@@ -411,32 +402,34 @@ export default {
 
       <no-ci-empty-state
         v-else-if="stateToRender === $options.stateMap.emptyState"
-        :empty-state-svg-path="emptyStateSvgPath"
+        :empty-state-svg-path="$options.noPipelinesSvgPath"
         :can-set-ci="canCreatePipeline"
         :registration-token="registrationToken"
       />
 
       <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.error"
-        :svg-path="errorStateSvgPath"
+        :svg-path="$options.errorStateSvgPath"
+        :svg-height="null"
         :title="s__('Pipelines|There was an error fetching the pipelines.')"
         :description="s__('Pipelines|Try again in a few moments or contact your support team.')"
       />
 
       <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.emptyTab"
-        :svg-path="noPipelinesSvgPath"
+        :svg-path="$options.noPipelinesSvgPath"
         :svg-height="150"
         :title="emptyTabMessage"
       />
 
       <div v-else-if="stateToRender === $options.stateMap.tableList">
-        <pipelines-table-component
+        <pipelines-table
           :pipelines="state.pipelines"
-          :pipeline-schedule-url="pipelineScheduleUrl"
           :update-graph-dropdown="updateGraphDropdown"
-          :view-type="viewType"
-          :pipeline-key-option="selectedPipelineKeyOption"
+          :pipeline-id-type="selectedPipelineKeyOption.value"
+          @cancel-pipeline="onCancelPipeline"
+          @refresh-pipelines-table="onRefreshPipelinesTable"
+          @retry-pipeline="onRetryPipeline"
         />
       </div>
 

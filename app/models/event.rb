@@ -12,7 +12,7 @@ class Event < ApplicationRecord
   include IgnorableColumns
   include EachBatch
 
-  ignore_column :target_id_convert_to_bigint, remove_with: '16.4', remove_after: '2023-09-22'
+  ignore_column :target_id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   ACTIONS = HashWithIndifferentAccess.new(
     created: 1,

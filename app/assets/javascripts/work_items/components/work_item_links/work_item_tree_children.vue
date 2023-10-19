@@ -3,7 +3,6 @@ export default {
   components: {
     WorkItemLinkChild: () => import('./work_item_link_child.vue'),
   },
-  inject: ['fullPath'],
   props: {
     workItemType: {
       type: String,

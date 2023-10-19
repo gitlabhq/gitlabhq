@@ -111,7 +111,7 @@ module Gitlab
         all_commits
       ].freeze
 
-      PLACEHOLDERS_COMBINED_REGEX = /%{(#{Regexp.union(PLACEHOLDERS.keys)})}/.freeze
+      PLACEHOLDERS_COMBINED_REGEX = /%{(#{Regexp.union(PLACEHOLDERS.keys)})}/
 
       def replace_placeholders(message, allowed_placeholders: [], squash: false, keep_carriage_return: false)
         # Convert CRLF to LF.

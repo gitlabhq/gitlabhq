@@ -355,19 +355,6 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                   expect(json_response['objects'].first['actions']['download']['href']).to start_with("https://lfs-objects.s3.amazonaws.com/")
                   expect(json_response['objects'].first['actions']['download']['href']).to include("X-Amz-Expires=3600&")
                 end
-
-                context 'when feature flag "lfs_batch_direct_downloads" is "false"' do
-                  before do
-                    stub_feature_flags(lfs_batch_direct_downloads: false)
-                  end
-
-                  it_behaves_like 'LFS http 200 response'
-
-                  it 'does return proxied address URL' do
-                    expect(json_response['objects'].first).to include(sample_object)
-                    expect(json_response['objects'].first['actions']['download']['href']).to eq(objects_url(project, sample_oid))
-                  end
-                end
               end
             end
 

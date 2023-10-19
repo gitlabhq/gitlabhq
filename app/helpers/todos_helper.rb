@@ -31,6 +31,9 @@ module TodosHelper
       s_("Todos|has requested access to %{what} %{which}"), what: _(todo.member_access_type), which: _(todo.target.name)
     )
     when Todo::REVIEW_SUBMITTED then s_('Todos|reviewed your merge request')
+    when Todo::OKR_CHECKIN_REQUESTED then format(
+      s_("Todos|requested an OKR update for %{what}"), what: todo.target.title
+    )
     end
   end
 
@@ -161,6 +164,10 @@ module TodosHelper
 
   def todos_filter_empty?
     todos_filter_params.values.none?
+  end
+
+  def todos_has_filtered_results?
+    params[:group_id] || params[:project_id] || params[:author_id] || params[:type] || params[:action_id]
   end
 
   def no_todos_messages

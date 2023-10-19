@@ -35,7 +35,7 @@
             %span.note-header-author-name.bold
               = note.author.name
             = user_status(note.author)
-            %spannote-headline-light{ data: { qa_selector: 'note_author_content' } }
+            %spannote-headline-light{ data: { testid: 'note-author-content' } }
               = note.author.to_reference
           %span.note-headline-ligh.note-headline-meta
             - if note.system
@@ -52,7 +52,7 @@
             - else
               = render 'projects/notes/actions', note: note, note_editable: note_editable
       .note-body{ class: note_editable ? 'js-task-list-container' : '' }
-        .note-text.md{ data: { qa_selector: 'note_content' } }
+        .note-text.md{ data: { testid: 'note-content' } }
           = markdown_field(note, :note)
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago')
         .original-note-content.hidden{ data: { post_url: note_url(note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore } }

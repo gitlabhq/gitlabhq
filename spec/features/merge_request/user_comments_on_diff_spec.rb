@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_workflow do
   include MergeRequestDiffHelpers
   include RepoHelpers
-  include ContentEditorHelpers
 
   let(:project) { create(:project, :repository) }
   let(:merge_request) do
@@ -140,7 +139,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         end
 
         visit(merge_request_path(merge_request))
-        close_rich_text_promo_popover_if_present
 
         page.within('.notes .discussion') do
           find('.js-vue-discussion-reply').click

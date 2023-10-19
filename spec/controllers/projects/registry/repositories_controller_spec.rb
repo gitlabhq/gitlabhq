@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Registry::RepositoriesController do
+RSpec.describe Projects::Registry::RepositoriesController, feature_category: :container_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
 
@@ -103,8 +103,6 @@ RSpec.describe Projects::Registry::RepositoriesController do
         end
 
         it 'marks the repository as delete_scheduled' do
-          expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async).with(user.id, repository.id)
-
           expect { delete_repository(repository) }
             .to change { repository.reload.status }.from(nil).to('delete_scheduled')
 
@@ -113,8 +111,6 @@ RSpec.describe Projects::Registry::RepositoriesController do
         end
 
         it 'tracks the event', :snowplow do
-          allow(DeleteContainerRepositoryWorker).to receive(:perform_async).with(user.id, repository.id)
-
           delete_repository(repository)
 
           expect_snowplow_event(category: anything, action: 'delete_repository')

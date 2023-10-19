@@ -1,0 +1,3 @@
+query isShowingLabels {
+  isShowingLabels @client
+}

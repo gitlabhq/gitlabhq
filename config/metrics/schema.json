@@ -92,8 +92,7 @@
       "items": {
         "type": "object",
         "required": [
-          "name",
-          "unique"
+          "name"
         ],
         "properties": {
           "name": {
@@ -185,9 +184,6 @@
           "gold"
         ]
       }
-    },
-    "skip_validation": {
-      "type": "boolean"
     },
     "value_json_schema": {
       "type": "string"

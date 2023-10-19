@@ -1,0 +1,8 @@
+---
+name: vsa_predefined_date_ranges
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131825
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425317
+milestone: '16.5'
+type: development
+group: group::optimize
+default_enabled: false

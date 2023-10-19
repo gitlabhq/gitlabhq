@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
 
   shared_examples 'Blocked URL' do
     it 'raises an error' do
-      expect { middleware.call(env) }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+      expect { middleware.call(env) }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
     end
   end
 
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
       let(:env) { { url: 'ssh://172.16.0.0' } }
 
       it 'raises an error' do
-        expect { middleware.call(env) }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+        expect { middleware.call(env) }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
       end
     end
   end

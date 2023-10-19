@@ -172,8 +172,7 @@ http://secondary.example.com/
                         GitLab Version: 14.9.2-ee
                               Geo Role: Secondary
                          Health Status: Healthy
-                          Repositories: succeeded 12345 / total 12345 (100%)
-                 Verified Repositories: succeeded 12345 / total 12345 (100%)
+                  Project Repositories: succeeded 12345 / total 12345 (100%)
              Project Wiki Repositories: succeeded 6789 / total 6789 (100%)
                            Attachments: succeeded 4 / total 4 (100%)
                       CI job artifacts: succeeded 0 / total 0 (0%)
@@ -191,6 +190,7 @@ http://secondary.example.com/
      Terraform State Versions Verified: succeeded 0 / total 10 (0%)
          Snippet Repositories Verified: succeeded 99 / total 100 (99%)
            Pipeline Artifacts Verified: succeeded 0 / total 10 (0%)
+         Project Repositories Verified: succeeded 12345 / total 12345 (100%)
     Project Wiki Repositories Verified: succeeded 6789 / total 6789 (100%)
                          Sync Settings: Full
               Database replication lag: 0 seconds
@@ -199,19 +199,19 @@ http://secondary.example.com/
                 Last status report was: 1 minute ago
 ```
 
-There are up to three statuses for each item. For example, for `Repositories`, you see the following lines:
+There are up to three statuses for each item. For example, for `Project Repositories`, you see the following lines:
 
 ```plaintext
-  Repositories: succeeded 12345 / total 12345 (100%)
-  Verified Repositories: succeeded 12345 / total 12345 (100%)
+  Project Repositories: succeeded 12345 / total 12345 (100%)
+  Project Repositories Verified: succeeded 12345 / total 12345 (100%)
   Repositories Checked: failed 5 / succeeded 0 / total 5 (0%)
 ```
 
 The 3 status items are defined as follows:
 
-- The `Repositories` output shows how many repositories are synced from the primary to the secondary.
-- The `Verified Repositories` output shows how many repositories on this secondary have a matching repository checksum with the Primary.
-- The `Repositories Checked` output shows how many repositories have passed a local Git repository check (`git fsck`) on the secondary.
+- The `Project Repositories` output shows how many project repositories are synced from the primary to the secondary.
+- The `Project Verified Repositories` output shows how many project repositories on this secondary have a matching repository checksum with the Primary.
+- The `Repositories Checked` output shows how many project repositories have passed a local Git repository check (`git fsck`) on the secondary.
 
 To find more details about failed items, check
 [the `gitlab-rails/geo.log` file](../../logs/log_parsing.md#find-most-common-geo-sync-errors)
@@ -503,6 +503,46 @@ This check is also required when using a mixture of GitLab deployments. The loca
 
 ## Fixing PostgreSQL database replication errors
 
+The following sections outline troubleshooting steps for fixing replication error messages (indicated by `Database replication working? ... no` in the
+[`geo:check` output](#health-check-rake-task).
+The instructions present here mostly assume a single-node Geo Linux package deployment, and might need to be adapted to different environments.
+
+### Removing an inactive replication slot
+
+Replication slots are marked as 'inactive' when the replication client (a secondary site) connected to the slot disconnects.
+Inactive replication slots cause WAL files to be retained, because they are sent to the client when it reconnects and the slot becomes active once more.
+If the secondary site is not able to reconnect, use the following steps to remove its corresponding inactive replication slot:
+
+1. [Start a PostgreSQL console session](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database) on the Geo primary site's database node:
+
+   ```shell
+   sudo gitlab-psql -d gitlabhq_production
+   ```
+
+   NOTE:
+   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
+
+1. View the replication slots and remove them if they are inactive:
+
+   ```sql
+   SELECT * FROM pg_replication_slots;
+   ```
+
+   Slots where `active` is `f` are inactive.
+
+   - When this slot should be active, because you have a **secondary** site configured using that slot,
+     look for the [PostgreSQL logs](../../logs/index.md#postgresql-logs) for the **secondary** site,
+     to view why the replication is not running.
+   - If you are no longer using the slot (for example, you no longer have Geo enabled), or the secondary site is no longer able to reconnect,
+     you should remove it using the PostgreSQL console session:
+
+     ```sql
+     SELECT pg_drop_replication_slot('<name_of_inactive_slot>');
+     ```
+
+1. Follow either the steps [to remove that Geo site](remove_geo_site.md) if it's no longer required,
+   or [re-initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process), which recreates the replication slot correctly.
+
 ### Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
 
 If a replication slot is inactive,
@@ -517,18 +557,7 @@ HINT: Close open transactions soon to avoid wraparound problems.
 You might also need to commit or roll back old prepared transactions, or drop stale replication slots.
 ```
 
-To fix this:
-
-1. [Connect to the primary database](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database).
-
-1. Run `SELECT * FROM pg_replication_slots;`.
-   Note the `slot_name` that reports `active` as `f` (false).
-
-1. Follow [the steps to remove that Geo site](remove_geo_site.md).
-
-The following sections outline troubleshooting steps for fixing replication
-error messages (indicated by `Database replication working? ... no` in the
-[`geo:check` output](#health-check-rake-task).
+To fix this, you should [remove the inactive replication slot](#removing-an-inactive-replication-slot) and re-initiate the replication.
 
 ### Message: `ERROR:  replication slots can only be used if max_replication_slots > 0`?
 
@@ -568,35 +597,9 @@ the default 30 minutes. Adjust as required for your installation.
 ### Message: "PANIC: could not write to file `pg_xlog/xlogtemp.123`: No space left on device"
 
 Determine if you have any unused replication slots in the **primary** database. This can cause large amounts of
-log data to build up in `pg_xlog`. Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
+log data to build up in `pg_xlog`.
 
-1. Start a PostgreSQL console session:
-
-   ```shell
-   sudo gitlab-psql
-   ```
-
-   NOTE:
-   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
-
-1. View your replication slots:
-
-   ```sql
-   SELECT * FROM pg_replication_slots;
-   ```
-
-Slots where `active` is `f` are not active.
-
-- When this slot should be active, because you have a **secondary** site configured using that slot,
-  sign in on the web interface for the **secondary** site and check the [PostgreSQL logs](../../logs/index.md#postgresql-logs)
-  to view why the replication is not running.
-
-- If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
-  PostgreSQL console session:
-
-  ```sql
-  SELECT pg_drop_replication_slot('<name_of_extra_slot>');
-  ```
+[Removing the inactive slots](#removing-an-inactive-replication-slot) can reduce the amount of space used in the `pg_xlog`.
 
 ### Message: "ERROR: canceling statement due to conflict with recovery"
 
@@ -1016,48 +1019,29 @@ If you notice replication failures in `Admin > Geo > Sites` or the [Sync status 
 
 ### Manually retry replication or verification
 
-Project Git repositories and Project Wiki Git repositories have the ability in `Admin > Geo > Replication` to `Resync all`, `Reverify all`, or for a single resource, `Resync`  or `Reverify`.
+A Geo data type is a specific class of data that is required by one or more GitLab features to store relevant information and is replicated by Geo to secondary sites.
 
-Adding this ability to other data types is proposed in issue [364725](https://gitlab.com/gitlab-org/gitlab/-/issues/364725).
+The following Geo data types exist:
 
-The following sections describe how to use internal application commands in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session) to cause replication or verification immediately.
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-### Blob types
-
-- `Ci::JobArtifact`
-- `Ci::PipelineArtifact`
-- `Ci::SecureFile`
-- `LfsObject`
-- `MergeRequestDiff`
-- `Packages::PackageFile`
-- `PagesDeployment`
-- `Terraform::StateVersion`
-- `Upload`
-
-`Packages::PackageFile` is used in the following
-[Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-examples, but things generally work the same for the other types.
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-### Repository types, except for project or project wiki repositories
-
-- `SnippetRepository`
-- `GroupWikiRepository`
-
-`SnippetRepository` is used in the examples below, but things generally work the same for the other Repository types.
-
-[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to enact the following, basic troubleshooting steps.
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-#### The Replicator
+- **Blob types:**
+  - `Ci::JobArtifact`
+  - `Ci::PipelineArtifact`
+  - `Ci::SecureFile`
+  - `LfsObject`
+  - `MergeRequestDiff`
+  - `Packages::PackageFile`
+  - `PagesDeployment`
+  - `Terraform::StateVersion`
+  - `Upload`
+  - `DependencyProxy::Manifest`
+  - `DependencyProxy::Blob`
+- **Repository types:**
+  - `ContainerRepositoryRegistry`
+  - `DesignManagement::Repository`
+  - `ProjectRepository`
+  - `ProjectWikiRepository`
+  - `SnippetRepository`
+  - `GroupWikiRepository`
 
 The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it):
 
@@ -1066,33 +1050,135 @@ model_record = Packages::PackageFile.last
 model_record.replicator.registry.replicator.model_record # just showing that these methods exist
 ```
 
-#### Replicate a package file, synchronously, given an ID
+With all this information, you can:
 
-```ruby
-model_record = Packages::PackageFile.find(id)
-model_record.replicator.send(:download)
-```
+- [Manually resync and reverify individual components](#resync-and-reverify-individual-components)
+- [Manually resync and reverify multiple components](#resync-and-reverify-multiple-components)
 
-#### Replicate a package file, synchronously, given a registry ID
+#### Resync and reverify individual components
 
-```ruby
-registry = Geo::PackageFileRegistry.find(registry_id)
-registry.replicator.send(:download)
-```
+[You can force a resync and reverify individual items](https://gitlab.com/gitlab-org/gitlab/-/issues/364727)
+for all component types managed by the [self-service framework](../../../development/geo/framework.md) using the UI.
+On the secondary site, visit **Admin > Geo > Replication**.
 
-#### Find registry records of blobs that failed to sync
+However, if this doesn't work, you can perform the same action using the Rails
+console. The following sections describe how to use internal application
+commands in the Rails console to cause replication or verification for
+individual records synchronously or asynchronously.
 
-```ruby
-Geo::PackageFileRegistry.failed
-```
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-#### Find registry records of blobs that are missing on the primary site
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to enact the following, basic troubleshooting steps:
 
-```ruby
-Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Geo primary site')
-```
+- **For Blob types** (using the `Packages::PackageFile` component as an example)
 
-#### Verify package files on the secondary manually
+  - Find registry records that failed to sync:
+
+    ```ruby
+    Geo::PackageFileRegistry.failed
+    ```
+
+  - Find registry records that are missing on the primary site:
+
+    ```ruby
+    Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Geo primary site')
+    ```
+
+  - Resync a package file, synchronously, given an ID:
+
+    ```ruby
+    model_record = Packages::PackageFile.find(id)
+    model_record.replicator.send(:download)
+    ```
+
+  - Resync a package file, synchronously, given a registry ID:
+
+    ```ruby
+    registry = Geo::PackageFileRegistry.find(registry_id)
+    registry.replicator.send(:download)
+    ```
+
+  - Resync a package file, asynchronously, given a registry ID.
+    Since GitLab 16.2, a component can be asynchronously replicated as follows:
+
+    ```ruby
+    registry = Geo::PackageFileRegistry.find(registry_id)
+    registry.replicator.enqueue_sync
+    ```
+
+  - Reverify a package file, asynchronously, given a registry ID.
+    Since GitLab 16.2, a component can be asynchronously reverified as follows:
+
+    ```ruby
+    registry = Geo::PackageFileRegistry.find(registry_id)
+    registry.replicator.verify_async
+    ```
+
+- **For Repository types** (using the `SnippetRepository` component as an example)
+
+  - Resync a snippet repository, synchronously, given an ID:
+
+    ```ruby
+    model_record = Geo::SnippetRepositoryRegistry.find(id)
+    model_record.replicator.sync_repository
+    ```
+
+  - Resync a snippet repository, synchronously, given a registry ID
+
+    ```ruby
+    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
+    registry.replicator.sync_repository
+    ```
+
+  - Resync a snippet repository, asynchronously, given a registry ID.
+    Since GitLab 16.2, a component can be asynchronously replicated as follows:
+
+    ```ruby
+    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
+    registry.replicator.enqueue_sync
+    ```
+
+  - Reverify a snippet repository, asynchronously, given a registry ID.
+    Since GitLab 16.2, a component can be asynchronously reverified as follows:
+
+    ```ruby
+    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
+    registry.replicator.verify_async
+    ```
+
+#### Resync and reverify multiple components
+
+NOTE:
+There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+The following sections describe how to use internal application commands in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to cause bulk replication or verification.
+
+##### Reverify all components (or any SSF data type which supports verification)
+
+For GitLab 16.4 and earlier:
+
+1. SSH into a GitLab Rails node in the primary Geo site.
+1. Open the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Mark all uploads as `pending verification`:
+
+   ```ruby
+   Upload.verification_state_table_class.each_batch do |relation|
+     relation.update_all(verification_state: 0)
+   end
+   ```
+
+1. This causes the primary to start checksumming all Uploads.
+1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
+
+For other SSF data types replace `Upload` in the command above with the desired model class.
+
+##### Verify blob files on the secondary manually
 
 This iterates over all package files on the secondary, looking at the
 `verification_checksum` stored in the database (which came from the primary)
@@ -1143,25 +1229,43 @@ status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
 status
 ```
 
-#### Reverify all uploads (or any SSF data type which is verified)
+### Failed verification of Uploads on the primary Geo site
 
-1. SSH into a GitLab Rails node in the primary Geo site.
-1. Open [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Mark all uploads as "pending verification":
+If some Uploads verification is failing on the primary Geo site with the `verification_checksum: nil` and `verification_failure: Error during verification: undefined method 'underscore' for NilClass:Class` errros, this can be due to orphaned Uploads. The parent record owning the Upload (the Upload's `model`) has somehow been deleted, but the Upload record still exists. These verification failures are false.
 
-   ```ruby
-   Upload.verification_state_table_class.each_batch do |relation|
-     relation.update_all(verification_state: 0)
-   end
-   ```
+You can find these errors in the `geo.log` file on the primary Geo site.
 
-1. This causes the primary to start checksumming all Uploads.
-1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
+To confirm that model records are missing, you can run a Rake task on the primary Geo site:
 
-For other SSF data types replace `Upload` in the command above with the desired model class.
+```shell
+sudo gitlab-rake gitlab:uploads:check
+```
 
-NOTE:
-There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+You can delete these Upload records on the primary Geo site to get rid of these failures by running the following script from the [Rails console](../../operations/rails_console.md):
+
+```ruby
+# Look for uploads with the verification error
+# or edit with your own affected IDs
+uploads = Geo::UploadState.where(
+  verification_checksum: nil,
+  verification_state: 3,
+  verification_failure: "Error during verification: undefined method  'underscore' for NilClass:Class"
+).pluck(:upload_id)
+
+uploads_deleted = 0
+begin
+    uploads.each do |upload|
+    u = Upload.find upload
+    rescue => e
+        puts "checking upload #{u.id} failed with #{e.message}"
+      else
+        uploads_deleted=uploads_deleted + 1
+        p u                            ### allow verification before destroy
+        # p u.destroy!                 ### uncomment to actually destroy
+  end
+end
+p "#{uploads_deleted} remote objects were destroyed."
+```
 
 ## HTTP response code errors
 

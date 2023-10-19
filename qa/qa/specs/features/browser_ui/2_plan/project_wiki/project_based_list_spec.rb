@@ -61,12 +61,9 @@ module QA
       private
 
       def create_wiki_pages(no_of_pages)
-        wiki = Resource::Wiki::ProjectPage.fabricate_via_api!
+        wiki = create(:project_wiki_page)
         no_of_pages.times do |index|
-          Resource::Wiki::ProjectPage.fabricate_via_api! do |page|
-            page.title = "bulk_#{index}"
-            page.project = wiki.project
-          end
+          create(:project_wiki_page, title: "bulk_#{index}", project: wiki.project)
         end
         wiki
       end

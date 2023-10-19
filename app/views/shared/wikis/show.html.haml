@@ -29,10 +29,10 @@
 
 .gl-mt-5.gl-mb-3
   .gl-display-flex.gl-justify-content-space-between
-    %h2.gl-mt-0.gl-mb-5{ data: { qa_selector: 'wiki_page_title', testid: 'wiki_page_title' } }= @page.human_title
+    %h2.gl-mt-0.gl-mb-5{ data: { testid: 'wiki-page-title' } }= @page.human_title
     %div
       - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
-        = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), icon: 'pencil', button_options: { class: 'js-wiki-edit', title: "Edit", data: { qa_selector: 'edit_page_button', testid: 'wiki_edit_button' }})
+        = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), icon: 'pencil', button_options: { class: 'js-wiki-edit', title: "Edit", data: { testid: 'wiki-edit-button' }})
 
   .js-async-wiki-page-content.md.gl-pt-2{ data: { qa_selector: 'wiki_page_content', testid: 'wiki-page-content', tracking_context: wiki_page_tracking_context(@page).to_json, get_wiki_content_url: wiki_page_render_api_endpoint(@page) } }
 

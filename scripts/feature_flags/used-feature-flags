@@ -1,0 +1,127 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'set'
+require 'fileutils'
+require_relative '../../lib/gitlab_edition'
+
+ADDITIONAL_EDITIONS = %w[ee jh].freeze
+
+class String
+  def red
+    "\e[31m#{self}\e[0m"
+  end
+
+  def yellow
+    "\e[33m#{self}\e[0m"
+  end
+
+  def green
+    "\e[32m#{self}\e[0m"
+  end
+
+  def bold
+    "\e[1m#{self}\e[0m"
+  end
+end
+
+def add_definition_path!(edition, flag_def_paths)
+  return unless GitlabEdition.public_send(:"#{edition}?") # rubocop:disable GitlabSecurity/PublicSend
+
+  flag_def_paths << "#{edition}/config/feature_flags/**/*.yml"
+end
+
+def mark_replicator_flags_as_used(edition)
+  return unless GitlabEdition.public_send(:"#{edition}?") # rubocop:disable GitlabSecurity/PublicSend
+
+  # Geo feature flags are constructed dynamically and there's no explicit checks in the codebase so we mark all
+  # the replicators' derived feature flags as used.
+  # See https://gitlab.com/gitlab-org/gitlab/-/blob/54e802e8fe76b6f93656d75ef9b566bf57b60f41/ee/lib/gitlab/geo/replicator.rb#L183-185
+  Dir.glob("#{edition}/app/replicators/geo/*_replicator.rb").each do |path|
+    replicator_name = File.basename(path, '.rb')
+    feature_flag_name = "geo_#{replicator_name.delete_suffix('_replicator')}_replication"
+
+    FileUtils.touch(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
+  end
+end
+
+flag_definition_paths = [
+  'config/feature_flags/**/*.yml'
+]
+
+ADDITIONAL_EDITIONS.each do |edition|
+  add_definition_path!(edition, flag_definition_paths)
+  mark_replicator_flags_as_used(edition)
+end
+
+all_flags = {}
+additional_flags = Set.new
+
+# Iterate all defined feature flags
+# to discover which were used
+Dir.glob(flag_definition_paths).each do |flag_definition_path|
+  feature_flag_name = File.basename(flag_definition_path, '.yml')
+
+  # TODO: we need a better way of tracking use of Gitaly FF across Gitaly and GitLab
+  if feature_flag_name.start_with?('gitaly_')
+    puts "Skipping the #{feature_flag_name} feature flag since it starts with 'gitaly_'."
+    next
+  end
+
+  all_flags[feature_flag_name] = File.exist?(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
+end
+
+# Iterate all used feature flags
+# to discover which flags are undefined
+Dir.glob('tmp/feature_flags/*.used').each do |path|
+  feature_flag_name = File.basename(path, '.used')
+
+  additional_flags.add(feature_flag_name) unless all_flags[feature_flag_name]
+end
+
+used_flags = all_flags.select { |_name, used| used }
+unused_flags = all_flags.reject { |_name, used| used }
+
+puts "=========================================".green.bold
+puts "Feature Flags usage summary:".green.bold
+puts
+
+puts "- #{all_flags.count + additional_flags.count} was found"
+puts "- #{unused_flags.count} appear(s) to be UNUSED".yellow
+puts "- #{additional_flags.count} appear(s) to be unknown".yellow
+puts "- #{used_flags.count} appear(s) to be used".green
+puts
+
+if additional_flags.count > 0
+  puts "==================================================".green.bold
+  puts "There are feature flags that appear to be unknown".yellow
+  puts
+  puts "They appear to be used by CI, but we do lack their YAML definition".yellow
+  puts "This is likely expected, so feel free to ignore that list:".yellow
+  puts
+  additional_flags.sort.each do |name|
+    puts "- #{name}".yellow
+  end
+  puts
+end
+
+if unused_flags.count > 0
+  puts "========================================".green.bold
+  puts "These feature flags appear to be UNUSED".red.bold
+  puts
+  puts "If they are really no longer needed REMOVE their .yml definition".red
+  puts "If they are needed you need to ENSURE that their usage is covered with specs to continue.".red
+  puts "Feature flag usage is detected via Rubocop, which is unable to resolve dynamic feature flag usage,".red.bold
+  puts "interpolated strings however are optimistically matched. For more details consult test suite:".red
+  puts "https://gitlab.com/gitlab-org/gitlab/-/blob/69cb5d36db95881b495966c95655672cfb816f62/spec/rubocop/cop/gitlab/mark_used_feature_flags_spec.rb".red
+  puts
+  unused_flags.keys.sort.each do |name|
+    puts "- #{name}".yellow
+  end
+  puts
+  puts "Feature flag usage check failed.".red.bold
+  exit(1)
+end
+
+puts "Everything is fine here!".green
+puts

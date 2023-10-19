@@ -13,7 +13,6 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_NAME_TO_ICON_MAP,
 } from '../../constants';
-import { workItemPath } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
 import WorkItemTreeChildren from './work_item_tree_children.vue';
@@ -27,7 +26,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['fullPath'],
   props: {
     canUpdate: {
       type: Boolean,
@@ -89,9 +87,6 @@ export default {
     },
     stateTimestampTypeText() {
       return this.isItemOpen ? __('Created') : __('Closed');
-    },
-    childPath() {
-      return workItemPath(this.fullPath, this.childItem.iid);
     },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
@@ -236,7 +231,6 @@ export default {
         :can-update="canUpdate"
         :parent-work-item-id="issuableGid"
         :work-item-type="workItemType"
-        :child-path="childPath"
         @click="$emit('click', $event)"
         @removeChild="$emit('removeChild', childItem)"
       />

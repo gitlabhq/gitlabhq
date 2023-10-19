@@ -40,6 +40,14 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
     it { expect(described_class.min_gl_version_for_project_migration.to_s).to eq('14.4.0') }
   end
 
+  describe '#completed?' do
+    it { expect(described_class.new(status: -1)).to be_completed }
+    it { expect(described_class.new(status: 0)).not_to be_completed }
+    it { expect(described_class.new(status: 1)).not_to be_completed }
+    it { expect(described_class.new(status: 2)).to be_completed }
+    it { expect(described_class.new(status: 3)).to be_completed }
+  end
+
   describe '#source_version_info' do
     it 'returns source_version as Gitlab::VersionInfo' do
       bulk_import = build(:bulk_import, source_version: '9.13.2')

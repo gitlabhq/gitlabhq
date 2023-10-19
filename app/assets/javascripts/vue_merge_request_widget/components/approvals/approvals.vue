@@ -24,10 +24,6 @@ export default {
     GlSprintf,
   },
   mixins: [approvalsMixin, glFeatureFlagsMixin()],
-  provide: {
-    expandDetailsTooltip: __('Expand eligible approvers'),
-    collapseDetailsTooltip: __('Collapse eligible approvers'),
-  },
   props: {
     mr: {
       type: Object,
@@ -248,6 +244,8 @@ export default {
       is-collapsible
       collapse-on-desktop
       :collapsed="collapsed"
+      :expand-details-tooltip="__('Expand eligible approvers')"
+      :collapse-details-tooltip="__('Collapse eligible approvers')"
       @toggle="() => $emit('toggle')"
     >
       <template v-if="$apollo.queries.approvals.loading">{{ $options.FETCH_LOADING }}</template>

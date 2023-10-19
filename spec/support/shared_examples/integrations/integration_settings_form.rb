@@ -16,7 +16,7 @@ RSpec.shared_examples 'integration settings form' do
 
         page.within('form.integration-settings-form') do
           expect(page).to have_field('Active', type: 'checkbox', wait: 0),
-                          "#{integration.title} active field not present"
+            "#{integration.title} active field not present"
 
           fields = parse_json(fields_for_integration(integration))
           fields.each do |field|
@@ -24,7 +24,7 @@ RSpec.shared_examples 'integration settings form' do
 
             field_name = field[:name]
             expect(page).to have_field(field[:title], wait: 0),
-                            "#{integration.title} field #{field_name} not present"
+              "#{integration.title} field #{field_name} not present"
           end
 
           api_only_fields = integration.fields.select { _1[:api_only] }
@@ -43,7 +43,7 @@ RSpec.shared_examples 'integration settings form' do
                             end
 
             expect(page).to have_field(trigger_title, type: 'checkbox', wait: 0),
-                            "#{integration.title} field #{trigger_title} checkbox not present"
+              "#{integration.title} field #{trigger_title} checkbox not present"
           end
         end
       end

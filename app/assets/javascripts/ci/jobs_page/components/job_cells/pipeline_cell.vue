@@ -1,8 +1,12 @@
 <script>
 import { GlAvatar, GlLink } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export default {
+  i18n: {
+    stageLabel: s__('Jobs|Stage'),
+  },
   components: {
     GlAvatar,
     GlLink,
@@ -36,21 +40,22 @@ export default {
 
 <template>
   <div>
-    <div class="gl-p-3 gl-mt-n3">
-      <gl-link
-        class="gl-text-truncate gl-ml-n3 gl-text-gray-500!"
-        :href="pipelinePath"
-        data-testid="pipeline-id"
-      >
+    <div class="gl-p-3 gl-mt-n3 gl-mx-n3">
+      <gl-link class="gl-text-truncate" :href="pipelinePath" data-testid="pipeline-id">
         {{ pipelineId }}
       </gl-link>
+
+      <span class="gl-text-secondary">
+        <span>{{ __('created by') }}</span>
+        <gl-link v-if="showAvatar" :href="userPath" data-testid="pipeline-user-link">
+          <gl-avatar :src="pipelineUserAvatar" :size="16" />
+        </gl-link>
+        <span v-else>{{ __('API') }}</span>
+      </span>
     </div>
-    <div class="gl-font-sm gl-text-secondary gl-mt-n2">
-      <span>{{ __('created by') }}</span>
-      <gl-link v-if="showAvatar" :href="userPath" data-testid="pipeline-user-link">
-        <gl-avatar :src="pipelineUserAvatar" :size="16" />
-      </gl-link>
-      <span v-else>{{ __('API') }}</span>
+
+    <div v-if="job.stage" class="gl-text-truncate gl-font-sm gl-text-secondary gl-mt-1">
+      <span data-testid="job-stage-name">{{ $options.i18n.stageLabel }}: {{ job.stage.name }}</span>
     </div>
   </div>
 </template>

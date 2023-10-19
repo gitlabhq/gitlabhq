@@ -8,7 +8,6 @@ module Gitlab
 
         data_consistency :always
 
-        sidekiq_options retry: 3
         include GithubImport::Queue
         include StageMethods
 
@@ -24,16 +23,6 @@ module Gitlab
           project.import_state.refresh_jid_expiration
 
           move_to_next_stage(project, { waiter.key => waiter.jobs_remaining })
-        rescue StandardError => e
-          Gitlab::Import::ImportFailureService.track(
-            project_id: project.id,
-            error_source: self.class.name,
-            exception: e,
-            fail_import: abort_on_failure,
-            metrics: true
-          )
-
-          raise(e)
         end
 
         private
@@ -57,10 +46,6 @@ module Gitlab
           AdvanceStageWorker.perform_async(
             project.id, waiters, :pull_requests_merged_by
           )
-        end
-
-        def abort_on_failure
-          true
         end
       end
     end

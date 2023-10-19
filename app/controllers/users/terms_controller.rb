@@ -4,7 +4,6 @@ module Users
   class TermsController < ApplicationController
     include InternalRedirect
     include OneTrustCSP
-    include GoogleAnalyticsCSP
 
     skip_before_action :authenticate_user!, only: [:index]
     skip_before_action :enforce_terms!
@@ -13,10 +12,6 @@ module Users
     skip_before_action :require_email
 
     before_action :terms
-
-    before_action only: [:index] do
-      push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)
-    end
 
     layout 'terms'
 

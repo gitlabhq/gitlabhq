@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::InProductMarketingEmail, type: :model do
+RSpec.describe Users::InProductMarketingEmail, type: :model, feature_category: :onboarding do
   let(:track) { :create }
   let(:series) { 0 }
 
@@ -15,7 +15,7 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
 
     it { is_expected.to validate_presence_of(:user) }
 
-    context 'for a track+series email' do
+    context 'when track+series email' do
       it { is_expected.to validate_presence_of(:track) }
       it { is_expected.to validate_presence_of(:series) }
 
@@ -23,28 +23,6 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
         is_expected.to validate_uniqueness_of(:user_id)
           .scoped_to([:track, :series]).with_message('track series email has already been sent')
       }
-    end
-
-    context 'for a campaign email' do
-      subject { build(:in_product_marketing_email, :campaign) }
-
-      it { is_expected.to validate_presence_of(:campaign) }
-      it { is_expected.not_to validate_presence_of(:track) }
-      it { is_expected.not_to validate_presence_of(:series) }
-
-      it {
-        is_expected.to validate_uniqueness_of(:user_id)
-          .scoped_to(:campaign).with_message('campaign email has already been sent')
-      }
-
-      it { is_expected.to validate_inclusion_of(:campaign).in_array(described_class::CAMPAIGNS) }
-    end
-
-    context 'when mixing campaign and track+series' do
-      it 'is not valid' do
-        expect(build(:in_product_marketing_email, :campaign, track: :create)).not_to be_valid
-        expect(build(:in_product_marketing_email, :campaign, series: 0)).not_to be_valid
-      end
     end
   end
 
@@ -78,33 +56,9 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
     context 'when no track or series for a user exists' do
       let(:track) { :create }
       let(:series) { 0 }
+      let(:other_user) { create(:user) }
 
-      before do
-        @other_user = create(:user)
-      end
-
-      it { expect(without_track_and_series).to eq [@other_user] }
-    end
-  end
-
-  describe '.without_campaign' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:other_user) { create(:user) }
-
-    let(:campaign) { Users::InProductMarketingEmail::BUILD_IOS_APP_GUIDE }
-
-    subject(:without_campaign) { User.merge(described_class.without_campaign(campaign)) }
-
-    context 'when record for campaign already exists' do
-      before do
-        create(:in_product_marketing_email, :campaign, campaign: campaign, user: user)
-      end
-
-      it { is_expected.to match_array [other_user] }
-    end
-
-    context 'when record for campaign does not exist' do
-      it { is_expected.to match_array [user, other_user] }
+      it { expect(without_track_and_series).to eq [other_user] }
     end
   end
 
@@ -112,7 +66,9 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
     let_it_be(:user) { create(:user) }
     let_it_be(:in_product_marketing_email) { create(:in_product_marketing_email, series: 0, track: 0, user: user) }
 
-    subject(:for_user_with_track_and_series) { described_class.for_user_with_track_and_series(user, track, series).first }
+    subject(:for_user_with_track_and_series) do
+      described_class.for_user_with_track_and_series(user, track, series).first
+    end
 
     context 'when record for user with given track and series exists' do
       it { is_expected.to eq(in_product_marketing_email) }
@@ -165,7 +121,7 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
         end
       end
 
-      context 'cta_clicked_at is already set' do
+      context 'when cta_clicked_at is already set' do
         it 'does not update' do
           create(:in_product_marketing_email, user: user, track: track, series: series, cta_clicked_at: Time.zone.now)
 

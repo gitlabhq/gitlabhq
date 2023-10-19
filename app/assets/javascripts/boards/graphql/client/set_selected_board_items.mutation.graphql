@@ -1,0 +1,3 @@
+mutation setSelectedBoardItems($itemId: ID!) {
+  setSelectedBoardItems(itemId: $itemId) @client
+}

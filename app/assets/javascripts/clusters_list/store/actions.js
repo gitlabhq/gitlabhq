@@ -17,9 +17,10 @@ const allNodesPresent = (clusters, retryCount) => {
 };
 
 export const reportSentryError = (_store, { error, tag }) => {
-  Sentry.withScope((scope) => {
-    scope.setTag('javascript_clusters_list', tag);
-    Sentry.captureException(error);
+  Sentry.captureException(error, {
+    tags: {
+      javascript_clusters_list: tag,
+    },
   });
 };
 

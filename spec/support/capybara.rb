@@ -51,15 +51,6 @@ Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
   file.close! # We just want the filename
 
   TestEnv.with_workhorse(host, port, socket_path) do
-    # In cases of multiple installations of chromedriver, prioritize the version installed by SeleniumManager
-    # selenium-manager doesn't work with Linux arm64 yet:
-    # https://github.com/SeleniumHQ/selenium/issues/11357
-    if RUBY_PLATFORM.include?('x86_64-linux') || RUBY_PLATFORM.include?('darwin')
-      chrome_options = Selenium::WebDriver::Chrome::Options.chrome
-      chromedriver_path = File.dirname(Selenium::WebDriver::SeleniumManager.driver_path(chrome_options))
-      ENV['PATH'] = "#{chromedriver_path}:#{ENV['PATH']}" # rubocop:disable RSpec/EnvAssignment
-    end
-
     Capybara.servers[:puma].call(app, nil, socket_path, **options)
   end
 end

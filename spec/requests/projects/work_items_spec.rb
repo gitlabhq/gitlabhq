@@ -40,8 +40,8 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
       sign_in(current_user)
     end
 
-    it 'renders index' do
-      get project_work_items_url(work_item.project, work_items_path: work_item.iid)
+    it 'renders show' do
+      get project_work_item_url(work_item.project, work_item.iid)
 
       expect(response).to have_gitlab_http_status(:ok)
     end

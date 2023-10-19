@@ -13,11 +13,11 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-const initializeJobPage = (element) => {
-  const store = createStore();
-
-  // Let's start initializing the store (i.e. fetching data) right away
-  store.dispatch('init', element.dataset);
+export const initJobDetails = () => {
+  const el = document.getElementById('js-job-page');
+  if (!el) {
+    return null;
+  }
 
   const {
     artifactHelpUrl,
@@ -26,27 +26,27 @@ const initializeJobPage = (element) => {
     subscriptionsMoreMinutesUrl,
     endpoint,
     pagePath,
-    logState,
     buildStatus,
     projectPath,
     retryOutdatedJobDocsUrl,
     aiRootCauseAnalysisAvailable,
-  } = element.dataset;
+  } = el.dataset;
+
+  // init store to start fetching log
+  const store = createStore();
+  store.dispatch('init', { endpoint, pagePath });
 
   return new Vue({
-    el: element,
+    el,
     apolloProvider,
     store,
-    components: {
-      JobApp,
-    },
     provide: {
       projectPath,
       retryOutdatedJobDocsUrl,
       aiRootCauseAnalysisAvailable: parseBoolean(aiRootCauseAnalysisAvailable),
     },
-    render(createElement) {
-      return createElement('job-app', {
+    render(h) {
+      return h(JobApp, {
         props: {
           artifactHelpUrl,
           deploymentHelpUrl,
@@ -54,16 +54,10 @@ const initializeJobPage = (element) => {
           subscriptionsMoreMinutesUrl,
           endpoint,
           pagePath,
-          logState,
           buildStatus,
           projectPath,
         },
       });
     },
   });
-};
-
-export default () => {
-  const jobElement = document.getElementById('js-job-page');
-  initializeJobPage(jobElement);
 };

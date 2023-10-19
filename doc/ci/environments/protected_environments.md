@@ -40,7 +40,7 @@ To protect an environment:
    - There are two roles to choose from:
      - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
      - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
-   - You can select groups that are already associated with the project only.
+   - You can only select groups that are already [invited](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group) to the project.
    - Users must have at least the Developer role to appear in
      the **Allowed to deploy** list.
 1. In the **Approvers** list, select the role, users, or groups you
@@ -49,7 +49,7 @@ To protect an environment:
    - There are two roles to choose from:
      - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
      - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
-   - You can select groups that are already associated with the project only.
+   - You can only select groups that are already [invited](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group) to the project.
    - Users must have at least the Developer role to appear in
      the **Approvers** list.
 

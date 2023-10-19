@@ -58,9 +58,10 @@ RSpec.describe SearchController, '(JavaScript fixtures)', type: :controller do
             project_id: project.id,
             startline: 2)
         ],
-     total_count: 4,
-     limit: 4,
-     offset: 0)
+        total_count: 4,
+        limit: 4,
+        offset: 0
+      )
     end
 
     before do

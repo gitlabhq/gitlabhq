@@ -34,7 +34,7 @@ Medium severity vulnerabilities usually arise from misconfiguration of systems o
 
 ## Low severity
 
-Low severity vulnerabilities contain flaws that may not be directly exploitable but introduce unnecessary weakness to an application or system. These flaws are usually due to missing security controls, or unnecessary disclose information about the application environment. Examples of low severity vulnerabilities are missing cookie security directives, verbose error or exception messages. Typically these flaws are rated with CVSS 3.1 between 1.0-3.9.
+Low severity vulnerabilities contain flaws that may not be directly exploitable but introduce unnecessary weakness to an application or system. These flaws are usually due to missing security controls, or unnecessary disclose information about the application environment. Examples of low severity vulnerabilities are missing cookie security directives, verbose error or exception messages. Typically these flaws are rated with CVSS 3.1 between 0.1-3.9.
 
 ## Info severity
 

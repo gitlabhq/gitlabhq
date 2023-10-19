@@ -5,6 +5,7 @@ require 'mime/types'
 module API
   class Repositories < ::API::Base
     include PaginationParams
+    include Helpers::Unidiff
 
     content_type :txt, 'text/plain'
 
@@ -202,6 +203,7 @@ module API
                       documentation: { example: 'feature' }
         optional :from_project_id, type: Integer, desc: 'The project to compare from', documentation: { example: 1 }
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
+        use :with_unidiff
       end
       get ':id/repository/compare', urgency: :low do
         target_project = fetch_target_project(current_user, user_project, params)
@@ -220,7 +222,7 @@ module API
           compare = CompareService.new(user_project, params[:to]).execute(target_project, params[:from], straight: params[:straight])
 
           if compare
-            present compare, with: Entities::Compare, current_user: current_user
+            present compare, with: Entities::Compare, current_user: current_user, enable_unidiff: declared_params[:unidiff]
           else
             not_found!("Ref")
           end

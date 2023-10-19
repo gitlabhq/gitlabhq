@@ -8,7 +8,14 @@ import ClustersEmptyState from '~/clusters_list/components/clusters_empty_state.
 import ClusterStore from '~/clusters_list/store';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  SET_LOADING_NODES,
+  SET_CLUSTERS_DATA,
+  SET_LOADING_CLUSTERS,
+} from '~/clusters_list/store/mutation_types';
 import { apiData } from '../mock_data';
+
+jest.mock('@sentry/browser');
 
 describe('Clusters', () => {
   let mock;
@@ -59,15 +66,7 @@ describe('Clusters', () => {
     };
   };
 
-  let captureException;
-
   beforeEach(() => {
-    jest.spyOn(Sentry, 'withScope').mockImplementation((fn) => {
-      const mockScope = { setTag: () => {} };
-      fn(mockScope);
-    });
-    captureException = jest.spyOn(Sentry, 'captureException');
-
     mock = new MockAdapter(axios);
     mockPollingApi(HTTP_STATUS_OK, apiData, paginationHeader());
 
@@ -76,13 +75,12 @@ describe('Clusters', () => {
 
   afterEach(() => {
     mock.restore();
-    captureException.mockRestore();
   });
 
   describe('clusters table', () => {
     describe('when data is loading', () => {
       beforeEach(() => {
-        wrapper.vm.$store.state.loadingClusters = true;
+        store.commit(SET_LOADING_CLUSTERS, true);
       });
 
       it('displays a loader instead of the table while loading', () => {
@@ -99,7 +97,12 @@ describe('Clusters', () => {
 
     describe('when there are no clusters', () => {
       beforeEach(() => {
-        wrapper.vm.$store.state.totalClusters = 0;
+        store.commit(SET_CLUSTERS_DATA, {
+          data: {},
+          paginationInformation: {
+            total: 0,
+          },
+        });
       });
       it('should render empty state', () => {
         expect(findEmptyState().exists()).toBe(true);
@@ -175,7 +178,7 @@ describe('Clusters', () => {
 
     describe('nodes finish loading', () => {
       beforeEach(async () => {
-        wrapper.vm.$store.state.loadingNodes = false;
+        store.commit(SET_LOADING_NODES, false);
         await nextTick();
       });
 
@@ -198,19 +201,23 @@ describe('Clusters', () => {
 
     describe('nodes with unknown quantity', () => {
       it('notifies Sentry about all missing quantity types', () => {
-        expect(captureException).toHaveBeenCalledTimes(8);
+        expect(Sentry.captureException).toHaveBeenCalledTimes(8);
       });
 
       it('notifies Sentry about CPU missing quantity types', () => {
         const missingCpuTypeError = new Error('UnknownK8sCpuQuantity:1missingCpuUnit');
 
-        expect(captureException).toHaveBeenCalledWith(missingCpuTypeError);
+        expect(Sentry.captureException).toHaveBeenCalledWith(missingCpuTypeError, {
+          tags: { javascript_clusters_list: 'totalCpuAndUsageError' },
+        });
       });
 
       it('notifies Sentry about Memory missing quantity types', () => {
         const missingMemoryTypeError = new Error('UnknownK8sMemoryQuantity:1missingMemoryUnit');
 
-        expect(captureException).toHaveBeenCalledWith(missingMemoryTypeError);
+        expect(Sentry.captureException).toHaveBeenCalledWith(missingMemoryTypeError, {
+          tags: { javascript_clusters_list: 'totalMemoryAndUsageError' },
+        });
       });
     });
   });

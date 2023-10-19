@@ -172,7 +172,6 @@ project_members:
 - user
 - source
 - project
-- member_task
 - member_namespace
 - member_role
 member_roles:
@@ -250,6 +249,7 @@ merge_requests:
 - created_environments
 - predictions
 - user_agent_detail
+- scan_result_policy_violations
 external_pull_requests:
 - project
 merge_request_diff:
@@ -668,6 +668,7 @@ project:
 - statistics
 - container_repositories
 - container_registry_data_repair_detail
+- container_registry_protection_rules
 - uploads
 - file_uploads
 - import_state
@@ -823,10 +824,12 @@ project:
 - design_management_repository_state
 - compliance_standards_adherence
 - scan_result_policy_reads
+- scan_result_policy_violations
 - project_state
 - security_policy_bots
 - target_branch_rules
 - organization
+- dora_performance_scores
 award_emoji:
 - awardable
 - user

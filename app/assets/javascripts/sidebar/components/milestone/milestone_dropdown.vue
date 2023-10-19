@@ -110,7 +110,7 @@ export default {
       :issuable-attribute="$options.issuableAttribute"
       :issuable-type="issuableType"
       :workspace-type="workspaceType"
-      data-qa-selector="issuable_milestone_dropdown"
+      data-testid="issuable-milestone-dropdown"
       @change="handleChange"
     >
       <template #footer>

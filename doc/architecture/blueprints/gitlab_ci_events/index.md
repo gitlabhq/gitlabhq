@@ -2,9 +2,9 @@
 status: proposed
 creation-date: "2023-03-15"
 authors: [ "@furkanayhan" ]
-owners: [ "@furkanayhan" ]
+owners: [ "@fabiopitino" ]
 coach: "@grzesiek"
-approvers: [ "@jreporter", "@cheryl.li" ]
+approvers: [ "@fabiopitino", "@jreporter", "@cheryl.li" ]
 owning-stage: "~devops::verify"
 participating-stages: [ "~devops::package", "~devops::deploy" ]
 ---
@@ -45,6 +45,10 @@ Events" blueprint is about making it possible to:
 1. Describe technology we could use to reduce the cost of running automation jobs significantly.
 
 ## Proposal
+
+### Decisions
+
+- [001: Use hierarchical events](decisions/001_hierarchical_events.md)
 
 ### Requirements
 

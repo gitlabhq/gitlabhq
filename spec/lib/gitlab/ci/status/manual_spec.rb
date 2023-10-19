@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Manual do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'manual' }
+    it { expect(subject.text).to eq 'Manual' }
   end
 
   describe '#label' do

@@ -12,12 +12,15 @@ module CsvBuilder
     # >   puts rows
     # > end
     def render
-      Tempfile.open(['csv_builder_gzip', '.csv.gz']) do |tempfile|
-        csv = CSV.new(Zlib::GzipWriter.open(tempfile.path))
+      Tempfile.create(['csv_builder_gzip', '.csv.gz']) do |tempfile|
+        Zlib::GzipWriter.open(tempfile.path) do |gz|
+          csv = CSV.new(gz)
 
-        write_csv csv, until_condition: -> {} # truncation must be handled outside of the CsvBuilder
+          write_csv csv, until_condition: -> {} # truncation must be handled outside of the CsvBuilder
 
-        csv.close
+          csv.close
+        end
+
         yield tempfile, @rows_written
       end
     end

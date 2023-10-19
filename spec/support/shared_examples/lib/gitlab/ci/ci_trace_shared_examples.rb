@@ -113,7 +113,7 @@ RSpec.shared_examples 'common trace features' do
       it "returns valid sections" do
         expect(sections).not_to be_empty
         expect(sections.size).to eq(sections_data.size),
-                                 "expected #{sections_data.size} sections, got #{sections.size}"
+          "expected #{sections_data.size} sections, got #{sections.size}"
 
         buff = StringIO.new(log)
         sections.each_with_index do |s, i|

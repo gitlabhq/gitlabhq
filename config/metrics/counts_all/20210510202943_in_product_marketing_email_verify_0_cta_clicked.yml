@@ -6,8 +6,10 @@ product_section: 'TBD'
 product_stage: growth
 product_group: activation
 value_type: number
-status: active
-milestone: "13.12"
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131860
+milestone_removed: '16.5'
+milestone: '13.12'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56752
 time_frame: all
 data_source: database
@@ -16,9 +18,9 @@ options:
   track: verify
   series: 0
 distribution:
-- ce
-- ee
+  - ce
+  - ee
 tier:
-- free
-- premium
-- ultimate
+  - free
+  - premium
+  - ultimate

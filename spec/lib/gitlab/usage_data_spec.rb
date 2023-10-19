@@ -17,7 +17,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
 
     it 'includes basic top and second level keys' do
       is_expected.to include(:counts)
-      is_expected.to include(:counts_monthly)
       is_expected.to include(:counts_weekly)
       is_expected.to include(:license)
 
@@ -152,8 +151,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     it 'includes accurate usage_activity_by_stage data' do
       for_defined_days_back do
         user = create(:user)
-        project = create(:project, :repository_private,
-                         :test_repo, :remote_mirror, creator: user)
+        project = create(:project, :repository_private, :test_repo, :remote_mirror, creator: user)
         create(:merge_request, source_project: project)
         create(:deploy_key, user: user)
         create(:key, user: user)
@@ -293,22 +291,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           bulk_imports: {
             gitlab_v1: 2
           },
-          project_imports: {
-            bitbucket: 2,
-            bitbucket_server: 2,
-            git: 2,
-            gitea: 2,
-            github: 2,
-            gitlab_migration: 2,
-            gitlab_project: 2,
-            manifest: 2,
-            total: 16
-          },
-          issue_imports: {
-            jira: 2,
-            fogbugz: 2,
-            csv: 2
-          },
           group_imports: {
             group_import: 2,
             gitlab_migration: 2
@@ -319,22 +301,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         {
           bulk_imports: {
             gitlab_v1: 1
-          },
-          project_imports: {
-            bitbucket: 1,
-            bitbucket_server: 1,
-            git: 1,
-            gitea: 1,
-            github: 1,
-            gitlab_migration: 1,
-            gitlab_project: 1,
-            manifest: 1,
-            total: 8
-          },
-          issue_imports: {
-            jira: 1,
-            fogbugz: 1,
-            csv: 1
           },
           group_imports: {
             group_import: 1,
@@ -623,28 +589,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     end
   end
 
-  describe '.system_usage_data_monthly' do
-    let_it_be(:project) { create(:project, created_at: 3.days.ago) }
-
-    before do
-      create(:package, project: project, created_at: 3.days.ago)
-      create(:package, created_at: 2.months.ago, project: project)
-
-      for_defined_days_back do
-        create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
-      end
-    end
-
-    subject { described_class.system_usage_data_monthly }
-
-    it 'gathers monthly usage counts correctly' do
-      counts_monthly = subject[:counts_monthly]
-
-      expect(counts_monthly[:projects]).to eq(1)
-      expect(counts_monthly[:packages]).to eq(1)
-    end
-  end
-
   context 'when not relying on database records' do
     describe '.features_usage_data_ce' do
       subject { described_class.features_usage_data_ce }
@@ -885,8 +829,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     it 'gathers Service Desk data' do
       create_list(:issue, 2, :confidential, author: Users::Internal.support_bot, project: project)
 
-      expect(subject).to eq(service_desk_enabled_projects: 1,
-                            service_desk_issues: 2)
+      expect(subject).to eq(service_desk_enabled_projects: 1, service_desk_issues: 2)
     end
   end
 

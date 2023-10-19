@@ -80,6 +80,8 @@ RSpec.describe Tooling::Danger::ConfigFiles do
         config/feature_flags/first.yml
         config/events/1234_new_event.yml
         config/metrics/count_7d/new_metric.yml
+        ee/config/feature_flags/ee_feature_flag.yml
+        ee/config/saas_features/some_saas_feature.yml
       ]
     end
 
@@ -91,6 +93,8 @@ RSpec.describe Tooling::Danger::ConfigFiles do
         config/events/1234_new_event.yml
         config/metrics/count_7d/new_metric.yml
         app/assets/index.js
+        ee/config/feature_flags/ee_feature_flag.yml
+        ee/config/saas_features/some_saas_feature.yml
       ]
 
       allow(config_file.helper).to receive(:added_files).and_return(all_new_files)

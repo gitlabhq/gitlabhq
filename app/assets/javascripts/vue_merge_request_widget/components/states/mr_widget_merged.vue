@@ -67,7 +67,7 @@ export default {
         actions.push({
           text: this.revertLabel,
           tooltipText: this.revertTitle,
-          dataQaSelector: 'revert_button',
+          testId: 'revert-button',
           onClick: () => this.openRevertModal(),
         });
       } else if (this.mr.revertInForkPath) {
@@ -75,7 +75,7 @@ export default {
           text: this.revertLabel,
           tooltipText: this.revertTitle,
           href: this.mr.revertInForkPath,
-          dataQaSelector: 'revert_button',
+          testId: 'revert-button',
           dataMethod: 'post',
         });
       }
@@ -84,7 +84,7 @@ export default {
         actions.push({
           text: this.cherryPickLabel,
           tooltipText: this.cherryPickTitle,
-          dataQaSelector: 'cherry_pick_button',
+          testId: 'cherry-pick-button',
           onClick: () => this.openCherryPickModal(),
         });
       } else if (this.mr.cherryPickInForkPath) {
@@ -92,7 +92,7 @@ export default {
           text: this.cherryPickLabel,
           tooltipText: this.cherryPickTitle,
           href: this.mr.cherryPickInForkPath,
-          dataQaSelector: 'cherry_pick_button',
+          testId: 'cherry-pick-button',
           dataMethod: 'post',
         });
       }

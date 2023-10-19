@@ -7,77 +7,469 @@ type: index, howto
 
 # Migrating from Jenkins **(FREE ALL)**
 
-If you're migrating from Jenkins to GitLab CI/CD, you should be able
-to create CI/CD pipelines that do everything you need.
+If you're migrating from Jenkins to GitLab CI/CD, you are able to create CI/CD
+pipelines that replicate and enhance your Jenkins workflows.
 
-You can start by watching the [Migrating from Jenkins to GitLab](https://www.youtube.com/watch?v=RlEVGOpYF5Y)
-video for examples of:
+## Key similarities and differences
 
-- Converting a Jenkins pipeline into a GitLab CI/CD pipeline.
-- Using Auto DevOps to test your code automatically.
+GitLab CI/CD and Jenkins are CI/CD tools with some similarities. Both GitLab
+and Jenkins:
 
-## Get started
+- Use stages for collections of jobs.
+- Support container-based builds.
 
-The following list of recommended steps was created after observing organizations
-that were able to quickly complete this migration.
+Additionally, there are some important differences between the two:
 
-Before doing any migration work, you should [start with a migration plan](plan_a_migration.md).
+- GitLab CI/CD pipelines are all configured in a YAML format configuration file.
+  Jenkins uses either a Groovy format configuration file (declarative pipelines)
+  or Jenkins DSL (scripted pipelines).
+- GitLab can run either on SaaS (cloud) or self-managed deployments. Jenkins deployments must be self-managed.
+- GitLab provides source code management (SCM) out of the box. Jenkins requires a separate
+  SCM solution to store code.
+- GitLab provides a built-in container registry. Jenkins requires a separate solution
+  for storing container images.
+- GitLab provides built-in templates for scanning code. Jenkins requires 3rd party plugins
+  for scanning code.
 
-Engineers that need to migrate projects to GitLab CI/CD should:
+## Comparison of features and concepts
 
-- Read about some [key GitLab CI/CD features](#key-gitlab-cicd-features).
-- Follow tutorials to create:
-  - [Your first GitLab pipeline](../quick_start/index.md).
-  - [A more complex pipeline](../quick_start/tutorial.md) that builds, tests,
-    and deploys a static site.
-- Review the [`.gitlab-ci.yml` keyword reference](../yaml/index.md).
-- Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners
-  or installing new runners.
-- Migrate build and CI jobs and configure them to show results directly in merge requests.
-  You can use [Auto DevOps](../../topics/autodevops/index.md) as a starting point,
-  and [customize](../../topics/autodevops/customize.md) or [decompose](../../topics/autodevops/customize.md#use-individual-components-of-auto-devops)
-  the configuration as needed.
-- Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-  [environments](../environments/index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
-- Check if any CI/CD configuration can be reused across different projects, then create
-  and share [templates](#templates).
-- Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)
-  to learn how to make your GitLab CI/CD pipelines faster and more efficient.
+Many Jenkins features and concepts have equivalents in GitLab that offer the same
+functionality.
 
-If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/)
-can be a great resource.
+### Configuration file
 
-### Key GitLab CI/CD features
+Jenkins can be configured with a [`Jenkinsfile` in the Groovy format](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/). GitLab CI/CD uses a [`.gitlab-ci.yml` YAML file](../../ci/yaml/gitlab_ci_yaml.md) by default.
 
-GitLab CI/CD key features might be different or not exist in Jenkins. For example,
-in GitLab:
+Example of a `Jenkinsfile`:
 
-- Pipelines can be triggered with:
-  - A Git push
-  - A [Schedule](../pipelines/schedules.md)
-  - The [GitLab UI](../pipelines/index.md#run-a-pipeline-manually)
-  - An [API call](../triggers/index.md)
-  - A [webhook](../triggers/index.md#use-a-webhook)
-- You can control which jobs run in which cases with the [`rules` syntax](../yaml/index.md#rules).
-- You can reuse pipeline configurations:
-  - Use the [`extends` keyword](../yaml/index.md#extends) to reuse configuration
-    in a single pipeline configuration.
-  - Use the [`include` keyword](../yaml/index.md#include) to reuse configuration across
-    multiple pipelines and projects.
-- Jobs are grouped into stages, and jobs in the same stage can run at the same time.
-  Stages run in sequence. Jobs can be configured to run outside of the stage ordering with the
-  [`needs` keyword](../yaml/index.md#needs).
-- The [`parallel`](../yaml/index.md#parallel) keyword can automatically parallelize tasks,
-  especially tests that support parallelization.
-- Jobs run independently of each other and have a fresh environment for each job.
-  Passing artifacts between jobs is controlled using the [`artifacts`](../yaml/index.md#artifacts)
-  and [`dependencies`](../yaml/index.md#dependencies) keywords.
-- The `.gitlab-ci.yml` configuration file exists in your Git repository, like a `Jenkinsfile`,
-  but is [a YAML file](#yaml-configuration-file), not Groovy.
-- GitLab comes with a [container registry](../../user/packages/container_registry/index.md).
-  You can build and store custom container images to run your jobs in.
+```groovy
+pipeline {
+    agent any
 
-## Runners
+    stages {
+        stage('hello') {
+            steps {
+                echo "Hello World"
+            }
+        }
+    }
+}
+```
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+stages:
+  - hello
+
+hello-job:
+  stage: hello
+  script:
+    - echo "Hello World"
+```
+
+### Jenkins pipeline syntax
+
+A Jenkins configuration is composed of a `pipeline` block with "sections" and "directives".
+GitLab CI/CD has similar functionality, configured with YAML keywords.
+
+#### Sections
+
+| Jenkins  | GitLab         | Explanation |
+|----------|----------------|-------------|
+| `agent`  | `image`        | Jenkins pipelines execute on agents, and the `agent` section defines how the pipeline executes, and the Docker container to use. GitLab jobs execute on _runners_, and the `image` keyword defines the container to use. You can configure your own runners in Kubernetes or on any host. |
+| `post`   | `after_script` or `stage` | The Jenkins `post` section defines actions that should be performed at the end of a stage or pipeline. In GitLab, use `after_script` for commands to run at the end of a job, and `before_script` for actions to run before the other commands in a job. Use `stage` to select the exact stage a job should run in. GitLab supports both `.pre` and `.post` stages that always run before or after all other defined stages. |
+| `stages` | `stages`       | Jenkins stages are groups of jobs. GitLab CI/CD also uses stages, but it is more flexible. You can have multiple stages each with multiple independent jobs. Use `stages` at the top level to the stages and their execution order, and use `stage` at the job level to define the stage for that job. |
+| `steps`  | `script`       | Jenkins `steps` define what to execute. GitLab CI/CD uses a `script` section which is similar. The `script` section is a YAML array with separate entries for each command to run in sequence. |
+
+#### Directives
+
+| Jenkins       | GitLab         | Explanation |
+|---------------|----------------|-------------|
+| `environment` | `variables`    | Jenkins uses `environment` for environment variables. GitLab CI/CD uses the `variables` keyword to define CI/CD variables that can be used during job execution, but also for more dynamic pipeline configuration. These can also be set in the GitLab UI, under CI/CD settings. |
+| `options`     | Not applicable | Jenkins uses `options` for additional configuration, including timeouts and retry values. GitLab does not need a separate section for options, all configuration is added as CI/CD keywords at the job or pipeline level, for example `timeout` or `retry`. |
+| `parameters`  | Not applicable | In Jenkins, parameters can be required when triggering a pipeline. Parameters are handled in GitLab with CI/CD variables, which can be defined in many places, including the pipeline configuration, project settings, at runtime manually through the UI, or API. |
+| `triggers`    | `rules`        | In Jenkins, `triggers` defines when a pipeline should run again, for example through cron notation. GitLab CI/CD can run pipelines automatically for many reasons, including Git changes and merge request updates. Use the `rules` keyword to control which events to run jobs for. Scheduled pipelines are defined in the project settings. |
+| `tools`       | Not applicable | In Jenkins, `tools` defines additional tools to install in the environment. GitLab does not have a similar keyword, as the recommendation is to use container images prebuilt with the exact tools required for your jobs. These images can be cached and can be built to already contain the tools you need for your pipelines. If a job needs additional tools, they can be installed as part of a `before_script` section. |
+| `input`       | Not applicable | In Jenkins, `input` adds a prompt for user input. Similar to `parameters`, inputs are handled in GitLab through CI/CD variables. |
+| `when`        | `rules`        | In Jenkins, `when` defines when a stage should be executed. GitLab also has a `when` keyword, which defines whether a job should start running based on the status of earlier jobs, for example if jobs passed or failed. To control when to add jobs to specific pipelines, use `rules`. |
+
+### Common configurations
+
+This section goes over commonly used CI/CD configurations, showing how they can be converted
+from Jenkins to GitLab CI/CD.
+
+[Jenkins pipelines](https://www.jenkins.io/doc/book/pipeline/) generate automated CI/CD jobs
+that are triggered when certain event take place, such as a new commit being pushed.
+A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../../ci/yaml/gitlab_ci_yaml.md).
+
+Jenkins does not provide a place to store source code, so the `Jenkinsfile` must be stored
+in a separate source control repository.
+
+#### Jobs
+
+Jobs are a set of commands that run in a set sequence to achieve a particular result.
+
+For example, build a container then deploy it to production, in a `Jenkinsfile`:
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('build') {
+            agent { docker 'golang:alpine' }
+            steps {
+                apk update
+                go build -o bin/hello
+            }
+            post {
+              always {
+                archiveArtifacts artifacts: 'bin/hello'
+                onlyIfSuccessful: true
+              }
+            }
+        }
+        stage('deploy') {
+            agent { docker 'golang:alpine' }
+            when {
+              branch 'staging'
+            }
+            steps {
+                echo "Deploying to staging"
+                scp bin/hello remoteuser@remotehost:/remote/directory
+            }
+        }
+    }
+}
+```
+
+This example:
+
+- Uses the `golang:alpine` container image.
+- Runs a job for building code.
+  - Stores the built executable as an artifact.
+- Adds a second job to deploy to `staging`, which:
+  - Only exists if the commit targets the `staging` branch.
+  - Starts after the build stage succeeds.
+  - Uses the built executable artifact from the earlier job.
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+default:
+  image: golang:alpine
+
+stages:
+  - build
+  - deploy
+
+build-job:
+  stage: build
+  script:
+    - apk update
+    - go build -o bin/hello
+  artifacts:
+    paths:
+      - bin/hello
+    expire_in: 1 week
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Deploying to Staging"
+    - scp bin/hello remoteuser@remotehost:/remote/directory
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'staging'
+  artifacts:
+    paths:
+      - bin/hello
+```
+
+##### Parallel
+
+In Jenkins, jobs that are not dependent on previous jobs can run in parallel when
+added to a `parallel` section.
+
+For example, in a `Jenkinsfile`:
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Parallel') {
+            parallel {
+                stage('Python') {
+                    agent { docker 'python:latest' }
+                    steps {
+                        sh "python --version"
+                    }
+                }
+                stage('Java') {
+                    agent { docker 'openjdk:latest' }
+                    when {
+                        branch 'staging'
+                    }
+                    steps {
+                        sh "java -version"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+This example runs a Python and a Java job in parallel, using different container images.
+The Java job only runs when the `staging` branch is changed.
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+python-version:
+  image: python:latest
+  script:
+    - python --version
+
+java-version:
+  image: openjdk:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'staging'
+  script:
+    - java -version
+```
+
+In this case, no extra configuration is needed to make the jobs run in parallel.
+Jobs run in parallel by default, each on a different runner assuming there are enough runners
+for all the jobs. The Java job is set to only run when the `staging` branch is changed.
+
+##### Matrix
+
+In GitLab you can use a matrix to run a job multiple times in parallel in a single pipeline,
+but with different variable values for each instance of the job. Jenkins runs the matrix sequentially.
+
+For example, in a `Jenkinsfile`:
+
+```groovy
+matrix {
+    axes {
+        axis {
+            name 'PLATFORM'
+            values 'linux', 'mac', 'windows'
+        }
+        axis {
+            name 'ARCH'
+            values 'x64', 'x86'
+        }
+    }
+    stages {
+        stage('build') {
+            echo "Building $PLATFORM for $ARCH"
+        }
+        stage('test') {
+            echo "Building $PLATFORM for $ARCH"
+        }
+        stage('deploy') {
+            echo "Building $PLATFORM for $ARCH"
+        }
+    }
+}
+```
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+stages:
+  - build
+  - test
+  - deploy
+
+.parallel-hidden-job:
+  parallel:
+    matrix:
+      - PLATFORM: [linux, mac, windows]
+        ARCH: [x64, x86]
+
+build-job:
+  extends: .parallel-hidden-job
+  stage: build
+  script:
+    - echo "Building $PLATFORM for $ARCH"
+
+test-job:
+  extends: .parallel-hidden-job
+  stage: test
+  script:
+    - echo "Testing $PLATFORM for $ARCH"
+
+deploy-job:
+  extends: .parallel-hidden-job
+  stage: deploy
+  script:
+    - echo "Testing $PLATFORM for $ARCH"
+```
+
+#### Container Images
+
+In GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../../ci/docker/using_docker_images.md)
+using the [image](../../ci/yaml/index.md#image) keyword.
+
+For example, in a `Jenkinsfile`:
+
+```groovy
+stage('Version') {
+    agent { docker 'python:latest' }
+    steps {
+        echo 'Hello Python'
+        sh 'python --version'
+    }
+}
+```
+
+This example shows commands running in a `python:latest` container.
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+version-job:
+  image: python:latest
+  script:
+    - echo "Hello Python"
+    - python --version
+```
+
+#### Variables
+
+In GitLab, use the `variables` keyword to define [CI/CD variables](../variables/index.md).
+Use variables to reuse configuration data, have more dynamic configuration, or store important values.
+Variables can be defined either globally or per job.
+
+For example, in a `Jenkinsfile`:
+
+```groovy
+pipeline {
+    agent any
+    environment {
+        NAME = 'Fern'
+    }
+    stages {
+        stage('English') {
+            environment {
+                GREETING = 'Hello'
+            }
+            steps {
+                sh 'echo "$GREETING $NAME"'
+            }
+        }
+        stage('Spanish') {
+            environment {
+                GREETING = 'Hola'
+            }
+            steps {
+                sh 'echo "$GREETING $NAME"'
+            }
+        }
+    }
+}
+```
+
+This example shows how variables can be used to pass values to commands in jobs.
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+default:
+  image: alpine:latest
+
+stages:
+  - greet
+
+variables:
+  NAME: "Fern"
+
+english:
+  stage: greet
+  variables:
+    GREETING: "Hello"
+  script:
+    - echo "$GREETING $NAME"
+
+spanish:
+  stage: greet
+  variables:
+    GREETING: "Hola"
+  script:
+    - echo "$GREETING $NAME"
+```
+
+Variables can also be [set in the GitLab UI, in the CI/CD settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+In some cases, you can use [protected](../variables/index.md#protect-a-cicd-variable)
+and [masked](../variables/index.md#mask-a-cicd-variable) variables for secret values.
+These variables can be accessed in pipeline jobs the same as variables defined in the
+configuration file.
+
+For example, in a `Jenkinsfile`:
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Example Username/Password') {
+            environment {
+                AWS_ACCESS_KEY = credentials('aws-access-key')
+            }
+            steps {
+                sh 'my-login-script.sh $AWS_ACCESS_KEY'
+            }
+        }
+    }
+}
+```
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+login-job:
+  script:
+    - my-login-script.sh $AWS_ACCESS_KEY
+```
+
+Additionally, GitLab CI/CD makes [predefined variables](../variables/predefined_variables.md)
+available to every pipeline and job which contain values relevant to the pipeline and repository.
+
+#### Expressions and conditionals
+
+When a new pipeline starts, GitLab checks which jobs should run in that pipeline.
+You can configure jobs to run depending on factors like the status of variables,
+or the pipeline type.
+
+For example, in a `Jenkinsfile`:
+
+```groovy
+stage('deploy_staging') {
+    agent { docker 'alpine:latest' }
+    when {
+        branch 'staging'
+    }
+    steps {
+        echo "Deploying to staging"
+    }
+}
+```
+
+In this example, the job only runs when the branch we are committing to is named `staging`.
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == staging'
+```
+
+#### Runners
 
 Like Jenkins agents, GitLab runners are the hosts that run jobs. If you are using GitLab.com,
 you can use the [shared runner fleet](../runners/index.md) to run jobs without provisioning
@@ -95,233 +487,161 @@ Some key details about runners:
   for finer control, and associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
 - GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).
-  Use autoscaling to provision runners only when needed and scale down when not needed,
-  similar to ephemeral agents in Jenkins.
+  Use autoscaling to provision runners only when needed and scale down when not needed.
 
-## YAML configuration file
+For example, in a `Jenkinsfile`:
 
-GitLab pipeline configuration files use the [YAML](https://yaml.org/) format instead of
-the [Groovy](https://groovy-lang.org/) format that Jenkins uses.
-
-Using YAML is a strength of GitLab CI/CD, as it is a simple format to understand
-and start using. For example, a small configuration file with two jobs and some
-shared configuration in a hidden job:
-
-```yaml
-.test-config:
-  tags:
-    - docker-runners
-  stage: test
-
-test-job:
-  extends:
-    - .docker-config
-  script:
-    - bundle exec rake rspec
-
-lint-job:
-  extends:
-    - .docker-config
-  script:
-    - yarn run prettier
+```groovy
+pipeline {
+    agent none
+    stages {
+        stage('Linux') {
+            agent {
+                label 'linux'
+            }
+            steps {
+                echo "Hello, $USER"
+            }
+        }
+        stage('Windows') {
+            agent {
+                label 'windows'
+            }
+            steps {
+                echo "Hello, %USERNAME%"
+            }
+        }
+    }
+}
 ```
 
-In this example:
-
-- The commands to run in jobs are added with the [`script` keyword](../yaml/index.md#script).
-- The [`extends` keyword](../yaml/index.md#extends) reduces duplication in the configuration
-  by adding the same `tags` and `stage` configuration defined in `.test-config` to both jobs.
-
-### Artifacts
-
-In GitLab, any job can use the [`artifacts` keyword](../yaml/index.md#artifacts)
-to define a set of [artifacts](../jobs/job_artifacts.md) to be stored when a job completes.
-Artifacts are files that can be used in later jobs, for example for testing or deployment.
-
-For example:
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
 
 ```yaml
-pdf:
-  script: xelatex mycv.tex
+linux_job:
+  stage: build
+  tags:
+    - linux
+  script:
+    - echo "Hello, $USER"
+
+windows_job:
+  stage: build
+  tags:
+    - windows
+  script:
+    - echo "Hello, %USERNAME%"
+```
+
+#### Artifacts
+
+In GitLab, any job can use the [`artifacts`](../../ci/yaml/index.md#artifacts) keyword to define a set of artifacts to
+be stored when a job completes. [Artifacts](../../ci/jobs/job_artifacts.md) are files that can be used in later jobs,
+for example for testing or deployment.
+
+For example, in a `Jenkinsfile`:
+
+```groovy
+stages {
+    stage('Generate Cat') {
+        steps {
+            sh 'touch cat.txt'
+            sh 'echo "meow" > cat.txt'
+        }
+        post {
+            always {
+                archiveArtifacts artifacts: 'cat.txt'
+                onlyIfSuccessful: true
+            }
+        }
+    }
+    stage('Use Cat') {
+        steps {
+            sh 'cat cat.txt'
+        }
+    }
+  }
+```
+
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
+
+```yaml
+stages:
+  - generate
+  - use
+
+generate_cat:
+  stage: generate
+  script:
+    - touch cat.txt
+    - echo "meow" > cat.txt
   artifacts:
     paths:
-      - mycv.pdf
-      - output/
+      - cat.txt
     expire_in: 1 week
-```
 
-In this example:
-
-- The `mycv.pdf` file and all the files in `output/` are stored and could be used
-  in later jobs.
-- To save resources, the artifacts expire and are deleted after one week.
-
-### Scanning features
-
-You might have used plugins for things like code quality, security, or static application scanning
-in Jenkins. Tools like these are already available in GitLab and can be used in your
-pipeline.
-
-GitLab features including [code quality](../testing/code_quality.md), [security scanning](../../user/application_security/index.md),
-[SAST](../../user/application_security/sast/index.md), and many others generate reports
-when they complete. These reports can be displayed in merge requests and pipeline details pages.
-
-### Templates
-
-For organizations with many CI/CD pipelines, you can use project templates to configure
-custom CI/CD configuration templates and reuse them across projects.
-
-Group maintainers can configure a group to use as the source for [custom project templates](../../administration/custom_project_templates.md).
-These templates can be used by all projects in the group.
-
-An instance administrator can set a group as the source for [instance project templates](../../user/group/custom_project_templates.md),
-which can be used by all projects in that instance.
-
-## Convert a declarative Jenkinsfile
-
-A declarative Jenkinsfile contains "Sections" and "Directives" which are used to control the behavior of your
-pipelines. Equivalents for all of these exist in GitLab, which we've documented below.
-
-This section is based on the [Jenkinsfile syntax documentation](https://www.jenkins.io/doc/book/pipeline/syntax/)
-and is meant to be a mapping of concepts there to concepts in GitLab.
-
-### Sections
-
-#### `agent`
-
-The agent section is used to define how a pipeline executes. For GitLab, we use [runners](../runners/index.md)
-to provide this capability. You can configure your own runners in Kubernetes or on any host. You can also take advantage
-of our shared runner fleet (the shared runner fleet is only available for GitLab.com users).
-We also support using [tags](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) to direct different jobs
-to different runners (execution agents).
-
-The `agent` section also allows you to define which Docker images should be used for execution, for which we use
-the [`image`](../yaml/index.md#image) keyword. The `image` can be set on a single job or at the top level, in which
-case it applies to all jobs in the pipeline:
-
-```yaml
-my_job:
-  image: alpine
-```
-
-#### `post`
-
-The `post` section defines the actions that should be performed at the end of the pipeline. GitLab also supports
-this through the use of stages. You can define your stages as follows, and any jobs assigned to the `before_pipeline`
-or `after_pipeline` stages run as expected. You can call these stages anything you like:
-
-```yaml
-stages:
-  - before_pipeline
-  - build
-  - test
-  - deploy
-  - after_pipeline
-```
-
-Setting a step to be performed before and after any job can be done via the
-[`before_script`](../yaml/index.md#before_script) and [`after_script`](../yaml/index.md#after_script) keywords:
-
-```yaml
-default:
-  before_script:
-    - echo "I run before any jobs starts in the entire pipeline, and can be responsible for setting up the environment."
-```
-
-#### `stages`
-
-GitLab CI/CD also lets you define stages, but is a little bit more free-form to configure. The GitLab [`stages` keyword](../yaml/index.md#stages)
-is a top level setting that enumerates the list of stages. You are not required to nest individual jobs underneath
-the `stages` section. Any job defined in the `.gitlab-ci.yml` can be made a part of any stage through use of the
-[`stage` keyword](../yaml/index.md#stage).
-
-Unless otherwise specified, every pipeline is instantiated with a `build`, `test`, and `deploy` stage
-which are run in that order. Jobs that have no `stage` defined are placed by default in the `test` stage.
-Of course, each job that refers to a stage must refer to a stage that exists in the pipeline configuration.
-
-```yaml
-stages:
-  - build
-  - test
-  - deploy
-
-my_job:
-  stage: build
-```
-
-#### `steps`
-
-The `steps` section is equivalent to the [`script` section](../yaml/index.md#script) of an individual job. The `steps` section is a YAML array
-with each line representing an individual command to be run:
-
-```yaml
-my_job:
+use_cat:
+  stage: use
   script:
-    - echo "hello! the current time is:"
-    - time
+    - cat cat.txt
+  artifacts:
+    paths:
+      - cat.txt
 ```
 
-### Directives
+#### Caching
 
-#### `environment`
+A [cache](../../ci/caching/index.md) is created when a job downloads one or more files and
+saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
+so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
+[distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
+Jenkins core does not provide caching.
 
-In GitLab, we use the [`variables` keyword](../yaml/index.md#variables) to define different variables at runtime.
-These can also be set up through the GitLab UI, under CI/CD settings. See also our [general documentation on variables](../variables/index.md),
-including the section on [protected variables](../variables/index.md#protect-a-cicd-variable). This can be used
-to limit access to certain variables to certain environments or runners:
-
-```yaml
-variables:
-  POSTGRES_USER: user
-  POSTGRES_PASSWORD: testing_password
-```
-
-#### `options`
-
-Here, options for different things exist associated with the object in question itself. For example, options related
-to jobs are defined in relation to the job itself. If you're looking for a certain option, you should be able to find
-where it's located by searching our [complete configuration reference](../yaml/index.md) page.
-
-#### `parameters`
-
-GitLab does not require you to define which variables you want to be available when starting a manual job. A user
-can provide any variables they like.
-
-#### `triggers` / `cron`
-
-Because GitLab is integrated tightly with Git, SCM polling options for triggers are not needed. We support a
-[syntax for scheduling pipelines](../pipelines/schedules.md).
-
-#### `tools`
-
-GitLab does not support a separate `tools` directive. Our best-practice recommendation is to use pre-built
-container images. These images can be cached and can be built to already contain the tools you need for your pipelines. Pipelines can
-be set up to automatically build these images as needed and deploy them to the [container registry](../../user/packages/container_registry/index.md).
-
-If you don't use container images with Docker or Kubernetes, but use the `shell` executor on your own system,
-you must set up your environment. You can set up the environment in advance, or as part of the jobs
-with a `before_script` action that handles this for you.
-
-#### `input`
-
-Similar to the `parameters` keyword, this is not needed because a manual job can always be provided runtime
-variable entry.
-
-#### `when`
-
-GitLab does support a [`when` keyword](../yaml/index.md#when) which is used to indicate when a job should be
-run in case of (or despite) failure. Most of the logic for controlling pipelines can be found in
-our very powerful [`rules` system](../yaml/index.md#rules):
+For example, in a `.gitlab-ci.yml` file:
 
 ```yaml
-my_job:
+cache-job:
   script:
-    - echo
-  rules:
-    - if: $CI_COMMIT_BRANCH
+    - echo "This job uses a cache."
+  cache:
+    key: binaries-cache-$CI_COMMIT_REF_SLUG
+    paths:
+      - binaries/
 ```
 
-## Secrets Management
+### Jenkins plugins
+
+Some functionality in Jenkins that is enabled through plugins is supported natively
+in GitLab with keywords and features that offer similar functionality. For example:
+
+| Jenkins plugin                                                                    | GitLab feature |
+|-----------------------------------------------------------------------------------|----------------|
+| [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout` keyword](../yaml/index.md#timeout) |
+| [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [Coverage report artifacts](../yaml/artifacts_reports.md#artifactsreportscoverage_report) and [Code coverage](../testing/code_coverage.md) |
+| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage.md) and [Test coverage visualization](../testing/test_coverage_visualization.md) |
+| [Embeddable Build Status](https://plugins.jenkins.io/embeddable-build-status/)    | [Pipeline status badges](../../user/project/badges.md#pipeline-status-badges) |
+| [JUnit](https://plugins.jenkins.io/junit/)                                        | [JUnit test report artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) and [Unit test reports](../testing/unit_test_reports.md) |
+| [Mailer](https://plugins.jenkins.io/mailer/)                                      | [Notification emails](../../user/profile/notifications.md) |
+| [Parameterized Trigger Plugin](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger` keyword](../yaml/index.md#trigger) and [downstream pipelines](../pipelines/downstream_pipelines.md) |
+| [Role-based Authorization Strategy](https://plugins.jenkins.io/role-strategy/)    | GitLab [permissions and roles](../../user/permissions.md) |
+| [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [Job](../jobs/index.md) logs are time stamped by default |
+
+### Security Scanning features
+
+You might have used plugins for things like code quality, security, or static application scanning in Jenkins.
+GitLab provides [security scanners](../../user/application_security/index.md) out-of-the-box to detect
+vulnerabilities in all parts of the SDLC. You can add these plugins in GitLab using templates, for example to add
+SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+```
+
+You can customize the behavior of security scanners by using CI/CD variables, for example
+with the [SAST scanners](../../user/application_security/sast/index.md#available-cicd-variables).
+
+### Secrets Management
 
 Privileged information, often referred to as "secrets", is sensitive information
 or credentials you need in your CI/CD workflow. You might use secrets to unlock protected resources
@@ -354,15 +674,59 @@ only be done in [the project, group, or instance settings](../variables/index.md
 Review the [security guidelines](../variables/index.md#cicd-variable-security) to improve
 the safety of your CI/CD variables.
 
-## Additional resources
+## Planning and Performing a Migration
+
+The following list of recommended steps was created after observing organizations
+that were able to quickly complete this migration.
+
+### Create a Migration Plan
+
+Before starting a migration you should create a [migration plan](plan_a_migration.md) to make preparations for the migration. For a migration from Jenkins, ask yourself the following questions in preparation:
+
+- What plugins are used by jobs in Jenkins today?
+  - Do you know what these plugins do exactly?
+  - Do any plugins wrap a common build tool? For example, Maven, Gradle, or NPM?
+- What is installed on the Jenkins agents?
+- Are there any shared libraries in use?
+- How are you authenticating from Jenkins? Are you using SSH keys, API tokens, or other secrets?
+- Are there other projects that you need to access from your pipeline?
+- Are there credentials in Jenkins to access outside services? For example Ansible Tower,
+  Artifactory, or other Cloud Providers or deployment targets?
+
+### Prerequisites
+
+Before doing any migration work, you should first:
+
+1. Get familiar with GitLab.
+   - Read about the [key GitLab CI/CD features](../../ci/index.md).
+   - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
+   - Review the [`.gitlab-ci.yml` keyword reference](../yaml/index.md).
+1. Set up and configure GitLab.
+1. Test your GitLab instance.
+   - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.
+
+### Migration Steps
+
+1. Migrate projects from your SCM solution to GitLab.
+   - (Recommended) You can use the available [importers](../../user/project/import/index.md)
+     to automate mass imports from external SCM providers.
+   - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
+1. Create a `.gitlab-ci.yml` file in each project.
+1. Migrate Jenkins configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
+1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
+   [environments](../environments/index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+1. Check if any CI/CD configuration can be reused across different projects, then create
+   and share CI/CD templates.
+1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)
+   to learn how to make your GitLab CI/CD pipelines faster and more efficient.
+
+### Additional Resources
 
 - You can use the [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/)
-  to run a complete Jenkins instance inside of a GitLab CI/CD job, including plugins. Use this tool to
-  help ease the transition to GitLab CI/CD, by delaying the migration of less urgent pipelines.
+  to run a complete Jenkins instance inside of a GitLab CI/CD job, including plugins. Use this tool to help ease the transition to GitLab CI/CD, by delaying the migration of less urgent pipelines.
 
   NOTE:
   The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
   For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
-- If your tooling outputs packages that you want to make accessible, you can store them
-  in a [package registry](../../user/packages/index.md).
-- Use [review Apps](../review_apps/index.md) to preview changes before merging them.
+
+If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

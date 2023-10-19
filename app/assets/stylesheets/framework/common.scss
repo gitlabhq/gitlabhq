@@ -43,13 +43,18 @@
   .right-sidebar-collapsed {
     --application-bar-right: #{$right-sidebar-collapsed-width};
 
-    &.is-merge-request {
+    &.is-merge-request,
+    &.build-sidebar {
       --application-bar-right: 0px;
     }
   }
 
   .right-sidebar-expanded {
     --application-bar-right: #{$right-sidebar-width};
+  }
+
+  .build-sidebar {
+    --application-bar-right: 0px;
   }
 }
 
@@ -566,4 +571,44 @@ See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
       margin-left: -1px;
     }
   }
+}
+
+// --- moved from labels.scss when moving to page_bundles ---
+// Fix scoped label padding in cases where old markdown uses the old label structure */
+.gl-label-text + .gl-label-text {
+  @include gl-pl-2;
+  @include gl-pr-3;
+}
+
+// used in the Markdown rendering of labels
+.scoped-label-tooltip-title {
+  color: var(--indigo-300, $indigo-300);
+}
+
+.gl-label-scoped {
+  box-shadow: 0 0 0 2px currentColor inset;
+
+  &.gl-label-sm {
+    box-shadow: 0 0 0 1px inset;
+  }
+}
+
+.ref-container,
+.commit-sha-container {
+  font-family: $gl-monospace-font;
+  font-variant-ligatures: none;
+  font-size: $gl-font-size-sm;
+  padding-left: $gl-spacing-scale-2;
+  padding-right: $gl-spacing-scale-2;
+  border-radius: $gl-border-radius-base;
+}
+
+.ref-container {
+  color: var(--blue-500, $blue-500) !important;
+  background-color: var(--blue-50, $blue-50);
+}
+
+.commit-sha-container {
+  color: var(--gray-700, $gray-700) !important;
+  background-color: var(--gray-50, $gray-50);
 }

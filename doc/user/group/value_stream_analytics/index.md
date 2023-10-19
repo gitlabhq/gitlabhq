@@ -204,6 +204,10 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 
 > - Filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
 > - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
+> - Predefined date ranges dropdown list [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408656/) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the predefined date ranges dropdown list feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. On GitLab.com, this feature is not available. The feature is not ready for production use.
 
 Prerequisites:
 
@@ -219,10 +223,10 @@ To view value stream analytics for your group or project:
    1. Select the **Filter results** text box.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
-   1. To adjust the date range:
-      - In the **From** field, select a start date.
-      - In the **To** field, select an end date. The charts and list show workflow items created
-        during the date range.
+   1. To view metrics in a particular date range, from the dropdown list select a predefined date range or the **Custom** option. With the **Custom** option selected:
+        - In the **From** field, select a start date.
+        - In the **To** field, select an end date.
+      The charts and list display workflow items created during the date range.
 1. Optional. Sort results by ascending or descending:
       - To sort by most recent or oldest workflow item, select the **Last event** header.
       - To sort by most or least amount of time spent in each stage, select the **Duration** header.

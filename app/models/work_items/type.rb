@@ -73,6 +73,7 @@ module WorkItems
 
       Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
       Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
+      Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter.upsert_restrictions
       find_by(namespace_id: nil, base_type: type)
     end
 

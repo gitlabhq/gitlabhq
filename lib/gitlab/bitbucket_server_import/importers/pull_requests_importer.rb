@@ -20,6 +20,22 @@ module Gitlab
 
             break if pull_requests.empty?
 
+            commits_to_fetch = pull_requests.filter_map do |pull_request|
+              next if already_processed?(pull_request)
+              next unless pull_request.merged? || pull_request.closed?
+
+              [pull_request.source_branch_sha, pull_request.target_branch_sha]
+            end.flatten
+
+            # Bitbucket Server keeps tracks of references for open pull requests in
+            # refs/heads/pull-requests, but closed and merged requests get moved
+            # into hidden internal refs under stash-refs/pull-requests. As a result,
+            # they are not fetched by default.
+            #
+            # This method call explicitly fetches head and start commits for affected pull requests.
+            # That allows us to correctly assign diffs and commits to merge requests.
+            fetch_missing_commits(commits_to_fetch)
+
             pull_requests.each do |pull_request|
               # Needs to come before `already_processed?` as `jobs_remaining` resets to zero when the job restarts and
               # jobs_remaining needs to be the total amount of enqueued jobs
@@ -41,6 +57,15 @@ module Gitlab
         end
 
         private
+
+        def fetch_missing_commits(commits_to_fetch)
+          return if commits_to_fetch.blank?
+          return unless Feature.enabled?(:fetch_commits_for_bitbucket_server, project.group)
+
+          project.repository.fetch_remote(project.import_url, refmap: commits_to_fetch, prune: false)
+        rescue StandardError => e
+          track_import_failure!(project, exception: e)
+        end
 
         def sidekiq_worker_class
           ImportPullRequestWorker

@@ -15,17 +15,34 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
 
   describe '#relate_issuable' do
-    let(:noteable_ref) { create(:issue) }
+    let_it_be(:issue1) { create(:issue, project: project) }
+    let_it_be(:issue2) { create(:issue, project: project) }
 
-    subject { service.relate_issuable(noteable_ref) }
+    let(:noteable_ref) { issue1 }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'relate' }
-    end
+    subject(:system_note) { service.relate_issuable(noteable_ref) }
 
     context 'when issue marks another as related' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'relate' }
+      end
+
       it 'sets the note text' do
-        expect(subject.note).to eq "marked this issue as related to #{noteable_ref.to_reference(project)}"
+        expect(system_note.note).to eq "marked this issue as related to #{issue1.to_reference(project)}"
+      end
+    end
+
+    context 'when issue marks several other issues as related' do
+      let(:noteable_ref) { [issue1, issue2] }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'relate' }
+      end
+
+      it 'sets the note text' do
+        expect(system_note.note).to eq(
+          "marked this issue as related to #{issue1.to_reference(project)} and #{issue2.to_reference(project)}"
+        )
       end
     end
 
@@ -695,7 +712,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED }
+          let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED }
           let(:user) { author }
           let(:namespace) { project.namespace }
         end

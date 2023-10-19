@@ -3,7 +3,6 @@
 module Resolvers
   class PaginatedTreeResolver < BaseResolver
     type Types::Tree::TreeType.connection_type, null: true
-    extension Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
     calls_gitaly!
 
@@ -49,10 +48,6 @@ module Resolvers
         e,
         extensions: { code: e.code, gitaly_code: e.status, service: e.service }
       )
-    end
-
-    def self.field_options
-      super.merge(connection: false) # we manage the pagination manually, so opt out of the connection field extension
     end
   end
 end

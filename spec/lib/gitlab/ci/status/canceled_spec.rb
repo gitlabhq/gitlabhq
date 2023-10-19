@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Canceled do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'canceled' }
+    it { expect(subject.text).to eq 'Canceled' }
   end
 
   describe '#label' do

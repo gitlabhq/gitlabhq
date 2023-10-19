@@ -23,28 +23,6 @@ these failures, so you should follow [these instructions](background_verificatio
 If verification is lagging significantly behind replication, consider giving
 the site more time before scheduling a planned failover.
 
-## Disabling or enabling the automatic background verification
-
-Run the following commands in a [Rails console](../../operations/rails_console.md) on a **Rails node on the primary** site.
-
-To check if automatic background verification is enabled:
-
-```ruby
-Gitlab::Geo.repository_verification_enabled?
-```
-
-To disable automatic background verification:
-
-```ruby
-Feature.disable('geo_repository_verification')
-```
-
-To enable automatic background verification:
-
-```ruby
-Feature.enable('geo_repository_verification')
-```
-
 ## Repository verification
 
 On the **primary** site:
@@ -96,21 +74,6 @@ On the **primary** site:
    re-verification interval:
 
    ![Re-verification interval](img/reverification-interval.png)
-
-The automatic background re-verification is enabled by default, but you can
-disable if you need. Run the following commands in a [Rails console](../../operations/rails_console.md) on a **Rails node on the primary** site:
-
-To disable automatic background re-verification:
-
-```ruby
-Feature.disable('geo_repository_reverification')
-```
-
-To enable automatic background re-verification:
-
-```ruby
-Feature.enable('geo_repository_reverification')
-```
 
 ## Reset verification for projects where verification has failed
 

@@ -2,13 +2,14 @@
 
 module IssuableLinks
   class CreateService < BaseService
-    attr_reader :issuable, :current_user, :params
+    attr_reader :issuable, :current_user, :params, :new_links
 
     def initialize(issuable, user, params)
       @issuable = issuable
       @current_user = user
       @params = params.dup
       @errors = []
+      @new_links = []
     end
 
     def execute
@@ -45,6 +46,7 @@ module IssuableLinks
       set_link_type(link)
 
       if link.changed? && link.save
+        new_links << link
         create_notes(link)
       end
 

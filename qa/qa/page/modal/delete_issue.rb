@@ -5,11 +5,11 @@ module QA
     module Modal
       class DeleteIssue < Base
         view 'app/assets/javascripts/issues/show/components/delete_issue_modal.vue' do
-          element :confirm_delete_issue_button, required: true
+          element 'confirm-delete-issue-button', required: true
         end
 
         def confirm_delete_issue
-          click_element :confirm_delete_issue_button
+          click_element('confirm-delete-issue-button')
         end
       end
     end

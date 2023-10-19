@@ -10,13 +10,15 @@ class UserCustomAttribute < ApplicationRecord
   scope :by_user_id, ->(user_id) { where(user_id: user_id) }
   scope :by_updated_at, ->(updated_at) { where(updated_at: updated_at) }
   scope :arkose_sessions, -> { by_key('arkose_session') }
+  scope :trusted_with_spam, -> { by_key(TRUSTED_BY) }
 
   BLOCKED_BY = 'blocked_by'
   UNBLOCKED_BY = 'unblocked_by'
   ARKOSE_RISK_BAND = 'arkose_risk_band'
   AUTO_BANNED_BY_ABUSE_REPORT_ID = 'auto_banned_by_abuse_report_id'
   AUTO_BANNED_BY_SPAM_LOG_ID = 'auto_banned_by_spam_log_id'
-  ALLOW_POSSIBLE_SPAM = 'allow_possible_spam'
+  TRUSTED_BY = 'trusted_by'
+  AUTO_BANNED_BY = 'auto_banned_by'
   IDENTITY_VERIFICATION_PHONE_EXEMPT = 'identity_verification_phone_exempt'
 
   class << self
@@ -50,6 +52,17 @@ class UserCustomAttribute < ApplicationRecord
       return unless spam_log
 
       custom_attribute = { user_id: spam_log.user_id, key: AUTO_BANNED_BY_SPAM_LOG_ID, value: spam_log.id }
+      upsert_custom_attributes([custom_attribute])
+    end
+
+    def set_trusted_by(user:, trusted_by:)
+      return unless user && trusted_by
+
+      custom_attribute = {
+        user_id: user.id,
+        key: UserCustomAttribute::TRUSTED_BY,
+        value: "#{trusted_by.username}/#{trusted_by.id}+#{Time.current}"
+      }
 
       upsert_custom_attributes([custom_attribute])
     end

@@ -31,7 +31,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
     subject { described_class.new(path_to_bundle: bundle_path, shared: shared, importable: project) }
 
     after do
-      Gitlab::Shell.new.remove_repository(project.repository_storage, project.disk_path)
+      project.repository.remove
     end
 
     it 'restores the repo successfully', :aggregate_failures do
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
     subject { described_class.new(path_to_bundle: bundle_path, shared: shared, importable: ProjectWiki.new(project)) }
 
     after do
-      Gitlab::Shell.new.remove_repository(project.wiki.repository_storage, project.wiki.disk_path)
+      project.wiki.repository.remove
     end
 
     it 'restores the wiki repo successfully', :aggregate_failures do

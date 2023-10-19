@@ -26,9 +26,6 @@ export const DEFAULT_FIELDS_ADMIN = [
   { key: 'project', label: __('Project'), columnClass: 'gl-w-20p' },
   { key: 'runner', label: __('Runner'), columnClass: 'gl-w-15p' },
   { key: 'pipeline', label: __('Pipeline'), columnClass: 'gl-w-10p' },
-  { key: 'stage', label: __('Stage'), columnClass: 'gl-w-10p' },
-  { key: 'name', label: __('Name'), columnClass: 'gl-w-15p' },
-  { key: 'duration', label: __('Duration'), columnClass: 'gl-w-15p' },
   { key: 'actions', label: '', columnClass: 'gl-w-10p' },
 ];
 

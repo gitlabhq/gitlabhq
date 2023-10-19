@@ -14,7 +14,9 @@ class Projects::FindFileController < Projects::ApplicationController
   urgency :low, [:show, :list]
 
   def show
-    return render_404 unless @repository.commit(@ref)
+    return render_404 unless @commit
+
+    @ref_type = ref_type
 
     respond_to do |format|
       format.html
@@ -22,7 +24,7 @@ class Projects::FindFileController < Projects::ApplicationController
   end
 
   def list
-    file_paths = @repo.ls_files(@ref)
+    file_paths = @repo.ls_files(@commit.id)
 
     respond_to do |format|
       format.json { render json: file_paths }

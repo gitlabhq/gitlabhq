@@ -20,7 +20,7 @@ Here's an overview of what you're going to do:
 1. Build your Hugo site with a CI/CD pipeline.
 1. Deploy and view your Hugo site with GitLab Pages.
 
-## Prerequisites
+## Before you begin
 
 - An account on GitLab.com.
 - Familiarity with Git.

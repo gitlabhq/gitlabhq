@@ -17,7 +17,7 @@ To install a single node GitLab instance and configure it to be secure:
 1. [Configure GitLab](#configure-gitlab)
 1. [Next steps](#next-steps)
 
-## Prerequisites
+## Before you begin
 
 - A domain name, and a correct [setup of DNS](https://docs.gitlab.com/omnibus/settings/dns.html).
 - A Debian-based server with the following minimum specs:

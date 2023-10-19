@@ -8,7 +8,6 @@ query getInheritedCiVariables($after: String, $first: Int, $fullPath: ID!) {
         ...PageInfo
       }
       nodes {
-        __typename
         id
         key
         variableType

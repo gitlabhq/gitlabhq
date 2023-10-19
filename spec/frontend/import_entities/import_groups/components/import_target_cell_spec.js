@@ -1,10 +1,9 @@
-import { GlDropdownItem, GlFormInput } from '@gitlab/ui';
+import { GlFormInput } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import waitForPromises from 'helpers/wait_for_promises';
-import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue';
+import ImportTargetDropdown from '~/import_entities/components/import_target_dropdown.vue';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -37,7 +36,7 @@ describe('import target cell', () => {
   let group;
 
   const findNameInput = () => wrapper.findComponent(GlFormInput);
-  const findNamespaceDropdown = () => wrapper.findComponent(ImportGroupDropdown);
+  const findNamespaceDropdown = () => wrapper.findComponent(ImportTargetDropdown);
 
   const createComponent = (props) => {
     apolloProvider = createMockApollo([
@@ -49,7 +48,7 @@ describe('import target cell', () => {
 
     wrapper = shallowMount(ImportTargetCell, {
       apolloProvider,
-      stubs: { ImportGroupDropdown },
+      stubs: { ImportTargetDropdown },
       propsData: {
         groupPathRegex: /.*/,
         ...props,
@@ -73,14 +72,14 @@ describe('import target cell', () => {
     });
 
     it('emits update-target-namespace when dropdown option is clicked', () => {
-      const dropdownItem = findNamespaceDropdown().findAllComponents(GlDropdownItem).at(2);
+      const targetNamespace = {
+        fullPath: AVAILABLE_NAMESPACES[1].fullPath,
+        id: AVAILABLE_NAMESPACES[1].id,
+      };
 
-      dropdownItem.vm.$emit('click');
+      findNamespaceDropdown().vm.$emit('select', targetNamespace);
 
-      expect(wrapper.emitted('update-target-namespace')).toBeDefined();
-      expect(wrapper.emitted('update-target-namespace')[0][0]).toStrictEqual(
-        AVAILABLE_NAMESPACES[1],
-      );
+      expect(wrapper.emitted('update-target-namespace')[0]).toStrictEqual([targetNamespace]);
     });
   });
 
@@ -101,36 +100,6 @@ describe('import target cell', () => {
     });
   });
 
-  it('renders only no parent option if available namespaces list is empty', () => {
-    createComponent({
-      group: generateFakeTableEntry({ id: 1, status: STATUSES.NONE }),
-      availableNamespaces: [],
-    });
-
-    const items = findNamespaceDropdown()
-      .findAllComponents(GlDropdownItem)
-      .wrappers.map((w) => w.text());
-
-    expect(items[0]).toBe('No parent');
-    expect(items).toHaveLength(1);
-  });
-
-  it('renders both no parent option and available namespaces list when available namespaces list is not empty', async () => {
-    createComponent({
-      group: generateFakeTableEntry({ id: 1, status: STATUSES.NONE }),
-    });
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
-    await waitForPromises();
-    await nextTick();
-
-    const [firstItem, ...rest] = findNamespaceDropdown()
-      .findAllComponents(GlDropdownItem)
-      .wrappers.map((w) => w.text());
-
-    expect(firstItem).toBe('No parent');
-    expect(rest).toHaveLength(AVAILABLE_NAMESPACES.length);
-  });
-
   describe('when entity is not available for import', () => {
     beforeEach(() => {
       group = generateFakeTableEntry({
@@ -147,6 +116,7 @@ describe('import target cell', () => {
 
   describe('when entity is available for import', () => {
     const FAKE_PROGRESS_MESSAGE = 'progress message';
+
     beforeEach(() => {
       group = generateFakeTableEntry({
         id: 1,

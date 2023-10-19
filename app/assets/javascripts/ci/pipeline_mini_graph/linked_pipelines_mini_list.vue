@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { accessValue } from './accessors/linked_pipelines_accessors';
 /**
  * Renders the upstream/downstream portions of the pipeline mini graph.
@@ -11,7 +11,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    CiIcon,
+    CiBadgeLink,
   },
   inject: {
     dataMethod: {
@@ -99,24 +99,18 @@ export default {
     }"
     class="linked-pipeline-mini-list gl-display-inline gl-vertical-align-middle"
   >
-    <a
+    <ci-badge-link
       v-for="pipeline in linkedPipelinesTrimmed"
       :key="pipeline.id"
       v-gl-tooltip="{ title: pipelineTooltipText(pipeline) }"
-      :href="pipeline.path"
+      :status="pipelineStatus(pipeline)"
+      size="md"
+      :show-text="false"
+      :show-tooltip="false"
       :class="triggerButtonClass(pipeline)"
-      class="linked-pipeline-mini-item gl-display-inline-flex gl-mr-2 gl-my-2 gl-rounded-full gl-vertical-align-middle"
+      class="linked-pipeline-mini-item gl-mb-0!"
       data-testid="linked-pipeline-mini-item"
-    >
-      <ci-icon
-        is-borderless
-        is-interactive
-        css-classes="gl-rounded-full"
-        :size="24"
-        :status="pipelineStatus(pipeline)"
-        class="gl-align-items-center gl-border gl-display-inline-flex"
-      />
-    </a>
+    />
 
     <a
       v-if="shouldRenderCounter"

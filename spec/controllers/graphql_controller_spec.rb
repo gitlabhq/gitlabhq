@@ -317,6 +317,73 @@ RSpec.describe GraphqlController, feature_category: :integrations do
 
       subject { post :execute, params: { query: query, access_token: token.token } }
 
+      shared_examples 'invalid token' do
+        it 'returns 401 with invalid token message' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect_graphql_errors_to_include('Invalid token')
+        end
+      end
+
+      context 'with an invalid token' do
+        context 'with auth header' do
+          subject do
+            request.headers[header] = 'invalid'
+            post :execute, params: { query: query, user: nil }
+          end
+
+          context 'with private-token' do
+            let(:header) { 'Private-Token' }
+
+            it_behaves_like 'invalid token'
+          end
+
+          context 'with job-token' do
+            let(:header) { 'Job-Token' }
+
+            it_behaves_like 'invalid token'
+          end
+
+          context 'with deploy-token' do
+            let(:header) { 'Deploy-Token' }
+
+            it_behaves_like 'invalid token'
+          end
+        end
+
+        context 'with authorization bearer (oauth token)' do
+          subject do
+            request.headers['Authorization'] = 'Bearer invalid'
+            post :execute, params: { query: query, user: nil }
+          end
+
+          it_behaves_like 'invalid token'
+        end
+
+        context 'with auth param' do
+          subject { post :execute, params: { query: query, user: nil }.merge(header) }
+
+          context 'with private_token' do
+            let(:header) { { private_token: 'invalid' } }
+
+            it_behaves_like 'invalid token'
+          end
+
+          context 'with job_token' do
+            let(:header) { { job_token: 'invalid' } }
+
+            it_behaves_like 'invalid token'
+          end
+
+          context 'with token' do
+            let(:header) { { token: 'invalid' } }
+
+            it_behaves_like 'invalid token'
+          end
+        end
+      end
+
       context 'when the user is a project bot' do
         let(:user) { create(:user, :project_bot, last_activity_on: last_activity_on) }
 
@@ -471,62 +538,81 @@ RSpec.describe GraphqlController, feature_category: :integrations do
     context 'when querying an IntrospectionQuery', :use_clean_rails_memory_store_caching do
       let_it_be(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
 
-      it 'caches IntrospectionQuery even when operationName is not given' do
-        expect(GitlabSchema).to receive(:execute).exactly(:once)
+      context 'in dev or test env' do
+        before do
+          allow(Gitlab).to receive(:dev_or_test_env?).and_return(true)
+        end
 
-        post :execute, params: { query: query }
-        post :execute, params: { query: query }
-      end
-
-      it 'caches the IntrospectionQuery' do
-        expect(GitlabSchema).to receive(:execute).exactly(:once)
-
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-      end
-
-      it 'caches separately for both remove_deprecated set to true and false' do
-        expect(GitlabSchema).to receive(:execute).exactly(:twice)
-
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: true }
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: true }
-
-        # We clear this instance variable to reset remove_deprecated
-        subject.remove_instance_variable(:@context) if subject.instance_variable_defined?(:@context)
-
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: false }
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: false }
-      end
-
-      it 'has a different cache for each Gitlab.revision' do
-        expect(GitlabSchema).to receive(:execute).exactly(:twice)
-
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-
-        allow(Gitlab).to receive(:revision).and_return('new random value')
-
-        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-      end
-
-      context 'when there is an unknown introspection query' do
-        let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql')) }
-
-        it 'does not cache an unknown introspection query' do
+        it 'does not cache IntrospectionQuery' do
           expect(GitlabSchema).to receive(:execute).exactly(:twice)
+
+          post :execute, params: { query: query }
+          post :execute, params: { query: query }
+        end
+      end
+
+      context 'in env different from dev or test' do
+        before do
+          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+        end
+
+        it 'caches IntrospectionQuery even when operationName is not given' do
+          expect(GitlabSchema).to receive(:execute).exactly(:once)
+
+          post :execute, params: { query: query }
+          post :execute, params: { query: query }
+        end
+
+        it 'caches the IntrospectionQuery' do
+          expect(GitlabSchema).to receive(:execute).exactly(:once)
 
           post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
           post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
         end
-      end
 
-      it 'hits the cache even if the whitespace in the query differs' do
-        query_1 = File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql'))
-        query_2 = "#{query_1}  " # add a couple of spaces to change the fingerprint
+        it 'caches separately for both remove_deprecated set to true and false' do
+          expect(GitlabSchema).to receive(:execute).exactly(:twice)
 
-        expect(GitlabSchema).to receive(:execute).exactly(:once)
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: true }
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: true }
 
-        post :execute, params: { query: query_1, operationName: 'IntrospectionQuery' }
-        post :execute, params: { query: query_2, operationName: 'IntrospectionQuery' }
+          # We clear this instance variable to reset remove_deprecated
+          subject.remove_instance_variable(:@context) if subject.instance_variable_defined?(:@context)
+
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: false }
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: false }
+        end
+
+        it 'has a different cache for each Gitlab.revision' do
+          expect(GitlabSchema).to receive(:execute).exactly(:twice)
+
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+
+          allow(Gitlab).to receive(:revision).and_return('new random value')
+
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+        end
+
+        context 'when there is an unknown introspection query' do
+          let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql')) }
+
+          it 'does not cache an unknown introspection query' do
+            expect(GitlabSchema).to receive(:execute).exactly(:twice)
+
+            post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+            post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+          end
+        end
+
+        it 'hits the cache even if the whitespace in the query differs' do
+          query_1 = File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql'))
+          query_2 = "#{query_1}  " # add a couple of spaces to change the fingerprint
+
+          expect(GitlabSchema).to receive(:execute).exactly(:once)
+
+          post :execute, params: { query: query_1, operationName: 'IntrospectionQuery' }
+          post :execute, params: { query: query_2, operationName: 'IntrospectionQuery' }
+        end
       end
 
       it 'fails if the GraphiQL gem version is not 1.8.0' do
@@ -542,7 +628,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
     let_it_be(:admin) { create(:admin) }
     let_it_be(:project) { create(:project) }
 
-    let(:graphql_query) { graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id name)) }
+    let(:graphql_query) { graphql_query_for('project', { 'fullPath' => project.full_path }, %w[id name]) }
 
     before do
       sign_in(admin)
@@ -588,8 +674,8 @@ RSpec.describe GraphqlController, feature_category: :integrations do
   end
 
   describe '#append_info_to_payload' do
-    let(:query_1) { { query: graphql_query_for('project', { 'fullPath' => 'foo' }, %w(id name), 'getProject_1') } }
-    let(:query_2) { { query: graphql_query_for('project', { 'fullPath' => 'bar' }, %w(id), 'getProject_2') } }
+    let(:query_1) { { query: graphql_query_for('project', { 'fullPath' => 'foo' }, %w[id name], 'getProject_1') } }
+    let(:query_2) { { query: graphql_query_for('project', { 'fullPath' => 'bar' }, %w[id], 'getProject_2') } }
     let(:graphql_queries) { [query_1, query_2] }
     let(:log_payload) { {} }
     let(:expected_logs) do

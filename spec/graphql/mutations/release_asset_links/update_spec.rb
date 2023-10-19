@@ -16,12 +16,14 @@ RSpec.describe Mutations::ReleaseAssetLinks::Update, feature_category: :release_
   let_it_be(:link_type) { 'package' }
 
   let_it_be(:release_link) do
-    create(:release_link,
-           release: release,
-           name: name,
-           url: url,
-           filepath: filepath,
-           link_type: link_type)
+    create(
+      :release_link,
+      release: release,
+      name: name,
+      url: url,
+      filepath: filepath,
+      link_type: link_type
+    )
   end
 
   let(:current_user) { developer }

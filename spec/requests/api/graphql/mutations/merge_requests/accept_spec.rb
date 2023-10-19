@@ -33,12 +33,19 @@ RSpec.describe 'accepting a merge request', :request_store do
       project.add_maintainer(current_user)
     end
 
-    it 'merges the merge request' do
+    it 'merges the merge request asynchronously' do
+      expect_next_found_instance_of(MergeRequest) do |instance|
+        expect(instance).to receive(:merge_async).with(current_user.id, {
+          'sha' => merge_request.diff_head_sha,
+          'squash' => false
+        }).and_call_original
+      end
+
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['mergeRequest']).to include(
-        'state' => 'merged'
+        'state' => merge_request.state
       )
     end
   end

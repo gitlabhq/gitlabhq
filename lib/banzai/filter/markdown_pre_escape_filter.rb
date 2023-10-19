@@ -57,7 +57,7 @@ module Banzai
       ].freeze
 
       TARGET_CHARS         = ESCAPABLE_CHARS.pluck(:char).join.freeze
-      ASCII_PUNCTUATION    = %r{(\\[#{TARGET_CHARS}])}.freeze
+      ASCII_PUNCTUATION    = %r{(\\[#{TARGET_CHARS}])}
       LITERAL_KEYWORD      = 'cmliteral'
 
       def call

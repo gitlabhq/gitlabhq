@@ -12,9 +12,7 @@ RSpec.describe Gitlab::ImportExport::DesignRepoRestorer do
     let(:bundler) { Gitlab::ImportExport::DesignRepoSaver.new(exportable: project_with_design_repo, shared: shared) }
     let(:bundle_path) { File.join(shared.export_path, Gitlab::ImportExport.design_repo_bundle_filename) }
     let(:restorer) do
-      described_class.new(path_to_bundle: bundle_path,
-                          shared: shared,
-                          importable: project)
+      described_class.new(path_to_bundle: bundle_path, shared: shared, importable: project)
     end
 
     before do

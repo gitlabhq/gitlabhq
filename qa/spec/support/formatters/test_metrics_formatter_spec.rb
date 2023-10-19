@@ -22,8 +22,8 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:quarantined) { 'false' }
   let(:influx_client) { instance_double('InfluxDB2::Client', create_write_api: influx_write_api) }
   let(:influx_write_api) { instance_double('InfluxDB2::WriteApi', write: nil) }
-  let(:stage) { '1_manage' }
-  let(:file_path) { "./qa/specs/features/#{stage}/subfolder/some_spec.rb" }
+  let(:file_path) { "./qa/specs/features/1_manage/subfolder/some_spec.rb" }
+  let(:rerun_file_path) { "./qa/specs/features/1_manage/subfolder/some_spec.rb" }
   let(:ui_fabrication) { 0 }
   let(:api_fabrication) { 0 }
   let(:fabrication_resources) { {} }
@@ -53,7 +53,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         job_name: 'test-job',
         merge_request: 'false',
         run_type: run_type,
-        stage: stage.match(%r{\d{1,2}_(\w+)}).captures.first,
+        stage: 'manage',
         product_group: product_group,
         testcase: testcase
       },
@@ -78,7 +78,10 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     spec ||= -> { it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {} }
 
     describe_successfully('stats export', &spec).tap do |example_group|
-      example_group.examples.each { |ex| ex.metadata[:file_path] = file_path }
+      example_group.examples.each do |ex|
+        ex.metadata[:file_path] = file_path
+        ex.metadata[:rerun_file_path] = rerun_file_path
+      end
     end
     send_stop_notification
   end
@@ -192,7 +195,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     context 'with context quarantined spec' do
       let(:quarantined) { 'false' }
 
-      it 'exports data to influxdb with correct qurantine tag' do
+      it 'exports data to influxdb with correct quarantine tag' do
         run_spec do
           it(
             'spec',
@@ -290,6 +293,19 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         end
 
         expect(influx_write_api).to have_received(:write).once
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with a shared example' do
+      let(:file_path) { './qa/specs/features/shared_examples/merge_with_code_owner_shared_examples.rb' }
+      let(:rerun_file_path) { './qa/specs/features/3_create/subfolder/another_spec.rb' }
+
+      it 'exports data to influxdb with correct filename' do
+        run_spec
+
+        data[:tags][:file_path] = '/3_create/subfolder/another_spec.rb'
+        data[:tags][:stage] = 'create'
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end

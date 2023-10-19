@@ -25,12 +25,7 @@ module QA
         create(:project, :with_readme, name: 'project-for-tags', api_client: followed_user_api_client, group: group)
       end
 
-      let(:merge_request) do
-        Resource::MergeRequest.fabricate_via_api! do |mr|
-          mr.project = project
-          mr.api_client = followed_user_api_client
-        end
-      end
+      let(:merge_request) { create(:merge_request, project: project, api_client: followed_user_api_client) }
 
       let(:issue) { create(:issue, project: project, api_client: followed_user_api_client) }
 

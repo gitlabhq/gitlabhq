@@ -363,13 +363,13 @@ describe('InputCopyToggleVisibility', () => {
     it('passes no `size` prop', () => {
       createComponent();
 
-      expect(findFormInput().props('size')).toBe(null);
+      expect(findFormInput().props('width')).toBe(null);
     });
 
     it('passes `size` prop to the input', () => {
       createComponent({ props: { size: 'md' } });
 
-      expect(findFormInput().props('size')).toBe('md');
+      expect(findFormInput().props('width')).toBe('md');
     });
   });
 

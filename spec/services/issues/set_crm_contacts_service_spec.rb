@@ -106,6 +106,14 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
 
         it_behaves_like 'setting contacts'
         it_behaves_like 'adds system note', 1, 1
+
+        context 'with empty list' do
+          let(:params) { { replace_ids: [] } }
+          let(:expected_contacts) { [] }
+
+          it_behaves_like 'setting contacts'
+          it_behaves_like 'adds system note', 0, 2
+        end
       end
 
       context 'add' do

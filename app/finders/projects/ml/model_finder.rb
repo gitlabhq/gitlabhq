@@ -11,7 +11,7 @@ module Projects
         ::Ml::Model
           .by_project(@project)
           .including_latest_version
-          .limit(100) # This is a temporary limit before we add pagination
+          .with_version_count
       end
     end
   end

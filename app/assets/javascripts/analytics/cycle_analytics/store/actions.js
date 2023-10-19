@@ -163,6 +163,10 @@ export const setDateRange = ({ dispatch, commit }, { createdAfter, createdBefore
   return dispatch('refetchStageData');
 };
 
+export const setPredefinedDateRange = ({ commit }, predefinedDateRange) => {
+  commit(types.SET_PREDEFINED_DATE_RANGE, predefinedDateRange);
+};
+
 export const setInitialStage = ({ dispatch, commit, state: { stages } }, stage) => {
   if (!stages.length && !stage) {
     commit(types.SET_NO_ACCESS_ERROR);

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Database
   module BatchedBackgroundMigration
     class CiDatabaseWorker # rubocop:disable Scalability/IdempotentWorker

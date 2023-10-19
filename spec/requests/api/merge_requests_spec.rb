@@ -27,10 +27,10 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
   shared_context 'with merge requests' do
     let_it_be(:milestone1) { create(:milestone, title: '0.9', project: project) }
+    let_it_be(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, updated_at: base_time + 1.hour, merge_commit_sha: '9999999999999999999999999999999999999999') }
     let_it_be(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time, updated_at: base_time + 3.hours) }
     let_it_be(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second, updated_at: base_time) }
     let_it_be(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second, updated_at: base_time + 2.hours) }
-    let_it_be(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, updated_at: base_time + 1.hour, merge_commit_sha: '9999999999999999999999999999999999999999') }
     let_it_be(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
     let_it_be(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
   end
@@ -1829,6 +1829,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(json_response['overflow']).to be_falsy
     end
 
+    context 'when unidiff format is requested' do
+      it 'returns the diff in Unified format' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/changes", user), params: { unidiff: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig('changes', 0, 'diff')).to eq(merge_request.diffs.diffs.first.unidiff)
+      end
+    end
+
     context 'when using DB-backed diffs' do
       it_behaves_like 'find an existing merge request'
 
@@ -1900,6 +1909,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(merge_request.diffs.size)
+    end
+
+    context 'when unidiff format is requested' do
+      it 'returns the diff in Unified format' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user), params: { unidiff: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig(0, 'diff')).to eq(merge_request.diffs.diffs.first.unidiff)
+      end
     end
 
     context 'when pagination params are present' do

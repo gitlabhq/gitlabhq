@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Diff do
+RSpec.describe Gitlab::Git::Diff, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:repository) { project.repository }
 
@@ -336,6 +336,121 @@ EOT
     end
   end
 
+  describe '#unidiff' do
+    let_it_be(:project) { create(:project, :empty_repo) }
+    let_it_be(:repository) { project.repository }
+    let_it_be(:user) { project.first_owner }
+
+    let(:commits) { repository.commits('master', limit: 10) }
+    let(:diffs) { commits.map(&:diffs).map(&:diffs).flat_map(&:to_a).reverse }
+
+    before_all do
+      create_commit(
+        project,
+        user,
+        commit_message: "Create file",
+        actions: [{ action: 'create', content: 'foo', file_path: 'a.txt' }]
+      )
+
+      create_commit(
+        project,
+        user,
+        commit_message: "Update file",
+        actions: [{ action: 'update', content: 'foo2', file_path: 'a.txt' }]
+      )
+
+      create_commit(
+        project,
+        user,
+        commit_message: "Rename file without change",
+        actions: [{ action: 'move', previous_path: 'a.txt', file_path: 'b.txt' }]
+      )
+
+      create_commit(
+        project,
+        user,
+        commit_message: "Rename file with change",
+        actions: [{ action: 'move', content: 'foo3', previous_path: 'b.txt', file_path: 'c.txt' }]
+      )
+
+      create_commit(
+        project,
+        user,
+        commit_message: "Delete file",
+        actions: [{ action: 'delete', file_path: 'c.txt' }]
+      )
+
+      create_commit(
+        project,
+        user,
+        commit_message: "Create empty file",
+        actions: [{ action: 'create', file_path: 'empty.txt' }]
+      )
+
+      create_commit(
+        project,
+        user,
+        commit_message: "Create binary file",
+        actions: [{ action: 'create', content: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=', file_path: 'test%2Ebin', encoding: 'base64' }]
+      )
+    end
+
+    context 'when file was created' do
+      it 'returns a correct header' do
+        diff = diffs[0]
+
+        expect(diff.unidiff).to start_with("--- /dev/null\n+++ b/a.txt\n")
+      end
+    end
+
+    context 'when file was changed' do
+      it 'returns a correct header' do
+        diff = diffs[1]
+
+        expect(diff.unidiff).to start_with("--- a/a.txt\n+++ b/a.txt\n")
+      end
+    end
+
+    context 'when file was moved without content change' do
+      it 'returns an empty header' do
+        diff = diffs[2]
+
+        expect(diff.unidiff).to eq('')
+      end
+    end
+
+    context 'when file was moved with content change' do
+      it 'returns a correct header' do
+        expect(diffs[3].unidiff).to start_with("--- /dev/null\n+++ b/c.txt\n")
+        expect(diffs[4].unidiff).to start_with("--- a/b.txt\n+++ /dev/null\n")
+      end
+    end
+
+    context 'when file was deleted' do
+      it 'returns a correct header' do
+        diff = diffs[5]
+
+        expect(diff.unidiff).to start_with("--- a/c.txt\n+++ /dev/null\n")
+      end
+    end
+
+    context 'when empty file was created' do
+      it 'returns an empty header' do
+        diff = diffs[6]
+
+        expect(diff.unidiff).to eq('')
+      end
+    end
+
+    context 'when file is binary' do
+      it 'returns a binary files message' do
+        diff = diffs[7]
+
+        expect(diff.unidiff).to eq("Binary files /dev/null and b/test%2Ebin differ\n")
+      end
+    end
+  end
+
   describe '#submodule?' do
     let(:gitaly_submodule_diff) do
       Gitlab::GitalyClient::Diff.new(
@@ -444,5 +559,10 @@ EOT
   def binary_diff(project)
     # rugged will not detect this as binary, but we can fake it
     described_class.between(project.repository, 'add-pdf-text-binary', 'add-pdf-text-binary^').first
+  end
+
+  def create_commit(project, user, params)
+    params = { start_branch: 'master', branch_name: 'master' }.merge(params)
+    Files::MultiService.new(project, user, params).execute.fetch(:result)
   end
 end

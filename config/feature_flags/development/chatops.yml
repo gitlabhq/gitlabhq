@@ -1,8 +1,0 @@
----
-name: chatops
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780
-rollout_issue_url: 
-milestone: '11.9'
-type: development
-group: group::configure
-default_enabled: true

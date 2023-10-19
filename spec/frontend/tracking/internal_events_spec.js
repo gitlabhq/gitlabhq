@@ -6,7 +6,6 @@ import {
   GITLAB_INTERNAL_EVENT_CATEGORY,
   SERVICE_PING_SCHEMA,
   LOAD_INTERNAL_EVENTS_SELECTOR,
-  USER_CONTEXT_SCHEMA,
 } from '~/tracking/constants';
 import * as utils from '~/tracking/utils';
 import { Tracker } from '~/tracking/tracker';
@@ -26,18 +25,27 @@ Tracker.enabled = jest.fn();
 const event = 'TestEvent';
 
 describe('InternalEvents', () => {
-  describe('track_event', () => {
-    it('track_event calls API.trackInternalEvent with correct arguments', () => {
-      InternalEvents.track_event(event);
+  describe('trackEvent', () => {
+    it('trackEvent calls API.trackInternalEvent with correct arguments', () => {
+      InternalEvents.trackEvent(event);
 
       expect(API.trackInternalEvent).toHaveBeenCalledTimes(1);
       expect(API.trackInternalEvent).toHaveBeenCalledWith(event);
     });
 
-    it('track_event calls tracking.event functions with correct arguments', () => {
+    it('trackEvent calls trackBrowserSDK with correct arguments', () => {
+      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
+
+      InternalEvents.trackEvent(event);
+
+      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledTimes(1);
+      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event);
+    });
+
+    it('trackEvent calls tracking.event functions with correct arguments', () => {
       const trackingSpy = mockTracking(GITLAB_INTERNAL_EVENT_CATEGORY, undefined, jest.spyOn);
 
-      InternalEvents.track_event(event, { context: extraContext });
+      InternalEvents.trackEvent(event, { context: extraContext });
 
       expect(trackingSpy).toHaveBeenCalledTimes(1);
       expect(trackingSpy).toHaveBeenCalledWith(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
@@ -66,10 +74,10 @@ describe('InternalEvents', () => {
   `,
       methods: {
         handleButton1Click() {
-          this.track_event(event);
+          this.trackEvent(event);
         },
         handleButton2Click() {
-          this.track_event(event, extraContext);
+          this.trackEvent(event, extraContext);
         },
       },
       mixins: [InternalEvents.mixin()],
@@ -79,8 +87,8 @@ describe('InternalEvents', () => {
       wrapper = shallowMountExtended(Component);
     });
 
-    it('this.track_event function calls InternalEvent`s track function with an event', async () => {
-      const trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
+    it('this.trackEvent function calls InternalEvent`s track function with an event', async () => {
+      const trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
 
       await wrapper.findByTestId('button1').trigger('click');
 
@@ -88,9 +96,9 @@ describe('InternalEvents', () => {
       expect(trackEventSpy).toHaveBeenCalledWith(event, {});
     });
 
-    it("this.track_event function calls InternalEvent's track function with an event and data", async () => {
+    it("this.trackEvent function calls InternalEvent's track function with an event and data", async () => {
       const data = extraContext;
-      const trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
+      const trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
 
       await wrapper.findByTestId('button2').trigger('click');
 
@@ -147,7 +155,7 @@ describe('InternalEvents', () => {
     describe('tracking', () => {
       let trackEventSpy;
       beforeEach(() => {
-        trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
+        trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
       });
 
       it('should track event if action exists', () => {
@@ -181,16 +189,6 @@ describe('InternalEvents', () => {
         environment: 'testing',
         key: 'value',
       };
-      window.gl.snowplowStandardContext = {
-        schema: 'iglu:com.gitlab/gitlab_standard',
-        data: {
-          environment: 'testing',
-          key: 'value',
-          google_analytics_id: '',
-          source: 'gitlab-javascript',
-          extra: {},
-        },
-      };
     });
 
     it('should not call setDocumentTitle or page methods when window.glClient is undefined', () => {
@@ -203,33 +201,11 @@ describe('InternalEvents', () => {
     });
 
     it('should call setDocumentTitle and page methods on window.glClient when it is defined', () => {
-      const mockStandardContext = window.gl.snowplowStandardContext;
-      const userContext = {
-        schema: USER_CONTEXT_SCHEMA,
-        data: mockStandardContext?.data,
-      };
-
       InternalEvents.initBrowserSDK();
 
       expect(window.glClient.setDocumentTitle).toHaveBeenCalledWith('GitLab');
       expect(window.glClient.page).toHaveBeenCalledWith({
         title: 'GitLab',
-        context: [userContext],
-      });
-    });
-
-    it('should call page method with combined standard and experiment contexts', () => {
-      const mockStandardContext = window.gl.snowplowStandardContext;
-      const userContext = {
-        schema: USER_CONTEXT_SCHEMA,
-        data: mockStandardContext?.data,
-      };
-
-      InternalEvents.initBrowserSDK();
-
-      expect(window.glClient.page).toHaveBeenCalledWith({
-        title: 'GitLab',
-        context: [userContext],
       });
     });
 
@@ -241,17 +217,32 @@ describe('InternalEvents', () => {
       expect(window.glClient.setDocumentTitle).toHaveBeenCalledWith('GitLab');
       expect(window.glClient.page).toHaveBeenCalledWith({
         title: 'GitLab',
-        context: [
-          {
-            schema: USER_CONTEXT_SCHEMA,
-            data: {
-              google_analytics_id: '',
-              source: 'gitlab-javascript',
-              extra: {},
-            },
-          },
-        ],
       });
+    });
+  });
+
+  describe('trackBrowserSDK', () => {
+    beforeEach(() => {
+      window.glClient = {
+        track: jest.fn(),
+      };
+    });
+
+    it('should not call glClient.track if Tracker is not enabled', () => {
+      Tracker.enabled.mockReturnValue(false);
+
+      InternalEvents.trackBrowserSDK(event);
+
+      expect(window.glClient.track).not.toHaveBeenCalled();
+    });
+
+    it('should call glClient.track with correct arguments if Tracker is enabled', () => {
+      Tracker.enabled.mockReturnValue(true);
+
+      InternalEvents.trackBrowserSDK(event);
+
+      expect(window.glClient.track).toHaveBeenCalledTimes(1);
+      expect(window.glClient.track).toHaveBeenCalledWith(event);
     });
   });
 });

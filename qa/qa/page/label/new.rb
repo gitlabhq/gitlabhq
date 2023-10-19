@@ -5,26 +5,26 @@ module QA
     module Label
       class New < Page::Base
         view 'app/views/shared/labels/_form.html.haml' do
-          element :label_title_field
-          element :label_description_field
-          element :label_color_field
-          element :label_create_button
+          element 'label-title-field'
+          element 'label-description-field'
+          element 'label-color-field'
+          element 'label-create-button'
         end
 
         def click_label_create_button
-          click_element :label_create_button
+          click_element('label-create-button')
         end
 
         def fill_title(title)
-          fill_element :label_title_field, title
+          fill_element('label-title-field', title)
         end
 
         def fill_description(description)
-          fill_element :label_description_field, description
+          fill_element('label-description-field', description)
         end
 
         def fill_color(color)
-          fill_element :label_color_field, color
+          fill_element('label-color-field', color)
         end
       end
     end

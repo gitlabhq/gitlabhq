@@ -1,6 +1,7 @@
-import { GlIcon } from '@gitlab/ui';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
+import LockedBadge from '~/issuable/components/locked_badge.vue';
 import {
   issuableStatusText,
   STATUS_CLOSED,
@@ -17,20 +18,17 @@ describe('StickyHeader component', () => {
   let wrapper;
 
   const findConfidentialBadge = () => wrapper.findComponent(ConfidentialityBadge);
-  const findHiddenBadge = () => wrapper.findByTestId('hidden');
-  const findLockedBadge = () => wrapper.findByTestId('locked');
+  const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
+  const findLockedBadge = () => wrapper.findComponent(LockedBadge);
+  const findTitle = () => wrapper.findComponent(GlLink);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(StickyHeader, {
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
       propsData: {
         issuableStatus: STATUS_OPEN,
         issuableType: TYPE_ISSUE,
         show: true,
         title: 'A sticky issue',
-        titleHtml: '',
         ...props,
       },
     });
@@ -91,13 +89,6 @@ describe('StickyHeader component', () => {
     const lockedBadge = findLockedBadge();
 
     expect(lockedBadge.exists()).toBe(isLocked);
-
-    if (isLocked) {
-      expect(lockedBadge.attributes('title')).toBe(
-        'This issue is locked. Only project members can comment.',
-      );
-      expect(getBinding(lockedBadge.element, 'gl-tooltip')).not.toBeUndefined();
-    }
   });
 
   it.each`
@@ -109,27 +100,13 @@ describe('StickyHeader component', () => {
     const hiddenBadge = findHiddenBadge();
 
     expect(hiddenBadge.exists()).toBe(isHidden);
-
-    if (isHidden) {
-      expect(hiddenBadge.attributes('title')).toBe(
-        'This issue is hidden because its author has been banned',
-      );
-      expect(getBinding(hiddenBadge.element, 'gl-tooltip')).not.toBeUndefined();
-    }
   });
 
   it('shows with title', () => {
     createComponent();
-    const title = wrapper.find('a');
+    const title = findTitle();
 
     expect(title.text()).toContain('A sticky issue');
     expect(title.attributes('href')).toBe('#top');
-  });
-
-  it('shows title containing markup', () => {
-    const titleHtml = '<b>A sticky issue</b>';
-    createComponent({ titleHtml });
-
-    expect(wrapper.find('a').html()).toContain(titleHtml);
   });
 });

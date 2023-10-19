@@ -66,14 +66,14 @@ To identify the RSpec tests that are likely to fail in a merge request, we use *
 
 ##### Static mappings
 
-We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
+We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
   be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/5ab06422826c0d69c615655982a6f969a7f3c6ea/tooling/lib/tooling/find_tests.rb#L17)).
 
 The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
 
 ##### Dynamic mappings
 
-First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with a dynamic mapping strategy from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
+First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with a dynamic mapping strategy from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
   ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/lib/tooling/find_tests.rb#L20)).
 
 In addition to `test_file_finder`, we have added several advanced mappings to detect even more tests to run:
@@ -278,8 +278,8 @@ See `.review:rules:start-review-app-pipeline` in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
 the specific list of rules.
 
-If you want to deploy a Review App in a merge request, you can either trigger the `start-review-app-pipeline` manual job in the CI/CD pipeline, or add the
-`pipeline:run-review-app` label to the merge request and run a new CI/CD pipeline.
+If you want to force a Review App to be deployed regardless of your changes, you can add the
+`pipeline:run-review-app` label to the merge request.
 
 Consult the [Review Apps](../testing_guide/review_apps.md) dedicated page for more information.
 
@@ -570,9 +570,11 @@ Our current RSpec tests parallelization setup is as follows:
    - if knapsack is doing its job, test files that are run should be listed under
      `Report specs`, not under `Leftover specs`.
 1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
-   [the canonical project](https://gitlab.com/gitlab-org/gitlab) takes all the
-   `knapsack/rspec*.json` files and merge them all together into a single
+   [the canonical project](https://gitlab.com/gitlab-org/gitlab) and updates the `knapsack/report-master.json` in 2 ways:
+   1. By default, it takes all the `knapsack/rspec*.json` files and merge them all together into a single
    `knapsack/report-master.json` file that is saved as artifact.
+   1. (Experimental) When the `AVERAGE_KNAPSACK_REPORT` environment variable is set to `true`, instead of merging the reports, the job will calculate the average of the test duration between `knapsack/report-master.json` and `knapsack/rspec*.json` to reduce the performance impact from potentially random factors such as spec ordering, runner hardware differences, flaky tests, etc.
+   This experimental approach is aimed to better predict the duration for each spec files to distribute load among parallel jobs more evenly so the jobs can finish around the same time.
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
 

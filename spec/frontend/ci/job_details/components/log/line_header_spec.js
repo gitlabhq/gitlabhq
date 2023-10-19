@@ -16,7 +16,7 @@ describe('Job Log Header Line', () => {
           style: 'term-fg-l-green',
         },
       ],
-      lineNumber: 76,
+      lineNumber: 77,
     },
     isClosed: true,
     path: '/jashkenas/underscore/-/jobs/335',

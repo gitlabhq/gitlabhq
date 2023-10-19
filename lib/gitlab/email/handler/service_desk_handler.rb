@@ -10,9 +10,9 @@ module Gitlab
         include ReplyProcessing
         include Gitlab::Utils::StrongMemoize
 
-        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-issue-\z/.freeze
-        HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\z/.freeze
-        PROJECT_KEY_PATTERN  = /\A(?<slug>.+)-(?<key>[a-z0-9_]+)\z/.freeze
+        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-issue-\z/
+        HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\z/
+        PROJECT_KEY_PATTERN  = /\A(?<slug>.+)-(?<key>[a-z0-9_]+)\z/
 
         def initialize(mail, mail_key, service_desk_key: nil)
           if service_desk_key
@@ -75,9 +75,10 @@ module Gitlab
 
         def contains_custom_email_address_verification_subaddress?
           return false unless Feature.enabled?(:service_desk_custom_email, project)
+          return false unless to_address.present?
 
           # Verification email only has one recipient
-          mail.to.first.include?(ServiceDeskSetting::CUSTOM_EMAIL_VERIFICATION_SUBADDRESS)
+          to_address.include?(ServiceDeskSetting::CUSTOM_EMAIL_VERIFICATION_SUBADDRESS)
         end
 
         def handled_custom_email_address_verification?
@@ -208,6 +209,11 @@ module Gitlab
         def from_address
           (mail.reply_to || []).first || mail.from.first || mail.sender
         end
+
+        def to_address
+          mail.to&.first
+        end
+        strong_memoize_attr :to_address
 
         def can_handle_legacy_format?
           project_path && project_path.include?('/') && !mail_key.include?('+')

@@ -122,6 +122,19 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
       end
     end
 
+    context 'with invalid timeout stategy' do
+      it 'returns 400 response' do
+        post api("/import/github", user), params: {
+          target_namespace: user.namespace_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id,
+          timeout_strategy: "invalid_strategy"
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'when additional access tokens are provided' do
       let(:additional_access_tokens) { 'token1,token2' }
 

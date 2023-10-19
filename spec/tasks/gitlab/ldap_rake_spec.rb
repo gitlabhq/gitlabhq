@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:ldap:rename_provider rake task', :silence_stdout do
   it 'completes without error' do

@@ -24,7 +24,7 @@ module Gitlab
           private
 
           def collection
-            project.merge_requests.select(:id, :description, :iid)
+            project.merge_requests.id_not_in(already_imported_ids).select(:id, :description, :iid)
           end
 
           def ordering_column

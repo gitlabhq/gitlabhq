@@ -1,0 +1,9 @@
+mutation createOrganization($input: LocalCreateOrganizationInput!) {
+  createOrganization(input: $input) @client {
+    organization {
+      name
+      path
+    }
+    errors
+  }
+}

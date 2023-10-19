@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Success do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'passed' }
+    it { expect(subject.text).to eq 'Passed' }
   end
 
   describe '#label' do

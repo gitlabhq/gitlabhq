@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
-  let_it_be(:entity) { create(:bulk_import_entity) }
+  subject(:worker) { described_class.new }
 
-  let_it_be(:pipeline_tracker) do
+  let_it_be(:entity) { create(:bulk_import_entity, :started) }
+
+  let_it_be_with_reload(:pipeline_tracker) do
     create(
       :bulk_import_tracker,
       entity: entity,
@@ -14,97 +16,116 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
     )
   end
 
-  let(:job_args) { entity.id }
-
-  it 'updates pipeline trackers to enqueued state when selected' do
-    worker = described_class.new
-
-    next_tracker = worker.send(:next_pipeline_trackers_for, entity.id).first
-
-    next_tracker.reload
-
-    expect(next_tracker.enqueued?).to be_truthy
-
-    expect(worker.send(:next_pipeline_trackers_for, entity.id))
-      .not_to include(next_tracker)
+  let_it_be_with_reload(:pipeline_tracker_2) do
+    create(
+      :bulk_import_tracker,
+      entity: entity,
+      pipeline_name: 'Stage1::Pipeline',
+      stage: 1
+    )
   end
 
   include_examples 'an idempotent worker' do
-    it 'enqueues the first stage pipelines work' do
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        # the worker runs twice but only executes once
-        expect(logger)
-          .to receive(:info).twice
-          .with(
-            hash_including(
-              'bulk_import_entity_id' => entity.id,
-              'bulk_import_id' => entity.bulk_import_id,
-              'bulk_import_entity_type' => entity.source_type,
-              'source_full_path' => entity.source_full_path,
-              'current_stage' => nil,
-              'message' => 'Stage starting',
-              'source_version' => entity.bulk_import.source_version_info.to_s,
-              'importer' => 'gitlab_migration'
-            )
-          )
-      end
+    let(:job_args) { entity.id }
 
-      expect(BulkImports::PipelineWorker)
-        .to receive(:perform_async)
-        .with(
-          pipeline_tracker.id,
-          pipeline_tracker.stage,
-          entity.id
-        )
-
-      subject
+    before do
+      allow(described_class).to receive(:perform_in)
+      allow(BulkImports::PipelineWorker).to receive(:perform_async)
     end
 
-    it 'logs and tracks the raised exceptions' do
-      exception = StandardError.new('Error!')
+    it 'enqueues the pipeline workers of the first stage and then re-enqueues itself' do
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger).to receive(:info).with(hash_including('message' => 'Stage starting', 'entity_stage' => 0))
+        expect(logger).to receive(:info).with(hash_including('message' => 'Stage running', 'entity_stage' => 0))
+      end
 
       expect(BulkImports::PipelineWorker)
         .to receive(:perform_async)
-        .and_raise(exception)
+        .with(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
+      expect(described_class).to receive(:perform_in).twice.with(described_class::PERFORM_DELAY, entity.id)
+
+      expect { subject }.to change { pipeline_tracker.reload.status_name }.from(:created).to(:enqueued)
+    end
+  end
+
+  context 'when pipeline workers from a stage are running' do
+    before do
+      pipeline_tracker.enqueue!
+    end
+
+    it 'does not enqueue the pipeline workers from the next stage and re-enqueues itself' do
       expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:info).twice
-          .with(
-            hash_including(
-              'bulk_import_entity_id' => entity.id,
-              'bulk_import_id' => entity.bulk_import_id,
-              'bulk_import_entity_type' => entity.source_type,
-              'source_full_path' => entity.source_full_path,
-              'current_stage' => nil,
-              'source_version' => entity.bulk_import.source_version_info.to_s,
-              'importer' => 'gitlab_migration'
-            )
-          )
-
-        expect(logger)
-          .to receive(:error)
-          .with(
-            hash_including(
-              'bulk_import_entity_id' => entity.id,
-              'bulk_import_id' => entity.bulk_import_id,
-              'bulk_import_entity_type' => entity.source_type,
-              'source_full_path' => entity.source_full_path,
-              'current_stage' => nil,
-              'message' => 'Entity failed',
-              'exception.backtrace' => anything,
-              'exception.class' => 'StandardError',
-              'exception.message' => 'Error!',
-              'importer' => 'gitlab_migration',
-              'source_version' => entity.bulk_import.source_version_info.to_s
-            )
-          )
+        expect(logger).to receive(:info).with(hash_including('message' => 'Stage running', 'entity_stage' => 0))
       end
 
-      expect(Gitlab::ErrorTracking)
-        .to receive(:track_exception)
-              .with(
-                exception,
+      expect(BulkImports::PipelineWorker).not_to receive(:perform_async)
+      expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, entity.id)
+
+      worker.perform(entity.id)
+    end
+  end
+
+  context 'when there are no pipeline workers from the previous stage running' do
+    before do
+      pipeline_tracker.fail_op!
+    end
+
+    it 'enqueues the pipeline workers from the next stage and re-enqueues itself' do
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger).to receive(:info).with(hash_including('message' => 'Stage starting', 'entity_stage' => 1))
+      end
+
+      expect(BulkImports::PipelineWorker)
+        .to receive(:perform_async)
+          .with(
+            pipeline_tracker_2.id,
+            pipeline_tracker_2.stage,
+            entity.id
+          )
+
+      expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, entity.id)
+
+      worker.perform(entity.id)
+    end
+  end
+
+  context 'when there are no next stage to run' do
+    before do
+      pipeline_tracker.fail_op!
+      pipeline_tracker_2.fail_op!
+    end
+
+    it 'does not enqueue any pipeline worker and re-enqueues itself' do
+      expect(BulkImports::PipelineWorker).not_to receive(:perform_async)
+      expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, entity.id)
+
+      worker.perform(entity.id)
+    end
+  end
+
+  context 'when entity status is not started' do
+    let(:entity) { create(:bulk_import_entity, :finished) }
+
+    it 'does not re-enqueues itself' do
+      expect(described_class).not_to receive(:perform_in)
+
+      worker.perform(entity.id)
+    end
+  end
+
+  it 'logs and tracks the raised exceptions' do
+    exception = StandardError.new('Error!')
+
+    expect(BulkImports::PipelineWorker)
+      .to receive(:perform_async)
+      .and_raise(exception)
+
+    expect(Gitlab::ErrorTracking)
+      .to receive(:track_exception)
+            .with(
+              exception,
+              hash_including(
                 bulk_import_entity_id: entity.id,
                 bulk_import_id: entity.bulk_import_id,
                 bulk_import_entity_type: entity.source_type,
@@ -112,75 +133,10 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
                 source_version: entity.bulk_import.source_version_info.to_s,
                 importer: 'gitlab_migration'
               )
-
-      subject
-
-      expect(entity.reload.failed?).to eq(true)
-    end
-
-    context 'in first stage' do
-      let(:job_args) { [entity.id, 0] }
-
-      it 'do not enqueue a new pipeline job if the current stage still running' do
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-          expect(logger)
-            .to receive(:info).twice
-            .with(
-              hash_including(
-                'bulk_import_entity_id' => entity.id,
-                'bulk_import_id' => entity.bulk_import_id,
-                'bulk_import_entity_type' => entity.source_type,
-                'source_full_path' => entity.source_full_path,
-                'current_stage' => 0,
-                'message' => 'Stage running',
-                'source_version' => entity.bulk_import.source_version_info.to_s,
-                'importer' => 'gitlab_migration'
-              )
-            )
-        end
-
-        expect(BulkImports::PipelineWorker)
-          .not_to receive(:perform_async)
-
-        subject
-      end
-
-      it 'enqueues the next stage pipelines when the current stage is finished' do
-        next_stage_pipeline_tracker = create(
-          :bulk_import_tracker,
-          entity: entity,
-          pipeline_name: 'Stage1::Pipeline',
-          stage: 1
-        )
-
-        pipeline_tracker.fail_op!
-
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-          expect(logger)
-            .to receive(:info).twice
-            .with(
-              hash_including(
-                'bulk_import_entity_id' => entity.id,
-                'bulk_import_id' => entity.bulk_import_id,
-                'bulk_import_entity_type' => entity.source_type,
-                'source_full_path' => entity.source_full_path,
-                'current_stage' => 0,
-                'source_version' => entity.bulk_import.source_version_info.to_s,
-                'importer' => 'gitlab_migration'
-              )
-            )
-        end
-
-        expect(BulkImports::PipelineWorker)
-          .to receive(:perform_async)
-            .with(
-              next_stage_pipeline_tracker.id,
-              next_stage_pipeline_tracker.stage,
-              entity.id
             )
 
-        subject
-      end
-    end
+    worker.perform(entity.id)
+
+    expect(entity.reload.failed?).to eq(true)
   end
 end

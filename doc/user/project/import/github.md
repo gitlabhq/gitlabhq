@@ -32,9 +32,6 @@ When importing projects:
   creates comments describing that non-existent users were added as reviewers and approvers. However, the actual
   reviewer status and approval are not applied to the merge request in GitLab.
 - You can change the target namespace and target repository name before you import.
-- The importer also imports branches on forks of projects related to open pull requests. These branches are
-  imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
-  a discrepancy in branches compared to those of the GitHub repository.
 - The organization the repository belongs to must not impose restrictions of a [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions) on the GitLab instance you import to.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -161,14 +158,15 @@ When the **Organization** tab is selected, you can further narrow down your sear
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
 - Issue and pull request events. For example, _opened_ or _closed_, _renamed_, and _labeled_ or _unlabeled_.
-- All comments. In regular import of large repositories some comments might get skipped due to limitation of GitHub API.
+- More than approximately 30,000 comments because of a [limitation of the GitHub API](#missing-comments).
 - Markdown attachments from repository comments, release posts, issue descriptions, and pull request descriptions. These can include
   images, text, or binary attachments. If not imported, links in Markdown to attachments break after you remove the attachments from GitHub.
 
 You can choose to import these items, but this could significantly increase import time. To import these items, select the appropriate fields in the UI:
 
 - **Import issue and pull request events**.
-- **Use alternative comments import method**.
+- **Use alternative comments import method**. If importing GitHub projects with more than approximately 30,000 comments, you should enable this method because of a
+  [limitation of the GitHub API](#missing-comments).
 - **Import Markdown attachments**.
 - **Import collaborators** (selected by default). Leaving it selected might result in new users using a seat in the group or namespace,
   and being granted permissions [as high as project owner](#collaborators-members). Only direct collaborators are imported.
@@ -250,6 +248,8 @@ The following items of a project are imported:
 
 - Repository description.
 - Git repository data.
+- All project branches.
+- All branches of forks of the project related to open pull requests, but not closed pull requests. Branches from forks are imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`.
 - Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
 - Collaborators (members). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10. From GitLab 16.0, can
   be imported [as an additional item](#select-additional-items-to-import).
@@ -475,19 +475,20 @@ repository to be imported manually. Administrators can manually import the repos
 
 The GitHub importer might encounter some errors when importing large projects.
 
-#### Alternative way to import notes and diff notes
+#### Missing comments
 
-When the GitHub importer runs on extremely large projects, not all notes and diff notes can be imported due to the GitHub API `issues_comments` and `pull_requests_comments` endpoint limitations.
-
-If it's not possible to fetch all pages, the GitHub API might return the following error:
+The GitHub API has a limit that prevents more than approximately 30,000 notes or diff notes from being imported.
+When this limit is reached, the GitHub API instead returns the following error:
 
 ```plaintext
 In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.
 ```
 
-An [alternative approach](#select-additional-items-to-import) for importing comments is available.
+For example, see [this GitHub API response](https://api.github.com/repositories/27193779/issues/comments?page=401&per_page=100).
 
-Instead of using `issues_comments` and `pull_requests_comments`, use individual resources to pull notes from one object at a time. This way, you can carry over any missing comments. However, execution takes longer because this method increases the number of network requests required to perform the import.
+If you are importing GitHub projects with a large number of comments, you should select the **Use alternative comments import method**
+[additional item to import](#select-additional-items-to-import) checkbox. This setting makes the import process take longer because it increases the number of network requests
+required to perform the import.
 
 #### Reduce GitHub API request objects per page
 

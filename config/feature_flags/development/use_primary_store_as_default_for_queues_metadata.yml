@@ -1,8 +1,0 @@
----
-name: use_primary_store_as_default_for_queues_metadata
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131736
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425508
-milestone: '16.5'
-type: development
-group: group::scalability
-default_enabled: false

@@ -135,3 +135,7 @@
 .gl-hover-border-gray-100:hover {
   border-color: $gray-100;
 }
+
+.gl-last-of-type-border-b-0:last-of-type {
+  @include gl-border-b-0;
+}

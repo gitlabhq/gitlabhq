@@ -87,13 +87,13 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter, feature_category: :team_pl
   end
 
   context "languages that should be passed through" do
-    %w(math mermaid plantuml suggestion).each do |lang|
+    %w[math mermaid plantuml suggestion].each do |lang|
       context "when #{lang} is specified" do
         it "highlights as plaintext but with the correct language attribute and class" do
-          result = filter(%{<pre data-canonical-lang="#{lang}"><code>This is a test</code></pre>})
+          result = filter(%(<pre data-canonical-lang="#{lang}"><code>This is a test</code></pre>))
           copy_code_btn = '<copy-code></copy-code>' unless lang == 'suggestion'
 
-          expect(result.to_html.delete("\n")).to eq(%{<div class="gl-relative markdown-code-block js-markdown-code"><pre data-canonical-lang="#{lang}" class="code highlight js-syntax-highlight language-#{lang}" lang="#{lang}" v-pre="true"><code><span id="LC1" class="line" lang="#{lang}">This is a test</span></code></pre>#{copy_code_btn}</div>})
+          expect(result.to_html.delete("\n")).to eq(%(<div class="gl-relative markdown-code-block js-markdown-code"><pre data-canonical-lang="#{lang}" class="code highlight js-syntax-highlight language-#{lang}" lang="#{lang}" v-pre="true"><code><span id="LC1" class="line" lang="#{lang}">This is a test</span></code></pre>#{copy_code_btn}</div>))
         end
 
         include_examples "XSS prevention", lang

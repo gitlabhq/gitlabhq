@@ -30,6 +30,15 @@ FactoryBot.define do
 
     ref { pipeline.ref }
 
+    runner_manager { nil }
+
+    after(:build) do |build, evaluator|
+      if evaluator.runner_manager
+        build.runner = evaluator.runner_manager.runner
+        create(:ci_runner_machine_build, build: build, runner_manager: evaluator.runner_manager)
+      end
+    end
+
     trait :with_token do
       transient do
         generate_token { true }
@@ -432,8 +441,8 @@ FactoryBot.define do
           services: ['postgres',
                      { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' },
                      { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
-          script: %w(echo),
-          after_script: %w(ls date),
+          script: %w[echo],
+          after_script: %w[ls date],
           hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] },
           artifacts: {
             name: 'artifacts_file',

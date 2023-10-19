@@ -1,13 +1,13 @@
 import { GlLoadingIcon, GlModal, GlTableLite } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import LegacyPipelinesTableWraper from '~/commit/pipelines/legacy_pipelines_table_wrapper.vue';
+import LegacyPipelinesTableWrapper from '~/commit/pipelines/legacy_pipelines_table_wrapper.vue';
+import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
@@ -39,27 +39,26 @@ describe('Pipelines table in Commits and Merge requests', () => {
   const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
   const findModal = () => wrapper.findComponent(GlModal);
   const findMrPipelinesDocsLink = () => wrapper.findByTestId('mr-pipelines-docs-link');
+  const findPipelinesTable = () => wrapper.findComponent(PipelinesTable);
 
-  const createComponent = ({ props = {} } = {}) => {
-    wrapper = extendedWrapper(
-      mount(LegacyPipelinesTableWraper, {
-        propsData: {
-          endpoint: 'endpoint.json',
-          emptyStateSvgPath: 'foo',
-          errorStateSvgPath: 'foo',
-          ...props,
-        },
-        mocks: {
-          $toast,
-        },
-        stubs: {
-          GlModal: stubComponent(GlModal, {
-            template: '<div />',
-            methods: { show: showMock },
-          }),
-        },
-      }),
-    );
+  const createComponent = ({ props = {}, mountFn = mountExtended } = {}) => {
+    wrapper = mountFn(LegacyPipelinesTableWrapper, {
+      propsData: {
+        endpoint: 'endpoint.json',
+        emptyStateSvgPath: 'foo',
+        errorStateSvgPath: 'foo',
+        ...props,
+      },
+      mocks: {
+        $toast,
+      },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          template: '<div />',
+          methods: { show: showMock },
+        }),
+      },
+    });
   };
 
   beforeEach(() => {
@@ -116,7 +115,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
       it('should make an API request when using pagination', async () => {
         expect(mock.history.get).toHaveLength(1);
-        expect(mock.history.get[0].params.page).toBe('1');
 
         wrapper.find('.next-page-item').trigger('click');
 
@@ -357,6 +355,55 @@ describe('Pipelines table in Commits and Merge requests', () => {
       expect(findErrorEmptyState().text()).toBe(
         'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
       );
+    });
+  });
+
+  describe('events', () => {
+    beforeEach(async () => {
+      mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, [pipeline]);
+
+      createComponent({ mountFn: shallowMountExtended });
+
+      await waitForPromises();
+    });
+
+    describe('When cancelling a pipeline', () => {
+      it('sends the cancel action', async () => {
+        expect(mock.history.post).toHaveLength(0);
+
+        findPipelinesTable().vm.$emit('cancel-pipeline', pipeline);
+
+        await waitForPromises();
+
+        expect(mock.history.post).toHaveLength(1);
+        expect(mock.history.post[0].url).toContain('cancel.json');
+      });
+    });
+
+    describe('When retrying a pipeline', () => {
+      it('sends the retry action', async () => {
+        expect(mock.history.post).toHaveLength(0);
+
+        findPipelinesTable().vm.$emit('retry-pipeline', pipeline);
+
+        await waitForPromises();
+
+        expect(mock.history.post).toHaveLength(1);
+        expect(mock.history.post[0].url).toContain('retry.json');
+      });
+    });
+
+    describe('When refreshing a pipeline', () => {
+      it('calls the pipelines endpoint again', async () => {
+        expect(mock.history.get).toHaveLength(1);
+
+        findPipelinesTable().vm.$emit('refresh-pipelines-table');
+
+        await waitForPromises();
+
+        expect(mock.history.get).toHaveLength(2);
+        expect(mock.history.get[1].url).toContain('endpoint.json');
+      });
     });
   });
 });

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 # We need to load the constants here, or else stubbed
 # constants will be overwritten when `require 'git'`

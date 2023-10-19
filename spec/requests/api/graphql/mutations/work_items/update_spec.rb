@@ -7,14 +7,13 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:author) { create(:user).tap { |user| project.add_reporter(user) } }
-  let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
-  let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
-  let_it_be(:guest) { create(:user).tap { |user| project.add_guest(user) } }
+  let_it_be(:author) { create(:user).tap { |user| group.add_reporter(user) } }
+  let_it_be(:developer) { create(:user).tap { |user| group.add_developer(user) } }
+  let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
+  let_it_be(:guest) { create(:user).tap { |user| group.add_guest(user) } }
   let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: author) }
 
-  let(:work_item_event) { 'CLOSE' }
-  let(:input) { { 'stateEvent' => work_item_event, 'title' => 'updated title' } }
+  let(:input) { { 'stateEvent' => 'CLOSE', 'title' => 'updated title' } }
   let(:fields) do
     <<~FIELDS
       workItem {
@@ -25,7 +24,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     FIELDS
   end
 
-  let(:mutation) { graphql_mutation(:workItemUpdate, input.merge('id' => work_item.to_global_id.to_s), fields) }
+  let(:mutation_work_item) { work_item }
+  let(:mutation) { graphql_mutation(:workItemUpdate, input.merge('id' => mutation_work_item.to_gid.to_s), fields) }
 
   let(:mutation_response) { graphql_mutation_response(:work_item_update) }
 
@@ -60,7 +60,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when the work item is closed' do
-      let(:work_item_event) { 'REOPEN' }
+      let(:input) { { 'stateEvent' => 'REOPEN' } }
 
       before do
         work_item.close!
@@ -155,10 +155,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         it 'updates labels' do
           expect do
             post_graphql_mutation(mutation, current_user: current_user)
-            work_item.reload
-          end.to change { work_item.labels.count }.to(expected_labels.count)
+            mutation_work_item.reload
+          end.to change { mutation_work_item.labels.count }.to(expected_labels.count)
 
-          expect(work_item.labels).to match_array(expected_labels)
+          expect(mutation_work_item.labels).to match_array(expected_labels)
           expect(mutation_response['workItem']['widgets']).to include(
             'labels' => {
               'nodes' => match_array(expected_labels.map { |l| { 'id' => l.to_gid.to_s } })
@@ -168,9 +168,9 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
       end
 
-      let_it_be(:existing_label) { create(:label, project: project) }
-      let_it_be(:label1) { create(:label, project: project) }
-      let_it_be(:label2) { create(:label, project: project) }
+      let_it_be(:existing_label) { create(:group_label, group: group) }
+      let_it_be(:label1) { create(:group_label, group: group) }
+      let_it_be(:label2) { create(:group_label, group: group) }
 
       let(:fields) do
         <<~FIELDS
@@ -197,9 +197,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       let(:add_label_ids) { [] }
       let(:remove_label_ids) { [] }
+      let_it_be(:group_work_item) { create(:work_item, :task, :group_level, namespace: group) }
 
       before_all do
         work_item.update!(labels: [existing_label])
+        group_work_item.update!(labels: [existing_label])
       end
 
       context 'when only removing labels' do
@@ -210,6 +212,12 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
         context 'with quick action' do
           let(:input) { { 'descriptionWidget' => { 'description' => "/remove_label ~\"#{existing_label.name}\"" } } }
+
+          it_behaves_like 'mutation updating work item labels'
+        end
+
+        context 'when work item belongs directly to the group' do
+          let(:mutation_work_item) { group_work_item }
 
           it_behaves_like 'mutation updating work item labels'
         end
@@ -228,6 +236,12 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
           it_behaves_like 'mutation updating work item labels'
         end
+
+        context 'when work item belongs directly to the group' do
+          let(:mutation_work_item) { group_work_item }
+
+          it_behaves_like 'mutation updating work item labels'
+        end
       end
 
       context 'when adding and removing labels' do
@@ -242,6 +256,12 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             { 'descriptionWidget' => { 'description' =>
                   "/label ~\"#{label1.name}\" ~\"#{label2.name}\"\n/remove_label ~\"#{existing_label.name}\"" } }
           end
+
+          it_behaves_like 'mutation updating work item labels'
+        end
+
+        context 'when work item belongs directly to the group' do
+          let(:mutation_work_item) { group_work_item }
 
           it_behaves_like 'mutation updating work item labels'
         end
@@ -1025,7 +1045,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when updating notifications subscription' do
-      let_it_be(:current_user) { reporter }
+      let_it_be(:current_user) { guest }
       let(:input) { { 'notificationsWidget' => { 'subscribed' => desired_state } } }
 
       let(:fields) do
@@ -1059,7 +1079,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             update_work_item
             subscription.reload
           end.to change(subscription, :subscribed).to(desired_state)
-            .and(change { work_item.reload.subscribed?(reporter, project) }.to(desired_state))
+            .and(change { work_item.reload.subscribed?(guest, project) }.to(desired_state))
 
           expect(response).to have_gitlab_http_status(:success)
           expect(mutation_response['workItem']['widgets']).to include(
@@ -1159,7 +1179,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when updating currentUserTodos' do
-      let_it_be(:current_user) { reporter }
+      let_it_be(:current_user) { guest }
 
       let(:fields) do
         <<~FIELDS
@@ -1185,7 +1205,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       context 'when adding a new todo' do
         let(:input) { { 'currentUserTodosWidget' => { 'action' => 'ADD' } } }
 
-        context 'when user has access to the work item' do
+        context 'when user can create todos' do
           it 'adds a new todo for the user on the work item' do
             expect { update_work_item }.to change { current_user.todos.count }.by(1)
 
@@ -1202,6 +1222,17 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
                 }
               }
             )
+          end
+
+          context 'when a base attribute is present' do
+            before do
+              input.merge!('title' => 'new title')
+            end
+
+            it_behaves_like 'a mutation that returns top-level errors', errors: [
+              'The resource that you are attempting to access does not exist or you don\'t have permission to ' \
+              'perform this action'
+            ]
           end
         end
 

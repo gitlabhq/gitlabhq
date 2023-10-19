@@ -5,9 +5,6 @@ module Packages
     class OdataPackageEntryService
       include API::Helpers::RelatedResourcesHelpers
 
-      SEMVER_LATEST_VERSION_PLACEHOLDER = '0.0.0-latest-version'
-      LATEST_VERSION_FOR_V2_DOWNLOAD_ENDPOINT = 'latest'
-
       def initialize(project, params)
         @project = project
         @params = params
@@ -29,41 +26,39 @@ module Packages
             <title type='text'>#{params[:package_name]}</title>
             <content type='application/zip' src="#{download_url}"/>
             <m:properties>
-              <d:Version>#{package_version}</d:Version>
+              <d:Version>#{params[:package_version]}</d:Version>
             </m:properties>
           </entry>
         XML
       end
 
-      def package_version
-        params[:package_version] || SEMVER_LATEST_VERSION_PLACEHOLDER
-      end
-
       def id_url
         expose_url "#{api_v4_projects_packages_nuget_v2_path(id: project.id)}" \
-                   "/Packages(Id='#{params[:package_name]}',Version='#{package_version}')"
+                   "/Packages(Id='#{params[:package_name]}',Version='#{params[:package_version]}')"
       end
 
-      # TODO: use path helper when download endpoint is merged
       def download_url
-        expose_url "#{api_v4_projects_packages_nuget_v2_path(id: project.id)}" \
-                   "/download/#{params[:package_name]}/#{download_url_package_version}"
-      end
-
-      def download_url_package_version
-        if latest_version?
-          LATEST_VERSION_FOR_V2_DOWNLOAD_ENDPOINT
+        if params[:package_version].present?
+          expose_url api_v4_projects_packages_nuget_download_package_name_package_version_package_filename_path(
+            {
+              id: project.id,
+              package_name: params[:package_name],
+              package_version: params[:package_version],
+              package_filename: file_name
+            },
+            true
+          )
         else
-          params[:package_version]
+          xml_base
         end
-      end
-
-      def latest_version?
-        params[:package_version].nil? || params[:package_version] == SEMVER_LATEST_VERSION_PLACEHOLDER
       end
 
       def xml_base
         expose_url api_v4_projects_packages_nuget_v2_path(id: project.id)
+      end
+
+      def file_name
+        "#{params[:package_name]}.#{params[:package_version]}.nupkg"
       end
     end
   end

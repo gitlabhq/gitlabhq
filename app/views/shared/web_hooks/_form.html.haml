@@ -63,7 +63,7 @@
     %li.gl-pb-3
       = form.gitlab_ui_checkbox_component :releases_events,
           integration_webhook_event_human_name(:releases_events),
-          help_text: s_('Webhooks|A release is created or updated.')
+          help_text: s_('Webhooks|A release is created, updated, or deleted.')
     - if Feature.enabled?(:emoji_webhooks, hook.parent)
       %li.gl-pb-5
         - emoji_help_link = link_to s_('Which emoji events trigger webhooks'), help_page_path('user/project/integrations/webhook_events.md', anchor: 'emoji-events')

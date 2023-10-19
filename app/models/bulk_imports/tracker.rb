@@ -33,11 +33,9 @@ class BulkImports::Tracker < ApplicationRecord
     entity_scope.where(stage: next_stage_scope).with_status(:created)
   }
 
-  def self.stage_running?(entity_id, stage)
-    where(stage: stage, bulk_import_entity_id: entity_id)
-      .with_status(:created, :enqueued, :started)
-      .exists?
-  end
+  scope :running_trackers, -> (entity_id) {
+    where(bulk_import_entity_id: entity_id).with_status(:enqueued, :started)
+  }
 
   def pipeline_class
     unless entity.pipeline_exists?(pipeline_name)

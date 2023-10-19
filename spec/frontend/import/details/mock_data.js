@@ -7,7 +7,7 @@ export const mockImportFailures = [
       exception_class: 'ActiveRecord::RecordInvalid',
       exception_message: 'Record invalid',
       source: 'Gitlab::GithubImport::Importer::PullRequestImporter',
-      github_identifiers: {
+      external_identifiers: {
         iid: 2,
         issuable_type: 'MergeRequest',
         object_type: 'pull_request',
@@ -22,7 +22,7 @@ export const mockImportFailures = [
       exception_class: 'ActiveRecord::RecordInvalid',
       exception_message: 'Record invalid',
       source: 'Gitlab::GithubImport::Importer::PullRequestImporter',
-      github_identifiers: {
+      external_identifiers: {
         iid: 3,
         issuable_type: 'MergeRequest',
         object_type: 'pull_request',
@@ -37,7 +37,7 @@ export const mockImportFailures = [
       exception_class: 'NameError',
       exception_message: 'some message',
       source: 'Gitlab::GithubImport::Importer::LfsObjectImporter',
-      github_identifiers: {
+      external_identifiers: {
         oid: '3a9257fae9e86faee27d7208cb55e086f18e6f29f48c430bfbc26d42eb',
         size: 2473979,
       },

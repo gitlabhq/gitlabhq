@@ -76,7 +76,7 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
       end
 
       it_behaves_like 'internal event tracking' do
-        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
+        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
         let(:namespace) { project.namespace }
 
         subject(:service_action) { update_note(note: 'new text') }

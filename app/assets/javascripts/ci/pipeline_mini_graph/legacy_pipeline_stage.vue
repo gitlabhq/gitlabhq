@@ -13,7 +13,7 @@
  */
 
 import { GlDropdown, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { createAlert } from '~/alert';
 import eventHub from '~/ci/event_hub';
 import axios from '~/lib/utils/axios_utils';
@@ -33,7 +33,7 @@ export default {
     positionFixed: true,
   },
   components: {
-    CiIcon,
+    CiBadgeLink,
     GlLoadingIcon,
     GlDropdown,
     LegacyJobItem,
@@ -126,14 +126,13 @@ export default {
     @show="onShowDropdown"
   >
     <template #button-content>
-      <ci-icon
-        is-borderless
-        is-interactive
-        css-classes="gl-rounded-full"
-        :is-active="isDropdownOpen"
-        :size="24"
+      <ci-badge-link
         :status="stage.status"
-        class="gl-display-inline-flex gl-align-items-center gl-border gl-z-index-1"
+        size="md"
+        :show-text="false"
+        :show-tooltip="false"
+        :use-link="false"
+        class="gl-mb-0!"
       />
     </template>
     <div v-if="isLoading" class="gl--flex-center gl-p-2" data-testid="pipeline-stage-loading-state">

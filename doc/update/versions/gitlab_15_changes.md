@@ -144,6 +144,9 @@ if you can't upgrade to 15.11.12 and later.
   - This issue may not manifest immediately as it can take up to a week before the Sidekiq is saturated enough.
   - Elasticsearch does not need to be enabled for this to occur.
   - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
+- A bug with the [`BackfillTraversalIdsToBlobsAndWikiBlobs` advanced search migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107730) might cause the Elasticsearch cluster to become saturated.
+  - When this issue occurs, searches might become slow and updates to the Elasticsearch cluster might take a long time to complete.
+  - To resolve this issue, upgrade to GitLab 15.10 to [reduce the migration batch size](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113719).
 - **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
   - Patch releases 15.9.0, 15.9.1, 15.9.2 have a bug that can cause data loss
     from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`,
@@ -541,7 +544,9 @@ potentially cause downtime.
 
 - GitLab 15.4.0 includes a [batched background migration](../background_migrations.md#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
   This migration might take hours or days to complete on larger GitLab instances.
-- By default, Gitaly and Praefect nodes use the time server at `pool.ntp.org`. If your instance can not connect to `pool.ntp.org`, [configure the `NTP_HOST` variable](../../administration/gitaly/praefect.md#customize-time-server-setting).
+- By default, Gitaly and Praefect nodes use the time server at `pool.ntp.org`. If your instance can not connect to `pool.ntp.org`,
+  [configure the `NTP_HOST` variable](../../administration/gitaly/praefect.md#customize-time-server-setting) otherwise, there can be `ntp: read udp ... i/o timeout` errors
+  in the logs and the output of `gitlab-rake gitlab:gitaly:check`. However, if the Gitaly hosts' times are in sync, these errors can be ignored.
 - GitLab 15.4.0 introduced a default [Sidekiq routing rule](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules) that routes all jobs to the `default` queue. For instances using [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated), this causes [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.4.5, so upgrading to that version or later will return to the previous behavior.
   - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
@@ -787,7 +792,18 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
     for Omnibus GitLab. This replaces `gitlab_shell['custom_hooks_dir']`.
 - PostgreSQL 13.6 is being shipped as the default version for fresh installs and
   12.10 for upgrades. You can manually upgrade to PostgreSQL 13.6 following the
-  [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#gitlab-150-and-later).
+  [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) with:
+
+  ```shell
+  sudo gitlab-ctl pg-upgrade -V 13
+  ```
+
+  Until PostgreSQL 12 is removed, you may
+  [pin the PostgreSQL version](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only)
+  if needed for compatibility or test environment reasons.
+
+  [Fault tolerant and Geo installations require additional steps and planning](../../administration/postgresql/replication_and_failover.md#upgrading-postgresql-major-version-in-a-patroni-cluster).
+
   Because of underlying structural changes, the running PostgreSQL process
   **_must_** be restarted when it is upgraded before running database
   migrations. If automatic restart is skipped, you must run the following

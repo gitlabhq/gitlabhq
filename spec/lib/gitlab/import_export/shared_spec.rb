@@ -74,12 +74,12 @@ RSpec.describe Gitlab::ImportExport::Shared do
       expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
         .with(error, hash_including(
-                       importer: 'Import/Export',
-                       project_id: project.id,
-                       project_name: project.name,
-                       project_path: project.full_path,
-                       import_jid: import_state.jid
-                     ))
+          importer: 'Import/Export',
+          project_id: project.id,
+          project_name: project.name,
+          project_path: project.full_path,
+          import_jid: import_state.jid
+        ))
 
       subject.error(error)
     end

@@ -3,6 +3,7 @@
   "required": [
     "id",
     "state",
+    "locked",
     "avatar_url",
     "web_url",
     "path",
@@ -10,13 +11,35 @@
     "username"
   ],
   "properties": {
-    "id": { "type": "integer" },
-    "state": { "type": "string" },
-    "avatar_url": { "type": [ "string", "null" ] },
-    "web_url": { "type": "string" },
-    "path": { "type": "string" },
-    "name": { "type": "string" },
-    "username": { "type": "string" },
-    "status_tooltip_html": { "$ref": "../types/nullable_string.json" }
+    "id": {
+      "type": "integer"
+    },
+    "state": {
+      "type": "string"
+    },
+    "locked": {
+      "type": "boolean"
+    },
+    "avatar_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "web_url": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "username": {
+      "type": "string"
+    },
+    "status_tooltip_html": {
+      "$ref": "../types/nullable_string.json"
+    }
   }
 }

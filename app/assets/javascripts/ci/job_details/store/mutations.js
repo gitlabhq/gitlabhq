@@ -3,13 +3,9 @@ import * as types from './mutation_types';
 import { logLinesParser, updateIncrementalJobLog } from './utils';
 
 export default {
-  [types.SET_JOB_ENDPOINT](state, endpoint) {
-    state.jobEndpoint = endpoint;
-  },
-
   [types.SET_JOB_LOG_OPTIONS](state, options = {}) {
     state.jobLogEndpoint = options.pagePath;
-    state.jobLogState = options.logState;
+    state.jobEndpoint = options.endpoint;
   },
 
   [types.HIDE_SIDEBAR](state) {

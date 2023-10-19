@@ -179,6 +179,6 @@ Cons:
 
 ## Resources
 
-- [Custom Roles MVC announcement](https://github.blog/changelog/2021-10-27-enterprise-organizations-can-now-create-custom-repository-roles)
+- [Custom Roles MVC announcement](https://github.blog/changelog/2021-10-27-enterprise-organizations-can-now-create-custom-repository-roles/)
 - [Custom Roles lunch and learn notes](https://docs.google.com/document/d/1x2ExhGJl2-nEibTaQE_7e5w2sDCRRHiakrBYDspPRqw/edit#)
 - [Discovery on auto-generating documentation for permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/352891#note_989392294).

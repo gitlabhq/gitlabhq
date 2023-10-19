@@ -13,7 +13,7 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Feature Flag #{reference}</#{elem}>"
 
@@ -47,7 +47,7 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
     end
 
     it 'escapes the title attribute' do
-      allow(feature_flag).to receive(:name).and_return(%{"></a>whatever<a title="})
+      allow(feature_flag).to receive(:name).and_return(%("></a>whatever<a title="))
       doc = reference_filter("Feature Flag #{reference}")
 
       expect(doc.text).to eq "Feature Flag #{reference}"
@@ -79,7 +79,7 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
       doc = reference_filter("Feature Flag #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
-      expect(link).not_to match %r(https?://)
+      expect(link).not_to match %r{https?://}
       expect(link).to eq urls.edit_project_feature_flag_url(project, feature_flag.iid, only_path: true)
     end
   end

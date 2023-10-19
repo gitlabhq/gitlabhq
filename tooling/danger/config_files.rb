@@ -14,6 +14,8 @@ module Tooling
         config/feature_flags
         config/metrics
         config/events
+        ee/config/feature_flags
+        ee/config/saas_features
       ].freeze
 
       def add_suggestion_for_missing_introduced_by_url

@@ -23,7 +23,7 @@ module Ml
             ci_job: job_info
           },
           params: candidate.params,
-          metrics: candidate.latest_metrics,
+          metrics: candidate.metrics,
           metadata: candidate.metadata
         }
       }

@@ -138,7 +138,10 @@ export default {
     </div>
 
     <template v-if="activePanel">
-      <div class="gl-display-flex gl-align-items-center gl-py-5">
+      <div
+        data-testid="active-panel-template"
+        class="gl-display-flex gl-align-items-center gl-py-5"
+      >
         <div class="col-auto">
           <img aria-hidden :src="activePanel.imageSrc" />
         </div>

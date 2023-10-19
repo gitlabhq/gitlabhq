@@ -312,20 +312,4 @@ RSpec.describe VerifyPagesDomainService, feature_category: :pages do
   def disallow_resolver!
     expect(Resolv::DNS).not_to receive(:open)
   end
-
-  def stub_resolver(stubbed_lookups = {})
-    resolver = instance_double('Resolv::DNS')
-    allow(resolver).to receive(:timeouts=)
-
-    expect(Resolv::DNS).to receive(:open).and_yield(resolver)
-
-    allow(resolver).to receive(:getresources) { [] }
-    stubbed_lookups.each do |domain, records|
-      records = Array(records).map { |txt| Resolv::DNS::Resource::IN::TXT.new(txt) }
-      # Append '.' to domain_name, indicating absolute FQDN
-      allow(resolver).to receive(:getresources).with(domain + '.', Resolv::DNS::Resource::IN::TXT) { records }
-    end
-
-    resolver
-  end
 end

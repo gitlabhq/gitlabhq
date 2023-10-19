@@ -85,7 +85,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
 
       where(:markdown, :expected) do
         %q![foo](/bar\@ "\@title")! | %q(<a href="/bar@" title="@title">foo</a>)
-        %![foo]\n\n[foo]: /bar\\@ "\\@title"! | %q(<a href="/bar@" title="@title">foo</a>)
+        %([foo]\n\n[foo]: /bar\\@ "\\@title") | %q(<a href="/bar@" title="@title">foo</a>)
       end
 
       with_them do

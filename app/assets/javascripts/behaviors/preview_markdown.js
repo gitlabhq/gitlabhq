@@ -131,10 +131,13 @@ $(document).on('markdown-preview:show', (e, $form) => {
   lastTextareaPreviewed = $form.find('textarea.markdown-area');
   lastTextareaHeight = lastTextareaPreviewed.height();
 
-  // toggle tabs
-  $form.find(previewButtonSelector).val('edit');
-  $form.find(previewButtonSelector).children('span.gl-button-text').text(__('Continue editing'));
-  $form.find(previewButtonSelector).addClass('gl-shadow-none! gl-bg-transparent!');
+  const $previewButton = $form.find(previewButtonSelector);
+
+  if (!$previewButton.parents('.js-vue-markdown-field').length) {
+    $previewButton.val('edit');
+    $previewButton.children('span.gl-button-text').text(__('Continue editing'));
+    $previewButton.addClass('gl-shadow-none! gl-bg-transparent!');
+  }
 
   // toggle content
   $form.find('.md-write-holder').hide();
@@ -154,9 +157,12 @@ $(document).on('markdown-preview:hide', (e, $form) => {
     $form.find('textarea.markdown-area').height(lastTextareaHeight);
   }
 
-  // toggle tabs
-  $form.find(previewButtonSelector).val('preview');
-  $form.find(previewButtonSelector).children('span.gl-button-text').text(__('Preview'));
+  const $previewButton = $form.find(previewButtonSelector);
+
+  if (!$previewButton.parents('.js-vue-markdown-field').length) {
+    $previewButton.val('preview');
+    $previewButton.children('span.gl-button-text').text(__('Preview'));
+  }
 
   // toggle content
   $form.find('.md-write-holder').show();

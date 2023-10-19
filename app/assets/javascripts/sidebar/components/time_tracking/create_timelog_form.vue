@@ -206,7 +206,7 @@ export default {
             :value="spentAt"
             show-clear-button
             autocomplete="off"
-            size="small"
+            width="small"
             @input="updateSpentAtDate"
             @clear="updateSpentAtDate(null)"
           />

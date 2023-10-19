@@ -52,6 +52,45 @@ RSpec.shared_examples 'issuable link' do
       end
     end
 
+    context 'when max number of links is exceeded' do
+      subject(:link) { create_issuable_link(issuable, issuable2) }
+
+      shared_examples 'invalid due to exceeding max number of links' do
+        let(:stubbed_limit) { 1 }
+        let(:issuable_name) { described_class.issuable_name }
+        let(:error_msg) do
+          "This #{issuable_name} would exceed the maximum number of " \
+            "linked #{issuable_name.pluralize} (#{stubbed_limit})."
+        end
+
+        before do
+          create(issuable_link_factory, source: source, target: target)
+          stub_const("IssuableLink::MAX_LINKS_COUNT", stubbed_limit)
+        end
+
+        specify do
+          is_expected.to be_invalid
+          expect(link.errors.messages[error_item]).to include(error_msg)
+        end
+      end
+
+      context 'when source exceeds max' do
+        let(:source) { issuable }
+        let(:target) { issuable3 }
+        let(:error_item) { :source }
+
+        it_behaves_like 'invalid due to exceeding max number of links'
+      end
+
+      context 'when target exceeds max' do
+        let(:source) { issuable2 }
+        let(:target) { issuable3 }
+        let(:error_item) { :target }
+
+        it_behaves_like 'invalid due to exceeding max number of links'
+      end
+    end
+
     def create_issuable_link(source, target)
       build(issuable_link_factory, source: source, target: target)
     end

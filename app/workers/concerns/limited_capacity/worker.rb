@@ -1,41 +1,5 @@
 # frozen_string_literal: true
 
-# Usage:
-#
-# Worker that performs the tasks:
-#
-# class DummyWorker
-#   include ApplicationWorker
-#   include LimitedCapacity::Worker
-#
-#   # For each job that raises any error, a worker instance will be disabled
-#   # until the next schedule-run.
-#   # If you wish to get around this, exceptions must by handled by the implementer.
-#   #
-#   def perform_work(*args)
-#   end
-#
-#   def remaining_work_count(*args)
-#     5
-#   end
-#
-#   def max_running_jobs
-#     25
-#   end
-# end
-#
-# Cron worker to fill the pool of regular workers:
-#
-# class ScheduleDummyCronWorker
-#   include ApplicationWorker
-#   include CronjobQueue
-#
-#   def perform(*args)
-#     DummyWorker.perform_with_capacity(*args)
-#   end
-# end
-#
-
 module LimitedCapacity
   module Worker
     extend ActiveSupport::Concern

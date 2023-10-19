@@ -63,6 +63,7 @@ gl-emoji {
   border-bottom-color: $blue-500;
 }
 
-.emoji-picker .gl-dropdown-inner > :last-child {
+.emoji-picker .gl-dropdown-contents > :last-child {
   padding-bottom: 0;
+  overflow-y: hidden;
 }

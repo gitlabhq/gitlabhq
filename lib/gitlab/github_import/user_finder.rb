@@ -271,8 +271,7 @@ module Gitlab
       end
 
       def log(message, username: nil)
-        Gitlab::Import::Logger.info(
-          import_type: :github,
+        Logger.info(
           project_id: project.id,
           class: self.class.name,
           username: username,

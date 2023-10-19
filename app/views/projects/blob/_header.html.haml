@@ -4,7 +4,6 @@
   = render 'projects/blob/header_content', blob: blob
 
   .file-actions.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-md-justify-content-end<
-    = render 'projects/blob/viewer_switcher', blob: blob unless blame
     = render 'shared/web_ide_button', blob: blob
     .btn-group.gl-ml-3{ role: "group" }
       = copy_blob_source_button(blob) unless blame

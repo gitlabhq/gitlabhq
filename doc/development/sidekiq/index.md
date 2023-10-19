@@ -121,7 +121,7 @@ Sidekiq workers are deferred by two ways,
 1. Manual: Feature flags can be used to explicitly defer a particular worker, more details can be found [here](../feature_flags/index.md#deferring-sidekiq-jobs).
 1. Automatic: Similar to the [throttling mechanism](../database/batched_background_migrations.md#throttling-batched-migrations) in batched migrations, database health indicators are used to defer a Sidekiq worker.
 
-   To use the automatic deferring mechanism, worker has to opt-in by calling `defer_on_database_health_signal` with `gitlab_schema`, delay_by (time to delay) and tables (which is used by autovacuum db indicator) as it's parameters.
+   To use the automatic deferring mechanism, worker has to opt-in by calling `defer_on_database_health_signal` with `gitlab_schema`, `delay_by` (time to delay) and tables (which is used by autovacuum db indicator) as it's parameters.
 
    **Example:**
 
@@ -147,7 +147,7 @@ Sidekiq workers are deferred by two ways,
 For deferred jobs, logs contain the following to indicate the source:
 
 - `job_status`: `deferred`
-- `job_deferred_by`: 'feature_flag' or 'database_health_check'
+- `job_deferred_by`: `feature_flag` or `database_health_check`
 
 ## Sidekiq Queues
 

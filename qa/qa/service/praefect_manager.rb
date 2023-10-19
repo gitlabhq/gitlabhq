@@ -288,9 +288,9 @@ module QA
 
       def modify_repo_access_time(node, repo_path, update_time)
         repo = "/var/opt/gitlab/git-data/repositories/#{repo_path}"
-        shell(%{
+        shell(%(
           docker exec --user git #{node} bash -c 'find #{repo} -exec touch -d "#{update_time}" {} \\;'
-        })
+        ))
       end
 
       private

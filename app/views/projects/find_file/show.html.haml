@@ -1,13 +1,16 @@
 - page_title _("Find File"), @ref
 - add_page_specific_style 'page_bundles/tree'
+- add_page_specific_style 'page_bundles/projects'
 
-.file-finder-holder.tree-holder.clearfix.js-file-finder.gl-pt-4{ 'data-file-find-url': "#{escape_javascript(project_files_path(@project, @ref, format: :json))}", 'data-find-tree-url': escape_javascript(project_tree_path(@project, @ref)), 'data-blob-url-template': escape_javascript(project_blob_path(@project, @ref)) }
+- tree_path = project_tree_path(@project, @ref)
+- blob_path = project_blob_path(@project, @ref)
+.file-finder-holder.tree-holder.clearfix.js-file-finder.gl-pt-4{ data: { file_find_url: "#{escape_javascript(project_files_path(@project, @ref, ref_type: @ref_type, format: :json))}", find_tree_url: escape_javascript(tree_path), blob_url_template: escape_javascript(blob_path), ref_type: @ref_type } }
   .nav-block.gl-xs-mr-0
     .tree-ref-holder.gl-xs-mb-3.gl-xs-w-full.gl-max-w-26
-      #js-blob-ref-switcher{ data: { project_id: @project.id, ref: @ref, namespace: "/-/find_file" } }
+      #js-blob-ref-switcher{ data: { project_id: @project.id, ref: @ref, ref_type: @ref_type, namespace: "/-/find_file" } }
     %ul.breadcrumb.repo-breadcrumb.gl-flex-nowrap
       %li.breadcrumb-item.gl-white-space-nowrap
-        = link_to project_tree_path(@project, @ref) do
+        = link_to project_tree_path(@project, @ref, ref_type: @ref_type) do
           = @project.path
       %li.file-finder.breadcrumb-item
         %input#file_find.form-control.file-finder-input{ type: "text", placeholder: _('Find by path'), autocomplete: 'off' }

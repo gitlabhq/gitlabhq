@@ -15,7 +15,7 @@ module Gitlab
 
         attr_reader :issuable_iid
 
-        HANDLER_REGEX = /\A#{HANDLER_ACTION_BASE_REGEX}-(?<incoming_email_token>.+)-issue-(?<issuable_iid>\d+)\z/.freeze
+        HANDLER_REGEX = /\A#{HANDLER_ACTION_BASE_REGEX}-(?<incoming_email_token>.+)-issue-(?<issuable_iid>\d+)\z/
 
         def initialize(mail, mail_key)
           super(mail, mail_key)

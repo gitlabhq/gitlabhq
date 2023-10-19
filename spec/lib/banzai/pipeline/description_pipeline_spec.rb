@@ -27,7 +27,7 @@ RSpec.describe Banzai::Pipeline::DescriptionPipeline, feature_category: :team_pl
     expect(doc.strip).to eq 'Description'
   end
 
-  %w(pre code img ol ul li).each do |elem|
+  %w[pre code img ol ul li].each do |elem|
     it "removes '#{elem}' elements" do
       act = "<#{elem}>Description</#{elem}>"
 
@@ -35,7 +35,7 @@ RSpec.describe Banzai::Pipeline::DescriptionPipeline, feature_category: :team_pl
     end
   end
 
-  %w(b i strong em a ins del sup sub).each do |elem|
+  %w[b i strong em a ins del sup sub].each do |elem|
     it "still allows '#{elem}' elements" do
       exp = act = "<#{elem}>Description</#{elem}>"
 

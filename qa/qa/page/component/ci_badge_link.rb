@@ -6,24 +6,24 @@ module QA
       module CiBadgeLink
         extend QA::Page::PageConcern
 
-        COMPLETED_STATUSES = %w[passed failed canceled blocked skipped manual].freeze # excludes created, pending, running
-        INCOMPLETE_STATUSES = %w[pending created running].freeze
+        COMPLETED_STATUSES = %w[Passed Failed Canceled Blocked Skipped Manual].freeze # excludes Created, Pending, Running
+        INCOMPLETE_STATUSES = %w[Pending Created Running].freeze
 
-        # e.g. def passed?(timeout: nil); status_badge == 'passed'; end
+        # e.g. def passed?(timeout: nil); status_badge == 'Passed'; end
         COMPLETED_STATUSES.map do |status|
-          define_method "#{status}?" do |timeout: nil|
+          define_method "#{status.downcase}?" do |timeout: nil|
             timeout ? completed?(timeout: timeout) : completed?
             status_badge == status
           end
 
           # has_passed? => passed?
           # has_failed? => failed?
-          alias_method :"has_#{status}?", :"#{status}?"
+          alias_method :"has_#{status.downcase}?", :"#{status.downcase}?"
         end
 
-        # e.g. def pending?; status_badge == 'pending'; end
+        # e.g. def pending?; status_badge == 'Pending'; end
         INCOMPLETE_STATUSES.map do |status|
-          define_method "#{status}?" do
+          define_method "#{status.downcase}?" do
             status_badge == status
           end
         end
@@ -32,12 +32,13 @@ module QA
           super
 
           base.view 'app/assets/javascripts/vue_shared/components/ci_badge_link.vue' do
-            element 'ci-badge-link'
+            element 'ci-badge-text'
           end
         end
 
         def status_badge
-          find_element('ci-badge-link').text
+          # There are more than 1 on job details page
+          all_elements('ci-badge-text', minimum: 1).first.text
         end
 
         def completed?(timeout: 60)

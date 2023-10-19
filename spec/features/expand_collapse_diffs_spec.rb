@@ -236,7 +236,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
       expect(page).to have_selector('.diff-content', count: 5)
       expect(page).to have_selector('.diff-collapsed', count: 5)
 
-      %w(file-95.txt file-96.txt file-97.txt file-98.txt file-99.txt).each do |filename|
+      %w[file-95.txt file-96.txt file-97.txt file-98.txt file-99.txt].each do |filename|
         expect(find("[data-blob-diff-path*='#{filename}']")).to have_selector('.diff-collapsed')
       end
     end
@@ -252,7 +252,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
       expect(page).to have_selector('.diff-content', count: 6)
       expect(page).to have_selector('.diff-collapsed', count: 2)
 
-      %w(file-4.txt file-5.txt).each do |filename|
+      %w[file-4.txt file-5.txt].each do |filename|
         expect(find("[data-blob-diff-path*='#{filename}']")).to have_selector('.diff-collapsed')
       end
     end

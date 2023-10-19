@@ -163,9 +163,9 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           it { is_expected.to eq([merge_request2]) }
 
           it 'queries merge_request_metrics.target_project_id table' do
-            expect(query.to_sql).to include(%{"merge_request_metrics"."target_project_id" = #{merge_request2.target_project_id}})
+            expect(query.to_sql).to include(%("merge_request_metrics"."target_project_id" = #{merge_request2.target_project_id}))
 
-            expect(query.to_sql).not_to include(%{"merge_requests"."target_project_id"})
+            expect(query.to_sql).not_to include(%("merge_requests"."target_project_id"))
           end
         end
       end
@@ -537,7 +537,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       context 'filtering by approved by username' do
         let(:params) { { approved_by_usernames: user2.username } }
 
-        where(:sort) { [nil] + %w(milestone merged_at merged_at_desc closed_at closed_at_desc) }
+        where(:sort) { [nil] + %w[milestone merged_at merged_at_desc closed_at closed_at_desc] }
 
         before do
           create(:approval, merge_request: merge_request3, user: user2)

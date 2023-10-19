@@ -1,2 +1,2 @@
 include:
-  template: Jobs/SAST-IaC.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml

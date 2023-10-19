@@ -204,7 +204,7 @@ For example, if:
 - The project is `gitlab.example.com/parent-group/sub-group/my-project`.
 - The Terraform module is `my-infra-package`.
 
-The project name must be unique in all projects in all groups under `parent-group`.
+The module name must be unique in all projects in all groups under `parent-group`.
 
 ## Delete a Terraform module
 

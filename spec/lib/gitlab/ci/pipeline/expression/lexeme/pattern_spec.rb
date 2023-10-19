@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern, feature_category: :continuous_integration do
   describe '#initialize' do
     context 'when the value is a valid regular expression' do
       it 'initializes the pattern' do
@@ -163,15 +163,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
       regexp = described_class.new('/abc/')
 
       expect(regexp.evaluate).to eq Gitlab::UntrustedRegexp.new('abc')
-    end
-
-    it 'raises error if evaluated regexp is not valid' do
-      allow(Gitlab::UntrustedRegexp::RubySyntax).to receive(:valid?).and_return(true)
-
-      regexp = described_class.new('/invalid ( .*/')
-
-      expect { regexp.evaluate }
-        .to raise_error(Gitlab::Ci::Pipeline::Expression::RuntimeError)
     end
   end
 end

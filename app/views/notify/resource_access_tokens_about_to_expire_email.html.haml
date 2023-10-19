@@ -11,3 +11,5 @@
 %p
   - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
   = html_escape(_('You can create a new one or check them in your %{link_start}access tokens%{link_end} settings.')) % { link_start: link_start, link_end: '</a>'.html_safe }
+%p
+  = @reason_text

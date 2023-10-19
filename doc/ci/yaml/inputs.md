@@ -14,6 +14,8 @@ and subject to change without notice.
 
 ## Define input parameters with `spec:inputs`
 
+> `description` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
+
 Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
 to a pipeline with `include`. Use [`include:inputs`](#set-input-parameter-values-with-includeinputs)
 to define the values to use when the pipeline runs.
@@ -41,6 +43,7 @@ When using `spec:inputs`:
 
 - Defined inputs are mandatory by default.
 - Inputs can be made optional by specifying a `default`. Use `default: null` to have no default value.
+- You can optionally use `description` to give a description to a specific input.
 - A string containing an interpolation block must not exceed 1 MB.
 - The string inside an interpolation block must not exceed 1 KB.
 
@@ -54,6 +57,7 @@ spec:
       default: 'test-user'
     flags:
       default: null
+      description: 'Sample description of the `flags` input detail.'
 ---
 
 # The pipeline configuration would follow...
@@ -63,7 +67,7 @@ In this example:
 
 - `website` is mandatory and must be defined.
 - `user` is optional. If not defined, the value is `test-user`.
-- `flags` is optional. If not defined, it has no value.
+- `flags` is optional. If not defined, it has no value. The optional description should give details about the input.
 
 ## Set input parameter values with `include:inputs`
 
@@ -85,8 +89,6 @@ include:
 In this example:
 
 - `website` has a value of `My website` for the included configuration.
-- `user` has a value of `test-user`, because that is the default when not specified.
-- `flags` has no value, because it is optional and has no default when not specified.
 
 ### Use `include:inputs` with multiple files
 
@@ -102,21 +104,37 @@ include:
       stage: my-stage
 ```
 
-You can also include the same file multiple times, with different inputs.
-For example:
+### Include the same file multiple times
+
+You can include the same file multiple times, with different inputs. However, if multiple jobs
+with the same name are added to one pipeline, each additional job overwrites the previous job
+with the same name. You must ensure the configuration prevents duplicate job names.
+
+For example, including the same configuration multiple times with different inputs:
 
 ```yaml
 include:
   - local: path/to/my-super-linter.yml
     inputs:
       type: docs
-      job-name: lint-docs
       lint-path: "doc/"
   - local: path/to/my-super-linter.yml
     inputs:
       type: yaml
-      job-name: lint-yaml
       lint-path: "data/yaml/"
+```
+
+The configuration in `path/to/my-super-linter.yml` ensures the job has a unique name
+each time it is included:
+
+```yaml
+spec:
+  inputs:
+    type:
+    lint-path:
+---
+"run-$[[ inputs.type ]]-lint":
+  script: ./lint --$[[ inputs.type ]] --path=$[[ inputs.lint-path ]]
 ```
 
 ## Specify functions to manipulate input values
@@ -140,21 +158,43 @@ Details:
 spec:
   inputs:
     test:
-      default: '0123456789'
+      default: 'test $MY_VAR'
 ---
 
 test-job:
-  script: echo $[[ inputs.test | truncate(1,3) ]]
+  script: echo $[[ inputs.test | expand_vars | truncate(5,8) ]]
 ```
 
-In this example:
+In this example, assuming the input uses the default value and `$MY_VAR` is an unmasked project variable with value `my value`:
 
-- The function [`truncate`](#truncate) applies to the value of `inputs.test`.
-- Assuming the value of `inputs.test` is `0123456789`, then the output of `script` would be `echo 123`.
+1. First, the function [`expand_vars`](#expand_vars) expands the value to `test my value`.
+1. Then [`truncate`](#truncate) applies to `test my value` with a character offset of `5` and length `8`.
+1. The output of `script` would be `echo my value`.
 
 ### Predefined interpolation functions
 
+#### `expand_vars`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
+
+Use `expand_vars` to expand [CI/CD variables](../variables/index.md) in the input value.
+
+Only variables you can [use with the `include` keyword](includes.md#use-variables-with-include) and which are
+**not** [masked](../variables/index.md#mask-a-cicd-variable) can be expanded.
+[Nested variable expansion](../variables/where_variables_can_be_used.md#nested-variable-expansion) is not supported.
+
+Example:
+
+```yaml
+$[[ inputs.test | expand_vars ]]
+```
+
+Assuming the value of `inputs.test` is `test $MY_VAR`, and the variable `$MY_VAR` is unmasked
+with a value of `my value`, then the output would be `test my value`.
+
 #### `truncate`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
 
 Use `truncate` to shorten the interpolated value. For example:
 

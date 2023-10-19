@@ -12,8 +12,7 @@ time_frame: all
 data_source: database
 data_category: optional
 instrumentation_class: CountConnectedAgentsMetric
-performance_indicator_type:
-- smau
+performance_indicator_type: []
 distribution:
 - ce
 - ee

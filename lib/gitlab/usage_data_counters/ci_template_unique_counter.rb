@@ -13,11 +13,7 @@ module Gitlab::UsageDataCounters
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: project.id)
 
         namespace = project.namespace
-        context = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                           event: event_name).to_context
-        label = 'redis_hll_counters.ci_templates.ci_templates_total_unique_counts_monthly'
-        Gitlab::Tracking.event(name, 'ci_templates_unique', namespace: namespace,
-                               project: project, context: [context], user: user, label: label)
+        Gitlab::InternalEvents.track_event('ci_template_included', namespace: namespace, project: project, user: user)
       end
 
       def ci_templates(relative_base = 'lib/gitlab/ci/templates')

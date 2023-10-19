@@ -76,7 +76,6 @@ module UsageDataHelpers
 
   USAGE_DATA_KEYS = %i(
     counts
-    counts_monthly
     recorded_at
     mattermost_enabled
     signup_enabled

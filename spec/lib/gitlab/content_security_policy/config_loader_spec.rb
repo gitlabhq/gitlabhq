@@ -577,17 +577,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
         end
       end
 
-      context 'when browsersdk_tracking is disabled' do
-        before do
-          stub_feature_flags(browsersdk_tracking: false)
-          stub_env('GITLAB_ANALYTICS_URL', analytics_url)
-        end
-
-        it 'does not add GITLAB_ANALYTICS_URL to connect-src' do
-          expect(connect_src).not_to include(analytics_url)
-        end
-      end
-
       context 'when GITLAB_ANALYTICS_URL is not set' do
         before do
           stub_env('GITLAB_ANALYTICS_URL', nil)

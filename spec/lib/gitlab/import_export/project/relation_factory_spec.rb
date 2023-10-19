@@ -335,17 +335,19 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
 
   context 'pipeline_schedule' do
     let(:relation_sym) { :pipeline_schedules }
+    let(:value) { true }
     let(:relation_hash) do
       {
-        "id": 3,
-        "created_at": "2016-07-22T08:55:44.161Z",
-        "updated_at": "2016-07-22T08:55:44.161Z",
-        "description": "pipeline schedule",
-        "ref": "main",
-        "cron": "0 4 * * 0",
-        "cron_timezone": "UTC",
-        "active": value,
-        "project_id": project.id
+        'id' => 3,
+        'created_at' => '2016-07-22T08:55:44.161Z',
+        'updated_at' => '2016-07-22T08:55:44.161Z',
+        'description' => 'pipeline schedule',
+        'ref' => 'main',
+        'cron' => '0 4 * * 0',
+        'cron_timezone' => 'UTC',
+        'active' => value,
+        'project_id' => project.id,
+        'owner_id' => non_existing_record_id
       }
     end
 
@@ -359,6 +361,10 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
           expect(created_object.active).to eq(false)
         end
       end
+    end
+
+    it 'sets importer user as owner' do
+      expect(created_object.owner_id).to eq(importer_user.id)
     end
   end
 

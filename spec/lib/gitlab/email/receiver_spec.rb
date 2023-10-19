@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Email::Receiver do
 
       metadata = receiver.mail_metadata
 
-      expect(metadata.keys).to match_array(%i(mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to meta received_recipients))
+      expect(metadata.keys).to match_array(%i(mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to meta received_recipients cc_address))
       expect(metadata[:meta]).to include(client_id: client_id, project: project.full_path)
       expect(metadata[meta_key]).to eq(meta_value)
     end
@@ -111,6 +111,24 @@ RSpec.describe Gitlab::Email::Receiver do
       describe 'it uses receive headers to find the key' do
         it_behaves_like 'successful receive'
       end
+    end
+
+    context 'when in a Cc header' do
+      let(:email_raw) do
+        <<~EMAIL
+        From: jake@example.com
+        To: to@example.com
+        Cc: incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com
+        Subject: Issue titile
+
+        Issue description
+        EMAIL
+      end
+
+      let(:meta_key) { :cc_address }
+      let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"] }
+
+      it_behaves_like 'successful receive'
     end
   end
 

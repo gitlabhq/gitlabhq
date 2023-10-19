@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::OldestPerCommitFinder do
+RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_review_workflow do
   describe '#execute' do
     it 'returns a Hash mapping commit SHAs to their oldest merge requests' do
       project = create(:project)
@@ -18,8 +18,8 @@ RSpec.describe MergeRequests::OldestPerCommitFinder do
         merge_commit_sha: sha3
       )
 
-      mr1_diff = create(:merge_request_diff, merge_request: mr1)
-      mr2_diff = create(:merge_request_diff, merge_request: mr2)
+      mr1_diff = mr1.merge_request_diff
+      mr2_diff = mr2.merge_request_diff
 
       create(:merge_request_diff_commit, merge_request_diff: mr1_diff, sha: sha1)
       create(:merge_request_diff_commit, merge_request_diff: mr2_diff, sha: sha1)
@@ -71,6 +71,7 @@ RSpec.describe MergeRequests::OldestPerCommitFinder do
       # This expectation is set so we're certain that the merge commit SHAs (if
       # a matching merge request is found) aren't also used for finding MRs
       # according to diffs.
+      #
       expect(MergeRequestDiffCommit)
         .not_to receive(:oldest_merge_request_id_per_commit)
 
@@ -116,6 +117,27 @@ RSpec.describe MergeRequests::OldestPerCommitFinder do
         .to eq(sha1 => mr, sha2 => mr)
     end
 
+    it 'includes a merge request for fast-forward merged MR' do
+      project = create(:project)
+      sha = Digest::SHA1.hexdigest('foo')
+      # When there is only a merged_commit_sha, then it means the MR was
+      # fast-forward merged without a squash, but possibly including a rebase.
+      mr = create(
+        :merge_request,
+        :merged,
+        target_project: project,
+        merged_commit_sha: sha
+      )
+
+      commits = [double(:commit1, id: sha)]
+
+      expect(MergeRequestDiffCommit)
+        .not_to receive(:oldest_merge_request_id_per_commit)
+
+      expect(described_class.new(project).execute(commits))
+        .to eq(sha => mr)
+    end
+
     it 'includes the oldest merge request when a merge commit is present in a newer merge request' do
       project = create(:project)
       sha = Digest::SHA1.hexdigest('foo')
@@ -126,9 +148,12 @@ RSpec.describe MergeRequests::OldestPerCommitFinder do
       )
 
       mr2 = create(:merge_request, :merged, target_project: project)
-      mr_diff = create(:merge_request_diff, merge_request: mr2)
 
-      create(:merge_request_diff_commit, merge_request_diff: mr_diff, sha: sha)
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: mr2.merge_request_diff,
+        sha: sha
+      )
 
       commits = [double(:commit, id: sha)]
 

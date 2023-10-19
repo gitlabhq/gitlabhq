@@ -32,7 +32,7 @@ module Banzai
             )
             \n\ *>>>\ *(?=\n$|\z)
           )
-      }mx.freeze
+      }mx
 
       def initialize(text, context = nil, result = nil)
         super text, context, result

@@ -12,7 +12,7 @@ For applications that use RSpec for running tests, we've introduced the `Verify/
 [template to run subsets of your test suite](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Verify/FailFast.gitlab-ci.yml),
 based on the changes in your merge request.
 
-The template uses the [`test_file_finder` (`tff`) gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder/)
+The template uses the [`test_file_finder` (`tff`) gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder)
 that accepts a list of files as input, and returns a list of spec (test) files
 that it believes to be relevant to the input files.
 

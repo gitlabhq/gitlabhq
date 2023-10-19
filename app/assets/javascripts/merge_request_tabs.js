@@ -93,7 +93,7 @@ function mountPipelines() {
   const { mrWidgetData } = gl;
   const table = new Vue({
     components: {
-      CommitPipelinesTable: () => {
+      MergeRequestPipelinesTable: () => {
         return gon.features.mrPipelinesGraphql
           ? import('~/ci/merge_requests/components/pipelines_table_wrapper.vue')
           : import('~/commit/pipelines/legacy_pipelines_table_wrapper.vue');
@@ -109,10 +109,10 @@ function mountPipelines() {
       manualActionsLimit: 50,
       mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
       sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
-      withFailedJobsDetails: true,
+      useFailedJobsWidget: gon.features?.ciJobFailuresInMr || false,
     },
     render(createElement) {
-      return createElement('commit-pipelines-table', {
+      return createElement('merge-request-pipelines-table', {
         props: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
           emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
@@ -347,11 +347,11 @@ export default class MergeRequestTabs {
         }
         // this.hideSidebar();
         this.resetViewContainer();
-        this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
+        this.mergeRequestPipelinesTable = destroyPipelines(this.mergeRequestPipelinesTable);
       } else if (action === 'new') {
         this.expandView();
         this.resetViewContainer();
-        this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
+        this.mergeRequestPipelinesTable = destroyPipelines(this.mergeRequestPipelinesTable);
       } else if (this.isDiffAction(action)) {
         if (!isInVueNoteablePage()) {
           /*
@@ -366,7 +366,7 @@ export default class MergeRequestTabs {
         }
         // this.hideSidebar();
         this.expandViewContainer();
-        this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
+        this.mergeRequestPipelinesTable = destroyPipelines(this.mergeRequestPipelinesTable);
         this.commitsTab.classList.remove('active');
       } else if (action === 'pipelines') {
         // this.hideSidebar();
@@ -384,7 +384,7 @@ export default class MergeRequestTabs {
 
         // this.showSidebar();
         this.resetViewContainer();
-        this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
+        this.mergeRequestPipelinesTable = destroyPipelines(this.mergeRequestPipelinesTable);
       }
 
       renderGFM(document.querySelector('.detail-page-description'));
@@ -522,7 +522,7 @@ export default class MergeRequestTabs {
   }
 
   mountPipelinesView() {
-    this.commitPipelinesTable = mountPipelines();
+    this.mergeRequestPipelinesTable = mountPipelines();
   }
 
   // load the diff tab content from the backend

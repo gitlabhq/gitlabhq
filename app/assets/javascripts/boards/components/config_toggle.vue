@@ -49,7 +49,7 @@ export default {
       v-gl-tooltip
       :title="tooltipTitle"
       :class="{ 'dot-highlight': hasScope || boardHasScope }"
-      data-qa-selector="boards_config_button"
+      data-testid="boards-config-button"
       @click.prevent="showPage"
     >
       {{ buttonText }}

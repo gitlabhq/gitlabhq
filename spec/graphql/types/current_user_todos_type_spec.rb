@@ -173,9 +173,7 @@ RSpec.describe GitlabSchema.types['CurrentUserTodos'] do
     end
 
     it 'returns correct data' do
-      result = execute_query(query_type,
-                             graphql: query_without_state_arguments,
-                             raise_on_error: true).to_h
+      result = execute_query(query_type, graphql: query_without_state_arguments, raise_on_error: true).to_h
 
       expect(result.dig('data', 'a', 'todos', 'nodes')).to contain_exactly(
         a_graphql_entity_for(todo_a),
@@ -198,9 +196,7 @@ RSpec.describe GitlabSchema.types['CurrentUserTodos'] do
     end
 
     it 'returns correct data, when state arguments are supplied' do
-      result = execute_query(query_type,
-                             raise_on_error: true,
-                             graphql: with_state_arguments).to_h
+      result = execute_query(query_type, raise_on_error: true, graphql: with_state_arguments).to_h
 
       expect(result.dig('data', 'a', 'todos', 'nodes')).to contain_exactly(
         a_graphql_entity_for(todo_a)

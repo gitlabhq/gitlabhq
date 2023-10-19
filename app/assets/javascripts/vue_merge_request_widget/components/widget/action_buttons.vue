@@ -1,12 +1,18 @@
 <script>
-import { GlButton, GlDropdown, GlDropdownItem, GlTooltipDirective } from '@gitlab/ui';
-import { sprintf, __ } from '~/locale';
+import {
+  GlButton,
+  GlDisclosureDropdown,
+  GlIcon,
+  GlLoadingIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 
 export default {
   components: {
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlIcon,
+    GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -29,10 +35,22 @@ export default {
     };
   },
   computed: {
-    dropdownLabel() {
-      if (!this.widget) return undefined;
-
-      return sprintf(__('%{widget} options'), { widget: this.widget });
+    dropdownItems() {
+      return this.tertiaryButtons.map((button) => {
+        return {
+          text: button.text,
+          href: button.href,
+          action: () => this.onClickAction(button),
+          icon: button.icon || button.iconName,
+          loading: button.loading,
+          extraAttrs: {
+            dataClipboardText: button.dataClipboardText,
+            dataMethod: button.dataMethod,
+            target: button.target,
+            disabled: button.disabled,
+          },
+        };
+      });
     },
   },
   methods: {
@@ -62,44 +80,31 @@ export default {
 
       return btn.tooltipText;
     },
-    actionButtonQaSelector(btn) {
-      if (btn.dataQaSelector) {
-        return btn.dataQaSelector;
-      }
-      return 'mr_widget_extension_actions_button';
-    },
   },
 };
 </script>
 
 <template>
   <div class="gl-display-flex gl-align-items-flex-start">
-    <gl-dropdown
-      v-gl-tooltip
-      :title="__('Options')"
-      :text="dropdownLabel"
+    <gl-disclosure-dropdown
+      :items="dropdownItems"
       icon="ellipsis_v"
       no-caret
       category="tertiary"
-      right
-      lazy
+      placement="right"
       text-sr-only
       size="small"
       toggle-class="gl-p-2!"
       class="gl-display-block gl-md-display-none!"
     >
-      <gl-dropdown-item
-        v-for="(btn, index) in tertiaryButtons"
-        :key="index"
-        :href="btn.href"
-        :target="btn.target"
-        :data-clipboard-text="btn.dataClipboardText"
-        :data-method="btn.dataMethod"
-        @click="onClickAction(btn)"
-      >
-        {{ btn.text }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      <template #list-item="{ item }">
+        <span class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
+          {{ item.text }}
+          <gl-loading-icon v-if="item.loading" size="sm" />
+          <gl-icon v-else-if="item.icon" :name="item.icon" />
+        </span>
+      </template>
+    </gl-disclosure-dropdown>
     <gl-button
       v-for="(btn, index) in tertiaryButtons"
       :id="btn.id"
@@ -110,9 +115,8 @@ export default {
       :target="btn.target"
       :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
       :data-clipboard-text="btn.dataClipboardText"
-      :data-qa-selector="actionButtonQaSelector(btn)"
       :data-method="btn.dataMethod"
-      :icon="btn.icon"
+      :icon="btn.icon || btn.iconName"
       :data-testid="btn.testId || 'extension-actions-button'"
       :variant="btn.variant || 'confirm'"
       :loading="btn.loading"

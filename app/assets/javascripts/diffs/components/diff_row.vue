@@ -248,7 +248,6 @@ export default {
           :class="$options.classNameMapCellLeft(props)"
           data-testid="left-line-number"
           class="diff-td diff-line-num"
-          data-qa-selector="new_diff_line_link"
         >
           <span
             v-if="
@@ -266,7 +265,6 @@ export default {
               :draggable="!props.line.left.commentsDisabled"
               type="button"
               class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button"
-              data-qa-selector="diff_comment_button"
               :disabled="props.line.left.commentsDisabled"
               :aria-disabled="props.line.left.commentsDisabled"
               @click="

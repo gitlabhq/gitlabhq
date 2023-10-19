@@ -13,6 +13,8 @@ instrumentation_class: RedisMetric
 options:
   prefix: note
   event: create_commit
+events:
+  - name: commit_note_created
 distribution:
 - ce
 - ee

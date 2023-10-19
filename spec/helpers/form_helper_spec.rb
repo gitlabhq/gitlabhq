@@ -67,11 +67,10 @@ RSpec.describe FormHelper do
 
     it 'renders an appropriately styled alert div' do
       model = double(errors: errors_stub('Error 1'))
+      alert_classes = "gl-alert gl-mb-5 gl-alert-danger gl-alert-not-dismissible gl-alert-has-title"
 
       expect(helper.form_errors(model))
-        .to include(
-          '<div class="gl-alert gl-mb-5 gl-alert-danger gl-alert-not-dismissible" id="error_explanation" role="alert">'
-        )
+        .to include("<div class=\"#{alert_classes}\" id=\"error_explanation\" role=\"alert\">")
     end
 
     it 'contains a summary message' do

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { s__ } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import RefSelector from '~/ref/components/ref_selector.vue';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { generateRefDestinationPath } from './ref_switcher_utils';
 
 Vue.use(Translate);
@@ -13,7 +13,7 @@ export default () => {
   const el = document.getElementById('js-blob-ref-switcher');
   if (!el) return false;
 
-  const { projectId, ref, namespace } = el.dataset;
+  const { projectId, ref, refType, namespace } = el.dataset;
 
   return new Vue({
     el,
@@ -21,7 +21,8 @@ export default () => {
       return createElement(RefSelector, {
         props: {
           projectId,
-          value: ref,
+          value: refType ? joinPaths('refs', refType, ref) : ref,
+          useSymbolicRefNames: Boolean(refType),
           translations: {
             dropdownHeader: REF_SWITCH_HEADER,
             searchPlaceholder: REF_SWITCH_HEADER,

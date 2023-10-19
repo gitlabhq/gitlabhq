@@ -1,12 +1,12 @@
 - expanded = integration_expanded?('snowplow_')
-%section.settings.as-snowplow.no-animate#js-snowplow-settings{ class: ('expanded' if expanded), data: { qa_selector: 'snowplow_settings_content' } }
+%section.settings.as-snowplow.no-animate#js-snowplow-settings{ class: ('expanded' if expanded), data: { testid: 'snowplow-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Snowplow')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
-      - help_link = link_to('', help_page_path('development/internal_analytics/snowplow/index'), target: '_blank', rel: 'noopener noreferrer')
+      - help_link = link_to('', help_page_path('development/internal_analytics/internal_event_instrumentation/index'), target: '_blank', rel: 'noopener noreferrer')
       - snowplow_link = link_to('', 'https://snowplow.io/', target: '_blank', rel: 'noopener noreferrer')
       = safe_format(_('Configure %{snowplow_link_start}Snowplow%{snowplow_link_end} to track events. %{help_link_start}Learn more.%{help_link_end}'), tag_pair(snowplow_link, :snowplow_link_start, :snowplow_link_end), tag_pair(help_link, :help_link_start, :help_link_end))
   .settings-content
@@ -15,7 +15,7 @@
 
       %fieldset
         .form-group
-          = f.gitlab_ui_checkbox_component :snowplow_enabled, _('Enable Snowplow tracking'), checkbox_options: { data: { qa_selector: 'snowplow_enabled_checkbox' } }
+          = f.gitlab_ui_checkbox_component :snowplow_enabled, _('Enable Snowplow tracking'), checkbox_options: { data: { testid: 'snowplow-enabled-checkbox' } }
         .form-group
           = f.label :snowplow_collector_hostname, _('Collector hostname'), class: 'label-light'
           = f.text_field :snowplow_collector_hostname, class: 'form-control gl-form-input', placeholder: 'snowplow.example.com'
@@ -32,4 +32,4 @@
           .form-text.text-muted
             = _('The Snowplow cookie domain.')
 
-      = f.submit _('Save changes'), data: { qa_selector: 'save_changes_button' }, pajamas_button: true
+      = f.submit _('Save changes'), data: { testid: 'save-changes-button' }, pajamas_button: true

@@ -1,7 +1,6 @@
 ---
 table_name: routes
 classes:
-- Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::Route
 - Route
 feature_categories:
 - groups_and_projects

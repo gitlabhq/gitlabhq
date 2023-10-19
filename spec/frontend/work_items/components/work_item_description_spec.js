@@ -13,9 +13,11 @@ import WorkItemDescription from '~/work_items/components/work_item_description.v
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
+  groupWorkItemByIidResponseFactory,
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
@@ -33,6 +35,7 @@ describe('WorkItemDescription', () => {
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   let workItemResponseHandler;
+  let groupWorkItemResponseHandler;
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
@@ -51,22 +54,28 @@ describe('WorkItemDescription', () => {
     canUpdate = true,
     workItemResponse = workItemByIidResponseFactory({ canUpdate }),
     isEditing = false,
+    isGroup = false,
     workItemIid = '1',
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
+    groupWorkItemResponseHandler = jest
+      .fn()
+      .mockResolvedValue(groupWorkItemByIidResponseFactory({ canUpdate }));
 
     const { id } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemDescription, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
+        [groupWorkItemByIidQuery, groupWorkItemResponseHandler],
         [updateWorkItemMutation, mutationHandler],
       ]),
       propsData: {
+        fullPath: 'test-project-path',
         workItemId: id,
         workItemIid,
       },
       provide: {
-        fullPath: 'test-project-path',
+        isGroup,
       },
     });
 
@@ -247,9 +256,31 @@ describe('WorkItemDescription', () => {
     });
   });
 
-  it('calls the work item query', async () => {
-    await createComponent();
+  describe('when project context', () => {
+    it('calls the project work item query', () => {
+      createComponent();
 
-    expect(workItemResponseHandler).toHaveBeenCalled();
+      expect(workItemResponseHandler).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work item query', () => {
+      createComponent();
+
+      expect(groupWorkItemResponseHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when group context', () => {
+    it('skips calling the project work item query', () => {
+      createComponent({ isGroup: true });
+
+      expect(workItemResponseHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls the group work item query', () => {
+      createComponent({ isGroup: true });
+
+      expect(groupWorkItemResponseHandler).toHaveBeenCalled();
+    });
   });
 });

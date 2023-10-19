@@ -8,8 +8,11 @@ export default {
   components: {
     AwardsList,
   },
-  inject: ['fullPath'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemIid: {
       type: String,
       required: true,

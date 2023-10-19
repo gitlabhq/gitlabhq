@@ -74,12 +74,12 @@ export default {
       default: 0,
     },
     issueId: {
-      type: Number,
+      type: String,
       required: false,
       default: null,
     },
     issueIid: {
-      type: Number,
+      type: String,
       required: false,
       default: null,
     },
@@ -362,7 +362,12 @@ export default {
             },
           },
           update: (cache, { data: { workItemCreate } }) =>
-            addHierarchyChild(cache, this.fullPath, String(this.issueIid), workItemCreate.workItem),
+            addHierarchyChild({
+              cache,
+              fullPath: this.fullPath,
+              iid: this.issueIid,
+              workItem: workItemCreate.workItem,
+            }),
         });
 
         const { workItem, errors } = data.workItemCreate;
@@ -392,7 +397,12 @@ export default {
           mutation: deleteWorkItemMutation,
           variables: { input: { id } },
           update: (cache) =>
-            removeHierarchyChild(cache, this.fullPath, String(this.issueIid), { id }),
+            removeHierarchyChild({
+              cache,
+              fullPath: this.fullPath,
+              iid: this.issueIid,
+              workItem: { id },
+            }),
         });
 
         if (data.workItemDelete.errors?.length) {

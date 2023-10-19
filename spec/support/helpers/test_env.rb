@@ -394,8 +394,11 @@ module TestEnv
   end
 
   def seed_db
+    # Adjust `deletion_except_tables` method to exclude seeded tables from
+    # record deletions.
     Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
     Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
+    Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter.upsert_restrictions
   end
 
   private

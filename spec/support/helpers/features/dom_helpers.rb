@@ -2,12 +2,12 @@
 
 module Features
   module DomHelpers
-    def find_by_testid(testid)
-      page.find("[data-testid='#{testid}']")
+    def find_by_testid(testid, **kwargs)
+      page.find("[data-testid='#{testid}']", **kwargs)
     end
 
-    def within_testid(testid, &block)
-      page.within("[data-testid='#{testid}']", &block)
+    def within_testid(testid, **kwargs, &block)
+      page.within("[data-testid='#{testid}']", **kwargs, &block)
     end
   end
 end

@@ -486,59 +486,6 @@ RSpec.shared_examples_for "bulk member creation" do
       end.to change { Member.count }.by(2)
     end
   end
-
-  context 'when `tasks_to_be_done` and `tasks_project_id` are passed' do
-    let(:task_project) { source.is_a?(Group) ? create(:project, group: source) : source }
-
-    it 'creates a member_task with the correct attributes', :aggregate_failures do
-      members = described_class.add_members(source, [user1], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: task_project.id)
-      member = members.last
-
-      expect(member.tasks_to_be_done).to match_array([:ci, :code])
-      expect(member.member_task.project).to eq(task_project)
-    end
-
-    context 'with an already existing member' do
-      before do
-        source.add_member(user1, :developer)
-      end
-
-      it 'does not update tasks to be done if tasks already exist', :aggregate_failures do
-        member = source.members.find_by(user_id: user1.id)
-        create(:member_task, member: member, project: task_project, tasks_to_be_done: %w(code ci))
-
-        expect do
-          described_class.add_members(
-            source,
-            [user1.id],
-            :developer,
-            tasks_to_be_done: %w(issues),
-            tasks_project_id: task_project.id
-          )
-        end.not_to change { MemberTask.count }
-
-        member.reset
-        expect(member.tasks_to_be_done).to match_array([:code, :ci])
-        expect(member.member_task.project).to eq(task_project)
-      end
-
-      it 'adds tasks to be done if they do not exist', :aggregate_failures do
-        expect do
-          described_class.add_members(
-            source,
-            [user1.id],
-            :developer,
-            tasks_to_be_done: %w(issues),
-            tasks_project_id: task_project.id
-          )
-        end.to change { MemberTask.count }.by(1)
-
-        member = source.members.find_by(user_id: user1.id)
-        expect(member.tasks_to_be_done).to match_array([:issues])
-        expect(member.member_task.project).to eq(task_project)
-      end
-    end
-  end
 end
 
 RSpec.shared_examples 'owner management' do

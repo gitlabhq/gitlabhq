@@ -640,7 +640,7 @@ export const mockPipeline = (projectPath) => {
       triggered_by: null,
       triggered: [],
     },
-    pipelineScheduleUrl: 'foo',
+    pipelineSchedulesPath: 'foo',
     pipelineKey: 'id',
     viewType: 'root',
   };
@@ -865,7 +865,7 @@ export const mockPipelineTag = () => {
       triggered_by: null,
       triggered: [],
     },
-    pipelineScheduleUrl: 'foo',
+    pipelineSchedulesPath: 'foo',
     pipelineKey: 'id',
     viewType: 'root',
   };
@@ -1072,7 +1072,7 @@ export const mockPipelineBranch = () => {
       triggered_by: null,
       triggered: [],
     },
-    pipelineScheduleUrl: 'foo',
+    pipelineSchedulesPath: 'foo',
     pipelineKey: 'id',
     viewType: 'root',
   };

@@ -80,13 +80,12 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
         .to receive(:each_milestone)
         .and_return([milestone])
 
-      expect(Gitlab::Import::Logger).to receive(:error)
+      expect(Gitlab::GithubImport::Logger).to receive(:error)
         .with(
-          import_type: :github,
           project_id: project.id,
           importer: described_class.name,
           message: ["Title can't be blank"],
-          github_identifiers: { iid: 2, object_type: :milestone, title: nil }
+          external_identifiers: { iid: 2, object_type: :milestone, title: nil }
         )
 
       rows, errors = importer.build_milestones

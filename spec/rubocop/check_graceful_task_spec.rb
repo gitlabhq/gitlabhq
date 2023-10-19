@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'stringio'
-
-require_relative '../support/helpers/next_instance_of'
+require 'rubocop_spec_helper'
 require_relative '../../rubocop/check_graceful_task'
 
 RSpec.describe RuboCop::CheckGracefulTask do
-  include NextInstanceOf
-
   let(:output) { StringIO.new }
 
   subject(:task) { described_class.new(output) }
@@ -119,9 +114,9 @@ RSpec.describe RuboCop::CheckGracefulTask do
     end
 
     context 'with args' do
-      let(:args) { %w[a.rb Lint/EmptyFile b.rb Lint/Syntax] }
+      let(:args) { %w[Lint/EmptyFile Lint/Syntax] }
 
-      it_behaves_like 'rubocop scan', rubocop_args: %w[--only Lint/EmptyFile,Lint/Syntax a.rb b.rb]
+      it_behaves_like 'rubocop scan', rubocop_args: %w[--only Lint/EmptyFile,Lint/Syntax]
 
       it 'does not notify slack' do
         expect(Gitlab::Popen).not_to receive(:popen)

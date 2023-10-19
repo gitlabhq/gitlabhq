@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -118,8 +118,8 @@ For each attribute:
 1. Select **Ok**.
 
 If your SAML configuration differs from [the recommended SAML settings](index.md#azure), select the mapping
-attributes and modify them accordingly. In particular, the `objectId` source attribute must map to the `externalId`
-target attribute.
+attributes and modify them accordingly. The source attribute that you map to the `externalId`
+target attribute must match the attribute used for the SAML `NameID`.
 
 If a mapping is not listed in the table, use the Azure Active Directory defaults. For a list of required attributes,
 refer to the [internal group SCIM API](../../../development/internal_api/index.md#group-scim-api) documentation.
@@ -161,8 +161,6 @@ To configure Okta for SCIM:
 1. Assign users in the **Assignments** tab. Assigned users are created and managed in your GitLab group.
 
 ## User access
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an [**Enterprise**](../../enterprise_user/index.md) badge in the **Members** view.
 
 During the synchronization process, all new users:
 

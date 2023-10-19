@@ -17,7 +17,7 @@ module Gitlab
       class BatchOptimizer
         # Target time efficiency for a job
         # Time efficiency is defined as: job duration / interval
-        TARGET_EFFICIENCY = (0.9..0.95).freeze
+        TARGET_EFFICIENCY = (0.9..0.95)
 
         # Lower and upper bound for the batch size
         MIN_BATCH_SIZE = 1_000

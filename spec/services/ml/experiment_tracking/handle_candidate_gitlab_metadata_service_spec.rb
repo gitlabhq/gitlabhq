@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ml::ExperimentTracking::HandleCandidateGitlabMetadataService, feature_category: :experimentation_activation do
+RSpec.describe ::Ml::ExperimentTracking::HandleCandidateGitlabMetadataService, feature_category: :activation do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.owner }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }

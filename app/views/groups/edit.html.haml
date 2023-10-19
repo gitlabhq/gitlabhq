@@ -49,7 +49,7 @@
 = render_if_exists 'groups/templates_setting', expanded: expanded
 = render_if_exists 'shared/groups/max_pages_size_setting'
 
-%section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded), data: { qa_selector: 'advanced_settings_content' } }
+%section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded), data: { testid: 'advanced-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Advanced')

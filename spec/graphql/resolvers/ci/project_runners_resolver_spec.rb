@@ -7,8 +7,13 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
 
   describe '#resolve' do
     subject(:resolve_scope) do
-      resolve(described_class, obj: obj, ctx: { current_user: user }, args: args,
-                               arg_style: :internal)
+      resolve(
+        described_class,
+        obj: obj,
+        ctx: { current_user: user },
+        args: args,
+        arg_style: :internal
+      )
     end
 
     include_context 'runners resolver setup'
@@ -77,8 +82,10 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
       end
 
       it 'calls RunnersFinder with expected arguments' do
-        allow(::Ci::RunnersFinder).to receive(:new).with(current_user: user,
-                                                         params: expected_params).once.and_return(finder)
+        allow(::Ci::RunnersFinder).to receive(:new).with(
+          current_user: user, params: expected_params
+        ).once.and_return(finder)
+
         allow(finder).to receive(:execute).once.and_return([:execute_return_value])
 
         expect(resolve_scope.items.to_a).to contain_exactly(:execute_return_value)

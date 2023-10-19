@@ -94,7 +94,7 @@ Filling in the form and selecting the **Add status check** button creates a new 
 
 ### Update a status check service
 
-Within the **Status checks** sub-section, select the **Edit** button
+Within the **Status checks** sub-section, select **Edit** (**{pencil}**)
 next to the status check you want to edit.
 The **Update status check** form is then shown.
 
@@ -137,7 +137,7 @@ you can select the **All branches** option.
 
 ## Delete a status check service
 
-Within the **Status checks** sub-section, select the **Remove...** button
+Within the **Status checks** sub-section, select **Remove** (**{remove}**)
 next to the status check you want to delete.
 The **Remove status check?** modal is then shown.
 

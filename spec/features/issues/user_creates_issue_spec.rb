@@ -4,12 +4,9 @@ require "spec_helper"
 
 RSpec.describe "User creates issue", feature_category: :team_planning do
   include DropzoneHelper
-  include ContentEditorHelpers
 
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
-
-  let(:visible_label_selection_on_metadata) { false }
 
   context "when unauthenticated" do
     before do
@@ -37,12 +34,10 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
 
   context "when signed in as guest", :js do
     before do
-      stub_feature_flags(visible_label_selection_on_metadata: visible_label_selection_on_metadata)
       project.add_guest(user)
       sign_in(user)
 
       visit(new_project_issue_path(project))
-      close_rich_text_promo_popover_if_present
     end
 
     context 'available metadata' do
@@ -89,7 +84,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     end
 
     context "with labels" do
-      let(:label_titles) { %w(bug feature enhancement) }
+      let(:label_titles) { %w[bug feature enhancement] }
 
       before do
         label_titles.each do |title|
@@ -97,50 +92,28 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         end
       end
 
-      context 'with the visible_label_selection_on_metadata feature flag enabled' do
-        let(:visible_label_selection_on_metadata) { true }
+      it "creates issue" do
+        issue_title = "500 error on profile"
 
-        it "creates issue" do
-          issue_title = "500 error on profile"
+        fill_in("Title", with: issue_title)
 
-          fill_in("Title", with: issue_title)
+        click_button _('Select label')
 
-          click_button _('Select label')
+        wait_for_all_requests
 
-          wait_for_all_requests
+        page.within '[data-testid="sidebar-labels"]' do
+          click_button label_titles.first
+          click_button _('Close')
 
-          page.within '[data-testid="sidebar-labels"]' do
-            click_button label_titles.first
-            click_button _('Close')
-
-            wait_for_requests
-          end
-
-          click_button("Create issue")
-
-          expect(page).to have_content(issue_title)
-                      .and have_content(user.name)
-                      .and have_content(project.name)
-                      .and have_content(label_titles.first)
+          wait_for_requests
         end
-      end
 
-      context 'with the visible_label_selection_on_metadata feature flag disabled' do
-        let(:visible_label_selection_on_metadata) { false }
+        click_button("Create issue")
 
-        it "creates issue" do
-          issue_title = "500 error on profile"
-
-          fill_in("Title", with: issue_title)
-          click_button("Label")
-          click_link(label_titles.first)
-          click_button("Create issue")
-
-          expect(page).to have_content(issue_title)
-                      .and have_content(user.name)
-                      .and have_content(project.name)
-                      .and have_content(label_titles.first)
-        end
+        expect(page).to have_content(issue_title)
+                    .and have_content(user.name)
+                    .and have_content(project.name)
+                    .and have_content(label_titles.first)
       end
     end
 

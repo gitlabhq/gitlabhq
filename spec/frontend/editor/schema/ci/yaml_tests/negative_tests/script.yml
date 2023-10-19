@@ -1,0 +1,14 @@
+script: echo "invalid global script"
+
+default:
+  before_script: 0.1
+  after_script: 1
+
+invalid_script_type:
+  script: true
+
+empty_array_script:
+  script: []
+
+empty_string_script:
+  script: ""

@@ -465,6 +465,6 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       expect(results.objects(scope)).to match_array([milestone_1, milestone_2, milestone_3])
     end
 
-    include_examples 'search results filtered by archived', 'search_milestones_hide_archived_projects'
+    include_examples 'search results filtered by archived'
   end
 end

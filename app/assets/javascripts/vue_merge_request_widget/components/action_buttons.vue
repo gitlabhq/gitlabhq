@@ -83,12 +83,6 @@ export default {
 
       return btn.tooltipText;
     },
-    actionButtonQaSelector(btn) {
-      if (btn.dataQaSelector) {
-        return btn.dataQaSelector;
-      }
-      return 'mr_widget_extension_actions_button';
-    },
   },
 };
 </script>
@@ -105,7 +99,6 @@ export default {
           :target="btn.target"
           :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
           :data-clipboard-text="btn.dataClipboardText"
-          :data-qa-selector="actionButtonQaSelector(btn)"
           :data-method="btn.dataMethod"
           :icon="btn.icon"
           :data-testid="btn.testId || 'extension-actions-button'"
@@ -157,9 +150,8 @@ export default {
           :title="setTooltip(btn)"
           :href="btn.href"
           :target="btn.target"
-          :class="[{ 'gl-mr-1': index !== tertiaryButtons.length - 1 }, btn.class]"
+          :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
           :data-clipboard-text="btn.dataClipboardText"
-          :data-qa-selector="actionButtonQaSelector(btn)"
           :data-method="btn.dataMethod"
           :icon="btn.icon"
           :data-testid="btn.testId || 'extension-actions-button'"

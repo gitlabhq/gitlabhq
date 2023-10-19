@@ -6,7 +6,7 @@ import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '~/ci/pipeline_details/constants';
 import getPipelineQuery from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
-import { reportToSentry, reportMessageToSentry } from '~/ci/utils';
+import { reportToSentry } from '~/ci/utils';
 import DismissPipelineGraphCallout from './graphql/mutations/dismiss_pipeline_notification.graphql';
 import {
   ACTION_FAILURE,
@@ -156,17 +156,7 @@ export default {
       error(err) {
         this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
 
-        reportMessageToSentry(
-          this.$options.name,
-          `| type: ${LOAD_FAILURE} , info: ${JSON.stringify(err)}`,
-          {
-            graphViewType: this.graphViewType,
-            graphqlResourceEtag: this.graphqlResourceEtag,
-            metricsPath: this.metricsPath,
-            projectPath: this.pipelineProjectPath,
-            pipelineIid: this.pipelineIid,
-          },
-        );
+        reportToSentry(this.$options.name, new Error(err));
       },
       result({ data, error }) {
         const stages = data?.project?.pipeline?.stages?.nodes || [];

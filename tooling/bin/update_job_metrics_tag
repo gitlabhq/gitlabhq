@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/tooling/job_metrics'
+
+unless ENV['CI_JOB_METRICS_ENABLED'] == 'true'
+  puts "[job-metrics] Feature disabled because CI_JOB_METRICS_ENABLED is not set to true."
+  exit 0
+end
+
+tag_name  = ARGV.shift
+tag_value = ARGV.shift
+
+if tag_name.nil? || tag_value.nil?
+  puts 'usage: update_job_metric_tag <tag_name> <tag_value>'
+  exit 1
+end
+
+puts "[job-metrics] Updating job metrics tag for the CI/CD job."
+Tooling::JobMetrics.new.update_tag(tag_name, tag_value)

@@ -33,15 +33,15 @@ RSpec.describe 'Enumerator#next patch fix' do
     end
 
     def have_been_raised_by_next_and_not_fixed_up
-      contain_unique_method_calls_in_order %w(call_enum_method)
+      contain_unique_method_calls_in_order %w[call_enum_method]
     end
 
     def have_been_raised_by_enum_object_and_fixed_up
-      contain_unique_method_calls_in_order %w(make_error call_enum_method)
+      contain_unique_method_calls_in_order %w[make_error call_enum_method]
     end
 
     def have_been_raised_by_nested_next_and_fixed_up
-      contain_unique_method_calls_in_order %w(call_nested_next call_enum_method)
+      contain_unique_method_calls_in_order %w[call_nested_next call_enum_method]
     end
 
     methods = [

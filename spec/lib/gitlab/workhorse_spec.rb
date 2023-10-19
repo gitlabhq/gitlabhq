@@ -371,50 +371,13 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
 
     subject(:cleanup_key) { described_class.cleanup_key(key) }
 
-    shared_examples 'cleans up key' do |redis = Gitlab::Redis::Workhorse|
-      before do
-        described_class.set_key_and_notify(key, value)
-      end
-
-      it 'deletes the key' do
-        expect { cleanup_key }
-          .to change { redis.with { |c| c.exists?(key) } }.from(true).to(false)
-      end
+    before do
+      described_class.set_key_and_notify(key, value)
     end
 
-    it_behaves_like 'cleans up key'
-
-    context 'when workhorse migration feature flags are disabled' do
-      before do
-        stub_feature_flags(
-          use_primary_and_secondary_stores_for_workhorse: false,
-          use_primary_store_as_default_for_workhorse: false
-        )
-      end
-
-      it_behaves_like 'cleans up key', Gitlab::Redis::SharedState
-    end
-
-    context 'when either workhorse migration feature flags are enabled' do
-      context 'when use_primary_and_secondary_stores_for_workhorse is enabled' do
-        before do
-          stub_feature_flags(
-            use_primary_store_as_default_for_workhorse: false
-          )
-        end
-
-        it_behaves_like 'cleans up key'
-      end
-
-      context 'when use_primary_store_as_default_for_workhorse is enabled' do
-        before do
-          stub_feature_flags(
-            use_primary_and_secondary_stores_for_workhorse: false
-          )
-        end
-
-        it_behaves_like 'cleans up key'
-      end
+    it 'deletes the key' do
+      expect { cleanup_key }
+        .to change { Gitlab::Redis::Workhorse.with { |c| c.exists?(key) } }.from(true).to(false)
     end
   end
 
@@ -424,13 +387,13 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
 
     subject { described_class.set_key_and_notify(key, value, overwrite: overwrite) }
 
-    shared_examples 'set and notify' do |redis = Gitlab::Redis::Workhorse|
+    shared_examples 'set and notify' do
       it 'set and return the same value' do
         is_expected.to eq(value)
       end
 
       it 'set and notify' do
-        expect(redis).to receive(:with).and_call_original
+        expect(Gitlab::Redis::Workhorse).to receive(:with).and_call_original
         expect_any_instance_of(::Redis).to receive(:publish)
           .with(described_class::NOTIFICATION_PREFIX + 'test-key', "test-value")
 
@@ -442,39 +405,6 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
       let(:overwrite) { true }
 
       it_behaves_like 'set and notify'
-
-      context 'when workhorse migration feature flags are disabled' do
-        before do
-          stub_feature_flags(
-            use_primary_and_secondary_stores_for_workhorse: false,
-            use_primary_store_as_default_for_workhorse: false
-          )
-        end
-
-        it_behaves_like 'set and notify', Gitlab::Redis::SharedState
-      end
-
-      context 'when either workhorse migration feature flags are enabled' do
-        context 'when use_primary_and_secondary_stores_for_workhorse is enabled' do
-          before do
-            stub_feature_flags(
-              use_primary_store_as_default_for_workhorse: false
-            )
-          end
-
-          it_behaves_like 'set and notify'
-        end
-
-        context 'when use_primary_store_as_default_for_workhorse is enabled' do
-          before do
-            stub_feature_flags(
-              use_primary_and_secondary_stores_for_workhorse: false
-            )
-          end
-
-          it_behaves_like 'set and notify'
-        end
-      end
     end
 
     context 'when we set an existing key' do

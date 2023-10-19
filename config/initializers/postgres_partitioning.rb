@@ -8,6 +8,7 @@ Gitlab::Database::Partitioning.register_models(
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     Ci::RunnerManagerBuild,
     Ci::JobAnnotation,
+    Ci::BuildMetadata,
     BatchedGitRefUpdates::Deletion,
     Users::ProjectVisit,
     Users::GroupVisit
@@ -19,7 +20,8 @@ if Gitlab.ee?
       IncidentManagement::PendingEscalations::Alert,
       IncidentManagement::PendingEscalations::Issue,
       Security::Finding,
-      Analytics::ValueStreamDashboard::Count
+      Analytics::ValueStreamDashboard::Count,
+      Ci::FinishedBuildChSyncEvent
     ])
 else
   Gitlab::Database::Partitioning.register_tables(

@@ -6,7 +6,7 @@ module Gitlab
       module Pipeline
         class Delayed < Status::Extended
           def text
-            s_('CiStatusText|delayed')
+            s_('CiStatusText|Delayed')
           end
 
           def label

@@ -59,7 +59,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     let(:query) { 'foo' }
     let(:scope) { 'milestones' }
 
-    include_examples 'search results filtered by archived', 'search_milestones_hide_archived_projects'
+    include_examples 'search results filtered by archived'
   end
 
   describe '#projects' do

@@ -35,7 +35,7 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   end
 
   context 'for web IDE edit actions' do
-    let(:action) { described_class::EDIT_BY_WEB_IDE }
+    let(:event) { described_class::EDIT_BY_WEB_IDE }
 
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   end
 
   context 'for SFE edit actions' do
-    let(:action) { described_class::EDIT_BY_SFE }
+    let(:event) { described_class::EDIT_BY_SFE }
 
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   end
 
   context 'for snippet editor edit actions' do
-    let(:action) { described_class::EDIT_BY_SNIPPET_EDITOR }
+    let(:event) { described_class::EDIT_BY_SNIPPET_EDITOR }
 
     it_behaves_like 'tracks and counts action' do
       def track_action(params)

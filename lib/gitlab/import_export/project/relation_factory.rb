@@ -194,6 +194,7 @@ module Gitlab
 
         def setup_pipeline_schedule
           @relation_hash['active'] = false
+          @relation_hash['owner_id'] = @user.id
         end
 
         def setup_merge_request

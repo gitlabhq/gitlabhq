@@ -1,11 +1,11 @@
 ---
-stage: Analyze
-group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../internal_event_instrumentation/event_definition_guide.md'
+remove_date: '2023-12-27'
 ---
 
-# Internal event tracking definition guide
+This document was moved to [another location](../internal_event_instrumentation/event_definition_guide.md).
 
-This page is under construction. It serves as placeholder for the following information.
-
-- Explanation of all parts of an event definition
+<!-- This redirect file can be deleted after <2023-12-27>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

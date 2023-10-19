@@ -55,6 +55,10 @@
   padding-right: 0;
   z-index: $zindex-dropdown-menu;
 
+  .inline-block {
+    @include gl-display-inline-block;
+  }
+
   &.right-sidebar-merge-requests {
     width: $right-sidebar-width;
 
@@ -73,8 +77,16 @@
     }
   }
 
-  &:not(.is-merge-request) {
+  &:not(.is-merge-request):not(.build-sidebar) {
     @include media-breakpoint-up(md) {
+      .content-wrapper {
+        padding-right: $right-sidebar-width;
+      }
+    }
+  }
+
+  &.build-sidebar {
+    @include media-breakpoint-up(lg) {
       .content-wrapper {
         padding-right: $right-sidebar-width;
       }

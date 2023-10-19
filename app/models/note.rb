@@ -26,7 +26,7 @@ class Note < ApplicationRecord
   include IgnorableColumns
   include Spammable
 
-  ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
+  ignore_column :id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/
 
@@ -105,7 +105,7 @@ class Note < ApplicationRecord
   validates :note, presence: true
   validates :note, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
   validates :project, presence: true, if: :for_project_noteable?
-  validates :namespace, presence: true
+  validates :namespace, presence: true, unless: :for_abuse_report?
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -383,7 +383,7 @@ class Note < ApplicationRecord
   end
 
   def for_project_noteable?
-    !for_personal_snippet?
+    !(for_personal_snippet? || for_abuse_report?)
   end
 
   def for_design?
@@ -392,6 +392,10 @@ class Note < ApplicationRecord
 
   def for_issuable?
     for_issue? || for_merge_request?
+  end
+
+  def for_abuse_report?
+    noteable_type == AbuseReport.name
   end
 
   def skip_project_check?
@@ -830,7 +834,11 @@ class Note < ApplicationRecord
   def ensure_namespace_id
     return if namespace_id.present? && !noteable_changed? && !project_changed?
 
-    self.namespace_id = if for_project_noteable?
+    self.namespace_id = if for_issue?
+                          # Some issues are not project noteables (e.g. group-level work items)
+                          # so we need this separate condition
+                          noteable&.namespace_id
+                        elsif for_project_noteable?
                           project&.project_namespace_id
                         elsif for_personal_snippet?
                           noteable&.author&.namespace&.id

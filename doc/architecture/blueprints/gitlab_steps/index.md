@@ -3,7 +3,7 @@ status: proposed
 creation-date: "2023-08-23"
 authors: [ "@ayufan" ]
 coach: "@grzegorz"
-approvers: [ "@dhershkovitch", "@DarrenEastman", "@marknuzzo", "@nicolewilliams" ]
+approvers: [ "@dhershkovitch", "@DarrenEastman", "@cheryl.li" ]
 owning-stage: "~devops::verify"
 participating-stages: [ ]
 ---
@@ -15,7 +15,7 @@ participating-stages: [ ]
 This document describes architecture of a new component called Step Runner, the GitLab Steps syntax it uses,
 and how the GitHub Actions support will be achieved.
 
-The competitive CI products [drone.io](https://drone.io),
+The competitive CI products [drone.io](https://drone.io/),
 [GitHub Actions](https://docs.github.com/en/actions/creating-actions)
 have a composable CI jobs execution in form of steps, or actions.
 
@@ -139,4 +139,4 @@ TBD
 
 ## References
 
-- [GitLab Issue #215511](https://gitlab.com/gitlab-org/gitlab/-/issues/215511)
+- [GitLab Epic 11535](https://gitlab.com/groups/gitlab-org/-/epics/11535)

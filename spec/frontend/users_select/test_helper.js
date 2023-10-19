@@ -147,6 +147,7 @@ export const createInputsModelExpectation = (users) =>
       name: user.name,
       show_status: user.show_status.toString(),
       state: user.state,
+      locked: user.locked.toString(),
       username: user.username,
       web_url: user.web_url,
     },

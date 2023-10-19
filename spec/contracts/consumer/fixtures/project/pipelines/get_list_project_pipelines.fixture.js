@@ -68,7 +68,7 @@ const body = {
         }),
         text: Matchers.term({
           matcher: PIPELINE_TEXTS,
-          generate: 'running',
+          generate: 'Running',
         }),
         label: Matchers.term({
           matcher: PIPELINE_LABELS,
@@ -103,7 +103,7 @@ const body = {
           }),
           text: Matchers.term({
             matcher: PIPELINE_TEXTS,
-            generate: 'passed',
+            generate: 'Passed',
           }),
           label: Matchers.term({
             matcher: PIPELINE_LABELS,

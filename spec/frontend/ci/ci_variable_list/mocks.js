@@ -189,7 +189,6 @@ export const createProjectProps = () => {
     componentName: 'ProjectVariable',
     entity: 'project',
     fullPath: '/namespace/project/',
-    hasEnvScopeQuery: true,
     id: 'gid://gitlab/Project/20',
     mutationData: {
       [ADD_MUTATION_ACTION]: addProjectVariable,
@@ -214,7 +213,6 @@ export const createGroupProps = () => {
     componentName: 'GroupVariable',
     entity: 'group',
     fullPath: '/my-group',
-    hasEnvScopeQuery: false,
     id: 'gid://gitlab/Group/20',
     mutationData: {
       [ADD_MUTATION_ACTION]: addGroupVariable,
@@ -233,7 +231,6 @@ export const createGroupProps = () => {
 export const createInstanceProps = () => {
   return {
     componentName: 'InstanceVariable',
-    hasEnvScopeQuery: false,
     entity: '',
     mutationData: {
       [ADD_MUTATION_ACTION]: addAdminVariable,

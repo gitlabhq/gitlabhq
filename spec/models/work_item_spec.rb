@@ -287,7 +287,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
       it_behaves_like 'internal event tracking' do
         let(:work_item) { create(:work_item) }
-        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
+        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
         let(:project) { work_item.project }
         let(:user) { work_item.author }
         let(:namespace) { project.namespace }
@@ -712,6 +712,29 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         expect(authorized_item_a.linked_work_items(authorize: false))
           .to contain_exactly(authorized_item_b, authorized_item_c, unauthorized_item)
       end
+    end
+
+    context 'when work item is a new record' do
+      let(:new_work_item) { build(:work_item, project: authorized_project) }
+
+      it { expect(new_work_item.linked_work_items(user)).to be_empty }
+    end
+  end
+
+  describe '#linked_items_count' do
+    let_it_be(:item1) { create(:work_item, :issue, project: reusable_project) }
+    let_it_be(:item2) { create(:work_item, :issue, project: reusable_project) }
+    let_it_be(:item3) { create(:work_item, :issue, project: reusable_project) }
+    let_it_be(:item4) { build(:work_item, :issue, project: reusable_project) }
+
+    it 'returns number of items linked to the work item' do
+      create(:work_item_link, source: item1, target: item2)
+      create(:work_item_link, source: item1, target: item3)
+
+      expect(item1.linked_items_count).to eq(2)
+      expect(item2.linked_items_count).to eq(1)
+      expect(item3.linked_items_count).to eq(1)
+      expect(item4.linked_items_count).to eq(0)
     end
   end
 end

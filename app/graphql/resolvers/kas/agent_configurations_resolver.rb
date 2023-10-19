@@ -3,7 +3,7 @@
 module Resolvers
   module Kas
     class AgentConfigurationsResolver < BaseResolver
-      type Types::Kas::AgentConfigurationType, null: true
+      type Types::Kas::AgentConfigurationType.connection_type, null: true
 
       # Calls Gitaly via KAS
       calls_gitaly!

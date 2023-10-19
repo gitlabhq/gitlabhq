@@ -4,9 +4,10 @@ import { produce } from 'immer';
 
 import { s__ } from '~/locale';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import createWorkItemTodosMutation from '~/work_items/graphql/create_work_item_todos.mutation.graphql';
-import markDoneWorkItemTodosMutation from '~/work_items/graphql/mark_done_work_item_todos.mutation.graphql';
+import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
+import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import createWorkItemTodosMutation from '../graphql/create_work_item_todos.mutation.graphql';
+import markDoneWorkItemTodosMutation from '../graphql/mark_done_work_item_todos.mutation.graphql';
 
 import {
   TODO_ADD_ICON,
@@ -28,6 +29,7 @@ export default {
     GlIcon,
     GlButton,
   },
+  inject: ['isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -148,7 +150,7 @@ export default {
     },
     updateWorkItemCurrentTodosWidgetCache({ cache, todos }) {
       const query = {
-        query: workItemByIidQuery,
+        query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
         variables: { fullPath: this.workItemFullpath, iid: this.workItemIid },
       };
 

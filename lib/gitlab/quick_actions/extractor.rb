@@ -20,7 +20,7 @@ module Gitlab
           .+?
           \n```$
         )
-      }mix.freeze
+      }mix
 
       INLINE_CODE_REGEX = %r{
         (?<inline_code>
@@ -31,7 +31,7 @@ module Gitlab
 
           `.+?`
         )
-      }mix.freeze
+      }mix
 
       HTML_BLOCK_REGEX = %r{
         (?<html>
@@ -44,7 +44,7 @@ module Gitlab
           .+?
           \n<\/[^>]+?>$
         )
-      }mix.freeze
+      }mix
 
       QUOTE_BLOCK_REGEX = %r{
         (?<html>
@@ -57,11 +57,11 @@ module Gitlab
           .+?
           \n>>>$
         )
-      }mix.freeze
+      }mix
 
       EXCLUSION_REGEX = %r{
         #{CODE_REGEX} | #{INLINE_CODE_REGEX} | #{HTML_BLOCK_REGEX} | #{QUOTE_BLOCK_REGEX}
-      }mix.freeze
+      }mix
 
       attr_reader :command_definitions, :keep_actions
 

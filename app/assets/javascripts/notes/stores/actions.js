@@ -95,10 +95,7 @@ export const fetchDiscussions = (
       ? { params: { notes_filter: filter, persist_filter: persistFilter } }
       : null;
 
-  if (
-    window.gon?.features?.mrActivityFilters &&
-    getters.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
-  ) {
+  if (getters.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE) {
     config = { params: { notes_filter: 0, persist_filter: false } };
   }
 

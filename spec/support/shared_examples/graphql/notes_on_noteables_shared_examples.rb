@@ -14,9 +14,21 @@ RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
   let(:user) { note.author }
 
   context 'for regular notes' do
+    let!(:system_note) do
+      create(
+        :note,
+        system: true,
+        noteable: noteable,
+        project: (noteable.project if noteable.respond_to?(:project))
+      )
+    end
+
+    let(:filters) { "" }
+
     let(:query) do
       note_fields = <<~NOTES
-      notes {
+      notes #{filters} {
+        count
         edges {
           node {
             #{all_graphql_fields_for('Note', max_depth: 1)}
@@ -42,11 +54,12 @@ RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
       end
     end
 
-    it 'includes the note' do
+    it 'includes all notes' do
       post_graphql(query, current_user: user)
 
-      expect(noteable_data['notes']['edges'].first['node']['body'])
-        .to eq(note.note)
+      expect(noteable_data['notes']['count']).to eq(2)
+      expect(noteable_data['notes']['edges'][0]['node']['body']).to eq(system_note.note)
+      expect(noteable_data['notes']['edges'][1]['node']['body']).to eq(note.note)
     end
 
     it 'avoids N+1 queries' do
@@ -68,6 +81,42 @@ RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
 
       expect { post_graphql(query, current_user: user) }.not_to exceed_query_limit(control)
       expect_graphql_errors_to_be_empty
+    end
+
+    context 'when filter is provided' do
+      context 'when filter is set to ALL_NOTES' do
+        let(:filters) { "(filter: ALL_NOTES)" }
+
+        it 'returns all the notes' do
+          post_graphql(query, current_user: user)
+
+          expect(noteable_data['notes']['count']).to eq(2)
+          expect(noteable_data['notes']['edges'][0]['node']['body']).to eq(system_note.note)
+          expect(noteable_data['notes']['edges'][1]['node']['body']).to eq(note.note)
+        end
+      end
+
+      context 'when filter is set to ONLY_COMMENTS' do
+        let(:filters) { "(filter: ONLY_COMMENTS)" }
+
+        it 'returns only the comments' do
+          post_graphql(query, current_user: user)
+
+          expect(noteable_data['notes']['count']).to eq(1)
+          expect(noteable_data['notes']['edges'][0]['node']['body']).to eq(note.note)
+        end
+      end
+
+      context 'when filter is set to ONLY_ACTIVITY' do
+        let(:filters) { "(filter: ONLY_ACTIVITY)" }
+
+        it 'returns only the activity notes' do
+          post_graphql(query, current_user: user)
+
+          expect(noteable_data['notes']['count']).to eq(1)
+          expect(noteable_data['notes']['edges'][0]['node']['body']).to eq(system_note.note)
+        end
+      end
     end
   end
 

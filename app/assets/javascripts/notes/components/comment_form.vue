@@ -13,10 +13,9 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
-import { badgeState } from '~/merge_requests/components/merge_request_status_badge.vue';
+import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 
 import * as constants from '../constants';
@@ -49,7 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin(), issuableStateMixin],
+  mixins: [issuableStateMixin],
   props: {
     noteableType: {
       type: String,
@@ -69,7 +68,7 @@ export default {
         id: 'note-body',
         name: 'note[note]',
         class: 'js-note-text note-textarea js-gfm-input markdown-area',
-        'data-qa-selector': 'comment_field',
+        'data-testid': 'comment-field',
       },
     };
   },
@@ -361,7 +360,6 @@ export default {
             >
               <markdown-editor
                 ref="markdownEditor"
-                :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
                 :value="note"
                 :render-markdown-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"

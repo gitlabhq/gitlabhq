@@ -26,32 +26,32 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
       subject { get :switch, params: params }
 
       where(:destination, :ref_type, :path, :redirected_to) do
-        'tree'           | nil     | nil | lazy { project_tree_path(project, id) }
-        'tree'           | 'heads' | nil | lazy { project_tree_path(project, id) }
+        'tree'           | nil     | nil       | lazy { project_tree_path(project, id) }
+        'tree'           | 'heads' | nil       | lazy { project_tree_path(project, id) }
         'tree'           | nil     | 'foo/bar' | lazy { project_tree_path(project, id_and_path) }
-        'blob'           | nil     | nil | lazy { project_blob_path(project, id) }
-        'blob'           | 'heads' | nil | lazy { project_blob_path(project, id) }
+        'blob'           | nil     | nil       | lazy { project_blob_path(project, id) }
+        'blob'           | 'heads' | nil       | lazy { project_blob_path(project, id) }
         'blob'           | nil     | 'foo/bar' | lazy { project_blob_path(project, id_and_path) }
-        'graph'          | nil     | nil | lazy { project_network_path(project, id) }
-        'graph'          | 'heads' | nil | lazy { project_network_path(project, id, ref_type: 'heads') }
+        'graph'          | nil     | nil       | lazy { project_network_path(project, id) }
+        'graph'          | 'heads' | nil       | lazy { project_network_path(project, id, ref_type: 'heads') }
         'graph'          | nil     | 'foo/bar' | lazy { project_network_path(project, id_and_path) }
-        'graphs'         | nil     | nil | lazy { project_graph_path(project, id) }
-        'graphs'         | 'heads' | nil | lazy { project_graph_path(project, id, ref_type: 'heads') }
+        'graphs'         | nil     | nil       | lazy { project_graph_path(project, id) }
+        'graphs'         | 'heads' | nil       | lazy { project_graph_path(project, id, ref_type: 'heads') }
         'graphs'         | nil     | 'foo/bar' | lazy { project_graph_path(project, id_and_path) }
-        'find_file'      | nil     | nil | lazy { project_find_file_path(project, id) }
-        'find_file'      | 'heads' | nil | lazy { project_find_file_path(project, id) }
+        'find_file'      | nil     | nil       | lazy { project_find_file_path(project, id) }
+        'find_file'      | 'heads' | nil       | lazy { project_find_file_path(project, id) }
         'find_file'      | nil     | 'foo/bar' | lazy { project_find_file_path(project, id_and_path) }
-        'graphs_commits' | nil     | nil | lazy { commits_project_graph_path(project, id) }
-        'graphs_commits' | 'heads' | nil | lazy { commits_project_graph_path(project, id) }
+        'graphs_commits' | nil     | nil       | lazy { commits_project_graph_path(project, id) }
+        'graphs_commits' | 'heads' | nil       | lazy { commits_project_graph_path(project, id) }
         'graphs_commits' | nil     | 'foo/bar' | lazy { commits_project_graph_path(project, id_and_path) }
-        'badges'         | nil     | nil | lazy { project_settings_ci_cd_path(project, ref: id) }
-        'badges'         | 'heads' | nil | lazy { project_settings_ci_cd_path(project, ref: id) }
+        'badges'         | nil     | nil       | lazy { project_settings_ci_cd_path(project, ref: id) }
+        'badges'         | 'heads' | nil       | lazy { project_settings_ci_cd_path(project, ref: id) }
         'badges'         | nil     | 'foo/bar' | lazy { project_settings_ci_cd_path(project, ref: id_and_path) }
-        'commits'        | nil     | nil | lazy { project_commits_path(project, id) }
-        'commits'        | 'heads' | nil | lazy { project_commits_path(project, id, ref_type: 'heads') }
+        'commits'        | nil     | nil       | lazy { project_commits_path(project, id) }
+        'commits'        | 'heads' | nil       | lazy { project_commits_path(project, id, ref_type: 'heads') }
         'commits'        | nil     | 'foo/bar' | lazy { project_commits_path(project, id_and_path) }
-        nil              | nil     | nil | lazy { project_commits_path(project, id) }
-        nil              | 'heads' | nil | lazy { project_commits_path(project, id, ref_type: 'heads') }
+        nil              | nil     | nil       | lazy { project_commits_path(project, id) }
+        nil              | 'heads' | nil       | lazy { project_commits_path(project, id, ref_type: 'heads') }
         nil              | nil     | 'foo/bar' | lazy { project_commits_path(project, id_and_path) }
       end
 

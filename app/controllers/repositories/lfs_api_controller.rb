@@ -26,11 +26,7 @@ module Repositories
       end
 
       if download_request?
-        if Feature.enabled?(:lfs_batch_direct_downloads, project)
-          render json: { objects: download_objects! }, content_type: LfsRequest::CONTENT_TYPE
-        else
-          render json: { objects: legacy_download_objects! }, content_type: LfsRequest::CONTENT_TYPE
-        end
+        render json: { objects: download_objects! }, content_type: LfsRequest::CONTENT_TYPE
       elsif upload_request?
         render json: { objects: upload_objects! }, content_type: LfsRequest::CONTENT_TYPE
       else

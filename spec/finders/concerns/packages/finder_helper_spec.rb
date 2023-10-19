@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::FinderHelper do
+RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
   describe '#packages_for_project' do
     let_it_be_with_reload(:project1) { create(:project) }
     let_it_be(:package1) { create(:package, project: project1) }
@@ -106,6 +106,34 @@ RSpec.describe ::Packages::FinderHelper do
         end
 
         it_behaves_like params[:shared_example_name]
+      end
+
+      context 'when the second project has the package registry disabled' do
+        before do
+          project1.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          project2.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+            package_registry_access_level: 'disabled', packages_enabled: false)
+        end
+
+        it_behaves_like 'returning both packages'
+
+        context 'with with_package_registry_enabled set to true' do
+          let(:finder_class) do
+            Class.new do
+              include ::Packages::FinderHelper
+
+              def initialize(user)
+                @current_user = user
+              end
+
+              def execute(group)
+                packages_visible_to_user(@current_user, within_group: group, with_package_registry_enabled: true)
+              end
+            end
+          end
+
+          it_behaves_like 'returning package1'
+        end
       end
     end
 

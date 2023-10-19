@@ -16,6 +16,7 @@ query getAllJobs(
         id
         description
         adminUrl
+        runnerType
       }
       artifacts {
         nodes {

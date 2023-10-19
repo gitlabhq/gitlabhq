@@ -139,7 +139,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integ
       it 'shows the correct trigger url' do
         value = find_field('request_url').value
 
-        expect(value).to match("api/v4/projects/#{project.id}/services/mattermost_slash_commands/trigger")
+        expect(value).to match("api/v4/projects/#{project.id}/integrations/mattermost_slash_commands/trigger")
       end
 
       it 'shows a token placeholder' do

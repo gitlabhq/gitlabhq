@@ -60,6 +60,7 @@ describe('Blob Rich Viewer component', () => {
         expect(wrapper.text()).toContain('Line: 10');
         expect(wrapper.text()).toContain('Line: 50');
         expect(wrapper.emitted(CONTENT_LOADED_EVENT)).toHaveLength(1);
+        expect(handleLocationHash).toHaveBeenCalled();
         expect(findMarkdownFieldView().props('isLoading')).toBe(false);
       });
 

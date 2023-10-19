@@ -130,7 +130,9 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 - The **Groups** tab lists the `Engineering` group.
 - The **Groups** tab lists a group regardless of whether it is a public or private group.
-- All direct members of the `Engineering` group have access to the `Frontend` group. Direct members of `Engineering` that gain access to the `Frontend` group keep their same access level as in `Engineering`, but up to the maximum access level selected when sharing the group.
+- All direct members of the `Engineering` group have access to the `Frontend` group. The least access is granted between the access in the `Engineering` group and the access in the `Frontend` group.
+  - If `Member1` has the Maintainer role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member1` has the Developer role in `Frontend`.
+  - If `Member2` has the Guest role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member2` has the Guest role in `Frontend`.
 - Inherited members of the `Engineering` group do not gain access to the `Frontend` group.
 - Direct members of the `Engineering` group who have the **Group Invite** badge next to their profile on the group's usage quota page count towards the billable members of the `Frontend` group.
 
@@ -271,7 +273,7 @@ You can remove the user cap, so there is no limit on the number of members you c
 
 Prerequisite:
 
-- You must be assigned the Owner role) for the group.
+- You must be assigned the Owner role for the group.
 
 To remove the user cap:
 
@@ -452,9 +454,11 @@ You can give all users in a group and its subgroups access to [Code Suggestions]
 - This setting
   [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
 - Each user can
-  [Enable Code Suggestions](../../user/profile/preferences.md#enable-code-suggestions).
+  [enable Code Suggestions](../../user/profile/preferences.md#enable-code-suggestions).
 
-To enable Code Suggestions for a group:
+Code Suggestions are enabled by default at the group level.
+
+To update this setting:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
@@ -462,16 +466,16 @@ To enable Code Suggestions for a group:
 1. Under **Code Suggestions**, select the **Projects in this group can use Code Suggestions** checkbox.
 1. Select **Save changes**.
 
-## Enable Experiment features **(ULTIMATE SAAS)**
+## Enable Experiment and Beta features **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 
 WARNING:
-[Experiment features](../../policy/experiment-beta-support.md#experiment) may produce unexpected results
+[Experiment and Beta features](../../policy/experiment-beta-support.md) may produce unexpected results
 (for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
 and might include insecure code or failed pipelines).
 
-You can give all users in a top-level group access to Experiment features.
+You can give all users in a top-level group access to Experiment and Beta features.
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
@@ -480,12 +484,12 @@ To enable Experiment features for a top-level group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Experiment features**, select the **Use Experiment features** checkbox.
+1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
 1. Select **Save changes**.
 
 ## Enable third-party AI features **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 
 WARNING:
 These AI features use [third-party services](../ai_features.md#data-usage)

@@ -14,7 +14,7 @@ module Atlassian
         ALGORITHM = 'RS256'
         DEFAULT_PUBLIC_KEY_CDN_URL = 'https://connect-install-keys.atlassian.com'
         PROXY_PUBLIC_KEY_PATH = '/-/jira_connect/public_keys'
-        UUID4_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/.freeze
+        UUID4_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
 
         def initialize(token, verification_claims)
           @token = token

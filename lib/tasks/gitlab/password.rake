@@ -14,6 +14,7 @@ namespace :gitlab do
 
       user.password = password
       user.password_confirmation = password_confirm
+      user.password_automatically_set = false
       user.send_only_admin_changed_your_password_notification!
 
       unless user.save

@@ -3,7 +3,9 @@
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security,
     feature_flag: { name: 'ci_prevent_file_var_expansion_downstream_pipeline', scope: :project },
-    quarantine: { type: :bug, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424903' } do
+    only: { subdomain: 'staging-canary' } do
+    # Runs this test only in staging-canary to debug flakiness https://gitlab.com/gitlab-org/gitlab/-/issues/424903
+    # We need to collect failure data, please don't quarantine for the time being
     describe 'Pipeline with file variables and downstream pipelines' do
       let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
@@ -29,6 +31,7 @@ module QA
       let(:upstream_project_files) do
         [
           {
+            action: 'create',
             file_path: '.gitlab-ci.yml',
             content: <<~YAML
                   default:
@@ -54,6 +57,7 @@ module QA
             YAML
           },
           {
+            action: 'create',
             file_path: 'child.yml',
             content: <<~YAML
                   default:
@@ -78,6 +82,7 @@ module QA
       let(:downstream_project_file) do
         [
           {
+            action: 'create',
             file_path: '.gitlab-ci.yml',
             content: <<~YAML
                   default:
@@ -175,11 +180,7 @@ module QA
       end
 
       def add_ci_file(project, files)
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add CI files to project'
-          commit.add_files(files)
-        end
+        create(:commit, project: project, commit_message: 'Add CI files to project', actions: files)
       end
 
       def wait_for_pipelines_to_finish

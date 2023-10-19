@@ -7,7 +7,7 @@ module Ci
     include SafelyChangeColumnDefault
     include BulkInsertSafe
 
-    MAX_JOB_NAME_LENGTH = 128
+    MAX_JOB_NAME_LENGTH = 255
 
     columns_changing_default :partition_id
 

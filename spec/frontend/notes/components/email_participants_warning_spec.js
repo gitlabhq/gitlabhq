@@ -1,10 +1,12 @@
 import { mount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
+
 import EmailParticipantsWarning from '~/notes/components/email_participants_warning.vue';
 
 describe('Email Participants Warning Component', () => {
   let wrapper;
 
-  const findMoreButton = () => wrapper.find('button');
+  const findMoreButton = () => wrapper.findComponent(GlButton);
 
   const createWrapper = (emails) => {
     wrapper = mount(EmailParticipantsWarning, {
@@ -48,7 +50,7 @@ describe('Email Participants Warning Component', () => {
 
     describe('when more button clicked', () => {
       beforeEach(() => {
-        findMoreButton().trigger('click');
+        findMoreButton().vm.$emit('click');
       });
 
       it('more button no longer exists', () => {

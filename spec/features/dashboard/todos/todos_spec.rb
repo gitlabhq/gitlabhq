@@ -7,6 +7,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
 
   let_it_be(:user) { create(:user, :no_super_sidebar, username: 'john') }
   let_it_be(:user2) { create(:user, :no_super_sidebar, username: 'diane') }
+  let_it_be(:user3) { create(:user) }
   let_it_be(:author) { create(:user, :no_super_sidebar) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
@@ -422,6 +423,25 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
         wait_for_requests
         find('.js-todos-undo-all').click
         wait_for_requests
+      end
+    end
+
+    describe 'shows a count of todos' do
+      before do
+        allow(Todo).to receive(:default_per_page).and_return(1)
+        create_list(:todo, 2, :mentioned, user: user3, project: project, target: issue, author: author, state: :pending)
+        create_list(:todo, 2, :mentioned, user: user3, project: project, target: issue, author: author, state: :done)
+        sign_in(user3)
+      end
+
+      it 'displays a count of all pending todos' do
+        visit dashboard_todos_path
+        expect(find('.js-todos-pending')).to have_content('2')
+      end
+
+      it 'displays a count of all done todos' do
+        visit dashboard_todos_path(state: 'done')
+        expect(find('.js-todos-done')).to have_content('2')
       end
     end
   end

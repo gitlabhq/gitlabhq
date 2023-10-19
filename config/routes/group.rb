@@ -78,6 +78,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       post :toggle_subscription, on: :member
     end
 
+    resources :custom_emoji, only: [:index, :new], action: :index
+
     resources :packages, only: [:index, :show]
 
     resources :milestones, constraints: { id: %r{[^/]+} } do
@@ -128,11 +130,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :container_registries, only: [:index, :show], controller: 'registry/repositories'
     resource :dependency_proxy, only: [:show, :update]
-
-    namespace :observability do
-      get 'explore'
-      get 'datasources'
-    end
 
     namespace :harbor do
       resources :repositories, only: [:index, :show], constraints: { id: %r{[a-zA-Z./:0-9_\-]+} } do

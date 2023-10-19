@@ -174,7 +174,7 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED }
+          let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED }
           let(:namespace) { project.namespace }
 
           subject(:service_action) { run_service }

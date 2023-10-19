@@ -3,7 +3,7 @@
 require 'digest/sha1'
 
 module QA
-  RSpec.describe 'Release', :runner, product_group: :release do
+  RSpec.describe 'Release', :runner, product_group: :environments do
     describe 'Git clone using a deploy key' do
       let(:runner_name) { "qa-runner-#{SecureRandom.hex(4)}" }
       let(:repository_location) { project.repository_ssh_location }
@@ -87,12 +87,7 @@ module QA
         private
 
         def make_ci_variable(key_name, key)
-          Resource::CiVariable.fabricate_via_api! do |resource|
-            resource.project = project
-            resource.key = key_name
-            resource.value = key.private_key
-            resource.masked = false
-          end
+          create(:ci_variable, project: project, key: key_name, value: key.private_key)
         end
       end
     end

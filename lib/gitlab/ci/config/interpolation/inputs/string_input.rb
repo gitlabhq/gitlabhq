@@ -25,6 +25,24 @@ module Gitlab
             def valid_value?(value)
               value.nil? || value.is_a?(String)
             end
+
+            private
+
+            def validate_regex!
+              return unless spec.key?(:regex)
+
+              safe_regex = ::Gitlab::UntrustedRegexp.new(spec[:regex])
+
+              return if safe_regex.match?(actual_value)
+
+              if value.nil?
+                error('default value does not match required RegEx pattern')
+              else
+                error('provided value does not match required RegEx pattern')
+              end
+            rescue RegexpError
+              error('invalid regular expression')
+            end
           end
         end
       end

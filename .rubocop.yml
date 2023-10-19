@@ -16,6 +16,9 @@ inherit_from:
   <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.1' %>
   - ./rubocop/rubocop-ruby31.yml
   <% end %>
+  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.2' %>
+  - ./rubocop/rubocop-ruby32.yml
+  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -49,6 +52,8 @@ AllCops:
     - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
+    # projects_controller.rb is used for testing LLM response and is very sensitive to whitespaces.
+    - 'ee/spec/fixtures/llm/projects_controller.rb'
     # Adding this specifically for a large revert: !118368
     <% File.readlines('.rubocop_revert_ignores.txt').map(&:chomp).each do |f| %>
     - '<%= f %>'
@@ -116,6 +121,12 @@ Lint/EmptyFile:
     - 'db/seeds.rb'
     - 'ee/db/embedding/seeds.rb'
     - 'ee/db/geo/seeds.rb'
+
+# This file has a lot of these, and how we name classes here is essential for how we
+# implement migration versions
+Naming/ClassAndModuleCamelCase:
+  Exclude:
+    - 'lib/gitlab/database/migration.rb'
 
 # This cop checks whether some constant value isn't a
 # mutable literal (e.g. array or hash).
@@ -455,6 +466,12 @@ Migration/BatchMigrationsPostOnly:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'
 
+Migration/UnfinishedDependencies:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+
 BackgroundMigration/FeatureCategory:
   Enabled: true
   Include:
@@ -465,6 +482,14 @@ BackgroundMigration/MissingDictionaryFile:
   EnforcedSince: 20230307160251
   Include:
     - 'db/post_migrate/*.rb'
+
+# See https://gitlab.com/groups/gitlab-org/-/epics/7374
+Gitlab/AvoidGitlabInstanceChecks:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+    - 'ee/db/fixtures/**/*'
 
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:
@@ -546,7 +571,7 @@ RSpec/FactoriesInMigrationSpecs:
     - 'spec/lib/ee/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
-RSpec/MissingFeatureCategory:
+RSpec/FeatureCategory:
   Enabled: true
   Exclude:
     - 'qa/**/*.rb'
@@ -950,6 +975,11 @@ Style/ClassAndModuleChildren:
 Fips/OpenSSL:
   Enabled: false
 
+Gemfile/MissingFeatureCategory:
+  Enabled: true
+  Include:
+    - 'Gemfile'
+
 Gemspec/AvoidExecutingGit:
   Enabled: false
 
@@ -982,7 +1012,6 @@ Cop/SidekiqApiUsage:
     - 'db/post_migrate/**/*'
     - 'lib/gitlab/sidekiq_middleware/**/*'
     - 'lib/gitlab/background_migration/**/*'
-    - 'lib/gitlab/hashed_storage/migrator.rb'
     - 'lib/api/sidekiq_metrics.rb'
     - 'lib/gitlab/sidekiq_config.rb'
     - 'lib/gitlab/sidekiq_queue.rb'

@@ -6,9 +6,9 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
   include HttpBasicAuthHelpers
 
   context 'Resource Owner Password Credentials' do
-    def request_oauth_token(user, headers = {})
+    def request_oauth_token(user, headers = {}, password = user.password)
       post '/oauth/token',
-         params: { username: user.username, password: user.password, grant_type: 'password' },
+         params: { username: user.username, password: password, grant_type: 'password' },
          headers: headers
     end
 
@@ -61,13 +61,28 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
 
     context 'when user does not have 2FA enabled' do
       context 'when no client credentials provided' do
-        it 'creates an access token' do
-          user = create(:user)
+        context 'with valid credentials' do
+          it 'creates an access token' do
+            user = create(:user)
 
-          request_oauth_token(user)
+            request_oauth_token(user)
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['access_token']).to be_present
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['access_token']).to be_present
+          end
+        end
+
+        context 'with invalid user password' do
+          it 'does not create an access token' do
+            user = create(:user)
+
+            expect do
+              request_oauth_token(user, {}, 'not-my-password')
+            end.to change { user.reload.failed_attempts }.from(0).to(1)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('invalid_grant')
+          end
         end
       end
 
@@ -83,7 +98,7 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
           end
         end
 
-        context 'with invalid credentials' do
+        context 'with invalid client secret' do
           it 'does not create an access token' do
             user = create(:user)
 

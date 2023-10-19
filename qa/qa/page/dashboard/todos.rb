@@ -19,7 +19,7 @@ module QA
 
         view 'app/helpers/dropdowns_helper.rb' do
           element :dropdown_input_field
-          element :dropdown_list_content
+          element 'dropdown-list-content'
         end
 
         def has_todo_list?
@@ -35,7 +35,7 @@ module QA
 
           fill_element(:dropdown_input_field, group.path)
 
-          within_element(:dropdown_list_content) do
+          within_element('dropdown-list-content') do
             click_on group.path
           end
 

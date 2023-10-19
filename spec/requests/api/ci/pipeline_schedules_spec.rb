@@ -176,7 +176,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     context 'with public project' do
-      let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+      let_it_be(:project) { create(:project, :repository, :public, public_builds: true) }
 
       it_behaves_like 'request with schedule ownership'
       it_behaves_like 'request with project permissions'
@@ -202,6 +202,30 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
           expect(response).to return_pipeline_schedule_sucessfully
           expect(json_response).not_to have_key('variables')
+        end
+      end
+
+      context 'when public pipelines are disabled' do
+        let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+
+        context 'authenticated user with no project permissions' do
+          it 'does not return pipeline_schedule' do
+            get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'authenticated user with insufficient project permissions' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'returns pipeline_schedule with no variables' do
+            get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
     end
@@ -294,7 +318,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     context 'with public project' do
-      let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+      let_it_be(:project) { create(:project, :repository, :public, public_builds: true) }
 
       it_behaves_like 'request with schedule ownership'
       it_behaves_like 'request with project permissions'
@@ -306,6 +330,18 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           get api(url, user)
 
           expect(response).to return_pipeline_schedule_pipelines_successfully
+        end
+      end
+
+      context 'when public pipelines are disabled' do
+        let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+
+        context 'authenticated user with no project permissions' do
+          it 'does not return the details of pipelines triggered from the pipeline schedule' do
+            get api(url, user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
     end

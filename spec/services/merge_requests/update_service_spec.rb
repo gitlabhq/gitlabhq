@@ -788,7 +788,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             update_merge_request({ label_ids: [label.id] })
           end
 
-          expect(merge_request.reload.updated_at).to be > Time.current
+          expect(merge_request.reload.updated_at).to be_future
         end
       end
 
@@ -897,6 +897,27 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           update_merge_request(title: 'New title')
         end
 
+        context 'when additional_merge_when_checks_ready is enabled' do
+          it 'publishes a DraftStateChangeEvent' do
+            expected_data = {
+              current_user_id: user.id,
+              merge_request_id: merge_request.id
+            }
+
+            expect { update_merge_request(title: 'New title') }.to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
+          end
+        end
+
+        context 'when additional_merge_when_checks_ready is disabled' do
+          before do
+            stub_feature_flags(additional_merge_when_checks_ready: false)
+          end
+
+          it 'does not publish a DraftStateChangeEvent' do
+            expect { update_merge_request(title: 'New title') }.not_to publish_event(MergeRequests::DraftStateChangeEvent)
+          end
+        end
+
         context 'when removing through wip_event param' do
           it 'removes Draft from the title' do
             expect { update_merge_request({ wip_event: "ready" }) }
@@ -921,6 +942,27 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
           should_email(subscriber)
           should_not_email(non_subscriber)
+        end
+
+        context 'when additional_merge_when_checks_ready is enabled' do
+          it 'publishes a DraftStateChangeEvent' do
+            expected_data = {
+              current_user_id: user.id,
+              merge_request_id: merge_request.id
+            }
+
+            expect { update_merge_request(title: 'Draft: New title') }.to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
+          end
+        end
+
+        context 'when additional_merge_when_checks_ready is disabled' do
+          before do
+            stub_feature_flags(additional_merge_when_checks_ready: false)
+          end
+
+          it 'does not publish a DraftStateChangeEvent' do
+            expect { update_merge_request(title: 'Draft: New title') }.not_to publish_event(MergeRequests::DraftStateChangeEvent)
+          end
         end
 
         it 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do

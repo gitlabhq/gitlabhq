@@ -25,11 +25,14 @@ export const ACTIONS_I18N = {
 };
 
 export const NO_ACTION = { value: '', text: s__('AbuseReport|No action') };
+export const TRUST_REASON = { value: 'trusted', text: s__(`AbuseReport|Confirmed trusted user`) };
+export const TRUST_ACTION = { value: 'trust_user', text: s__('AbuseReport|Trust user') };
 
 export const USER_ACTION_OPTIONS = [
   NO_ACTION,
   { value: 'block_user', text: s__('AbuseReport|Block user') },
   { value: 'ban_user', text: s__('AbuseReport|Ban user') },
+  TRUST_ACTION,
   { value: 'delete_user', text: s__('AbuseReport|Delete user') },
 ];
 
@@ -75,7 +78,6 @@ export const USER_DETAILS_I18N = {
   reportedFor: s__(
     'AbuseReport|%{reportLinkStart}Reported%{reportLinkEnd} for %{category} %{timeAgo}.',
   ),
-  registeredWith: s__('AbuseReport|Registered with name %{name}.'),
   similarRecords: s__(
     'AbuseReport|Card matches %{cardMatchesLinkStart}%{count} accounts%{cardMatchesLinkEnd}',
   ),
@@ -87,6 +89,7 @@ export const REPORTED_CONTENT_I18N = {
     comment: s__('AbuseReport|Reported comment'),
     issue: s__('AbuseReport|Reported issue'),
     merge_request: s__('AbuseReport|Reported merge request'),
+    epic: s__('AbuseReport|Reported epic'),
     unknown: s__('AbuseReport|Reported content'),
   },
   viewScreenshot: s__('AbuseReport|View screenshot'),
@@ -96,6 +99,7 @@ export const REPORTED_CONTENT_I18N = {
     comment: s__('AbuseReport|Go to comment'),
     issue: s__('AbuseReport|Go to issue'),
     merge_request: s__('AbuseReport|Go to merge request'),
+    epic: s__('AbuseReport|Go to epic'),
     unknown: s__('AbuseReport|Go to content'),
   },
   reportedBy: s__('AbuseReport|Reported by'),

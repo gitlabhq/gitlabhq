@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:usage data take tasks', :silence_stdout, :with_license, feature_category: :service_ping do
   include StubRequests

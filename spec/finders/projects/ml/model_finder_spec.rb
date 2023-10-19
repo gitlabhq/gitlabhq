@@ -22,4 +22,8 @@ RSpec.describe Projects::Ml::ModelFinder, feature_category: :mlops do
   it 'does not return models belonging to a different project' do
     is_expected.not_to include(model3)
   end
+
+  it 'includes version count' do
+    expect(models[0].version_count).to be(models[0].versions.count)
+  end
 end

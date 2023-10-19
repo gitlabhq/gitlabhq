@@ -37,8 +37,8 @@ module Integrations
         # `notify_only_default_branch`. Now we have a string property named
         # `branches_to_be_notified`. Instead of doing a background migration, we
         # opted to set a value for the new property based on the old one, if
-        # users hasn't specified one already. When users edit the service and
-        # selects a value for this new property, it will override everything.
+        # users haven't specified one already. When users edit the integration and
+        # select a value for this new property, it will override everything.
 
         self.branches_to_be_notified ||= notify_only_default_branch? ? "default" : "all"
       end

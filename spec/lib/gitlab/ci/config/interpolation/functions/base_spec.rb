@@ -18,6 +18,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::Base, feature_categ
   it 'defines an expected interface for child classes' do
     expect { described_class.function_expression_pattern }.to raise_error(NotImplementedError)
     expect { described_class.name }.to raise_error(NotImplementedError)
-    expect { custom_function_klass.new('test').execute('input') }.to raise_error(NotImplementedError)
+    expect { custom_function_klass.new('test', nil).execute('input') }.to raise_error(NotImplementedError)
   end
 end

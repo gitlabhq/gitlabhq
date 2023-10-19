@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::EncodingHelper do
+RSpec.describe Gitlab::EncodingHelper, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   let(:ext_class) { Class.new { extend Gitlab::EncodingHelper } }
@@ -291,4 +291,39 @@ RSpec.describe Gitlab::EncodingHelper do
       expect(described_class.strip_bom("BOM at the end\xEF\xBB\xBF")).to eq("BOM at the end\xEF\xBB\xBF")
     end
   end
+
+  # This cop's alternative to .dup doesn't work in this context for some reason.
+  # rubocop: disable Performance/UnfreezeString
+  describe "#force_encode_utf8" do
+    let(:stringish) do
+      Class.new(String) do
+        undef :force_encoding
+      end
+    end
+
+    it "raises an ArgumentError if the argument can't force encoding" do
+      expect { described_class.force_encode_utf8(stringish.new("foo")) }.to raise_error(ArgumentError)
+    end
+
+    it "returns the message if already UTF-8 and valid encoding" do
+      string = "føø".dup
+
+      expect(string).not_to receive(:force_encoding).and_call_original
+      expect(described_class.force_encode_utf8(string)).to eq("føø")
+    end
+
+    it "forcibly encodes a string to UTF-8" do
+      string = "føø".dup.force_encoding("ISO-8859-1")
+
+      expect(string).to receive(:force_encoding).with("UTF-8").and_call_original
+      expect(described_class.force_encode_utf8(string)).to eq("føø")
+    end
+
+    it "forcibly encodes a frozen string to UTF-8" do
+      string = "bår".dup.force_encoding("ISO-8859-1").freeze
+
+      expect(described_class.force_encode_utf8(string)).to eq("bår")
+    end
+  end
+  # rubocop: enable Performance/UnfreezeString
 end

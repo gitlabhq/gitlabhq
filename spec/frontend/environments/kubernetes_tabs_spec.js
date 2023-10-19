@@ -162,7 +162,7 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       createWrapper(createErroredApolloProvider());
       await waitForPromises();
 
-      expect(wrapper.emitted('cluster-error')).toEqual([[error]]);
+      expect(wrapper.emitted('cluster-error')).toEqual([[error.message]]);
     });
   });
 

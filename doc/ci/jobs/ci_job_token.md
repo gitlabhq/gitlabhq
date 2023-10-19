@@ -73,6 +73,12 @@ to access specific private resources. The job token scope only controls access
 to private projects. If an accessed project is public or internal, token scoping does
 not apply.
 
+When enabled, and the job token is being used to access a different project:
+
+- The user that executes the job must be a member of the project that is being accessed.
+- The user must have the [permissions](../../user/permissions.md) to perform the action.
+- The accessed project must have the project attempting to access it [added to the allowlist](#add-a-project-to-the-job-token-scope-allowlist).
+
 If a job token is leaked, it could potentially be used to access private data
 to the job token's user. By limiting the job token access scope, private data cannot
 be accessed unless projects are explicitly authorized.
@@ -197,10 +203,8 @@ To configure the job token scope:
 
 ## Download an artifact from a different pipeline **(PREMIUM ALL)**
 
-> `CI_JOB_TOKEN` for artifacts download with the API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in GitLab 9.5.
-
-You can use the `CI_JOB_TOKEN` to access artifacts from a job created by a previous
-pipeline. You must specify which job you want to retrieve the artifacts from:
+You can use the CI/CD job token to authenticate with the [jobs artifacts API endpoint](../../api/job_artifacts.md)
+and fetch artifacts from a different pipeline. You must specify which job to retrieve artifacts from:
 
 ```yaml
 build_submodule:
@@ -210,8 +214,6 @@ build_submodule:
     - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"
     - unzip artifacts.zip
 ```
-
-Read more about the [jobs artifacts API](../../api/job_artifacts.md#download-the-artifacts-archive).
 
 ## Troubleshooting
 
@@ -259,10 +261,5 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   - Enable the inbound token access scope.
   - Give access to project B from project A, or add B to A's allowlist.
   - To remove project access.
-- When the [CI/CD job token scopes](#configure-cicd-job-token-access) are enabled,
-  and the job token is being used to access a different project:
-  - The user that executes the job must be a member of the project that is being accessed.
-  - The user must have the [permissions](../../user/permissions.md) to perform the action.
-  - The accessed project must have the project attempting to access it [added to the allowlist](#add-a-project-to-the-job-token-scope-allowlist).
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.

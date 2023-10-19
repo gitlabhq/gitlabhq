@@ -20,6 +20,10 @@ RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access
   end
 
   describe 'GET #new' do
+    it_behaves_like 'Base action controller' do
+      subject(:request) { get oauth_authorization_path }
+    end
+
     context 'when application redirect URI has a custom scheme' do
       context 'when CSP is disabled' do
         before do

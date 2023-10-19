@@ -507,7 +507,7 @@ module QA
           sleep_interval: 1,
           message: "Waiting for #{self.class.name} to be removed"
         ) do
-          !exists?
+          !exists?(max_redirects: 0)
         rescue InternalServerError
           # Retry on transient errors that are likely to be due to race conditions between concurrent delete operations
           # when parts of a resource are stored in multiple tables

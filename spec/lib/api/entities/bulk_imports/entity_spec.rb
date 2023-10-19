@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::BulkImports::Entity do
+RSpec.describe API::Entities::BulkImports::Entity, feature_category: :importers do
   let_it_be(:entity) { create(:bulk_import_entity) }
 
   subject { described_class.new(entity).as_json }
@@ -22,7 +22,8 @@ RSpec.describe API::Entities::BulkImports::Entity do
       :created_at,
       :updated_at,
       :failures,
-      :migrate_projects
+      :migrate_projects,
+      :has_failures
     )
   end
 end

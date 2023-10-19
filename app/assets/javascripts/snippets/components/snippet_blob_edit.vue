@@ -69,11 +69,11 @@ export default {
 };
 </script>
 <template>
-  <div class="file-holder snippet" data-qa-selector="file_holder_container">
+  <div class="file-holder snippet" data-testid="file-holder-container">
     <blob-header-edit
       :id="inputId"
       :value="blob.path"
-      data-qa-selector="file_name_field"
+      data-testid="file-name-field"
       :can-delete="canDelete"
       :show-delete="showDelete"
       @input="notifyAboutUpdates({ path: $event })"

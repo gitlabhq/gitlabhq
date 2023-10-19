@@ -26,7 +26,7 @@ RSpec.describe Notes::DestroyService, feature_category: :team_planning do
     end
 
     describe 'comment removed event tracking', :snowplow do
-      let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_REMOVED }
+      let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_REMOVED }
       let(:note) { create(:note, project: project, noteable: issue) }
       let(:service_action) { described_class.new(project, user).execute(note) }
 
@@ -39,7 +39,7 @@ RSpec.describe Notes::DestroyService, feature_category: :team_planning do
         expect do
           service_action
         end.to change {
-                 counter.unique_events(event_names: action, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now)
+                 counter.unique_events(event_names: event, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now)
                }.by(1)
       end
 

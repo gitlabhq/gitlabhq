@@ -42,7 +42,7 @@ RSpec.describe JiraConnect::AppDescriptorController, feature_category: :integrat
         authentication: {
           type: 'jwt'
         },
-        scopes: %w(READ WRITE DELETE),
+        scopes: %w[READ WRITE DELETE],
         apiVersion: 1,
         apiMigrations: {
           'context-qsh': true,
@@ -71,7 +71,7 @@ RSpec.describe JiraConnect::AppDescriptorController, feature_category: :integrat
           name: { value: 'GitLab' },
           url: 'https://gitlab.com',
           logoUrl: logo_url,
-          capabilities: %w(branch commit pull_request)
+          capabilities: %w[branch commit pull_request]
         },
         jiraBuildInfoProvider: common_module_properties.merge(
           actions: {},

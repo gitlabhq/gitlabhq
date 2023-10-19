@@ -19,6 +19,15 @@ class LfsDownloadObject
     @headers = headers || {}
   end
 
+  def to_hash
+    {
+      oid: oid,
+      size: size,
+      link: link,
+      headers: headers
+    }.stringify_keys
+  end
+
   def sanitized_uri
     @sanitized_uri ||= Gitlab::UrlSanitizer.new(link)
   end

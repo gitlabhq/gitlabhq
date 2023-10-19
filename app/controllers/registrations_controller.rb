@@ -7,13 +7,12 @@ class RegistrationsController < Devise::RegistrationsController
   include InvisibleCaptchaOnSignup
   include OneTrustCSP
   include BizibleCSP
-  include GoogleAnalyticsCSP
-  include GoogleSyndicationCSP
   include PreferredLanguageSwitcher
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
   include SkipsAlreadySignedInMessage
   include Gitlab::RackLoadBalancingHelpers
   include ::Gitlab::Utils::StrongMemoize
+  include Onboarding::Redirectable
 
   layout 'devise'
 
@@ -26,11 +25,7 @@ class RegistrationsController < Devise::RegistrationsController
     check_rate_limit!(:user_sign_up, scope: request.ip)
   end
 
-  before_action only: [:new] do
-    push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)
-  end
-
-  feature_category :user_management
+  feature_category :instance_resiliency
 
   helper_method :arkose_labs_enabled?
   helper_method :registration_path_params
@@ -60,7 +55,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     # Devise sets a flash message on both successful & failed signups,
     # but we only want to show a message if the resource is blocked by a pending approval.
-    flash[:notice] = nil unless resource.blocked_pending_approval?
+    flash[:notice] = nil unless allow_flash_content?(resource)
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)
   end
@@ -121,6 +116,9 @@ class RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(user)
     Gitlab::AppLogger.info(user_created_message(confirmed: user.confirmed?))
 
+    # Member#accept_invite! operates on the member record to change the association, so the user needs reloaded
+    # to update the collection.
+    user.reset
     after_sign_up_path
   end
 
@@ -146,8 +144,13 @@ class RegistrationsController < Devise::RegistrationsController
 
   private
 
-  def after_sign_up_path
-    users_sign_up_welcome_path
+  def onboarding_status
+    Onboarding::Status.new(params.to_unsafe_h.deep_symbolize_keys, session, resource)
+  end
+  strong_memoize_attr :onboarding_status
+
+  def allow_flash_content?(user)
+    user.blocked_pending_approval? || onboarding_status.single_invite?
   end
 
   # overridden in EE

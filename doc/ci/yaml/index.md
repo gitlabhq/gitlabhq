@@ -7,13 +7,14 @@ type: reference
 
 # `.gitlab-ci.yml` keyword reference **(FREE ALL)**
 
-This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
+This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
+This file is where you define the CI/CD jobs that make up your pipeline.
 
+- To create your own `.gitlab-ci.yml` file, try a tutorial that demonstrates a
+  [simple](../quick_start/index.md) or [complex](../quick_start/tutorial.md) pipeline.
 - For a collection of examples, see [GitLab CI/CD examples](../examples/index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
-- To create your own `.gitlab-ci.yml` file, try a tutorial that demonstrates a
-  [simple](../quick_start/index.md) or [complex](../quick_start/tutorial.md) pipeline.
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](../lint.md) tool.
@@ -120,7 +121,7 @@ In this example:
 - `image: ruby:3.0` and `retry: 2` are the default keywords for all jobs in the pipeline.
 - The `rspec` job does not have `image` or `retry` defined, so it uses the defaults of
   `image: ruby:3.0` and `retry: 2`.
-- The `rspec 2.7` job does not have `retry` defined, but it does have `image` explictly defined.
+- The `rspec 2.7` job does not have `retry` defined, but it does have `image` explicitly defined.
   It uses the default `retry: 2`, but ignores the default `image` and uses the `image: ruby:2.7`
   defined in the job.
 
@@ -631,7 +632,9 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   - Command aliases and variables exported in `script` scripts.
   - Changes outside of the working tree (depending on the runner executor), like
     software installed by a `before_script` or `script` script.
-- Have a separate timeout, which is [hard-coded to 5 minutes](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2716).
+- Have a separate timeout. For GitLab Runner 16.4 and later, this defaults to 5 minutes, and can be configured with the
+  [`RUNNER_AFTER_SCRIPT_TIMEOUT`](../runners/configure_runners.md#set-script-and-after_script-timeouts) variable.
+  In GitLab 16.3 and earlier, the timeout is hard-coded to 5 minutes.
 - Don't affect the job's exit code. If the `script` section succeeds and the
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
 
@@ -895,6 +898,11 @@ job:
   - Select **Keep** on the job page.
   - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of
     `expire_in` to `never`.
+- If the expiry time is too short, jobs in later stages of a long pipeline might try to fetch
+  expired artifacts from earlier jobs. If the artifacts are expired, jobs that try to fetch
+  them fail with a [`could not retrieve the needed artifacts` error](../jobs/job_artifacts_troubleshooting.md#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts).
+  Set the expiry time to be longer, or use [`dependencies`](#dependencies) in later jobs
+  to ensure they don't try to fetch expired artifacts.
 
 #### `artifacts:expose_as`
 
@@ -1616,10 +1624,11 @@ to select a specific site profile and scanner profile.
 
 ### `dependencies`
 
-Use the `dependencies` keyword to define a list of jobs to fetch [artifacts](#artifacts) from.
-You can also set a job to download no artifacts at all.
+Use the `dependencies` keyword to define a list of specific jobs to fetch [artifacts](#artifacts)
+from. When `dependencies` is not defined in a job, all jobs in earlier stages are considered dependent
+and the job fetches all artifacts from those jobs.
 
-If you do not use `dependencies`, all artifacts from previous stages are passed to each job.
+You can also set a job to download no artifacts at all.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2342,6 +2351,9 @@ In this example, a new pipeline causes a running pipeline to be:
   like a build job. Deployment jobs usually shouldn't be cancelled, to prevent partial deployments.
 - To completely cancel a running pipeline, all jobs must have `interruptible: true`,
   or `interruptible: false` jobs must not have started.
+- Running jobs are only cancelled if the newer pipeline has new changes.
+  For example, a running job is not be cancelled if you run a new pipeline for the same
+  commit by selecting **Run pipeline** in the UI.
 
 ### `needs`
 
@@ -2763,11 +2775,29 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
 
 - [Specify a parallelized job using needs with multiple parallelized jobs](../jobs/job_control.md#specify-a-parallelized-job-using-needs-with-multiple-parallelized-jobs).
 
+**Additional details**:
+
+- The order of the matrix variables in `needs:parallel:matrix` must match the order
+  of the matrix variables in the needed job. For example, reversing the order of
+  the variables in the `linux:rspec` job in the earlier example above would be invalid:
+
+  ```yaml
+  linux:rspec:
+    stage: test
+    needs:
+      - job: linux:build
+        parallel:
+          matrix:
+            - STACK: app1        # The variable order does not match `linux:build` and is invalid.
+              PROVIDER: aws
+    script: echo "Running rspec on linux..."
+  ```
+
 ### `only` / `except`
 
 NOTE:
-`only` and `except` are not being actively developed. [`rules`](#rules) is the preferred
-keyword to control when to add jobs to pipelines.
+`only` and `except` are not being actively developed. To control when to add jobs to pipelines,
+use [`rules`](#rules) instead.
 
 You can use `only` and `except` to control when to add jobs to pipelines.
 
@@ -2779,12 +2809,12 @@ for more details and examples.
 
 #### `only:refs` / `except:refs`
 
+NOTE:
+`only:refs` and `except:refs` are not being actively developed. To use refs, regular expressions,
+or variables to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
+
 Use the `only:refs` and `except:refs` keywords to control when to add jobs to a
 pipeline based on branch names or pipeline types.
-
-`only:refs` and `except:refs` are not being actively developed. [`rules:if`](#rulesif)
-is the preferred keyword when using refs, regular expressions, or variables to control
-when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2868,12 +2898,12 @@ job2:
 
 #### `only:variables` / `except:variables`
 
+NOTE:
+`only:variables` and `except:variables` are not being actively developed. To use refs,
+regular expressions, or variables to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
+
 Use the `only:variables` or `except:variables` keywords to control when to add jobs
 to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
-
-`only:variables` and `except:variables` are not being actively developed. [`rules:if`](#rulesif)
-is the preferred keyword when using refs, regular expressions, or variables to control
-when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2898,6 +2928,10 @@ deploy:
 
 #### `only:changes` / `except:changes`
 
+NOTE:
+`only:changes` and `except:changes` are not being actively developed. To use changed files
+to control when to add a job to a pipeline, use [`rules:changes`](#ruleschanges) instead.
+
 Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
 when a Git push event modifies a file.
 
@@ -2906,9 +2940,6 @@ Use `changes` in pipelines with the following refs:
 - `branches`
 - `external_pull_requests`
 - `merge_requests` (see additional details about [using `only:changes` with merge request pipelines](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines))
-
-`only:changes` and `except:changes` are not being actively developed. [`rules:changes`](#ruleschanges)
-is the preferred keyword when using changed files to control when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2957,12 +2988,13 @@ docker build:
 
 #### `only:kubernetes` / `except:kubernetes`
 
+NOTE:
+`only:refs` and `except:refs` are not being actively developed. To control if jobs are added
+to the pipeline when the Kubernetes service is active in the project, use [`rules:if`](#rulesif)
+with the [`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable instead.
+
 Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
 when the Kubernetes service is active in the project.
-
-`only:refs` and `except:refs` are not being actively developed. Use [`rules:if`](#rulesif)
-with the [`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable
-to control if jobs are added to the pipeline when the Kubernetes service is active in the project.
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 
@@ -3150,6 +3182,25 @@ deploystacks: [vultr, processing]
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
 - [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
 - [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
+
+**Additional details**:
+
+- You cannot create multiple matrix configurations with the same variable values but different variable names.
+  Job names are generated from the variable values, not the variable names, so matrix entries
+  with identical values generate identical job names that overwrite each other.
+
+  For example, this `test` configuration would try to create two series of identical jobs,
+  but the `OS2` versions overwrite the `OS` versions:
+
+  ```yaml
+  test:
+    parallel:
+      matrix:
+        - OS: [ubuntu]
+          PROVIDER: [aws, gcp]
+        - OS2: [ubuntu]
+          PROVIDER: [aws, gcp]
+  ```
 
 ### `release`
 
@@ -4068,7 +4119,8 @@ job:
 
 #### `secrets:token`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.8, controlled by the **Limit JSON Web Token (JWT) access** setting.
+> - [Made always available and **Limit JSON Web Token (JWT) access** setting removed](https://gitlab.com/gitlab-org/gitlab/-/issues/366798) in GitLab 16.0.
 
 Use `secrets:token` to explicitly select a token to use when authenticating with Vault by referencing the token's CI/CD variable.
 
@@ -4096,9 +4148,6 @@ job:
 **Additional details**:
 
 - When the `token` keyword is not set, the first ID token is used to authenticate.
-- In GitLab 15.8 to 15.11, you must enable [**Limit JSON Web Token (JWT) access**](../secrets/id_token_authentication.md#enable-automatic-id-token-authentication-deprecated) for this keyword to be available.
-- When **Limit JSON Web Token (JWT) access** is disabled, the `token` keyword is ignored and the `CI_JOB_JWT`
-  CI/CD variable is used to authenticate.
 
 ### `services`
 
@@ -4371,7 +4420,7 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 Use `timeout` to configure a timeout for a specific job. If the job runs for longer
 than the timeout, the job fails.
 
-The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run).
+The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run),
 but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the

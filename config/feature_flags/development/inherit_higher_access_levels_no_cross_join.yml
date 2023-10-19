@@ -1,0 +1,8 @@
+---
+name: inherit_higher_access_levels_no_cross_join
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132947
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427238
+milestone: '16.5'
+type: development
+group: group::authentication and authorization
+default_enabled: true

@@ -574,7 +574,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:action) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_WEB_IDE }
+          let(:event) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_WEB_IDE }
           let(:namespace) { project.namespace.reload }
         end
 
@@ -823,7 +823,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
                 valid_c_params[:start_project] = private_project.id
               end
 
-              it 'returns a 402' do
+              it 'returns a 404' do
                 post api(url, fork_owner), params: valid_c_params
 
                 expect(response).to have_gitlab_http_status(:not_found)
@@ -1696,6 +1696,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
         it_behaves_like 'ref diff'
       end
+
+      context 'when unidiff format is requested' do
+        it 'returns the diff in Unified format' do
+          get api(route, current_user), params: { unidiff: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_limited_pagination_headers
+          expect(json_response.dig(0, 'diff')).to eq(commit.diffs.diffs.first.unidiff)
+        end
+      end
     end
   end
 
@@ -2422,8 +2432,8 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           get api(route, current_user)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['signature_type']).to eq('PGP')
-          expect(json_response['commit_source']).to eq('rugged')
+          expect(json_response['signature_type']).to eq('X509')
+          expect(json_response['commit_source']).to eq('gitaly')
         end
       end
     end

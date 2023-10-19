@@ -50,8 +50,7 @@ module Gitlab
           def filter_author(query)
             return query if params[:author_username].blank?
 
-            user = User.by_username(params[:author_username]).first
-
+            user = find_user(params[:author_username])
             return query.none if user.blank?
 
             query.authored(user)
@@ -60,11 +59,7 @@ module Gitlab
           def filter_milestone_ids(query)
             return query if params[:milestone_title].blank?
 
-            milestone = MilestonesFinder
-              .new(group_ids: root_ancestor.self_and_descendant_ids, project_ids: root_ancestor.all_projects.select(:id), title: params[:milestone_title])
-              .execute
-              .first
-
+            milestone = find_milestone(params[:milestone_title])
             return query.none if milestone.blank?
 
             query.with_milestone_id(milestone.id)
@@ -115,6 +110,17 @@ module Gitlab
           private
 
           attr_reader :stage, :params, :root_ancestor, :stage_event_model
+
+          def find_milestone(title)
+            MilestonesFinder
+              .new(group_ids: root_ancestor.self_and_descendant_ids, project_ids: root_ancestor.all_projects.select(:id), title: title)
+              .execute
+              .first
+          end
+
+          def find_user(username)
+            User.by_username(username).first
+          end
         end
         # rubocop: enable CodeReuse/ActiveRecord
       end

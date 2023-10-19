@@ -13,11 +13,13 @@ module Packages
       project.packages.installable
     end
 
-    def packages_visible_to_user(user, within_group:)
+    def packages_visible_to_user(user, within_group:, with_package_registry_enabled: false)
       return ::Packages::Package.none unless within_group
       return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)
 
       projects = projects_visible_to_reporters(user, within_group: within_group)
+      projects = projects.with_package_registry_enabled if with_package_registry_enabled
+
       ::Packages::Package.for_projects(projects.select(:id)).installable
     end
 

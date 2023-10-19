@@ -2,7 +2,7 @@
 
 - project = local_assigns.fetch(:project)
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card', data: { qa_selector: 'export_project_content' } }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card', data: { testid: 'export-project-content' } }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
   - c.with_header do
     .gl-new-card-title-wrapper
       %h4.gl-new-card-title= _('Export project')
@@ -27,10 +27,10 @@
     - if project.export_status == :finished
       = render Pajamas::ButtonComponent.new(href: download_export_project_path(project),
         method: :get,
-        button_options: { ref: 'nofollow', download: '', data: { qa_selector: 'download_export_link' } }) do
+        button_options: { ref: 'nofollow', download: '', data: { testid: 'download-export-link' } }) do
         = _('Download export')
       = render Pajamas::ButtonComponent.new(href: generate_new_export_project_path(project), method: :post) do
         = _('Generate new export')
     - else
-      = render Pajamas::ButtonComponent.new(href: export_project_path(project), method: :post, button_options: { data: { qa_selector: 'export_project_link' } }) do
+      = render Pajamas::ButtonComponent.new(href: export_project_path(project), method: :post, button_options: { data: { testid: 'export-project-link' } }) do
         = _('Export project')

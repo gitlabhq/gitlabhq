@@ -35,7 +35,7 @@ export default {
       return {
         attributes: {
           variant: 'danger',
-          'data-qa-selector': 'confirm_delete_issue_button',
+          'data-testid': 'confirm-delete-issue-button',
         },
         text: this.title,
       };

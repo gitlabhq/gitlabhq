@@ -21,7 +21,6 @@ Over time, while you're working in the source branch, the target branch might ch
 Any time you want to be sure the merged results are accurate, you should re-run the pipeline.
 
 Merged results pipelines can't run when the target branch has changes that conflict with the changes in the source branch.
-
 In these cases, the pipeline runs as a [merge request pipeline](merge_request_pipelines.md)
 and [is labeled as `merge request`](merge_request_pipelines.md#types-of-merge-request-pipelines).
 

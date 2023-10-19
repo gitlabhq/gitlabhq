@@ -14,8 +14,11 @@ module Gitlab
 
           MAX_DEPTH = 3
 
-          def initialize(hash)
-            @context = hash
+          attr_reader :variables
+
+          def initialize(data, variables: [])
+            @data = data
+            @variables = Ci::Variables::Collection.fabricate(variables)
 
             raise ContextTooComplexError if depth > MAX_DEPTH
           end
@@ -32,25 +35,25 @@ module Gitlab
           end
 
           def depth
-            deep_depth(@context)
+            deep_depth(@data)
           end
 
           def fetch(field)
-            @context.fetch(field)
+            @data.fetch(field)
           end
 
           def key?(name)
-            @context.key?(name)
+            @data.key?(name)
           end
 
           def to_h
-            @context.to_h
+            @data.to_h
           end
 
           private
 
-          def deep_depth(context, depth = 0)
-            values = context.values.map do |value|
+          def deep_depth(data, depth = 0)
+            values = data.values.map do |value|
               if value.is_a?(Hash)
                 deep_depth(value, depth + 1)
               else
@@ -61,10 +64,10 @@ module Gitlab
             values.max.to_i
           end
 
-          def self.fabricate(context)
+          def self.fabricate(context, variables: [])
             case context
             when Hash
-              new(context)
+              new(context, variables: variables)
             when Interpolation::Context
               context
             else

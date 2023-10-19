@@ -96,13 +96,15 @@ module QA
             #   request to request, especially a 200 response rather than a 304
             #   (indicating a cached response.) Further, :content_disposition
             #   should include `attachment` for all responses.
-            #
-            expect(response.headers[:cache_control]).to include("no-store")
-            expect(response.headers[:cache_control]).to include("no-cache")
-            expect(response.headers[:expires]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
-            expect(response.headers[:content_disposition]).to include("attachment")
-            expect(response.headers[:content_disposition]).not_to include("inline")
-            expect(response.headers[:content_type]).to include("image/svg+xml")
+            aggregate_failures do
+              expect_status(200)
+              expect(response.headers[:cache_control]).to include("no-store")
+              expect(response.headers[:cache_control]).to include("no-cache")
+              expect(response.headers[:expires]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
+              expect(response.headers[:content_disposition]).to include("attachment")
+              expect(response.headers[:content_disposition]).not_to include("inline")
+              expect(response.headers[:content_type]).to include("image/svg+xml")
+            end
           end
 
           delete_project_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}")

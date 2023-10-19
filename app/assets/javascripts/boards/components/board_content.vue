@@ -219,7 +219,7 @@ export default {
 <template>
   <div
     v-cloak
-    data-qa-selector="boards_list"
+    data-testid="boards-list"
     class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-min-h-0"
   >
     <gl-alert v-if="errorToDisplay" variant="danger" :dismissible="true" @dismiss="dismissError">

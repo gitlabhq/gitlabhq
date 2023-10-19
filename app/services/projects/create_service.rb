@@ -229,7 +229,7 @@ module Projects
         %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424281'
       ) do
         ApplicationRecord.transaction do
-          @project.create_or_update_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
+          @project.build_or_assign_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
 
           # Avoid project callbacks being triggered multiple times by saving the parent first.
           # See https://github.com/rails/rails/issues/41701.

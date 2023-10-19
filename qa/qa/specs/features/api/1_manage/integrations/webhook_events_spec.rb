@@ -32,9 +32,7 @@ module QA
 
       it 'sends a merge request event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349720' do
         Resource::ProjectWebHook.setup(session: session, merge_requests: true) do |webhook, smocker|
-          Resource::MergeRequest.fabricate_via_api! do |merge_request|
-            merge_request.project = webhook.project
-          end
+          create(:merge_request, project: webhook.project)
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'merge_request')
         end
@@ -42,9 +40,7 @@ module QA
 
       it 'sends a wiki page event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349722' do
         Resource::ProjectWebHook.setup(session: session, wiki_page: true) do |webhook, smocker|
-          Resource::Wiki::ProjectPage.fabricate_via_api! do |page|
-            page.project = webhook.project
-          end
+          create(:project_wiki_page, project: webhook.project)
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'wiki_page')
         end
@@ -82,11 +78,7 @@ module QA
             project_push.project = webhook.project
           end
 
-          Resource::Tag.fabricate_via_api! do |tag|
-            tag.project = project_push.project
-            tag.ref = project_push.branch_name
-            tag.name = tag_name
-          end
+          create(:tag, project: project_push.project, ref: project_push.branch_name, name: tag_name)
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'tag_push')
         end

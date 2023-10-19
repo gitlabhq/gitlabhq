@@ -8,7 +8,6 @@ module Gitlab
 
         data_consistency :always
 
-        sidekiq_options retry: 5
         include GithubImport::Queue
         include StageMethods
 

@@ -5,7 +5,7 @@ module Gitlab
     module Status
       class Pending < Status::Core
         def text
-          s_('CiStatusText|pending')
+          s_('CiStatusText|Pending')
         end
 
         def label

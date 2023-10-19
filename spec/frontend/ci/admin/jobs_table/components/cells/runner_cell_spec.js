@@ -1,5 +1,6 @@
 import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import RunnerTypeIcon from '~/ci/runner/components/runner_type_icon.vue';
 import RunnerCell from '~/ci/admin/jobs_table/components/cells/runner_cell.vue';
 import { RUNNER_EMPTY_TEXT } from '~/ci/admin/jobs_table/constants';
 import { allRunnersData } from 'jest/ci/runner/mock_data';
@@ -58,6 +59,31 @@ describe('Runner Cell', () => {
 
       it('hides the runner link', () => {
         expect(findRunnerLink().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('Runner Type Icon', () => {
+    const findRunnerTypeIcon = () => wrapper.findComponent(RunnerTypeIcon);
+
+    describe('Job with runner', () => {
+      beforeEach(() => {
+        createComponent({ job: mockJobWithRunner });
+      });
+
+      it('shows the runner type icon', () => {
+        expect(findRunnerTypeIcon().exists()).toBe(true);
+        expect(findRunnerTypeIcon().props('type')).toBe(mockJobWithRunner.runner.runnerType);
+      });
+    });
+
+    describe('Job without runner', () => {
+      beforeEach(() => {
+        createComponent({ job: mockJobWithoutRunner });
+      });
+
+      it('does not show the runner type icon', () => {
+        expect(findRunnerTypeIcon().exists()).toBe(false);
       });
     });
   });

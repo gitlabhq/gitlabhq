@@ -8,7 +8,7 @@ module QA
       end
 
       class VisibilityLevel
-        %i(public internal private).each do |level|
+        %i[public internal private].each do |level|
           const_set(level.upcase, level)
         end
       end

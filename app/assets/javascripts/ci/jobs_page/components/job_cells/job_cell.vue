@@ -35,9 +35,6 @@ export default {
     jobRef() {
       return this.job?.refName;
     },
-    jobRefPath() {
-      return this.job?.refPath;
-    },
     jobTags() {
       return this.job.tags;
     },
@@ -72,61 +69,60 @@ export default {
 <template>
   <div>
     <div class="gl-text-truncate gl-p-3 gl-mt-n3 gl-mx-n3 gl-mb-n2">
+      <gl-icon
+        v-if="jobStuck"
+        v-gl-tooltip="$options.i18n.stuckText"
+        name="warning"
+        :size="$options.iconSize"
+        class="gl-mr-2"
+        data-testid="stuck-icon"
+      />
+
       <gl-link
         v-if="canReadJob"
         class="gl-text-blue-600!"
         :href="jobPath"
         data-testid="job-id-link"
       >
-        {{ jobId }}
+        <span class="gl-text-truncate">
+          <span data-testid="job-name">{{ jobId }}: {{ job.name }}</span>
+        </span>
       </gl-link>
 
-      <span v-else data-testid="job-id-limited-access">{{ jobId }}</span>
+      <span v-else data-testid="job-id-limited-access">{{ jobId }}: {{ job.name }}</span>
+    </div>
 
-      <gl-icon
-        v-if="jobStuck"
-        v-gl-tooltip="$options.i18n.stuckText"
-        name="warning"
-        :size="$options.iconSize"
-        data-testid="stuck-icon"
-      />
-
-      <div
-        class="gl-display-flex gl-text-gray-700 gl-align-items-center gl-lg-justify-content-start gl-justify-content-end gl-mt-2"
-      >
-        <div
-          v-if="jobRef"
-          class="gl-p-2 gl-rounded-base gl-bg-gray-50 gl-max-w-15 gl-text-truncate"
+    <div
+      class="gl-display-flex gl-text-gray-700 gl-align-items-center gl-lg-justify-content-start gl-justify-content-end gl-mt-1"
+    >
+      <div v-if="jobRef" class="gl-p-2 gl-rounded-base gl-bg-gray-50 gl-max-w-26 gl-text-truncate">
+        <gl-icon
+          v-if="createdByTag"
+          name="label"
+          :size="$options.iconSize"
+          data-testid="label-icon"
+        />
+        <gl-icon v-else name="fork" :size="$options.iconSize" data-testid="fork-icon" />
+        <gl-link
+          class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"
+          :href="job.refPath"
+          data-testid="job-ref"
+          >{{ job.refName }}</gl-link
         >
-          <gl-icon
-            v-if="createdByTag"
-            name="label"
-            :size="$options.iconSize"
-            data-testid="label-icon"
-          />
-          <gl-icon v-else name="fork" :size="$options.iconSize" data-testid="fork-icon" />
-          <gl-link
-            class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"
-            :href="job.refPath"
-            data-testid="job-ref"
-            >{{ job.refName }}</gl-link
-          >
-        </div>
-
-        <span v-else>{{ __('none') }}</span>
-        <div class="gl-ml-2 gl-p-2 gl-rounded-base gl-bg-gray-50">
-          <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
-          <gl-link
-            class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"
-            :href="job.commitPath"
-            data-testid="job-sha"
-            >{{ job.shortSha }}</gl-link
-          >
-        </div>
+      </div>
+      <span v-else>{{ __('none') }}</span>
+      <div class="gl-ml-2 gl-p-2 gl-rounded-base gl-bg-gray-50">
+        <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
+        <gl-link
+          class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"
+          :href="job.commitPath"
+          data-testid="job-sha"
+          >{{ job.shortSha }}</gl-link
+        >
       </div>
     </div>
 
-    <div>
+    <div class="gl-mt-2">
       <gl-badge
         v-for="tag in jobTags"
         :key="tag"
@@ -136,7 +132,6 @@ export default {
       >
         {{ tag }}
       </gl-badge>
-
       <gl-badge
         v-if="triggered"
         variant="info"

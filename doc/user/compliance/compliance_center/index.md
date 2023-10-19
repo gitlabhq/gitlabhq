@@ -15,12 +15,12 @@ See report and manage standards adherence, violations, and compliance frameworks
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125875) GraphQL APIs in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `compliance_adherence_report`. Disabled by default.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `adherence_report_ui`. Disabled by default.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/414495) in GitLab 16.5.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire
-instance, an administrator can [enable the feature flags](../../../administration/feature_flags.md) named
-`compliance_adherence_report` and `adherence_report_ui`. On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can
+[disable the feature flags](../../../administration/feature_flags.md) named `compliance_adherence_report` and `adherence_report_ui`. On GitLab.com,
+this feature is available.
 
 Standards adherence dashboard lists the adherence status of projects complying to GitLab standard.
 
@@ -167,6 +167,33 @@ separation of duties is:
 - [A merge request committer is **not** allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 - [The minimum number of approvals required to merge a merge request is **at least** two](../../project/merge_requests/approvals/rules.md).
 
+### Export a report of merge request compliance violations on projects in a group
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356791) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_violation_csv_export`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/424447) in GitLab 16.5.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named
+`compliance_violation_csv_export`. On GitLab.com, this feature is available.
+
+Export a report of merge request compliance violations on merge requests belonging to projects in a group. Reports:
+
+- Do not use filters on the violations report.
+- Are truncated at 15 MB so the email attachment is not too large.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To export a report of merge request compliance violations for projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Secure > Compliance center**.
+1. On the page, select the **Violations** tab.
+1. On the Violations tab, select the **Export full report as CSV** action in the top right corner
+
+A report is compiled and delivered to your email inbox as an attachment.
+
 ### Chain of Custody report
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in GitLab 13.3.
@@ -234,11 +261,12 @@ Depending on your version of GitLab, the Chain of Custody report is either sent 
 Alternatively, use a direct link: `https://gitlab.com/groups/<group-name>/-/security/merge_commit_reports.csv?commit_sha={optional_commit_sha}`,
 passing in an optional value to the `commit_sha` query parameter.
 
-## Compliance frameworks report
+## Compliance projects report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
+> - [Renamed from **compliance frameworks report**](https://gitlab.com/gitlab-org/gitlab/-/issues/422963) in GitLab 16.5.
 
-With compliance frameworks report, you can see the compliance frameworks that are applied to projects in a group. Each row of the report shows:
+With compliance projects report, you can see the compliance frameworks that are applied to projects in a group. Each row of the report shows:
 
 - Project name.
 - Project path.
@@ -246,17 +274,17 @@ With compliance frameworks report, you can see the compliance frameworks that ar
 
 The default framework for the group has a **default** badge.
 
-### View the compliance frameworks report for a group
+### View the compliance projects report for a group
 
 Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
-To view the compliance frameworks report:
+To view the compliance projects report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Frameworks** tab.
+1. On the page, select the **Projects** tab.
 
 ### Apply a compliance framework to projects in a group
 
@@ -273,7 +301,7 @@ To apply a compliance framework to one project in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Frameworks** tab.
+1. On the page, select the **Projects** tab.
 1. Next to the project you want to add the compliance framework to, select **{plus}** **Add framework**.
 1. Select an existing compliance framework or create a new one.
 
@@ -281,7 +309,7 @@ To apply a compliance framework to multiple projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Frameworks** tab.
+1. On the page, select the **Projects** tab.
 1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Apply framework to selected projects**.
 1. Select framework to apply.
@@ -302,43 +330,17 @@ To remove a compliance framework from one project in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Frameworks** tab.
+1. On the page, select the **Projects** tab.
 1. Next to the compliance framework to remove from the project, select **{close}** on the framework label.
 
 To remove a compliance framework from multiple projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Frameworks** tab.
+1. On the page, select the **Projects** tab.
 1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
 1. Select **Remove**.
-
-### Export a report of merge request compliance violations on projects in a group
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356791) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_violation_csv_export`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`compliance_violation_csv_export`. On GitLab.com, this feature is not available. The feature is not ready for production use.
-
-Export a report of merge request compliance violations on merge requests belonging to projects in a group. Reports:
-
-- Do not use filters on the violations report.
-- Are truncated at 15 MB so the email attachment is not too large.
-
-Prerequisites:
-
-- You must be an administrator or have the Owner role for the group.
-
-To export a report of merge request compliance violations for projects in a group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Violations** tab.
-1. On the Violations tab, select the **Export full report as CSV** action in the top right corner
-
-A report is compiled and delivered to your email inbox as an attachment.
 
 ### Export a report of compliance frameworks on projects in a group
 
@@ -357,12 +359,12 @@ To export a report of compliance frameworks on projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Frameworks** tab.
+1. On the page, select the **Projects** tab.
 1. On the Frameworks tab, select the **Export as CSV** action in the top right corner
 
 A report is compiled and delivered to your email inbox as an attachment.
 
-#### Filter the compliance frameworks report
+#### Filter the compliance projects report
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
 
@@ -370,7 +372,7 @@ To filter the list of compliance frameworks:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Frameworks** tab.
+1. On the page, select the **Projects** tab.
 1. In the search field:
    1. Select the attribute you want to filter by.
    1. Select an operator.
@@ -378,3 +380,30 @@ To filter the list of compliance frameworks:
 1. Select **Search** (**{search}**).
 
 Repeat this process to filter by multiple attributes.
+
+## Compliance frameworks report
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422973) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `compliance_framework_report_ui`. Disabled by default.
+> - In GitLab 16.4 and earlier, **Compliance frameworks report** referred to what is now called **Compliance projects report**. The formally-named **Compliance frameworks report** was [renamed to **Compliance projects report**](https://gitlab.com/gitlab-org/gitlab/-/issues/422963) in GitLab 16.5.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
+`compliance_framework_report_ui`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+With compliance frameworks report, you can see all the compliance frameworks in a group. Each row of the report shows:
+
+- Framework name.
+
+The default framework for the group has a **default** badge.
+
+### View the compliance frameworks report for a group
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To view the compliance projects report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.

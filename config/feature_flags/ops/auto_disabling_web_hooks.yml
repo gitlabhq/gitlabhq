@@ -4,6 +4,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113479
 rollout_issue_url:
 milestone: '15.10'
 type: ops
-group: group::integrations
+group: group::import and integrate
 default_enabled: false # Keep this value as false, as feature should be disabled by default for self-managed
                        # https://gitlab.com/gitlab-org/gitlab/-/issues/390157.

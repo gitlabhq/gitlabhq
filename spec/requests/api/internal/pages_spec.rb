@@ -69,6 +69,15 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
       context 'when querying a custom domain' do
         let_it_be(:pages_domain) { create(:pages_domain, domain: 'pages.io', project: project) }
 
+        # We need to ensure not to return the unique domain when requesting a custom domain
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/426435
+        before_all do
+          project.project_setting.update!(
+            pages_unique_domain: 'unique-domain',
+            pages_unique_domain_enabled: true
+          )
+        end
+
         context 'when there are no pages deployed for the related project' do
           before do
             project.mark_pages_as_not_deployed

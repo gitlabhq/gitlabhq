@@ -171,7 +171,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
             it_behaves_like 'sorts by created_at descending'
           end
 
-          %w(created_date created_at_desc).each do |sort|
+          %w[created_date created_at_desc].each do |sort|
             context "with sort param equal to #{sort}" do
               let(:params) { { sort: sort } }
 

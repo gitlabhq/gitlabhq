@@ -18,6 +18,8 @@ module Ci
       scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
       scope :order_by_name_desc, -> { joins(:project).merge(Project.sorted_by_name_desc) }
       scope :order_by_name_asc, -> { joins(:project).merge(Project.sorted_by_name_asc) }
+      scope :order_by_latest_released_at_desc, -> { reorder(arel_table[:latest_released_at].desc.nulls_last) }
+      scope :order_by_latest_released_at_asc, -> { reorder(arel_table[:latest_released_at].asc.nulls_last) }
 
       delegate :avatar_path, :description, :name, :star_count, :forks_count, to: :project
 

@@ -43,10 +43,12 @@ module Routing
     end
 
     def work_item_url(entity, *args)
-      if entity.project.present?
-        project_work_items_url(entity.project, entity.iid, *args)
+      return group_work_item_url(entity.namespace, entity.iid, *args) unless entity.project.present?
+
+      if use_issue_path?(entity)
+        project_issue_url(entity.project, entity.iid, *args)
       else
-        group_work_item_url(entity.namespace, entity.iid, *args)
+        project_work_item_url(entity.project, entity.iid, *args)
       end
     end
 
@@ -96,6 +98,10 @@ module Routing
       return true if issue.project.blank? && issue.namespace.present?
 
       issue.issue_type == 'task'
+    end
+
+    def use_issue_path?(work_item)
+      work_item.issue_type == 'issue'
     end
   end
 end

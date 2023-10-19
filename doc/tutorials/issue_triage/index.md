@@ -24,7 +24,7 @@ To set up GitLab for issue triage in a project:
 1. [Create an issue triage board](#create-an-issue-triage-board)
 1. [Create issues for features](#create-issues-for-features)
 
-## Prerequisites
+## Before you begin
 
 - If you're using an existing project for this tutorial, make sure you have at least the Reporter role
   for the project.

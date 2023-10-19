@@ -20,12 +20,11 @@ module QA
       end
 
       after do
-        project.remove_via_api!
         runner.remove_via_api!
       end
 
       it(
-        'spans r/w postgres web sidekiq git api',
+        'spans r/w postgres web sidekiq git api', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360837'
       ) do
         # create a CI variable via UI

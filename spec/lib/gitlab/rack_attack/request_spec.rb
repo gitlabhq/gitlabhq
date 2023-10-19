@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::RackAttack::Request do
+RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
   using RSpec::Parameterized::TableSyntax
 
   let(:path) { '/' }
@@ -38,8 +38,12 @@ RSpec.describe Gitlab::RackAttack::Request do
       '/groups'  | false
       '/foo/api' | false
 
-      '/api'             | true
+      '/api'             | false
+      '/api/'            | true
       '/api/v4/groups/1' | true
+
+      '/oauth/tokens'    | true
+      '/oauth/userinfo'  | true
     end
 
     with_them do
@@ -51,6 +55,36 @@ RSpec.describe Gitlab::RackAttack::Request do
         end
 
         it { is_expected.to eq(expected) }
+      end
+    end
+
+    context 'when rate_limit_oauth_api feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_oauth_api: false)
+      end
+
+      where(:path, :expected) do
+        '/'        | false
+        '/groups'  | false
+        '/foo/api' | false
+
+        '/api'             | true
+        '/api/v4/groups/1' | true
+
+        '/oauth/tokens'    | false
+        '/oauth/userinfo'  | false
+      end
+
+      with_them do
+        it { is_expected.to eq(expected) }
+
+        context 'when the application is mounted at a relative URL' do
+          before do
+            stub_config_setting(relative_url_root: '/gitlab/root')
+          end
+
+          it { is_expected.to eq(expected) }
+        end
       end
     end
   end
@@ -196,7 +230,8 @@ RSpec.describe Gitlab::RackAttack::Request do
       '/groups'  | true
       '/foo/api' | true
 
-      '/api'             | false
+      '/api'             | true
+      '/api/'            | false
       '/api/v4/groups/1' | false
     end
 

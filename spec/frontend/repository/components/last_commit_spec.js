@@ -1,29 +1,26 @@
 import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import LastCommit from '~/repository/components/last_commit.vue';
+import CommitInfo from '~/repository/components/commit_info.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '~/repository/event_hub';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { FORK_UPDATED_EVENT } from '~/repository/constants';
 import { refMock } from '../mock_data';
 
 let wrapper;
+let commitData;
 let mockResolver;
 
 const findPipeline = () => wrapper.find('.js-commit-pipeline');
-const findTextExpander = () => wrapper.find('.text-expander');
-const findUserLink = () => wrapper.find('.js-user-link');
-const findUserAvatarLink = () => wrapper.findComponent(UserAvatarLink);
 const findLastCommitLabel = () => wrapper.findByTestId('last-commit-id-label');
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-const findCommitRowDescription = () => wrapper.find('.commit-row-description');
 const findStatusBox = () => wrapper.findComponent(SignatureBadge);
-const findItemTitle = () => wrapper.find('.item-title');
+const findCommitInfo = () => wrapper.findComponent(CommitInfo);
 
 const defaultPipelineEdges = [
   {
@@ -44,23 +41,7 @@ const defaultPipelineEdges = [
   },
 ];
 
-const defaultAuthor = {
-  __typename: 'UserCore',
-  id: 'gid://gitlab/User/1',
-  name: 'Test',
-  avatarUrl: 'https://test.com',
-  webPath: '/test',
-};
-
-const defaultMessage = 'Commit title';
-
-const createCommitData = ({
-  pipelineEdges = defaultPipelineEdges,
-  author = defaultAuthor,
-  descriptionHtml = '',
-  signature = null,
-  message = defaultMessage,
-}) => {
+const createCommitData = ({ pipelineEdges = defaultPipelineEdges, signature = null }) => {
   return {
     data: {
       project: {
@@ -79,13 +60,19 @@ const createCommitData = ({
                   sha: '123456789',
                   title: 'Commit title',
                   titleHtml: 'Commit title',
-                  descriptionHtml,
-                  message,
+                  descriptionHtml: '',
+                  message: '',
                   webPath: '/commit/123',
                   authoredDate: '2019-01-01',
                   authorName: 'Test',
                   authorGravatar: 'https://test.com',
-                  author,
+                  author: {
+                    __typename: 'UserCore',
+                    id: 'gid://gitlab/User/1',
+                    name: 'Test',
+                    avatarUrl: 'https://test.com',
+                    webPath: '/test',
+                  },
                   signature,
                   pipelines: {
                     __typename: 'PipelineConnection',
@@ -101,12 +88,13 @@ const createCommitData = ({
   };
 };
 
-const createComponent = (data = {}) => {
+const createComponent = async (data = {}) => {
   Vue.use(VueApollo);
 
   const currentPath = 'path';
 
-  mockResolver = jest.fn().mockResolvedValue(createCommitData(data));
+  commitData = createCommitData(data);
+  mockResolver = jest.fn().mockResolvedValue(commitData);
 
   wrapper = shallowMountExtended(LastCommit, {
     apolloProvider: createMockApollo([[pathLastCommitQuery, mockResolver]]),
@@ -116,7 +104,12 @@ const createComponent = (data = {}) => {
       SignatureBadge,
     },
   });
+
+  await waitForPromises();
+  await nextTick();
 };
+
+beforeEach(() => createComponent());
 
 afterEach(() => {
   mockResolver = null;
@@ -137,17 +130,17 @@ describe('Repository last commit component', () => {
     expect(findLoadingIcon().exists()).toBe(loading);
   });
 
-  it('renders commit widget', async () => {
-    createComponent();
-    await waitForPromises();
+  it('renders a CommitInfo component', () => {
+    const commit = { ...commitData.project?.repository.paginatedTree.nodes[0].lastCommit };
 
+    expect(findCommitInfo().props().commit).toMatchObject(commit);
+  });
+
+  it('renders commit widget', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders short commit ID', async () => {
-    createComponent();
-    await waitForPromises();
-
+  it('renders short commit ID', () => {
     expect(findLastCommitLabel().text()).toBe('12345678');
   });
 
@@ -158,27 +151,8 @@ describe('Repository last commit component', () => {
     expect(findPipeline().exists()).toBe(false);
   });
 
-  it('renders pipeline components when pipeline exists', async () => {
-    createComponent();
-    await waitForPromises();
-
+  it('renders pipeline components when pipeline exists', () => {
     expect(findPipeline().exists()).toBe(true);
-  });
-
-  it('hides author component when author does not exist', async () => {
-    createComponent({ author: null });
-    await waitForPromises();
-
-    expect(findUserLink().exists()).toBe(false);
-    expect(findUserAvatarLink().exists()).toBe(false);
-  });
-
-  it('does not render description expander when description is null', async () => {
-    createComponent();
-    await waitForPromises();
-
-    expect(findTextExpander().exists()).toBe(false);
-    expect(findCommitRowDescription().exists()).toBe(false);
   });
 
   describe('created', () => {
@@ -200,32 +174,6 @@ describe('Repository last commit component', () => {
     });
   });
 
-  describe('when the description is present', () => {
-    beforeEach(async () => {
-      createComponent({ descriptionHtml: '&#x000A;Update ADOPTERS.md' });
-      await waitForPromises();
-    });
-
-    it('strips the first newline of the description', () => {
-      expect(findCommitRowDescription().html()).toBe(
-        '<pre class="commit-row-description gl-mb-3 gl-white-space-pre-line">Update ADOPTERS.md</pre>',
-      );
-    });
-
-    it('expands commit description when clicking expander', async () => {
-      expect(findCommitRowDescription().classes('d-block')).toBe(false);
-      expect(findTextExpander().classes('open')).toBe(false);
-      expect(findTextExpander().props('selected')).toBe(false);
-
-      findTextExpander().vm.$emit('click');
-      await nextTick();
-
-      expect(findCommitRowDescription().classes('d-block')).toBe(true);
-      expect(findTextExpander().classes('open')).toBe(true);
-      expect(findTextExpander().props('selected')).toBe(true);
-    });
-  });
-
   it('renders the signature HTML as returned by the backend', async () => {
     const signatureResponse = {
       __typename: 'GpgSignature',
@@ -240,12 +188,5 @@ describe('Repository last commit component', () => {
     await waitForPromises();
 
     expect(findStatusBox().props()).toMatchObject({ signature: signatureResponse });
-  });
-
-  it('sets correct CSS class if the commit message is empty', async () => {
-    createComponent({ message: '' });
-    await waitForPromises();
-
-    expect(findItemTitle().classes()).toContain('font-italic');
   });
 });

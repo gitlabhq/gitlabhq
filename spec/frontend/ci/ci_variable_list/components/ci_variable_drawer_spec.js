@@ -1,4 +1,5 @@
-import { GlDrawer, GlFormCombobox, GlFormInput, GlFormSelect } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { GlDrawer, GlFormCombobox, GlFormInput, GlFormSelect, GlModal } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiEnvironmentsDropdown from '~/ci/ci_variable_list/components/ci_environments_dropdown.vue';
 import CiVariableDrawer from '~/ci/ci_variable_list/components/ci_variable_drawer.vue';
@@ -67,6 +68,8 @@ describe('CI Variable Drawer', () => {
   };
 
   const findConfirmBtn = () => wrapper.findByTestId('ci-variable-confirm-btn');
+  const findConfirmDeleteModal = () => wrapper.findComponent(GlModal);
+  const findDeleteBtn = () => wrapper.findByTestId('ci-variable-delete-btn');
   const findDisabledEnvironmentScopeDropdown = () => wrapper.findComponent(GlFormInput);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findEnvironmentScopeDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
@@ -363,22 +366,118 @@ describe('CI Variable Drawer', () => {
       });
 
       it('title and confirm button renders the correct text', () => {
-        expect(findTitle().text()).toBe('Add Variable');
-        expect(findConfirmBtn().text()).toBe('Add Variable');
+        expect(findTitle().text()).toBe('Add variable');
+        expect(findConfirmBtn().text()).toBe('Add variable');
+      });
+
+      it('does not render delete button', () => {
+        expect(findDeleteBtn().exists()).toBe(false);
+      });
+
+      it('dispatches the add-variable event', async () => {
+        await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
+        await findProtectedCheckbox().vm.$emit('input', false);
+        await findExpandedCheckbox().vm.$emit('input', true);
+        await findMaskedCheckbox().vm.$emit('input', true);
+        await findValueField().vm.$emit('input', 'NEW_VALUE');
+
+        findConfirmBtn().vm.$emit('click');
+
+        expect(wrapper.emitted('add-variable')).toEqual([
+          [
+            {
+              environmentScope: '*',
+              key: 'NEW_VARIABLE',
+              masked: true,
+              protected: false,
+              raw: false, // opposite of expanded
+              value: 'NEW_VALUE',
+              variableType: 'ENV_VAR',
+            },
+          ],
+        ]);
       });
     });
 
     describe('when editing a variable', () => {
       beforeEach(() => {
         createComponent({
-          props: { mode: EDIT_VARIABLE_ACTION },
+          props: { mode: EDIT_VARIABLE_ACTION, selectedVariable: mockProjectVariableFileType },
           stubs: { GlDrawer },
         });
       });
 
       it('title and confirm button renders the correct text', () => {
-        expect(findTitle().text()).toBe('Edit Variable');
-        expect(findConfirmBtn().text()).toBe('Edit Variable');
+        expect(findTitle().text()).toBe('Edit variable');
+        expect(findConfirmBtn().text()).toBe('Edit variable');
+      });
+
+      it('dispatches the edit-variable event', async () => {
+        await findValueField().vm.$emit('input', 'EDITED_VALUE');
+
+        findConfirmBtn().vm.$emit('click');
+
+        expect(wrapper.emitted('update-variable')).toEqual([
+          [
+            {
+              ...mockProjectVariableFileType,
+              value: 'EDITED_VALUE',
+            },
+          ],
+        ]);
+      });
+    });
+
+    describe('when deleting a variable', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          props: { mode: EDIT_VARIABLE_ACTION, selectedVariable: mockProjectVariableFileType },
+        });
+      });
+
+      it('bubbles up the delete-variable event', async () => {
+        findDeleteBtn().vm.$emit('click');
+
+        await nextTick();
+
+        findConfirmDeleteModal().vm.$emit('primary');
+
+        expect(wrapper.emitted('delete-variable')).toEqual([[mockProjectVariableFileType]]);
+      });
+    });
+
+    describe('environment scope events', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          props: {
+            mode: EDIT_VARIABLE_ACTION,
+            selectedVariable: mockProjectVariableFileType,
+            areScopedVariablesAvailable: true,
+            hideEnvironmentScope: false,
+          },
+        });
+      });
+
+      it('sets the environment scope', async () => {
+        await findEnvironmentScopeDropdown().vm.$emit('select-environment', 'staging');
+        await findConfirmBtn().vm.$emit('click');
+
+        expect(wrapper.emitted('update-variable')).toEqual([
+          [
+            {
+              ...mockProjectVariableFileType,
+              environmentScope: 'staging',
+            },
+          ],
+        ]);
+      });
+
+      it('bubbles up the search event', async () => {
+        await findEnvironmentScopeDropdown().vm.$emit('search-environment-scope', 'staging');
+
+        expect(wrapper.emitted('search-environment-scope')).toEqual([['staging']]);
       });
     });
   });

@@ -7,7 +7,7 @@ module Feature
     attr_reader :path
     attr_reader :attributes
 
-    VALID_FEATURE_NAME = %r{^#{Gitlab::Regex.sep_by_1('_', /[a-z0-9]+/)}$}.freeze
+    VALID_FEATURE_NAME = %r{^#{Gitlab::Regex.sep_by_1('_', /[a-z0-9]+/)}$}
 
     PARAMS.each do |param|
       define_method(param) do

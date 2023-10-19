@@ -68,7 +68,7 @@ export function updateIssueCountAndWeight({
         boardList: {
           ...boardList,
           issuesCount: boardList.issuesCount - 1,
-          totalWeight: boardList.totalWeight - issue.weight,
+          totalIssueWeight: boardList.totalIssueWeight - issue.weight,
         },
       }),
     );
@@ -83,7 +83,7 @@ export function updateIssueCountAndWeight({
       boardList: {
         ...boardList,
         issuesCount: boardList.issuesCount + 1,
-        totalWeight: boardList.totalWeight + issue.weight,
+        ...(issue.weight ? { totalIssueWeight: boardList.totalIssueWeight + issue.weight } : {}),
       },
     }),
   );

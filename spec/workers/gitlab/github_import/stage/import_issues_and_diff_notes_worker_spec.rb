@@ -13,6 +13,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker, feat
     settings.write({ optional_stages: { single_endpoint_notes_import: single_endpoint_optional_stage } })
   end
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     it 'imports the issues and diff notes' do
       client = double(:client)

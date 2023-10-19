@@ -40,7 +40,7 @@ export default {
     <nav class="review-bar-component js-review-bar" data-testid="review_bar_component">
       <div
         class="review-bar-content d-flex gl-justify-content-end"
-        data-qa-selector="review_bar_content"
+        data-testid="review-bar-content"
       >
         <preview-dropdown />
         <submit-dropdown />

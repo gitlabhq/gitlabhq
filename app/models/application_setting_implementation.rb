@@ -51,6 +51,7 @@ module ApplicationSettingImplementation
         container_registry_token_expire_delay: 5,
         container_registry_vendor: '',
         container_registry_version: '',
+        container_registry_db_enabled: false,
         custom_http_clone_url_root: nil,
         decompress_archive_file_timeout: 210,
         default_artifacts_expire_in: '30 days',
@@ -87,6 +88,7 @@ module ApplicationSettingImplementation
         external_pipeline_validation_service_timeout: nil,
         external_pipeline_validation_service_token: nil,
         external_pipeline_validation_service_url: nil,
+        failed_login_attempts_unlock_period_in_minutes: nil,
         first_day_of_week: 0,
         floc_enabled: false,
         gitaly_timeout_default: 55,
@@ -117,12 +119,14 @@ module ApplicationSettingImplementation
         login_recaptcha_protection_enabled: false,
         mailgun_signing_key: nil,
         mailgun_events_enabled: false,
+        math_rendering_limits_enabled: true,
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
+        max_decompressed_archive_size: 25600,
         max_export_size: 0,
         max_import_size: 0,
         max_import_remote_file_size: 10240,
-        max_decompressed_archive_size: 25600,
+        max_login_attempts: nil,
         max_terraform_state_size_bytes: 0,
         max_yaml_size_bytes: 1.megabyte,
         max_yaml_depth: 100,
@@ -267,7 +271,8 @@ module ApplicationSettingImplementation
         gitlab_dedicated_instance: false,
         ci_max_includes: 150,
         allow_account_deletion: true,
-        gitlab_shell_operation_limit: 600
+        gitlab_shell_operation_limit: 600,
+        project_jobs_api_rate_limit: 600
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

@@ -48,7 +48,7 @@ To change the maximum attachment size:
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Account and limit**.
-1. Increase or decrease by changing the value in **Maximum attachment size (MB)**.
+1. Increase or decrease by changing the value in **Maximum attachment size (MiB)**.
 
 If you choose a size larger than the configured value for the web server,
 you may receive errors. Read the [troubleshooting section](#troubleshooting) for more
@@ -64,7 +64,7 @@ You can change the maximum push size for your instance:
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Account and limit**.
-1. Increase or decrease by changing the value in **Maximum push size (MB)**.
+1. Increase or decrease by changing the value in **Maximum push size (MiB)**.
 
 For GitLab.com push size limits, read [accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
 
@@ -132,18 +132,18 @@ These settings can be found in:
 
 - Each project's settings:
   1. From the Project's homepage, navigate to **Settings > General**.
-  1. Fill in the **Repository size limit (MB)** field in the **Naming, topics, avatar** section.
+  1. Fill in the **Repository size limit (MiB)** field in the **Naming, topics, avatar** section.
   1. Select **Save changes**.
 - Each group's settings:
   1. From the Group's homepage, navigate to **Settings > General**.
-  1. Fill in the **Repository size limit (MB)** field in the **Naming, visibility** section.
+  1. Fill in the **Repository size limit (MiB)** field in the **Naming, visibility** section.
   1. Select **Save changes**.
 - GitLab global settings:
   1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. Select **Settings > General**.
   1. Expand the **Account and limit** section.
-  1. Fill in the **Size limit per repository (MB)** field.
+  1. Fill in the **Size limit per repository (MiB)** field.
   1. Select **Save changes**.
 
 The first push of a new project, including LFS objects, is checked for size.

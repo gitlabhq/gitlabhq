@@ -11,7 +11,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include SourcegraphDecorator
   include DiffHelper
   include Gitlab::Cache::Helpers
-  include ::Observability::ContentSecurityPolicy
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
@@ -37,8 +36,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   before_action only: [:show, :diffs] do
-    push_frontend_feature_flag(:content_editor_on_issues, project&.group)
-    push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
@@ -46,9 +43,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:saved_replies, current_user)
     push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
-    push_frontend_feature_flag(:mr_activity_filters, current_user)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
+    push_frontend_feature_flag(:notifications_todos_buttons, project)
   end
 
   before_action only: [:edit] do
@@ -159,7 +156,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
         .with_pagination(request, response)
-        .represent(@pipelines, preload: true),
+        .represent(
+          @pipelines,
+          preload: true,
+          disable_failed_builds: ::Feature.enabled?(:ci_fix_performance_pipelines_json_endpoint, @project)
+        ),
       count: {
         all: @pipelines.count
       }

@@ -71,8 +71,7 @@ export default {
         size="small"
         class="dropdown-header-button gl-p-0!"
         icon="close"
-        data-testid="close-button"
-        data-qa-selector="close_labels_dropdown_button"
+        data-testid="close-labels-dropdown-button"
         @click="$emit('closeDropdown')"
       />
     </div>

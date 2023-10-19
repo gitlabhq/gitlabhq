@@ -16,7 +16,7 @@ RSpec.describe API::Entities::User do
       # UserSafe
       :id, :username, :name,
       # UserBasic
-      :state, :avatar_url, :web_url,
+      :state, :locked, :avatar_url, :web_url,
       # User
       :created_at, :bio, :location, :public_email, :skype, :linkedin, :twitter, :discord,
       :website_url, :organization, :job_title, :pronouns, :bot, :work_information,
@@ -29,7 +29,7 @@ RSpec.describe API::Entities::User do
       allow(Ability).to receive(:allowed?).with(current_user, :read_user_profile, user).and_return(can_read_user_profile)
     end
 
-    %i(followers following is_followed).each do |relationship|
+    %i[followers following is_followed].each do |relationship|
       shared_examples 'does not expose relationship' do
         it "does not expose #{relationship}" do
           expect(subject).not_to include(relationship)

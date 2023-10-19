@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Bitbucket::Representation::Issue do
+RSpec.describe Bitbucket::Representation::Issue, feature_category: :importers do
   describe '#iid' do
     it { expect(described_class.new('id' => 1).iid).to eq(1) }
   end
@@ -45,5 +45,33 @@ RSpec.describe Bitbucket::Representation::Issue do
 
   describe '#updated_at' do
     it { expect(described_class.new('edited_on' => Date.today).updated_at).to eq(Date.today) }
+  end
+
+  describe '#to_hash' do
+    it do
+      raw = {
+        'id' => 111,
+        'title' => 'title',
+        'content' => { 'raw' => 'description' },
+        'state' => 'resolved',
+        'reporter' => { 'nickname' => 'User1' },
+        'milestone' => { 'name' => 1 },
+        'created_on' => 'created_at',
+        'edited_on' => 'updated_at'
+      }
+
+      expected_hash = {
+        iid: 111,
+        title: 'title',
+        description: 'description',
+        state: 'closed',
+        author: 'User1',
+        milestone: 1,
+        created_at: 'created_at',
+        updated_at: 'updated_at'
+      }
+
+      expect(described_class.new(raw).to_hash).to eq(expected_hash)
+    end
   end
 end

@@ -68,7 +68,7 @@ module Gitlab
         end
 
         def provider_config
-          Gitlab::Auth::OAuth::Provider.config_for(@provider) || {}
+          Gitlab::Auth::OAuth::Provider.config_for(provider) || {}
         end
 
         def provider_args
@@ -96,7 +96,10 @@ module Gitlab
         end
 
         def get_username
-          username_claims.map { |claim| get_from_auth_hash_or_info(claim) }.find { |name| name.presence }
+          username_claims.map { |claim| get_from_auth_hash_or_info(claim) }
+            .find { |name| name.presence }
+            &.split("@")
+            &.first
         end
 
         def username_and_email

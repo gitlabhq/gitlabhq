@@ -6,7 +6,7 @@ RSpec.describe TrackingHelper do
   describe '#tracking_attrs' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:input) { %w(a b c) }
+    let(:input) { %w[a b c] }
     let(:result) { { data: { track_label: 'a', track_action: 'b', track_property: 'c' } } }
 
     before do

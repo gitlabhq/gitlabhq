@@ -210,6 +210,8 @@ class MergeRequestDiff < ApplicationRecord
   # and save it to the database as serialized data
   def save_git_content
     ensure_commit_shas
+    set_patch_id_sha
+
     save_commits
     save_diffs
 
@@ -221,6 +223,16 @@ class MergeRequestDiff < ApplicationRecord
     reset
 
     keep_around_commits unless importing?
+  end
+
+  def set_patch_id_sha
+    return unless base_commit_sha && head_commit_sha
+    return if base_commit_sha == head_commit_sha
+
+    self.patch_id_sha = project.repository&.get_patch_id(
+      base_commit_sha,
+      head_commit_sha
+    )
   end
 
   def set_as_latest_diff

@@ -24,6 +24,7 @@ by disabling one or more [`ops` feature flags](../../development/feature_flags/i
 |----------------|------------------------------------|-------------------------------------------------------------------------------------------|
 | Code           | `global_search_code_tab`           | When enabled, global search includes code.                                                |
 | Commits        | `global_search_commits_tab`        | When enabled, global search includes commits.                                             |
+| Epics          | `global_search_epics_tab`          | When enabled, global search includes epics.                                               |
 | Issues         | `global_search_issues_tab`         | When enabled, global search includes issues.                                              |
 | Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests.                                      |
 | Users          | `global_search_users_tab`          | When enabled, global search includes users.                                               |

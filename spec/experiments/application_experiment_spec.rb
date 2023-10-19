@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationExperiment, :experiment, feature_category: :experimentation_conversion do
+RSpec.describe ApplicationExperiment, :experiment, feature_category: :acquisition do
   subject(:application_experiment) { described_class.new('namespaced/stub', **context) }
 
   let(:context) { {} }

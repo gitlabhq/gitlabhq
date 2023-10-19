@@ -165,8 +165,6 @@ Layout/LineContinuationSpacing:
     - 'spec/lib/gitlab/usage/metrics/instrumentations/count_imported_projects_total_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/gitlab_for_jira_app_direct_installations_count_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/gitlab_for_jira_app_proxy_installations_count_metric_spec.rb'
-    - 'spec/lib/gitlab/usage/metrics/instrumentations/in_product_marketing_email_cta_clicked_metric_spec.rb'
-    - 'spec/lib/gitlab/usage/metrics/instrumentations/in_product_marketing_email_sent_metric_spec.rb'
     - 'spec/lib/gitlab/utils/gzip_spec.rb'
     - 'spec/lib/system_check/incoming_email/imap_authentication_check_spec.rb'
     - 'spec/mailers/emails/identity_verification_spec.rb'

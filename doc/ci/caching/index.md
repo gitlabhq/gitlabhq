@@ -57,7 +57,9 @@ For runners to work with caches efficiently, you must do one of the following:
 - Use multiple runners that have
   [distributed caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching),
   where the cache is stored in S3 buckets. Shared runners on GitLab.com behave this way. These runners can be in autoscale mode,
-  but they don't have to be.
+  but they don't have to be. To manage cache objects,
+  apply lifecycle rules to delete the cache objects after a period of time.
+  Lifecycle rules are available on the object storage server.
 - Use multiple runners with the same architecture and have these runners
   share a common network-mounted directory to store the cache. This directory should use NFS or something similar.
   These runners must be in autoscale mode.
@@ -725,3 +727,16 @@ job B:
 
 Even if the `key` is different, the cached files might get "cleaned" before each
 stage if the jobs run on different runners in subsequent pipelines.
+
+### Concurrent runners missing local cache
+
+If you have configured multiple concurrent runners with the Docker executor, locally cached files might
+not be present for concurrently-running jobs as you expect. The names of cache volumes are constructed
+uniquely for each runner instance, so files cached by one runner instance are not found in the cache by another runner
+instance.
+
+To share the cache between concurrent runners, you can either:
+
+- Use the `[runners.docker]` section of the runners' `config.toml` to configure a single mount point on the host that
+is mapped to `/cache` in each container, preventing the runner from creating unique volume names.
+- Use a distributed cache.

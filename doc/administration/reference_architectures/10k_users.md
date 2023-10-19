@@ -28,7 +28,7 @@ full list of reference architectures, see
 | Internal load balancing node<sup>3</sup> | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    |
-| Gitaly<sup>5 6</sup>                     | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge`   |
+| Gitaly<sup>5</sup>                       | 3     | 16 vCPU, 60 GB memory<sup>6</sup> | `n1-standard-16` | `m5.4xlarge`   |
 | Praefect<sup>5</sup>                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     |
 | Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     |
 | Sidekiq<sup>7</sup>                      | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    |
@@ -39,14 +39,14 @@ full list of reference architectures, see
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
     - Redis is primarily single threaded. It's strongly recommended separating out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
-6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
-   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
-   [Large repositories](index.md#large-repositories) for more information.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+6. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+   However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
 7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
    However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
 <!-- markdownlint-enable MD029 -->
@@ -67,7 +67,7 @@ together {
 }
 
 together {
-  card "**Prometheus + Grafana**" as monitor #7FFFD4
+  card "**Prometheus**" as monitor #7FFFD4
   collections "**Consul** x3" as consul #e76a9b
 }
 
@@ -829,11 +829,15 @@ to be used with GitLab. The following IPs will be used as an example:
 - `10.6.0.62`: Redis - Persistent Replica 1
 - `10.6.0.63`: Redis - Persistent Replica 2
 
-### Provide your own Redis instance
+### Provide your own Redis instances
 
-You can optionally use a third party external service for Redis as long as it meets the [requirements](../../install/requirements.md#redis).
+You can optionally use a [third party external service for the Redis Cache and Persistence instances](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
-A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS Elasticache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work. However, note that the Redis Cluster mode specifically isn't supported by GitLab. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
+- Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
+- The Redis Cache instance should be configured accordingly to be an [Least Recently Used cache](../redis/replication_and_failover_external.md#setting-the-redis-cache-instance-as-an-lru) (LRU).
+
+For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
 
 ### Configure the Redis Cache cluster
 
@@ -1151,6 +1155,11 @@ are supported and can be added if needed.
 repositories. In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being
 designated the primary, and failover occurs automatically if the primary node goes down.
 
+WARNING:
+**Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
+**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
 Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
 Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
 
@@ -1160,12 +1169,6 @@ For guidance on:
   instead of this section. Use the same Gitaly specs.
 - Migrating existing repositories that aren't managed by Gitaly Cluster, see
   [migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
-
-NOTE:
-Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
-However, large repositories or monorepos not following these practices can significantly
-impact Gitaly performance and requirements.
-Refer to [Large repositories](index.md#large-repositories) for more information.
 
 The recommended cluster setup includes the following components:
 
@@ -1380,7 +1383,6 @@ Updates to example must be made at:
    gitlab_workhorse['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false
-   grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
@@ -1492,16 +1494,10 @@ Updates to example must be made at:
 The [Gitaly](../gitaly/index.md) server nodes that make up the cluster have
 requirements that are dependent on data and load.
 
-NOTE:
-Increased specs for Gitaly nodes may be required in some circumstances such as
-significantly large repositories or if any [additional workloads](index.md#additional-workloads),
-such as [server hooks](../server_hooks.md), have been added.
-
-NOTE:
-Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
-However, large repositories or monorepos not following these practices can significantly
-impact Gitaly performance and requirements.
-Refer to [large repositories](index.md#large-repositories) for more information.
+WARNING:
+**Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
+**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -1551,7 +1547,6 @@ Updates to example must be made at:
    gitlab_workhorse['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false
-   grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
@@ -2088,8 +2083,7 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 ## Configure Prometheus
 
 The Linux package can be used to configure a standalone Monitoring node
-running [Prometheus](../monitoring/prometheus/index.md) and
-[Grafana](../monitoring/performance/grafana_configuration.md).
+running [Prometheus](../monitoring/prometheus/index.md).
 
 The following IP will be used as an example:
 
@@ -2112,10 +2106,6 @@ To configure the Monitoring node:
    # Prometheus
    prometheus['listen_address'] = '0.0.0.0:9090'
    prometheus['monitor_kubernetes'] = false
-
-   # Grafana
-   grafana['admin_password'] = '<grafana_password>'
-   grafana['disable_login_form'] = false
 
    # Enable service discovery for Prometheus
    consul['monitoring_service_discovery'] =  true
@@ -2147,14 +2137,10 @@ To configure the Monitoring node:
       },
    ]
 
-   # Nginx - For Grafana access
-   nginx['enable'] = true
+   nginx['enable'] = false
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-1. In the GitLab UI, set `admin/application_settings/metrics_and_profiling` > Metrics - Grafana to `/-/grafana` to
-`http[s]://<MONITOR NODE>/-/grafana`
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2219,11 +2205,8 @@ cluster alongside your instance, read how to
 
 ## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
 
-As an alternative approach, you can also run select components of GitLab as Cloud Native
-in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/).
-In this setup, we support running the equivalent of GitLab Rails and Sidekiq nodes
-in a Kubernetes cluster, named Webservice and Sidekiq respectively. In addition,
-the following other supporting services are supported: NGINX, Task Runner, Migrations,
+Run select components of cloud-native GitLab in Kubernetes with the [GitLab Helm chart](https://docs.gitlab.com/charts/). In this setup, you can run the equivalent of GitLab Rails in the Kubernetes cluster called Webservice. You also can run the equivalent of Sidekiq nodes in the Kubernetes cluster called Sidekiq. In addition,
+the following other supporting services are supported: NGINX, Toolbox, Migrations,
 Prometheus, and Grafana.
 
 Hybrid installations leverage the benefits of both cloud native and traditional
@@ -2241,7 +2224,7 @@ to be complex. **This setup is only recommended** if you have strong working
 knowledge and experience in Kubernetes. The rest of this
 section assumes this.
 
-NOTE:
+WARNING:
 **Gitaly Cluster is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
 
@@ -2275,7 +2258,7 @@ services where applicable):
 | Internal load balancing node<sup>3</sup> | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`  |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`  |
-| Gitaly<sup>5 6</sup>                     | 3     | 16 vCPU, 60 GB memory | `n1-standard-16` | `m5.4xlarge` |
+| Gitaly<sup>5</sup>                       | 3     | 16 vCPU, 60 GB memory<sup>6</sup> | `n1-standard-16` | `m5.4xlarge` |
 | Praefect<sup>5</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
 | Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
 | Object storage<sup>4</sup>               | -     | -                     | -                | -            |
@@ -2283,14 +2266,14 @@ services where applicable):
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
     - Redis is primarily single threaded. It's strongly recommended separating out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
-6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
-   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
-   [Large repositories](index.md#large-repositories) for more information.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+6. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+   However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:

@@ -8,6 +8,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/shared_contexts/default_rspec_language_config_context'
 
+require_relative 'support/helpers/next_instance_of'
 require_relative 'rubocop/support_workaround'
 
 RSpec.configure do |config|
@@ -21,6 +22,7 @@ RSpec.configure do |config|
 
   config.include RuboCop::RSpec::ExpectOffense, type: :rubocop
   config.include RuboCop::RSpec::ExpectOffense, type: :rubocop_rspec
+  config.include NextInstanceOf
 
   config.include_context 'config', type: :rubocop
   config.include_context 'with default RSpec/Language config', type: :rubocop_rspec

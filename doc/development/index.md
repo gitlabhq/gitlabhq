@@ -1,7 +1,7 @@
 ---
 type: index, dev
 stage: none
-group: Development
+group: unassigned
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 description: "Development Guidelines: learn how to contribute to GitLab."
 ---

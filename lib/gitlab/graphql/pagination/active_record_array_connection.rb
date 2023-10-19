@@ -59,6 +59,7 @@ module Gitlab
         def dup
           self.class.new(
             items.dup,
+            context: context,
             first: first,
             after: after,
             max_page_size: max_page_size,

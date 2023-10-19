@@ -49,6 +49,7 @@ module RepositoryStorageMovable
         begin
           storage_move.container.set_repository_read_only!(skip_git_transfer_check: true)
         rescue StandardError => e
+          storage_move.do_fail!
           storage_move.add_error(e.message)
           next false
         end

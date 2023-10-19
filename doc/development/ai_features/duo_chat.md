@@ -14,37 +14,8 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. [Enable Anthropic API features](index.md#configure-anthropic-access).
 1. [Enable OpenAI support](index.md#configure-openai-access).
 1. [Ensure the embedding database is configured](index.md#set-up-the-embedding-database).
-1. Enable feature specific feature flag.
-
-   ```ruby
-   Feature.enable(:gitlab_duo)
-   Feature.enable(:tanuki_bot)
-   Feature.enable(:ai_redis_cache)
-   ```
-
 1. Ensure that your current branch is up-to-date with `master`.
 1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
-
-### Tips for local development
-
-1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
-1. Alternatively, bypass Sidekiq entirely and run the chat service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs.
-
-```diff
-diff --git a/ee/app/services/llm/chat_service.rb b/ee/app/services/llm/chat_service.rb
-index 5fa7ae8a2bc1..5fe996ba0345 100644
---- a/ee/app/services/llm/chat_service.rb
-+++ b/ee/app/services/llm/chat_service.rb
-@@ -5,7 +5,7 @@ class ChatService < BaseService
-     private
-
-     def perform
--      worker_perform(user, resource, :chat, options)
-+      worker_perform(user, resource, :chat, options.merge(sync: true))
-     end
-
-     def valid?
-```
 
 ## Working with GitLab Duo Chat
 
@@ -133,7 +104,8 @@ make sure a new fixture is generated and committed together with the change.
 The GraphQL Subscription for Chat behaves slightly different because it's user-centric. A user could have Chat open on multiple browser tabs, or also on their IDE.
 We therefore need to broadcast messages to multiple clients to keep them in sync. The `aiAction` mutation with the `chat` action behaves the following:
 
-1. All complete Chat messages (including messages from the user) are broadcasted with the `userId` and the `resourceId` from the mutation as identifier, ignoring the `clientSubscriptionId`.
-1. Chunks from streamed Chat messages are broadcasted with the `userId`, `resourceId`, and `clientSubscriptionId` as identifier.
+1. All complete Chat messages (including messages from the user) are broadcasted with the `userId`, `aiAction: "chat"` as identifier.
+1. Chunks from streamed Chat messages and currently used tools are broadcasted with the `userId`, `resourceId`, and the `clientSubscriptionId` from the mutation as identifier.
 
-To truly sync messages between all clients of a user, we need to remove the `resourceId` as well, which will be fixed by [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).
+Note that we still broadcast chat messages and currently used tools using the `userId` and `resourceId` as identifier.
+However, this is deprecated and should no longer be used. We want to remove `resourceId` on the subscription as part of [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).

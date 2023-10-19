@@ -1,0 +1,10 @@
+---
+table_name: analytics_cycle_analytics_value_stream_settings
+classes:
+- Analytics::CycleAnalytics::ValueStreamSetting
+feature_categories:
+- value_stream_management
+description: Stores settings for each value stream.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132650
+milestone: '16.5'
+gitlab_schema: gitlab_main

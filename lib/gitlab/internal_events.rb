@@ -9,10 +9,31 @@ module Gitlab
     class << self
       include Gitlab::Tracking::Helpers
 
-      def track_event(event_name, **kwargs)
+      def track_event(event_name, send_snowplow_event: true, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
 
+        increase_total_counter(event_name)
+        update_unique_counter(event_name, kwargs)
+        trigger_snowplow_event(event_name, kwargs) if send_snowplow_event
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name, kwargs: kwargs)
+        nil
+      end
+
+      private
+
+      def increase_total_counter(event_name)
+        return unless ::ServicePing::ServicePingSettings.enabled?
+
+        redis_counter_key =
+          Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name)
+        Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
+      end
+
+      def update_unique_counter(event_name, kwargs)
         unique_property = EventDefinitions.unique_property(event_name)
+        return unless unique_property
+
         unique_method = :id
 
         unless kwargs.has_key?(unique_property)
@@ -26,7 +47,9 @@ module Gitlab
         unique_value = kwargs[unique_property].public_send(unique_method) # rubocop:disable GitlabSecurity/PublicSend
 
         UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_value)
+      end
 
+      def trigger_snowplow_event(event_name, kwargs)
         user = kwargs[:user]
         project = kwargs[:project]
         namespace = kwargs[:namespace]
@@ -44,12 +67,7 @@ module Gitlab
         ).to_context
 
         track_struct_event(event_name, contexts: [standard_context, service_ping_context])
-      rescue StandardError => e
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name, kwargs: kwargs)
-        nil
       end
-
-      private
 
       def track_struct_event(event_name, contexts:)
         category = 'InternalEventTracking'

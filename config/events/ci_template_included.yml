@@ -1,0 +1,24 @@
+---
+description: When a pipeline is created with a CI Template file included in its configuration.
+category: InternalEventTracking
+action: ci_template_included
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_section: ops
+product_stage: verify
+product_group: pipeline_authoring
+milestone: "16.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132819
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

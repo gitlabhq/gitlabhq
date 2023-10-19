@@ -42,13 +42,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
         post_graphql(query, variables: variables)
       end
-
-      it 'does not instantiate any query analyzers' do # they are static and re-used
-        expect(GraphQL::Analysis::QueryComplexity).not_to receive(:new)
-        expect(GraphQL::Analysis::QueryDepth).not_to receive(:new)
-
-        2.times { post_graphql(query, variables: variables) }
-      end
     end
 
     context 'with no variables' do
@@ -282,9 +275,9 @@ RSpec.describe 'GraphQL', feature_category: :shared do
         it 'does not authenticate user' do
           post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
-          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:unauthorized)
 
-          expect(graphql_data['echo']).to eq('nil says: Hello world')
+          expect_graphql_errors_to_include('Invalid token')
         end
       end
 
@@ -308,9 +301,9 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
           post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
-          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:unauthorized)
 
-          expect(graphql_data['echo']).to eq('nil says: Hello world')
+          expect_graphql_errors_to_include('Invalid token')
         end
       end
     end

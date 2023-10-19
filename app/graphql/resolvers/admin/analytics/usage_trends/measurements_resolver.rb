@@ -7,7 +7,7 @@ module Resolvers
         class MeasurementsResolver < BaseResolver
           include Gitlab::Graphql::Authorize::AuthorizeResource
 
-          type Types::Admin::Analytics::UsageTrends::MeasurementType, null: true
+          type Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type, null: true
 
           argument :identifier, Types::Admin::Analytics::UsageTrends::MeasurementIdentifierEnum,
                     required: true,

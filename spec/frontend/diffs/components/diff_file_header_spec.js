@@ -8,8 +8,12 @@ import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '~/diffs/constants';
-import { reviewFile } from '~/diffs/store/actions';
-import { SET_DIFF_FILE_VIEWED, SET_MR_FILE_REVIEWS } from '~/diffs/store/mutation_types';
+import { reviewFile, setFileForcedOpen } from '~/diffs/store/actions';
+import {
+  SET_DIFF_FILE_VIEWED,
+  SET_MR_FILE_REVIEWS,
+  SET_FILE_FORCED_OPEN,
+} from '~/diffs/store/mutation_types';
 import { diffViewerModes } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -67,6 +71,7 @@ describe('DiffFileHeader component', () => {
           toggleFullDiff: jest.fn(),
           setCurrentFileHash: jest.fn(),
           setFileCollapsedByUser: jest.fn(),
+          setFileForcedOpen: jest.fn(),
           reviewFile: jest.fn(),
         },
       },
@@ -136,6 +141,19 @@ describe('DiffFileHeader component', () => {
 
     await nextTick();
     expect(wrapper.emitted().toggleFile).toBeDefined();
+  });
+
+  it('when header is clicked it triggers the action that removes the value that forces a file to be uncollapsed', () => {
+    createComponent();
+    findHeader().trigger('click');
+
+    return testAction(
+      setFileForcedOpen,
+      { filePath: diffFile.file_path, forced: false },
+      {},
+      [{ type: SET_FILE_FORCED_OPEN, payload: { filePath: diffFile.file_path, forced: false } }],
+      [],
+    );
   });
 
   it('when collapseIcon is clicked emits toggleFile', async () => {
@@ -643,6 +661,44 @@ describe('DiffFileHeader component', () => {
         expect(Boolean(wrapper.emitted().toggleFile)).toBe(fires);
       },
     );
+
+    it('removes the property that forces a file to be shown when the file review is toggled', () => {
+      createComponent({
+        props: {
+          diffFile: {
+            ...diffFile,
+            viewer: {
+              ...diffFile.viewer,
+              automaticallyCollapsed: false,
+              manuallyCollapsed: null,
+            },
+          },
+          showLocalFileReviews: true,
+          addMergeRequestButtons: true,
+          expanded: false,
+        },
+      });
+
+      findReviewFileCheckbox().vm.$emit('change', true);
+
+      testAction(
+        setFileForcedOpen,
+        { filePath: diffFile.file_path, forced: false },
+        {},
+        [{ type: SET_FILE_FORCED_OPEN, payload: { filePath: diffFile.file_path, forced: false } }],
+        [],
+      );
+
+      findReviewFileCheckbox().vm.$emit('change', false);
+
+      testAction(
+        setFileForcedOpen,
+        { filePath: diffFile.file_path, forced: false },
+        {},
+        [{ type: SET_FILE_FORCED_OPEN, payload: { filePath: diffFile.file_path, forced: false } }],
+        [],
+      );
+    });
   });
 
   it('should render the comment on files button', () => {

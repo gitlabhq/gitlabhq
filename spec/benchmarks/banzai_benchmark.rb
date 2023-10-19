@@ -52,7 +52,7 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
     stub_application_setting(asset_proxy_enabled: true)
     stub_application_setting(asset_proxy_secret_key: 'shared-secret')
     stub_application_setting(asset_proxy_url: 'https://assets.example.com')
-    stub_application_setting(asset_proxy_whitelist: %w(gitlab.com *.mydomain.com))
+    stub_application_setting(asset_proxy_whitelist: %w[gitlab.com *.mydomain.com])
     stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
     stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
 

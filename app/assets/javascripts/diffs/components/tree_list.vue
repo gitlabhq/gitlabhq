@@ -164,11 +164,7 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="wrapper"
-    class="tree-list-holder d-flex flex-column"
-    data-qa-selector="file_tree_container"
-  >
+  <div ref="wrapper" class="tree-list-holder d-flex flex-column" data-testid="file-tree-container">
     <div class="gl-pb-3 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
         <gl-icon name="search" class="gl-absolute gl-top-3 gl-left-3 tree-list-icon" />
@@ -181,7 +177,6 @@ export default {
           name="diff-tree-search"
           class="form-control"
           data-testid="diff-tree-search"
-          data-qa-selector="diff_tree_search"
         />
         <button
           v-show="search"

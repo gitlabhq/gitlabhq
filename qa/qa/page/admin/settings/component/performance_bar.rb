@@ -7,17 +7,17 @@ module QA
         module Component
           class PerformanceBar < Page::Base
             view 'app/views/admin/application_settings/_performance_bar.html.haml' do
-              element :enable_performance_bar_checkbox
-              element :save_changes_button
+              element 'enable-performance-bar-checkbox'
+              element 'save-changes-button'
             end
 
             def enable_performance_bar
-              check_element(:enable_performance_bar_checkbox, true)
+              check_element('enable-performance-bar-checkbox', true)
               Capybara.current_session.driver.browser.manage.add_cookie(name: 'perf_bar_enabled', value: 'true')
             end
 
             def save_settings
-              click_element :save_changes_button
+              click_element 'save-changes-button'
             end
           end
         end

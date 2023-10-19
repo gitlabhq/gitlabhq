@@ -302,12 +302,9 @@ For a web developer writing a webpage for your company's website:
 ## Filter activity in a merge request
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115383) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `mr_activity_filters`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/387070) in GitLab 16.0. Available to GitLab team members only.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `mr_activity_filters` for individual or groups of users.
-On GitLab.com, this feature is enabled for GitLab team members only.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/387070) in GitLab 16.0.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126998) in GitLab 16.3 by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132355) in GitLab 16.5. Feature flag `mr_activity_filters` removed.
 
 To understand the history of a merge request, filter its activity feed to show you
 only the items that are relevant to you.
@@ -393,6 +390,20 @@ with a new push.
 
 Threads are now resolved if a push makes a diff section outdated.
 Threads on lines that don't change and top-level resolvable threads are not resolved.
+
+## Move notifications and to-dos **(FREE SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
+> - [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`.
+On GitLab.com, this feature is not available.
+
+When this feature flag is enabled, the notifications and to-do item buttons are moved to the upper right corner of the page.
+
+- On merge requests, these buttons are located to the far right of the tabs.
+- On issues, incidents, and epics, these buttons are located at the top of the right sidebar.
 
 ## Related topics
 

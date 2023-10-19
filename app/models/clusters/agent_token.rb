@@ -33,6 +33,10 @@ module Clusters
       revoked: 1
     }
 
+    def revoke!
+      update(status: :revoked)
+    end
+
     def to_ability_name
       :cluster
     end

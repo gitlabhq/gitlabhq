@@ -20,8 +20,7 @@ RSpec.describe Integrations::GooglePlay, feature_category: :mobile_devops do
       it { is_expected.to allow_value('a.a.a').for(:package_name) }
       it { is_expected.to allow_value('com.example').for(:package_name) }
       it { is_expected.not_to allow_value('com').for(:package_name) }
-      it { is_expected.to allow_value(true, false).for(:google_play_protected_refs) }
-      it { is_expected.not_to allow_value(nil).for(:google_play_protected_refs) }
+      it { is_expected.to validate_inclusion_of(:google_play_protected_refs).in_array([true, false]) }
       it { is_expected.not_to allow_value('com.example.my app').for(:package_name) }
       it { is_expected.not_to allow_value('1com.example.myapp').for(:package_name) }
       it { is_expected.not_to allow_value('com.1example.myapp').for(:package_name) }

@@ -106,9 +106,10 @@ RSpec.describe 'getting project members information', feature_category: :groups_
     it 'returns an error for an invalid member relation' do
       fetch_members(project: child_project, args: { relations: [:OBLIQUE] })
 
-      expect(graphql_errors.first)
-        .to include('path' => %w[query project projectMembers relations],
-                    'message' => a_string_including('invalid value ([OBLIQUE])'))
+      expect(graphql_errors.first).to include(
+        'path' => %w[query project projectMembers relations],
+        'message' => a_string_including('invalid value ([OBLIQUE])')
+      )
     end
 
     context 'when project is owned by a member' do
@@ -170,13 +171,19 @@ RSpec.describe 'getting project members information', feature_category: :groups_
     it 'avoids N+1 queries, when requesting multiple MRs' do
       control_query = with_signature(
         [project_path, mr_a],
-        graphql_query_for(:project, { full_path: project_path },
-                          query_graphql_field(:project_members, nil, interaction_query))
+        graphql_query_for(
+          :project,
+          { full_path: project_path },
+          query_graphql_field(:project_members, nil, interaction_query)
+        )
       )
       query_two = with_signature(
         [project_path, mr_a, mr_b],
-        graphql_query_for(:project, { full_path: project_path },
-                          query_graphql_field(:project_members, nil, interaction_b_query))
+        graphql_query_for(
+          :project,
+          { full_path: project_path },
+          query_graphql_field(:project_members, nil, interaction_b_query)
+        )
       )
 
       control_count = ActiveRecord::QueryRecorder.new do
@@ -199,8 +206,11 @@ RSpec.describe 'getting project members information', feature_category: :groups_
 
       query = with_signature(
         [project_path, mr_a],
-        graphql_query_for(:project, { full_path: project_path },
-                          query_graphql_field(:project_members, nil, interaction_query))
+        graphql_query_for(
+          :project,
+          { full_path: project_path },
+          query_graphql_field(:project_members, nil, interaction_query)
+        )
       )
 
       control_count = ActiveRecord::QueryRecorder.new do

@@ -11,7 +11,7 @@ GitLab Dedicated is a single-tenant SaaS solution, fully managed and hosted by G
 
 The instructions on this page guide you through:
 
-1. Onboarding and initial setup of your GitLab Dedicated instance.
+1. Onboarding and initial setup of your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/), the GitLab Dedicated portal.
 1. Configuring your GitLab Dedicated instance including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
 Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Panel](../../administration/admin_area.md).
@@ -20,22 +20,42 @@ Examples of SaaS environment settings include `gitlab.rb` configurations and acc
 These environment settings cannot be changed by tenants.
 GitLab Dedicated Engineers also don't have direct access to tenant environments, except for [break glass situations](../../subscriptions/gitlab_dedicated/index.md#access-controls).
 
-## Onboarding
+## Onboarding to GitLab Dedicated using Switchboard
 
-To request the creation of a new GitLab Dedicated environment for your organization, you must provide the following information to your account team:
+To create a new GitLab Dedicated environment for your organization, provide the following information to your account team:
 
 - Expected number of users.
-- Desired primary region: Primary AWS region in which your data is stored (take note of [unavailable AWS regions](../../subscriptions/gitlab_dedicated/index.md#unavailable-aws-regions)).
-- Desired secondary region: Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster.
-- Desired backup region: An AWS region where the primary backups of your data are replicated. This can be the same as the primary or secondary region or different.
-- Desired instance subdomain: The main domain for GitLab Dedicated instances is `gitlab-dedicated.com`. You get to choose the subdomain name where your instance is accessible from (for example, `customer_name.gitlab-dedicated.com`).
-- Initial storage: Initial storage size for your repositories in GB.
-- Availability Zone IDs for PrivateLink: If you plan to later add a PrivateLink connection (either [inbound](#inbound-private-link) or [outbound](#outbound-private-link)) to your environment, and you require the connections to be available in specific Availability Zones, you must provide up to two [Availability Zone IDs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) during onboarding. If not specified, GitLab selects two random Availability Zone IDs where the connections are available.
-- [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services (if you are using that functionality).
+- Initial storage size for your repositories in GB.
+- Email addresses of the users who are responsible to complete the onboarding and create your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/).
+
+If you've been granted access to Switchboard, you receive an email invitation with temporary credentials to sign in.
+
+NOTE:
+The credentials for Switchboard are separate from any other GitLab credentials you may already have to sign in to a GitLab self-managed or GitLab.com instance.
+
+After you first sign in to Switchboard, you must update your password and set up MFA before you can complete your onboarding to create a tenant.
+
+The following stages guide you through a series of four steps to provide the information required to create your GitLab Dedicated tenant.
+
+1. Confirm account details: Confirm key attributes of your GitLab Dedicated account:
+   - Reference architecture: Corresponds with the number of users you provided to your account team when beginning the onboarding process. For more information, see [reference architectures](../../administration/reference_architectures/index.md).
+   - Total repository storage size: Corresponds with the storage size you provided to your account team when beginning the onboarding process.
+   - If you need to make changes to these attributes, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. Tenant configuration: Provides the minimum required information needed to create your GitLab Dedicated tenant:
+   - Desired instance subdomain: The main domain for GitLab Dedicated instances is `gitlab-dedicated.com`. You choose the subdomain name where your instance is accessible from. For example, `customer_name.gitlab-dedicated.com`.
+   - Desired primary region: Primary AWS region in which your data is stored. Note the [available AWS regions](../../subscriptions/gitlab_dedicated/index.md#available-aws-regions).
+   - Desired secondary region: Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster.
+   - Desired backup region: An AWS region where the primary backups of your data are replicated. This can be the same as the primary or secondary region, or different.
+   - Desired maintenance window: A weekly four-hour time slot that GitLab uses to perform routine maintenance and upgrade operations on all tenant instances. For more information, see [maintenance windows](#maintenance-window).
+1. Security: You can provide your own [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you choose not to provide KMS keys, encryption keys are generated for your instance when it is created. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
+1. Summary: You confirm that the information you've provided in the previous steps is accurate before initiating the creation of your tenant.
+
+NOTE:
+Some configuration settings (like the option to bring your own keys and your tenant name) are permanent and cannot be changed once your tenant has been created.
+
+It can take up to 3 hours to create the GitLab Dedicated tenant. When the setup is complete, you will receive a confirmation email with further instructions on how to access your tenant.
 
 ### Maintenance window
-
-When onboarding, you must also specify your preference for the weekly four-hour time slot that GitLab uses to perform routine maintenance and upgrade operations on all tenant instances.
 
 Available scheduled maintenance windows, performed outside standard working hours:
 
@@ -72,12 +92,6 @@ Postponing emergency maintenance is not possible, because the same process must 
 existing Dedicated customers, and the primary concern is to ensure safety and availability of
 Dedicated tenant instances.
 
-## Configuration changes
-
-To change or update the configuration for your GitLab Dedicated instance, open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request. You can request configuration changes for the options originally specified during onboarding, or for any of the optional features below.
-
-The turnaround time for processing configuration change requests is [documented in the GitLab handbook](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/#handling-configuration-changes-for-tenant-environments).
-
 ### Encrypted Data At Rest (BYOK)
 
 NOTE:
@@ -96,7 +110,7 @@ In GitLab Dedicated, you can use KMS keys in two ways:
   - Selective enablement of this feature is not supported.
   - Keys do not need to be unique to each service.
 
-Make sure the AWS KMS keys are replicated to your desired primary, secondary, and backup region specified during [onboarding](#onboarding).
+Make sure the AWS KMS keys are replicated to your desired primary, secondary, and backup region specified during [onboarding](#onboarding-to-gitlab-dedicated-using-switchboard).
 
 #### Create KMS keys in AWS
 
@@ -196,7 +210,13 @@ The last page asks you to confirm the KMS key policy. It should look similar to 
 }
 ```
 
-Make sure the AWS KMS keys are replicated to your desired primary, secondary and backup region specified during [onboarding](#onboarding). After you have created the keys, send GitLab the corresponding ARNs of each key so that GitLab can use to encrypt the data stored in your Dedicated instance.
+Make sure the AWS KMS keys are replicated to your desired primary, secondary and backup region specified during [onboarding](#onboarding-to-gitlab-dedicated-using-switchboard). After you have created the keys, send GitLab the corresponding ARNs of each key so that GitLab can use to encrypt the data stored in your Dedicated instance.
+
+## Configuration changes
+
+To change or update the configuration for your GitLab Dedicated instance, open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request. You can request configuration changes for the options originally specified during onboarding, or for any of the following optional features.
+
+The turnaround time to process configuration change requests is [documented in the GitLab handbook](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/#handling-configuration-changes-for-tenant-environments).
 
 ### Inbound Private Link
 
@@ -216,6 +236,9 @@ To enable the Inbound Private Link:
 1. After you create the endpoint, use the instance URL provided to you during onboarding to securely connect to your GitLab Dedicated instance from your VPC, without the traffic going over the public internet.
 
 ### Outbound Private Link
+
+NOTE:
+If you plan to add a PrivateLink connection (either [inbound](#inbound-private-link) or [outbound](#outbound-private-link)) to your environment, and you require the connections to be available in specific Availability Zones, you must provide up to two [Availability Zone IDs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) to your account team during onboarding. If not specified, GitLab selects two random Availability Zone IDs where the connections are available.
 
 Consider the following when using Outbound Private Links:
 
@@ -351,4 +374,4 @@ GitLab [application logs](../../administration/logs/index.md) are delivered to a
 To gain read only access to this bucket:
 
 1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the title "Customer Log Access". In the body of the ticket, include a list of IAM Principal ARNs (users or roles) that are fetching the logs from S3.
-1. GitLab then informs you of the name of the S3 bucket. Your nominated users/roles can then able to list and get all objects in the S3 bucket.
+1. GitLab then informs you of the name of the S3 bucket. Your nominated users/roles are then able to list and get all objects in the S3 bucket.

@@ -17,9 +17,16 @@ RSpec.describe Mutations::Releases::Update do
   let_it_be(:milestones) { [milestone_12_3.title, milestone_12_4.title] }
 
   let_it_be(:release) do
-    create(:release, project: project, tag: tag, name: name,
-                     description: description, released_at: released_at,
-                     created_at: created_at, milestones: [milestone_12_3, milestone_12_4])
+    create(
+      :release,
+      project: project,
+      tag: tag,
+      name: name,
+      description: description,
+      released_at: released_at,
+      created_at: created_at,
+      milestones: [milestone_12_3, milestone_12_4]
+    )
   end
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }

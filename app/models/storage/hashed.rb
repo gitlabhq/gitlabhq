@@ -31,10 +31,6 @@ module Storage
       "#{base_dir}/#{disk_hash}" if disk_hash
     end
 
-    def rename_repo(old_full_path: nil, new_full_path: nil)
-      true
-    end
-
     private
 
     # Generates the hash for the repository path and name on disk

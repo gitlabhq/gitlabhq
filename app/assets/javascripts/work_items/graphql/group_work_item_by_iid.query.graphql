@@ -1,0 +1,12 @@
+#import "./work_item.fragment.graphql"
+
+query groupWorkItemByIid($fullPath: ID!, $iid: String) {
+  workspace: group(fullPath: $fullPath) @persist {
+    id
+    workItems(iid: $iid) {
+      nodes {
+        ...WorkItem
+      }
+    }
+  }
+}

@@ -1,0 +1,591 @@
+@import 'mixins_and_variables_and_functions';
+
+.new_project,
+.edit-project,
+.import-project {
+  .form-text.text-muted {
+    margin-bottom: 10px;
+  }
+
+  .project-path .form-control {
+    border-radius: $gl-border-radius-base;
+  }
+
+  .input-group {
+    > div {
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .input-group > div {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    fieldset > .form-group:first-child {
+      padding-right: 0;
+    }
+  }
+
+  .input-group-prepend,
+  .input-group-append {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: unset;
+    width: unset;
+    max-width: 50%;
+    text-align: left;
+
+    &.static-namespace {
+      height: 35px;
+      border-radius: 3px;
+      border: 1px solid var(--border-color, $border-color);
+      max-width: 100%;
+      flex-grow: 1;
+    }
+
+    + .btn-default {
+      border-radius: 0 $gl-border-radius-base $gl-border-radius-base 0;
+    }
+  }
+}
+
+.save-project-loader {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: var(--gray-700, $gray-700);
+}
+
+.deploy-key {
+  // Ensure that the fingerprint does not overflow on small screens
+  .fingerprint {
+    word-break: break-all;
+    white-space: normal;
+  }
+
+  .key-created-at {
+    svg {
+      vertical-align: text-top;
+    }
+  }
+
+  .btn svg {
+    vertical-align: top;
+  }
+
+  .key-created-at {
+    line-height: unset;
+  }
+}
+
+.deploy-project-list {
+  margin-bottom: -$gl-padding-4;
+}
+
+.vs-public {
+  color: var(--blue-500, $blue-500);
+}
+
+.vs-internal {
+  color: var(--orange-500, $orange-500);
+}
+
+.vs-private {
+  color: var(--green-500, $green-500);
+}
+
+.lfs-enabled {
+  color: var(--green-500, $green-500);
+}
+
+.lfs-disabled {
+  color: var(--orange-500, $orange-500);
+}
+
+.breadcrumb.repo-breadcrumb {
+  flex: 1;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  line-height: $gl-line-height-32;
+  margin: 0;
+
+  a {
+    color: var(--gl-text-color, $gl-text-color);
+  }
+
+  .dropdown-menu {
+    width: 240px;
+  }
+}
+
+.project-template {
+  > .form-group {
+    margin-bottom: 0;
+  }
+
+  .tab-pane {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .template-option {
+    padding: 16px 0;
+
+    &:not(:first-child) {
+      border-top: 1px solid var(--border-color, $border-color);
+    }
+
+    .controls {
+      margin-left: auto;
+    }
+  }
+
+  .choose-template {
+    input {
+      position: absolute;
+      clip: rect(0, 0, 0, 0);
+    }
+  }
+
+  .project-fields-form {
+    display: none;
+
+    &.selected {
+      display: block;
+      padding: $gl-padding;
+    }
+  }
+
+  .template-input-group {
+    .input-group-prepend {
+      flex: 1;
+    }
+
+    .input-group-text {
+      width: 100%;
+      background-color: var(--white, $white);
+    }
+
+    .selected-icon {
+      img {
+        display: none;
+        height: 20px;
+        width: 20px;
+      }
+    }
+  }
+}
+
+.gitlab-tab-content {
+  .import-project-pane {
+    padding-bottom: 6px;
+  }
+}
+
+.project-import {
+  .import-btn-container {
+    margin-bottom: 0;
+  }
+
+  .toggle-import-form {
+    padding-bottom: 10px;
+  }
+
+  .import-buttons {
+    padding-left: 0;
+    display: flex;
+    flex-wrap: wrap;
+
+    .btn {
+      padding: $gl-padding-8;
+      margin-right: 10px;
+    }
+
+    .btn-template-icon {
+      height: 24px;
+      width: inherit;
+      display: block;
+      margin: 0 auto 4px;
+      font-size: 24px;
+
+      @media (min-width: map-get($grid-breakpoints, sm)-1) {
+        top: 0;
+      }
+    }
+
+    @include media-breakpoint-down(xs) {
+      .btn-template-icon {
+        display: inline-block;
+        height: 14px;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+
+    > div {
+      margin-bottom: 10px;
+      padding-left: 0;
+    }
+  }
+}
+
+.repository-languages-bar {
+  height: 8px;
+  margin-bottom: $gl-padding;
+  background-color: var(--white, $white);
+  border-radius: $border-radius-default;
+
+  .progress-bar {
+    margin-right: 2px;
+    padding: 0 $gl-padding-4;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.repository-language-bar-tooltip-language {
+  font-weight: $gl-font-weight-bold;
+}
+
+.repository-language-bar-tooltip-share {
+  color: var(--gray-200, $gray-200);
+}
+
+/*
+ * Projects list rendered on dashboard and user page
+ */
+
+.project-row {
+  .description p {
+    margin-bottom: 0;
+    color: var(--gl-text-color-secondary, $gl-text-color-secondary);
+    @include str-truncated(100%);
+  }
+}
+
+.projects-list {
+  @include basic-list;
+  @include gl-display-table;
+
+  .project-row {
+    @include gl-display-table-row;
+  }
+
+  .project-cell {
+    @include gl-display-table-cell;
+    @include gl-vertical-align-top;
+    @include gl-py-4;
+    border-bottom: 1px solid var(--gray-50, $gray-50);
+  }
+
+  .project-row:last-of-type {
+    .project-cell {
+      @include gl-border-none;
+    }
+  }
+
+
+  &.admin-projects,
+  &.group-settings-projects {
+    .project-row {
+      @include basic-list-stats;
+
+      .description > p {
+        @include gl-mb-0;
+      }
+    }
+
+    .controls {
+      @include gl-line-height-42;
+    }
+  }
+
+  .project-details {
+    p,
+    .commit-row-message {
+      @include gl-mb-0;
+      @include str-truncated(100%);
+    }
+
+    .description {
+      line-height: 1.5;
+      max-height: $gl-spacing-scale-8;
+    }
+  }
+
+  .ci-status-link {
+    @include gl-text-decoration-none;
+  }
+
+  &:not(.compact) {
+    .controls {
+      @include media-breakpoint-up(lg) {
+        @include gl-justify-content-start;
+        @include gl-pr-9;
+
+        &:not(.with-pipeline-status) {
+          .icon-wrapper:first-of-type {
+            @include media-breakpoint-up(lg) {
+              @include gl-ml-7;
+            }
+          }
+        }
+      }
+    }
+
+    .project-details {
+      p,
+      .commit-row-message {
+        @include gl-white-space-normal;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        /* stylelint-disable-next-line value-no-vendor-prefix */
+        display: -webkit-box;
+      }
+    }
+  }
+
+  .controls {
+    @include media-breakpoint-up(sm) {
+      @include gl-justify-content-end;
+    }
+
+    .icon-wrapper {
+      @include media-breakpoint-down(md) {
+        @include gl-mr-0;
+        @include gl-ml-3;
+      }
+
+      @include media-breakpoint-down(xs) {
+        &:first-child {
+          @include gl-ml-0;
+        }
+      }
+    }
+
+    .ci-status-link {
+      @include gl-display-inline-flex;
+    }
+  }
+
+  .icon-container {
+    @include media-breakpoint-up(lg) {
+      margin-right: $gl-spacing-scale-7;
+    }
+  }
+
+  &.compact {
+    .description {
+      @include gl-w-full;
+      @include gl-display-table;
+      @include gl-table-layout-fixed;
+    }
+
+    .avatar-container {
+      @include avatar-size(40px, 10px);
+      min-height: 40px;
+      min-width: 40px;
+
+      .identicon.s48 {
+        font-size: 16px;
+      }
+    }
+
+    .updated-note {
+      @include media-breakpoint-up(sm) {
+        @include gl-mt-2;
+      }
+    }
+
+    .icon-wrapper {
+      @include gl-ml-3;
+      @include gl-mr-0;
+    }
+
+    .user-access-role {
+      line-height: $gl-line-height-14;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    .avatar-container {
+      @include avatar-size(40px, 10px);
+      min-height: 40px;
+      min-width: 40px;
+
+      .identicon.s64 {
+        font-size: 16px;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    .updated-note {
+      @include gl-mt-3;
+      @include gl-text-right;
+    }
+  }
+
+  .forks,
+  .pipeline-status,
+  .updated-note {
+    @include gl-display-flex;
+  }
+
+  @include media-breakpoint-down(md) {
+    &.explore {
+      .pipeline-status,
+      .updated-note {
+        display: none !important;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .updated-note {
+      @include gl-mt-0;
+      @include gl-text-left;
+    }
+  }
+}
+
+.card .projects-list li {
+  padding: 10px 15px;
+  margin: 0;
+}
+
+.git-clone-holder {
+  .clone-options {
+    display: table-cell;
+
+    a.btn {
+      width: 100%;
+    }
+  }
+
+  .form-control {
+    @include gl-font-monospace;
+    background-color: var(--white, $white);
+    border-color: var(--border-color, $border-color);
+    font-size: 14px;
+    margin-left: -1px;
+    cursor: auto;
+  }
+}
+
+.compare-revision-cards {
+  @media (max-width: $breakpoint-lg) {
+    .swap-button {
+      display: none;
+    }
+  }
+
+  @media (max-width: $breakpoint-lg) {
+    .swap-button-mobile {
+      display: flex;
+    }
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    .gl-card {
+      width: calc(50% - 15px);
+    }
+  }
+}
+
+.project-path {
+  .form-control {
+    min-width: 100px;
+  }
+
+  &.form-group {
+    @include media-breakpoint-up(sm) {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.project-home-empty {
+  border-top: 0;
+
+  .container-fluid {
+    background: none;
+  }
+
+  p {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 650px;
+  }
+}
+
+.project-feature {
+  padding-top: 10px;
+
+  @include media-breakpoint-up(sm) {
+    padding-left: 45px;
+  }
+
+  &.nested {
+    @include media-breakpoint-up(sm) {
+      padding-left: 90px;
+    }
+  }
+}
+
+.services-installation-info .row {
+  margin-bottom: 10px;
+}
+
+.project-badge {
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.project-mirror-settings {
+  .btn-show-advanced {
+    min-width: 135px;
+
+    .label-show {
+      display: none;
+    }
+
+    .label-hide {
+      display: inline;
+    }
+
+    &.show-advanced {
+      .label-show {
+        display: inline;
+      }
+
+      .label-hide {
+        display: none;
+      }
+    }
+  }
+}
+
+.projects-list-item {
+  .description {
+    max-height: $gl-spacing-scale-8;
+
+    p {
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      /* stylelint-disable-next-line value-no-vendor-prefix */
+      display: -webkit-box;
+    }
+  }
+}

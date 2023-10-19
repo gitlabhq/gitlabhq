@@ -90,7 +90,7 @@ export default {
         variant="default"
         icon="file-tree"
         class="gl-mr-3 js-toggle-tree-list btn-icon"
-        data-qa-selector="file_tree_button"
+        data-testid="file-tree-button"
         :title="toggleFileBrowserTitle"
         :aria-label="toggleFileBrowserTitle"
         :selected="showTreeList"
@@ -141,7 +141,7 @@ export default {
           <compare-dropdown-layout
             :versions="diffCompareDropdownTargetVersions"
             class="mr-version-compare-dropdown"
-            data-qa-selector="target_version_dropdown"
+            data-testid="target-version-dropdown"
           />
         </template>
         <template #source>

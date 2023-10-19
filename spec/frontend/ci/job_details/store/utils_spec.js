@@ -6,10 +6,10 @@ import {
   addDurationToHeader,
   isCollapsibleSection,
   findOffsetAndRemove,
-  getIncrementalLineNumber,
+  getNextLineNumber,
 } from '~/ci/job_details/store/utils';
 import {
-  utilsMockData,
+  mockJobLog,
   originalTrace,
   regularIncremental,
   regularIncrementalRepeated,
@@ -187,39 +187,49 @@ describe('Jobs Store Utils', () => {
     let result;
 
     beforeEach(() => {
-      result = logLinesParser(utilsMockData);
+      result = logLinesParser(mockJobLog);
     });
 
     describe('regular line', () => {
       it('adds a lineNumber property with correct index', () => {
-        expect(result[0].lineNumber).toEqual(0);
-        expect(result[1].line.lineNumber).toEqual(1);
+        expect(result[0].lineNumber).toEqual(1);
+        expect(result[1].lineNumber).toEqual(2);
+        expect(result[2].line.lineNumber).toEqual(3);
+        expect(result[2].lines[0].lineNumber).toEqual(4);
+        expect(result[2].lines[1].lineNumber).toEqual(5);
+        expect(result[3].line.lineNumber).toEqual(6);
+        expect(result[3].lines[0].lineNumber).toEqual(7);
+        expect(result[3].lines[1].lineNumber).toEqual(8);
       });
     });
 
     describe('collapsible section', () => {
       it('adds a `isClosed` property', () => {
-        expect(result[1].isClosed).toEqual(false);
+        expect(result[2].isClosed).toEqual(false);
+        expect(result[3].isClosed).toEqual(false);
       });
 
       it('adds a `isHeader` property', () => {
-        expect(result[1].isHeader).toEqual(true);
+        expect(result[2].isHeader).toEqual(true);
+        expect(result[3].isHeader).toEqual(true);
       });
 
       it('creates a lines array property with the content of the collapsible section', () => {
-        expect(result[1].lines.length).toEqual(2);
-        expect(result[1].lines[0].content).toEqual(utilsMockData[2].content);
-        expect(result[1].lines[1].content).toEqual(utilsMockData[3].content);
+        expect(result[2].lines.length).toEqual(2);
+        expect(result[2].lines[0].content).toEqual(mockJobLog[3].content);
+        expect(result[2].lines[1].content).toEqual(mockJobLog[4].content);
       });
     });
 
     describe('section duration', () => {
       it('adds the section information to the header section', () => {
-        expect(result[1].line.section_duration).toEqual(utilsMockData[4].section_duration);
+        expect(result[2].line.section_duration).toEqual(mockJobLog[5].section_duration);
+        expect(result[3].line.section_duration).toEqual(mockJobLog[9].section_duration);
       });
 
       it('does not add section duration as a line', () => {
-        expect(result[1].lines.includes(utilsMockData[4])).toEqual(false);
+        expect(result[2].lines.includes(mockJobLog[5])).toEqual(false);
+        expect(result[3].lines.includes(mockJobLog[9])).toEqual(false);
       });
     });
   });
@@ -316,17 +326,24 @@ describe('Jobs Store Utils', () => {
     });
   });
 
-  describe('getIncrementalLineNumber', () => {
-    describe('when last line is 0', () => {
+  describe('getNextLineNumber', () => {
+    describe('when there is no previous log', () => {
+      it('returns 1', () => {
+        expect(getNextLineNumber([])).toEqual(1);
+        expect(getNextLineNumber(undefined)).toEqual(1);
+      });
+    });
+
+    describe('when last line is 1', () => {
       it('returns 1', () => {
         const log = [
           {
             content: [],
-            lineNumber: 0,
+            lineNumber: 1,
           },
         ];
 
-        expect(getIncrementalLineNumber(log)).toEqual(1);
+        expect(getNextLineNumber(log)).toEqual(2);
       });
     });
 
@@ -343,7 +360,7 @@ describe('Jobs Store Utils', () => {
           },
         ];
 
-        expect(getIncrementalLineNumber(log)).toEqual(102);
+        expect(getNextLineNumber(log)).toEqual(102);
       });
     });
 
@@ -364,7 +381,7 @@ describe('Jobs Store Utils', () => {
           },
         ];
 
-        expect(getIncrementalLineNumber(log)).toEqual(102);
+        expect(getNextLineNumber(log)).toEqual(102);
       });
     });
 
@@ -391,7 +408,7 @@ describe('Jobs Store Utils', () => {
           },
         ];
 
-        expect(getIncrementalLineNumber(log)).toEqual(104);
+        expect(getNextLineNumber(log)).toEqual(104);
       });
     });
   });
@@ -410,7 +427,7 @@ describe('Jobs Store Utils', () => {
                 text: 'Downloading',
               },
             ],
-            lineNumber: 0,
+            lineNumber: 1,
           },
           {
             offset: 2,
@@ -419,7 +436,7 @@ describe('Jobs Store Utils', () => {
                 text: 'log line',
               },
             ],
-            lineNumber: 1,
+            lineNumber: 2,
           },
         ]);
       });
@@ -438,7 +455,7 @@ describe('Jobs Store Utils', () => {
                 text: 'log line',
               },
             ],
-            lineNumber: 0,
+            lineNumber: 1,
           },
         ]);
       });
@@ -462,7 +479,7 @@ describe('Jobs Store Utils', () => {
                 },
               ],
               section: 'section',
-              lineNumber: 0,
+              lineNumber: 1,
             },
             lines: [],
           },
@@ -488,7 +505,7 @@ describe('Jobs Store Utils', () => {
                 },
               ],
               section: 'section',
-              lineNumber: 0,
+              lineNumber: 1,
             },
             lines: [
               {
@@ -499,7 +516,7 @@ describe('Jobs Store Utils', () => {
                   },
                 ],
                 section: 'section',
-                lineNumber: 1,
+                lineNumber: 2,
               },
             ],
           },

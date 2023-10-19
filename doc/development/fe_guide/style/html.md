@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # HTML style guide
 
-See also our [accessibility page](../accessibility.md).
+See also our [accessibility best practices](../accessibility/best_practices.md).
 
 ## Semantic elements
 

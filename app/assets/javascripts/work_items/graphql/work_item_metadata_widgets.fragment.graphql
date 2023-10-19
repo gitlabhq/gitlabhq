@@ -52,4 +52,12 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
   ... on WorkItemWidgetAwardEmoji {
     type
   }
+
+  ... on WorkItemWidgetLinkedItems {
+    type
+  }
+
+  ... on WorkItemWidgetHierarchy {
+    type
+  }
 }

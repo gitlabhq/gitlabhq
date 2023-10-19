@@ -370,6 +370,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
           end
         end
 
+        describe 'setting CVSS' do
+          let(:cvss_vectors) { report.findings.filter_map(&:cvss).reject(&:empty?) }
+
+          it 'ingests the provided CVSS vectors' do
+            expect(cvss_vectors.count).to eq(1)
+          end
+        end
+
         describe 'setting the uuid' do
           let(:finding_uuids) { report.findings.map(&:uuid) }
           let(:uuid_1) do

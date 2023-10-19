@@ -183,7 +183,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
             let(:params) { { sort: 'severity_asc' } }
 
             it 'sorts alerts by severity from less critical to more critical' do
-              expect(execute.pluck(:severity).uniq).to eq(%w(unknown info low medium high critical))
+              expect(execute.pluck(:severity).uniq).to eq(%w[unknown info low medium high critical])
             end
           end
 
@@ -191,7 +191,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
             let(:params) { { sort: 'severity_desc' } }
 
             it 'sorts alerts by severity from more critical to less critical' do
-              expect(execute.pluck(:severity).uniq).to eq(%w(critical high medium low info unknown))
+              expect(execute.pluck(:severity).uniq).to eq(%w[critical high medium low info unknown])
             end
           end
         end

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline_composition do
   let_it_be(:user) { create(:user) }
 
-  let(:path) { described_class.new(address: address, content_filename: 'template.yml') }
+  let(:path) { described_class.new(address: address) }
   let(:settings) { GitlabSettings::Options.build({ 'component_fqdn' => current_host }) }
   let(:current_host) { 'acme.com/' }
 
@@ -44,9 +44,10 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
       context 'when the component is simple (single file template)' do
         it 'fetches the component content', :aggregate_failures do
-          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
+          result = path.fetch_content!(current_user: user)
+          expect(result.content).to eq('image: alpine_1')
+          expect(result.path).to eq('templates/secret-detection.yml')
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('templates/secret-detection.yml')
           expect(path.project).to eq(project)
           expect(path.sha).to eq(project.commit('master').id)
         end
@@ -56,9 +57,10 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         let(:address) { "acme.com/#{project_path}/dast@#{version}" }
 
         it 'fetches the component content', :aggregate_failures do
-          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
+          result = path.fetch_content!(current_user: user)
+          expect(result.content).to eq('image: alpine_2')
+          expect(result.path).to eq('templates/dast/template.yml')
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('templates/dast/template.yml')
           expect(path.project).to eq(project)
           expect(path.sha).to eq(project.commit('master').id)
         end
@@ -67,7 +69,8 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
           let(:address) { "acme.com/#{project_path}/dast/another-folder@#{version}" }
 
           it 'returns nil' do
-            expect(path.fetch_content!(current_user: user)).to be_nil
+            result = path.fetch_content!(current_user: user)
+            expect(result.content).to be_nil
           end
         end
 
@@ -75,7 +78,8 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
           let(:address) { "acme.com/#{project_path}/dast/another-template@#{version}" }
 
           it 'returns nil' do
-            expect(path.fetch_content!(current_user: user)).to be_nil
+            result = path.fetch_content!(current_user: user)
+            expect(result.content).to be_nil
           end
         end
       end
@@ -110,9 +114,10 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         end
 
         it 'fetches the component content', :aggregate_failures do
-          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
+          result = path.fetch_content!(current_user: user)
+          expect(result.content).to eq('image: alpine_2')
+          expect(result.path).to eq('templates/secret-detection.yml')
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('templates/secret-detection.yml')
           expect(path.project).to eq(project)
           expect(path.sha).to eq(latest_sha)
         end
@@ -124,7 +129,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         it 'returns nil', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to be_nil
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to be_nil
           expect(path.project).to eq(project)
           expect(path.sha).to be_nil
         end
@@ -135,9 +139,10 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         let(:current_host) { 'acme.com/gitlab/' }
 
         it 'fetches the component content', :aggregate_failures do
-          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
+          result = path.fetch_content!(current_user: user)
+          expect(result.content).to eq('image: alpine_1')
+          expect(result.path).to eq('templates/secret-detection.yml')
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('templates/secret-detection.yml')
           expect(path.project).to eq(project)
           expect(path.sha).to eq(project.commit('master').id)
         end
@@ -164,9 +169,10 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
       end
 
       it 'fetches the component content', :aggregate_failures do
-        expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
+        result = path.fetch_content!(current_user: user)
+        expect(result.content).to eq('image: alpine')
+        expect(result.path).to eq('component/template.yml')
         expect(path.host).to eq(current_host)
-        expect(path.project_file_path).to eq('component/template.yml')
         expect(path.project).to eq(project)
         expect(path.sha).to eq(project.commit('master').id)
       end
@@ -184,9 +190,10 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         end
 
         it 'fetches the component content', :aggregate_failures do
-          expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
+          result = path.fetch_content!(current_user: user)
+          expect(result.content).to eq('image: alpine')
+          expect(result.path).to eq('component/template.yml')
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('component/template.yml')
           expect(path.project).to eq(project)
           expect(path.sha).to eq(project.commit('master').id)
         end
@@ -197,9 +204,10 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         let(:current_host) { 'acme.com/gitlab/' }
 
         it 'fetches the component content', :aggregate_failures do
-          expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
+          result = path.fetch_content!(current_user: user)
+          expect(result.content).to eq('image: alpine')
+          expect(result.path).to eq('component/template.yml')
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('component/template.yml')
           expect(path.project).to eq(project)
           expect(path.sha).to eq(project.commit('master').id)
         end
@@ -211,7 +219,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         it 'returns nil', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to be_nil
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to be_nil
           expect(path.project).to eq(project)
           expect(path.sha).to be_nil
         end

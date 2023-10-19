@@ -4,6 +4,7 @@ module API
   module Entities
     class UserBasic < UserSafe
       expose :state, documentation: { type: 'string', example: 'active' }
+      expose :access_locked?, as: :locked, documentation: { type: 'boolean' }
 
       expose :avatar_url, documentation: { type: 'string', example: 'https://gravatar.com/avatar/1' } do |user, options|
         user.avatar_url(only_path: false)

@@ -56,7 +56,7 @@ RSpec.describe QA::Page::View do
         it 'returns an array of errors related to missing elements' do
           expect(subject.errors).not_to be_empty
           expect(subject.errors.first)
-            .to match %r(Missing element `.*` in `.*/some/file.html` view)
+            .to match %r{Missing element `.*` in `.*/some/file.html` view}
         end
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe QA::Page::View do
       it 'returns an error when it is not able to find the partial' do
         expect(subject.errors).to be_one
         expect(subject.errors.first)
-          .to match %r(Missing view partial `.*/some/file.html`!)
+          .to match %r{Missing view partial `.*/some/file.html`!}
       end
     end
   end

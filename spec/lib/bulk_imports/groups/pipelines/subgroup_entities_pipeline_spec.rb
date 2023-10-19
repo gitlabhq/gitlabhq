@@ -19,7 +19,7 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
     })
   end
 
-  describe '#run' do
+  describe '#run', :clean_gitlab_redis_cache do
     before do
       allow_next_instance_of(BulkImports::Groups::Extractors::SubgroupsExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(extracted_data)
@@ -37,6 +37,11 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
       expect(subgroup_entity.destination_namespace).to eq 'imported-group'
       expect(subgroup_entity.destination_name).to eq 'sub-group'
       expect(subgroup_entity.parent_id).to eq parent_entity.id
+    end
+
+    it 'does not create duplicate entities on rerun' do
+      expect { subject.run }.to change(BulkImports::Entity, :count).by(1)
+      expect { subject.run }.not_to change(BulkImports::Entity, :count)
     end
   end
 

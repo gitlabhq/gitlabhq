@@ -13,20 +13,37 @@ RSpec.describe Resolvers::WorkItemsResolver do
   let_it_be(:other_project) { create(:project, group: group) }
 
   let_it_be(:item1) do
-    create(:work_item, project: project, state: :opened, created_at:
-           3.hours.ago, updated_at: 3.hours.ago)
+    create(
+      :work_item,
+      project: project,
+      state: :opened,
+      created_at: 3.hours.ago,
+      updated_at: 3.hours.ago
+    )
   end
 
   let_it_be(:item2) do
-    create(:work_item, project: project, state: :closed, title: 'foo',
-                       created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at:
-           1.hour.ago)
+    create(
+      :work_item,
+      project: project,
+      state: :closed,
+      title: 'foo',
+      created_at: 1.hour.ago,
+      updated_at: 1.hour.ago,
+      closed_at: 1.hour.ago
+    )
   end
 
   let_it_be(:item3) do
-    create(:work_item, project: other_project, state: :closed, title: 'foo',
-                       created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at:
-           1.hour.ago)
+    create(
+      :work_item,
+      project: other_project,
+      state: :closed,
+      title: 'foo',
+      created_at: 1.hour.ago,
+      updated_at: 1.hour.ago,
+      closed_at: 1.hour.ago
+    )
   end
 
   let_it_be(:item4) { create(:work_item) }

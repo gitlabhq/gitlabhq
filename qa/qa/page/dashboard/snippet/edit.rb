@@ -6,49 +6,51 @@ module QA
       module Snippet
         class Edit < Page::Base
           view 'app/assets/javascripts/snippets/components/edit.vue' do
-            element :submit_button, required: true
+            element 'submit-button', required: true
           end
 
           view 'app/assets/javascripts/snippets/components/snippet_blob_edit.vue' do
-            element :file_name_field
-            element :file_holder_container
+            element 'file-name-field'
+            element 'file-holder-container'
           end
 
           view 'app/assets/javascripts/blob/components/blob_edit_header.vue' do
-            element :delete_file_button
+            element 'delete-file-button'
           end
 
           view 'app/assets/javascripts/snippets/components/snippet_visibility_edit.vue' do
-            element :visibility_content
+            element 'visibility-content'
           end
 
           def add_to_file_content(content)
             text_area.click
             text_area.send_keys(:home, content) # starts in the beginning of the line
-            text_area.has_text?(content) # wait for changes to take effect
+            wait_until(message: "add_to_file_content", max_duration: Capybara.default_max_wait_time, reload: false) do
+              text_area.value.include?(content) # wait for changes to take effect
+            end
           end
 
           def change_visibility_to(visibility_type)
-            click_element(:visibility_content, visibility: visibility_type)
+            click_element('visibility-content', visibility: visibility_type)
           end
 
           def click_add_file
-            click_element(:add_file_button)
+            click_element('add-button')
           end
 
           def fill_file_name(name, file_number = nil)
             if file_number
-              within_element_by_index(:file_holder_container, file_number - 1) do
-                fill_element(:file_name_field, name)
+              within_element_by_index('file-holder-container', file_number - 1) do
+                fill_element('file-name-field', name)
               end
             else
-              fill_element(:file_name_field, name)
+              fill_element('file-name-field', name)
             end
           end
 
           def fill_file_content(content, file_number = nil)
             if file_number
-              within_element_by_index(:file_holder_container, file_number - 1) do
+              within_element_by_index('file-holder-container', file_number - 1) do
                 text_area.set(content)
               end
             else
@@ -57,15 +59,15 @@ module QA
           end
 
           def click_delete_file(file_number)
-            within_element_by_index(:file_holder_container, file_number - 1) do
-              click_element(:delete_file_button)
+            within_element_by_index('file-holder-container', file_number - 1) do
+              click_element('delete-file-button')
             end
           end
 
           def save_changes
-            click_element_coordinates(:submit_button)
+            click_element_coordinates('submit-button')
             wait_until(reload: false) do
-              has_no_element?(:file_name_field)
+              has_no_element?('file-name-field')
             end
           end
 

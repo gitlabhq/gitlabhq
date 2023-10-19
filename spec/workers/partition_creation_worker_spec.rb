@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 require 'spec_helper'
 
 RSpec.describe PartitionCreationWorker, feature_category: :database do

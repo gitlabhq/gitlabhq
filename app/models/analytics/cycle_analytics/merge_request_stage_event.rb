@@ -17,6 +17,10 @@ module Analytics
         where(condition.arel.exists)
       end
 
+      def self.project_column
+        :target_project_id
+      end
+
       def self.issuable_id_column
         :merge_request_id
       end

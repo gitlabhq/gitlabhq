@@ -65,7 +65,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category:
         expect(board).to be_present
         expect(board.project.id).to eq(project.id)
         expect(board.lists.count).to eq(3)
-        expect(board.lists.map(&:list_type).sort).to match_array(%w(backlog closed label))
+        expect(board.lists.map(&:list_type).sort).to match_array(%w[backlog closed label])
         expect(board.lists.find_by(list_type: "label").label.title).to eq("test")
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category:
         expect(board).to be_present
         expect(board.group.id).to eq(group.id)
         expect(board.lists.count).to eq(3)
-        expect(board.lists.map(&:list_type).sort).to match_array(%w(backlog closed label))
+        expect(board.lists.map(&:list_type).sort).to match_array(%w[backlog closed label])
         expect(board.lists.find_by(list_type: "label").label.title).to eq("test")
       end
     end

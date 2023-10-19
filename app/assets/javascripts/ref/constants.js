@@ -7,6 +7,9 @@ export const REF_TYPE_COMMITS = 'REF_TYPE_COMMITS';
 export const ALL_REF_TYPES = Object.freeze([REF_TYPE_BRANCHES, REF_TYPE_TAGS, REF_TYPE_COMMITS]);
 export const BRANCH_REF_TYPE = 'heads';
 export const TAG_REF_TYPE = 'tags';
+export const TAG_REF_TYPE_ICON = 'tag';
+export const BRANCH_REF_TYPE_ICON = 'branch';
+export const REF_TYPE_PARAM_NAME = 'ref_type';
 
 export const X_TOTAL_HEADER = 'x-total';
 

@@ -93,7 +93,7 @@ module Gitlab
       end
 
       class ProjectUploadPath
-        PROJECT_FULL_PATH_REGEX = %r{\A#{FileUploader.root}/(.+)/(\h+/[^/]+)\z}.freeze
+        PROJECT_FULL_PATH_REGEX = %r{\A#{FileUploader.root}/(.+)/(\h+/[^/]+)\z}
 
         attr_reader :full_path, :upload_path
 

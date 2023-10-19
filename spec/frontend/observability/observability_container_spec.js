@@ -16,6 +16,8 @@ describe('ObservabilityContainer', () => {
   const OAUTH_URL = 'https://example.com/oauth';
   const TRACING_URL = 'https://example.com/tracing';
   const PROVISIONING_URL = 'https://example.com/provisioning';
+  const SERVICES_URL = 'https://example.com/services';
+  const OPERATIONS_URL = 'https://example.com/operations';
 
   beforeEach(() => {
     jest.spyOn(console, 'error').mockImplementation();
@@ -27,6 +29,8 @@ describe('ObservabilityContainer', () => {
         oauthUrl: OAUTH_URL,
         tracingUrl: TRACING_URL,
         provisioningUrl: PROVISIONING_URL,
+        servicesUrl: SERVICES_URL,
+        operationsUrl: OPERATIONS_URL,
       },
       stubs: {
         ObservabilitySkeleton: stubComponent(ObservabilitySkeleton, {
@@ -93,6 +97,8 @@ describe('ObservabilityContainer', () => {
     expect(buildClient).toHaveBeenCalledWith({
       provisioningUrl: PROVISIONING_URL,
       tracingUrl: TRACING_URL,
+      servicesUrl: SERVICES_URL,
+      operationsUrl: OPERATIONS_URL,
     });
     expect(findIframe().exists()).toBe(false);
   });

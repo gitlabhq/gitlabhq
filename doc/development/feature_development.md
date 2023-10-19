@@ -1,6 +1,6 @@
 ---
 stage: none
-group: Development
+group: unassigned
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
@@ -162,9 +162,8 @@ The following integration guides are internal. Some integrations require access 
 
 ## Analytics Instrumentation guides
 
-- [Analytics Instrumentation guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
 - [Service Ping guide](internal_analytics/service_ping/index.md)
-- [Snowplow guide](internal_analytics/snowplow/index.md)
+- [Internal Events guide](internal_analytics/internal_event_instrumentation/quick_start.md)
 
 ## Experiment guide
 

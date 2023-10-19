@@ -10,7 +10,7 @@ module Mutations
       include Mutations::WorkItems::UpdateArguments
       include Mutations::WorkItems::Widgetable
 
-      authorize :update_work_item
+      authorize :read_work_item
 
       field :work_item, Types::WorkItemType,
             null: true,
@@ -22,11 +22,13 @@ module Mutations
         work_item = authorized_find!(id: id)
 
         widget_params = extract_widget_params!(work_item.work_item_type, attributes)
-
         interpret_quick_actions!(work_item, current_user, widget_params, attributes)
 
+        # Only checks permissions for base attributes because widgets define their own permissions independently
+        raise_resource_not_available_error! unless attributes.empty? || can_update?(work_item)
+
         update_result = ::WorkItems::UpdateService.new(
-          container: work_item.project,
+          container: work_item.resource_parent,
           current_user: current_user,
           params: attributes,
           widget_params: widget_params,
@@ -61,6 +63,10 @@ module Mutations
 
         widget_params.merge!(parsed_params[:widgets])
         attributes.merge!(parsed_params[:common])
+      end
+
+      def can_update?(work_item)
+        current_user.can?(:update_work_item, work_item)
       end
     end
   end

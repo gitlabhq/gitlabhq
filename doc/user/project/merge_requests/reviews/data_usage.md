@@ -9,7 +9,7 @@ type: index, reference
 
 ## How it works
 
-Suggested Reviewers is the first user-facing GitLab machine learning (ML) powered feature. It leverages a project's contribution graph to generate suggestions. This data already exists within GitLab including merge request metadata, source code files, and GitLab user account metadata.
+GitLab Duo Suggested Reviewers is the first user-facing GitLab machine learning (ML) powered feature. It leverages a project's contribution graph to generate suggestions. This data already exists within GitLab including merge request metadata, source code files, and GitLab user account metadata.
 
 ### Enabling the feature
 

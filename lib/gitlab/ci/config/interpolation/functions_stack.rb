@@ -16,12 +16,14 @@ module Gitlab
           end
 
           FUNCTIONS = [
-            Functions::Truncate
+            Functions::Truncate,
+            Functions::ExpandVars
           ].freeze
 
           attr_reader :errors
 
-          def initialize(function_expressions)
+          def initialize(function_expressions, ctx)
+            @ctx = ctx
             @errors = []
             @functions = build_stack(function_expressions)
           end
@@ -48,14 +50,14 @@ module Gitlab
 
           private
 
-          attr_reader :functions
+          attr_reader :functions, :ctx
 
           def build_stack(function_expressions)
             function_expressions.map do |function_expression|
               matching_function = FUNCTIONS.find { |function| function.matches?(function_expression) }
 
               if matching_function.present?
-                matching_function.new(function_expression)
+                matching_function.new(function_expression, ctx)
               else
                 message = "no function matching `#{function_expression}`: " \
                           'check that the function name, arguments, and types are correct'

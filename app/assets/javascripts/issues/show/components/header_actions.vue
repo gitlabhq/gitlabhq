@@ -14,21 +14,16 @@ import * as Sentry from '@sentry/browser';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { STATUS_CLOSED, TYPE_ISSUE, IssuableTypeText } from '~/issues/constants';
-import {
-  ISSUE_STATE_EVENT_CLOSE,
-  ISSUE_STATE_EVENT_REOPEN,
-  NEW_ACTIONS_POPOVER_KEY,
-} from '~/issues/show/constants';
+import { STATUS_CLOSED, TYPE_ISSUE, issuableTypeText } from '~/issues/constants';
+import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { getCookie, parseBoolean, setCookie, isLoggedIn } from '~/lib/utils/common_utils';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import NewHeaderActionsPopover from '~/issues/show/components/new_header_actions_popover.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import IssuableLockForm from '~/sidebar/components/lock/issuable_lock_form.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -70,7 +65,6 @@ export default {
     GlLink,
     GlModal,
     AbuseCategorySelector,
-    NewHeaderActionsPopover,
     SidebarSubscriptionsWidget,
     IssuableLockForm,
   },
@@ -138,7 +132,7 @@ export default {
     issueTypeText() {
       const { issueType } = this;
 
-      return IssuableTypeText[issueType] ?? issueType;
+      return issuableTypeText[issueType] ?? issueType;
     },
     buttonText() {
       return this.isClosed
@@ -278,11 +272,6 @@ export default {
     edit() {
       issuesEventHub.$emit('open.form');
     },
-    dismissPopover() {
-      if (this.isMrSidebarMoved && !parseBoolean(getCookie(`${NEW_ACTIONS_POPOVER_KEY}`))) {
-        setCookie(NEW_ACTIONS_POPOVER_KEY, true);
-      }
-    },
     copyReference() {
       toast(__('Reference copied'));
     },
@@ -390,17 +379,6 @@ export default {
       {{ $options.i18n.edit }}
     </gl-button>
 
-    <gl-button
-      v-if="showToggleIssueStateButton && !glFeatures.moveCloseIntoDropdown"
-      class="gl-display-none gl-sm-display-inline-flex!"
-      :data-qa-selector="qaSelector"
-      :loading="isToggleStateButtonLoading"
-      data-testid="toggle-issue-state-button"
-      @click="toggleIssueState"
-    >
-      {{ buttonText }}
-    </gl-button>
-
     <gl-dropdown
       v-if="hasDesktopDropdown"
       id="new-actions-header-dropdown"
@@ -415,9 +393,8 @@ export default {
       data-testid="desktop-dropdown"
       no-caret
       right
-      @shown="dismissPopover"
     >
-      <template v-if="showMovedSidebarOptions">
+      <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
         <sidebar-subscriptions-widget
           :iid="String(iid)"
           :full-path="fullPath"
@@ -428,7 +405,7 @@ export default {
         <gl-dropdown-divider />
       </template>
       <gl-dropdown-item
-        v-if="showToggleIssueStateButton && glFeatures.moveCloseIntoDropdown"
+        v-if="showToggleIssueStateButton"
         data-testid="toggle-issue-state-button"
         @click="toggleIssueState"
       >
@@ -492,7 +469,6 @@ export default {
       </template>
     </gl-dropdown>
 
-    <new-header-actions-popover v-if="isMrSidebarMoved" :issue-type="issueType" />
     <gl-modal
       ref="blockedByIssuesModal"
       modal-id="blocked-by-issues-modal"

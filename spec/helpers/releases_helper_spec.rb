@@ -59,7 +59,7 @@ RSpec.describe ReleasesHelper do
 
     describe '#data_for_edit_release_page' do
       it 'has the needed data to display the "edit release" page' do
-        keys = %i(project_id
+        keys = %i[project_id
                   group_id
                   group_milestones_available
                   project_path
@@ -72,7 +72,7 @@ RSpec.describe ReleasesHelper do
                   new_milestone_path
                   upcoming_release_docs_path
                   edit_release_docs_path
-                  delete_release_docs_path)
+                  delete_release_docs_path]
 
         expect(helper.data_for_edit_release_page.keys).to match_array(keys)
       end
@@ -80,7 +80,7 @@ RSpec.describe ReleasesHelper do
 
     describe '#data_for_new_release_page' do
       it 'has the needed data to display the "new release" page' do
-        keys = %i(project_id
+        keys = %i[project_id
                   group_id
                   group_milestones_available
                   project_path
@@ -93,7 +93,7 @@ RSpec.describe ReleasesHelper do
                   new_milestone_path
                   default_branch
                   upcoming_release_docs_path
-                  edit_release_docs_path)
+                  edit_release_docs_path]
 
         expect(helper.data_for_new_release_page.keys).to match_array(keys)
       end
@@ -101,9 +101,9 @@ RSpec.describe ReleasesHelper do
 
     describe '#data_for_show_page' do
       it 'has the needed data to display the individual "release" page' do
-        keys = %i(project_id
+        keys = %i[project_id
                   project_path
-                  tag_name)
+                  tag_name]
 
         expect(helper.data_for_show_page.keys).to match_array(keys)
       end

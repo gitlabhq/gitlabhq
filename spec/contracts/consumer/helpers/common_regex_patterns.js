@@ -15,7 +15,7 @@ export const PIPELINE_SOURCES =
 export const PIPELINE_STATUSES =
   '^status_(canceled|created|failed|manual|pending|preparing|running|scheduled|skipped|success|warning)$';
 export const PIPELINE_TEXTS =
-  '^(canceled|created|delayed|failed|manual|passed|pending|preparing|running|skipped|waiting)$';
+  '^(Canceled|Created|Delayed|Failed|Manual|Passed|Pending|Preparing|Running|Skipped|Waiting)$';
 
 // Jobs
 export const JOB_STATUSES =

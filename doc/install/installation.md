@@ -47,7 +47,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 |:------------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Ruby](#2-ruby)         | `3.0.x`         | From GitLab 15.10, Ruby 3.0 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
 | [RubyGems](#3-rubygems) | `3.4.x`         | A specific RubyGems version is not fully needed, but it's recommended to update so you can enjoy some known performance improvements.                                                                                                                                                  |
-| [Go](#4-go)             | `1.19.x`        | From GitLab 16.1, Go 1.19 or later is required.                                                                                                                                                                                                                                        |
+| [Go](#4-go)             | `1.20.x`        | From GitLab 16.4, Go 1.20 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.41.x`        | From GitLab 16.2, Git 2.41.x and later is required. You should use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
 | [Node.js](#5-node)      | `18.17.x`       | From GitLab 16.3, Node.js 18.17 or later is required.                                                                                                                                                                                                                                  |
 
@@ -247,11 +247,11 @@ Linux. You can find downloads for other platforms at the
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.19.10.linux-amd64.tar.gz"
-echo '8b045a483d3895c6edba2e90a9189262876190dbbd21756870cdd63821810677  go1.19.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.19.10.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.20.8.linux-amd64.tar.gz"
+echo 'cc97c28d9c252fbf28f91950d830201aa403836cbed702a05932e63f7f0c7bc4  go1.20.8.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.20.8.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.19.10.linux-amd64.tar.gz
+rm go1.20.8.linux-amd64.tar.gz
 ```
 
 ## 5. Node
@@ -293,20 +293,20 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 16.0 and later
 
 1. Install the database packages.
 
-   For Ubuntu 20.04 and later:
+   For Ubuntu 22.04 and later:
 
    ```shell
    sudo apt install -y postgresql postgresql-client libpq-dev postgresql-contrib
    ```
 
-   For Ubuntu 18.04 and earlier, the available PostgreSQL doesn't meet the minimum
+   For Ubuntu 20.04 and earlier, the available PostgreSQL doesn't meet the minimum
    version requirement. You must add PostgreSQL's repository:
 
    ```shell
+   sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-   sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-   sudo apt update
-   sudo apt -y install postgresql-12 postgresql-client-12 libpq-dev
+   sudo apt-get update
+   sudo apt-get -y install postgresql-14
    ```
 
 1. Verify the PostgreSQL version you have is supported by the version of GitLab you're
@@ -654,7 +654,7 @@ Install the gems (if you want to use Kerberos for user authentication, omit
 
 ```shell
 sudo -u git -H bundle config set --local deployment 'true'
-sudo -u git -H bundle config set --local without 'development test mysql aws kerberos'
+sudo -u git -H bundle config set --local without 'development test kerberos'
 sudo -u git -H bundle config path /home/git/gitlab/vendor/bundle
 sudo -u git -H bundle install
 ```

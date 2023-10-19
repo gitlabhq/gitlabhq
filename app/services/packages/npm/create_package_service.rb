@@ -5,7 +5,7 @@ module Packages
       include Gitlab::Utils::StrongMemoize
       include ExclusiveLeaseGuard
 
-      PACKAGE_JSON_NOT_ALLOWED_FIELDS = %w[readme readmeFilename licenseText].freeze
+      PACKAGE_JSON_NOT_ALLOWED_FIELDS = %w[readme readmeFilename licenseText contributors exports].freeze
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i
 
       def execute

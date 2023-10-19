@@ -6,7 +6,7 @@
 
   .form-group
     = f.label :title, _("Title")
-    = f.text_field :title, maxlength: 255, class: "form-control", data: { qa_selector: "milestone_title_field" }, required: true, autofocus: true
+    = f.text_field :title, maxlength: 255, class: "form-control", data: { testid: "milestone-title-field" }, required: true, autofocus: true
   = render "shared/milestones/form_dates", f: f
   .form-group
     = f.label :description, _("Description")
@@ -26,7 +26,7 @@
   = f.hidden_field :lock_version
 
   - if @milestone.new_record?
-    = f.submit _('Create milestone'), data: { qa_selector: "create_milestone_button" }, class: 'gl-mr-2', pajamas_button: true
+    = f.submit _('Create milestone'), data: { testid: "create-milestone-button" }, class: 'gl-mr-2', pajamas_button: true
     = render Pajamas::ButtonComponent.new(href: group_milestones_path(@group)) do
       = _("Cancel")
   - else

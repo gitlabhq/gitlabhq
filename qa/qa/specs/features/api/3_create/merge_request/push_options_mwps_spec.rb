@@ -26,23 +26,18 @@ module QA
       end
 
       it 'sets merge when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347843' do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  no-op:
-                    tags:
-                      - "runner-for-#{project.name}"
-                    script: sleep 999 # Leave the pipeline pending
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              no-op:
+                tags:
+                  - "runner-for-#{project.name}"
+                script: sleep 999 # Leave the pipeline pending
+            YAML
+          }
+        ])
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
@@ -58,10 +53,7 @@ module QA
 
         expect(merge_request).not_to be_nil, "There was a problem creating the merge request"
 
-        merge_request = Resource::MergeRequest.fabricate_via_api! do |mr|
-          mr.project = project
-          mr.iid = merge_request[:iid]
-        end
+        merge_request = create(:merge_request, project: project, iid: merge_request[:iid])
 
         aggregate_failures do
           expect(merge_request.state).to eq('opened')
@@ -77,23 +69,18 @@ module QA
           issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/346425"
         }
       ) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  no-op:
-                    tags:
-                      - "runner-for-#{project.name}"
-                    script: echo 'OK'
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              no-op:
+                tags:
+                  - "runner-for-#{project.name}"
+                script: echo 'OK'
+            YAML
+          }
+        ])
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
@@ -113,10 +100,7 @@ module QA
         mr = nil
         begin
           merge_request = Support::Retrier.retry_until(max_duration: 60, sleep_interval: 5, message: 'The merge request was not merged') do
-            mr = Resource::MergeRequest.fabricate_via_api! do |mr|
-              mr.project = project
-              mr.iid = merge_request[:iid]
-            end
+            mr = create(:merge_request, project: project, iid: merge_request[:iid])
 
             next unless mr.state == 'merged'
 

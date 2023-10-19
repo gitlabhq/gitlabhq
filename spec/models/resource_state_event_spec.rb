@@ -61,7 +61,7 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
         it_behaves_like 'internal event tracking' do
           subject(:service_action) { close_issue }
 
-          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLOSED }
+          let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLOSED }
           let(:project) { issue.project }
           let(:namespace) { issue.project.namespace }
           let(:user) { issue.author }
@@ -86,7 +86,7 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
         it_behaves_like 'internal event tracking' do
           subject(:service_action) { reopen_issue }
 
-          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_REOPENED }
+          let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_REOPENED }
           let(:project) { issue.project }
           let(:user) { issue.author }
           let(:namespace) { issue.project.namespace }

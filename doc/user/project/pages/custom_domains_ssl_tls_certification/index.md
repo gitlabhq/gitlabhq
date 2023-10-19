@@ -19,6 +19,9 @@ To use one or more custom domain names:
 - Add a [custom **root domain** or a **subdomain**](#set-up-a-custom-domain).
 - Add [SSL/TLS certification](#adding-an-ssltls-certificate-to-pages).
 
+WARNING:
+You cannot verify the [most popular public email domains](../../../../user/group/access_and_permissions.md#restrict-group-access-by-domain).
+
 ## Set up a custom domain
 
 To set up Pages with a custom domain name, read the requirements and steps below.

@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectMemberPolicy do
-  let(:project) { create(:project) }
-  let(:maintainer) { create(:user) }
+RSpec.describe ProjectMemberPolicy, feature_category: :groups_and_projects do
+  let_it_be(:project) { create(:project) }
+  let_it_be(:maintainer) { create(:user) }
   let(:member) { create(:project_member, project: project, user: member_user) }
   let(:current_user) { maintainer }
 

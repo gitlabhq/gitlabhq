@@ -390,6 +390,7 @@ class Project < ApplicationRecord
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :project
   has_many :alert_management_http_integrations, class_name: 'AlertManagement::HttpIntegration', inverse_of: :project
 
+  has_many :container_registry_protection_rules, class_name: 'ContainerRegistry::Protection::Rule', inverse_of: :project
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
@@ -559,13 +560,16 @@ class Project < ApplicationRecord
     allow_blank: true
   validates :name,
     presence: true,
-    length: { maximum: 255 },
-    format: { with: Gitlab::Regex.project_name_regex,
-              message: Gitlab::Regex.project_name_regex_message }
+    length: { maximum: 255 }
   validates :path,
     presence: true,
     project_path: true,
     length: { maximum: 255 }
+
+  validates :name,
+    format: { with: Gitlab::Regex.project_name_regex,
+              message: Gitlab::Regex.project_name_regex_message },
+    if: :name_changed?
   validates :path,
     format: { with: Gitlab::Regex.oci_repository_path_regex,
               message: Gitlab::Regex.oci_repository_path_regex_message },
@@ -749,6 +753,7 @@ class Project < ApplicationRecord
   scope :service_desk_enabled, -> { where(service_desk_enabled: true) }
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_package_registry_enabled, -> { with_feature_enabled(:package_registry) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_available_for_user, ->(current_user) { with_feature_available_for_user(:merge_requests, current_user) }
   scope :with_issues_or_mrs_available_for_user, -> (user) do
@@ -1449,7 +1454,7 @@ class Project < ApplicationRecord
       super(import_url.sanitized_url)
 
       credentials = import_url.credentials.to_h.transform_values { |value| CGI.unescape(value.to_s) }
-      create_or_update_import_data(credentials: credentials)
+      build_or_assign_import_data(credentials: credentials)
     else
       super(value)
     end
@@ -1470,9 +1475,7 @@ class Project < ApplicationRecord
     valid?(:import_url) || errors.messages[:import_url].nil?
   end
 
-  # TODO: rename to build_or_assign_import_data as it doesn't save record
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/377319
-  def create_or_update_import_data(data: nil, credentials: nil)
+  def build_or_assign_import_data(data: nil, credentials: nil)
     return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data
@@ -2236,15 +2239,6 @@ class Project < ApplicationRecord
     pages_metadatum&.deployed?
   end
 
-  def pages_path
-    # TODO: when we migrate Pages to work with new storage types, change here to use disk_path
-    File.join(Settings.pages.path, full_path)
-  end
-
-  def pages_available?
-    Gitlab.config.pages.enabled
-  end
-
   def pages_show_onboarding?
     !(pages_metadatum&.onboarding_complete || pages_metadatum&.deployed)
   end
@@ -2691,26 +2685,6 @@ class Project < ApplicationRecord
 
   def ff_merge_must_be_possible?
     self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
-  end
-
-  def migrate_to_hashed_storage!
-    return unless storage_upgradable?
-
-    if git_transfer_in_progress?
-      HashedStorage::ProjectMigrateWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
-    else
-      HashedStorage::ProjectMigrateWorker.perform_async(id)
-    end
-  end
-
-  def rollback_to_legacy_storage!
-    return if legacy_storage?
-
-    if git_transfer_in_progress?
-      HashedStorage::ProjectRollbackWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
-    else
-      HashedStorage::ProjectRollbackWorker.perform_async(id)
-    end
   end
 
   override :git_transfer_in_progress?
@@ -3195,10 +3169,6 @@ class Project < ApplicationRecord
     creator.banned? && team.max_member_access(creator.id) == Gitlab::Access::OWNER
   end
 
-  def content_editor_on_issues_feature_flag_enabled?
-    group&.content_editor_on_issues_feature_flag_enabled? || Feature.enabled?(:content_editor_on_issues, self)
-  end
-
   def work_items_feature_flag_enabled?
     group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end
@@ -3346,7 +3316,7 @@ class Project < ApplicationRecord
   end
 
   def merge_requests_allowing_collaboration(source_branch = nil)
-    relation = source_of_merge_requests.opened.where(allow_collaboration: true)
+    relation = source_of_merge_requests.from_fork.opened.where(allow_collaboration: true)
     relation = relation.where(source_branch: source_branch) if source_branch
     relation
   end

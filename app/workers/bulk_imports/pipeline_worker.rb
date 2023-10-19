@@ -14,7 +14,10 @@ module BulkImports
     deduplicate :until_executing
     worker_resource_boundary :memory
 
-    def perform(pipeline_tracker_id, stage, entity_id)
+    version 2
+
+    # Keep _stage parameter for backwards compatibility.
+    def perform(pipeline_tracker_id, _stage, entity_id)
       @entity = ::BulkImports::Entity.find(entity_id)
       @pipeline_tracker = ::BulkImports::Tracker.find(pipeline_tracker_id)
 
@@ -32,7 +35,9 @@ module BulkImports
         end
       end
     ensure
-      ::BulkImports::EntityWorker.perform_async(entity_id, stage)
+      # This is needed for in-flight migrations.
+      # It will be remove in https://gitlab.com/gitlab-org/gitlab/-/issues/426299
+      ::BulkImports::EntityWorker.perform_async(entity_id) if job_version.nil?
     end
 
     private

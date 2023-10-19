@@ -16,8 +16,22 @@ module Organizations
       }.merge(shared_groups_and_projects_app_data).to_json
     end
 
+    def organization_new_app_data
+      {
+        organizations_path: organizations_path,
+        root_url: root_url
+      }.to_json
+    end
+
     def organization_groups_and_projects_app_data
       shared_groups_and_projects_app_data.to_json
+    end
+
+    def organization_index_app_data
+      {
+        new_organization_url: new_organization_path,
+        organizations_empty_state_svg_path: image_path('illustrations/empty-state/empty-organizations-md.svg')
+      }
     end
 
     private

@@ -9,7 +9,7 @@ module Gitlab
 
       attr_reader :po_path, :translation_entries, :metadata_entry, :locale
 
-      VARIABLE_REGEX = /%{\w*}|%[a-z]/.freeze
+      VARIABLE_REGEX = /%{\w*}|%[a-z]/
 
       def initialize(po_path:, locale: I18n.locale.to_s)
         @po_path = po_path

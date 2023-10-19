@@ -8,6 +8,9 @@ module QA
         attribute :content
         attribute :slug
         attribute :format
+        attribute :web_url do
+          "#{project.web_url}/-/wikis/#{slug}"
+        end
 
         attribute :project do
           Project.fabricate_via_api! do |project|
@@ -29,12 +32,8 @@ module QA
           @content = 'This wiki page is created by the API'
         end
 
-        def resource_web_url(resource)
-          super
-        rescue ResourceURLMissingError
-          # TODO
-          # workaround
-          "#{project.web_url}/-/wikis/#{slug}"
+        def resource_web_url(_)
+          web_url
         end
 
         def api_get_path

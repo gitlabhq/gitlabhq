@@ -156,22 +156,7 @@ Prerequisites:
 - Code Suggestions must be enabled [for the instance](#enable-code-suggestions-on-self-managed-gitlab).
 - You must have installed and configured a [supported IDE editor extension](index.md#supported-editor-extensions).
 
-To use Code Suggestions:
-
-1. Author your code. As you type, suggestions are displayed. Depending on the cursor position, the extension either:
-
-   - Provides entire code snippets, like generating functions.
-   - Completes the current line.
-
-1. To accept a suggestion, press <kbd>Tab</kbd>.
-
-Suggestions are best when writing new code. Editing existing functions or 'fill in the middle' of a function may not perform as expected.
-
-GitLab is making improvements to the Code Suggestions to improve the quality. AI is non-deterministic, so you may not get the same suggestion every time with the same input.
-
-This feature is currently in [Beta](../../../../policy/experiment-beta-support.md#beta).
-Code Suggestions depends on both Google Vertex AI Codey APIs and the GitLab Code Suggestions service. We have built this feature to gracefully degrade and have controls in place to allow us to
-mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
+[Use Code Suggestions](index.md#use-code-suggestions).
 
 ### Data privacy
 

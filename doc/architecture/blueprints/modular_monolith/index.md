@@ -95,7 +95,7 @@ add more important details as we move forward towards the goal:
 
 1. [Deliver modularization proof-of-concepts that will deliver key insights](proof_of_concepts.md).
 1. Align modularization plans to the organizational structure by [defining bounded contexts](bounded_contexts.md).
-1. Separate domains into modules that will reflect organizational structure (TODO)
+1. [Separate domains into modules](packages_extraction.md) that will reflect organizational structure.
 1. Start a training program for team members on how to work with decoupled domains (TODO)
 1. Build tools that will make it easier to build decoupled domains through inversion of control (TODO)
 1. [Introduce hexagonal architecture within the monolith](hexagonal_monolith/index.md)

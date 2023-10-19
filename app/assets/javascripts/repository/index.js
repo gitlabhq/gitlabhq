@@ -122,7 +122,7 @@ export default function setupVueRepositoryList() {
         return h(LastCommit, {
           props: {
             currentPath: this.$route.params.path,
-            refType: this.$route.query.ref_type,
+            refType: this.$route.meta.refType || this.$route.query.ref_type,
           },
         });
       },
@@ -137,6 +137,7 @@ export default function setupVueRepositoryList() {
         return h(BlobControls, {
           props: {
             projectPath,
+            refType: this.$route.meta.refType || this.$route.query.ref_type,
           },
         });
       },
@@ -231,19 +232,21 @@ export default function setupVueRepositoryList() {
 
   const treeHistoryLinkEl = document.getElementById('js-tree-history-link');
   const { historyLink } = treeHistoryLinkEl.dataset;
-
   // eslint-disable-next-line no-new
   new Vue({
     el: treeHistoryLinkEl,
     router,
     render(h) {
+      const url = new URL(window.location.href);
+      url.pathname = `${historyLink}/${
+        this.$route.params.path ? escapeFileUrl(this.$route.params.path) : ''
+      }`;
+      url.searchParams.set('ref_type', this.$route.meta.refType || this.$route.query.ref_type);
       return h(
         GlButton,
         {
           attrs: {
-            href: `${historyLink}/${
-              this.$route.params.path ? escapeFileUrl(this.$route.params.path) : ''
-            }`,
+            href: url.href,
             // Ideally passing this class to `props` should work
             // But it doesn't work here. :(
             class: 'btn btn-default btn-md gl-button',
@@ -256,7 +259,7 @@ export default function setupVueRepositoryList() {
 
   initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link'), router });
 
-  const directoryDownloadLinks = document.getElementById('js-directory-downloads');
+  const directoryDownloadLinks = document.querySelector('.js-directory-downloads');
 
   if (directoryDownloadLinks) {
     // eslint-disable-next-line no-new

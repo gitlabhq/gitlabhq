@@ -103,7 +103,7 @@ RSpec.describe Integrations::FieldEntity, feature_category: :integrations do
               ['Default branch and protected branches', 'default_and_protected']
             ],
             help: nil,
-            value: nil,
+            value: 'all',
             checkbox_label: nil
           }
 

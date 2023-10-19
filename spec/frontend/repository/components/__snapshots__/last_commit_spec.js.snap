@@ -1,97 +1,50 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Repository last commit component renders commit widget 1`] = `
-<div
-  class="commit gl-display-flex gl-p-5 gl-w-full well-segment"
+<commit-info-stub
+  commit="[object Object]"
 >
-  <user-avatar-link-stub
-    class="gl-mr-4 gl-my-2"
-    imgalt=""
-    imgcssclasses=""
-    imgcsswrapperclasses=""
-    imgsize="32"
-    imgsrc="https://test.com"
-    linkhref="/test"
-    popoveruserid=""
-    popoverusername=""
-    tooltipplacement="top"
-    tooltiptext=""
-    username=""
-  />
   <div
-    class="commit-detail flex-list gl-align-items-center gl-display-flex gl-flex-grow-1 gl-justify-content-space-between gl-min-w-0"
+    class="commit-actions gl-align-items-center gl-display-flex gl-flex-align gl-flex-direction-row"
   >
     <div
-      class="commit-content"
-      data-qa-selector="commit_content"
+      class="ci-status-link"
     >
-      <gl-link-stub
-        class="commit-row-message item-title"
-        href="/commit/123"
-      >
-        Commit title
-      </gl-link-stub>
-      <div
-        class="committer"
-      >
-        <gl-link-stub
-          class="commit-author-link js-user-link"
-          href="/test"
-        >
-          Test
-        </gl-link-stub>
-        authored
-        <timeago-tooltip-stub
-          cssclass=""
-          datetimeformat="DATE_WITH_TIME_FORMAT"
-          time="2019-01-01"
-          tooltipplacement="bottom"
-        />
-      </div>
+      <ci-badge-link-stub
+        aria-label="Pipeline: failed"
+        class="js-commit-pipeline"
+        details-path="https://test.com/pipeline"
+        showtooltip="true"
+        size="md"
+        status="[object Object]"
+        uselink="true"
+      />
     </div>
-    <div
-      class="gl-flex-grow-1"
-    />
-    <div
-      class="commit-actions gl-align-items-center gl-display-flex gl-flex-align gl-flex-direction-row"
+    <gl-button-group-stub
+      class="gl-ml-4 js-commit-sha-group"
     >
-      <div
-        class="ci-status-link"
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
+        class="gl-font-monospace"
+        data-testid="last-commit-id-label"
+        icon=""
+        label="true"
+        size="medium"
+        variant="default"
       >
-        <ci-badge-link-stub
-          aria-label="Pipeline: failed"
-          class="js-commit-pipeline"
-          details-path="https://test.com/pipeline"
-          size="lg"
-          status="[object Object]"
-        />
-      </div>
-      <gl-button-group-stub
-        class="gl-ml-4 js-commit-sha-group"
-      >
-        <gl-button-stub
-          buttontextclasses=""
-          category="primary"
-          class="gl-font-monospace"
-          data-testid="last-commit-id-label"
-          icon=""
-          label="true"
-          size="medium"
-          variant="default"
-        >
-          12345678
-        </gl-button-stub>
-        <clipboard-button-stub
-          category="secondary"
-          class="input-group-text"
-          size="medium"
-          text="123456789"
-          title="Copy commit SHA"
-          tooltipplacement="top"
-          variant="default"
-        />
-      </gl-button-group-stub>
-    </div>
+        12345678
+      </gl-button-stub>
+      <clipboard-button-stub
+        category="secondary"
+        class="input-group-text"
+        size="medium"
+        text="123456789"
+        title="Copy commit SHA"
+        tooltipplacement="top"
+        variant="default"
+      />
+    </gl-button-group-stub>
   </div>
-</div>
+</commit-info-stub>
 `;

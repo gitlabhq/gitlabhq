@@ -21,7 +21,7 @@ module Types
       def html_summary(last_lines:)
         object.html(
           last_lines: last_lines.clamp(1, 100),
-          max_size: Feature.enabled?(:graphql_job_trace_html_summary_max_size) ? MAX_SIZE_B : nil
+          max_size: MAX_SIZE_B
         ).html_safe
       end
     end

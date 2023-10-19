@@ -4,7 +4,6 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { toggleMarkCheckboxes } from '~/behaviors/markdown/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -36,7 +35,6 @@ export default {
     placeholder: s__('DesignManagement|Write a comment or drag your files here…'),
     'aria-label': s__('DesignManagement|Design description'),
   },
-  mixins: [glFeaturesFlagMixin()],
   markdownDocsPath: helpPagePath('user/markdown'),
   quickActionsDocsPath: helpPagePath('user/project/quick_actions'),
   props: {
@@ -174,7 +172,6 @@ export default {
         :render-markdown-path="markdownPreviewPath"
         :markdown-docs-path="$options.markdownDocsPath"
         :form-field-props="$options.formFieldProps"
-        :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
         :quick-actions-docs-path="$options.quickActionsDocsPath"
         :autosave-key="autosaveKey"
         enable-autocomplete

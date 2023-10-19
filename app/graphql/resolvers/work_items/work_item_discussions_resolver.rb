@@ -4,7 +4,6 @@ module Resolvers
   module WorkItems
     class WorkItemDiscussionsResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
-      extension Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension
 
       authorize :read_work_item
       authorizes_object!
@@ -29,11 +28,6 @@ module Resolvers
           finder.paginator.cursor_for_next_page,
           *finder.execute
         )
-      end
-
-      def self.field_options
-        # we manage the pagination manually through external array, so opt out of the connection field extension
-        super.merge(connection: false)
       end
 
       def self.calculate_ext_conn_complexity

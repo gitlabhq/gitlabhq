@@ -16,7 +16,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   end
 
   shared_examples 'reference parsing' do
-    %w(pre code a style).each do |elem|
+    %w[pre code a style].each do |elem|
       it "ignores valid references contained inside '#{elem}' element" do
         exp = act = "<#{elem}>milestone #{reference}</#{elem}>"
         expect(reference_filter(act).to_html).to eq exp
@@ -49,7 +49,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
       doc = reference_filter("Milestone #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
-      expect(link).not_to match %r(https?://)
+      expect(link).not_to match %r{https?://}
       expect(link).to eq urls.milestone_path(milestone)
     end
   end
@@ -63,7 +63,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
     it 'links with adjacent text' do
       doc = reference_filter("Milestone (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>#{milestone.reference_link_text}</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>#{milestone.reference_link_text}</a>\.\)})
     end
 
     it 'ignores invalid milestone IIDs' do
@@ -89,12 +89,12 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
     it 'links with adjacent text' do
       doc = reference_filter("Milestone (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>#{milestone.reference_link_text}</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>#{milestone.reference_link_text}</a>\.\)})
     end
 
     it 'links with adjacent html tags' do
       doc = reference_filter("Milestone <p>#{reference}</p>.")
-      expect(doc.to_html).to match(%r(<p><a.+>#{milestone.reference_link_text}</a></p>))
+      expect(doc.to_html).to match(%r{<p><a.+>#{milestone.reference_link_text}</a></p>})
     end
 
     it 'ignores invalid milestone names' do
@@ -120,7 +120,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
     it 'links with adjacent text' do
       doc = reference_filter("Milestone (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>#{milestone.reference_link_text}</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>#{milestone.reference_link_text}</a>\.\)})
     end
 
     it 'ignores invalid milestone names' do
@@ -132,7 +132,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
   shared_examples 'referencing a milestone in a link href' do
     let(:unquoted_reference) { "#{Milestone.reference_prefix}#{milestone.name}" }
-    let(:link_reference) { %{<a href="#{unquoted_reference}">Milestone</a>} }
+    let(:link_reference) { %(<a href="#{unquoted_reference}">Milestone</a>) }
 
     before do
       milestone.update!(name: 'gfm')
@@ -146,7 +146,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
     it 'links with adjacent text' do
       doc = reference_filter("Milestone (#{link_reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>Milestone</a>\.\)))
+      expect(doc.to_html).to match(%r{\(<a.+>Milestone</a>\.\)})
     end
 
     it 'includes a data-project attribute' do
@@ -169,7 +169,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   shared_examples 'linking to a milestone as the entire link' do
     let(:unquoted_reference) { "#{Milestone.reference_prefix}#{milestone.name}" }
     let(:link) { urls.milestone_url(milestone) }
-    let(:link_reference) { %{<a href="#{link}">#{link}</a>} }
+    let(:link_reference) { %(<a href="#{link}">#{link}</a>) }
 
     it 'replaces the link text with the milestone reference' do
       doc = reference_filter("See #{link}")
@@ -220,7 +220,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
     it 'escapes the name attribute' do
       allow_next_instance_of(Milestone) do |instance|
-        allow(instance).to receive(:title).and_return(%{"></a>whatever<a title="})
+        allow(instance).to receive(:title).and_return(%("></a>whatever<a title="))
       end
 
       doc = reference_filter("See #{reference}")
@@ -257,7 +257,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
     it 'escapes the name attribute' do
       allow_next_instance_of(Milestone) do |instance|
-        allow(instance).to receive(:title).and_return(%{"></a>whatever<a title="})
+        allow(instance).to receive(:title).and_return(%("></a>whatever<a title="))
       end
 
       doc = reference_filter("See #{reference}")
@@ -294,7 +294,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
     it 'escapes the name attribute' do
       allow_next_instance_of(Milestone) do |instance|
-        allow(instance).to receive(:title).and_return(%{"></a>whatever<a title="})
+        allow(instance).to receive(:title).and_return(%("></a>whatever<a title="))
       end
 
       doc = reference_filter("See #{reference}")

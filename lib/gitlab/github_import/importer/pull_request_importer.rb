@@ -27,9 +27,9 @@ module Gitlab
           mr, already_exists = create_merge_request
 
           if mr
+            issuable_finder.cache_database_id(mr.id)
             set_merge_request_assignees(mr)
             insert_git_data(mr, already_exists)
-            issuable_finder.cache_database_id(mr.id)
           end
         end
 

@@ -125,7 +125,7 @@ module System
     end
 
     def future?
-      starts_at > Time.current
+      starts_at.future?
     end
 
     def now_or_future?

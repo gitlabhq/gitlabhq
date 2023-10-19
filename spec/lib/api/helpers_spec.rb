@@ -773,21 +773,43 @@ RSpec.describe API::Helpers, feature_category: :shared do
   end
 
   describe '#track_event' do
-    let(:user_id) { 345 }
-    let(:namespace_id) { 12 }
-    let(:project_id) { 56 }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project) { create(:project) }
     let(:event_name) { 'i_compliance_dashboard' }
     let(:unknown_event) { 'unknown' }
 
     it 'tracks internal event' do
       expect(Gitlab::InternalEvents).to receive(:track_event).with(
         event_name,
-        user_id: user_id,
-        namespace_id: namespace_id,
-        project_id: project_id
+        send_snowplow_event: true,
+        user: user,
+        namespace: namespace,
+        project: project
       )
 
-      helper.track_event(event_name, user_id: user_id, namespace_id: namespace_id, project_id: project_id)
+      helper.track_event(event_name,
+        user: user,
+        namespace_id: namespace.id,
+        project_id: project.id
+      )
+    end
+
+    it 'passes send_snowplow_event on to InternalEvents.track_event' do
+      expect(Gitlab::InternalEvents).to receive(:track_event).with(
+        event_name,
+        send_snowplow_event: false,
+        user: user,
+        namespace: namespace,
+        project: project
+      )
+
+      helper.track_event(event_name,
+        send_snowplow_event: false,
+        user: user,
+        namespace_id: namespace.id,
+        project_id: project.id
+      )
     end
 
     it 'logs an exception for unknown event' do
@@ -797,18 +819,29 @@ RSpec.describe API::Helpers, feature_category: :shared do
           instance_of(Gitlab::InternalEvents::UnknownEventError),
           event_name: unknown_event
         )
-      helper.track_event(unknown_event, user_id: user_id, namespace_id: namespace_id, project_id: project_id)
+
+      helper.track_event(unknown_event,
+        user: user,
+        namespace_id: namespace.id,
+        project_id: project.id
+      )
     end
 
-    it 'does not track event for nil user_id' do
+    it 'does not track event for nil user' do
       expect(Gitlab::InternalEvents).not_to receive(:track_event)
 
-      helper.track_event(unknown_event, user_id: nil, namespace_id: namespace_id, project_id: project_id)
+      helper.track_event(unknown_event,
+        user: nil,
+        namespace_id: namespace.id,
+        project_id: project.id
+      )
     end
   end
 
   shared_examples '#order_options_with_tie_breaker' do
-    subject { Class.new.include(described_class).new.order_options_with_tie_breaker }
+    subject { Class.new.include(described_class).new.order_options_with_tie_breaker(**reorder_params) }
+
+    let(:reorder_params) { {} }
 
     before do
       allow_any_instance_of(described_class).to receive(:params).and_return(params)
@@ -852,11 +885,25 @@ RSpec.describe API::Helpers, feature_category: :shared do
   describe '#order_options_with_tie_breaker' do
     include_examples '#order_options_with_tie_breaker'
 
-    context 'with created_at order given' do
-      let(:params) { { order_by: 'created_at', sort: 'asc' } }
+    context 'by default' do
+      context 'with created_at order given' do
+        let(:params) { { order_by: 'created_at', sort: 'asc' } }
 
-      it 'converts to id' do
-        is_expected.to eq({ 'id' => 'asc' })
+        it 'converts to id' do
+          is_expected.to eq({ 'id' => 'asc' })
+        end
+      end
+    end
+
+    context 'when override_created_at is false' do
+      let(:reorder_params) { { override_created_at: false } }
+
+      context 'with created_at order given' do
+        let(:params) { { order_by: 'created_at', sort: 'asc' } }
+
+        it 'does not convert to id' do
+          is_expected.to eq({ "created_at" => "asc", "id" => "asc" })
+        end
       end
     end
   end

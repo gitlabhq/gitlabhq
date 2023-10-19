@@ -42,7 +42,7 @@ module CommitsHelper
     crumbs = content_tag(:li, class: 'breadcrumb-item') do
       link_to(
         @project.path,
-        project_commits_path(@project, @ref)
+        project_commits_path(@project, @ref, ref_type: @ref_type)
       )
     end
 
@@ -56,7 +56,8 @@ module CommitsHelper
             part,
             project_commits_path(
               @project,
-              tree_join(@ref, parts[0..i].join('/'))
+              tree_join(@ref, parts[0..i].join('/')),
+              ref_type: @ref_type
             )
           )
         end

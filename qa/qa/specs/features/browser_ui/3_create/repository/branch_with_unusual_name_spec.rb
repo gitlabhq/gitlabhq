@@ -12,13 +12,13 @@ module QA
 
       context 'when branch name contains slash, hash, double dash, and capital letter' do
         it 'renders repository file tree correctly', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347715' do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.branch = branch_name
-            commit.start_branch = project.default_branch
-            commit.commit_message = 'Add new file'
-            commit.add_files([{ file_path: 'test-folder/test-file.md', content: 'new content' }])
-          end
+          create(:commit,
+            project: project,
+            branch: branch_name,
+            start_branch: project.default_branch,
+            commit_message: 'Add new file', actions: [
+              { action: 'create', file_path: 'test-folder/test-file.md', content: 'new content' }
+            ])
 
           project.visit!
 

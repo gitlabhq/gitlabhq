@@ -685,44 +685,21 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
     let(:commits_to_sync) { [] }
 
     shared_examples 'enqueues Jira sync worker' do
-      context "batch_delay_jira_branch_sync_worker feature flag is enabled" do
-        before do
-          stub_feature_flags(batch_delay_jira_branch_sync_worker: true)
-        end
-
-        specify :aggregate_failures do
-          Sidekiq::Testing.fake! do
-            if commits_to_sync.any?
-              expect(JiraConnect::SyncBranchWorker)
-                .to receive(:perform_in)
-                .with(kind_of(Numeric), project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
-                .and_call_original
-            else
-              expect(JiraConnect::SyncBranchWorker)
-                .to receive(:perform_async)
-                .with(project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
-                .and_call_original
-            end
-
-            expect { subject }.to change(JiraConnect::SyncBranchWorker.jobs, :size).by(1)
-          end
-        end
-      end
-
-      context "batch_delay_jira_branch_sync_worker feature flag is disabled" do
-        before do
-          stub_feature_flags(batch_delay_jira_branch_sync_worker: false)
-        end
-
-        specify :aggregate_failures do
-          Sidekiq::Testing.fake! do
+      specify :aggregate_failures do
+        Sidekiq::Testing.fake! do
+          if commits_to_sync.any?
+            expect(JiraConnect::SyncBranchWorker)
+              .to receive(:perform_in)
+              .with(kind_of(Numeric), project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
+              .and_call_original
+          else
             expect(JiraConnect::SyncBranchWorker)
               .to receive(:perform_async)
               .with(project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
               .and_call_original
-
-            expect { subject }.to change(JiraConnect::SyncBranchWorker.jobs, :size).by(1)
           end
+
+          expect { subject }.to change(JiraConnect::SyncBranchWorker.jobs, :size).by(1)
         end
       end
     end

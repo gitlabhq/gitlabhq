@@ -17,14 +17,13 @@ export default {
     targetProjectFullPath: {
       default: '',
     },
+    pipelineSchedulesPath: {
+      default: '',
+    },
   },
   props: {
     pipeline: {
       type: Object,
-      required: true,
-    },
-    pipelineScheduleUrl: {
-      type: String,
       required: true,
     },
   },
@@ -36,6 +35,13 @@ export default {
       return Boolean(
         this.targetProjectFullPath &&
           this.pipeline?.project?.full_path !== `/${this.targetProjectFullPath}`,
+      );
+    },
+    showMergedResultsBadge() {
+      // A merge train pipeline is technically also a merged results pipeline,
+      // but we want the badges to be mutually exclusive.
+      return (
+        this.pipeline.flags.merged_result_pipeline && !this.pipeline.flags.merge_train_pipeline
       );
     },
     autoDevopsTagId() {
@@ -52,7 +58,7 @@ export default {
     <gl-badge
       v-if="isScheduled"
       v-gl-tooltip
-      :href="pipelineScheduleUrl"
+      :href="pipelineSchedulesPath"
       target="__blank"
       :title="__('This pipeline was created by a schedule.')"
       variant="info"
@@ -74,7 +80,7 @@ export default {
       v-gl-tooltip
       :title="
         s__(
-          'Pipeline|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch.',
+          'Pipeline|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch.',
         )
       "
       variant="info"
@@ -149,13 +155,26 @@ export default {
       v-gl-tooltip
       :title="
         s__(
-          `Pipeline|This pipeline ran on the contents of this merge request's source branch, not the target branch.`,
+          `Pipeline|This pipeline ran on the contents of the merge request's source branch, not the target branch.`,
         )
       "
       variant="info"
       size="sm"
       data-testid="pipeline-url-detached"
       >{{ s__('Pipeline|merge request') }}</gl-badge
+    >
+    <gl-badge
+      v-if="showMergedResultsBadge"
+      v-gl-tooltip
+      :title="
+        s__(
+          `Pipeline|This pipeline ran on the contents of the merge request combined with the contents of the target branch.`,
+        )
+      "
+      variant="info"
+      size="sm"
+      data-testid="pipeline-url-merged-results"
+      >{{ s__('Pipeline|merged results') }}</gl-badge
     >
     <gl-badge
       v-if="isInFork"

@@ -16,7 +16,7 @@ module Gitlab
         def unique_property(event_name)
           unique_value = events[event_name]&.to_s
 
-          raise(InvalidMetricConfiguration, "Unique property not defined for #{event_name}") unless unique_value
+          return unless unique_value
 
           unless VALID_UNIQUE_VALUES.include?(unique_value)
             raise(InvalidMetricConfiguration, "Invalid unique value '#{unique_value}' for #{event_name}")
@@ -32,7 +32,7 @@ module Gitlab
         private
 
         def events
-          load_configurations if @events.nil? || Gitlab::Usage::MetricDefinition.metric_definitions_changed?
+          load_configurations if @events.nil?
 
           @events
         end

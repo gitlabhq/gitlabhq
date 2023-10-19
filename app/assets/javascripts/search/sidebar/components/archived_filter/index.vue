@@ -1,7 +1,8 @@
 <script>
-import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
+import { GlFormCheckboxGroup, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
+import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -13,6 +14,12 @@ export default {
     GlFormCheckboxGroup,
     GlFormCheckbox,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  i18n: {
+    tooltip: s__('GlobalSearch|Include search results from archived projects'),
+  },
   computed: {
     ...mapState(['urlQuery', 'useSidebarNavigation']),
     selectedFilter: {
@@ -20,9 +27,9 @@ export default {
         return [parseBoolean(this.urlQuery?.include_archived)];
       },
       set(value) {
-        const newValue = value?.pop() ?? false;
-        this.setQuery({ key: archivedFilterData.filterParam, value: newValue?.toString() });
-        this.trackSelectCheckbox(newValue);
+        const includeArchived = [...value].pop() ?? false;
+        this.setQuery({ key: archivedFilterData.filterParam, value: includeArchived?.toString() });
+        this.trackSelectCheckbox(includeArchived);
       },
     },
   },
@@ -49,7 +56,7 @@ export default {
       :class="$options.LABEL_DEFAULT_CLASSES"
       :value="true"
     >
-      <span data-testid="label">
+      <span v-gl-tooltip="$options.i18n.tooltip" data-testid="label">
         {{ $options.archivedFilterData.checkboxLabel }}
       </span>
     </gl-form-checkbox>

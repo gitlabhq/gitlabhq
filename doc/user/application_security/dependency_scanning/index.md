@@ -6,6 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning **(ULTIMATE ALL)**
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an interactive reading and how-to demo of this Dependency Scanning doc, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an interactive reading and how-to demo playlist, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
+
 Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
 dependencies are scanned, including transitive dependencies, also known as nested dependencies.
 
@@ -30,17 +35,6 @@ we encourage you to use all of our security scanners. For a comparison of these 
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o).
-
-## Requirements
-
-Dependency Scanning runs in the `test` stage, which is available by default. If you redefine the
-stages in the `.gitlab-ci.yml` file, the `test` stage is required.
-
-To run dependency scanning jobs, by default, you need GitLab Runner with the
-[`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
-If you're using the shared runners on GitLab.com, this is enabled by default. The analyzer images
-provided are for the Linux/amd64 architecture.
 
 WARNING:
 Dependency Scanning does not support runtime installation of compilers and interpreters.
@@ -126,7 +120,7 @@ table.supported-languages ul {
         8 LTS,
         11 LTS,
         17 LTS,
-        or 21 EA<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>
+        or 21 LTS<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>
       </td>
       <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
       <td>
@@ -236,8 +230,7 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
     <p>
-      Java 21 EA is only available when using <a href="https://maven.apache.org/">Maven</a> and is not supported when
-      <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
+      Java 21 LTS is only available when using <a href="https://maven.apache.org/">Maven</a> or <a href="https://gradle.org/">Gradle</a>. Java 21 LTS for <a href="https://www.scala-sbt.org/">sbt</a> is not yet available and tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/421174">issue 421174</a>. It is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>
@@ -422,7 +415,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
         <p>
           If your project <i>does not use</i> a <code>gradlew</code> file, then the analyzer automatically switches to one of the
           pre-installed Gradle versions, based on the version of Java specified by the
-          <a href="#configuring-specific-analyzers-used-by-dependency-scanning"><code>DS_JAVA_VERSION</code></a> variable.
+          <a href="#analyzer-specific-settings"><code>DS_JAVA_VERSION</code></a> variable.
           By default, the analyzer uses Java 17 and Gradle 7.3.3.
         </p>
         <p>
@@ -532,58 +525,88 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 ## Configuration
 
-To enable dependency scanning for GitLab 11.9 and later, you must
-[include](../../../ci/yaml/index.md#includetemplate) the
-[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
-that is provided as a part of your GitLab installation.
-For GitLab versions earlier than 11.9, you can copy and use the job as defined
-that template.
+Enable the dependency scanning analyzer to ensure it scans your application's dependencies for known
+vulnerabilities. You can then adjust its behavior by using CI/CD variables.
 
-Add the following to your `.gitlab-ci.yml` file:
+### Enabling the analyzer
 
-```yaml
-include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-```
+Prerequisites:
 
-The included template creates dependency scanning jobs in your CI/CD
-pipeline and scans your project's source code for possible vulnerabilities.
-The results are saved as a
-[dependency scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning)
-that you can later download and analyze. Due to implementation limitations, we
-always take the latest dependency scanning artifact available.
+- The `test` stage is required in the `.gitlab-ci.yml` file.
+- On GitLab self-managed you need GitLab Runner with the
+  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. On GitLab.com this
+  is enabled by default on the shared runners. The analyzer images provided are for the Linux/amd64
+  architecture.
 
-### Enable Dependency Scanning via an automatic merge request
+To enable the analyzer, either:
+
+- Enable [Auto DevOps](../../../topics/autodevops/index.md), which includes dependency scanning.
+- Edit the `.gitlab-ci.yml` file manually. Use this method if your `.gitlab-ci.yml` file is complex.
+- Use a preconfigured merge request.
+- Create a [scan execution policy](../policies/scan-execution-policies.md) that enforces dependency
+  scanning.
+
+#### Edit the `.gitlab-ci.yml` file manually
+
+This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
+your GitLab CI/CD configuration file is complex.
+
+To enable dependency scanning:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Pipeline editor**.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
+
+   ```yaml
+   include:
+     - template: Security/Dependency-Scanning.gitlab-ci.yml
+   ```
+
+1. Select the **Validate** tab, then select **Validate pipeline**.
+
+   Continue if you see the message **Simulation completed successfully**. That indicates the file is
+   valid.
+1. Select the **Edit** tab.
+1. Complete the fields. Do not use the default branch for the **Branch** field.
+1. Select **Commit changes**.
+1. Select **Code > Merge requests**.
+1. Select the merge request just created.
+1. Review the merge request, then select **Merge**.
+
+Pipelines now include a dependency scanning job.
+
+#### Use a preconfigured merge request
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4908) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md) named `sec_dependency_scanning_ui_enable`. Enabled by default.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/282533) in GitLab 14.1.
-> - [Feature flag `sec_dependency_scanning_ui_enable` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/326005) in GitLab 14.2.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/326005) in GitLab 14.2. Feature flag `sec_dependency_scanning_ui_enable` removed.
 
-To enable Dependency Scanning in a project, you can create a merge request:
+This method automatically prepares a merge request that includes the dependency scanning template
+in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
+
+NOTE:
+This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
+file. If you have a complex GitLab configuration file it might not be parsed successfully, and an
+error might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
+
+To enable dependency scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dependency Scanning** row, select **Configure with a merge request**.
-1. Review and merge the merge request to enable Dependency Scanning.
+1. Select **Create merge request**.
+1. Review the merge request, then select **Merge**.
 
 Pipelines now include a dependency scanning job.
 
-### Customizing the dependency scanning settings
+### Customizing analyzer behavior
 
-The Dependency Scanning settings can be changed through [CI/CD variables](#available-cicd-variables) by using the
-[`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
-For example:
+You can use CI/CD variables to customize dependency scanning behavior.
 
-```yaml
-include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-
-variables:
-  SECURE_LOG_LEVEL: error
-```
-
-Because template is [evaluated before](../../../ci/yaml/index.md#include) the pipeline
-configuration, the last mention of the variable takes precedence.
+WARNING:
+You should test all customization of GitLab security scanning tools in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
 
 ### Overriding dependency scanning jobs
 
@@ -613,15 +636,9 @@ gemnasium-dependency_scanning:
 
 ### Available CI/CD variables
 
-Dependency scanning can be [configured](#customizing-the-dependency-scanning-settings)
-using environment variables.
+You can use CI/CD variables to [customize](#customizing-analyzer-behavior) dependency scanning behavior.
 
-WARNING:
-All customization of GitLab security scanning tools should be tested in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results,
-including a large number of false positives.
-
-#### Configuring dependency scanning
+#### Global analyzer settings
 
 The following variables allow configuration of global dependency scanning settings.
 
@@ -634,9 +651,9 @@ The following variables allow configuration of global dependency scanning settin
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
 
-#### Configuring specific analyzers used by dependency scanning
+#### Analyzer-specific settings
 
-The following variables are used for configuring specific analyzers (used for a specific language/framework).
+The following variables configure the behavior of specific dependency scanning analyzers.
 
 | CI/CD variable                       | Analyzer           | Default                      | Description |
 |--------------------------------------| ------------------ | ---------------------------- |------------ |
@@ -957,10 +974,10 @@ jobs to run successfully. For more information, see [Offline environments](../of
 
 Here are the requirements for using dependency scanning in an offline environment:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- GitLab Runner with the `docker` or `kubernetes` executor.
 - Docker Container Registry with locally available copies of dependency scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - If you have a limited access environment you need to allow access, such as using a proxy, to the advisory database: `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`.
-  If you are unable to permit access to `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` you must host an offline copy of this `git` repository and set the `GEMNASIUM_DB_REMOTE_URL` CI/CD variable to the URL of this repository. For more information on configuration variables, see [Dependency Scanning](#configuring-dependency-scanning).
+  If you are unable to permit access to `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` you must host an offline copy of this `git` repository and set the `GEMNASIUM_DB_REMOTE_URL` CI/CD variable to the URL of this repository. For more information on configuration variables, see [Customizing analyzer behavior](#customizing-analyzer-behavior).
 
   This advisory database is constantly being updated, so you must periodically sync your local copy with GitLab.
 
@@ -1019,7 +1036,7 @@ variables:
   GEMNASIUM_DB_REMOTE_URL: "gitlab.example.com/gemnasium-db.git"
 ```
 
-See explanations of the variables above in the [configuration section](#configuration).
+See explanations of the previous variables in the [configuration section](#customizing-analyzer-behavior).
 
 ### Hosting a copy of the `gemnasium_db` advisory database
 
@@ -1353,7 +1370,7 @@ The `go.sum` file contains an entry of every module that was considered while ge
 Multiple versions of a module are included in the `go.sum` file, but the [MVS](https://go.dev/ref/mod#minimal-version-selection)
 algorithm used by `go build` only selects one. As a result, when dependency scanning uses `go.sum`, it might report false positives.
 
-To prevent false positives, gemnasium only uses `go.sum` if it is unable to generate the build list for the Go project. If `go.sum` is selected, a warning occurs:
+To prevent false positives, Gemnasium only uses `go.sum` if it is unable to generate the build list for the Go project. If `go.sum` is selected, a warning occurs:
 
 ```shell
 [WARN] [Gemnasium] [2022-09-14T20:59:38Z] ▶ Selecting "go.sum" parser for "/test-projects/gitlab-shell/go.sum". False positives may occur. See https://gitlab.com/gitlab-org/gitlab/-/issues/321081.

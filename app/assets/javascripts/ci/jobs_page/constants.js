@@ -29,6 +29,7 @@ export const PLAY_JOB_CONFIRMATION_MESSAGE = s__(
 export const RUN_JOB_NOW_HEADER_TITLE = s__('DelayedJobs|Run the delayed job now?');
 
 /* Table constants */
+/* There is another field list based on this one in app/assets/javascripts/ci/admin/jobs_table/constants.js */
 export const DEFAULT_FIELDS = [
   {
     key: 'status',
@@ -38,7 +39,7 @@ export const DEFAULT_FIELDS = [
   {
     key: 'job',
     label: __('Job'),
-    columnClass: 'gl-w-20p',
+    columnClass: 'gl-w-quarter',
   },
   {
     key: 'pipeline',
@@ -51,16 +52,6 @@ export const DEFAULT_FIELDS = [
     columnClass: 'gl-w-10p',
   },
   {
-    key: 'name',
-    label: __('Name'),
-    columnClass: 'gl-w-15p',
-  },
-  {
-    key: 'duration',
-    label: __('Duration'),
-    columnClass: 'gl-w-15p',
-  },
-  {
     key: 'coverage',
     label: __('Coverage'),
     tdClass: 'gl-display-none! gl-lg-display-table-cell!',
@@ -69,8 +60,10 @@ export const DEFAULT_FIELDS = [
   {
     key: 'actions',
     label: '',
+    tdClass: 'gl-text-right',
     columnClass: 'gl-w-10p',
   },
 ];
 
+export const JOBS_DEFAULT_FIELDS = DEFAULT_FIELDS.filter((field) => field.key !== 'stage');
 export const JOBS_TAB_FIELDS = DEFAULT_FIELDS.filter((field) => field.key !== 'pipeline');

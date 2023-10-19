@@ -25,8 +25,8 @@ module SafeFormatHelper
 
     # Use `Kernel.format` to avoid conflicts with ViewComponent's `format`.
     Kernel.format(
-      html_escape_once(format),
-      args.transform_values { |value| html_escape(value) }
+      ERB::Util.html_escape_once(format),
+      args.transform_values { |value| ERB::Util.html_escape(value) }
     ).html_safe
   end
 

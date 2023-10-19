@@ -2,11 +2,11 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Tree do
+RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
-  let(:project) { create(:project, :repository) }
-  let(:repository) { project.repository.raw }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository.raw }
 
   shared_examples 'repo' do
     subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params) }
@@ -95,6 +95,8 @@ RSpec.describe Gitlab::Git::Tree do
       end
 
       context :flat_path do
+        let(:project) { create(:project, :repository) }
+        let(:repository) { project.repository.raw }
         let(:filename) { 'files/flat/path/correct/content.txt' }
         let(:path) { 'files/flat' }
         # rubocop: disable Rails/FindBy
@@ -192,9 +194,9 @@ RSpec.describe Gitlab::Git::Tree do
   end
 
   describe '.where with Rugged enabled', :enable_rugged do
-    it 'calls out to the Rugged implementation' do
+    it 'does not call to the Rugged implementation' do
       allow_next_instance_of(Rugged) do |instance|
-        allow(instance).to receive(:lookup).with(SeedRepo::Commit::ID)
+        allow(instance).not_to receive(:lookup)
       end
 
       described_class.where(repository, SeedRepo::Commit::ID, 'files', false, false)
@@ -214,10 +216,10 @@ RSpec.describe Gitlab::Git::Tree do
         context 'when limit is equal to number of entries' do
           let(:entries_count) { entries.count }
 
-          it 'returns all entries without a cursor' do
+          it 'returns all entries with a cursor' do
             result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, { limit: entries_count, page_token: nil })
 
-            expect(cursor).to be_nil
+            expect(cursor).to eq(Gitaly::PaginationCursor.new)
             expect(result.entries.count).to eq(entries_count)
           end
         end
@@ -234,9 +236,9 @@ RSpec.describe Gitlab::Git::Tree do
         context 'when limit is missing' do
           let(:pagination_params) { { limit: nil, page_token: nil } }
 
-          it 'returns empty result' do
-            expect(entries).to eq([])
-            expect(cursor).to be_nil
+          it 'returns all entries' do
+            expect(entries.count).to be < 20
+            expect(cursor).to eq(Gitaly::PaginationCursor.new)
           end
         end
 
@@ -247,7 +249,7 @@ RSpec.describe Gitlab::Git::Tree do
             result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, { limit: -1, page_token: nil })
 
             expect(result.count).to eq(entries_count)
-            expect(cursor).to be_nil
+            expect(cursor).to eq(Gitaly::PaginationCursor.new)
           end
 
           context 'when token is provided' do
@@ -258,7 +260,7 @@ RSpec.describe Gitlab::Git::Tree do
               result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, { limit: -1, page_token: token })
 
               expect(result.count).to eq(entries.count - 2)
-              expect(cursor).to be_nil
+              expect(cursor).to eq(Gitaly::PaginationCursor.new)
             end
           end
         end
@@ -276,7 +278,7 @@ RSpec.describe Gitlab::Git::Tree do
 
           it 'returns only available entries' do
             expect(entries.count).to be < 20
-            expect(cursor).to be_nil
+            expect(cursor).to eq(Gitaly::PaginationCursor.new)
           end
         end
 

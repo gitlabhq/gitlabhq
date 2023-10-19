@@ -18,7 +18,7 @@ replication and failover for GitLab.
 
 ## Architecture
 
-The Linux pacakage-recommended configuration for a PostgreSQL cluster with
+The Linux package-recommended configuration for a PostgreSQL cluster with
 replication failover requires:
 
 - A minimum of three PostgreSQL nodes.
@@ -875,10 +875,11 @@ patroni['remove_data_directory_on_diverged_timelines'] = false
 
 Patroni uses a Unix socket to manage the PostgreSQL instance. Therefore, a connection from the `local` socket must be trusted.
 
-Also, replicas use the replication user (`gitlab_replicator` by default) to communicate with the leader. For this user,
+Replicas use the replication user (`gitlab_replicator` by default) to communicate with the leader. For this user,
 you can choose between `trust` and `md5` authentication. If you set `postgresql['sql_replication_password']`,
-Patroni uses `md5` authentication, and otherwise falls back to `trust`. You must to specify the cluster CIDR in
-`postgresql['md5_auth_cidr_addresses']` or `postgresql['trust_auth_cidr_addresses']` respectively.
+Patroni uses `md5` authentication, and otherwise falls back to `trust`.
+
+Based on the authentication you choose, you must specify the cluster CIDR in the `postgresql['md5_auth_cidr_addresses']` or `postgresql['trust_auth_cidr_addresses']` settings.
 
 ### Interacting with Patroni cluster
 

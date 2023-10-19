@@ -58,4 +58,4 @@ internal issue tracker, the internal issue is linked.
 
 ## Troubleshooting
 
-For recent integration webhook deliveries, check [integration webhook logs](index.md#troubleshooting).
+For recent integration webhook deliveries, check the integration webhook logs.

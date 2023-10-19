@@ -3,31 +3,15 @@ import { GlSkeletonLoader, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import Skeleton from '~/observability/components/skeleton/index.vue';
-import DashboardsSkeleton from '~/observability/components/skeleton/dashboards.vue';
-import ExploreSkeleton from '~/observability/components/skeleton/explore.vue';
-import ManageSkeleton from '~/observability/components/skeleton/manage.vue';
-import EmbedSkeleton from '~/observability/components/skeleton/embed.vue';
 
-import {
-  SKELETON_VARIANTS_BY_ROUTE,
-  DEFAULT_TIMERS,
-  SKELETON_VARIANT_EMBED,
-} from '~/observability/constants';
+import { DEFAULT_TIMERS } from '~/observability/constants';
 
 describe('Skeleton component', () => {
   let wrapper;
 
-  const SKELETON_VARIANTS = [...Object.values(SKELETON_VARIANTS_BY_ROUTE), 'spinner'];
+  const findSpinner = () => wrapper.findComponent(GlLoadingIcon);
 
   const findContentWrapper = () => wrapper.findByTestId('content-wrapper');
-
-  const findExploreSkeleton = () => wrapper.findComponent(ExploreSkeleton);
-
-  const findDashboardsSkeleton = () => wrapper.findComponent(DashboardsSkeleton);
-
-  const findManageSkeleton = () => wrapper.findComponent(ManageSkeleton);
-
-  const findEmbedSkeleton = () => wrapper.findComponent(EmbedSkeleton);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
 
@@ -39,39 +23,39 @@ describe('Skeleton component', () => {
 
   describe('on mount', () => {
     beforeEach(() => {
-      mountComponent({ variant: 'explore' });
+      mountComponent({ variant: 'spinner' });
     });
 
     describe('showing content', () => {
       it('shows the skeleton if content is not loaded within CONTENT_WAIT_MS', async () => {
-        expect(findExploreSkeleton().exists()).toBe(false);
-        expect(findContentWrapper().isVisible()).toBe(false);
+        expect(findSpinner().exists()).toBe(false);
+        expect(findContentWrapper().exists()).toBe(false);
 
         jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
 
         await nextTick();
 
-        expect(findExploreSkeleton().exists()).toBe(true);
-        expect(findContentWrapper().isVisible()).toBe(false);
+        expect(findSpinner().exists()).toBe(true);
+        expect(findContentWrapper().exists()).toBe(false);
       });
 
       it('does not show the skeleton if content loads within CONTENT_WAIT_MS', async () => {
-        expect(findExploreSkeleton().exists()).toBe(false);
-        expect(findContentWrapper().isVisible()).toBe(false);
+        expect(findSpinner().exists()).toBe(false);
+        expect(findContentWrapper().exists()).toBe(false);
 
         wrapper.vm.onContentLoaded();
 
         await nextTick();
 
-        expect(findContentWrapper().isVisible()).toBe(true);
-        expect(findExploreSkeleton().exists()).toBe(false);
+        expect(findContentWrapper().exists()).toBe(true);
+        expect(findSpinner().exists()).toBe(false);
 
         jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
 
         await nextTick();
 
-        expect(findContentWrapper().isVisible()).toBe(true);
-        expect(findExploreSkeleton().exists()).toBe(false);
+        expect(findContentWrapper().exists()).toBe(true);
+        expect(findSpinner().exists()).toBe(false);
       });
 
       it('hides the skeleton after content loads', async () => {
@@ -79,15 +63,15 @@ describe('Skeleton component', () => {
 
         await nextTick();
 
-        expect(findExploreSkeleton().exists()).toBe(true);
-        expect(findContentWrapper().isVisible()).toBe(false);
+        expect(findSpinner().exists()).toBe(true);
+        expect(findContentWrapper().exists()).toBe(false);
 
         wrapper.vm.onContentLoaded();
 
         await nextTick();
 
-        expect(findContentWrapper().isVisible()).toBe(true);
-        expect(findExploreSkeleton().exists()).toBe(false);
+        expect(findContentWrapper().exists()).toBe(true);
+        expect(findSpinner().exists()).toBe(false);
       });
     });
 
@@ -99,7 +83,7 @@ describe('Skeleton component', () => {
         await nextTick();
 
         expect(findAlert().exists()).toBe(true);
-        expect(findContentWrapper().isVisible()).toBe(false);
+        expect(findContentWrapper().exists()).toBe(false);
       });
 
       it('shows the error dialog if content fails to load', async () => {
@@ -110,7 +94,7 @@ describe('Skeleton component', () => {
         await nextTick();
 
         expect(findAlert().exists()).toBe(true);
-        expect(findContentWrapper().isVisible()).toBe(false);
+        expect(findContentWrapper().exists()).toBe(false);
       });
 
       it('does not show the error dialog if content has loaded within TIMEOUT_MS', async () => {
@@ -120,36 +104,28 @@ describe('Skeleton component', () => {
         await nextTick();
 
         expect(findAlert().exists()).toBe(false);
-        expect(findContentWrapper().isVisible()).toBe(true);
+        expect(findContentWrapper().exists()).toBe(true);
       });
     });
   });
 
   describe('skeleton variant', () => {
-    it.each`
-      skeletonType    | condition                                         | variant
-      ${'dashboards'} | ${'variant is dashboards'}                        | ${SKELETON_VARIANTS[0]}
-      ${'explore'}    | ${'variant is explore'}                           | ${SKELETON_VARIANTS[1]}
-      ${'manage'}     | ${'variant is manage'}                            | ${SKELETON_VARIANTS[2]}
-      ${'embed'}      | ${'variant is embed'}                             | ${SKELETON_VARIANT_EMBED}
-      ${'spinner'}    | ${'variant is spinner'}                           | ${'spinner'}
-      ${'default'}    | ${'variant is not manage, dashboards or explore'} | ${'unknown'}
-    `('should render $skeletonType skeleton if $condition', async ({ skeletonType, variant }) => {
-      mountComponent({ variant });
+    it('shows only the spinner variant when variant is spinner', async () => {
+      mountComponent({ variant: 'spinner' });
       jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
       await nextTick();
-      const showsDefaultSkeleton = ![...SKELETON_VARIANTS, SKELETON_VARIANT_EMBED].includes(
-        variant,
-      );
 
-      expect(findDashboardsSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[0]);
-      expect(findExploreSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[1]);
-      expect(findManageSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANTS[2]);
-      expect(findEmbedSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANT_EMBED);
+      expect(findSpinner().exists()).toBe(true);
+      expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(false);
+    });
 
-      expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(showsDefaultSkeleton);
+    it('shows only the default variant when variant is not spinner', async () => {
+      mountComponent({ variant: 'unknown' });
+      jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
+      await nextTick();
 
-      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(variant === 'spinner');
+      expect(findSpinner().exists()).toBe(false);
+      expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
     });
   });
 

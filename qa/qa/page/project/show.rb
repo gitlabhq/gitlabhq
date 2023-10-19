@@ -14,15 +14,15 @@ module QA
         prepend Mobile::Page::Project::Show if Runtime::Env.phone_layout?
 
         view 'app/assets/javascripts/repository/components/preview/index.vue' do
-          element :blob_viewer_content
+          element 'blob-viewer-content'
         end
 
         view 'app/assets/javascripts/repository/components/table/row.vue' do
-          element :file_name_link
+          element 'file-name-link'
         end
 
         view 'app/assets/javascripts/repository/components/table/index.vue' do
-          element :file_tree_table
+          element 'file-tree-table'
         end
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
@@ -30,23 +30,22 @@ module QA
         end
 
         view 'app/views/projects/_last_push.html.haml' do
-          element :create_merge_request_button
+          element 'create-merge-request-button'
         end
 
         view 'app/views/projects/_home_panel.html.haml' do
-          element :project_name_content
-          element :project_id_content
-          element :project_badges_content
-          element :badge_image_link
+          element 'project-name-content'
+          element 'project-id-content'
+          element 'project-badges-content'
+          element 'badge-image-link'
         end
 
         view 'app/views/projects/_files.html.haml' do
-          element :project_buttons
-          element :tree_holder, '.tree-holder' # rubocop:disable QA/ElementWithPattern
+          element 'project-buttons'
         end
 
         view 'app/assets/javascripts/repository/components/fork_info.vue' do
-          element :forked_from_link
+          element 'forked-from-link'
         end
 
         view 'app/assets/javascripts/forks/components/forks_button.vue' do
@@ -54,39 +53,39 @@ module QA
         end
 
         view 'app/views/projects/empty.html.haml' do
-          element :quick_actions_container
+          element 'quick-actions-container'
         end
 
         view 'app/assets/javascripts/repository/components/breadcrumbs.vue' do
-          element :add_to_tree_dropdown
-          element :new_file_menu_item
+          element 'add-to-tree'
+          element 'new-file-menu-item'
         end
 
         view 'app/views/projects/blob/viewers/_loading.html.haml' do
-          element :spinner_placeholder
+          element 'spinner-placeholder'
         end
 
         view 'app/views/projects/buttons/_download.html.haml' do
-          element :download_source_code_button
+          element 'download-source-code-button'
         end
 
         view 'app/views/projects/tree/_tree_header.html.haml' do
-          element :ref_dropdown_container
+          element 'ref-dropdown-container'
         end
 
         def wait_for_viewers_to_load
-          has_no_element?(:spinner_placeholder, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+          has_no_element?('spinner-placeholder', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
         end
 
         def create_first_new_file!
-          within_element(:quick_actions_container) do
+          within_element('quick-actions-container') do
             click_link_with_text 'New file'
           end
         end
 
         def create_new_file!
-          click_element :add_to_tree_dropdown
-          click_element :new_file_menu_item
+          click_element 'add-to-tree'
+          click_element 'new-file-menu-item'
         end
 
         # Click by JS is needed to bypass the VSCode Web IDE popover
@@ -98,47 +97,47 @@ module QA
         end
 
         def forked_from?(parent_project_name)
-          has_element?(:forked_from_link, text: parent_project_name)
+          has_element?('forked-from-link', text: parent_project_name)
         end
 
         def click_file(filename)
-          within_element(:file_tree_table) do
-            click_element(:file_name_link, text: filename)
+          within_element('file-tree-table') do
+            click_element('file-name-link', text: filename)
           end
         end
 
         def click_commit(commit_msg)
           wait_for_requests
 
-          within_element(:file_tree_table) do
+          within_element('file-tree-table') do
             click_on commit_msg
           end
         end
 
         def has_create_merge_request_button?
-          has_css?(element_selector_css(:create_merge_request_button))
+          has_css?(element_selector_css('create-merge-request-button'))
         end
 
         def has_file?(name)
-          return false unless has_element?(:file_tree_table)
+          return false unless has_element?('file-tree-table')
 
-          within_element(:file_tree_table) do
-            has_element?(:file_name_link, text: name)
+          within_element('file-tree-table') do
+            has_element?('file-name-link', text: name)
           end
         end
 
         def has_no_file?(name)
-          within_element(:file_tree_table) do
-            has_no_element?(:file_name_link, text: name)
+          within_element('file-tree-table') do
+            has_no_element?('file-name-link', text: name)
           end
         end
 
         def has_name?(name)
-          has_element?(:project_name_content, text: name)
+          has_element?('project-name-content', text: name)
         end
 
         def has_readme_content?(text)
-          has_element?(:blob_viewer_content, text: text)
+          has_element?('blob-viewer-content', text: text)
         end
 
         def new_merge_request
@@ -146,7 +145,7 @@ module QA
             has_create_merge_request_button?
           end
 
-          click_element :create_merge_request_button
+          click_element 'create-merge-request-button'
         end
 
         def open_web_ide!
@@ -166,34 +165,28 @@ module QA
         end
 
         def project_name
-          find_element(:project_name_content).text
+          find_element('project-name-content').text
         end
 
         def project_id
-          find_element(:project_id_content).text.delete('Project ID: ')
+          find_element('project-id-content').text.delete('Project ID: ')
         end
 
         def switch_to_branch(branch_name)
-          within_element(:ref_dropdown_container) do
+          within_element('ref-dropdown-container') do
             expand_select_list
             select_item(branch_name)
           end
         end
 
-        def wait_for_import
-          wait_until(reload: true) do
-            has_css?('.tree-holder')
-          end
-        end
-
         def has_visible_badge_image_link?(link_url)
-          within_element(:project_badges_content) do
-            has_element?(:badge_image_link, link_url: link_url)
+          within_element('project-badges-content') do
+            has_element?('badge-image-link', link_url: link_url)
           end
         end
 
         def has_license?(name)
-          within_element(:project_buttons) do
+          within_element('project-buttons') do
             has_link?(name)
           end
         end

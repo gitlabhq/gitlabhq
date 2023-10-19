@@ -1,22 +1,22 @@
 <script>
-import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL, TRACKING_CATEGORIES } from '~/ci/constants';
-import eventHub from '../../event_hub';
 import PipelineMultiActions from './pipeline_multi_actions.vue';
 import PipelinesManualActions from './pipelines_manual_actions.vue';
+import PipelineStopModal from './pipeline_stop_modal.vue';
 
 export default {
   BUTTON_TOOLTIP_RETRY,
   BUTTON_TOOLTIP_CANCEL,
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlModalDirective,
   },
   components: {
     GlButton,
     PipelineMultiActions,
     PipelinesManualActions,
+    PipelineStopModal,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -24,15 +24,12 @@ export default {
       type: Object,
       required: true,
     },
-    cancelingPipeline: {
-      type: Number,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
+      isCanceling: false,
       isRetrying: false,
+      showConfirmationModal: false,
     };
   },
   computed: {
@@ -41,27 +38,36 @@ export default {
         this.pipeline?.details?.has_manual_actions || this.pipeline?.details?.has_scheduled_actions
       );
     },
-    isCancelling() {
-      return this.cancelingPipeline === this.pipeline.id;
-    },
   },
   watch: {
     pipeline() {
-      this.isRetrying = false;
+      if (this.isCanceling || this.isRetrying) {
+        this.isCanceling = false;
+        this.isRetrying = false;
+      }
     },
   },
   methods: {
+    onCloseModal() {
+      this.showConfirmationModal = false;
+    },
+    onConfirmCancelPipeline() {
+      this.isCanceling = true;
+      this.showConfirmationModal = false;
+
+      this.$emit('cancel-pipeline', this.pipeline);
+    },
     handleCancelClick() {
+      this.showConfirmationModal = true;
+
       this.trackClick('click_cancel_button');
-      eventHub.$emit('openConfirmationModal', {
-        pipeline: this.pipeline,
-        endpoint: this.pipeline.cancel_path,
-      });
     },
     handleRetryClick() {
       this.isRetrying = true;
+
       this.trackClick('click_retry_button');
-      eventHub.$emit('retryPipeline', this.pipeline.retry_path);
+
+      this.$emit('retry-pipeline', this.pipeline);
     },
     trackClick(action) {
       this.track(action, { label: TRACKING_CATEGORIES.table });
@@ -72,8 +78,19 @@ export default {
 
 <template>
   <div class="gl-text-right">
+    <pipeline-stop-modal
+      :pipeline="pipeline"
+      :show-confirmation-modal="showConfirmationModal"
+      @submit="onConfirmCancelPipeline"
+      @close-modal="onCloseModal"
+    />
+
     <div class="btn-group">
-      <pipelines-manual-actions v-if="hasActions" :iid="pipeline.iid" />
+      <pipelines-manual-actions
+        v-if="hasActions"
+        :iid="pipeline.iid"
+        @refresh-pipeline-table="$emit('refresh-pipelines-table')"
+      />
 
       <gl-button
         v-if="pipeline.flags.retryable"
@@ -83,7 +100,6 @@ export default {
         :disabled="isRetrying"
         :loading="isRetrying"
         class="js-pipelines-retry-button"
-        data-qa-selector="pipeline_retry_button"
         data-testid="pipelines-retry-button"
         icon="retry"
         variant="default"
@@ -94,11 +110,10 @@ export default {
       <gl-button
         v-if="pipeline.flags.cancelable"
         v-gl-tooltip.hover
-        v-gl-modal-directive="'confirmation-modal'"
         :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
         :title="$options.BUTTON_TOOLTIP_CANCEL"
-        :loading="isCancelling"
-        :disabled="isCancelling"
+        :loading="isCanceling"
+        :disabled="isCanceling"
         icon="cancel"
         variant="danger"
         category="primary"

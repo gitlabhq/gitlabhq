@@ -11,12 +11,12 @@ module QA
             super
 
             base.view 'app/views/projects/_commit_button.html.haml' do
-              element :commit_button
+              element 'commit-button'
             end
           end
 
           def commit_changes
-            click_element(:commit_button)
+            click_element('commit-button')
 
             wait_until(reload: false, max_duration: 60) do
               finished_loading?

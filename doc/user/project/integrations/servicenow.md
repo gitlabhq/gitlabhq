@@ -17,7 +17,7 @@ With the GitLab spoke in ServiceNow, you can automate actions for GitLab
 projects, groups, users, issues, merge requests, branches, and repositories.
 
 For a full list of features, see the
-[GitLab spoke documentation](https://docs.servicenow.com/bundle/sandiego-application-development/page/administer/integrationhub-store-spokes/concept/gitlab-spoke.html).
+[GitLab spoke documentation](https://docs.servicenow.com/bundle/tokyo-application-development/page/administer/integrationhub-store-spokes/concept/gitlab-spoke.html).
 
 You must [configure GitLab as an OAuth2 authentication service provider](../../../integration/oauth_provider.md),
 which involves creating an application and then providing the Application ID

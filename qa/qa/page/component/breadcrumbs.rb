@@ -10,12 +10,12 @@ module QA
           super
 
           base.view 'app/views/layouts/nav/breadcrumbs/_breadcrumbs.html.haml' do
-            element :breadcrumb_links_content
+            element 'breadcrumb-links'
           end
         end
 
         def has_breadcrumb?(text)
-          has_element?(:breadcrumb_links_content, text: text)
+          has_element?('breadcrumb-links', text: text)
         end
       end
     end

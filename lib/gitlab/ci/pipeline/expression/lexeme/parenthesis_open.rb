@@ -6,7 +6,7 @@ module Gitlab
       module Expression
         module Lexeme
           class ParenthesisOpen < Lexeme::Operator
-            PATTERN = /\(/.freeze
+            PATTERN = /\(/
 
             def self.type
               :parenthesis_open

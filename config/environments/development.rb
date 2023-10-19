@@ -28,6 +28,10 @@ Rails.application.configure do
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 
+  # There is no need to check if assets are precompiled locally
+  # To debug AssetNotPrecompiled errors locally, set CHECK_PRECOMPILED_ASSETS to true
+  config.assets.check_precompiled_asset = Gitlab::Utils.to_boolean(ENV['CHECK_PRECOMPILED_ASSETS'], default: false)
+
   # Do not compress assets
   config.assets.compress = false
 

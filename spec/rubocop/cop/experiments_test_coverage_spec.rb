@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 
 require_relative '../../../rubocop/cop/experiments_test_coverage'
 
-RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :experimentation_conversion do
+RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisition do
   let(:class_offense) { described_class::CLASS_OFFENSE }
   let(:block_offense) { described_class::BLOCK_OFFENSE }
 

@@ -47,7 +47,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
       end
 
       it 'activates the Jira integration' do
-        stub_request(:get, test_url).with(basic_auth: %w(username password))
+        stub_request(:get, test_url).with(basic_auth: %w[username password])
           .to_raise(JIRA::HTTPError.new(double(message: 'message', code: '200')))
 
         visit_project_integration('Jira')

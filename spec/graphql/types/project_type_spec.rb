@@ -39,6 +39,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
+      ci_cd_settings
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -328,30 +329,31 @@ RSpec.describe GitlabSchema.types['Project'] do
     it { is_expected.to have_graphql_resolver(Resolvers::ProjectMergeRequestsResolver) }
 
     it do
-      is_expected.to have_graphql_arguments(:iids,
-                                            :source_branches,
-                                            :target_branches,
-                                            :state,
-                                            :draft,
-                                            :approved,
-                                            :labels,
-                                            :before,
-                                            :after,
-                                            :first,
-                                            :last,
-                                            :merged_after,
-                                            :merged_before,
-                                            :created_after,
-                                            :created_before,
-                                            :updated_after,
-                                            :updated_before,
-                                            :author_username,
-                                            :assignee_username,
-                                            :reviewer_username,
-                                            :milestone_title,
-                                            :not,
-                                            :sort
-                                           )
+      is_expected.to have_graphql_arguments(
+        :iids,
+        :source_branches,
+        :target_branches,
+        :state,
+        :draft,
+        :approved,
+        :labels,
+        :before,
+        :after,
+        :first,
+        :last,
+        :merged_after,
+        :merged_before,
+        :created_after,
+        :created_before,
+        :updated_after,
+        :updated_before,
+        :author_username,
+        :assignee_username,
+        :reviewer_username,
+        :milestone_title,
+        :not,
+        :sort
+      )
     end
   end
 
@@ -755,23 +757,29 @@ RSpec.describe GitlabSchema.types['Project'] do
   describe 'timeline_event_tags' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) do
-      create(:project,
-      :private,
-      :repository,
-      creator_id: user.id,
-      namespace: user.namespace)
+      create(
+        :project,
+        :private,
+        :repository,
+        creator_id: user.id,
+        namespace: user.namespace
+      )
     end
 
     let_it_be(:tag1) do
-      create(:incident_management_timeline_event_tag,
-      project: project,
-      name: 'Tag 1')
+      create(
+        :incident_management_timeline_event_tag,
+        project: project,
+        name: 'Tag 1'
+      )
     end
 
     let_it_be(:tag2) do
-      create(:incident_management_timeline_event_tag,
-      project: project,
-      name: 'Tag 2')
+      create(
+        :incident_management_timeline_event_tag,
+        project: project,
+        name: 'Tag 2'
+      )
     end
 
     let(:query) do
@@ -809,11 +817,13 @@ RSpec.describe GitlabSchema.types['Project'] do
   describe 'languages' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) do
-      create(:project,
-      :private,
-      :repository,
-      creator_id: user.id,
-      namespace: user.namespace)
+      create(
+        :project,
+        :private,
+        :repository,
+        creator_id: user.id,
+        namespace: user.namespace
+      )
     end
 
     let(:query) do

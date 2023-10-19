@@ -1,7 +1,7 @@
 ---
 type: reference, dev
 stage: none
-group: Development
+group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -109,7 +109,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 
 **Important notes:**
 
-- If the guidelines are not met, the MR may not pass the [Danger checks](https://gitlab.com/gitlab-org/gitlab/-/blob/master/danger/commit_messages/Dangerfile).
+- If the guidelines are not met, the MR may not pass the [Danger checks](https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles/-/blob/master/lib/danger/rules/commit_messages/Dangerfile).
 - Consider enabling [Squash and merge](../../user/project/merge_requests/squash_and_merge.md)
   if your merge request includes "Applied suggestion to X files" commits, so that Danger can ignore those.
 - The prefixes in the form of `[prefix]` and `prefix:` are allowed (they can be all lowercase, as long
@@ -197,7 +197,7 @@ the contribution acceptance criteria below:
 ## Definition of done
 
 If you contribute to GitLab, please know that changes involve more than just
-code. We use the following [definition of done](https://www.agilealliance.org/glossary/definition-of-done).
+code. We use the following [definition of done](https://www.agilealliance.org/glossary/definition-of-done/).
 To reach the definition of done, the merge request must create no regressions and meet all these criteria:
 
 - Verified as working in production on GitLab.com.

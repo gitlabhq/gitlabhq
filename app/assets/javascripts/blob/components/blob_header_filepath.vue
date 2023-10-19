@@ -49,7 +49,7 @@ export default {
       <file-icon :file-name="fileName" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
       <strong
         class="file-title-name mr-1 js-blob-header-filepath"
-        data-qa-selector="file_title_content"
+        data-testid="file-title-content"
         >{{ fileName }}</strong
       >
     </template>

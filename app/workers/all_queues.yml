@@ -174,15 +174,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: container_repository:delete_container_repository
-  :worker_name: DeleteContainerRepositoryWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: container_repository_delete:container_registry_delete_container_repository
   :worker_name: ContainerRegistry::DeleteContainerRepositoryWorker
   :feature_category: :container_registry
@@ -300,6 +291,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_schedule_unlock_pipelines_in_queue_cron
+  :worker_name: Ci::ScheduleUnlockPipelinesInQueueCronWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_stuck_builds_drop_running
   :worker_name: Ci::StuckBuilds::DropRunningWorker
   :feature_category: :continuous_integration
@@ -326,6 +326,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: cronjob:click_house_events_sync
+  :worker_name: ClickHouse::EventsSyncWorker
+  :feature_category: :value_stream_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:container_expiration_policy
   :worker_name: ContainerExpirationPolicyWorker
@@ -636,6 +645,15 @@
 - :name: cronjob:packages_debian_cleanup_dangling_package_files
   :worker_name: Packages::Debian::CleanupDanglingPackageFilesWorker
   :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:pages_deactivated_deployments_delete_cron
+  :worker_name: Pages::DeactivatedDeploymentsDeleteCronWorker
+  :feature_category: :pages
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1920,6 +1938,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: pipeline_background:ci_refs_unlock_previous_pipelines
+  :worker_name: Ci::Refs::UnlockPreviousPipelinesWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pipeline_background:ci_test_failure_history
   :worker_name: Ci::TestFailureHistoryWorker
   :feature_category: :continuous_integration
@@ -2352,8 +2379,44 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_import_import_issue
+  :worker_name: Gitlab::BitbucketImport::ImportIssueWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_import_issue_notes
+  :worker_name: Gitlab::BitbucketImport::ImportIssueNotesWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_import_lfs_object
+  :worker_name: Gitlab::BitbucketImport::ImportLfsObjectWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: bitbucket_import_import_pull_request
   :worker_name: Gitlab::BitbucketImport::ImportPullRequestWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_import_pull_request_notes
+  :worker_name: Gitlab::BitbucketImport::ImportPullRequestNotesWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -2370,8 +2433,44 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_import_stage_import_issues
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportIssuesWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_stage_import_issues_notes
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportIssuesNotesWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_stage_import_lfs_objects
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportLfsObjectsWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: bitbucket_import_stage_import_pull_requests
   :worker_name: Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_stage_import_pull_requests_notes
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportPullRequestsNotesWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -2631,10 +2730,10 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: click_house_events_sync
-  :worker_name: ClickHouse::EventsSyncWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
+- :name: ci_unlock_pipelines_in_queue
+  :worker_name: Ci::UnlockPipelinesInQueueWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -2811,6 +2910,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: environments_stop_job_failed
+  :worker_name: Environments::StopJobFailedWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: environments_stop_job_success
   :worker_name: Environments::StopJobSuccessWorker
   :feature_category: :continuous_delivery
@@ -2882,15 +2990,6 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
-  :tags: []
-- :name: gitlab_shell
-  :worker_name: GitlabShellWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: false
   :tags: []
 - :name: google_cloud_create_cloudsql_instance
   :worker_name: GoogleCloud::CreateCloudsqlInstanceWorker
@@ -3041,6 +3140,15 @@
   :feature_category: :team_planning
   :has_external_dependencies: false
   :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: issuable_related_links_create
+  :worker_name: Issuable::RelatedLinksCreateWorker
+  :feature_category: :portfolio_management
+  :has_external_dependencies: false
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -3524,7 +3632,7 @@
   :tags: []
 - :name: projects_record_target_platforms
   :worker_name: Projects::RecordTargetPlatformsWorker
-  :feature_category: :experimentation_activation
+  :feature_category: :activation
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

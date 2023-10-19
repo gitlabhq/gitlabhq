@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-require 'asana'
-
 module Integrations
   class Asana < Integration
+    TASK_URL_TEMPLATE = 'https://app.asana.com/api/1.0/tasks/%{task_gid}'
+    STORY_URL_TEMPLATE = 'https://app.asana.com/api/1.0/tasks/%{task_gid}/stories'
+
     validates :api_key, presence: true, if: :activated?
 
     field :api_key,
@@ -40,12 +41,6 @@ module Integrations
       %w[push]
     end
 
-    def client
-      @_client ||= ::Asana::Client.new do |c|
-        c.authentication :access_token, api_key
-      end
-    end
-
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
@@ -78,11 +73,12 @@ module Integrations
         taskid = tuple[2] || tuple[1]
 
         begin
-          task = ::Asana::Resources::Task.find_by_id(client, taskid)
-          task.add_comment(text: "#{push_msg} #{message}")
+          story_on_task_url = format(STORY_URL_TEMPLATE, task_gid: taskid)
+          Gitlab::HTTP.post(story_on_task_url, headers: { "Authorization" => "Bearer #{api_key}" }, body: { text: "#{push_msg} #{message}" })
 
           if tuple[0]
-            task.update(completed: true)
+            task_url = format(TASK_URL_TEMPLATE, task_gid: taskid)
+            Gitlab::HTTP.put(task_url, headers: { "Authorization" => "Bearer #{api_key}" }, body: { completed: true })
           end
         rescue StandardError => e
           log_error(e.message)

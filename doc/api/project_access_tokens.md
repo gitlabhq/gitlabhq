@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -138,6 +138,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
 
 Rotate a project access token. Revokes the previous token and creates a new token that expires in one week.
+
+WARNING:
+When you rotate a project access token, the new token retains the expiry date of the old token. For more information, see [issue 423362](https://gitlab.com/gitlab-org/gitlab/-/issues/423362).
 
 ```plaintext
 POST /projects/:id/access_tokens/:token_id/rotate

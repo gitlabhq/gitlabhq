@@ -21,7 +21,7 @@ with runner authentication tokens, which have replaced the deprecated registrati
 method that uses registration tokens. For more information, see
 [The new runner registration workflow](../../ci/runners/new_creation_workflow.md#the-new-runner-registration-workflow).
 
-## Prerequisites
+## Before you begin
 
 - GitLab Runner must be installed on your GitLab instance.
 - To create shared runners, you must be an administrator.
@@ -97,7 +97,7 @@ To create a runner configuration, you can use:
 
 ### With the GitLab REST API
 
-Prerequisites:
+Before you begin, you need:
 
 - The URL for your GitLab instance. For example, if your project is hosted on
   `gitlab.example.com/yourname/yourproject`, your GitLab instance URL is

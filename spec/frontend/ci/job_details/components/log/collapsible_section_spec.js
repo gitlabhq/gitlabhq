@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import CollapsibleSection from '~/ci/job_details/components/log/collapsible_section.vue';
+import LogLine from '~/ci/job_details/components/log/line.vue';
 import LogLineHeader from '~/ci/job_details/components/log/line_header.vue';
 import { collapsibleSectionClosed, collapsibleSectionOpened } from './mock_data';
 
@@ -9,9 +10,9 @@ describe('Job Log Collapsible Section', () => {
 
   const jobLogEndpoint = 'jobs/335';
 
-  const findCollapsibleLine = () => wrapper.find('.collapsible-line');
-  const findCollapsibleLineSvg = () => wrapper.find('.collapsible-line svg');
   const findLogLineHeader = () => wrapper.findComponent(LogLineHeader);
+  const findLogLineHeaderSvg = () => findLogLineHeader().find('svg');
+  const findLogLines = () => wrapper.findAllComponents(LogLine);
 
   const createComponent = (props = {}) => {
     wrapper = mount(CollapsibleSection, {
@@ -30,11 +31,16 @@ describe('Job Log Collapsible Section', () => {
     });
 
     it('renders clickable header line', () => {
-      expect(findCollapsibleLine().attributes('role')).toBe('button');
+      expect(findLogLineHeader().text()).toBe('1 foo');
+      expect(findLogLineHeader().attributes('role')).toBe('button');
     });
 
-    it('renders an icon with the closed state', () => {
-      expect(findCollapsibleLineSvg().attributes('data-testid')).toBe('chevron-lg-right-icon');
+    it('renders an icon with a closed state', () => {
+      expect(findLogLineHeaderSvg().attributes('data-testid')).toBe('chevron-lg-right-icon');
+    });
+
+    it('does not render collapsed lines', () => {
+      expect(findLogLines()).toHaveLength(0);
     });
   });
 
@@ -47,15 +53,17 @@ describe('Job Log Collapsible Section', () => {
     });
 
     it('renders clickable header line', () => {
-      expect(findCollapsibleLine().attributes('role')).toBe('button');
+      expect(findLogLineHeader().text()).toContain('foo');
+      expect(findLogLineHeader().attributes('role')).toBe('button');
     });
 
     it('renders an icon with the open state', () => {
-      expect(findCollapsibleLineSvg().attributes('data-testid')).toBe('chevron-lg-down-icon');
+      expect(findLogLineHeaderSvg().attributes('data-testid')).toBe('chevron-lg-down-icon');
     });
 
-    it('renders collapsible lines content', () => {
-      expect(wrapper.findAll('.js-line').length).toEqual(collapsibleSectionOpened.lines.length);
+    it('renders collapsible lines', () => {
+      expect(findLogLines().at(0).text()).toContain('this is a collapsible nested section');
+      expect(findLogLines()).toHaveLength(collapsibleSectionOpened.lines.length);
     });
   });
 
@@ -65,7 +73,7 @@ describe('Job Log Collapsible Section', () => {
       jobLogEndpoint,
     });
 
-    findCollapsibleLine().trigger('click');
+    findLogLineHeader().trigger('click');
 
     await nextTick();
     expect(wrapper.emitted('onClickCollapsibleLine').length).toBe(1);

@@ -18,7 +18,8 @@ module Types
         field :discussions, Types::Notes::DiscussionType.connection_type,
           null: true,
           description: "Notes on this work item.",
-          resolver: Resolvers::WorkItems::WorkItemDiscussionsResolver
+          resolver: Resolvers::WorkItems::WorkItemDiscussionsResolver,
+          connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

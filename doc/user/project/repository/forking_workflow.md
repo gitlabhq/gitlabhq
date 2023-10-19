@@ -15,6 +15,11 @@ A fork is a personal copy of the repository and all its branches, which you crea
 in a namespace of your choice. Make changes in your own fork and
 submit them through a merge request to the repository you don't have access to.
 
+The forked project uses a
+[deduplication strategy](../../../development/git_object_deduplication.md)
+to have a potentially smaller storage space than the source project. Forked projects
+can access the object pool connected to the source project.
+
 ## Create a fork
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15013) a new form in GitLab 13.11 [with a flag](../../../user/feature_flags.md) named `fork_project_form`. Disabled by default.

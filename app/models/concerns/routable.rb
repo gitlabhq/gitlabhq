@@ -15,16 +15,7 @@ module Routable
   #
   # Returns a single object, or nil.
 
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/PerceivedComplexity
-  def self.find_by_full_path(
-    path,
-    follow_redirects: false,
-    route_scope: Route,
-    redirect_route_scope: RedirectRoute,
-    optimize_routable: Routable.optimize_routable_enabled?
-  )
-
+  def self.find_by_full_path(path, follow_redirects: false, route_scope: nil)
     return unless path.present?
 
     # Convert path to string to prevent DB error: function lower(integer) does not exist
@@ -35,49 +26,22 @@ module Routable
     #
     # We need to qualify the columns with the table name, to support both direct lookups on
     # Route/RedirectRoute, and scoped lookups through the Routable classes.
-    if optimize_routable
-      path_condition = { path: path }
+    path_condition = { path: path }
 
-      source_type_condition = if route_scope == Route
-                                {}
-                              else
-                                { source_type: route_scope.klass.base_class }
-                              end
+    source_type_condition = route_scope ? { source_type: route_scope.klass.base_class } : {}
 
-      route =
-        Route.where(source_type_condition).find_by(path_condition) ||
-        Route.where(source_type_condition).iwhere(path_condition).take
+    route =
+      Route.where(source_type_condition).find_by(path_condition) ||
+      Route.where(source_type_condition).iwhere(path_condition).take
 
-      if follow_redirects
-        route ||= RedirectRoute.where(source_type_condition).iwhere(path_condition).take
-      end
-
-      return unless route
-      return route.source if route_scope == Route
-
-      route_scope.find_by(id: route.source_id)
-    else
-      Gitlab::Database.allow_cross_joins_across_databases(url:
-        "https://gitlab.com/gitlab-org/gitlab/-/issues/420046") do
-        route =
-          route_scope.find_by(routes: { path: path }) ||
-          route_scope.iwhere(Route.arel_table[:path] => path).take
-
-        if follow_redirects
-          route ||= redirect_route_scope.iwhere(RedirectRoute.arel_table[:path] => path).take
-        end
-
-        next unless route
-
-        route.is_a?(Routable) ? route : route.source
-      end
+    if follow_redirects
+      route ||= RedirectRoute.where(source_type_condition).iwhere(path_condition).take
     end
-  end
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
 
-  def self.optimize_routable_enabled?
-    Feature.enabled?(:optimize_routable)
+    return unless route
+    return route.source unless route_scope
+
+    route_scope.find_by(id: route.source_id)
   end
 
   included do
@@ -107,22 +71,12 @@ module Routable
     #
     # Returns a single object, or nil.
     def find_by_full_path(path, follow_redirects: false)
-      optimize_routable = Routable.optimize_routable_enabled?
-
-      if optimize_routable
-        route_scope = all
-        redirect_route_scope = RedirectRoute
-      else
-        route_scope = includes(:route).references(:routes)
-        redirect_route_scope = joins(:redirect_routes)
-      end
+      route_scope = all
 
       Routable.find_by_full_path(
         path,
         follow_redirects: follow_redirects,
-        route_scope: route_scope,
-        redirect_route_scope: redirect_route_scope,
-        optimize_routable: optimize_routable
+        route_scope: route_scope
       )
     end
 

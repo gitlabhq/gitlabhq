@@ -5,7 +5,14 @@ module AccessTokensHelper
   include ApplicationHelper
 
   def scope_description(prefix)
-    prefix == :project_access_token ? [:doorkeeper, :project_access_token_scope_desc] : [:doorkeeper, :scope_desc]
+    case prefix
+    when :project_access_token
+      [:doorkeeper, :project_access_token_scope_desc]
+    when :group_access_token
+      [:doorkeeper, :group_access_token_scope_desc]
+    else
+      [:doorkeeper, :scope_desc]
+    end
   end
 
   def tokens_app_data

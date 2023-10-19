@@ -86,7 +86,7 @@ module Gitlab
 
         def add_browsersdk_tracking(directives)
           return if directives.blank?
-          return unless Gitlab.com? && Feature.enabled?(:browsersdk_tracking) && ENV['GITLAB_ANALYTICS_URL'].present?
+          return unless Gitlab.com? && ENV['GITLAB_ANALYTICS_URL'].present?
 
           default_connect_src = directives['connect-src'] || directives['default-src']
           connect_src_values = Array.wrap(default_connect_src) | [ENV['GITLAB_ANALYTICS_URL']]

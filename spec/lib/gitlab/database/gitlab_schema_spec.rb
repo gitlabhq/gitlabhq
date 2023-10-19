@@ -226,57 +226,83 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
             allow_cross_joins: %i[gitlab_shared],
             allow_cross_transactions: %i[gitlab_internal gitlab_shared],
             allow_cross_foreign_keys: %i[]
+          ),
+          Gitlab::Database::GitlabSchemaInfo.new(
+            name: "gitlab_main_cell",
+            allow_cross_joins: [
+              :gitlab_shared,
+              :gitlab_main,
+              { gitlab_main_clusterwide: { specific_tables: %w[plans] } }
+            ],
+            allow_cross_transactions: [
+              :gitlab_internal,
+              :gitlab_shared,
+              :gitlab_main,
+              { gitlab_main_clusterwide: { specific_tables: %w[plans] } }
+            ],
+            allow_cross_foreign_keys: [
+              { gitlab_main_clusterwide: { specific_tables: %w[plans] } }
+            ]
           )
         ].index_by(&:name)
       )
     end
 
     describe '.cross_joins_allowed?' do
-      where(:schemas, :result) do
-        %i[] | true
-        %i[gitlab_main_clusterwide gitlab_main] | true
-        %i[gitlab_main_clusterwide gitlab_ci] | false
-        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | false
-        %i[gitlab_main_clusterwide gitlab_internal] | false
-        %i[gitlab_main gitlab_ci] | false
-        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | true
-        %i[gitlab_main_clusterwide gitlab_shared] | true
+      where(:schemas, :tables, :result) do
+        %i[] | %i[] | true
+        %i[gitlab_main] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_main] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | %i[] | false
+        %i[gitlab_main gitlab_ci] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_shared] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
       end
 
       with_them do
-        it { expect(described_class.cross_joins_allowed?(schemas)).to eq(result) }
+        it { expect(described_class.cross_joins_allowed?(schemas, tables)).to eq(result) }
       end
     end
 
     describe '.cross_transactions_allowed?' do
-      where(:schemas, :result) do
-        %i[] | true
-        %i[gitlab_main_clusterwide gitlab_main] | true
-        %i[gitlab_main_clusterwide gitlab_ci] | false
-        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | false
-        %i[gitlab_main_clusterwide gitlab_internal] | true
-        %i[gitlab_main gitlab_ci] | false
-        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | true
-        %i[gitlab_main_clusterwide gitlab_shared] | true
+      where(:schemas, :tables, :result) do
+        %i[] | %i[] | true
+        %i[gitlab_main] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_main] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | %i[] | true
+        %i[gitlab_main gitlab_ci] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_shared] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
       end
 
       with_them do
-        it { expect(described_class.cross_transactions_allowed?(schemas)).to eq(result) }
+        it { expect(described_class.cross_transactions_allowed?(schemas, tables)).to eq(result) }
       end
     end
 
     describe '.cross_foreign_key_allowed?' do
-      where(:schemas, :result) do
-        %i[] | false
-        %i[gitlab_main_clusterwide gitlab_main] | true
-        %i[gitlab_main_clusterwide gitlab_ci] | false
-        %i[gitlab_main_clusterwide gitlab_internal] | false
-        %i[gitlab_main gitlab_ci] | false
-        %i[gitlab_main_clusterwide gitlab_shared] | false
+      where(:schemas, :tables, :result) do
+        %i[] | %i[] | false
+        %i[gitlab_main] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_main] | %i[] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | %i[] | false
+        %i[gitlab_main gitlab_ci] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_shared] | %i[] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
       end
 
       with_them do
-        it { expect(described_class.cross_foreign_key_allowed?(schemas)).to eq(result) }
+        it { expect(described_class.cross_foreign_key_allowed?(schemas, tables)).to eq(result) }
       end
     end
   end

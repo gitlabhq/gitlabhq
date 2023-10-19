@@ -1,5 +1,5 @@
 .gl-display-flex.gl-mt-7
-  - submit_button_options = { type: :submit, variant: :confirm, button_options: { id: 'commit-changes', class: 'js-commit-button', data: { qa_selector: 'commit_button' } } }
+  - submit_button_options = { type: :submit, variant: :confirm, button_options: { id: 'commit-changes', class: 'js-commit-button', data: { testid: 'commit-button' } } }
   = render Pajamas::ButtonComponent.new(**submit_button_options) do
     = _('Commit changes')
   = render Pajamas::ButtonComponent.new(loading: true, disabled: true, **submit_button_options.merge({ button_options: { class: 'js-commit-button-loading gl-display-none' } })) do

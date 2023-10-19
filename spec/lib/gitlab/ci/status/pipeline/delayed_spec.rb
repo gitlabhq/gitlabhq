@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Ci::Status::Pipeline::Delayed do
 
   describe '#text' do
     it 'overrides status text' do
-      expect(subject.text).to eq 'delayed'
+      expect(subject.text).to eq 'Delayed'
     end
   end
 

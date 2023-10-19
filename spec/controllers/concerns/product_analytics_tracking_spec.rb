@@ -10,15 +10,17 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
   let(:event_name) { 'an_event' }
   let(:event_action) { 'an_action' }
   let(:event_label) { 'a_label' }
-
   let!(:group) { create(:group) }
+
   let_it_be(:project) { create(:project) }
+
+  subject(:track_internal_event) { get :show, params: { id: 1 } }
 
   describe '.track_internal_event' do
     controller(ApplicationController) do
       include ProductAnalyticsTracking
 
-      skip_before_action :authenticate_user!, only: [:show]
+      skip_before_action :authenticate_user!, only: [:index]
       track_internal_event :index, :show, name: 'g_compliance_dashboard', conditions: [:custom_condition?]
 
       def index
@@ -58,8 +60,6 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
     context 'when user is logged in' do
       let(:namespace) { project.namespace }
 
-      subject(:track_internal_event) { get :index }
-
       before do
         sign_in(user)
       end
@@ -83,7 +83,7 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
       it 'does not track the event if the format is not HTML' do
         expect_no_internal_tracking
 
-        get :index, format: :json
+        get :show, params: { id: 1, format: :json }
       end
 
       it 'does not track the event if a custom condition returns false' do
@@ -96,34 +96,10 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
     end
 
     context 'when user is not logged in' do
-      let(:visitor_id) { SecureRandom.uuid }
-
-      it 'tracks the event when there is a visitor id' do
-        cookies[:visitor_id] = { value: visitor_id, expires: 24.months }
-
-        expect_internal_tracking(tracked_user: nil)
-
-        get :show, params: { id: 1 }
-      end
-
-      context 'and there is no visitor_id' do
-        it 'does not track the event' do
-          expect_no_internal_tracking
-
-          subject
-        end
-      end
-    end
-
-    context 'when there is no custom_id set' do
-      before do
-        allow(controller).to receive(:get_custom_id).and_return(nil)
-      end
-
-      it 'does not track' do
+      it 'does not track the event' do
         expect_no_internal_tracking
 
-        subject
+        get :index
       end
     end
   end

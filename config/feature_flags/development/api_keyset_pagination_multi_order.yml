@@ -1,8 +1,0 @@
----
-name: api_keyset_pagination_multi_order
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130019
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422999
-milestone: '16.5'
-type: development
-group: group::authentication and authorization
-default_enabled: false

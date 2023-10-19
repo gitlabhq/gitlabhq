@@ -44,6 +44,12 @@
 .if-merge-request-approved: &if-merge-request-approved
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
+.if-merge-request-approved-and-specific-devops-stage: &if-merge-request-approved-and-specific-devops-stage
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS =~ /devops::create/)'
+
+.if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::create/'
+
 .if-merge-request-not-approved: &if-merge-request-not-approved
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
@@ -325,7 +331,7 @@
   - "config.ru"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
+  - "{,ee/,jh/}{bin,config,db,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
   # CI changes
   - ".gitlab-ci.yml"
@@ -361,6 +367,10 @@
   # Feature flag changes
   - "{,ee/,jh/}{,spec/}lib/feature.rb"
   - "config/feature_flags/**/*"
+
+# AI patterns:
+.ai-patterns: &ai-patterns
+  - "{,ee/,jh/}lib/gitlab/llm/**/*"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -422,7 +432,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   # CI changes
   - ".gitlab-ci.yml"
@@ -446,7 +456,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   # CI changes
   - ".gitlab-ci.yml"
@@ -477,7 +487,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   # CI changes
   - ".gitlab-ci.yml"
@@ -505,7 +515,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   - "doc/administration/audit_event_streaming/audit_event_types.md"
@@ -544,7 +554,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   # CI changes
   - ".gitlab-ci.yml"
@@ -582,7 +592,7 @@
   - "{,ee/,jh/}Gemfile.lock"  # This should include gitlab-styles, rubocop itself, and any plugins we might be using
   - "lib/gitlab_edition.rb"  # This is required in RuboCop::CodeReuseHelpers
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
-  - "config/feature_categories.yml"  # Used by RSpec/InvalidFeatureCategory
+  - "config/feature_categories.yml"  # Used by RSpec/FeatureCategory
 
 .danger-patterns: &danger-patterns
   - "Dangerfile"
@@ -764,8 +774,6 @@
       changes: *backend-patterns
     - <<: *if-merge-request
       changes: *backstage-patterns
-    - <<: *if-merge-request
-      changes: ["**/*click_house*"]
 
 .rails:rules:ee-and-foss-integration:predictive:
   rules:
@@ -1211,6 +1219,8 @@
 .frontend:rules:compile-test-assets:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *backend-patterns
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
@@ -1575,6 +1585,9 @@
     - <<: *if-force-ci
       when: manual
       allow_failure: true
+    - <<: *if-merge-request-approved-and-specific-devops-stage
+      changes: *code-patterns
+      allow_failure: true
     # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
     # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
     # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
@@ -1693,11 +1706,15 @@
     - !reference [".qa:rules:package-and-test-nightly", rules]
     - !reference [".qa:rules:package-and-test-ce", rules]
 
-# These are based on `.qa:rules:trigger-omnibus` but with automatic jobs changed to `when: never.`
+# These are based on `.qa:rules:trigger-omnibus` except:
+# 1. Automatic jobs changed to `when: never.`
+# 2. For specific devops stage, do not run for code-patterns
 # If any changes are made to this rule, `.qa:rules:follow-up-e2e` should also be updated.
 .qa:rules:manual-omnibus-and-follow-up-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-merge-request-and-specific-devops-stage
+      when: never
     - !reference [".qa:rules:code-merge-request-manual", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       when: never
@@ -1741,6 +1758,8 @@
 .qa:rules:follow-up-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-merge-request-and-specific-devops-stage
+      when: never
     - <<: *if-merge-request
       changes: *code-patterns
       allow_failure: true
@@ -1818,6 +1837,8 @@
       when: never
     - <<: *if-force-ci
       when: never
+    - <<: *if-merge-request-and-specific-devops-stage
+      when: never
     # From .qa:rules:package-and-test-schedule
     - <<: *if-dot-com-gitlab-org-schedule
       when: never
@@ -1837,6 +1858,8 @@
     - <<: *if-default-refs
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *backend-patterns
 
 .rails:rules:clusterwide-db:
   rules:
@@ -1995,8 +2018,6 @@
       changes: *backend-patterns
     - <<: *if-default-refs
       changes: *backstage-patterns
-    - <<: *if-merge-request
-      changes: ["**/*click_house*"]
 
 .rails:rules:ee-and-foss-integration:
   rules:
@@ -2087,6 +2108,20 @@
     - !reference [".rails:rules:system-default-rules", rules]
     - <<: *if-default-refs
       changes: *code-backstage-patterns
+
+.rails:rules:ee-gitlab-duo-chat:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - if: '$REAL_AI_REQUEST == null'
+      when: never
+    - if: '$ANTHROPIC_API_KEY == null'
+      when: never
+    - if: '$OPENAI_EMBEDDINGS == null'
+      when: never
+    - <<: *if-merge-request
+      changes: *ai-patterns
+      when: manual
+      allow_failure: true
 
 .rails:rules:as-if-foss-migration:
   rules:
@@ -2302,8 +2337,7 @@
 .rails:rules:clickhouse-changes:
   rules:
     - <<: *if-merge-request
-      changes: ["**/*click_house*"]
-    - <<: *if-merge-request-labels-run-all-rspec
+      changes: *backend-patterns
 
 #########################
 # Static analysis rules #
@@ -2547,7 +2581,7 @@
 
 # The following rules needs to be the same as the one for .review:rules:review-cleanup
 # except that:
-# - we start review apps automatically for scheduled pipelines and when the `pipeline:run-review-app` label is set
+# - most rules re automatic here (i.e. no `when: manual`) and not allowed to fail (i.e. no `allow_failure: true`) here
 # - several rules have `variables: *review-change-pattern` here
 .review:rules:start-review-app-pipeline:
   rules:
@@ -2558,15 +2592,13 @@
     - if: '$CI_REVIEW_APPS_ENABLED != "true"'
       when: never
     - <<: *if-merge-request-labels-run-review-app
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
-      when: manual
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-build-patterns
       variables: *review-change-pattern
-      when: manual
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
       variables: *review-change-pattern
@@ -2584,8 +2616,6 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      when: manual
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
@@ -2774,6 +2804,8 @@
       changes: *workhorse-patterns
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+    - <<: *if-merge-request
+      changes: *backend-patterns
 
 .test-metadata:rules:update-tests-metadata:
   rules:

@@ -145,7 +145,7 @@ When upgrading Ruby, consider updating the following repositories:
 
 - [Gitaly](https://gitlab.com/gitlab-org/gitaly) ([example](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3771))
 - [GitLab LabKit](https://gitlab.com/gitlab-org/labkit-ruby) ([example](https://gitlab.com/gitlab-org/labkit-ruby/-/merge_requests/79))
-- [GitLab Exporter](https://gitlab.com/gitlab-org/gitlab-exporter) ([example](https://gitlab.com/gitlab-org/gitlab-exporter/-/merge_requests/150))
+- [GitLab Exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter/-/merge_requests/150))
 - [GitLab Experiment](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/merge_requests/128))
 - [Gollum Lib](https://gitlab.com/gitlab-org/gollum-lib) ([example](https://gitlab.com/gitlab-org/gollum-lib/-/merge_requests/21))
 - [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab) ([example](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2162))

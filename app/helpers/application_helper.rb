@@ -123,7 +123,7 @@ module ApplicationHelper
     {
       page: body_data_page,
       page_type_id: controller.params[:id],
-      find_file: find_file_path,
+      find_file: find_file_path(ref_type: @ref_type),
       group: @group&.path,
       group_full_path: @group&.full_path
     }.merge(project_data)
@@ -404,6 +404,10 @@ module ApplicationHelper
   end
 
   def add_page_specific_style(path, defer: true)
+    @already_added_styles ||= Set.new
+    return if @already_added_styles.include?(path)
+
+    @already_added_styles.add(path)
     content_for :page_specific_styles do
       if defer
         stylesheet_link_tag_defer path
@@ -468,7 +472,7 @@ module ApplicationHelper
   end
 
   def hidden_resource_icon(resource, css_class: nil)
-    issuable_title = _('This %{issuable} is hidden because its author has been banned')
+    issuable_title = _('This %{issuable} is hidden because its author has been banned.')
 
     case resource
     when Issue

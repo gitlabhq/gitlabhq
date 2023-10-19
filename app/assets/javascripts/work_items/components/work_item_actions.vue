@@ -7,7 +7,6 @@ import {
   GlModalDirective,
   GlToggle,
 } from '@gitlab/ui';
-import { produce } from 'immer';
 
 import * as Sentry from '@sentry/browser';
 
@@ -15,7 +14,6 @@ import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 
 import {
   sprintfWorkItem,
@@ -28,7 +26,6 @@ import {
   TEST_ID_PROMOTE_ACTION,
   TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   TEST_ID_COPY_REFERENCE_ACTION,
-  WIDGET_TYPE_NOTIFICATIONS,
   I18N_WORK_ITEM_ERROR_CONVERTING,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
@@ -70,8 +67,12 @@ export default {
   copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   deleteActionTestId: TEST_ID_DELETE_ACTION,
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
-  inject: ['fullPath'],
+  inject: ['isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemId: {
       type: String,
       required: false,
@@ -126,10 +127,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    workItemIid: {
-      type: String,
-      required: true,
     },
   },
   apollo: {
@@ -199,79 +196,30 @@ export default {
       }
     },
     toggleNotifications(subscribed) {
-      const inputVariables = {
-        projectPath: this.fullPath,
-        iid: this.workItemIid,
-        subscribedState: subscribed,
-      };
       this.$apollo
         .mutate({
           mutation: updateWorkItemNotificationsMutation,
           variables: {
-            input: inputVariables,
-          },
-          optimisticResponse: {
-            updateWorkItemNotificationsSubscription: {
-              issue: {
-                id: this.workItemId,
-                subscribed,
-              },
-              errors: [],
+            input: {
+              id: this.workItemId,
+              subscribed,
             },
-          },
-          update: (
-            cache,
-            {
-              data: {
-                updateWorkItemNotificationsSubscription: { issue = {} },
-              },
-            },
-          ) => {
-            // As the mutation and the query both are different,
-            // overwrite the subscribed value in the cache
-            this.updateWorkItemNotificationsWidgetCache({
-              cache,
-              issue,
-            });
           },
         })
-        .then(
-          ({
-            data: {
-              updateWorkItemNotificationsSubscription: { errors },
-            },
-          }) => {
-            if (errors?.length) {
-              throw new Error(errors[0]);
-            }
-            toast(
-              subscribed ? this.$options.i18n.notificationOn : this.$options.i18n.notificationOff,
-            );
-          },
-        )
+        .then(({ data }) => {
+          const { errors } = data.workItemSubscribe;
+          if (errors?.length) {
+            throw new Error(errors[0]);
+          }
+
+          toast(
+            subscribed ? this.$options.i18n.notificationOn : this.$options.i18n.notificationOff,
+          );
+        })
         .catch((error) => {
           this.$emit('error', error.message);
           Sentry.captureException(error);
         });
-    },
-    updateWorkItemNotificationsWidgetCache({ cache, issue }) {
-      const query = {
-        query: workItemByIidQuery,
-        variables: { fullPath: this.fullPath, iid: this.workItemIid },
-      };
-      // Read the work item object
-      const sourceData = cache.readQuery(query);
-
-      const newData = produce(sourceData, (draftState) => {
-        const { widgets } = draftState.workspace.workItems.nodes[0];
-
-        const widgetNotifications = widgets.find(({ type }) => type === WIDGET_TYPE_NOTIFICATIONS);
-        // overwrite the subscribed value
-        widgetNotifications.subscribed = issue.subscribed;
-      });
-
-      // write to the cache
-      cache.writeQuery({ ...query, data: newData });
     },
     throwConvertError() {
       this.$emit('error', this.i18n.convertError);
@@ -337,7 +285,6 @@ export default {
               :data-testid="$options.notificationsToggleTestId"
               class="work-item-notification-toggle"
               label-position="left"
-              label-id="notifications-toggle"
               @change="toggleNotifications($event)"
             />
           </template>

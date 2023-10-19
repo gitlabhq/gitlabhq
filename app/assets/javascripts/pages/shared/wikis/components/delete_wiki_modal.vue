@@ -77,7 +77,7 @@ export default {
       v-gl-modal="$options.modal.modalId"
       category="secondary"
       variant="danger"
-      data-qa-selector="delete_button"
+      data-qa-selector="delete-button"
     >
       {{ $options.i18n.deletePageText }}
     </gl-button>

@@ -23,7 +23,7 @@
           - if file_hooks.any?
             %ul.content-list{ class: 'gl-my-n3!' }
               - file_hooks.each do |file|
-                %li.label-list-item
+                %li.gl-border-b.gl-last-of-type-border-b-0
                   .monospace
                     = File.basename(file)
           - else

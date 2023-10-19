@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rake_helper'
 
 RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :service_ping do
   include UsageDataHelpers
@@ -91,8 +90,8 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
         data = Gitlab::Json.parse(File.read(file))
 
         expect(
-          json_response['counts_monthly'].except('aggregated_metrics')
-        ).to eq(data['counts_monthly'].except('aggregated_metrics'))
+          json_response['counts_weekly'].except('aggregated_metrics')
+        ).to eq(data['counts_weekly'].except('aggregated_metrics'))
 
         expect(json_response['counts']).to eq(data['counts'])
         expect(json_response['active_user_count']).to eq(data['active_user_count'])

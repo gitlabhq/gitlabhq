@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { TYPE_ISSUE, TYPE_TEST_CASE, IssuableTypeText } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_TEST_CASE, issuableTypeText } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import { confidentialityQueries } from '../../queries/constants';
 
@@ -80,7 +80,7 @@ export default {
         : __('at least the Reporter role');
     },
     issuableTypeText() {
-      return IssuableTypeText[this.issuableType];
+      return issuableTypeText[this.issuableType];
     },
     commentText() {
       return this.isTestCase ? '' : __(' and leave a comment on');

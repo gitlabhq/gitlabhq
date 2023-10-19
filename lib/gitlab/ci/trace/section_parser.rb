@@ -74,7 +74,7 @@ module Gitlab
         end
 
         def beginning_of_section_regex
-          @beginning_of_section_regex ||= /section_/.freeze
+          @beginning_of_section_regex ||= /section_/
         end
 
         def find_next_marker(scanner)

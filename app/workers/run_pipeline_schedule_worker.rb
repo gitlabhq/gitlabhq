@@ -22,7 +22,7 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
     options.symbolize_keys!
 
     if options[:scheduling]
-      return if schedule.next_run_at > Time.current
+      return if schedule.next_run_at.future?
 
       update_next_run_at_for(schedule)
     end

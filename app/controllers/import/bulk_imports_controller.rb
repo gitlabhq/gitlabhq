@@ -152,7 +152,7 @@ class Import::BulkImportsController < ApplicationController
       allow_local_network: allow_local_requests?,
       schemes: %w[http https]
     )
-  rescue Gitlab::UrlBlocker::BlockedUrlError => e
+  rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     clear_session_data
 
     redirect_to new_group_path(anchor: 'import-group-pane'), alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }

@@ -116,7 +116,7 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching, feat
         is_expected.to eq('http://gitlab.com/bamboo/browse/42')
       end
 
-      context 'bamboo_url has trailing slash' do
+      context 'when bamboo_url has trailing slash' do
         let(:bamboo_url) { 'http://gitlab.com/bamboo/' }
 
         it 'returns a build URL' do
@@ -198,10 +198,19 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching, feat
 
     context 'when Bamboo API returns an array of results and we only consider the last one' do
       let(:bamboo_response_template) do
-        %q({"results":{"results":{"size":"2","result":[{"buildState":"%{build_state}","planResultKey":{"key":"41"}},{"buildState":"%{build_state}","planResultKey":{"key":"42"}}]}}})
+        '{"results":{"results":{"size":"2","result":[{"buildState":"%{build_state}","planResultKey":{"key":"41"}}, ' \
+          '{"buildState":"%{build_state}","planResultKey":{"key":"42"}}]}}}'
       end
 
       it_behaves_like 'reactive cache calculation'
+    end
+  end
+
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(ActionController::Base.helpers.image_path(
+        'illustrations/third-party-logos/integrations-logos/atlassian-bamboo.svg'
+      ))
     end
   end
 
@@ -222,11 +231,11 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching, feat
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body
-    ).with(basic_auth: %w(mic password))
+    ).with(basic_auth: %w[mic password])
   end
 
   def bamboo_response(build_state: 'success')
     # reference: https://docs.atlassian.com/atlassian-bamboo/REST/6.2.5/#d2e786
-    bamboo_response_template % { build_state: build_state }
+    format(bamboo_response_template, build_state: build_state)
   end
 end

@@ -134,6 +134,7 @@ Prerequisites:
     with the scope set to, at minimum, `api`.
   - A [deploy token](../../project/deploy_tokens/index.md)
     with the scope set to `read_package_registry`, `write_package_registry`, or both.
+  - A [CI/CD Job token](../../../ci/jobs/ci_job_token.md)
 
 To install a package:
 
@@ -216,6 +217,26 @@ To install a package:
        "<DOMAIN-NAME>": {
          "username": "<deploy_token_username>",
          "token": "<deploy_token>",
+       ...
+     }
+   }
+   ```
+
+   Using a CI/CD job token:
+
+   ```shell
+   composer config gitlab-token.<DOMAIN-NAME> gitlab-ci-token ${CI_JOB_TOKEN}
+   ```
+
+   Result in the `auth.json` file:
+
+   ```json
+   {
+     ...
+     "gitlab-token": {
+       "<DOMAIN-NAME>": {
+         "username": "gitlab-ci-token",
+         "token": "<ci-job-token>",
        ...
      }
    }
@@ -312,11 +333,13 @@ You can install from source by pulling the Git repository directly. To do so, ei
 
 #### SSH access
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119739) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119739) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/329246) GitLab 16.5.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`.
+On self-managed GitLab, by default this feature is available. To hide the feature per project, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`.
+On GitLab.com, this feature is available.
 
 When you install from source, the `composer` configures an
 access to the project's Git repository.

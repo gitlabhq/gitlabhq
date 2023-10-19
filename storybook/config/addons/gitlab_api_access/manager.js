@@ -41,29 +41,35 @@ const GitLabAPIParametersPanel = () => {
 
   channel.emit(GITLAB_API_ACCESS_UPDATE_EVENT, state);
 
-  return h('div', {}, [
-    h(Form.Field, { label: 'GitLab URL' }, [
+  return h(
+    'div',
+    {},
+    h(
+      Form.Field,
+      { label: 'GitLab URL' },
       h(Form.Input, {
         type: 'text',
         value: state.gitlabURL,
         placeholder: 'https://gitlab.com',
         onChange: (e) => updateGitLabURL(e),
       }),
-    ]),
-    h(Form.Field, { label: 'GitLab access token' }, [
+    ),
+    h(
+      Form.Field,
+      { label: 'GitLab access token' },
       h(Form.Input, {
         type: 'password',
         value: state.accessToken,
         onChange: (e) => updateAccessToken(e),
       }),
-    ]),
-  ]);
+    ),
+  );
 };
 
 addons.register(ADDON_ID, () => {
   addons.add(PANEL_ID, {
     type: types.PANEL,
     title: 'GitLab API Access',
-    render: ({ active, key }) => h(AddonPanel, { active, key }, [h(GitLabAPIParametersPanel)]),
+    render: ({ active, key }) => h(AddonPanel, { active, key }, h(GitLabAPIParametersPanel)),
   });
 });

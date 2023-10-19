@@ -92,106 +92,48 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
       worker.perform(project.id)
     end
 
-    context 'when abort_on_failure is false' do
-      it 'logs error when import fails' do
-        exception = StandardError.new('some error')
+    it 'logs error when import fails' do
+      exception = StandardError.new('some error')
 
-        allow(worker)
-          .to receive(:find_project)
-          .with(project.id)
-          .and_return(project)
+      allow(worker)
+        .to receive(:find_project)
+        .with(project.id)
+        .and_return(project)
 
-        expect(worker)
-          .to receive(:try_import)
-          .and_raise(exception)
+      expect(worker)
+        .to receive(:try_import)
+        .and_raise(exception)
 
-        expect(Gitlab::GithubImport::Logger)
-          .to receive(:info)
-          .with(
-            {
-              message: 'starting stage',
-              project_id: project.id,
-              import_stage: 'DummyStage'
-            }
-          )
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          {
+            message: 'starting stage',
+            project_id: project.id,
+            import_stage: 'DummyStage'
+          }
+        )
 
-        expect(Gitlab::Import::ImportFailureService)
-          .to receive(:track)
-          .with(
-            {
-              project_id: project.id,
-              exception: exception,
-              error_source: 'DummyStage',
-              fail_import: false
-            }
-          ).and_call_original
-
-        expect { worker.perform(project.id) }
-          .to raise_error(exception)
-
-        expect(project.import_state.reload.status).to eq('started')
-
-        expect(project.import_failures).not_to be_empty
-        expect(project.import_failures.last.exception_class).to eq('StandardError')
-        expect(project.import_failures.last.exception_message).to eq('some error')
-      end
-    end
-
-    context 'when abort_on_failure is true' do
-      let(:worker) do
-        Class.new do
-          def self.name
-            'DummyStage'
-          end
-
-          def abort_on_failure
-            true
-          end
-
-          include(Gitlab::GithubImport::StageMethods)
-        end.new
-      end
-
-      it 'logs, captures and re-raises the exception and also marks the import as failed' do
-        exception = StandardError.new('some error')
-
-        allow(worker)
-          .to receive(:find_project)
-          .with(project.id)
-          .and_return(project)
-
-        expect(worker)
-          .to receive(:try_import)
-          .and_raise(exception)
-
-        expect(Gitlab::GithubImport::Logger)
-          .to receive(:info)
-          .with(
-            {
-              message: 'starting stage',
-              project_id: project.id,
-              import_stage: 'DummyStage'
-            }
-          )
-
-        expect(Gitlab::Import::ImportFailureService)
-          .to receive(:track)
-          .with(
+      expect(Gitlab::Import::ImportFailureService)
+        .to receive(:track)
+        .with(
+          {
             project_id: project.id,
             exception: exception,
             error_source: 'DummyStage',
-            fail_import: true
-          ).and_call_original
+            fail_import: false,
+            metrics: true
+          }
+        ).and_call_original
 
-        expect { worker.perform(project.id) }.to raise_error(exception)
+      expect { worker.perform(project.id) }
+        .to raise_error(exception)
 
-        expect(project.import_state.reload.status).to eq('failed')
-        expect(project.import_state.last_error).to eq('some error')
+      expect(project.import_state.reload.status).to eq('started')
 
-        expect(project.import_failures).not_to be_empty
-        expect(project.import_failures.last.exception_class).to eq('StandardError')
-        expect(project.import_failures.last.exception_message).to eq('some error')
-      end
+      expect(project.import_failures).not_to be_empty
+      expect(project.import_failures.last.exception_class).to eq('StandardError')
+      expect(project.import_failures.last.exception_message).to eq('some error')
     end
   end
 

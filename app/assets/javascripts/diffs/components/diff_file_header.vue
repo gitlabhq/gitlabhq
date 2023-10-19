@@ -232,10 +232,15 @@ export default {
       'setCurrentFileHash',
       'reviewFile',
       'setFileCollapsedByUser',
+      'setFileForcedOpen',
       'setGenerateTestFilePath',
       'toggleFileCommentForm',
     ]),
     handleToggleFile() {
+      this.setFileForcedOpen({
+        filePath: this.diffFile.file_path,
+        forced: false,
+      });
       this.$emit('toggleFile');
     },
     showForkMessage(e) {
@@ -278,6 +283,10 @@ export default {
       }
 
       if ((open && reviewed) || (closed && !reviewed)) {
+        this.setFileForcedOpen({
+          filePath: this.diffFile.file_path,
+          forced: false,
+        });
         this.$emit('toggleFile');
       }
     },
@@ -293,7 +302,7 @@ export default {
       'is-sidebar-moved': glFeatures.movedMrSidebar,
     }"
     class="js-file-title file-title file-title-flex-parent gl-border"
-    data-qa-selector="file_title_container"
+    data-testid="file-title-container"
     :data-qa-file-name="filePath"
     @click.self="handleToggleFile"
   >
@@ -423,7 +432,7 @@ export default {
           right
           toggle-class="btn-icon js-diff-more-actions"
           class="gl-pt-0!"
-          data-qa-selector="dropdown_button"
+          data-testid="options-dropdown-button"
           lazy
           @show="setMoreActionsShown(true)"
           @hidden="setMoreActionsShown(false)"
@@ -450,7 +459,7 @@ export default {
               ref="ideEditButton"
               :href="diffFile.ide_edit_path"
               class="js-ide-edit-blob"
-              data-qa-selector="edit_in_ide_button"
+              data-testid="edit-in-ide-button"
               target="_blank"
             >
               {{ __('Open in Web IDE') }}
@@ -482,7 +491,7 @@ export default {
             <gl-dropdown-item
               v-if="diffHasDiscussions(diffFile)"
               ref="toggleDiscussionsButton"
-              data-qa-selector="toggle_comments_button"
+              data-testid="toggle-comments-button"
               @click="toggleFileDiscussionWrappers(diffFile)"
             >
               <template v-if="diffHasExpandedDiscussions(diffFile)">

@@ -12,6 +12,12 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
+      "cvss": [
+        {
+          "vendor": "GitLab",
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+        }
+      ],
       "location": {
         "file": "some/kind/of/file.c",
         "dependency": {
@@ -414,7 +420,9 @@
           "value": "foo"
         }
       ],
-      "links": []
+      "links": [
+
+      ]
     }
   ],
   "remediations": [
@@ -476,7 +484,9 @@
       "diff": "dG90YWxseSBsZWdpdGltYXRlIGRpZmYsIDEwLzEwIHdvdWxkIGFwcGx5"
     }
   ],
-  "dependency_files": [],
+  "dependency_files": [
+
+  ],
   "scan": {
     "analyzer": {
       "id": "common-analyzer",

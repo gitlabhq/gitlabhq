@@ -34,6 +34,7 @@ import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
+import { captureException } from '~/ci/runner/sentry_utils';
 import { GROUPS_INVITATIONS_PATH, invitationsApiResponse } from '../mock_data/api_responses';
 import {
   propsData,
@@ -52,6 +53,7 @@ import {
 
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 jest.mock('~/experimentation/experiment_tracking');
+jest.mock('~/ci/runner/sentry_utils');
 
 describe('InviteMembersModal', () => {
   let wrapper;
@@ -130,10 +132,10 @@ describe('InviteMembersModal', () => {
   const findUserLimitAlert = () => wrapper.findComponent(UserLimitNotification);
   const findAccordion = () => wrapper.findComponent(GlCollapse);
   const findErrorsIcon = () => wrapper.findComponent(GlIcon);
-  const findMemberErrorMessage = (element) =>
-    `${Object.keys(invitationsApiResponse.EXPANDED_RESTRICTED.message)[element]}: ${
-      Object.values(invitationsApiResponse.EXPANDED_RESTRICTED.message)[element]
-    }`;
+  const expectedErrorMessage = (index, errorType) => {
+    const [username, message] = Object.entries(errorType.parsedMessage)[index];
+    return `${username}: ${message}`;
+  };
   const findActionButton = () => wrapper.findByTestId('invite-modal-submit');
   const findCancelButton = () => wrapper.findByTestId('invite-modal-cancel');
 
@@ -315,8 +317,6 @@ describe('InviteMembersModal', () => {
       mock.onPost(GROUPS_INVITATIONS_PATH).reply(code, data);
     };
 
-    const expectedEmailRestrictedError =
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.";
     const expectedSyntaxError = 'email contains an invalid email address';
 
     describe('when no invites have been entered in the form and then some are entered', () => {
@@ -447,10 +447,8 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the generic error for http server error', async () => {
-          mockInvitationsApi(
-            HTTP_STATUS_INTERNAL_SERVER_ERROR,
-            'Request failed with status code 500',
-          );
+          const SERVER_ERROR_MESSAGE = 'Request failed with status code 500';
+          mockInvitationsApi(HTTP_STATUS_INTERNAL_SERVER_ERROR, SERVER_ERROR_MESSAGE);
 
           clickInviteButton();
 
@@ -458,17 +456,25 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
           expect(findMembersSelect().props('exceptionState')).toBe(false);
+          expect(captureException).toHaveBeenCalledWith({
+            error: new Error(SERVER_ERROR_MESSAGE),
+            component: wrapper.vm.$options.name,
+          });
         });
 
         it('displays the restricted user api message for response with bad request', async () => {
           mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
+
+          await triggerMembersTokenSelect([user3]);
 
           clickInviteButton();
 
           await waitForPromises();
 
           expect(findMemberErrorAlert().exists()).toBe(true);
-          expect(findMemberErrorAlert().text()).toContain(expectedEmailRestrictedError);
+          expect(findMemberErrorAlert().text()).toContain(
+            expectedErrorMessage(0, invitationsApiResponse.EMAIL_RESTRICTED),
+          );
           expect(membersFormGroupInvalidFeedback()).toBe('');
           expect(findMembersSelect().props('exceptionState')).not.toBe(false);
         });
@@ -476,19 +482,21 @@ describe('InviteMembersModal', () => {
         it('displays all errors when there are multiple existing users that are restricted by email', async () => {
           mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
+          await triggerMembersTokenSelect([user3, user4, user5]);
+
           clickInviteButton();
 
           await waitForPromises();
 
           expect(findMemberErrorAlert().exists()).toBe(true);
           expect(findMemberErrorAlert().text()).toContain(
-            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[0],
+            expectedErrorMessage(0, invitationsApiResponse.MULTIPLE_RESTRICTED),
           );
           expect(findMemberErrorAlert().text()).toContain(
-            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[1],
+            expectedErrorMessage(1, invitationsApiResponse.MULTIPLE_RESTRICTED),
           );
           expect(findMemberErrorAlert().text()).toContain(
-            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[2],
+            expectedErrorMessage(2, invitationsApiResponse.MULTIPLE_RESTRICTED),
           );
           expect(membersFormGroupInvalidFeedback()).toBe('');
           expect(findMembersSelect().props('exceptionState')).not.toBe(false);
@@ -608,7 +616,9 @@ describe('InviteMembersModal', () => {
             await waitForPromises();
 
             expect(findMemberErrorAlert().exists()).toBe(true);
-            expect(findMemberErrorAlert().text()).toContain(expectedEmailRestrictedError);
+            expect(findMemberErrorAlert().text()).toContain(
+              expectedErrorMessage(0, invitationsApiResponse.EMAIL_RESTRICTED),
+            );
             expect(membersFormGroupInvalidFeedback()).toBe('');
             expect(findMembersSelect().props('exceptionState')).not.toBe(false);
             expect(findActionButton().props('loading')).toBe(false);
@@ -617,19 +627,21 @@ describe('InviteMembersModal', () => {
           it('displays all errors when there are multiple emails that return a restricted error message', async () => {
             mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
+            await triggerMembersTokenSelect([user3, user4, user5]);
+
             clickInviteButton();
 
             await waitForPromises();
 
             expect(findMemberErrorAlert().exists()).toBe(true);
             expect(findMemberErrorAlert().text()).toContain(
-              Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[0],
+              expectedErrorMessage(0, invitationsApiResponse.MULTIPLE_RESTRICTED),
             );
             expect(findMemberErrorAlert().text()).toContain(
-              Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[1],
+              expectedErrorMessage(1, invitationsApiResponse.MULTIPLE_RESTRICTED),
             );
             expect(findMemberErrorAlert().text()).toContain(
-              Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[2],
+              expectedErrorMessage(2, invitationsApiResponse.MULTIPLE_RESTRICTED),
             );
             expect(membersFormGroupInvalidFeedback()).toBe('');
             expect(findMembersSelect().props('exceptionState')).not.toBe(false);
@@ -685,10 +697,18 @@ describe('InviteMembersModal', () => {
           expect(findMemberErrorAlert().props('title')).toContain(
             "The following 4 members couldn't be invited",
           );
-          expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(0));
-          expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(1));
-          expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(2));
-          expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(3));
+          expect(findMemberErrorAlert().text()).toContain(
+            expectedErrorMessage(0, invitationsApiResponse.EXPANDED_RESTRICTED),
+          );
+          expect(findMemberErrorAlert().text()).toContain(
+            expectedErrorMessage(1, invitationsApiResponse.EXPANDED_RESTRICTED),
+          );
+          expect(findMemberErrorAlert().text()).toContain(
+            expectedErrorMessage(2, invitationsApiResponse.EXPANDED_RESTRICTED),
+          );
+          expect(findMemberErrorAlert().text()).toContain(
+            expectedErrorMessage(3, invitationsApiResponse.EXPANDED_RESTRICTED),
+          );
           expect(findAccordion().exists()).toBe(true);
           expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
           expect(findErrorsIcon().attributes('class')).not.toContain('gl-rotate-180');
@@ -711,7 +731,9 @@ describe('InviteMembersModal', () => {
           expect(findMemberErrorAlert().props('title')).toContain(
             "The following 3 members couldn't be invited",
           );
-          expect(findMemberErrorAlert().text()).not.toContain(findMemberErrorMessage(0));
+          expect(findMemberErrorAlert().text()).not.toContain(
+            expectedErrorMessage(0, invitationsApiResponse.EXPANDED_RESTRICTED),
+          );
 
           await removeMembersToken(user6);
 
@@ -719,14 +741,18 @@ describe('InviteMembersModal', () => {
           expect(findMemberErrorAlert().props('title')).toContain(
             "The following 2 members couldn't be invited",
           );
-          expect(findMemberErrorAlert().text()).not.toContain(findMemberErrorMessage(2));
+          expect(findMemberErrorAlert().text()).not.toContain(
+            expectedErrorMessage(2, invitationsApiResponse.EXPANDED_RESTRICTED),
+          );
 
           await removeMembersToken(user4);
 
           expect(findMemberErrorAlert().props('title')).toContain(
             "The following member couldn't be invited",
           );
-          expect(findMemberErrorAlert().text()).not.toContain(findMemberErrorMessage(1));
+          expect(findMemberErrorAlert().text()).not.toContain(
+            expectedErrorMessage(1, invitationsApiResponse.EXPANDED_RESTRICTED),
+          );
 
           await removeMembersToken(user5);
 

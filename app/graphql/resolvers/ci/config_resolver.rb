@@ -30,11 +30,20 @@ module Resolvers
                required: false,
                description: 'Run pipeline creation simulation, or only do static check.'
 
-      def resolve(project_path:, content:, sha: nil, dry_run: false)
+      argument :skip_verify_project_sha, GraphQL::Types::Boolean,
+               required: false,
+               alpha: { milestone: '16.5' },
+               description: "If the provided `sha` is found in the project's repository but is not " \
+                            "associated with a Git reference (a detached commit), the verification fails and a " \
+                            "validation error is returned. Otherwise, verification passes, even if the `sha` is " \
+                            "invalid. Set to `true` to skip this verification process."
+
+      def resolve(project_path:, content:, sha: nil, dry_run: false, skip_verify_project_sha: false)
         project = authorized_find!(project_path: project_path)
 
         result = ::Gitlab::Ci::Lint
-          .new(project: project, current_user: context[:current_user], sha: sha)
+          .new(project: project, current_user: context[:current_user], sha: sha,
+               verify_project_sha: !skip_verify_project_sha)
           .validate(content, dry_run: dry_run)
 
         response(result)

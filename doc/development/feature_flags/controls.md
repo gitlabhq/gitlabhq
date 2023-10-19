@@ -1,7 +1,7 @@
 ---
 type: reference, dev
 stage: none
-group: Development
+group: unassigned
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
@@ -70,12 +70,19 @@ there for any exceptions while testing your feature after enabling the feature f
 For these pre-production environments, it's strongly encouraged to run the command in
 `#staging`, `#production`, or `#chatops-ops-test`, for improved visibility.
 
+#### Enabling the feature flag with percentage of time
+
 To enable a feature for 25% of the time, run the following in Slack:
 
 ```shell
 /chatops run feature set new_navigation_bar 25 --random --dev
 /chatops run feature set new_navigation_bar 25 --random --staging
 ```
+
+NOTE:
+Percentage of time feature flags are deprecated in favor of [percentage of actors](#percentage-based-actor-selection).
+If you understand the consequences of using percentage of time feature flags, you can force it using
+`--ignore-random-deprecation-check`.
 
 ### Enabling a feature for GitLab.com
 
@@ -99,6 +106,83 @@ Guidelines:
 - If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
 - For support requests to toggle feature flags for specific groups or projects, please follow the process outlined in the [support workflows](https://about.gitlab.com/handbook/support/workflows/saas_feature_flags.html).
+
+#### Guideline for which percentages to choose during the rollout
+
+Choosing which the percentages while rolling out the feature flag
+depends on different factors, for example:
+
+- Is the feature flag checked often so that you can collect enough information to decide it's safe to continue with the rollout?
+- If something goes wrong with the feature, how many requests or customers will be impacted?
+- If something goes wrong, are there any other GitLab publicly available features that will be impacted by the rollout?
+- Are there any possible performance degradation from rolling out the feature flag?
+
+Let's take some examples for different types of feature flags, and how you can consider the rollout
+in these cases:
+
+##### A. Feature flag for an operation that runs a few times per day
+
+Let's say you are releasing a new functionality that runs a few times per day, for example, in a daily or
+hourly cron job. And this new functionality is controlled by the newly introduced feature flag.
+For example, [rewriting the database query for a cron job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128759/diffs).
+In this case, releasing the feature flag for a percentage below 25% might give you slow feedback
+regarding whether to proceed with the rollout or not. Also, if the cron job fails, it will [retry](../sidekiq/index.md#retries).
+So the consequences of something going wrong won't be that big. In this case, releasing with a percentage of 25% or 50%
+will be an acceptable choice.
+
+But you have to make sure to log the result of the feature flag check to the log of your worker. See instructions
+[here](../logging.md#logging-context-metadata-through-rails-or-grape-requests)
+about best practices for logging.
+
+##### B. Feature flag for an operation that runs hundreds or thousands times per day
+
+Your newly introduced feature or change might be more customer facing than whatever runs in Sidekiq jobs. But
+it might not be run often. In this case, choose a percentage high enough to collect some results in order
+to know whether to proceed or not. You can consider starting with `5%` or `10%` in this case, while monitoring
+the logs for any errors, or returned `500`s statuses to the users.
+
+But as you continue with the rollout and increasing the percentage, you will need to consider looking at the
+performance impact of the feature. You can consider monitoring
+the [Latency: Apdex and error ratios](https://dashboards.gitlab.net/d/general-triage/general-platform-triage?orgId=1)
+dashboard on Grafana.
+
+##### C. Feature flag for an operation that runs at the core of the app
+
+Sometimes, a new change that might touch every aspect of the GitLab application. For example, changing
+a database query on one of the core models, like `User`, `Project` or `Namespace`. In this case, releasing
+the feature for `1%` of the requests, or even less than that (via Change Request) is highly recommended to avoid any incidents.
+See [this change request example](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/16427) of a feature flag that was released
+for around `0.1%` of the requests, due to the high impact of the change.
+
+To make sure that the rollout does not affect many customers, consider following these steps:
+
+1. Estimate how many requests per minute can be affected by 100% of the feature flag rollout. This
+   can be achieved by tracking
+   the database queries. See [the instructions here](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/patroni/mapping_statements.md#example-queries).
+1. Calculate the reasonable number of requests or users that can be affected, in case
+   the rollout doesn't go as expected.
+1. Based on the numbers collected from (1) and (2), calculate the reasonable percentage to start with to roll out
+   the feature flag. Here is [an example](https://gitlab.com/gitlab-org/gitlab/-/issues/425859#note_1576923174)
+   of such calculation.
+1. Make sure to communicate your findings on the rollout issue of the feature flag.
+
+##### D. Unknown impact of releasing the feature flag
+
+If you are not certain what percentages to use, then choose the safe recommended option, and choose these percentages:
+
+1. 1%
+1. 10%
+1. 25%
+1. 50%
+1. 75%
+1. 100%
+
+Between every step you'll want to wait a little while and monitor the
+appropriate graphs on <https://dashboards.gitlab.net>. The exact time to wait
+may differ. For some features a few minutes is enough, while for others you may
+want to wait several hours or even days. This is entirely up to you, just make
+sure it is clearly communicated to your team and the Production team if you
+anticipate any potential problems.
 
 #### Process
 
@@ -129,6 +213,11 @@ To enable a feature for 25% of the time, run the following in Slack:
 ```shell
 /chatops run feature set new_navigation_bar 25 --random
 ```
+
+NOTE:
+Percentage of time feature flags are deprecated in favor of [percentage of actors](#percentage-based-actor-selection).
+If you understand the consequences of using percentage of time feature flags, you can force it using
+`--ignore-random-deprecation-check`.
 
 This sets a feature flag to `true` based on the following formula:
 
@@ -176,19 +265,11 @@ For project level features:
 Feature.enabled?(:feature_ice_cold_projects, project)
 ```
 
-If you are not certain what percentages to use, use the following steps:
+For current request:
 
-1. 25%
-1. 50%
-1. 75%
-1. 100%
-
-Between every step you'll want to wait a little while and monitor the
-appropriate graphs on <https://dashboards.gitlab.net>. The exact time to wait
-may differ. For some features a few minutes is enough, while for others you may
-want to wait several hours or even days. This is entirely up to you, just make
-sure it is clearly communicated to your team, and the Production team if you
-anticipate any potential problems.
+```ruby
+Feature.enabled?(:feature_ice_cold_projects, Feature.current_request)
+```
 
 Feature gates can also be actor based, for example a feature could first be
 enabled for only the `gitlab` project. The project is passed by supplying a

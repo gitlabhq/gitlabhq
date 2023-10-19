@@ -19,7 +19,7 @@ module RuboCop
 
         MESSAGE = "`basic_auth: { user: ... }` does not work - replace `user:` with `username:`"
 
-        RESTRICT_ON_SEND = %i(get put post delete).freeze
+        RESTRICT_ON_SEND = %i[get put post delete].freeze
 
         def_node_matcher :httparty_basic_auth?, <<~PATTERN
           (send

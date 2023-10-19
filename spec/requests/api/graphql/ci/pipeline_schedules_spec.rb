@@ -115,6 +115,31 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
 
       expect(edit_path).to be nil
     end
+
+    it 'returns the pipeline schedules data' do
+      expect(pipeline_schedule_graphql_data['id']).to eq(pipeline_schedule.to_global_id.to_s)
+    end
+
+    context 'when public pipelines are disabled' do
+      before do
+        project.update!(public_builds: false)
+        post_graphql(query, current_user: another_user)
+      end
+
+      it 'does not return any data' do
+        expect(pipeline_schedule_graphql_data).to be_nil
+      end
+
+      context 'when the user is authorized' do
+        before_all do
+          project.add_developer(another_user)
+        end
+
+        it 'returns the pipeline schedules data' do
+          expect(pipeline_schedule_graphql_data['id']).to eq(pipeline_schedule.to_global_id.to_s)
+        end
+      end
+    end
   end
 
   it 'avoids N+1 queries' do

@@ -102,8 +102,7 @@ module API
 
         def group
           group = find_group(params[:id])
-          not_found!('Group') unless can?(current_user, :read_group, group)
-          group
+          check_group_access(group)
         end
         strong_memoize_attr :group
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_redis_shared_state, feature_category: :package_registry do
   include ExclusiveLeaseHelpers
 
-  let!(:package) { create(:nuget_package, :processing, :with_symbol_package) }
+  let!(:package) { create(:nuget_package, :processing, :with_symbol_package, :with_build) }
   let(:package_file) { package.package_files.first }
   let(:service) { described_class.new(package_file) }
   let(:package_name) { 'DummyProject.DummyPackage' }
@@ -101,6 +101,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
           .and change { Packages::DependencyLink.count }.by(0)
           .and change { Packages::Nuget::DependencyLinkMetadatum.count }.by(0)
           .and change { ::Packages::Nuget::Metadatum.count }.by(1)
+          .and change { existing_package.build_infos.count }.by(1)
         expect(package_file.reload.file_name).to eq(package_file_name)
         expect(package_file.package).to eq(existing_package)
       end
@@ -258,6 +259,16 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
             .and change { ::Packages::Nuget::Metadatum.count }.by(0)
           expect(package_file.reload.file_name).to eq(package_file_name)
           expect(package_file.package).to eq(existing_package)
+        end
+
+        context 'with packages_nuget_symbols records' do
+          before do
+            create_list(:nuget_symbol, 2, package: package)
+          end
+
+          it 'links the symbol records to the existing package' do
+            expect { subject }.to change { existing_package.nuget_symbols.count }.by(2)
+          end
         end
 
         it_behaves_like 'taking the lease'

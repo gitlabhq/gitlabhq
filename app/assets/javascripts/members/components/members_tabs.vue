@@ -22,7 +22,7 @@ export const TABS = [
   {
     namespace: MEMBER_TYPES.group,
     title: __('Groups'),
-    attrs: { 'data-qa-selector': 'groups_list_tab' },
+    attrs: { 'data-testid': 'groups-list-tab' },
     queryParamValue: TAB_QUERY_PARAM_VALUES.group,
   },
   {
@@ -112,6 +112,7 @@ export default {
 <template>
   <gl-tabs
     v-model="selectedTabIndex"
+    content-class="gl-py-0"
     sync-active-tab-with-query-params
     :query-param-name="$options.ACTIVE_TAB_QUERY_PARAM_NAME"
   >

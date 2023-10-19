@@ -1,7 +1,9 @@
 <script>
-import { GlAvatarLabeled, GlLink } from '@gitlab/ui';
+import { GlAvatarLabeled, GlLink, GlTableLite } from '@gitlab/ui';
+import { isEmpty, maxBy, range } from 'lodash';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
+import { __, sprintf } from '~/locale';
 import DetailRow from './components/candidate_detail_row.vue';
 
 import {
@@ -22,6 +24,11 @@ import {
   JOB_LABEL,
   CI_USER_LABEL,
   CI_MR_LABEL,
+  PERFORMANCE_LABEL,
+  NO_PARAMETERS_MESSAGE,
+  NO_METRICS_MESSAGE,
+  NO_METADATA_MESSAGE,
+  NO_CI_MESSAGE,
 } from './translations';
 
 export default {
@@ -32,6 +39,7 @@ export default {
     DetailRow,
     GlAvatarLabeled,
     GlLink,
+    GlTableLite,
   },
   props: {
     candidate: {
@@ -54,6 +62,14 @@ export default {
     JOB_LABEL,
     CI_USER_LABEL,
     CI_MR_LABEL,
+    PARAMETERS_LABEL,
+    METRICS_LABEL,
+    METADATA_LABEL,
+    PERFORMANCE_LABEL,
+    NO_PARAMETERS_MESSAGE,
+    NO_METRICS_MESSAGE,
+    NO_METADATA_MESSAGE,
+    NO_CI_MESSAGE,
   },
   computed: {
     info() {
@@ -62,21 +78,38 @@ export default {
     ciJob() {
       return Object.freeze(this.info.ci_job);
     },
-    sections() {
-      return [
-        {
-          sectionName: PARAMETERS_LABEL,
-          sectionValues: this.candidate.params,
-        },
-        {
-          sectionName: METRICS_LABEL,
-          sectionValues: this.candidate.metrics,
-        },
-        {
-          sectionName: METADATA_LABEL,
-          sectionValues: this.candidate.metadata,
-        },
-      ];
+    hasMetadata() {
+      return !isEmpty(this.candidate.metadata);
+    },
+    hasParameters() {
+      return !isEmpty(this.candidate.params);
+    },
+    hasMetrics() {
+      return !isEmpty(this.candidate.metrics);
+    },
+    metricsTableFields() {
+      const maxStep = maxBy(this.candidate.metrics, 'step').step;
+      const rowClass = 'gl-p-3!';
+
+      const cssClasses = { thClass: rowClass, tdClass: rowClass };
+
+      const fields = range(maxStep + 1).map((step) => ({
+        key: step.toString(),
+        label: sprintf(__('Step %{step}'), { step }),
+        ...cssClasses,
+      }));
+
+      return [{ key: 'name', label: __('Metric'), ...cssClasses }, ...fields];
+    },
+    metricsTableItems() {
+      const items = {};
+      this.candidate.metrics.forEach((metric) => {
+        const metricRow = items[metric.name] || { name: metric.name };
+        metricRow[metric.step] = metric.value;
+        items[metric.name] = metricRow;
+      });
+
+      return Object.values(items);
     },
   },
 };
@@ -93,33 +126,37 @@ export default {
       />
     </model-experiments-header>
 
-    <table class="candidate-details gl-w-full">
-      <tbody>
-        <tr class="divider"></tr>
+    <section class="gl-mb-6">
+      <table class="candidate-details">
+        <tbody>
+          <detail-row :label="$options.i18n.ID_LABEL">
+            {{ info.iid }}
+          </detail-row>
 
-        <detail-row :label="$options.i18n.ID_LABEL" :section-label="$options.i18n.INFO_LABEL">
-          {{ info.iid }}
-        </detail-row>
+          <detail-row :label="$options.i18n.MLFLOW_ID_LABEL">{{ info.eid }}</detail-row>
 
-        <detail-row :label="$options.i18n.MLFLOW_ID_LABEL">{{ info.eid }}</detail-row>
+          <detail-row :label="$options.i18n.STATUS_LABEL">{{ info.status }}</detail-row>
 
-        <detail-row :label="$options.i18n.STATUS_LABEL">{{ info.status }}</detail-row>
+          <detail-row :label="$options.i18n.EXPERIMENT_LABEL">
+            <gl-link :href="info.path_to_experiment">
+              {{ info.experiment_name }}
+            </gl-link>
+          </detail-row>
 
-        <detail-row :label="$options.i18n.EXPERIMENT_LABEL">
-          <gl-link :href="info.path_to_experiment">
-            {{ info.experiment_name }}
-          </gl-link>
-        </detail-row>
+          <detail-row v-if="info.path_to_artifact" :label="$options.i18n.ARTIFACTS_LABEL">
+            <gl-link :href="info.path_to_artifact">
+              {{ $options.i18n.ARTIFACTS_LABEL }}
+            </gl-link>
+          </detail-row>
+        </tbody>
+      </table>
+    </section>
 
-        <detail-row v-if="info.path_to_artifact" :label="$options.i18n.ARTIFACTS_LABEL">
-          <gl-link :href="info.path_to_artifact">
-            {{ $options.i18n.ARTIFACTS_LABEL }}
-          </gl-link>
-        </detail-row>
+    <section class="gl-mb-6">
+      <h4>{{ $options.i18n.CI_SECTION_LABEL }}</h4>
 
-        <template v-if="ciJob">
-          <tr class="divider"></tr>
-
+      <table v-if="ciJob" class="candidate-details">
+        <tbody>
           <detail-row
             :label="$options.i18n.JOB_LABEL"
             :section-label="$options.i18n.CI_SECTION_LABEL"
@@ -142,21 +179,53 @@ export default {
               !{{ ciJob.merge_request.iid }} {{ ciJob.merge_request.title }}
             </gl-link>
           </detail-row>
-        </template>
+        </tbody>
+      </table>
 
-        <template v-for="{ sectionName, sectionValues } in sections">
-          <tr v-if="sectionValues" :key="sectionName" class="divider"></tr>
+      <div v-else class="gl-text-secondary">{{ $options.i18n.NO_CI_MESSAGE }}</div>
+    </section>
 
-          <detail-row
-            v-for="(item, index) in sectionValues"
-            :key="item.name"
-            :label="item.name"
-            :section-label="index === 0 ? sectionName : ''"
-          >
+    <section class="gl-mb-6">
+      <h4>{{ $options.i18n.PARAMETERS_LABEL }}</h4>
+
+      <table v-if="hasParameters" class="candidate-details">
+        <tbody>
+          <detail-row v-for="item in candidate.params" :key="item.name" :label="item.name">
             {{ item.value }}
           </detail-row>
-        </template>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+
+      <div v-else class="gl-text-secondary">{{ $options.i18n.NO_PARAMETERS_MESSAGE }}</div>
+    </section>
+
+    <section class="gl-mb-6">
+      <h4>{{ $options.i18n.METADATA_LABEL }}</h4>
+
+      <table v-if="hasMetadata" class="candidate-details">
+        <tbody>
+          <detail-row v-for="item in candidate.metadata" :key="item.name" :label="item.name">
+            {{ item.value }}
+          </detail-row>
+        </tbody>
+      </table>
+
+      <div v-else class="gl-text-secondary">{{ $options.i18n.NO_METADATA_MESSAGE }}</div>
+    </section>
+
+    <section class="gl-mb-6">
+      <h4>{{ $options.i18n.PERFORMANCE_LABEL }}</h4>
+
+      <div v-if="hasMetrics" class="gl-overflow-x-auto">
+        <gl-table-lite
+          :items="metricsTableItems"
+          :fields="metricsTableFields"
+          class="gl-w-auto"
+          hover
+        />
+      </div>
+
+      <div v-else class="gl-text-secondary">{{ $options.i18n.NO_METRICS_MESSAGE }}</div>
+    </section>
   </div>
 </template>

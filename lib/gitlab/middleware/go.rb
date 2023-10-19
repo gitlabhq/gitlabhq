@@ -8,7 +8,7 @@ module Gitlab
       include ActionView::Helpers::TagHelper
       include ActionController::HttpAuthentication::Basic
 
-      PROJECT_PATH_REGEX = %r{\A(#{Gitlab::PathRegex.full_namespace_route_regex}/#{Gitlab::PathRegex.project_route_regex})/}.freeze
+      PROJECT_PATH_REGEX = %r{\A(#{Gitlab::PathRegex.full_namespace_route_regex}/#{Gitlab::PathRegex.project_route_regex})/}
 
       def initialize(app)
         @app = app

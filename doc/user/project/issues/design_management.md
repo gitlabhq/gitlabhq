@@ -31,14 +31,10 @@ For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.
   Image thumbnails are stored as other uploads, and are not associated with a project but rather
   with a specific design model.
 
-- Projects must use
-  [hashed storage](../../../administration/raketasks/storage.md#migrate-to-hashed-storage).
-
   Newly created projects use hashed storage by default.
 
-  A GitLab administrator can verify the storage type of a project by going to **Admin Area > Projects**
-  and then selecting the project in question. A project can be identified as
-  hashed-stored if the value of the **Relative path** field contains `@hashed`.
+  A GitLab administrator can verify the relative path of a hashed-stored project by going to **Admin Area > Projects**
+  and then selecting the project in question. The **Relative path** field contains `@hashed` in its value.
 
 If the requirements are not met, you are notified in the **Designs** section.
 
@@ -190,17 +186,11 @@ To archive multiple designs at once:
 
 ## Markdown and rich text editors for descriptions
 
-<!-- When content_editor_on_issues flag is removed, move version notes
-     to "Add a design to an issue", update that topic, and delete this one. -->
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
+> - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
 
-FLAG:
-On self-managed GitLab, by default the rich text editor is available. To hide it, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `content_editor_on_issues`.
-On GitLab.com, this feature is available.
-
-When this feature is enabled, you can use the Markdown and rich text editor in design descriptions.
+You can use the Markdown and rich text editor in design descriptions.
 It's the same editor you use for comments across GitLab.
 
 ## Reorder designs

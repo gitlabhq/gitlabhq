@@ -76,7 +76,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
           allowed_content_types: allowed_content_types
         )
 
-        expect { service.execute }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+        expect { service.execute }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
       end
     end
 

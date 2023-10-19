@@ -5,7 +5,6 @@ module Gitlab
     module Pipeline
       module Expression
         ExpressionError = Class.new(StandardError)
-        RuntimeError = Class.new(ExpressionError)
       end
     end
   end

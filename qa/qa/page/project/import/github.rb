@@ -20,7 +20,7 @@ module QA
           end
 
           view "app/assets/javascripts/import_entities/components/import_target_dropdown.vue" do
-            element :target_namespace_selector_dropdown
+            element 'target-namespace-dropdown'
           end
 
           # Add personal access token
@@ -46,7 +46,7 @@ module QA
           # @return [void]
           def import!(gh_project_name, target_group_path, project_name)
             within_element(:project_import_row, source_project: gh_project_name) do
-              click_element(:target_namespace_selector_dropdown)
+              click_element('target-namespace-dropdown')
               click_element("listbox-item-#{target_group_path}", wait: 10)
               fill_element(:project_path_field, project_name)
 

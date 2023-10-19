@@ -132,7 +132,6 @@ project_feature:
     - project_id
     - updated_at
     - operations_access_level
-    - model_experiments_access_level
   computed_attributes:
     - issues_enabled
     - jobs_enabled
@@ -164,7 +163,6 @@ project_setting:
     - selective_code_owner_removals
     - show_diff_preview_in_email
     - suggested_reviewers_enabled
-    - jitsu_key
     - mirror_branch_regex
     - allow_pipeline_trigger_approve_deployment
     - pages_unique_domain_enabled
@@ -172,16 +170,7 @@ project_setting:
     - pages_multiple_versions_enabled
     - runner_registration_enabled
     - product_analytics_instrumentation_key
-    - jitsu_host
-    - jitsu_project_xid
-    - jitsu_administrator_email
-    - jitsu_administrator_password
-    - encrypted_jitsu_administrator_password
-    - encrypted_jitsu_administrator_password_iv
     - product_analytics_data_collector_host
-    - product_analytics_clickhouse_connection_string
-    - encrypted_product_analytics_clickhouse_connection_string
-    - encrypted_product_analytics_clickhouse_connection_string_iv
     - cube_api_base_url
     - cube_api_key
     - encrypted_cube_api_key
@@ -204,5 +193,6 @@ build_service_desk_setting: # service_desk_setting
     - encrypted_custom_email_smtp_password
     - encrypted_custom_email_smtp_password_iv
     - custom_email_smtp_password
+    - add_external_participants_from_cc
   remapped_attributes:
     project_key: service_desk_address

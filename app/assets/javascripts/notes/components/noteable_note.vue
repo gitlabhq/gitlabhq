@@ -421,7 +421,7 @@ export default {
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
     class="note note-wrapper note-comment"
-    data-qa-selector="noteable_note_container"
+    data-testid="noteable-note-container"
   >
     <div
       v-if="showMultiLineComment"

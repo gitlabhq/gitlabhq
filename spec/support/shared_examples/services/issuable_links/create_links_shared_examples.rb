@@ -3,6 +3,7 @@
 RSpec.shared_examples 'issuable link creation' do |use_references: true|
   let(:items_param) { use_references ? :issuable_references : :target_issuable }
   let(:response_keys) { [:status, :created_references] }
+  let(:async_notes) { false }
   let(:already_assigned_error_msg) { "#{issuable_type.capitalize}(s) already assigned" }
   let(:permission_error_status) { issuable_type == :issue ? 403 : 404 }
   let(:permission_error_msg) do
@@ -85,17 +86,27 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
       end
 
       it 'creates notes' do
-        # First two-way relation notes
-        expect(SystemNoteService).to receive(:relate_issuable)
-          .with(issuable, issuable2, user)
-        expect(SystemNoteService).to receive(:relate_issuable)
-          .with(issuable2, issuable, user)
+        if async_notes
+          expect(Issuable::RelatedLinksCreateWorker).to receive(:perform_async) do |args|
+            expect(args).to eq(
+              {
+                issuable_class: issuable.class.name,
+                issuable_id: issuable.id,
+                link_ids: issuable_link_class.where(source: issuable).last(2).pluck(:id),
+                link_type: 'relates_to',
+                user_id: user.id
+              }
+            )
+          end
+        else
+          # First two-way relation notes
+          expect(SystemNoteService).to receive(:relate_issuable).with(issuable, issuable2, user)
+          expect(SystemNoteService).to receive(:relate_issuable).with(issuable2, issuable, user)
 
-        # Second two-way relation notes
-        expect(SystemNoteService).to receive(:relate_issuable)
-          .with(issuable, issuable3, user)
-        expect(SystemNoteService).to receive(:relate_issuable)
-          .with(issuable3, issuable, user)
+          # Second two-way relation notes
+          expect(SystemNoteService).to receive(:relate_issuable).with(issuable, issuable3, user)
+          expect(SystemNoteService).to receive(:relate_issuable).with(issuable3, issuable, user)
+        end
 
         subject
       end
@@ -105,10 +116,24 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
       let(:params) { set_params([issuable_a, issuable_b]) }
 
       it 'creates notes only for new relations' do
-        expect(SystemNoteService).to receive(:relate_issuable).with(issuable, issuable_a, anything)
-        expect(SystemNoteService).to receive(:relate_issuable).with(issuable_a, issuable, anything)
-        expect(SystemNoteService).not_to receive(:relate_issuable).with(issuable, issuable_b, anything)
-        expect(SystemNoteService).not_to receive(:relate_issuable).with(issuable_b, issuable, anything)
+        if async_notes
+          expect(Issuable::RelatedLinksCreateWorker).to receive(:perform_async) do |args|
+            expect(args).to eq(
+              {
+                issuable_class: issuable.class.name,
+                issuable_id: issuable.id,
+                link_ids: issuable_link_class.where(source: issuable).last(1).pluck(:id),
+                link_type: 'relates_to',
+                user_id: user.id
+              }
+            )
+          end
+        else
+          expect(SystemNoteService).to receive(:relate_issuable).with(issuable, issuable_a, anything)
+          expect(SystemNoteService).to receive(:relate_issuable).with(issuable_a, issuable, anything)
+          expect(SystemNoteService).not_to receive(:relate_issuable).with(issuable, issuable_b, anything)
+          expect(SystemNoteService).not_to receive(:relate_issuable).with(issuable_b, issuable, anything)
+        end
 
         subject
       end

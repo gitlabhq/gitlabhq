@@ -199,7 +199,7 @@ You can also mark an [issue as confidential](../project/issues/confidential_issu
 ## Show only comments
 
 In discussions with many comments, filter the discussion to show only comments or history of
-changes (system notes). System notes include changes to the description, mentions in other GitLab
+changes ([system notes](../project/system_notes.md)). System notes include changes to the description, mentions in other GitLab
 objects, or changes to labels, assignees, and the milestone.
 GitLab saves your preference, and applies it to every issue, merge request, or epic you view.
 

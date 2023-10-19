@@ -8,6 +8,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker, fea
   let(:worker) { described_class.new }
   let(:client) { double(:client) }
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     it 'imports all the pull request reviews' do
       importer = double(:importer)

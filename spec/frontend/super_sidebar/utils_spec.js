@@ -11,7 +11,7 @@ import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { unsortedFrequentItems, sortedFrequentItems } from '../frequent_items/mock_data';
 import { cachedFrequentProjects } from './mock_data';
@@ -58,7 +58,6 @@ describe('Super sidebar utils spec', () => {
     const storageKey = `${username}/frequent-${context.namespace}`;
 
     beforeEach(() => {
-      gon.features = { serverSideFrecentNamespaces: true };
       axiosMock = new MockAdapter(axios);
       axiosMock.onPost(trackVisitsPath).reply(HTTP_STATUS_OK);
     });
@@ -99,12 +98,12 @@ describe('Super sidebar utils spec', () => {
       expect(axiosMock.history.post[0].url).toBe(trackVisitsPath);
     });
 
-    it('does not send a POST request when the serverSideFrecentNamespaces feature flag is disabled', async () => {
-      gon.features = { serverSideFrecentNamespaces: false };
+    it('logs an error to Sentry when the request fails', async () => {
+      axiosMock.onPost(trackVisitsPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       trackContextAccess(username, context, trackVisitsPath);
       await waitForPromises();
 
-      expect(axiosMock.history.post).toHaveLength(0);
+      expect(Sentry.captureException).toHaveBeenCalled();
     });
 
     it('updates existing item frequency/access time if it was persisted to the local storage over 15 minutes ago', () => {

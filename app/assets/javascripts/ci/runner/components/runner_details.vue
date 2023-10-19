@@ -29,10 +29,6 @@ export default {
       import('ee_component/ci/runner/components/runner_maintenance_note_detail.vue'),
     RunnerGroups,
     RunnerProjects,
-    RunnerUpgradeStatusBadge: () =>
-      import('ee_component/ci/runner/components/runner_upgrade_status_badge.vue'),
-    RunnerUpgradeStatusAlert: () =>
-      import('ee_component/ci/runner/components/runner_upgrade_status_alert.vue'),
     RunnerTags,
     RunnerManagersDetail,
     TimeAgo,
@@ -92,7 +88,6 @@ export default {
 
 <template>
   <div>
-    <runner-upgrade-status-alert class="gl-my-4" :runner="runner" />
     <div class="gl-pt-4">
       <dl class="gl-mb-0 gl-display-grid runner-details-grid-template">
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
@@ -104,16 +99,6 @@ export default {
             <time-ago :time="runner.contactedAt" />
           </template>
         </runner-detail>
-        <runner-detail :label="s__('Runners|Version')">
-          <template v-if="runner.version" #value>
-            {{ runner.version }}
-            <runner-upgrade-status-badge size="sm" :runner="runner" />
-          </template>
-        </runner-detail>
-        <runner-detail :label="s__('Runners|IP Address')" :value="runner.ipAddress" />
-        <runner-detail :label="s__('Runners|Executor')" :value="runner.executorName" />
-        <runner-detail :label="s__('Runners|Architecture')" :value="runner.architectureName" />
-        <runner-detail :label="s__('Runners|Platform')" :value="runner.platformName" />
         <runner-detail :label="s__('Runners|Configuration')">
           <template v-if="configTextProtected || configTextUntagged" #value>
             <gl-intersperse>

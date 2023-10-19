@@ -1,0 +1,8 @@
+---
+name: gl_analytics_tracking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132534
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426106
+milestone: '16.5'
+type: development
+group: group::analytics instrumentation
+default_enabled: false

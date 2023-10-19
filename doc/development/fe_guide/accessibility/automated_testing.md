@@ -1,0 +1,125 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+
+# Automated accessibility testing
+
+We use [axe-core](https://github.com/dequelabs/axe-core) [gems](https://github.com/dequelabs/axe-core-gems)
+to run automated accessibility tests in feature tests.
+
+[We aim to conform to level AA of the World Wide Web Consortium (W3C) Web Content Accessibility Guidelines 2.1](https://design.gitlab.com/accessibility/a11y).
+
+## When to add accessibility tests
+
+When adding a new view to the application, make sure to include the accessibility check in your feature test.
+We aim to have full coverage for all the views.
+
+One of the advantages of testing in feature tests is that we can check different states, not only
+single components in isolation.
+
+You can find some examples on how to approach accessibility checks below.
+
+### Empty state
+
+Some views have an empty state that result in a page structure that's different from the default view.
+They may also offer some actions, for example to create a first issue or to enable a feature.
+In this case, add assertions for both an empty state and a default view.
+
+### Ensure compliance before user interactions
+
+Often we test against a number of steps we expect our users to perform.
+In this case, make sure to include the check early on, before any of them has been simulated.
+This way we ensure there are no barriers to what we expect of users.
+
+### Ensure compliance after changed page structure
+
+User interactions may result in significant changes in page structure. For example, a modal is shown, or a new section is rendered.
+In that case, add an assertion after any such change.
+We want to make sure that users are able to interact with all available components.
+
+### Separate file for extensive test suites
+
+For some views, feature tests span multiple files.
+Take a look at our [feature tests for a merge request](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/features/merge_request).
+The number of user interactions that needs to be covered is too big to fit into one test file.
+As a result, multiple feature tests cover one view, with different user privileges, or data sets.
+If we were to include accessibility checks in all of them, there is a chance we would cover the same states of a view multiple times and significantly increase the run time.
+It would also make it harder to determine the coverage for accessibility, if assertions would be scattered across many files.
+
+In that case, consider creating one test file dedicated to accessibility.
+Place it in the same directory and name it `accessibility_spec.rb`, for example `spec/features/merge_request/accessibility_spec.rb`.
+Make it explicit that a feature test has accessibility coverage in a separate file, and
+doesn't need additional assertions. Include this comment below the opening of the
+top-level block:
+
+```ruby
+# spec/features/merge_request/user_approves_spec.rb
+
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe 'Merge request > User approves', :js, feature_category: :code_review_workflow do
+# covered by ./accessibility_spec.rb
+```
+
+### Shared examples
+
+Often feature tests include shared examples for a number of scenarios.
+If they differ only by provided data, but are based on the same user interaction, you can check for accessibility compliance outside the shared examples.
+This way we only run the check once and save resources.
+
+## How to add accessibility tests
+
+Axe provides the custom matcher `be_axe_clean`, which can be used like the following:
+
+```ruby
+# spec/features/settings_spec.rb
+it 'passes axe automated accessibility testing', :js do
+  visit_settings_page
+
+  wait_for_requests # ensures page is fully loaded
+
+  expect(page).to be_axe_clean
+end
+```
+
+If needed, you can scope testing to a specific area of the page by using `within`.
+
+Axe also provides specific [clauses](https://github.com/dequelabs/axe-core-gems/blob/develop/packages/axe-core-rspec/README.md#clauses),
+for example:
+
+```ruby
+expect(page).to be_axe_clean.within '[data-testid="element"]'
+
+# run only WCAG 2.1 Level AA rules
+expect(page).to be_axe_clean.according_to :wcag21aa
+
+# specifies which rule to skip
+expect(page).to be_axe_clean.skipping :'link-in-text-block'
+
+# clauses can be chained
+expect(page).to be_axe_clean.within('[data-testid="element"]')
+                            .according_to(:wcag21aa)
+```
+
+Axe does not test hidden regions, such as inactive menus or modal windows. To test
+hidden regions for accessibility, write tests that activate or render the regions visible
+and run the matcher again.
+
+You can run accessibility tests locally in the same way as you [run any feature tests](../../testing_guide/frontend_testing.md#how-to-run-a-feature-test).
+
+After adding accessibility tests, make sure to fix all possible errors.
+For help on how to do it, refer to [this guide](best_practices.md#quick-checklist).
+You can also check accessibility sections in [Pajamas components' documentation](https://design.gitlab.com/components/overview).
+If any of the errors require global changes, create a follow-up issue and assign these labels: `accessability`, `WG::product accessibility`.
+
+### Known accessibility violations
+
+This section documents violations where a recommendation differs with the [design system](https://design.gitlab.com/):
+
+- `link-in-text-block`: For now, use the `skipping` clause to skip `:'link-in-text-block'`
+  rule to fix the violation. After this is fixed as part of [issue 1444](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/1444)
+  and underline is added to the `GlLink` component, this clause can be removed.

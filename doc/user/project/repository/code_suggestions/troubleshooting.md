@@ -18,7 +18,8 @@ In GitLab, ensure Code Suggestions is enabled:
 - [For your user account](../../../profile/preferences.md#enable-code-suggestions).
 - [For *all* top-level groups your account belongs to](../../../group/manage.md#enable-code-suggestions). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
 
-To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). A response of `user_is_allowed` should return `true`.
+To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). The `user_is_allowed` key should have should have a value of `true`.
+A `404 Not Found` result is returned if either of the previous conditions is not met.
 
 ### Code Suggestions not displayed in VS Code or GitLab WebIDE
 

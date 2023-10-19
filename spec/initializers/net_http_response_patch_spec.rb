@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# TODO: This spec file can be removed after fully migration to the gitlab-http gem.
+# It's already covered in gems/gitlab-http/spec/gitlab/http_v2/net_http_response_patch_spec.rb
+
 require 'spec_helper'
 
 RSpec.describe 'Net::HTTPResponse patch header read timeout', feature_category: :shared do

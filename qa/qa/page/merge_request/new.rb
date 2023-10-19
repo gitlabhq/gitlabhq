@@ -14,8 +14,8 @@ module QA
           element 'compare-branches-button'
         end
 
-        view 'app/assets/javascripts/merge_requests/components/compare_dropdown.vue' do
-          element 'source-branch-dropdown', ':data-testid="testid"' # rubocop:disable QA/ElementWithPattern
+        view 'app/assets/javascripts/merge_requests/components/compare_app.vue' do
+          element 'compare-dropdown'
         end
 
         view 'app/views/projects/merge_requests/creations/_new_submit.html.haml' do
@@ -50,7 +50,7 @@ module QA
         end
 
         def select_source_branch(branch)
-          click_element('source-branch-dropdown')
+          click_element('compare-dropdown', 'compare-side': 'source')
           search_and_select(branch)
         end
       end

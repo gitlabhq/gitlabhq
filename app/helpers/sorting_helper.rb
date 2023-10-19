@@ -64,15 +64,6 @@ module SortingHelper
     options
   end
 
-  def forks_sort_options_hash
-    {
-      sort_value_recently_created => sort_title_created_date,
-      sort_value_oldest_created => sort_title_created_date,
-      sort_value_latest_activity => sort_title_latest_activity,
-      sort_value_oldest_activity => sort_title_latest_activity
-    }
-  end
-
   def forks_reverse_sort_options_hash
     {
       sort_value_recently_created => sort_value_oldest_created,
@@ -91,12 +82,6 @@ module SortingHelper
       sort_value_latest_activity => sort_title_recently_updated,
       sort_value_oldest_activity => sort_title_oldest_updated
     }
-  end
-
-  def subgroups_sort_options_hash
-    groups_sort_options_hash.merge(
-      sort_value_stars_desc => sort_title_most_stars
-    )
   end
 
   def admin_groups_sort_options_hash
@@ -197,19 +182,6 @@ module SortingHelper
       sort_value_most_popular => sort_value_least_popular,
       sort_value_title => sort_value_title_desc
     }.merge(issuable_sort_option_overrides)
-  end
-
-  def audit_logs_sort_order_hash
-    {
-      sort_value_recently_created => sort_title_recently_created,
-      sort_value_oldest_created => sort_title_oldest_created
-    }
-  end
-
-  def issuable_sort_option_title(sort_value)
-    sort_value = issuable_sort_option_overrides[sort_value] || sort_value
-
-    sort_options_hash[sort_value]
   end
 
   def issuable_sort_options(viewing_issues, viewing_merge_requests)
@@ -319,17 +291,6 @@ module SortingHelper
       sort_value_project_name_desc => sort_value_project_name_asc,
       sort_value_project_name_asc => sort_value_project_name_desc
     }
-  end
-
-  def packages_sort_option_title(sort_value)
-    packages_sort_options_hash[sort_value] || sort_title_created_date
-  end
-
-  def packages_sort_direction_button(sort_value)
-    reverse_sort = packages_reverse_sort_order_hash[sort_value]
-    url = package_sort_path(sort: reverse_sort)
-
-    sort_direction_button(url, reverse_sort, sort_value)
   end
 
   def forks_sort_direction_button(sort_value, without = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id])

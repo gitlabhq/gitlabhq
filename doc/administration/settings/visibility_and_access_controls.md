@@ -85,10 +85,11 @@ To configure delayed project deletion:
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Scroll to:
-   - (In GitLab 15.11 and later with `always_perform_delayed_deletion` feature flag enabled, or GitLab 16.0 and later) **Deletion protection** and set the retention period to a value between `1` and `90`.
-   - (GitLab 15.1 and later) **Deletion protection** and select keep deleted groups and projects, and select a retention period.
-   - (GitLab 15.0 and earlier) **Default delayed project protection** and select **Enable delayed project deletion by
-     default for newly-created groups.** Then set a retention period in **Default deletion delay**.
+   - In GitLab 16.0 and later: **Deletion protection** and set the retention period to a value between `1` and `90`.
+   - In GitLab 15.11 with `always_perform_delayed_deletion` feature flag enabled: **Deletion protection** and set the retention period to a value between `1` and `90`.
+   - In GitLab 15.1 to 15.10: **Deletion protection** and select **Keep deleted groups and projects**, then set the retention period.
+   - In GitLab 15.0 and earlier: **Default delayed project protection** and select **Enable delayed project deletion by
+     default for newly-created groups**, then set the retention period.
 1. Select **Save changes**.
 
 Deletion protection is not available for projects only (without being also being enabled for groups).

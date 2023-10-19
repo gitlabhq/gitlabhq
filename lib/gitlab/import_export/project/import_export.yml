@@ -172,6 +172,7 @@ included_attributes:
     - :project_id
     - :ref
     - :updated_at
+    - :owner_id
   error_tracking_setting:
     - :api_url
     - :organization_name

@@ -98,17 +98,8 @@ RSpec.describe Projects::ProjectMembersController do
           end
         end
 
-        context 'when invited group members are present' do
+        shared_examples 'users are invited through groups' do
           let_it_be(:invited_group_member) { create(:user) }
-
-          before do
-            group.add_owner(invited_group_member)
-
-            project.invited_groups << group
-            project.add_maintainer(user)
-
-            sign_in(user)
-          end
 
           context 'when webui_members_inherited_users is disabled' do
             before do
@@ -127,6 +118,35 @@ RSpec.describe Projects::ProjectMembersController do
 
             expect(assigns(:project_members).map(&:user_id)).to include(invited_group_member.id)
           end
+        end
+
+        context 'when invited group members are present' do
+          before do
+            group.add_owner(invited_group_member)
+
+            project.invited_groups << group
+            project.add_maintainer(user)
+
+            sign_in(user)
+          end
+
+          include_examples 'users are invited through groups'
+        end
+
+        context 'when group is invited to project parent' do
+          let_it_be(:parent_group) { create(:group, :public) }
+          let_it_be(:project, reload: true) { create(:project, :public, namespace: parent_group) }
+
+          before do
+            group.add_owner(invited_group_member)
+
+            parent_group.shared_with_groups << group
+            project.add_maintainer(user)
+
+            sign_in(user)
+          end
+
+          include_examples 'users are invited through groups'
         end
       end
 

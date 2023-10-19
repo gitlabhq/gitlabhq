@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class DesignBundlePipeline
         include Pipeline
+        include IndexCacheStrategy
 
         file_extraction_pipeline!
         relation_name BulkImports::FileTransfer::ProjectConfig::DESIGN_BUNDLE_RELATION

@@ -21,7 +21,7 @@ RSpec.describe CommitPresenter, feature_category: :source_code_management do
     subject { presenter.detailed_status_for('ref')&.text }
 
     where(:read_commit_status, :read_pipeline, :expected_result) do
-      true  | true  | 'passed'
+      true  | true  | 'Passed'
       true  | false | nil
       false | true  | nil
       false | false | nil

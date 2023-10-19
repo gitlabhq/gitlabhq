@@ -18,7 +18,13 @@ Cells is a new architecture for our software as a service platform. This archite
 
 For more information about Cells, see also:
 
-- [Goals, Glossary and Requirements](goals.md)
+## Goals
+
+See [Goals, Glossary and Requirements](goals.md).
+
+## Deployment Architecture
+
+See [Deployment Architecture](deployment-architecture.md).
 
 ## Work streams
 
@@ -87,11 +93,11 @@ The first 2-3 quarters are required to define a general split of data and build 
 
     The Admin Area section for the most part is shared across a cluster.
 
-1. **User accounts are shared across cluster.**
+1. **User accounts are shared across cluster.** ✓
 
     The purpose is to make `users` cluster-wide.
 
-1. **User can create Group.**
+1. **User can create Group.** ✓ ([demo](https://www.youtube.com/watch?v=LUyV0ncfdRs))
 
     The purpose is to perform a targeted decomposition of `users` and `namespaces`, because `namespaces` will be stored locally in the Cell.
 
@@ -115,9 +121,13 @@ The first 2-3 quarters are required to define a general split of data and build 
 
     The purpose is that `ci_pipelines` (like `ci_stages`, `ci_builds`, `ci_job_artifacts`) and adjacent tables are properly attributed to be Cell-local.
 
-1. **User can create issue, merge request, and merge it after it is green.**
+1. **User can create issue.**
 
-    The purpose is to ensure that `issues` and `merge requests` are properly attributed to be `Cell-local`.
+    The purpose is to ensure that `issues` are properly attributed to be `Cell-local`.
+
+1. **User can create merge request, and merge it after it is green.**
+
+    The purpose is to ensure `merge requests` are properly attributed to be `Cell-local`.
 
 1. **User can manage Group and Project members.**
 
@@ -265,34 +275,34 @@ One iteration describes one quarter's worth of work.
     - Data access layer: Initial Admin Area settings are shared across cluster.
     - Essential workflows: Allow to share cluster-wide data with database-level data access layer
 
-1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - Expected delivery: 16.2 FY24Q2 | Actual delivery: 16.4 FY24Q3 - In progress
+1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - Expected delivery: 16.2 FY24Q2, Actual delivery: 16.4 FY24Q3 - Complete
 
     - Essential workflows: User accounts are shared across cluster.
     - Essential workflows: User can create Group.
 
-1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - Expected delivery: 16.7 FY24Q4 - Planned
+1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - Expected delivery: 16.7 FY24Q4 - In Progress
 
     - Essential workflows: User can create Project.
     - Routing: Technology.
     - Routing: Cell discovery.
-    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
-    - Data access layer: Data access layer.
 
 1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - Expected delivery: 16.10 FY25Q1 - Planned
 
-    - Essential workflows: User can create organization on Cell 2.
+    - Essential workflows: User can create Organization on Cell 2.
     - Data access layer: Cluster-unique identifiers.
+    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
+    - Data access layer: Data access layer.
     - Routing: User can use single domain to interact with many Cells.
     - Cell deployment: Extend GitLab Dedicated to support GCP.
 
 1. Iteration 5..N - starting FY25Q1
 
     - Essential workflows: User can push to Git repository.
-    - Essential workflows: User can create issue, merge request, and merge it after it is green.
     - Essential workflows: User can run CI pipeline.
     - Essential workflows: Instance-wide settings are shared across cluster.
     - Essential workflows: User can change profile avatar that is shared in cluster.
-    - Essential workflows: User can create issue, merge request, and merge it after it is green.
+    - Essential workflows: User can create issue.
+    - Essential workflows: User can create merge request, and merge it after it is green.
     - Essential workflows: User can manage Group and Project members.
     - Essential workflows: User can manage instance-wide runners.
     - Essential workflows: User is part of Organization and can only see information from the Organization.
@@ -317,6 +327,7 @@ Below is a list of known affected features with preliminary proposed solutions.
 
 - [Cells: Admin Area](impacted_features/admin-area.md)
 - [Cells: Backups](impacted_features/backups.md)
+- [Cells: CI/CD Catalog](impacted_features/ci-cd-catalog.md)
 - [Cells: CI Runners](impacted_features/ci-runners.md)
 - [Cells: Container Registry](impacted_features/container-registry.md)
 - [Cells: Contributions: Forks](impacted_features/contributions-forks.md)
@@ -338,10 +349,13 @@ Below is a list of known affected features with preliminary proposed solutions.
 The following list of impacted features only represents placeholders that still require work to estimate the impact of Cells and develop solution proposals.
 
 - [Cells: Agent for Kubernetes](impacted_features/agent-for-kubernetes.md)
-- [Cells: CI/CD Catalog](impacted_features/ci-cd-catalog.md)
 - [Cells: Data pipeline ingestion](impacted_features/data-pipeline-ingestion.md)
 - [Cells: GitLab Pages](impacted_features/gitlab-pages.md)
+- [Cells: Group Transfer](impacted_features/group-transfer.md)
+- [Cells: Issues](impacted_features/issues.md)
+- [Cells: Merge Requests](impacted_features/merge-requests.md)
 - [Cells: Personal Access Tokens](impacted_features/personal-access-tokens.md)
+- [Cells: Project Transfer](impacted_features/project-transfer.md)
 - [Cells: Router Endpoints Classification](impacted_features/router-endpoints-classification.md)
 - [Cells: Schema changes (Postgres and Elasticsearch migrations)](impacted_features/schema-changes.md)
 - [Cells: Uploads](impacted_features/uploads.md)
@@ -407,7 +421,7 @@ The design goals of the Cells architecture describe that [all Cells are under a 
 
 - Cell-local features should be limited to those related to managing the Cell, but never be a feature where the Cell semantic is exposed to the customer.
 - The Cells architecture wants to freely control the distribution of Organization and customer data across Cells without impacting users when data is migrated.
- 
+
 Cluster-wide features are strongly discouraged because:
 
 - They might require storing a substantial amount of data cluster-wide which decreases [scalability headroom](goals.md#provides-100x-headroom).

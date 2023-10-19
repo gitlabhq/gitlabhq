@@ -190,6 +190,7 @@ export default {
       :title="$options.i18n.MISSING_OR_DELETED_IMAGE_TITLE"
       :description="$options.i18n.MISSING_OR_DELETED_IMAGE_MESSAGE"
       :svg-path="config.noContainersImage"
+      :svg-height="null"
       class="gl-mx-auto gl-my-0"
     />
   </div>

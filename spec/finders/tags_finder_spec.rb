@@ -133,7 +133,7 @@ RSpec.describe TagsFinder do
         it 'filters tags' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(v1.1.0))
+          expect(result.map(&:name)).to eq(%w[v1.1.0])
         end
       end
 
@@ -143,7 +143,7 @@ RSpec.describe TagsFinder do
         it 'filters branches' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(v1.1.1))
+          expect(result.map(&:name)).to eq(%w[v1.1.1])
         end
       end
 
@@ -153,7 +153,7 @@ RSpec.describe TagsFinder do
         it 'filters branches' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(v1.0.0 v1.1.0))
+          expect(result.map(&:name)).to eq(%w[v1.0.0 v1.1.0])
         end
       end
 
@@ -174,7 +174,7 @@ RSpec.describe TagsFinder do
           it 'filters branches' do
             result = subject
 
-            expect(result.map(&:name)).to eq(%w(v1.1.1 v1.1.0 v1.0.0))
+            expect(result.map(&:name)).to eq(%w[v1.1.1 v1.1.0 v1.0.0])
           end
         end
 
@@ -184,7 +184,7 @@ RSpec.describe TagsFinder do
           it 'filters branches' do
             result = subject
 
-            expect(result.map(&:name)).to eq(%w(v1.1.0 v1.0.0))
+            expect(result.map(&:name)).to eq(%w[v1.1.0 v1.0.0])
           end
         end
       end
@@ -195,7 +195,7 @@ RSpec.describe TagsFinder do
         it 'ignores the pagination for search' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(v1.1.1))
+          expect(result.map(&:name)).to eq(%w[v1.1.1])
         end
       end
     end

@@ -1,6 +1,5 @@
 <script>
 import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
-import { workItemPath } from '../../utils';
 
 export default {
   components: {
@@ -20,20 +19,11 @@ export default {
       type: Boolean,
       required: true,
     },
-    workItemFullPath: {
-      type: String,
-      required: true,
-    },
-  },
-  methods: {
-    linkedItemPath(fullPath, id) {
-      return workItemPath(fullPath, id);
-    },
   },
 };
 </script>
 <template>
-  <div>
+  <div data-testid="work-item-linked-items-list">
     <h4
       v-if="heading"
       data-testid="work-items-list-heading"
@@ -51,8 +41,9 @@ export default {
           <work-item-link-child-contents
             :child-item="linkedItem.workItem"
             :can-update="canUpdate"
-            :child-path="linkedItemPath(workItemFullPath, linkedItem.workItem.iid)"
+            :show-task-icon="true"
             @click="$emit('showModal', { event: $event, child: linkedItem.workItem })"
+            @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
           />
         </li>
       </ul>

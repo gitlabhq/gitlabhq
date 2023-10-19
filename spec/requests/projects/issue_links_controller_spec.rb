@@ -33,7 +33,7 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
 
         expect(json_response.count).to eq(1)
         expect(json_response.first).to include(
-          'path' => project_work_items_path(issue_b.project, issue_b.iid),
+          'path' => project_work_item_path(issue_b.project, issue_b.iid),
           'type' => 'TASK'
         )
       end

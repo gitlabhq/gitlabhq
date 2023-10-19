@@ -13,6 +13,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker, feature_cat
     settings.write({ optional_stages: { attachments_import: stage_enabled } })
   end
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     let(:client) { instance_double('Gitlab::GithubImport::Client') }
     let(:importers) do

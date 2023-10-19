@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:uploads:migrate and migrate_to_local rake tasks', :sidekiq_inline, :silence_stdout do
   before do

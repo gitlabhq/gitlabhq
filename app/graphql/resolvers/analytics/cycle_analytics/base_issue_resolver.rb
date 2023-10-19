@@ -48,3 +48,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::Analytics::CycleAnalytics::BaseIssueResolver.prepend_mod

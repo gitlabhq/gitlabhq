@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::Truncate, feature_c
   end
 
   it 'truncates the given input' do
-    function = described_class.new('truncate(1,2)')
+    function = described_class.new('truncate(1,2)', nil)
 
     output = function.execute('test')
 
@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::Truncate, feature_c
 
   context 'when given a non-string input' do
     it 'returns an error' do
-      function = described_class.new('truncate(1,2)')
+      function = described_class.new('truncate(1,2)', nil)
 
       function.execute(100)
 

@@ -1,13 +1,15 @@
 <script>
 import { GlModal, GlAlert } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl, updateHistory, getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import eventHub from '~/boards/eventhub';
 import { formType } from '../constants';
 
+import { setError } from '../graphql/cache_updates';
+import errorQuery from '../graphql/client/error.query.graphql';
 import createBoardMutation from '../graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '../graphql/board_destroy.mutation.graphql';
 import updateBoardMutation from '../graphql/board_update.mutation.graphql';
@@ -93,8 +95,13 @@ export default {
       isLoading: false,
     };
   },
+  apollo: {
+    error: {
+      query: errorQuery,
+      update: (data) => data.boardsAppError,
+    },
+  },
   computed: {
-    ...mapState(['error']),
     isNewForm() {
       return this.currentPage === formType.new;
     },
@@ -133,7 +140,7 @@ export default {
           variant: this.buttonKind,
           disabled: this.submitDisabled,
           loading: this.isLoading,
-          'data-qa-selector': 'save_changes_button',
+          'data-testid': 'save-changes-button',
         },
       };
     },
@@ -177,7 +184,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setError', 'unsetError', 'setBoard']),
+    ...mapActions(['setBoard']),
+    setError,
     isFocusMode() {
       return Boolean(document.querySelector('.content-wrapper > .js-focus-mode-board.is-focused'));
     },
@@ -211,8 +219,8 @@ export default {
         try {
           await this.deleteBoard();
           visitUrl(this.boardBaseUrl);
-        } catch {
-          this.setError({ message: this.$options.i18n.deleteErrorMessage });
+        } catch (error) {
+          setError({ error, message: this.$options.i18n.deleteErrorMessage });
         } finally {
           this.isLoading = false;
         }
@@ -236,8 +244,8 @@ export default {
               : '';
             updateHistory({ url: `${this.boardBaseUrl}/${getIdFromGraphQLId(board.id)}${param}` });
           }
-        } catch {
-          this.setError({ message: this.$options.i18n.saveErrorMessage });
+        } catch (error) {
+          setError({ error, message: this.$options.i18n.saveErrorMessage });
         } finally {
           this.isLoading = false;
         }
@@ -295,11 +303,11 @@ export default {
     @hide.prevent
   >
     <gl-alert
-      v-if="!isApolloBoard && error"
+      v-if="error"
       class="gl-mb-3"
       variant="danger"
       :dismissible="true"
-      @dismiss="unsetError"
+      @dismiss="() => setError({ message: null, captureError: false })"
     >
       {{ error }}
     </gl-alert>
@@ -316,7 +324,7 @@ export default {
           ref="name"
           v-model="board.name"
           class="form-control"
-          data-qa-selector="board_name_field"
+          data-testid="board-name-field"
           type="text"
           :placeholder="$options.i18n.titleFieldPlaceholder"
           @keyup.enter="submit"

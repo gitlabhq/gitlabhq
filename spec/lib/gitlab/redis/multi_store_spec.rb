@@ -948,6 +948,55 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
   end
 
+  describe '#close' do
+    subject { multi_store.close }
+
+    context 'when using both stores' do
+      before do
+        allow(multi_store).to receive(:use_primary_and_secondary_stores?).and_return(true)
+      end
+
+      it 'closes both stores' do
+        expect(primary_store).to receive(:close)
+        expect(secondary_store).to receive(:close)
+
+        subject
+      end
+    end
+
+    context 'when using only one store' do
+      before do
+        allow(multi_store).to receive(:use_primary_and_secondary_stores?).and_return(false)
+      end
+
+      context 'when using primary_store as default store' do
+        before do
+          allow(multi_store).to receive(:use_primary_store_as_default?).and_return(true)
+        end
+
+        it 'closes primary store' do
+          expect(primary_store).to receive(:close)
+          expect(secondary_store).not_to receive(:close)
+
+          subject
+        end
+      end
+
+      context 'when using secondary_store as default store' do
+        before do
+          allow(multi_store).to receive(:use_primary_store_as_default?).and_return(false)
+        end
+
+        it 'closes secondary store' do
+          expect(primary_store).not_to receive(:close)
+          expect(secondary_store).to receive(:close)
+
+          subject
+        end
+      end
+    end
+  end
+
   context 'with unsupported command' do
     let(:counter) { Gitlab::Metrics::NullMetric.instance }
 

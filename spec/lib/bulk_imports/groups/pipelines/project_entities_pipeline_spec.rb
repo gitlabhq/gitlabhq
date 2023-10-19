@@ -19,7 +19,7 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
 
   subject { described_class.new(context) }
 
-  describe '#run' do
+  describe '#run', :clean_gitlab_redis_cache do
     let(:extracted_data) do
       BulkImports::Pipeline::ExtractedData.new(data: {
         'id' => 'gid://gitlab/Project/1234567',
@@ -48,6 +48,11 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
       expect(project_entity.destination_name).to eq('my-project')
       expect(project_entity.destination_namespace).to eq(destination_group.full_path)
       expect(project_entity.source_xid).to eq(1234567)
+    end
+
+    it 'does not create duplicate entities on rerun' do
+      expect { subject.run }.to change(BulkImports::Entity, :count).by(1)
+      expect { subject.run }.not_to change(BulkImports::Entity, :count)
     end
   end
 

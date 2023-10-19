@@ -26,10 +26,7 @@ module QA
 
         expect(merge_request).not_to be_nil, "There was a problem creating the merge request"
 
-        merge_request = Resource::MergeRequest.fabricate_via_api! do |mr|
-          mr.project = project
-          mr.iid = merge_request[:iid]
-        end.merge_via_api!
+        merge_request = create(:merge_request, project: project, iid: merge_request[:iid]).merge_via_api!
 
         expect(merge_request[:state]).to eq('merged')
 

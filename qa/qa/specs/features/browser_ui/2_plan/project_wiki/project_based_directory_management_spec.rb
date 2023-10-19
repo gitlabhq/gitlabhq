@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Plan', product_group: :knowledge do
     describe 'A project wiki' do
-      let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
+      let(:initial_wiki) { create(:project_wiki_page) }
       let(:new_path) { "a/new/path-with-spaces" }
 
       before do

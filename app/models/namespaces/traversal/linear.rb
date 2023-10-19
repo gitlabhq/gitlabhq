@@ -61,8 +61,6 @@ module Namespaces
         # INPUT: [[4909902], [4909902,51065789], [4909902,51065793], [7135830], [15599674, 1], [15599674, 1, 3], [15599674, 2]]
         # RESULT: [[4909902], [7135830], [15599674, 1], [15599674, 2]]
         def shortest_traversal_ids_prefixes
-          raise ArgumentError, 'Feature not supported since the `:use_traversal_ids` is disabled' unless use_traversal_ids?
-
           prefixes = []
 
           # The array needs to be sorted (O(nlogn)) to ensure shortest elements are always first
@@ -91,8 +89,6 @@ module Namespaces
       end
 
       def use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids)
-
         traversal_ids.present?
       end
 

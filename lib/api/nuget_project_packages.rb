@@ -11,6 +11,7 @@ module API
   class NugetProjectPackages < ::API::Base
     helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers
+    helpers ::API::Helpers::Packages::Nuget
     include ::API::Helpers::Authentication
 
     feature_category :package_registry
@@ -113,9 +114,7 @@ module API
           track_package_event(
             symbol_package ? 'push_symbol_package' : 'push_package',
             :nuget,
-            **{ category: 'API::NugetPackages',
-                project: package.project,
-                namespace: package.project.namespace }.tap { |args| args[:feed] = 'v2' if request.path.include?('nuget/v2') }
+            **track_package_event_attrs(package.project)
           )
         end
       rescue ObjectStorage::RemoteStoreError => e
@@ -147,6 +146,16 @@ module API
                         .payload
 
         present odata_entry
+      end
+
+      def track_package_event_attrs(project)
+        attrs = {
+          category: 'API::NugetPackages',
+          project: project,
+          namespace: project.namespace
+        }
+        attrs[:feed] = 'v2' if request.path.include?('nuget/v2')
+        attrs
       end
     end
 
@@ -216,9 +225,7 @@ module API
               track_package_event(
                 params[:format] == 'snupkg' ? 'pull_symbol_package' : 'pull_package',
                 :nuget,
-                category: 'API::NugetPackages',
-                project: package_file.project,
-                namespace: package_file.project.namespace
+                **track_package_event_attrs(package.project)
               )
 
               # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false
@@ -227,7 +234,7 @@ module API
           end
         end
 
-        # To support an additional authentication option for publish endpoints,
+        # To support an additional authentication option for publish/delete endpoints,
         # we redefine the `authenticate_with` method by combining the previous
         # authentication option with the new one.
         authenticate_with do |accept|
@@ -303,6 +310,31 @@ module API
           end
           put 'symbolpackage/authorize', urgency: :low do
             authorize_nuget_upload
+          end
+
+          desc 'The NuGet Package Delete endpoint' do
+            detail 'This feature was introduced in GitLab 16.5'
+            success code: 204
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[nuget_packages]
+          end
+          params do
+            requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex, documentation: { example: 'mynugetpkg' }
+            requires :package_version, type: String, allow_blank: false, desc: 'The NuGet package version', regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.0.1' }
+          end
+          delete '*package_name/*package_version', format: false, urgency: :low do
+            authorize_destroy_package!(project_or_group)
+
+            package = find_package(params[:package_name], params[:package_version])
+            destroy_conditionally!(package) do |package|
+              ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
+
+              track_package_event('delete_package', :nuget, category: 'API::NugetPackages', project: package.project, namespace: package.project.namespace)
+            end
           end
 
           namespace '/v2' do

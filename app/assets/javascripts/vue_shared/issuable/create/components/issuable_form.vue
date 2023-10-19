@@ -1,15 +1,17 @@
 <script>
-import { GlForm, GlFormInput, GlFormGroup } from '@gitlab/ui';
+import { GlForm, GlFormInput, GlFormCheckbox, GlFormGroup } from '@gitlab/ui';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
 import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
+import { issuableTypeText } from '~/issues/constants';
 
 export default {
   VARIANT_EMBEDDED,
   components: {
     GlForm,
     GlFormInput,
+    GlFormCheckbox,
     GlFormGroup,
     MarkdownEditor,
     LabelsSelect,
@@ -31,6 +33,10 @@ export default {
       type: String,
       required: true,
     },
+    issuableType: {
+      type: String,
+      required: true,
+    },
   },
   descriptionFormFieldProps: {
     ariaLabel: __('Description'),
@@ -44,10 +50,20 @@ export default {
     return {
       issuableTitle: '',
       issuableDescription: '',
+      issuableConfidential: false,
       selectedLabels: [],
     };
   },
-  computed: {},
+  computed: {
+    confidentialityText() {
+      return sprintf(
+        __(
+          'This %{issuableType} is confidential and should only be visible to team members with at least Reporter access.',
+        ),
+        { issuableType: issuableTypeText[this.issuableType] },
+      );
+    },
+  },
   methods: {
     handleUpdateSelectedLabels(labels) {
       if (labels.length) {
@@ -85,6 +101,15 @@ export default {
         />
       </div>
     </div>
+    <div data-testid="issuable-confidential" class="form-group row">
+      <div class="col-12">
+        <gl-form-group :label="__('Confidentiality')" label-for="issuable-confidential">
+          <gl-form-checkbox id="issuable-confidential" v-model="issuableConfidential">
+            {{ confidentialityText }}
+          </gl-form-checkbox>
+        </gl-form-group>
+      </div>
+    </div>
     <div data-testid="issuable-labels" class="form-group row">
       <label for="issuable-labels" class="col-12">{{ __('Labels') }}</label>
       <div class="col-12">
@@ -111,6 +136,7 @@ export default {
         name="actions"
         :issuable-title="issuableTitle"
         :issuable-description="issuableDescription"
+        :issuable-confidential="issuableConfidential"
         :selected-labels="selectedLabels"
       ></slot>
     </div>

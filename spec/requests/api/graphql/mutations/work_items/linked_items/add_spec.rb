@@ -5,15 +5,17 @@ require 'spec_helper'
 RSpec.describe "Add linked items to a work item", feature_category: :portfolio_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
-  let_it_be(:work_item) { create(:work_item, project: project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :private, group: group) }
+  let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
+  let_it_be(:project_work_item) { create(:work_item, :issue, project: project) }
   let_it_be(:related1) { create(:work_item, project: project) }
   let_it_be(:related2) { create(:work_item, project: project) }
 
   let(:mutation_response) { graphql_mutation_response(:work_item_add_linked_items) }
   let(:mutation) { graphql_mutation(:workItemAddLinkedItems, input, fields) }
 
+  let(:work_item) { project_work_item }
   let(:ids_to_link) { [related1.to_global_id.to_s, related2.to_global_id.to_s] }
   let(:input) { { 'id' => work_item.to_global_id.to_s, 'workItemsIds' => ids_to_link } }
 
@@ -70,6 +72,18 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
       )
     end
 
+    context 'when work item is created at the group level' do
+      let(:work_item) { create(:work_item, :group_level, namespace: group) }
+
+      it 'links the work item' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change { WorkItems::RelatedWorkItemLink.count }.by(2)
+
+        expect(mutation_response['message']).to eq("Successfully linked ID(s): #{related1.id} and #{related2.id}.")
+      end
+    end
+
     context 'when linking a work item fails' do
       let_it_be(:private_project) { create(:project, :private) }
       let_it_be(:related2) { create(:work_item, project: private_project) }
@@ -99,6 +113,20 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
           end.not_to change { WorkItems::RelatedWorkItemLink.count }
 
           expect_graphql_errors_to_include("Couldn't find WorkItem with 'id'=#{non_existing_record_id}")
+        end
+      end
+
+      context 'when type cannot be linked' do
+        let_it_be(:req) { create(:work_item, :requirement, project: project) }
+
+        let(:input) { { 'id' => work_item.to_global_id.to_s, 'workItemsIds' => [req.to_global_id.to_s] } }
+
+        it 'returns an error message' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(mutation_response["errors"]).to eq([
+            "#{req.to_reference} cannot be added: issues cannot be related to requirements"
+          ])
         end
       end
 

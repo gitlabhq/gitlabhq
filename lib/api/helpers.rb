@@ -19,7 +19,7 @@ module API
     API_TOKEN_ENV = 'gitlab.api.token'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
-    INTEGER_ID_REGEX = /^-?\d+$/.freeze
+    INTEGER_ID_REGEX = /^-?\d+$/
 
     def logger
       API.logger
@@ -237,7 +237,7 @@ module API
     end
 
     def check_namespace_access(namespace)
-      return namespace if can?(current_user, :read_namespace, namespace)
+      return namespace if can?(current_user, :read_namespace_via_membership, namespace)
 
       not_found!('Namespace')
     end
@@ -412,7 +412,7 @@ module API
     end
 
     def require_pages_enabled!
-      not_found! unless user_project.pages_available?
+      not_found! unless ::Gitlab::Pages.enabled?
     end
 
     def require_pages_config_enabled!
@@ -462,8 +462,8 @@ module API
       items.search(text)
     end
 
-    def order_options_with_tie_breaker
-      order_by = if params[:order_by] == 'created_at'
+    def order_options_with_tie_breaker(override_created_at: true)
+      order_by = if params[:order_by] == 'created_at' && override_created_at
                    'id'
                  else
                    params[:order_by]
@@ -700,14 +700,18 @@ module API
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 
-    def track_event(event_name, user_id:, namespace_id: nil, project_id: nil)
-      return unless user_id.present?
+    def track_event(event_name, user:, send_snowplow_event: true, namespace_id: nil, project_id: nil)
+      return unless user.present?
+
+      namespace = Namespace.find(namespace_id) if namespace_id
+      project = Project.find(project_id) if project_id
 
       Gitlab::InternalEvents.track_event(
         event_name,
-        user_id: user_id,
-        namespace_id: namespace_id,
-        project_id: project_id
+        send_snowplow_event: send_snowplow_event,
+        user: user,
+        namespace: namespace,
+        project: project
       )
     rescue StandardError => e
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name)

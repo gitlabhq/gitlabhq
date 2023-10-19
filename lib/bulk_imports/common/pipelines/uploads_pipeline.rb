@@ -5,8 +5,9 @@ module BulkImports
     module Pipelines
       class UploadsPipeline
         include Pipeline
+        include IndexCacheStrategy
 
-        AVATAR_PATTERN = %r{.*\/#{BulkImports::UploadsExportService::AVATAR_PATH}\/(?<identifier>.*)}.freeze
+        AVATAR_PATTERN = %r{.*\/#{BulkImports::UploadsExportService::AVATAR_PATH}\/(?<identifier>.*)}
 
         AvatarLoadingError = Class.new(StandardError)
 

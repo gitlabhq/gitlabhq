@@ -8,10 +8,6 @@ class Admin::TopicsController < Admin::ApplicationController
 
   feature_category :groups_and_projects
 
-  before_action do
-    push_frontend_feature_flag(:content_editor_on_issues, current_user)
-  end
-
   def index
     @topics = Projects::TopicsFinder.new(params: params.permit(:search)).execute.page(params[:page]).without_count
   end

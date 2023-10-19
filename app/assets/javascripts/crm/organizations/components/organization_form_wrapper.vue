@@ -4,7 +4,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CRM_ORGANIZATION, TYPENAME_GROUP } from '~/graphql_shared/constants';
 import CrmForm from '../../components/crm_form.vue';
 import getGroupOrganizationsQuery from './graphql/get_group_organizations.query.graphql';
-import createOrganizationMutation from './graphql/create_organization.mutation.graphql';
+import createCustomerRelationsOrganizationMutation from './graphql/create_customer_relations_organization.mutation.graphql';
 import updateOrganizationMutation from './graphql/update_organization.mutation.graphql';
 
 export default {
@@ -31,7 +31,7 @@ export default {
     mutation() {
       if (this.isEditMode) return updateOrganizationMutation;
 
-      return createOrganizationMutation;
+      return createCustomerRelationsOrganizationMutation;
     },
     getQuery() {
       return {

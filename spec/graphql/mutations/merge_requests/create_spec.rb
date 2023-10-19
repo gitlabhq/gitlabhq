@@ -112,11 +112,13 @@ RSpec.describe Mutations::MergeRequests::Create do
 
       context 'when project is public with private merge requests' do
         let_it_be(:project) do
-          create(:project,
-                 :public,
-                 :repository,
-                 group: group,
-                 merge_requests_access_level: ProjectFeature::DISABLED)
+          create(
+            :project,
+            :public,
+            :repository,
+            group: group,
+            merge_requests_access_level: ProjectFeature::DISABLED
+          )
         end
 
         context 'and user is a guest' do

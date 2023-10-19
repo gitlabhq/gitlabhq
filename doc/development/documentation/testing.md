@@ -102,7 +102,7 @@ The output should be similar to:
 This requires you to either:
 
 - Have the [required lint tools installed](#local-linters) on your computer.
-- A working Docker or containerd installation, to use an image with these tools pre-installed.
+- A working Docker or `containerd` installation, to use an image with these tools pre-installed.
 
 ### Documentation link tests
 

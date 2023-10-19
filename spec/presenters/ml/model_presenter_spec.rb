@@ -40,4 +40,10 @@ RSpec.describe Ml::ModelPresenter, feature_category: :mlops do
       it { is_expected.to eq("/#{project.full_path}/-/packages/#{model.latest_version.package_id}") }
     end
   end
+
+  describe '#path' do
+    subject { model1.present.path }
+
+    it { is_expected.to eq("/#{project.full_path}/-/ml/models/#{model1.id}") }
+  end
 end

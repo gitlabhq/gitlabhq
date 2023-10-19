@@ -1,5 +1,5 @@
 <script>
-import { GlForm, GlFormInput, GlButton } from '@gitlab/ui';
+import { GlForm, GlFormInput, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
@@ -11,6 +11,9 @@ export default {
     GlForm,
     GlButton,
     GlFormInput,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   data() {
     return {
@@ -37,7 +40,8 @@ export default {
   <div id="peek-view-add-request" class="view gl-display-flex">
     <gl-form class="gl-display-flex gl-align-items-center" @submit.prevent>
       <gl-button
-        class="gl-text-blue-300! gl-mr-2"
+        v-gl-tooltip.viewport
+        class="gl-mr-2"
         category="tertiary"
         variant="link"
         icon="plus"
@@ -52,7 +56,7 @@ export default {
         type="text"
         :placeholder="$options.i18n.inputLabel"
         :aria-label="$options.i18n.inputLabel"
-        class="gl-ml-2"
+        class="gl-ml-2 gl-px-3! gl-py-2!"
         @keyup.enter="addRequest"
         @keyup.esc="clearForm"
       />

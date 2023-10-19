@@ -159,7 +159,7 @@ To publish comments to the Status Page Incident:
 
 - Create a comment on the incident issue.
 - When you're ready to publish the comment, mark the comment for publication by
-  adding a microphone [emoji reaction](../../user/award_emojis.md)
+  adding a microphone [emoji reaction](../../user/emoji_reactions.md)
   reaction (`:microphone:` 🎤) to the comment.
 - Any files attached to the comment (up to 5000 per issue) are also published.
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.)

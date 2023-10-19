@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def self.available?(project)
-        Chat.available? && project.builds_enabled?
+        project.builds_enabled?
       end
 
       def self.allowed?(project, user)

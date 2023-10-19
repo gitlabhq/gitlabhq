@@ -39,6 +39,6 @@ export default {
 
 <template>
   <gl-button v-bind="$attrs" :aria-label="buttonLabel" @click="onToggle($event)">
-    {{ buttonLabel }}
+    <slot>{{ buttonLabel }}</slot>
   </gl-button>
 </template>

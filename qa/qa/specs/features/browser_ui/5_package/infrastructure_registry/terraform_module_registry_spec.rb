@@ -45,27 +45,16 @@ module QA
 
       it 'publishes a module', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/371583' do
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            terraform_module_yaml = ERB.new(
-              read_fixture('package_managers/terraform', 'module_upload.yaml.erb')
-            ).result(binding)
-            commit.project = imported_project
-            commit.commit_message = 'Add gitlab-ci.yaml file'
-            commit.update_files([
-                                  {
-                                    file_path: '.gitlab-ci.yml',
-                                    content: terraform_module_yaml
-                                  }
-                                ]
-                               )
-          end
+          terraform_module_yaml = ERB.new(
+            read_fixture('package_managers/terraform', 'module_upload.yaml.erb')
+          ).result(binding)
+
+          create(:commit, project: imported_project, commit_message: 'Add gitlab-ci.yaml file', actions: [
+            { action: 'update', file_path: '.gitlab-ci.yml', content: terraform_module_yaml }
+          ])
         end
 
-        Resource::Tag.fabricate_via_api! do |tag|
-          tag.project = imported_project
-          tag.ref = imported_project.default_branch
-          tag.name = "1.0.0"
-        end
+        create(:tag, project: imported_project, ref: imported_project.default_branch, name: '1.0.0')
 
         Flow::Pipeline.visit_latest_pipeline
 

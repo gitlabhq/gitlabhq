@@ -58,9 +58,10 @@ export default {
     },
     toggleFormDropdown() {
       this.isDropdownShowing = !this.isDropdownShowing;
-      const { dropdown } = this.$refs.status.$refs.dropdown.$refs;
+      const { dropdown } = this.$refs.status.$refs;
+
       if (dropdown && this.isDropdownShowing) {
-        dropdown.show();
+        dropdown.open();
       }
     },
     handleUpdating(isMutationInProgress) {

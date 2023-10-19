@@ -7,7 +7,6 @@ module Types
     attr_reader :doc_reference
 
     def initialize(*args, **kwargs, &block)
-      init_gitlab_deprecation(kwargs)
       @doc_reference = kwargs.delete(:see)
 
       # our custom addition `nullable` which allows us to declare

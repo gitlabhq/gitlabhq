@@ -20,16 +20,9 @@ module QA
           push.file_content = 'First commit'
         end
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = second_added_commit_message
-          commit.add_files(
-            [{
-              file_path: "file-#{SecureRandom.hex(8)}",
-              content: 'Second commit'
-            }]
-          )
-        end
+        create(:commit, project: project, commit_message: second_added_commit_message, actions: [
+          { action: 'create', file_path: "file-#{SecureRandom.hex(8)}", content: 'Second commit' }
+        ])
 
         expect(project.commits.map { |commit| commit[:message].chomp })
           .to include(intial_commit_message)

@@ -8,7 +8,7 @@ module QA
       let(:commit_message) { "this is a new addition to the wiki" }
 
       let(:project) { create(:project) }
-      let(:wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
+      let(:wiki) { create(:project_wiki_page) }
 
       before do
         Flow::Login.sign_in
@@ -57,9 +57,7 @@ module QA
 
       it 'by adding a home page to the wiki using git push',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347806' do
-        empty_wiki = Resource::Wiki::ProjectPage.new do |empty_wiki|
-          empty_wiki.project = project
-        end
+        empty_wiki = build(:project_wiki_page, project: project)
 
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_title}.md"

@@ -407,7 +407,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
         update_merge_request({ assignee_ids: [assignee.id] }, format: :json)
 
-        expect(json_response['assignees']).to all(include(*%w(name username avatar_url id state web_url)))
+        expect(json_response['assignees']).to all(include(*%w[name username avatar_url id state web_url]))
       end
     end
 

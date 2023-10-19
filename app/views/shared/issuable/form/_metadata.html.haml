@@ -3,6 +3,7 @@
 - presenter = local_assigns.fetch(:presenter)
 - has_due_date = issuable.has_attribute?(:due_date)
 - form = local_assigns.fetch(:form)
+- add_page_specific_style 'page_bundles/labels'
 
 - if @add_related_issue
   .form-group
@@ -37,15 +38,7 @@
             .issuable-form-select-holder
               = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]"
 
-      - if Feature.enabled?(:visible_label_selection_on_metadata, project)
-        .js-issuable-form-label-selector{ data: issuable_label_selector_data(project, issuable) }
-      - else
-        .form-group.row
-          = form.label :label_ids, _('Labels'), class: "col-12"
-          = form.hidden_field :label_ids, multiple: true, value: ''
-          .col-12
-            .issuable-form-select-holder
-              = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false }, dropdown_title: "Select label"
+      .js-issuable-form-label-selector{ data: issuable_label_selector_data(project, issuable) }
 
       = render_if_exists "shared/issuable/form/merge_request_blocks", issuable: issuable, form: form
 

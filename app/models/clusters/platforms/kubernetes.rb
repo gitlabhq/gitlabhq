@@ -12,7 +12,7 @@ module Clusters
       REQUIRED_K8S_MIN_VERSION = 23
 
       IGNORED_CONNECTION_EXCEPTIONS = [
-        Gitlab::UrlBlocker::BlockedUrlError,
+        Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError,
         Kubeclient::HttpError,
         Errno::ECONNREFUSED,
         URI::InvalidURIError,

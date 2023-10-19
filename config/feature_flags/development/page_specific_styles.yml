@@ -1,0 +1,8 @@
+---
+name: page_specific_styles
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131606
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425035
+milestone: '16.5'
+type: development
+group: group::project management
+default_enabled: false

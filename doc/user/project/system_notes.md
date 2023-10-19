@@ -51,6 +51,15 @@ The filtering options are:
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity**.
 
+## Privacy considerations
+
+You can see only the system notes linked to objects you can access.
+
+For example, if someone mentions your issue 111 in an issue in their private project:
+
+- The project members see the following note in issue 111: `Alex Garcia mentioned in agarcia/private-project#222`.
+- Non-members of the project can't see the note at all.
+
 ## Related topics
 
 - [Notes API](../../api/notes.md)

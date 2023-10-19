@@ -3,10 +3,11 @@ import { GlAvatarLink, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
-import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import WorkItemStateBadge from './work_item_state_badge.vue';
+import WorkItemTypeIcon from './work_item_type_icon.vue';
 
 export default {
   components: {
@@ -18,8 +19,12 @@ export default {
     ConfidentialityBadge,
     GlLoadingIcon,
   },
-  inject: ['fullPath'],
+  inject: ['isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemIid: {
       type: String,
       required: false,
@@ -59,7 +64,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

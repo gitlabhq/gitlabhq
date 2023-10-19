@@ -179,6 +179,7 @@ export default {
             { 'gl-opacity-3': isFadedOut(group.name) },
             'gl-transition-duration-slow gl-transition-timing-function-ease',
           ]"
+          data-testid="job-item-container"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
           @setSkipRetryModal="$emit('setSkipRetryModal')"
         />

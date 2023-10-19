@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_failures do
+RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_failures, feature_category: :importers do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -80,17 +80,6 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
       expect(note.author_id).to eq(project.creator_id)
       expect(note.note).to eq("*Created by: #{user.username}*\n\nHello")
     end
-
-    it 'does not import the note when a foreign key error is raised' do
-      stub_user_finder(project.creator_id, false)
-
-      expect(ApplicationRecord)
-        .to receive(:legacy_bulk_insert)
-        .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
-
-      expect { subject.execute }
-        .not_to change(LegacyDiffNote, :count)
-    end
   end
 
   describe '#execute' do
@@ -143,6 +132,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           expect(note.noteable_type).to eq('MergeRequest')
           expect(note.noteable_id).to eq(merge_request.id)
           expect(note.project_id).to eq(project.id)
+          expect(note.namespace_id).to eq(project.project_namespace_id)
           expect(note.author_id).to eq(user.id)
           expect(note.system).to eq(false)
           expect(note.discussion_id).to eq(discussion_id)

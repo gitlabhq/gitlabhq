@@ -13,9 +13,9 @@ GitLab has created a common set of tools to support our product groups and their
 
 AI is moving very quickly, and we need to be able to keep pace with changes in the area. We have built an [abstraction layer](../../ee/development/ai_features/index.md) to do this, allowing us to take a more "pluggable" approach to the underlying models, data stores, and other technologies.
 
-The following diagram from the [architecture blueprint](../architecture/blueprints/ai_gateway/index.md) shows a simplified view of how the different components in GitLab interact. The abstraction layer helps avoid code duplication within the REST APIs within the `AI API` block.
+The following diagram from the [architecture blueprint](../architecture/blueprints/ai_gateway/index.md) shows a simplified view of how the different components in GitLab interact. The abstraction layer helps avoid code duplication within the REST APIs.
 
-![architecture diagram](img/architecture.png)
+![architecture diagram](../architecture/blueprints/ai_gateway/img/architecture.png)
 
 ## SaaS-based AI abstraction layer
 
@@ -33,8 +33,7 @@ By default, these actions are performed asynchronously via a Sidekiq
 job to prevent long-running requests in Puma. It should be used for
 non-latency sensitive actions due to the added latency by Sidekiq.
 
-At the time of writing, the Abstraction Layer still directly calls the AI providers. This will be
-changed [in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/424614).
+At the time of writing, the Abstraction Layer still directly calls the AI providers. [Epic 11484](https://gitlab.com/groups/gitlab-org/-/epics/11484) proposes to change this.
 
 When a certain action is latency sensitive, we can decide to call the
 AI-gateway directly. This avoids the latency added by Sidekiq.
@@ -88,24 +87,24 @@ For optimal `probes` and `lists` values:
 - Use `lists` equal to `rows / 1000` for tables with up to 1 million rows and `sqrt(rows)` for larger datasets.
 - For `probes` start with `lists / 10` for tables up to 1 million rows and `sqrt(lists)` for larger datasets.
 
-### Code Suggestions
+## Code Suggestions
 
-Code Suggestions is being integrated as part of the GitLab-Rails repository which will unify the architectures between Code Suggestions and AI features that use the abstraction layer, along with offering self-managed support for the other AI features.
+Code Suggestions is being integrated as part of the GitLab-Rails repository which will unify the architectures between Code Suggestions and AI features that use the abstraction layer, along with offering [self-managed support](#self-managed-support) for the other AI features.
 
 The following table documents functionality that Code Suggestions offers today, and what those changes will look like as part of the unification:
 
 | Topic | Details | Where this happens today | Where this will happen going forward |
 | ----- | ------  | --------------           | ------------------                   |
 | Request processing | |                     |                                      |
-|                    | Receives requests from IDEs (VSCode, GitLab WebIDE, MS Visual Studio, IntelliJ, JetBrains, VIM, Emacs, Sublime), including code before and after the cursor | AI Gateway | Abstraction Layer |
-|                    | Authentication the current user, verifies they are authorized to use Code Suggestions for this project | AI Gateway | Abstraction layer |
+|                    | Receives requests from IDEs (VS Code, GitLab WebIDE, MS Visual Studio, IntelliJ, JetBrains, VIM, Emacs, Sublime), including code before and after the cursor | GitLab Rails | GitLab Rails |
+|                    | Authenticates the current user, verifies they are authorized to use Code Suggestions for this project | GitLab Rails + AI Gateway | GitLab Rails + AI Gateway |
 |                    | Preprocesses the request to add context, such as including imports via TreeSitter | AI Gateway | Undecided |
 |                    | Routes the request to the AI Provider | AI Gateway | AI Gateway |
-|                    | Returns the response to the IDE | AI Gateway | Abstraction Layer |
-|                    | Logs the request, including timestamp, response time, model, etc | AI Gateway | Both |
+|                    | Returns the response to the IDE | GitLab Rails | GitLab Rails |
+|                    | Logs the request, including timestamp, response time, model, etc | Both | Both |
 | Telemetry | |                     |                                      |
 |           | User acceptance or rejection in the IDE | AI Gateway | [Both](https://gitlab.com/gitlab-org/gitlab/-/issues/418282) |
-|           | Number of unique users per day | [Abstraction Layer](https://app.periscopedata.com/app/gitlab/1143612/Code-Suggestions-Usage) | Undecided |
+|           | Number of unique users per day | [GitLab Rails](https://app.periscopedata.com/app/gitlab/1143612/Code-Suggestions-Usage), AI gateway | Undecided |
 |           | Error rate, model usage, response time, IDE usage | [AI Gateway](https://log.gprd.gitlab.net/app/dashboards#/view/6c947f80-7c07-11ed-9f43-e3784d7fe3ca?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-6h,to:now))) | Both |
 |           | Suggestions per language | AI Gateway |[Both](https://gitlab.com/groups/gitlab-org/-/epics/11017) |
 | Monitoring | |  Both                   |   Both                                  |
@@ -115,7 +114,15 @@ The following table documents functionality that Code Suggestions offers today, 
 | Internal Models | |                     |                                      |
 |            | Currently unmaintained, the ability to run models in our own instance, running them inside Triton, and routing requests to our own models | AI Gateway | AI Gateway |
 
-#### Code Suggestions Latency
+### Self-managed support
+
+Code Suggestions for self-managed users was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/epics/10516).
+
+For more information on the technical solution for this project see the [Cloud Connector MVC documentation](cloud_connector/code_suggestions_for_sm.md).
+
+The intention is to evolve this solution to service other AI features under the Cloud Connector product umbrella.
+
+### Code Suggestions Latency
 
 Code Suggestions acceptance rates are _highly_ sensitive to latency. While writing code with an AI assistant, a user will pause only for a short duration before continuing on with manually typing out a block of code. As soon as the user has pressed a subsequent keypress, the existing suggestion will be invalidated and a new request will need to be issued to the Code Suggestions endpoint. In turn, this request will also be highly sensitive to latency.
 

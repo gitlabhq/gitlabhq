@@ -11,7 +11,7 @@
 
 docker-build:
   # Use the official docker image.
-  image: docker:latest
+  image: docker:cli
   stage: build
   services:
     - docker:dind

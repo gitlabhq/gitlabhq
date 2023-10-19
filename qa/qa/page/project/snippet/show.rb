@@ -9,7 +9,7 @@ module QA
           include Page::Component::BlobContent
 
           view 'app/views/projects/notes/_actions.html.haml' do
-            element :edit_comment_button
+            element 'edit-comment-button'
           end
         end
       end

@@ -22,6 +22,19 @@ RSpec.describe API::Entities::WikiPage do
     expect(subject[:content]).to eq wiki_page.content
   end
 
+  context "with front matter content" do
+    let(:wiki_page) { create(:wiki_page) }
+    let(:content_with_front_matter) { "---\nxxx: abc\n---\nHome Page" }
+
+    before do
+      wiki_page.update(content: content_with_front_matter) # rubocop:disable Rails/SaveBang
+    end
+
+    it 'returns the raw wiki page content' do
+      expect(subject[:content]).to eq content_with_front_matter
+    end
+  end
+
   context 'when render_html param is passed' do
     context 'when it is true' do
       let(:params) { { render_html: true } }

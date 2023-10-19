@@ -93,5 +93,3 @@ module Issuable
     end
   end
 end
-
-Issuable::Clone::BaseService.prepend_mod_with('Issuable::Clone::BaseService')

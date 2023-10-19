@@ -7,28 +7,25 @@ export default {
     GlButton,
   },
   props: {
-    newPipelinePath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    resetCachePath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
     ciLintPath: {
       type: String,
       required: false,
       default: null,
     },
-
     isResetCacheButtonLoading: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    newPipelinePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    resetCachePath: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   methods: {
@@ -61,7 +58,6 @@ export default {
       category="primary"
       class="js-run-pipeline"
       data-testid="run-pipeline-button"
-      data-qa-selector="run_pipeline_button"
     >
       {{ s__('Pipeline|Run pipeline') }}
     </gl-button>

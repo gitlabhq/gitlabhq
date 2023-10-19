@@ -1,15 +1,7 @@
 <script>
-import {
-  GlLoadingIcon,
-  GlSearchBoxByType,
-  GlDropdown,
-  GlDropdownDivider,
-  GlDropdownSectionHeader,
-  GlDropdownItem,
-  GlModalDirective,
-} from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox, GlModalDirective } from '@gitlab/ui';
 import { produce } from 'immer';
-import { throttle } from 'lodash';
+import { differenceBy, debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 
@@ -18,7 +10,8 @@ import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { s__, __ } from '~/locale';
 
 import eventHub from '../eventhub';
 import groupBoardsQuery from '../graphql/group_boards.query.graphql';
@@ -34,15 +27,16 @@ export default {
   name: 'BoardsSelector',
   i18n: {
     fetchBoardsError: s__('Boards|An error occurred while fetching boards. Please try again.'),
+    headerText: s__('IssueBoards|Switch board'),
+    noResultsText: s__('IssueBoards|No matching boards found'),
+    hiddenBoardsText: s__(
+      'IssueBoards|Some of your boards are hidden, add a license to see them again.',
+    ),
   },
   components: {
     BoardForm,
-    GlLoadingIcon,
-    GlSearchBoxByType,
-    GlDropdown,
-    GlDropdownDivider,
-    GlDropdownSectionHeader,
-    GlDropdownItem,
+    GlButton,
+    GlCollapsibleListbox,
   },
   directives: {
     GlModalDirective,
@@ -60,11 +54,6 @@ export default {
     'isApolloBoard',
   ],
   props: {
-    throttleDuration: {
-      type: Number,
-      default: 200,
-      required: false,
-    },
     boardApollo: {
       type: Object,
       required: false,
@@ -78,13 +67,10 @@ export default {
   },
   data() {
     return {
-      hasScrollFade: false,
-      scrollFadeInitialized: false,
       boards: [],
       recentBoards: [],
       loadingBoards: false,
       loadingRecentBoards: false,
-      throttledSetScrollFade: throttle(this.setScrollFade, this.throttleDuration),
       contentClientHeight: 0,
       maxPosition: 0,
       filterTerm: '',
@@ -96,6 +82,12 @@ export default {
     ...mapState(['board', 'isBoardLoading']),
     boardToUse() {
       return this.isApolloBoard ? this.boardApollo : this.board;
+    },
+    boardToUseName() {
+      return this.boardToUse?.name || s__('IssueBoards|Select board');
+    },
+    boardToUseId() {
+      return getIdFromGraphQLId(this.boardToUse.id) || '';
     },
     isBoardToUseLoading() {
       return this.isApolloBoard ? this.isCurrentBoardLoading : this.isBoardLoading;
@@ -112,6 +104,26 @@ export default {
     loading() {
       return this.loadingRecentBoards || this.loadingBoards;
     },
+    listBoxItems() {
+      const mapItems = ({ id, name }) => ({ text: name, value: id });
+
+      if (this.showRecentSection) {
+        const notRecent = differenceBy(this.filteredBoards, this.recentBoards, 'id');
+
+        return [
+          {
+            text: __('Recent'),
+            options: this.recentBoards.map(mapItems),
+          },
+          {
+            text: __('All'),
+            options: notRecent.map(mapItems),
+          },
+        ];
+      }
+
+      return this.filteredBoards.map(mapItems);
+    },
     filteredBoards() {
       return this.boards.filter((board) =>
         board.name.toLowerCase().includes(this.filterTerm.toLowerCase()),
@@ -126,34 +138,25 @@ export default {
     showDropdown() {
       return this.showCreate || this.hasMissingBoards;
     },
-    scrollFadeClass() {
-      return {
-        'fade-out': !this.hasScrollFade,
-      };
-    },
     showRecentSection() {
       return (
-        this.recentBoards.length &&
+        this.recentBoards.length > 0 &&
         this.boards.length > MIN_BOARDS_TO_VIEW_RECENT &&
         !this.filterTerm.length
       );
     },
   },
   watch: {
-    filteredBoards() {
-      this.scrollFadeInitialized = false;
-      this.$nextTick(this.setScrollFade);
-    },
-    recentBoards() {
-      this.scrollFadeInitialized = false;
-      this.$nextTick(this.setScrollFade);
-    },
     boardToUse(newBoard) {
       document.title = newBoard.name;
     },
   },
   created() {
     eventHub.$on('showBoardModal', this.showPage);
+    this.handleSearch = debounce(this.setFilterTerm, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+  },
+  destroyed() {
+    this.handleSearch.cancel();
   },
   beforeDestroy() {
     eventHub.$off('showBoardModal', this.showPage);
@@ -248,34 +251,6 @@ export default {
 
       this.$emit('switchBoard', board.id);
     },
-    isScrolledUp() {
-      const { content } = this.$refs;
-
-      if (!content) {
-        return false;
-      }
-
-      const currentPosition = this.contentClientHeight + content.scrollTop;
-
-      return currentPosition < this.maxPosition;
-    },
-    initScrollFade() {
-      const { content } = this.$refs;
-
-      if (!content) {
-        return;
-      }
-
-      this.scrollFadeInitialized = true;
-
-      this.contentClientHeight = content.clientHeight;
-      this.maxPosition = content.scrollHeight;
-    },
-    setScrollFade() {
-      if (!this.scrollFadeInitialized) this.initScrollFade();
-
-      this.hasScrollFade = this.isScrolledUp();
-    },
     fetchCurrentBoard(boardId) {
       this.fetchBoard({
         fullPath: this.fullPath,
@@ -283,17 +258,24 @@ export default {
         boardType: this.boardType,
       });
     },
-    async switchBoard(boardId, e) {
+    setFilterTerm(value) {
+      this.filterTerm = value;
+    },
+    async switchBoardKeyEvent(boardId, e) {
       if (isMetaKey(e)) {
+        e.stopPropagation();
         window.open(`${this.boardBaseUrl}/${boardId}`, '_blank');
-      } else if (this.isApolloBoard) {
+      }
+    },
+    switchBoardGroup(value) {
+      if (this.isApolloBoard) {
         // Epic board ID is supported in EE version of this file
-        this.$emit('switchBoard', this.fullBoardId(boardId));
-        updateHistory({ url: `${this.boardBaseUrl}/${boardId}` });
+        this.$emit('switchBoard', this.fullBoardId(value));
+        updateHistory({ url: `${this.boardBaseUrl}/${value}` });
       } else {
         this.unsetActiveId();
-        this.fetchCurrentBoard(boardId);
-        updateHistory({ url: `${this.boardBaseUrl}/${boardId}` });
+        this.fetchCurrentBoard(value);
+        updateHistory({ url: `${this.boardBaseUrl}/${value}` });
       }
     },
   },
@@ -303,105 +285,65 @@ export default {
 <template>
   <div class="boards-switcher gl-mr-3" data-testid="boards-selector">
     <span class="boards-selector-wrapper">
-      <gl-dropdown
+      <gl-collapsible-listbox
         v-if="showDropdown"
+        block
         data-testid="boards-dropdown"
-        data-qa-selector="boards_dropdown"
-        toggle-class="dropdown-menu-toggle"
-        menu-class="flex-column dropdown-extended-height"
+        searchable
+        :searching="loading"
+        toggle-class="gl-min-w-20"
+        :header-text="$options.i18n.headerText"
+        :no-results-text="$options.i18n.noResultsText"
         :loading="isBoardToUseLoading"
-        :text="boardToUse.name"
-        @show="loadBoards"
+        :items="listBoxItems"
+        :toggle-text="boardToUseName"
+        :selected="boardToUseId"
+        @search="handleSearch"
+        @select="switchBoardGroup"
+        @shown="loadBoards"
       >
-        <p class="gl-dropdown-header-top" @mousedown.prevent>
-          {{ s__('IssueBoards|Switch board') }}
-        </p>
-        <gl-search-box-by-type ref="searchBox" v-model="filterTerm" class="m-2" />
+        <template #list-item="{ item }">
+          <div data-testid="dropdown-item-recent" @click="switchBoardKeyEvent(item.value, $event)">
+            {{ item.text }}
+          </div>
+        </template>
 
-        <div
-          v-if="!loading"
-          ref="content"
-          data-qa-selector="boards_dropdown_content"
-          class="dropdown-content flex-fill"
-          @scroll.passive="throttledSetScrollFade"
-        >
-          <gl-dropdown-item
-            v-show="filteredBoards.length === 0"
-            class="gl-pointer-events-none text-secondary"
-          >
-            {{ s__('IssueBoards|No matching boards found') }}
-          </gl-dropdown-item>
-
-          <gl-dropdown-section-header v-if="showRecentSection">
-            {{ __('Recent') }}
-          </gl-dropdown-section-header>
-
-          <template v-if="showRecentSection">
-            <gl-dropdown-item
-              v-for="recentBoard in recentBoards"
-              :key="`recent-${recentBoard.id}`"
-              data-testid="dropdown-item"
-              @click.prevent="switchBoard(recentBoard.id, $event)"
-            >
-              {{ recentBoard.name }}
-            </gl-dropdown-item>
-          </template>
-
-          <gl-dropdown-divider v-if="showRecentSection" />
-
-          <gl-dropdown-section-header v-if="showRecentSection">
-            {{ __('All') }}
-          </gl-dropdown-section-header>
-
-          <gl-dropdown-item
-            v-for="otherBoard in filteredBoards"
-            :key="otherBoard.id"
-            data-testid="dropdown-item"
-            @click.prevent="switchBoard(otherBoard.id, $event)"
-          >
-            {{ otherBoard.name }}
-          </gl-dropdown-item>
-
-          <gl-dropdown-item v-if="hasMissingBoards" class="no-pointer-events">
+        <template #footer>
+          <div v-if="hasMissingBoards" class="gl-border-t gl-font-sm gl-px-4 gl-pt-4 gl-pb-3">
             {{
               s__('IssueBoards|Some of your boards are hidden, add a license to see them again.')
             }}
-          </gl-dropdown-item>
-        </div>
+          </div>
+          <div v-if="canAdminBoard" class="gl-border-t gl-py-2 gl-px-2">
+            <gl-button
+              v-if="showCreate"
+              v-gl-modal-directive="'board-config-modal'"
+              block
+              class="gl-justify-content-start!"
+              category="tertiary"
+              data-testid="create-new-board-button"
+              data-track-action="click_button"
+              data-track-label="create_new_board"
+              data-track-property="dropdown"
+              @click="showPage('new')"
+            >
+              {{ s__('IssueBoards|Create new board') }}
+            </gl-button>
 
-        <div
-          v-show="filteredBoards.length > 0"
-          class="dropdown-content-faded-mask"
-          :class="scrollFadeClass"
-        ></div>
-
-        <gl-loading-icon v-if="loading" size="sm" />
-
-        <div v-if="canAdminBoard">
-          <gl-dropdown-divider />
-
-          <gl-dropdown-item
-            v-if="showCreate"
-            v-gl-modal-directive="'board-config-modal'"
-            data-qa-selector="create_new_board_button"
-            data-track-action="click_button"
-            data-track-label="create_new_board"
-            data-track-property="dropdown"
-            @click.prevent="showPage('new')"
-          >
-            {{ s__('IssueBoards|Create new board') }}
-          </gl-dropdown-item>
-
-          <gl-dropdown-item
-            v-if="showDelete"
-            v-gl-modal-directive="'board-config-modal'"
-            class="text-danger"
-            @click.prevent="showPage('delete')"
-          >
-            {{ s__('IssueBoards|Delete board') }}
-          </gl-dropdown-item>
-        </div>
-      </gl-dropdown>
+            <gl-button
+              v-if="showDelete"
+              v-gl-modal-directive="'board-config-modal'"
+              block
+              category="tertiary"
+              variant="danger"
+              class="gl-mt-0! gl-justify-content-start!"
+              @click="showPage('delete')"
+            >
+              {{ s__('IssueBoards|Delete board') }}
+            </gl-button>
+          </div>
+        </template>
+      </gl-collapsible-listbox>
 
       <board-form
         v-if="currentPage"

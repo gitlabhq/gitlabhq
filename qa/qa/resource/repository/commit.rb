@@ -10,7 +10,8 @@ module QA
           :commit_message,
           :file_path,
           :sha,
-          :start_branch
+          :start_branch,
+          :actions
 
         attribute :short_id
 
@@ -106,8 +107,6 @@ module QA
         end
 
         private
-
-        attr_reader :actions
 
         def validate_files!(files)
           if !files.is_a?(Array) ||

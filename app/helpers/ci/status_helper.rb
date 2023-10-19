@@ -72,20 +72,19 @@ module Ci
         status,
         path,
         tooltip_placement: tooltip_placement,
-        icon_size: 24)
+        icon_size: 16)
     end
 
     def render_status_with_link(status, path = nil, type: _('pipeline'), tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)
-      klass = "ci-status-link #{ci_icon_class_for_status(status)} d-inline-flex #{cssclass}"
+      variant = badge_variant(status)
+      klass = "ci-status-link #{ci_icon_class_for_status(status)} d-inline-flex gl-line-height-1 #{cssclass}"
       title = "#{type.titleize}: #{ci_label_for_status(status)}"
-      data = { toggle: 'tooltip', placement: tooltip_placement, container: container }
+      data = { toggle: 'tooltip', placement: tooltip_placement, container: container, testid: 'ci-status-badge-legacy' }
+      badge_classes = 'gl-px-2 gl-ml-3'
 
-      if path
-        link_to ci_icon_for_status(status, size: icon_size), path,
-          class: klass, title: title, data: data
-      else
+      gl_badge_tag(variant: variant, size: :md, href: path, class: badge_classes, title: title, data: data) do
         content_tag :span, ci_icon_for_status(status, size: icon_size),
-          class: klass, title: title, data: data
+          class: klass
       end
     end
 
@@ -117,6 +116,25 @@ module Ci
               end
       translation = "CiStatusLabel|#{label}"
       s_(translation)
+    end
+
+    def badge_variant(status)
+      variant = detailed_status?(status) ? status.group : status.dasherize
+
+      case variant
+      when 'success'
+        :success
+      when 'success-with-warnings', 'pending'
+        :warning
+      when 'failed'
+        :danger
+      when 'running'
+        :info
+      when 'canceled', 'manual'
+        :neutral
+      else
+        :muted
+      end
     end
   end
 end

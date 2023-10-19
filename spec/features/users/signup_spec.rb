@@ -67,16 +67,6 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
   end
 
   shared_examples 'signup process' do
-    def fill_in_signup_form
-      fill_in 'new_user_username', with: new_user.username
-      fill_in 'new_user_email', with: new_user.email
-      fill_in 'new_user_first_name', with: new_user.first_name
-      fill_in 'new_user_last_name', with: new_user.last_name
-      fill_in 'new_user_password', with: new_user.password
-
-      wait_for_all_requests
-    end
-
     def confirm_email
       new_user_token = User.find_by_email(new_user.email).confirmation_token
 
@@ -226,9 +216,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
           it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
             visit new_user_registration_path
 
-            fill_in_signup_form
-
-            expect { click_button 'Register' }.to change { User.count }.by(1)
+            expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
             expect(page).to have_current_path users_almost_there_path, ignore_query: true
             expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
 
@@ -246,10 +234,8 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
           it 'creates the user account and sends a confirmation email' do
             visit new_user_registration_path
 
-            fill_in_signup_form
-
-            expect { click_button 'Register' }.to change { User.count }.by(1)
-            expect(page).to have_current_path users_sign_up_welcome_path, ignore_query: true
+            expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+            expect(page).to have_current_path dashboard_projects_path
           end
         end
       end
@@ -262,10 +248,9 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         it 'creates the user account and goes to dashboard' do
           visit new_user_registration_path
 
-          fill_in_signup_form
-          click_button "Register"
+          fill_in_sign_up_form(new_user)
 
-          expect(page).to have_current_path users_sign_up_welcome_path, ignore_query: true
+          expect(page).to have_current_path dashboard_projects_path
         end
       end
 
@@ -277,9 +262,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         it 'creates the user but does not sign them in' do
           visit new_user_registration_path
 
-          fill_in_signup_form
-
-          expect { click_button 'Register' }.to change { User.count }.by(1)
+          expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
           expect(page).to have_current_path new_user_session_path, ignore_query: true
           expect(page).to have_content(<<~TEXT.squish)
             You have signed up successfully. However, we could not sign you in
@@ -294,8 +277,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         create(:user, email: new_user.email)
         visit new_user_registration_path
 
-        fill_in_signup_form
-        click_button "Register"
+        fill_in_sign_up_form(new_user)
 
         expect(page).to have_current_path user_registration_path, ignore_query: true
         expect(page).to have_content("error prohibited this user from being saved")
@@ -306,8 +288,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         create(:user, email: new_user.email)
         visit new_user_registration_path
 
-        fill_in_signup_form
-        click_button "Register"
+        fill_in_sign_up_form(new_user)
 
         expect(page).to have_current_path user_registration_path, ignore_query: true
         expect(page.body).not_to match(/#{new_user.password}/)
@@ -328,18 +309,8 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         visit new_user_registration_path
         expect(page).to have_content(terms_text)
 
-        fill_in_signup_form
-        click_button 'Register'
+        fill_in_sign_up_form(new_user)
 
-        expect(page).to have_current_path(users_sign_up_welcome_path), ignore_query: true
-
-        select 'Software Developer', from: 'user_role'
-        click_button 'Get started!'
-
-        created_user = User.find_by_username(new_user.username)
-
-        expect(created_user.software_developer_role?).to be_truthy
-        expect(created_user.setup_for_company).to be_nil
         expect(page).to have_current_path(dashboard_projects_path)
       end
 
@@ -366,9 +337,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         it 'prevents from signing up' do
           visit new_user_registration_path
 
-          fill_in_signup_form
-
-          expect { click_button 'Register' }.not_to change { User.count }
+          expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
           expect(page).to have_content(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
           expect(page).to have_content(
             "Minimum length is #{Gitlab::CurrentSettings.minimum_password_length} characters")
@@ -379,9 +348,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         it 'prevents from signing up' do
           visit new_user_registration_path
 
-          fill_in_signup_form
-
-          expect { click_button 'Register' }.not_to change { User.count }
+          expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
           expect(page).to have_content('That was a bit too quick! Please resubmit.')
         end
       end
@@ -390,9 +357,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
     it 'allows visiting of a page after initial registration' do
       visit new_user_registration_path
 
-      fill_in_signup_form
-
-      click_button 'Register'
+      fill_in_sign_up_form(new_user)
 
       visit new_project_path
 
@@ -403,8 +368,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
       create(:user, email: new_user.email)
       visit new_user_registration_path
 
-      fill_in_signup_form
-      click_button "Register"
+      fill_in_sign_up_form(new_user)
 
       expect(page).to have_current_path user_registration_path, ignore_query: true
       expect(page.body).not_to match(/#{new_user.password}/)

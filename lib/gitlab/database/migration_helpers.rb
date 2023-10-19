@@ -567,8 +567,8 @@ module Gitlab
       # table - The table containing the column.
       # column - The name of the column to change.
       # new_type - The new column type.
-      def cleanup_concurrent_column_type_change(table, column)
-        temp_column = "#{column}_for_type_change"
+      def cleanup_concurrent_column_type_change(table, column, temp_column: nil)
+        temp_column ||= "#{column}_for_type_change"
 
         transaction do
           # This has to be performed in a transaction as otherwise we might have
@@ -586,10 +586,10 @@ module Gitlab
       # type_cast_function - Required if the conversion back to the original type is not automatic
       # batch_column_name - option for tables without a primary key, in this case
       #            another unique integer column can be used. Example: :user_id
-      def undo_cleanup_concurrent_column_type_change(table, column, old_type, type_cast_function: nil, batch_column_name: :id, limit: nil)
+      def undo_cleanup_concurrent_column_type_change(table, column, old_type, type_cast_function: nil, batch_column_name: :id, limit: nil, temp_column: nil)
         Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
-        temp_column = "#{column}_for_type_change"
+        temp_column ||= "#{column}_for_type_change"
 
         # Using a descriptive name that includes orinal column's name risks
         # taking us above the 63 character limit, so we use a hash
@@ -751,7 +751,7 @@ module Gitlab
         trigger_name = rename_trigger_name(table, columns, temporary_columns)
         remove_rename_triggers(table, trigger_name)
 
-        temporary_columns.each { |column| remove_column(table, column) }
+        temporary_columns.each { |column| remove_column(table, column, if_exists: true) }
       end
       alias_method :cleanup_conversion_of_integer_to_bigint, :revert_initialize_conversion_of_integer_to_bigint
 
@@ -908,6 +908,11 @@ module Gitlab
           end
 
           name = index.name.gsub(old, new)
+
+          if name.length > 63
+            digest = Digest::SHA256.hexdigest(name).first(10)
+            name = "idx_copy_#{digest}"
+          end
 
           options = {
             unique: index.unique,
@@ -1202,6 +1207,10 @@ into similar problems in the future (e.g. when new tables are created).
         if column.default || column.default_function
           change_column_default(table_name, column_name, to: nil)
         end
+      end
+
+      def lock_tables(*tables, mode: :access_exclusive)
+        execute("LOCK TABLE #{tables.join(', ')} IN #{mode.to_s.upcase.tr('_', ' ')} MODE")
       end
 
       private

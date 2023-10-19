@@ -318,11 +318,11 @@ export default {
 <template>
   <div>
     <gl-form-group :label-for="fields.name.id" :label="__('Name')">
-      <gl-form-input v-bind="fields.name" size="lg" />
+      <gl-form-input v-bind="fields.name" width="lg" />
     </gl-form-group>
 
     <gl-form-group :label-for="fields.email.id" :label="__('Email')">
-      <gl-form-input v-bind="fields.email" type="email" size="lg" />
+      <gl-form-input v-bind="fields.email" type="email" width="lg" />
     </gl-form-group>
 
     <gl-button type="submit" category="primary" variant="confirm">{{ __('Update') }}</gl-button>
@@ -396,6 +396,29 @@ This approach has a few benefits:
 
 - Accessing a global variable is not required, except in the application's
   [entry point](#accessing-the-gl-object).
+
+#### Redirecting to page and displaying alerts
+
+If you need to redirect to another page and display alerts, you can use the [`visitUrlWithAlerts`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/url_utility.js#L731) util.
+This can be useful when you're redirecting to a newly created resource and showing a success alert.
+
+By default the alerts will be cleared when the page is reloaded. If you need an alert to be persisted on a page you can set the
+`persistOnPages` key to an array of Rails controller actions. To find the Rails controller action run `document.body.dataset.page` in your console.
+
+Example:
+
+```javascript
+visitUrlWithAlerts('/dashboard/groups', [
+  {
+    id: 'resource-building-in-background',
+    message: 'Resource is being built in the background.',
+    variant: 'info',
+    persistOnPages: ['dashboard:groups:index'],
+  },
+])
+```
+
+If you need to manually remove a persisted alert, you can use the [`removeGlobalAlertById`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/global_alerts.js#L31) util.
 
 ### A folder for Components
 

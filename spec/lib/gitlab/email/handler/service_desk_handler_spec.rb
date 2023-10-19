@@ -321,7 +321,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         end
       end
 
-      context 'when using custom service desk address' do
+      context 'when using additional service desk alias address' do
         let(:receiver) { Gitlab::Email::ServiceDeskReceiver.new(email_raw) }
 
         before do
@@ -585,6 +585,16 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
         expect(handler.can_handle?).to be_falsey
       end
+    end
+
+    context 'when there is no to address' do
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:to_address).and_return(nil)
+        end
+      end
+
+      it_behaves_like 'a new issue request'
     end
 
     context 'when there is no from address' do

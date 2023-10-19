@@ -53,7 +53,7 @@ module Backup
     end
 
     override :restore
-    def restore(backup_tarball)
+    def restore(backup_tarball, backup_id)
       backup_existing_files_dir(backup_tarball)
 
       cmd_list = [%w[gzip -cd], %W[#{tar} --unlink-first --recursive-unlink -C #{app_files_realpath} -xf -]]

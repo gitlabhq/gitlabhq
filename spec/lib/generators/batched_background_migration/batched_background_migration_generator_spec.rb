@@ -33,7 +33,7 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
       end
 
       assert_migration('db/post_migrate/queue_my_batched_migration.rb') do |migration_file|
-        expect(migration_file).to eq(expected_migration_file)
+        expect(migration_file).to eq(expected_migration_file.gsub('<migration_version>', fetch_migration_version))
       end
 
       assert_migration('spec/migrations/queue_my_batched_migration_spec.rb') do |migration_spec_file|
@@ -54,7 +54,7 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
     end
 
     let(:expected_ee_migration_job_file) { load_expected_file('ee_my_batched_migration.txt') }
-    let(:expected_migration_job_spec_file) { load_expected_file('my_batched_migration_spec_matcher.txt') }
+    let(:expected_migration_job_spec_file) { load_expected_file('my_batched_migration_spec.txt') }
 
     include_examples "generates files common to both types of migrations",
       'foss_my_batched_migration.txt',
@@ -78,7 +78,7 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
       run_generator %w[my_batched_migration --table_name=projects --column_name=id --feature_category=database]
     end
 
-    let(:expected_migration_job_spec_file) { load_expected_file('my_batched_migration_spec_matcher.txt') }
+    let(:expected_migration_job_spec_file) { load_expected_file('my_batched_migration_spec.txt') }
 
     include_examples "generates files common to both types of migrations",
       'my_batched_migration.txt',
@@ -88,8 +88,7 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
 
     it 'generates expected files' do
       assert_file('spec/lib/gitlab/background_migration/my_batched_migration_spec.rb') do |migration_job_spec_file|
-        # Regex is used to match the dynamic schema: <version> in the specs
-        expect(migration_job_spec_file).to match(/#{expected_migration_job_spec_file}/)
+        expect(migration_job_spec_file).to eq(expected_migration_job_spec_file)
       end
     end
   end
@@ -98,5 +97,10 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
 
   def load_expected_file(file_name)
     File.read(File.expand_path("expected_files/#{file_name}", __dir__))
+  end
+
+  def fetch_migration_version
+    @migration_version ||= migration_file_name('db/post_migrate/queue_my_batched_migration.rb')
+      .match(%r{post_migrate/([0-9]+)_queue_my_batched_migration.rb})[1]
   end
 end

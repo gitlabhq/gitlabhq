@@ -1,21 +1,21 @@
-import { GlDropdownItem } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
-import { CANARY_UPDATE_MODAL } from '~/environments/constants';
 import { rolloutStatus } from './graphql/mock_data';
+
+jest.mock('lodash/uniqueId', () => {
+  return jest.fn((input) => input);
+});
 
 describe('/environments/components/canary_ingress.vue', () => {
   let wrapper;
 
-  const setWeightTo = (weightWrapper, x) =>
-    weightWrapper
-      .findAllComponents(GlDropdownItem)
-      .at(x / 5)
-      .vm.$emit('click');
+  const setWeightTo = (weightWrapper, x) => {
+    weightWrapper.vm.$emit('select', x);
+  };
 
   const createComponent = (props = {}, options = {}) => {
-    wrapper = mount(CanaryIngress, {
+    wrapper = mountExtended(CanaryIngress, {
       propsData: {
         canaryIngress: {
           canary_weight: 60,
@@ -37,11 +37,11 @@ describe('/environments/components/canary_ingress.vue', () => {
     let stableWeightDropdown;
 
     beforeEach(() => {
-      stableWeightDropdown = wrapper.find('[data-testid="stable-weight"]');
+      stableWeightDropdown = extendedWrapper(wrapper.find('#stable-weight-'));
     });
 
     it('displays the current stable weight', () => {
-      expect(stableWeightDropdown.props('text')).toBe('40');
+      expect(stableWeightDropdown.props('selected')).toBe(40);
     });
 
     it('emits a change with the new canary weight', () => {
@@ -51,17 +51,9 @@ describe('/environments/components/canary_ingress.vue', () => {
     });
 
     it('lists options from 0 to 100 in increments of 5', () => {
-      const options = stableWeightDropdown.findAllComponents(GlDropdownItem);
+      const options = stableWeightDropdown.props('items');
       expect(options).toHaveLength(21);
-      options.wrappers.forEach((w, i) => expect(w.text()).toBe((i * 5).toString()));
-    });
-
-    it('is set to open the change modal', () => {
-      stableWeightDropdown
-        .findAllComponents(GlDropdownItem)
-        .wrappers.forEach((w) =>
-          expect(getBinding(w.element, 'gl-modal')).toMatchObject({ value: CANARY_UPDATE_MODAL }),
-        );
+      options.forEach((option, i) => expect(option.text).toBe((i * 5).toString()));
     });
   });
 
@@ -69,11 +61,11 @@ describe('/environments/components/canary_ingress.vue', () => {
     let canaryWeightDropdown;
 
     beforeEach(() => {
-      canaryWeightDropdown = wrapper.find('[data-testid="canary-weight"]');
+      canaryWeightDropdown = wrapper.find('#canary-weight-');
     });
 
     it('displays the current canary weight', () => {
-      expect(canaryWeightDropdown.props('text')).toBe('60');
+      expect(canaryWeightDropdown.props('selected')).toBe(60);
     });
 
     it('emits a change with the new canary weight', () => {
@@ -83,17 +75,9 @@ describe('/environments/components/canary_ingress.vue', () => {
     });
 
     it('lists options from 0 to 100 in increments of 5', () => {
-      canaryWeightDropdown
-        .findAllComponents(GlDropdownItem)
-        .wrappers.forEach((w, i) => expect(w.text()).toBe((i * 5).toString()));
-    });
-
-    it('is set to open the change modal', () => {
-      canaryWeightDropdown
-        .findAllComponents(GlDropdownItem)
-        .wrappers.forEach((w) =>
-          expect(getBinding(w.element, 'gl-modal')).toMatchObject({ value: CANARY_UPDATE_MODAL }),
-        );
+      const options = canaryWeightDropdown.props('items');
+      expect(options).toHaveLength(21);
+      options.forEach((option, i) => expect(option.text).toBe((i * 5).toString()));
     });
   });
 
@@ -106,8 +90,8 @@ describe('/environments/components/canary_ingress.vue', () => {
     });
 
     it('shows the correct weight', () => {
-      const canaryWeightDropdown = wrapper.find('[data-testid="canary-weight"]');
-      expect(canaryWeightDropdown.props('text')).toBe('50');
+      const canaryWeightDropdown = wrapper.find('#canary-weight-');
+      expect(canaryWeightDropdown.props('selected')).toBe(50);
     });
   });
 });

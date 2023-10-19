@@ -24,11 +24,6 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     it_behaves_like 'records an onboarding progress action', :user_added
-
-    it 'does not create task issues' do
-      expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
-      expect { result }.not_to change { project.issues.count }
-    end
   end
 
   context 'when email belongs to an existing user as a confirmed secondary email' do
@@ -321,11 +316,11 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
       let(:params) { { email: unconfirmed_user.email } }
 
-      it 'adds an existing user to members' do
+      it 'adds a new member as an invite for unconfirmed primary email' do
         expect_to_create_members(count: 1)
         expect(result[:status]).to eq(:success)
-        expect(project.users).to include unconfirmed_user
-        expect(project.members.last).not_to be_invite
+        expect(project.users).not_to include unconfirmed_user
+        expect(project.members.last).to be_invite
       end
     end
 
@@ -338,23 +333,6 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
         expect_to_create_members(count: 1)
         expect(result[:status]).to eq(:success)
         expect(project.users).to include project_user
-      end
-
-      context 'when assigning tasks to be done' do
-        let(:params) do
-          { user_id: project_user.id, tasks_to_be_done: %w(ci code), tasks_project_id: project.id }
-        end
-
-        it 'creates 2 task issues', :aggregate_failures do
-          expect(TasksToBeDone::CreateWorker)
-            .to receive(:perform_async)
-                  .with(anything, user.id, [project_user.id])
-                  .once
-                  .and_call_original
-          expect { result }.to change { project.issues.count }.by(2)
-
-          expect(project.issues).to all have_attributes(project: project, author: user)
-        end
       end
     end
   end

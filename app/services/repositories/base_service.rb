@@ -15,10 +15,6 @@ class Repositories::BaseService < BaseService
     gitlab_shell.repository_exists?(repository.shard, path + '.git')
   end
 
-  def mv_repository(from_path, to_path)
-    gitlab_shell.mv_repository(repository.shard, from_path, to_path)
-  end
-
   # If we get a Gitaly error, the repository may be corrupted. We can
   # ignore these errors since we're going to trash the repositories
   # anyway.

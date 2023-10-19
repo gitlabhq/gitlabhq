@@ -69,6 +69,7 @@ export default {
       badge-tooltip-prop="name"
       :badge-sr-only-text="assigneesCollapsedTooltip"
       :class="assigneesContainerClass"
+      class="gl-white-space-nowrap"
     >
       <template #avatar="{ avatar }">
         <gl-avatar-link v-gl-tooltip target="blank" :href="avatar.webUrl" :title="avatar.name">

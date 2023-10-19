@@ -26,13 +26,19 @@ export default {
   },
 
   props: {
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     selected: {
       type: String,
       required: true,
     },
     userNamespace: {
       type: String,
-      required: true,
+      required: false,
+      default: undefined,
     },
   },
 
@@ -66,6 +72,10 @@ export default {
   },
 
   computed: {
+    isProject() {
+      return Boolean(this.userNamespace);
+    },
+
     filteredNamespaces() {
       return (this.namespaces ?? []).filter((ns) =>
         ns.fullPath.toLowerCase().includes(this.searchTerm.toLowerCase()),
@@ -78,14 +88,33 @@ export default {
 
     items() {
       return [
-        {
-          text: __('Users'),
-          options: [{ text: this.userNamespace, value: this.userNamespace }],
-        },
+        this.isProject
+          ? {
+              text: __('Users'),
+              options: [
+                {
+                  text: this.userNamespace,
+                  value: this.userNamespace,
+                },
+              ],
+            }
+          : {
+              text: __('Parent'),
+              textSrOnly: true,
+              options: [
+                {
+                  text: s__('BulkImport|No parent'),
+                  value: '',
+                },
+              ],
+            },
         {
           text: __('Groups'),
           options: this.filteredNamespaces.map((namespace) => {
-            return { text: namespace.fullPath, value: namespace.fullPath };
+            return {
+              text: namespace.fullPath,
+              value: namespace.fullPath,
+            };
           }),
         },
       ];
@@ -94,7 +123,15 @@ export default {
 
   methods: {
     onSelect(value) {
-      this.$emit('select', value);
+      if (this.isProject) {
+        this.$emit('select', value);
+      } else if (value === '') {
+        this.$emit('select', { fullPath: '', id: null });
+      } else {
+        const { fullPath, id } = this.filteredNamespaces.find((ns) => ns.fullPath === value);
+
+        this.$emit('select', { fullPath, id });
+      }
     },
 
     onSearch(value) {
@@ -107,12 +144,13 @@ export default {
 <template>
   <gl-collapsible-listbox
     :items="items"
+    :disabled="disabled"
     :selected="selected"
     :toggle-text="toggleText"
     searchable
     fluid-width
     toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-    data-qa-selector="target_namespace_selector_dropdown"
+    data-testid="target-namespace-dropdown"
     @select="onSelect"
     @search="onSearch"
   />

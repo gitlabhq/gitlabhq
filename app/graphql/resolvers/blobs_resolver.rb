@@ -36,7 +36,7 @@ module Resolvers
       ref ||= repository.root_ref
       validate_ref(ref)
 
-      ref = ExtractsRef.qualify_ref(ref, ref_type)
+      ref = ExtractsRef::RefExtractor.qualify_ref(ref, ref_type)
 
       repository.blobs_at(paths.map { |path| [ref, path] }).tap do |blobs|
         blobs.each do |blob|

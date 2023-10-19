@@ -20,7 +20,11 @@ This feature is not ready for production use.
 
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
-To leave feedback about Product Analytics bugs or functionality, please comment in [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970) or open a new issue with the label `group::product analytics`.
+To leave feedback about Product Analytics bugs or functionality:
+
+- Comment on [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
+- Create an issue with the `group::product analytics` label.
+- [Schedule a call](https://calendly.com/jheimbuck/30-minute-call) with the team.
 
 ## How product analytics works
 
@@ -268,6 +272,19 @@ POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
 ```
 
 If the request is successful, the returned JSON includes an array of rows of results.
+
+## Onboarding GitLab internal projects
+
+GitLab team members can enable Product Analytics on their own internal projects on GitLab.com during the experiment phase.
+
+1. Send a message to the Product Analytics team (`#g_analyze_product_analytics`) informing them of the repository to be enabled.
+1. Ensure that the project is within an Ultimate namespace.
+1. Using ChatOps, enable both the `product_analytics_dashboards` and `combined_analytics_dashboards`
+
+    ```plaintext
+    /chatops run feature set product_analytics_dashboards true --project=FULLPATH_TO_PROJECT
+    /chatops run feature set combined_analytics_dashboards true --project=FULLPATH_TO_PROJECT
+    ```
 
 ## Troubleshooting
 

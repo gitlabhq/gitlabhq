@@ -6,10 +6,11 @@ CREATE TABLE events
   target_id UInt64 DEFAULT 0,
   target_type LowCardinality(String) DEFAULT '',
   action UInt8 DEFAULT 0,
+  deleted UInt8 DEFAULT 0,
   created_at DateTime64(6, 'UTC') DEFAULT now(),
   updated_at DateTime64(6, 'UTC') DEFAULT now()
 )
-ENGINE = ReplacingMergeTree(updated_at)
+ENGINE = ReplacingMergeTree(updated_at, deleted)
 PRIMARY KEY (id)
 ORDER BY (id)
 PARTITION BY toYear(created_at)

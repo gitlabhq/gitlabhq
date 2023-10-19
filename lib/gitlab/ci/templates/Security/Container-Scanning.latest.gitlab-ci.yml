@@ -2,4 +2,4 @@
 # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/381665
 
 include:
-  template: Jobs/Container-Scanning.latest.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.latest.gitlab-ci.yml

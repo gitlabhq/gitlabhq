@@ -8,7 +8,7 @@ RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state, fea
 
     context 'find user mapping' do
       let_it_be(:user) { create(:user) }
-      let_it_be(:chat_name) { create(:chat_name, user: user) }
+      let(:chat_name) { create(:chat_name, user: user) }
 
       let(:team_id) { chat_name.team_id }
       let(:user_id) { chat_name.chat_id }
@@ -19,26 +19,20 @@ RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state, fea
         end
 
         it 'updates the last used timestamp if one is not already set' do
-          expect(chat_name.last_used_at).to be_nil
-
-          subject
-
-          expect(chat_name.reload.last_used_at).to be_present
+          expect { subject }.to change { chat_name.reload.last_used_at }.from(nil)
         end
 
         it 'only updates an existing timestamp once within a certain time frame' do
-          chat_name = create(:chat_name, user: user)
-          service = described_class.new(team_id, user_id)
+          expect { described_class.new(team_id, user_id).execute }.to change { chat_name.reload.last_used_at }.from(nil)
+          expect { described_class.new(team_id, user_id).execute }.not_to change { chat_name.reload.last_used_at }
+        end
 
-          expect(chat_name.last_used_at).to be_nil
+        it 'records activity for the related user' do
+          expect_next_instance_of(Users::ActivityService, author: user) do |activity_service|
+            expect(activity_service).to receive(:execute)
+          end
 
-          service.execute
-
-          time = chat_name.reload.last_used_at
-
-          service.execute
-
-          expect(chat_name.reload.last_used_at).to eq(time)
+          subject
         end
       end
 

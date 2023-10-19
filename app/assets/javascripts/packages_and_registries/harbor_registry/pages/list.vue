@@ -164,6 +164,7 @@ export default {
       v-if="showConnectionError"
       :title="$options.i18n.connectionErrorTitle"
       :svg-path="containersErrorImage"
+      :svg-height="null"
     >
       <template #description>
         <p>
@@ -220,6 +221,7 @@ export default {
         <gl-empty-state
           v-else
           :svg-path="noContainersImage"
+          :svg-height="null"
           data-testid="emptySearch"
           :title="emptyStateTexts.title"
         >

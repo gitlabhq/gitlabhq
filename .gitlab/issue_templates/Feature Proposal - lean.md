@@ -43,7 +43,7 @@ Personas are described at https://about.gitlab.com/handbook/product/personas/
 
 <!-- How are you going to track usage of this feature? Think about user behavior and their interaction with the product. What indicates someone is getting value from it?
 
-Create tracking issue using the Snowplow event tracking template. See https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Snowplow%20event%20tracking.md
+Explore (../../doc/development/internal_analytics/internal_event_instrumentation/quick_start.md) for a guide.
 
 -->
 

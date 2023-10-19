@@ -278,20 +278,17 @@ export default {
             @saveReorder="$emit('saveReorder', $event)"
           />
         </template>
-        <div v-if="!shouldShowTokenBody && !isFormVisible">
-          <p class="gl-new-card-empty">
-            {{ emptyStateMessage }}
-            <gl-link
-              v-if="hasHelpPath"
-              :href="helpPath"
-              target="_blank"
-              data-testid="help-link"
-              :aria-label="helpLinkText"
-            >
-              {{ __('Learn more.') }}
-            </gl-link>
-          </p>
-        </div>
+        <p v-if="!shouldShowTokenBody && !isFormVisible" class="gl-new-card-empty">
+          {{ emptyStateMessage }}
+          <gl-link
+            v-if="hasHelpPath"
+            :href="helpPath"
+            data-testid="help-link"
+            :aria-label="helpLinkText"
+          >
+            {{ __('Learn more.') }}
+          </gl-link>
+        </p>
       </div>
     </gl-card>
   </div>

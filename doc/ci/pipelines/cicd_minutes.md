@@ -38,6 +38,11 @@ On self-managed GitLab instances:
 - Administrators can [assign more compute minutes](#set-the-compute-quota-for-a-specific-namespace)
   if a namespace uses all its monthly quota.
 
+[Trigger jobs](../../ci/yaml/index.md#trigger) do not execute on runners, so they do not
+consume compute minutes, even when using [`strategy:depend`](../yaml/index.md#triggerstrategy)
+to wait for the [downstream pipeline](../pipelines/downstream_pipelines.md) status.
+The triggered downstream pipeline consumes compute minutes the same as other pipelines.
+
 [Project runners](../runners/runners_scope.md#project-runners) are not subject to a compute quota.
 
 ## Set the compute quota for all namespaces
@@ -264,16 +269,16 @@ GitLab administrators can add a namespace to the reduced cost factor
 
 GitLab SaaS runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
 
-| GitLab SaaS runner type      | Machine Size         | Cost factor |
-|:-----------------------------|:---------------------|:------------|
-| Linux OS amd64               | small                | 1           |
-| Linux OS amd64               | medium               | 2           |
-| Linux OS amd64               | large                | 3           |
-| Linux OS amd64               | xlarge               | 6           |
-| Linux OS amd64               | 2xlarge              | 12          |
-| Linux OS amd64 + GPU-enabled | medium, GPU standard | 7           |
-| macOS M1                     | medium               | 6 (Beta)    |
-| Windows Server               | -                    | 1 (Beta)    |
+| GitLab SaaS runner type      | Machine Size           | Cost factor |
+|:-----------------------------|:-----------------------|:------------|
+| Linux OS amd64               | `small`                | 1           |
+| Linux OS amd64               | `medium`               | 2           |
+| Linux OS amd64               | `large`                | 3           |
+| Linux OS amd64               | `xlarge`               | 6           |
+| Linux OS amd64               | `2xlarge`              | 12          |
+| Linux OS amd64 + GPU-enabled | `medium`, GPU standard | 7           |
+| macOS M1                     | `medium`               | 6 (Beta)    |
+| Windows Server               | -                      | 1 (Beta)    |
 
 ### Monthly reset of compute usage
 

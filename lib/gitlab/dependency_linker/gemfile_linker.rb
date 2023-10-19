@@ -8,8 +8,8 @@ module Gitlab
       self.package_keyword = :gem
       self.file_type = :gemfile
 
-      GITHUB_REGEX = /(github:|:github\s*=>)\s*['"](?<name>[^'"]+)['"]/.freeze
-      GIT_REGEX = /(git:|:git\s*=>)\s*['"](?<name>#{URL_REGEX})['"]/.freeze
+      GITHUB_REGEX = /(github:|:github\s*=>)\s*['"](?<name>[^'"]+)['"]/
+      GIT_REGEX = /(git:|:git\s*=>)\s*['"](?<name>#{URL_REGEX})['"]/
 
       private
 

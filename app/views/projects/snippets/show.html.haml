@@ -6,6 +6,6 @@
 #js-snippet-view{ data: { 'snippet-gid': @snippet.to_global_id, 'report-abuse-path': snippet_report_abuse_path(@snippet), 'can-report-spam': @snippet.submittable_as_spam_by?(current_user).to_s } }
 
 .gl-px-0.gl-py-2
-  = render 'award_emoji/awards_block', awardable: @snippet, inline: true, api_awards_path: project_snippets_award_api_path(@snippet)
+  = render 'award_emoji/awards_block', awardable: @snippet, inline: true, api_awards_path: project_snippets_award_api_path(@snippet), new_custom_emoji_path: new_custom_emoji_path(@project.group)
 
 #notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => true

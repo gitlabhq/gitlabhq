@@ -423,15 +423,13 @@ class Group < Namespace
     owners.include?(user)
   end
 
-  def add_members(users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
+  def add_members(users, access_level, current_user: nil, expires_at: nil)
     Members::Groups::CreatorService.add_members( # rubocop:disable CodeReuse/ServiceClass
       self,
       users,
       access_level,
       current_user: current_user,
-      expires_at: expires_at,
-      tasks_to_be_done: tasks_to_be_done,
-      tasks_project_id: tasks_project_id
+      expires_at: expires_at
     )
   end
 
@@ -512,9 +510,15 @@ class Group < Namespace
                               members_with_parents(only_active_users: false)
                             end
 
-    members_from_hiearchy.all_owners.left_outer_joins(:user)
-      .merge(User.without_project_bot)
-      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455")
+    owners = []
+
+    members_from_hiearchy.all_owners.non_invite.each_batch do |relation|
+      owners += relation.preload(:user).load.reject do |member|
+        member.user.project_bot?
+      end
+    end
+
+    owners
   end
 
   def ldap_synced?
@@ -657,12 +661,6 @@ class Group < Namespace
       .non_invite
   end
 
-  def users_with_parents
-    User
-      .where(id: members_with_parents.select(:user_id))
-      .reorder(nil)
-  end
-
   def users_with_descendants
     User
       .where(id: members_with_descendants.select(:user_id))
@@ -694,7 +692,7 @@ class Group < Namespace
     return GroupMember::NO_ACCESS unless user
     return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
 
-    max_member_access([user.id])[user.id]
+    max_member_access(user)
   end
 
   def mattermost_team_params
@@ -879,10 +877,6 @@ class Group < Namespace
     ].compact.min
   end
 
-  def content_editor_on_issues_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:content_editor_on_issues)
-  end
-
   def work_items_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end
@@ -953,16 +947,16 @@ class Group < Namespace
     end
   end
 
-  def max_member_access(user_ids)
-    ::Gitlab::Database.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455") do
-      Gitlab::SafeRequestLoader.execute(
-        resource_key: max_member_access_for_resource_key(User),
-        resource_ids: user_ids,
-        default_value: Gitlab::Access::NO_ACCESS
-      ) do |user_ids|
-        members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
-      end
-    end
+  def max_member_access(user)
+    Gitlab::SafeRequestLoader.execute(
+      resource_key: max_member_access_for_resource_key(User),
+      resource_ids: [user.id],
+      default_value: Gitlab::Access::NO_ACCESS
+    ) do |_|
+      next {} unless user.active?
+
+      members_with_parents(only_active_users: false).where(user_id: user.id).group(:user_id).maximum(:access_level)
+    end.fetch(user.id)
   end
 
   def update_two_factor_requirement

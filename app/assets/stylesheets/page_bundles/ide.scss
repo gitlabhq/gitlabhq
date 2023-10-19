@@ -918,7 +918,7 @@ $ide-commit-header-height: 48px;
     --svg-status-bg: var(--ide-background, #{$white});
   }
 
-  .empty-state {
+  .gl-empty-state {
     p {
       margin: $grid-size 0;
       text-align: center;

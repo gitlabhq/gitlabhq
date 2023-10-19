@@ -692,6 +692,9 @@ Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['job_class'
 Settings.cron_jobs['ensure_merge_requests_prepared_worker'] ||= {}
 Settings.cron_jobs['ensure_merge_requests_prepared_worker']['cron'] ||= '*/30 * * * *'
 Settings.cron_jobs['ensure_merge_requests_prepared_worker']['job_class'] ||= 'MergeRequests::EnsurePreparedWorker'
+Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker'] ||= {}
+Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['cron'] ||= '*/10 * * * *'
+Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['job_class'] ||= 'Pages::DeactivatedDeploymentsDeleteCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -742,18 +745,9 @@ Gitlab.ee do
   Settings.cron_jobs['geo_prune_event_log_worker'] ||= {}
   Settings.cron_jobs['geo_prune_event_log_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['geo_prune_event_log_worker']['job_class'] ||= 'Geo::PruneEventLogWorker'
-  Settings.cron_jobs['geo_repository_sync_worker'] ||= {}
-  Settings.cron_jobs['geo_repository_sync_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'Geo::RepositorySyncWorker'
   Settings.cron_jobs['geo_secondary_registry_consistency_worker'] ||= {}
   Settings.cron_jobs['geo_secondary_registry_consistency_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['geo_secondary_registry_consistency_worker']['job_class'] ||= 'Geo::Secondary::RegistryConsistencyWorker'
-  Settings.cron_jobs['geo_repository_verification_primary_batch_worker'] ||= {}
-  Settings.cron_jobs['geo_repository_verification_primary_batch_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['geo_repository_verification_primary_batch_worker']['job_class'] ||= 'Geo::RepositoryVerification::Primary::BatchWorker'
-  Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker'] ||= {}
-  Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker']['job_class'] ||= 'Geo::RepositoryVerification::Secondary::SchedulerWorker'
   Settings.cron_jobs['historical_data_worker'] ||= {}
   Settings.cron_jobs['historical_data_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['historical_data_worker']['job_class'] = 'HistoricalDataWorker'
@@ -874,6 +868,12 @@ Gitlab.ee do
   Settings.cron_jobs['package_metadata_advisories_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['job_class'] = 'PackageMetadata::AdvisoriesSyncWorker'
+  Settings.cron_jobs['okr_checkin_reminder_emails'] ||= {}
+  Settings.cron_jobs['okr_checkin_reminder_emails']['cron'] ||= "0 1 * * *"
+  Settings.cron_jobs['okr_checkin_reminder_emails']['job_class'] = 'Okrs::CheckinReminderEmailsCronWorker'
+  Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker'] ||= {}
+  Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['job_class'] = 'Ci::ScheduleUnlockPipelinesInQueueCronWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -885,9 +885,19 @@ Gitlab.ee do
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker'] ||= {}
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['cron'] ||= "0 */6 * * *"
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
+    Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker'] ||= {}
+    Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['cron'] ||= "0 */4 * * *"
+    Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::ScheduleBulkRefreshUserAssignmentsWorker'
     Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
     Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"
     Settings.cron_jobs['click_house_events_sync_worker']['job_class'] = 'ClickHouse::EventsSyncWorker'
+    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker'] ||= {}
+    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['cron'] ||= '*/3 * * * *'
+    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [1]
+    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['job_class'] = 'ClickHouse::CiFinishedBuildsSyncCronWorker'
+    Settings.cron_jobs['vertex_ai_refresh_access_token_worker'] ||= {}
+    Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['cron'] ||= '*/50 * * * *'
+    Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['job_class'] = 'Llm::VertexAiAccessTokenRefreshWorker'
   end
 end
 

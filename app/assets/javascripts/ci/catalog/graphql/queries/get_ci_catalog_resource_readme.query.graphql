@@ -1,0 +1,6 @@
+query getCiCatalogResourceReadme($id: CiCatalogResourceID!) {
+  ciCatalogResource(id: $id) {
+    id
+    readmeHtml
+  }
+}

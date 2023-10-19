@@ -42,7 +42,7 @@ export default {
 };
 </script>
 <template>
-  <gl-empty-state class="gl-layout-w-limited" :title="title">
+  <gl-empty-state class="gl-layout-w-limited gl-mx-auto" :title="title">
     <template #description>
       <gl-sprintf :message="content">
         <template #link="{ content: contentToDisplay }">
@@ -51,10 +51,10 @@ export default {
       </gl-sprintf>
     </template>
     <template v-if="!hasTerm" #actions>
-      <gl-button :href="newEnvironmentPath" variant="confirm">
+      <gl-button class="gl-mx-2 gl-mb-3" :href="newEnvironmentPath" variant="confirm">
         {{ $options.i18n.newEnvironmentButtonLabel }}
       </gl-button>
-      <gl-button @click="$emit('enable-review')">
+      <gl-button class="gl-mx-2 gl-mb-3" @click="$emit('enable-review')">
         {{ $options.i18n.enablingReviewButtonLabel }}
       </gl-button>
     </template>

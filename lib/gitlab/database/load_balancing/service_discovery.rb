@@ -24,7 +24,7 @@ module Gitlab
         MAX_DISCOVERY_RETRIES = 3
         DISCOVERY_THREAD_REFRESH_DELTA = 5
 
-        RETRY_DELAY_RANGE = (0.1..0.2).freeze
+        RETRY_DELAY_RANGE = (0.1..0.2)
 
         RECORD_TYPES = {
           'A' => Net::DNS::A,
@@ -151,13 +151,7 @@ module Gitlab
           # started just before we added the new hosts it will use an old
           # host/connection. While this connection will be checked in and out,
           # it won't be explicitly disconnected.
-          if Gitlab::Utils.to_boolean(ENV['LOAD_BALANCER_PARALLEL_DISCONNECT'], default: false)
-            disconnect_old_hosts(old_hosts)
-          else
-            old_hosts.each do |host|
-              host.disconnect!(timeout: disconnect_timeout)
-            end
-          end
+          disconnect_old_hosts(old_hosts)
         end
 
         # Returns an Array containing:

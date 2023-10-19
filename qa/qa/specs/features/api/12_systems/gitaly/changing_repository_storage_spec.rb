@@ -15,13 +15,9 @@ module QA
           Support::Retrier.retry_on_exception(sleep_interval: 5) do
             # For a short period of time after migrating, the repository can be 'read only' which may lead to errors
             # 'The repository is temporarily read-only. Please try again later.'
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              commit.project = project
-              commit.commit_message = 'Add new file'
-              commit.add_files([
-                                 { file_path: 'new_file', content: '# This is a new file' }
-                               ])
-            end
+            create(:commit, project: project, commit_message: 'Add new file', actions: [
+              { action: 'create', file_path: 'new_file', content: '# This is a new file' }
+            ])
           end
 
           expect(project).to have_file('README.md')

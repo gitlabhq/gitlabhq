@@ -37,7 +37,7 @@ module Gitlab
         request.params.values.any? do |value|
           param_has_null_byte?(value)
         end
-      rescue ActionController::BadRequest
+      rescue ActionController::BadRequest, ActionDispatch::Http::Parameters::ParseError
         # If we can't build an ActionDispatch::Request something's wrong
         # This would also happen if `#params` contains invalid UTF-8
         # in this case we'll return a 400

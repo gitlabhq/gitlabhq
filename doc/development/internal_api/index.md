@@ -1221,7 +1221,20 @@ The group SCIM API implements the [RFC7644 protocol](https://www.rfc-editor.org/
 To use this API, enable [Group SSO](../../user/group/saml_sso/index.md) for the group.
 This API is only in use where [SCIM for Group SSO](../../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
 
-This API is different to the [main SCIM API](../../api/scim.md) and the [instance SCIM API](#instance-scim-api).
+This group SCIM API:
+
+- Is for system use for SCIM provider integration.
+- Implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+- Gets a list of SCIM provisioned users for the group.
+- Creates, deletes and updates SCIM provisioned users for the group.
+
+The [instance SCIM API](#instance-scim-api) does the same for instances.
+
+This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM API:
+
+- Is not an internal API.
+- Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+- Gets, checks, updates, and deletes SCIM identities within groups.
 
 ### Get a list of SCIM provisioned users
 
@@ -1374,6 +1387,9 @@ Example response:
 
 Returns a `201` status code if successful.
 
+NOTE:
+After you create a group SCIM identity for a user, you can see that SCIM identity in the Admin Area.
+
 ### Update a single SCIM provisioned user
 
 Fields that can be updated are:
@@ -1441,7 +1457,20 @@ The Instance SCIM API implements the [RFC7644 protocol](https://www.rfc-editor.o
 
 To use this API, enable [SAML SSO](../../integration/saml.md) for the instance.
 
-This API is different to the [main SCIM API](../../api/scim.md) and the [group SCIM API](#group-scim-api).
+This instance SCIM API:
+
+- Is for system use for SCIM provider integration.
+- Implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+- Gets a list of SCIM provisioned users for the group.
+- Creates, deletes and updates SCIM provisioned users for the group.
+
+The [group SCIM API](#group-scim-api) does the same for groups.
+
+This instance SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM API:
+
+- Is not an internal API.
+- Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+- Gets, checks, updates, and deletes SCIM identities within groups.
 
 ### Get a list of SCIM provisioned users
 

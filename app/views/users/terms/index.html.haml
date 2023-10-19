@@ -1,7 +1,7 @@
 - content_for :page_specific_javascripts do
-  = render "layouts/google_tag_manager_head"
+  = render_if_exists "layouts/google_tag_manager_head"
   = render "layouts/one_trust"
   = render "layouts/bizible"
-= render "layouts/google_tag_manager_body"
+= render_if_exists "layouts/google_tag_manager_body"
 
 #js-terms-of-service{ data: { terms_data: terms_data(@term, @redirect) } }

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Mock CI **(FREE ALL)**
 
 NOTE:
-This integration only appears if you're in a [development environment](https://gitlab.com/gitlab-org/gitlab-mock-ci-service#setup-mockci-integration).
+This integration is only available in a development environment.
 
 To set up the mock CI service server, respond to the following endpoints:
 
@@ -17,4 +17,4 @@ To set up the mock CI service server, respond to the following endpoints:
 - `build_page`: `#{project.namespace.path}/#{project.path}/status/#{sha}`
   - Where the build is linked to (whether or not it's implemented).
 
-For an example of a mock CI server, see [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service).
+For an example Mock CI server, see [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service).

@@ -23,8 +23,7 @@ and subject to change without notice.
 
 Create a new CycloneDX JSON export for all the project dependencies detected in a pipeline.
 
-If an authenticated user doesn't have permission to
-[read_dependency](../user/permissions.md#custom-role-requirements),
+If an authenticated user doesn't have permission to [read_dependency](../user/custom_roles.md#custom-role-requirements),
 this request returns a `403 Forbidden` status code.
 
 SBOM exports can be only accessed by the export's author.

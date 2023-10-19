@@ -30,7 +30,7 @@ export default {
       'CICD|Allow CI job tokens from the following projects to access this project',
     ),
     settingDisabledMessage: s__(
-      'CICD|Enable feature to allow job token access by the following projects.',
+      'CICD|Enable feature to limit job token access, so only the projects in this list can access this project with a CI/CD job token.',
     ),
     addProject: __('Add project'),
     cancel: __('Cancel'),

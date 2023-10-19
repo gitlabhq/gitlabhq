@@ -79,7 +79,7 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)', feature_category: :c
       post_graphql(query, current_user: user)
 
       expect(graphql_data_at(*path)).to match a_hash_including(
-        'text' => 'pending',
+        'text' => 'Pending',
         'label' => 'pending',
         'action' => a_hash_including('buttonTitle' => 'Cancel this job', 'icon' => 'cancel')
       )

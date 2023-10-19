@@ -823,6 +823,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:admin_mode) { true }
         let(:projects) { Project.all }
       end
+
+      it 'returns a project with user namespace that has a missing owner' do
+        project.namespace.update_column(:owner_id, non_existing_record_id)
+        project.route.update_column(:name, nil)
+
+        get api(path, admin, admin_mode: true), params: { search: project.path }
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project_response = json_response.find { |p| p['id'] == project.id }
+        expect(project_response).to be_present
+        expect(project_response['path']).to eq(project.path)
+
+        namespace_response = project_response['namespace']
+        expect(project_response['web_url']).to include(namespace_response['web_url'])
+      end
     end
 
     context 'with default created_at desc order' do
@@ -1271,6 +1286,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         attrs[:builds_access_level] = 'disabled'
         attrs[:merge_requests_access_level] = 'disabled'
         attrs[:issues_access_level] = 'disabled'
+        attrs[:model_experiments_access_level] = 'disabled'
       end
 
       post api(path, user), params: project
@@ -1281,7 +1297,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         next if %i[
           has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
           container_registry_access_level releases_access_level environments_access_level feature_flags_access_level
-          infrastructure_access_level monitor_access_level
+          infrastructure_access_level monitor_access_level model_experiments_access_level
         ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
@@ -1384,13 +1400,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     it 'disallows creating a project with an import_url that is not reachable' do
       url = 'http://example.com'
       endpoint_url = "#{url}/info/refs?service=git-upload-pack"
-      stub_full_request(endpoint_url, method: :get).to_return({ status: 301, body: '', headers: nil })
+      error_response = { status: 301, body: '', headers: nil }
+      stub_full_request(endpoint_url, method: :get).to_return(error_response)
       project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
 
       expect { post api(path, user), params: project_params }.not_to change { Project.count }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      expect(json_response['message']).to eq("#{url} is not a valid HTTP Git repository")
+      expect(json_response['message']).to eq("#{url} endpoint error: #{error_response[:status]}")
     end
 
     it 'creates a project with an import_url that is valid' do
@@ -3877,7 +3894,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(Project.find_by(path: project[:path]).analytics_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
-    %i(releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level).each do |field|
+    %i(releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level model_experiments_access_level).each do |field|
       it "sets #{field}" do
         put api(path, user), params: { field => 'private' }
 

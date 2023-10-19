@@ -32,14 +32,37 @@ Note the Redis node's IP address or hostname, port, and password (if required).
 1. Configure the GitLab application servers with the appropriate connection details
    for your external Redis service in your `/etc/gitlab/gitlab.rb` file:
 
+   When using a single Redis instance:
+
    ```ruby
    redis['enable'] = false
 
-   gitlab_rails['redis_host'] = 'redis.example.com'
-   gitlab_rails['redis_port'] = 6379
+   gitlab_rails['redis_host'] = '<redis_instance_url>'
+   gitlab_rails['redis_port'] = '<redis_instance_port>'
 
    # Required if Redis authentication is configured on the Redis node
-   gitlab_rails['redis_password'] = 'Redis Password'
+   gitlab_rails['redis_password'] = '<redis_password>'
+
+   # Set to true if instance is using Redis SSL 
+   gitlab_rails['redis_ssl'] = true
+   ```
+
+   When using separate Redis Cache and Persistent instances:
+
+   ```ruby
+   redis['enable'] = false
+
+   # Default Redis connection
+   gitlab_rails['redis_host'] = '<redis_persistent_instance_url>'
+   gitlab_rails['redis_port'] = '<redis_persistent_instance_port>'
+   gitlab_rails['redis_password'] = '<redis_persistent_password>'
+
+   # Set to true if instance is using Redis SSL
+   gitlab_rails['redis_ssl'] = true
+
+   # Redis Cache connection
+   # Replace `redis://` with `rediss://` if using SSL
+   gitlab_rails['redis_cache_instance'] = 'redis://:<redis_cache_password>@<redis_cache_instance_url>:<redis_cache_instance_port>'
    ```
 
 1. Reconfigure for the changes to take effect:
@@ -47,6 +70,15 @@ Note the Redis node's IP address or hostname, port, and password (if required).
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+### Setting the Redis Cache instance as an LRU
+
+When configuring a Redis Cache instance, it should be configured as a [Least Recently Used cache](https://redis.io/docs/manual/eviction/) (LRU) accordingly.
+
+Configuring this depends on the cloud provider or service, but generally the following settings and values configure a cache:
+
+- `maxmemory-policy` = `allkeys-lru`
+- `maxmemory-samples` = `5`
 
 ## Redis replication and failover with your own Redis servers
 

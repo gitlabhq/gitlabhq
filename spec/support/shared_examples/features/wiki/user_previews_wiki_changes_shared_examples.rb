@@ -5,8 +5,6 @@
 #   user
 
 RSpec.shared_examples 'User previews wiki changes' do
-  include ContentEditorHelpers
-
   let(:wiki_page) { build(:wiki_page, wiki: wiki) }
 
   before do
@@ -76,7 +74,6 @@ RSpec.shared_examples 'User previews wiki changes' do
     before do
       wiki_page.create # rubocop:disable Rails/SaveBang
       visit wiki_page_path(wiki, wiki_page, action: :edit)
-      close_rich_text_promo_popover_if_present
     end
 
     it_behaves_like 'relative links' do

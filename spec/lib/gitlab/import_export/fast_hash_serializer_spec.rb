@@ -217,17 +217,18 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer, :with_license, feature_
     release = create(:release)
     group = create(:group)
 
-    project = create(:project,
-                     :public,
-                     :repository,
-                     :issues_disabled,
-                     :wiki_enabled,
-                     :builds_private,
-                     description: 'description',
-                     releases: [release],
-                     group: group,
-                     approvals_before_merge: 1
-                    )
+    project = create(
+      :project,
+      :public,
+      :repository,
+      :issues_disabled,
+      :wiki_enabled,
+      :builds_private,
+      description: 'description',
+      releases: [release],
+      group: group,
+      approvals_before_merge: 1
+    )
 
     issue = create(:issue, assignees: [user], project: project)
     snippet = create(:project_snippet, project: project)
@@ -249,10 +250,7 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer, :with_license, feature_
     create(:discussion_note, noteable: issue, project: project)
     create(:note, noteable: merge_request, project: project)
     create(:note, noteable: snippet, project: project)
-    create(:note_on_commit,
-           author: user,
-           project: project,
-           commit_id: ci_build.pipeline.sha)
+    create(:note_on_commit, author: user, project: project, commit_id: ci_build.pipeline.sha)
 
     create(:resource_label_event, label: project_label, issue: issue)
     create(:resource_label_event, label: group_label, merge_request: merge_request)

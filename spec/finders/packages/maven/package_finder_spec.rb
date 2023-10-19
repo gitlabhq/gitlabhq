@@ -17,21 +17,21 @@ RSpec.describe ::Packages::Maven::PackageFinder do
     group.add_developer(user)
   end
 
-  describe '#execute!' do
-    subject { finder.execute! }
+  describe '#execute' do
+    subject { finder.execute }
 
     shared_examples 'handling valid and invalid paths' do
       context 'with a valid path' do
         let(:param_path) { package.maven_metadatum.path }
 
-        it { is_expected.to eq(package) }
+        it { is_expected.to include(package) }
       end
 
       context 'with an invalid path' do
         let(:param_path) { 'com/example/my-app/1.0-SNAPSHOT' }
 
-        it 'raises an error' do
-          expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+        it 'returns an empty array' do
+          is_expected.to be_empty
         end
       end
 
@@ -42,7 +42,9 @@ RSpec.describe ::Packages::Maven::PackageFinder do
           package.update_column(:status, :error)
         end
 
-        it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+        it 'returns an empty array' do
+          is_expected.to be_empty
+        end
       end
     end
 
@@ -59,8 +61,8 @@ RSpec.describe ::Packages::Maven::PackageFinder do
     end
 
     context 'across all projects' do
-      it 'raises an error' do
-        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      it 'returns an empty array' do
+        is_expected.to be_empty
       end
     end
 
@@ -86,13 +88,13 @@ RSpec.describe ::Packages::Maven::PackageFinder do
       end
 
       context 'without order by package file' do
-        it { is_expected.to eq(package3) }
+        it { is_expected.to match_array([package1, package2, package3]) }
       end
 
       context 'with order by package file' do
         let(:param_order_by_package_file) { true }
 
-        it { is_expected.to eq(package2) }
+        it { expect(subject.last).to eq(package2) }
       end
     end
   end

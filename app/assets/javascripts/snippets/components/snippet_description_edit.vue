@@ -36,7 +36,7 @@ export default {
         <gl-form-input
           class="form-control"
           :placeholder="s__('Snippets|Describe what your snippet does or how to use it…')"
-          data-qa-selector="description_placeholder"
+          data-testid="description-placeholder"
         />
       </div>
       <markdown-field
@@ -54,7 +54,7 @@ export default {
             :value="value"
             class="note-textarea js-gfm-input js-autosize markdown-area"
             dir="auto"
-            data-qa-selector="snippet_description_field"
+            data-testid="snippet-description-field"
             data-supports-quick-actions="false"
             :aria-label="__('Description')"
             :placeholder="__('Write a comment or drag your files here…')"

@@ -23,76 +23,76 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
 
   describe '#call' do
     context 'with worker not opted for database health check' do
+      let(:metric) { instance_double(Prometheus::Client::Counter, increment: true) }
+
+      shared_examples 'runs the job normally' do
+        it 'yields control' do
+          expect { |b| subject.call(TestWorker.new, job, queue, &b) }.to yield_control
+        end
+
+        it 'does not increment any metric counter' do
+          expect(metric).not_to receive(:increment)
+
+          subject.call(TestWorker.new, job, queue) { nil }
+        end
+
+        it 'does not increment deferred_count' do
+          subject.call(TestWorker.new, job, queue) { nil }
+
+          expect(job).not_to include('deferred_count')
+        end
+      end
+
+      shared_examples 'drops the job' do
+        it 'does not yield control' do
+          expect { |b| subject.call(TestWorker.new, job, queue, &b) }.not_to yield_control
+        end
+
+        it 'increments counter' do
+          expect(metric).to receive(:increment).with({ worker: "TestWorker", action: "dropped" })
+
+          subject.call(TestWorker.new, job, queue) { nil }
+        end
+
+        it 'does not increment deferred_count' do
+          subject.call(TestWorker.new, job, queue) { nil }
+
+          expect(job).not_to include('deferred_count')
+        end
+
+        it 'has dropped field in job equal to true' do
+          subject.call(TestWorker.new, job, queue) { nil }
+
+          expect(job).to include({ 'dropped' => true })
+        end
+      end
+
+      shared_examples 'defers the job' do
+        it 'does not yield control' do
+          expect { |b| subject.call(TestWorker.new, job, queue, &b) }.not_to yield_control
+        end
+
+        it 'delays the job' do
+          expect(TestWorker).to receive(:perform_in).with(described_class::DELAY, *job['args'])
+
+          subject.call(TestWorker.new, job, queue) { nil }
+        end
+
+        it 'increments counter' do
+          expect(metric).to receive(:increment).with({ worker: "TestWorker", action: "deferred" })
+
+          subject.call(TestWorker.new, job, queue) { nil }
+        end
+
+        it 'has deferred related fields in job payload' do
+          subject.call(TestWorker.new, job, queue) { nil }
+
+          expect(job).to include({ 'deferred' => true, 'deferred_by' => :feature_flag, 'deferred_count' => 1 })
+        end
+      end
+
       describe "with all combinations of drop and defer FFs" do
         using RSpec::Parameterized::TableSyntax
-
-        let(:metric) { instance_double(Prometheus::Client::Counter, increment: true) }
-
-        shared_examples 'runs the job normally' do
-          it 'yields control' do
-            expect { |b| subject.call(TestWorker.new, job, queue, &b) }.to yield_control
-          end
-
-          it 'does not increment any metric counter' do
-            expect(metric).not_to receive(:increment)
-
-            subject.call(TestWorker.new, job, queue) { nil }
-          end
-
-          it 'does not increment deferred_count' do
-            subject.call(TestWorker.new, job, queue) { nil }
-
-            expect(job).not_to include('deferred_count')
-          end
-        end
-
-        shared_examples 'drops the job' do
-          it 'does not yield control' do
-            expect { |b| subject.call(TestWorker.new, job, queue, &b) }.not_to yield_control
-          end
-
-          it 'increments counter' do
-            expect(metric).to receive(:increment).with({ worker: "TestWorker", action: "dropped" })
-
-            subject.call(TestWorker.new, job, queue) { nil }
-          end
-
-          it 'does not increment deferred_count' do
-            subject.call(TestWorker.new, job, queue) { nil }
-
-            expect(job).not_to include('deferred_count')
-          end
-
-          it 'has dropped field in job equal to true' do
-            subject.call(TestWorker.new, job, queue) { nil }
-
-            expect(job).to include({ 'dropped' => true })
-          end
-        end
-
-        shared_examples 'defers the job' do
-          it 'does not yield control' do
-            expect { |b| subject.call(TestWorker.new, job, queue, &b) }.not_to yield_control
-          end
-
-          it 'delays the job' do
-            expect(TestWorker).to receive(:perform_in).with(described_class::DELAY, *job['args'])
-
-            subject.call(TestWorker.new, job, queue) { nil }
-          end
-
-          it 'increments counter' do
-            expect(metric).to receive(:increment).with({ worker: "TestWorker", action: "deferred" })
-
-            subject.call(TestWorker.new, job, queue) { nil }
-          end
-
-          it 'has deferred related fields in job payload' do
-            subject.call(TestWorker.new, job, queue) { nil }
-
-            expect(job).to include({ 'deferred' => true, 'deferred_by' => :feature_flag, 'deferred_count' => 1 })
-          end
-        end
 
         before do
           stub_feature_flags("drop_sidekiq_jobs_#{TestWorker.name}": drop_ff)
@@ -110,6 +110,45 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
 
         with_them do
           it_behaves_like params[:resulting_behavior]
+        end
+      end
+
+      describe 'using current_request actor', :request_store do
+        before do
+          allow(Gitlab::Metrics).to receive(:counter).and_call_original
+          allow(Gitlab::Metrics).to receive(:counter).with(described_class::COUNTER, anything).and_return(metric)
+        end
+
+        context 'with drop_sidekiq_jobs FF' do
+          before do
+            stub_feature_flags("drop_sidekiq_jobs_#{TestWorker.name}": Feature.current_request)
+          end
+
+          it_behaves_like 'drops the job'
+
+          context 'for different request' do
+            before do
+              stub_with_new_feature_current_request
+            end
+
+            it_behaves_like 'runs the job normally'
+          end
+        end
+
+        context 'with run_sidekiq_jobs FF' do
+          before do
+            stub_feature_flags("run_sidekiq_jobs_#{TestWorker.name}": Feature.current_request)
+          end
+
+          it_behaves_like 'runs the job normally'
+
+          context 'for different request' do
+            before do
+              stub_with_new_feature_current_request
+            end
+
+            it_behaves_like 'defers the job'
+          end
         end
       end
     end

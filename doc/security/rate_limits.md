@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
 ---
@@ -126,7 +126,7 @@ The **rate limit** is 20 calls per minute per IP address.
 
 There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to reduce timeouts when retrieving jobs.
 
-The **rate limit** is 600 calls per minute per authenticated user.
+The **rate limit** defaults to 600 calls per authenticated user. You can [configure the rate limit](../administration/settings/user_and_ip_rate_limits.md).
 
 ### AI action
 

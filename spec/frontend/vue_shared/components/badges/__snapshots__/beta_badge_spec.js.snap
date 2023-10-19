@@ -2,22 +2,15 @@
 
 exports[`Beta badge component renders the badge 1`] = `
 <div>
-  <gl-badge-stub
-    class="gl-cursor-pointer"
+  <a
+    class="badge badge-neutral badge-pill gl-badge gl-cursor-pointer md"
     href="#"
-    iconsize="md"
-    size="md"
-    variant="neutral"
+    target="_self"
   >
     Beta
-  </gl-badge-stub>
-  <gl-popover-stub
-    cssclasses=""
-    data-testid="beta-badge"
-    showclosebutton="true"
-    target="[Function]"
-    title="What's Beta?"
-    triggers="hover focus click"
+  </a>
+  <div
+    class="gl-popover"
   >
     <p>
       A Beta feature is not production-ready, but is unlikely to change drastically before it's released. We encourage users to try Beta features and provide feedback.
@@ -43,6 +36,6 @@ exports[`Beta badge component renders the badge 1`] = `
         Is complete or near completion.
       </li>
     </ul>
-  </gl-popover-stub>
+  </div>
 </div>
 `;

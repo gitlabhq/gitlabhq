@@ -5,6 +5,9 @@
 = render_if_exists 'dashboard/todos/saml_reauth_notice'
 - add_page_specific_style 'page_bundles/todos'
 - add_page_specific_style 'page_bundles/issuable'
+- filter_by_done = params[:state] == 'done'
+- open_todo_count = todos_has_filtered_results? && !filter_by_done ? @allowed_todos.count : todos_pending_count
+- done_todo_count = todos_has_filtered_results? && filter_by_done ? @allowed_todos.count : todos_done_count
 
 .page-title-holder.d-flex.align-items-center
   %h1.page-title.gl-font-size-h-display= _("To-Do List")
@@ -14,10 +17,10 @@
     = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
       = gl_tab_link_to todos_filter_path(state: 'pending'), item_active: params[:state].blank? || params[:state] == 'pending', class: "js-todos-pending" do
         = _("To Do")
-        = gl_tab_counter_badge(number_with_delimiter(todos_pending_count), { class: 'js-todos-badge' })
-      = gl_tab_link_to todos_filter_path(state: 'done'), item_active: params[:state] == 'done', class: "js-todos-done" do
+        = gl_tab_counter_badge(number_with_delimiter(open_todo_count), { class: 'js-todos-badge' })
+      = gl_tab_link_to todos_filter_path(state: 'done'), item_active: filter_by_done, class: "js-todos-done" do
         = _("Done")
-        = gl_tab_counter_badge(number_with_delimiter(todos_done_count), { class: 'js-todos-badge' })
+        = gl_tab_counter_badge(number_with_delimiter(done_todo_count), { class: 'js-todos-badge' })
 
     .nav-controls
       - if @allowed_todos.any?(&:pending?)
@@ -80,31 +83,38 @@
         %ul.content-list.todos-list
           = render @allowed_todos
       = paginate @todos, theme: "gitlab"
-    .js-nothing-here-container.empty-state.hidden
+    .js-nothing-here-container.gl-empty-state.gl-text-center.hidden
       .svg-content.svg-150
         = image_tag 'illustrations/empty-todos-all-done-md.svg'
       .text-content.gl-text-center
-        %h4
+        %h1.gl-font-size-h-display.gl-line-height-36.gl-mt-0
           = s_("Todos|You're all done!")
   - elsif current_user.todos.any?
-    .col.todos-all-done.empty-state
+    .col.todos-all-done.gl-empty-state.gl-text-center
       .svg-content.svg-150
-        = image_tag 'illustrations/empty-todos-all-done-md.svg'
-      .text-content.gl-text-center
-        - if todos_filter_empty?
-          %h4
+        = image_tag (!todos_filter_empty? && !todos_has_filtered_results?) ? 'illustrations/empty-todos-all-done-md.svg' : 'illustrations/empty-todos-md.svg'
+      .text-content.gl-text-center.gl-m-auto{ class: "gl-max-w-88!" }
+        %h1.gl-font-size-h-display.gl-line-height-36.gl-mt-0
+          - if todos_filter_empty?
             = no_todos_messages.sample
+          - elsif todos_has_filtered_results?
+            = _("Sorry, your filter produced no results")
+          - else
+            = s_("Todos|Nothing is on your to-do list. Nice work!")
+
+        - if todos_filter_empty?
           %p
             = (s_("Todos|Are you looking for things to do? Take a look at %{strongStart}%{openIssuesLinkStart}open issues%{openIssuesLinkEnd}%{strongEnd}, contribute to %{strongStart}%{mergeRequestLinkStart}a merge request%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}, or mention someone in a comment to automatically assign them a new to-do item.") % { strongStart: '<strong>', strongEnd: '</strong>', openIssuesLinkStart: "<a href=\"#{issues_dashboard_path}\">", openIssuesLinkEnd: '</a>', mergeRequestLinkStart: "<a href=\"#{merge_requests_dashboard_path}\">", mergeRequestLinkEnd: '</a>' }).html_safe
-        - else
-          %h4
-            = s_("Todos|Nothing is on your to-do list. Nice work!")
+        - elsif todos_has_filtered_results?
+          %p
+            = link_to s_("Todos|Do you want to remove the filters?"), todos_filter_path(without: [:project_id, :author_id, :type, :action_id])
+
   - else
-    .col.empty-state
+    .col.gl-empty-state.gl-text-center
       .svg-content.svg-150
         = image_tag 'illustrations/empty-todos-md.svg'
-      .text-content.gl-text-center
-        %h4
+      .text-content.gl-text-center.gl-m-auto{ class: "gl-max-w-88!" }
+        %h1.gl-font-size-h-display.gl-line-height-36.gl-mt-0
           = s_("Todos|Your To-Do List shows what to work on next")
         %p
           = (s_("Todos|When an issue or merge request is assigned to you, or when you receive a %{strongStart}@mention%{strongEnd} in a comment, this automatically triggers a new item in your To-Do List.") % { strongStart: '<strong>', strongEnd: '</strong>' }).html_safe

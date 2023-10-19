@@ -14,7 +14,7 @@ module QA
               include QA::Page::SubMenus::Common
 
               view 'app/views/layouts/nav/_top_bar.html.haml' do
-                element :toggle_mobile_nav_button
+                element 'toggle-mobile-nav-button'
               end
             end
           end

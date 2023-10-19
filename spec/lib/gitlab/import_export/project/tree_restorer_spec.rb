@@ -449,6 +449,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
             expect(pipeline_schedule.cron).to eq('0 4 * * 0')
             expect(pipeline_schedule.cron_timezone).to eq('UTC')
             expect(pipeline_schedule.active).to eq(false)
+            expect(pipeline_schedule.owner_id).to eq(@user.id)
           end
         end
 
@@ -853,12 +854,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
         end
 
         let!(:project) do
-          create(:project,
-                 :builds_disabled,
-                 :issues_disabled,
-                 name: 'project',
-                 path: 'project',
-                 group: group)
+          create(
+            :project,
+            :builds_disabled,
+            :issues_disabled,
+            name: 'project',
+            path: 'project',
+            group: group
+          )
         end
 
         before do
@@ -889,12 +892,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       context 'with existing group models' do
         let(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
         let!(:project) do
-          create(:project,
-                 :builds_disabled,
-                 :issues_disabled,
-                 name: 'project',
-                 path: 'project',
-                 group: group)
+          create(
+            :project,
+            :builds_disabled,
+            :issues_disabled,
+            name: 'project',
+            path: 'project',
+            group: group
+          )
         end
 
         before do
@@ -925,12 +930,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       context 'with clashing milestones on IID' do
         let(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
         let!(:project) do
-          create(:project,
-                 :builds_disabled,
-                 :issues_disabled,
-                 name: 'project',
-                 path: 'project',
-                 group: group)
+          create(
+            :project,
+            :builds_disabled,
+            :issues_disabled,
+            name: 'project',
+            path: 'project',
+            group: group
+          )
         end
 
         before do
@@ -1142,8 +1149,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       let_it_be(:user) { create(:admin, email: 'user_1@gitlabexample.com') }
       let_it_be(:second_user) { create(:user, email: 'user_2@gitlabexample.com') }
       let_it_be(:project) do
-        create(:project, :builds_disabled, :issues_disabled,
-               { name: 'project', path: 'project' })
+        create(:project, :builds_disabled, :issues_disabled, { name: 'project', path: 'project' })
       end
 
       let(:shared) { project.import_export_shared }

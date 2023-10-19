@@ -40,7 +40,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
       classes: x.classes(),
     }));
   const findFirstBlobEdit = () => findBlobEdits().at(0);
-  const findAddButton = () => wrapper.find('[data-testid="add_button"]');
+  const findAddButton = () => wrapper.find('[data-testid="add-button"]');
   const findLimitationsText = () => wrapper.find('[data-testid="limitations_text"]');
   const getLastActions = () => {
     const events = wrapper.emitted().actions;

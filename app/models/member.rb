@@ -29,10 +29,8 @@ class Member < ApplicationRecord
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :member_namespace, inverse_of: :namespace_members, foreign_key: 'member_namespace_id', class_name: 'Namespace'
   belongs_to :member_role
-  has_one :member_task
 
   delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
-  delegate :tasks_to_be_done, to: :member_task, allow_nil: true
 
   validates :expires_at, allow_blank: true, future_date: true
   validates :user, presence: true, unless: :invite?
@@ -525,6 +523,7 @@ class Member < ApplicationRecord
 
   def validate_access_level_locked_for_member_role
     return unless member_role_id
+    return if member_role_changed? # it is ok to change the access level when changing member role
 
     if access_level_changed?
       errors.add(:access_level, _("cannot be changed since member is associated with a custom role"))
@@ -577,12 +576,6 @@ class Member < ApplicationRecord
 
   def after_accept_invite
     post_create_hook
-
-    run_after_commit_or_now do
-      if member_task
-        TasksToBeDone::CreateWorker.perform_async(member_task.id, created_by_id, [user_id.to_i])
-      end
-    end
   end
 
   def after_decline_invite

@@ -22,6 +22,9 @@ export default {
       },
     };
   },
+  [types.INITIALIZE_RELEASE](state, release) {
+    state.release = release;
+  },
 
   [types.REQUEST_RELEASE](state) {
     state.isFetchingRelease = true;

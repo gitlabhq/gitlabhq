@@ -108,7 +108,7 @@ def mr_missing_feature_flag_status_label?
 end
 
 def stage_requires_feature_flag_review?
-  DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW.include?(feature_flag.stage_label)
+  DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW.include?(helper.stage_label)
 end
 
 added_feature_flag_files.each do |feature_flag|

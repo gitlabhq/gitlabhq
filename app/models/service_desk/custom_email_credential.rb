@@ -59,7 +59,7 @@ module ServiceDesk
         allow_localhost: false,
         allow_local_network: false
       )
-    rescue Gitlab::UrlBlocker::BlockedUrlError => e
+    rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
       errors.add(:smtp_address, e)
     end
   end

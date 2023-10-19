@@ -49,7 +49,7 @@ To view the updated syntax highlighting theme, refresh your project's page.
 To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls). Use `default_syntax_highlighting_theme` to change the syntax highlighting colors on a more granular level.
 
 If these steps do not work, your programming language might not be supported by the syntax highlighters.
-For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/rouge) for guidance on code files and Snippets. View [Moncaco Editor](https://microsoft.github.io/monaco-editor/) and [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) for guidance on the Web IDE.  
+For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/rouge) for guidance on code files and Snippets. View [Monaco Editor](https://microsoft.github.io/monaco-editor/) and [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) for guidance on the Web IDE.
 
 ## Change the diff colors
 
@@ -105,17 +105,17 @@ To change the default content on your group overview page:
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Go to the **Behavior** section.
-1. For **Group overivew content**, select an option.
+1. For **Group overview content**, select an option.
 1. Select **Save changes**.
 
 ### Customize default content on your project overview page
 
-Your project overview page is the page you view when you select **Project overview** on the left sidebar. You can set your main project overview page to the Activity page, the Readme file, and other content.
+Your project overview page is the page you view when you select **Project overview** on the left sidebar. You can set your main project overview page to the Activity page, the README file, and other content.
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Go to the **Behavior** section.
-1. For **Project overivew content**, select an option.
+1. For **Project overview content**, select an option.
 1. Select **Save changes**.
 
 ### Hide shortcut buttons
@@ -260,7 +260,7 @@ Customize the format used to display times of activities on your group and proje
 - Relative format, for example `30 minutes ago`.
 - Absolute format, for example `September 3, 2022, 3:57 PM`.
 
-To use relative times on the GitLab UI:
+To use exact times on the GitLab UI:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
@@ -303,7 +303,9 @@ To access your **Followers** and **Following** tabs:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../policy/experiment-beta-support.md#beta).
 
-To enable [Code Suggestions](../../user/project/repository/code_suggestions/index.md):
+Code Suggestions are disabled by default at the user account level.
+
+To update this setting:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
@@ -311,7 +313,7 @@ To enable [Code Suggestions](../../user/project/repository/code_suggestions/inde
 1. Select **Save changes**.
 
 NOTE:
-If Code Suggestions are turned off [for the group](../../user/group/manage.md#enable-code-suggestions), then you cannot enable them for yourself. (Your setting has no effect.)
+If Code Suggestions are disabled [for any groups that you belong to](../../user/group/manage.md#enable-code-suggestions), then you cannot enable them for yourself. (Your setting has no effect.)
 
 ## Integrate your GitLab instance with third-party services
 

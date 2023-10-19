@@ -11,12 +11,8 @@ module QA
           element 'filter-groups'
         end
 
-        view "app/assets/javascripts/import_entities/import_groups/components/import_target_cell.vue" do
-          element :target_group_dropdown_item
-        end
-
-        view "app/assets/javascripts/import_entities/components/group_dropdown.vue" do
-          element :target_namespace_selector_dropdown
+        view "app/assets/javascripts/import_entities/components/import_target_dropdown.vue" do
+          element 'target-namespace-dropdown'
         end
 
         view "app/assets/javascripts/import_entities/import_groups/components/import_actions_cell.vue" do
@@ -40,8 +36,8 @@ module QA
           filter_group(source_group_name)
 
           within_element(:import_item, source_group: source_group_name) do
-            click_element(:target_namespace_selector_dropdown)
-            click_element(:target_group_dropdown_item, group_name: target_group_name)
+            click_element('target-namespace-dropdown')
+            click_element("listbox-item-#{target_group_name}")
 
             retry_until(message: "Triggering import") do
               click_element('import-group-button')

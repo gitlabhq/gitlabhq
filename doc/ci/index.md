@@ -39,7 +39,7 @@ Runners are the agents that run your jobs. These agents can run on physical mach
 In your `.gitlab-ci.yml` file, you can specify a container image you want to use when running the job.
 The runner loads the image and runs the job either locally or in the container.
 
-If you use GitLab.com, free shared runners are already available for you. And you can register your own
+If you use GitLab.com, SaaS runners on Linux, Windows, and macOS are already available for use. And you can register your own
 runners on GitLab.com if you'd like.
 
 If you don't use GitLab.com, you can:
@@ -75,6 +75,10 @@ They can be hard-coded in your `.gitlab-ci.yml` file, project settings, or dynam
 
 - [Learn more about CI/CD variables](variables/index.md).
 
+### CI/CD components
+
+A [CI/CD component](components/index.md) is a reusable single pipeline configuration unit. Use them to compose an entire pipeline configuration or a small part of a larger pipeline.
+
 ## Videos
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab CI/CD demo](https://www.youtube-nocookie.com/embed/ljth1Q5oJoo).
@@ -84,7 +88,7 @@ They can be hard-coded in your `.gitlab-ci.yml` file, project settings, or dynam
 ## Related topics
 
 - [Five teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/).
-- [Make the case for CI/CD in your organization](https://about.gitlab.com/devops-tools/github-vs-gitlab/).
+- [Make the case for CI/CD in your organization](https://about.gitlab.com/why-gitlab/).
 - Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/) from 30 days to under 8 hours with GitLab.
 - Use the [GitLab Workflow VS Code extension](../user/project/repository/vscode.md) to
   [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)

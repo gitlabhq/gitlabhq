@@ -2,6 +2,7 @@
 
 class Upload < ApplicationRecord
   include Checksummable
+  include EachBatch
 
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes

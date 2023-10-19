@@ -43,7 +43,7 @@
               = link_to_label(label, type: :merge_request, small: true)
 
     .issuable-meta
-      %ul.controls.d-flex.align-items-end
+      %ul.controls.d-flex.align-items-center
         - if merge_request.merged?
           - merged_at = merge_request.merged_at ? l(merge_request.merged_at.to_time) : _("Merge date & time could not be determined")
           %li.d-none.d-sm-flex

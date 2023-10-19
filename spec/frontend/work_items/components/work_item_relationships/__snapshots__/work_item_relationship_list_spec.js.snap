@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`WorkItemRelationshipList renders linked item list 1`] = `
-<div>
+<div
+  data-testid="work-item-linked-items-list"
+>
   <h4
     class="gl-font-sm gl-font-weight-semibold gl-mb-2 gl-mt-3 gl-mx-2 gl-text-gray-700"
     data-testid="work-items-list-heading"
@@ -20,7 +22,7 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
         <work-item-link-child-contents-stub
           canupdate="true"
           childitem="[object Object]"
-          childpath="/test-project-path/-/work_items/83"
+          showtaskicon="true"
         />
       </li>
     </ul>

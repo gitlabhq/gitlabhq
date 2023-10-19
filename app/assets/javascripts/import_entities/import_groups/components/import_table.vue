@@ -393,7 +393,7 @@ export default {
       }
     },
 
-    importGroup({ group, extraArgs, index }) {
+    async importGroup({ group, extraArgs, index }) {
       if (group.flags.isFinished && !this.reimportRequests.includes(group.id)) {
         this.validateImportTarget(group.importTarget);
         this.reimportRequests.push(group.id);
@@ -402,7 +402,7 @@ export default {
         });
       } else {
         this.reimportRequests = this.reimportRequests.filter((id) => id !== group.id);
-        this.requestGroupsImport([
+        await this.requestGroupsImport([
           {
             sourceGroupId: group.id,
             targetNamespace: group.importTarget.targetNamespace.fullPath,
@@ -410,6 +410,16 @@ export default {
             ...extraArgs,
           },
         ]);
+
+        const updatedGroup = this.groups?.find((g) => g.id === group.id);
+
+        if (
+          updatedGroup.progress &&
+          updatedGroup.progress.status === STATUSES.FAILED &&
+          updatedGroup.progress.message
+        ) {
+          this.reimportRequests.push(group.id);
+        }
       }
     },
 
@@ -427,6 +437,7 @@ export default {
     },
 
     setPageSize(size) {
+      this.page = 1;
       this.perPage = size;
     },
 

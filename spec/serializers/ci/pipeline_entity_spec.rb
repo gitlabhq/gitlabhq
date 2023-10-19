@@ -2,14 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineEntity do
+RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
   include Gitlab::Routing
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   let(:request) { double('request', current_user: user) }
-  let(:entity) { described_class.represent(pipeline, request: request) }
+  let(:options) { {} }
+  let(:entity) { described_class.represent(pipeline, request: request, **options) }
 
   describe '#as_json' do
     subject { entity.as_json }
@@ -255,8 +256,30 @@ RSpec.describe Ci::PipelineEntity do
           project.add_maintainer(user)
         end
 
-        it 'exposes these failed builds' do
-          expect(subject[:failed_builds].map { |b| b[:id] }).to contain_exactly(failed_1.id, failed_2.id)
+        # Remove with `ci_fix_performance_pipelines_json_endpoint`.
+        context 'when disable_failed_builds is true' do
+          let(:options) { { disable_failed_builds: true } }
+
+          it 'exposes the failed builds count but not the failed builds' do
+            expect(subject[:failed_builds_count]).to eq(2)
+            expect(subject).not_to have_key(:failed_builds)
+          end
+        end
+
+        context 'when disable_failed_builds is false' do
+          let(:options) { { disable_failed_builds: false } }
+
+          it 'exposes the failed builds count but not the failed builds' do
+            expect(subject[:failed_builds_count]).to eq(2)
+            expect(subject[:failed_builds].map { |b| b[:id] }).to contain_exactly(failed_1.id, failed_2.id)
+          end
+        end
+
+        context 'when disable_failed_builds is nil' do
+          it 'exposes the failed builds count and the failed builds' do
+            expect(subject[:failed_builds_count]).to eq(2)
+            expect(subject[:failed_builds].map { |b| b[:id] }).to contain_exactly(failed_1.id, failed_2.id)
+          end
         end
       end
 

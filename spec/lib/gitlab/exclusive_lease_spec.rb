@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_shared_state,
+RSpec.describe Gitlab::ExclusiveLease, :request_store,
   :clean_gitlab_redis_cluster_shared_state, feature_category: :shared do
   let(:unique_key) { SecureRandom.hex(10) }
 
@@ -19,67 +19,6 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
       lease.try_obtain # start the lease
       sleep(2 * timeout) # lease should have expired now
       expect(lease.try_obtain).to be_present
-    end
-
-    context 'when migrating across stores' do
-      let(:lease) { described_class.new(unique_key, timeout: 3600) }
-
-      before do
-        stub_feature_flags(use_cluster_shared_state_for_exclusive_lease: false)
-        allow(lease).to receive(:same_store).and_return(false)
-      end
-
-      it 'acquires 2 locks' do
-        # stub first SETNX
-        Gitlab::Redis::SharedState.with { |r| expect(r).to receive(:set).and_return(true) }
-        Gitlab::Redis::ClusterSharedState.with { |r| expect(r).to receive(:set).and_call_original }
-
-        expect(lease.try_obtain).to be_truthy
-      end
-
-      it 'rollback first lock if second lock is not acquired' do
-        Gitlab::Redis::ClusterSharedState.with do |r|
-          expect(r).to receive(:set).and_return(false)
-          expect(r).to receive(:eval).and_call_original
-        end
-
-        Gitlab::Redis::SharedState.with do |r|
-          expect(r).to receive(:set).and_call_original
-          expect(r).to receive(:eval).and_call_original
-        end
-
-        expect(lease.try_obtain).to be_falsey
-      end
-    end
-
-    context 'when cutting over to ClusterSharedState' do
-      context 'when lock is not acquired' do
-        it 'waits for existing holder to yield the lock' do
-          Gitlab::Redis::ClusterSharedState.with { |r| expect(r).to receive(:set).and_call_original }
-          Gitlab::Redis::SharedState.with { |r| expect(r).not_to receive(:set) }
-
-          lease = described_class.new(unique_key, timeout: 3600)
-          expect(lease.try_obtain).to be_truthy
-        end
-      end
-
-      context 'when lock is still acquired' do
-        let(:lease) { described_class.new(unique_key, timeout: 3600) }
-
-        before do
-          # simulates cutover where some application's feature-flag has not updated
-          stub_feature_flags(use_cluster_shared_state_for_exclusive_lease: false)
-          lease.try_obtain
-          stub_feature_flags(use_cluster_shared_state_for_exclusive_lease: true)
-        end
-
-        it 'waits for existing holder to yield the lock' do
-          Gitlab::Redis::ClusterSharedState.with { |r| expect(r).not_to receive(:set) }
-          Gitlab::Redis::SharedState.with { |r| expect(r).not_to receive(:set) }
-
-          expect(lease.try_obtain).to be_falsey
-        end
-      end
     end
   end
 
@@ -104,158 +43,130 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
     end
   end
 
-  shared_examples 'write operations' do
-    describe '#renew' do
-      it 'returns true when we have the existing lease' do
-        lease = described_class.new(unique_key, timeout: 3600)
-        expect(lease.try_obtain).to be_present
-        expect(lease.renew).to be_truthy
-      end
+  describe '#renew' do
+    it 'returns true when we have the existing lease' do
+      lease = described_class.new(unique_key, timeout: 3600)
+      expect(lease.try_obtain).to be_present
+      expect(lease.renew).to be_truthy
+    end
 
-      it 'returns false when we dont have a lease' do
-        lease = described_class.new(unique_key, timeout: 3600)
-        expect(lease.renew).to be_falsey
+    it 'returns false when we dont have a lease' do
+      lease = described_class.new(unique_key, timeout: 3600)
+      expect(lease.renew).to be_falsey
+    end
+  end
+
+  describe 'cancellation' do
+    def new_lease(key)
+      described_class.new(key, timeout: 3600)
+    end
+
+    shared_examples 'cancelling a lease' do
+      let(:lease) { new_lease(unique_key) }
+
+      it 'releases the held lease' do
+        uuid = lease.try_obtain
+        expect(uuid).to be_present
+        expect(new_lease(unique_key).try_obtain).to eq(false)
+
+        cancel_lease(uuid)
+
+        expect(new_lease(unique_key).try_obtain).to be_present
       end
     end
 
-    describe 'cancellation' do
-      def new_lease(key)
-        described_class.new(key, timeout: 3600)
+    describe '.cancel' do
+      def cancel_lease(uuid)
+        described_class.cancel(release_key, uuid)
       end
 
-      shared_examples 'cancelling a lease' do
-        let(:lease) { new_lease(unique_key) }
-
-        it 'releases the held lease' do
-          uuid = lease.try_obtain
-          expect(uuid).to be_present
-          expect(new_lease(unique_key).try_obtain).to eq(false)
-
-          cancel_lease(uuid)
-
-          expect(new_lease(unique_key).try_obtain).to be_present
+      context 'when called with the unprefixed key' do
+        it_behaves_like 'cancelling a lease' do
+          let(:release_key) { unique_key }
         end
       end
 
-      describe '.cancel' do
-        def cancel_lease(uuid)
-          described_class.cancel(release_key, uuid)
-        end
-
-        context 'when called with the unprefixed key' do
-          it_behaves_like 'cancelling a lease' do
-            let(:release_key) { unique_key }
-          end
-        end
-
-        context 'when called with the prefixed key' do
-          it_behaves_like 'cancelling a lease' do
-            let(:release_key) { described_class.redis_shared_state_key(unique_key) }
-          end
-        end
-
-        it 'does not raise errors when given a nil key' do
-          expect { described_class.cancel(nil, nil) }.not_to raise_error
+      context 'when called with the prefixed key' do
+        it_behaves_like 'cancelling a lease' do
+          let(:release_key) { described_class.redis_shared_state_key(unique_key) }
         end
       end
 
-      describe '#cancel' do
-        def cancel_lease(_uuid)
-          lease.cancel
-        end
-
-        it_behaves_like 'cancelling a lease'
-
-        it 'is safe to call even if the lease was never obtained' do
-          lease = new_lease(unique_key)
-
-          lease.cancel
-
-          expect(new_lease(unique_key).try_obtain).to be_present
-        end
+      it 'does not raise errors when given a nil key' do
+        expect { described_class.cancel(nil, nil) }.not_to raise_error
       end
     end
 
-    describe '.reset_all!' do
-      it 'removes all existing lease keys from redis' do
-        uuid = described_class.new(unique_key, timeout: 3600).try_obtain
+    describe '#cancel' do
+      def cancel_lease(_uuid)
+        lease.cancel
+      end
 
-        expect(described_class.get_uuid(unique_key)).to eq(uuid)
+      it_behaves_like 'cancelling a lease'
 
-        described_class.reset_all!
+      it 'is safe to call even if the lease was never obtained' do
+        lease = new_lease(unique_key)
 
-        expect(described_class.get_uuid(unique_key)).to be_falsey
+        lease.cancel
+
+        expect(new_lease(unique_key).try_obtain).to be_present
       end
     end
   end
 
-  shared_examples 'read operations' do
-    describe '#exists?' do
-      it 'returns true for an existing lease' do
-        lease = described_class.new(unique_key, timeout: 3600)
-        lease.try_obtain
+  describe '.reset_all!' do
+    it 'removes all existing lease keys from redis' do
+      uuid = described_class.new(unique_key, timeout: 3600).try_obtain
 
-        expect(lease.exists?).to eq(true)
-      end
+      expect(described_class.get_uuid(unique_key)).to eq(uuid)
 
-      it 'returns false for a lease that does not exist' do
-        lease = described_class.new(unique_key, timeout: 3600)
+      described_class.reset_all!
 
-        expect(lease.exists?).to eq(false)
-      end
-    end
-
-    describe '.get_uuid' do
-      it 'gets the uuid if lease with the key associated exists' do
-        uuid = described_class.new(unique_key, timeout: 3600).try_obtain
-
-        expect(described_class.get_uuid(unique_key)).to eq(uuid)
-      end
-
-      it 'returns false if the lease does not exist' do
-        expect(described_class.get_uuid(unique_key)).to be false
-      end
-    end
-
-    describe '#ttl' do
-      it 'returns the TTL of the Redis key' do
-        lease = described_class.new('kittens', timeout: 100)
-        lease.try_obtain
-
-        expect(lease.ttl <= 100).to eq(true)
-      end
-
-      it 'returns nil when the lease does not exist' do
-        lease = described_class.new('kittens', timeout: 10)
-
-        expect(lease.ttl).to be_nil
-      end
+      expect(described_class.get_uuid(unique_key)).to be_falsey
     end
   end
 
-  context 'when migrating across stores' do
-    before do
-      stub_feature_flags(use_cluster_shared_state_for_exclusive_lease: false)
+  describe '#exists?' do
+    it 'returns true for an existing lease' do
+      lease = described_class.new(unique_key, timeout: 3600)
+      lease.try_obtain
+
+      expect(lease.exists?).to eq(true)
     end
 
-    it_behaves_like 'read operations'
-    it_behaves_like 'write operations'
+    it 'returns false for a lease that does not exist' do
+      lease = described_class.new(unique_key, timeout: 3600)
+
+      expect(lease.exists?).to eq(false)
+    end
   end
 
-  context 'when feature flags are all disabled' do
-    before do
-      stub_feature_flags(
-        use_cluster_shared_state_for_exclusive_lease: false,
-        enable_exclusive_lease_double_lock_rw: false
-      )
+  describe '.get_uuid' do
+    it 'gets the uuid if lease with the key associated exists' do
+      uuid = described_class.new(unique_key, timeout: 3600).try_obtain
+
+      expect(described_class.get_uuid(unique_key)).to eq(uuid)
     end
 
-    it_behaves_like 'read operations'
-    it_behaves_like 'write operations'
+    it 'returns false if the lease does not exist' do
+      expect(described_class.get_uuid(unique_key)).to be false
+    end
   end
 
-  it_behaves_like 'read operations'
-  it_behaves_like 'write operations'
+  describe '#ttl' do
+    it 'returns the TTL of the Redis key' do
+      lease = described_class.new('kittens', timeout: 100)
+      lease.try_obtain
+
+      expect(lease.ttl <= 100).to eq(true)
+    end
+
+    it 'returns nil when the lease does not exist' do
+      lease = described_class.new('kittens', timeout: 10)
+
+      expect(lease.ttl).to be_nil
+    end
+  end
 
   describe '.throttle' do
     it 'prevents repeated execution of the block' do
@@ -310,8 +221,8 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
     it 'allows count to be specified' do
       expect(described_class)
         .to receive(:new)
-        .with(anything, hash_including(timeout: 15.minutes.to_i))
-        .and_call_original
+              .with(anything, hash_including(timeout: 15.minutes.to_i))
+              .and_call_original
 
       described_class.throttle(1, count: 4) {}
     end
@@ -319,8 +230,8 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
     it 'allows period to be specified' do
       expect(described_class)
         .to receive(:new)
-        .with(anything, hash_including(timeout: 1.day.to_i))
-        .and_call_original
+              .with(anything, hash_including(timeout: 1.day.to_i))
+              .and_call_original
 
       described_class.throttle(1, period: 1.day) {}
     end
@@ -328,80 +239,10 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store, :clean_gitlab_redis_share
     it 'allows period and count to be specified' do
       expect(described_class)
         .to receive(:new)
-        .with(anything, hash_including(timeout: 30.minutes.to_i))
-        .and_call_original
+              .with(anything, hash_including(timeout: 30.minutes.to_i))
+              .and_call_original
 
       described_class.throttle(1, count: 48, period: 1.day) {}
-    end
-  end
-
-  describe 'transitions between feature-flag toggles' do
-    shared_examples 'retains behaviours across transitions' do |flag|
-      it 'retains read behaviour' do
-        lease = described_class.new(unique_key, timeout: 3600)
-        uuid = lease.try_obtain
-
-        expect(lease.ttl).not_to eq(nil)
-        expect(lease.exists?).to be_truthy
-        expect(described_class.get_uuid(unique_key)).to eq(uuid)
-
-        # simulates transition
-        stub_feature_flags({ flag => true })
-        Gitlab::SafeRequestStore.clear!
-
-        expect(lease.ttl).not_to eq(nil)
-        expect(lease.exists?).to be_truthy
-        expect(described_class.get_uuid(unique_key)).to eq(uuid)
-      end
-
-      it 'retains renew behaviour' do
-        lease = described_class.new(unique_key, timeout: 3600)
-        lease.try_obtain
-
-        expect(lease.renew).to be_truthy
-
-        # simulates transition
-        stub_feature_flags({ flag => true })
-        Gitlab::SafeRequestStore.clear!
-
-        expect(lease.renew).to be_truthy
-      end
-
-      it 'retains renew behaviour' do
-        lease = described_class.new(unique_key, timeout: 3600)
-        uuid = lease.try_obtain
-        lease.cancel
-
-        # proves successful cancellation
-        expect(lease.try_obtain).to eq(uuid)
-
-        # simulates transition
-        stub_feature_flags({ flag => true })
-        Gitlab::SafeRequestStore.clear!
-
-        expect(lease.try_obtain).to be_falsey
-        lease.cancel
-        expect(lease.try_obtain).to eq(uuid)
-      end
-    end
-
-    context 'when enabling enable_exclusive_lease_double_lock_rw' do
-      before do
-        stub_feature_flags(
-          enable_exclusive_lease_double_lock_rw: false,
-          use_cluster_shared_state_for_exclusive_lease: false
-        )
-      end
-
-      it_behaves_like 'retains behaviours across transitions', :enable_exclusive_lease_double_lock_rw
-    end
-
-    context 'when enabling use_cluster_shared_state_for_exclusive_lease' do
-      before do
-        stub_feature_flags(use_cluster_shared_state_for_exclusive_lease: false)
-      end
-
-      it_behaves_like 'retains behaviours across transitions', :use_cluster_shared_state_for_exclusive_lease
     end
   end
 end

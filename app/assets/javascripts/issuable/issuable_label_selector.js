@@ -45,7 +45,7 @@ export default () => {
       labelsManagePath,
       variant: VARIANT_EMBEDDED,
       workspaceType: WORKSPACE_PROJECT,
-      toggleAttrs: { 'data-testid': 'issuable_label_dropdown' },
+      toggleAttrs: { 'data-testid': 'issuable-label-dropdown' },
     },
     render(createElement) {
       return createElement(IssuableLabelSelector);

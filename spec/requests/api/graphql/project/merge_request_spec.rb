@@ -321,9 +321,11 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     end
 
     it 'does not error' do
-      post_graphql(query,
-                   current_user: current_user,
-                   variables: { path: project.full_path })
+      post_graphql(
+        query,
+        current_user: current_user,
+        variables: { path: project.full_path }
+      )
 
       expect(graphql_data_at(:project, :mrs, :nodes, :notes, :pageInfo)).to contain_exactly a_hash_including(
         'endCursor' => String,

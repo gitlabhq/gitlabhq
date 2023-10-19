@@ -206,6 +206,14 @@ describe('markdownSerializer', () => {
     );
   });
 
+  it('correctly serializes a malformed URL-encoded link', () => {
+    expect(
+      serialize(
+        paragraph(link({ href: 'https://example.com/%E0%A4%A' }, 'https://example.com/%E0%A4%A')),
+      ),
+    ).toBe('https://example.com/%E0%A4%A');
+  });
+
   it('correctly serializes a link with a title', () => {
     expect(
       serialize(

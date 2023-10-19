@@ -58,6 +58,7 @@
 - Repositories::BranchNamesFinder
 - Repositories::ChangelogTagFinder
 - Repositories::TreeFinder
+- Sbom::DependencyLicensesFinder
 - Security::FindingsFinder
 - Security::PipelineVulnerabilitiesFinder
 - Security::ScanExecutionPoliciesFinder

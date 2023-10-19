@@ -43,6 +43,7 @@ if (mrNewCompareNode) {
         project: 'js-source-project',
         branch: 'js-source-branch gl-font-monospace',
       },
+      compareSide: 'source',
     },
     methods: {
       async selectedBranch(branchName) {

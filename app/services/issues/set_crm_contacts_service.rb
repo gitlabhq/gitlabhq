@@ -13,7 +13,7 @@ module Issues
       return error_invalid_params unless valid_params?
 
       @existing_ids = issue.customer_relations_contact_ids
-      determine_changes if params[:replace_ids].present?
+      determine_changes if set_present?
       return error_too_many if too_many?
 
       @added_count = 0
@@ -108,7 +108,7 @@ module Issues
     end
 
     def set_present?
-      params[:replace_ids].present?
+      !params[:replace_ids].nil?
     end
 
     def add_or_remove_present?

@@ -3,6 +3,7 @@
 module API
   class MergeRequests < ::API::Base
     include PaginationParams
+    include Helpers::Unidiff
 
     CONTEXT_COMMITS_POST_LIMIT = 20
 
@@ -30,7 +31,14 @@ module API
       params :optional_params_ee do
       end
 
+      params :optional_merge_params_ee do
+      end
+
       params :optional_merge_requests_search_params do
+      end
+
+      def ci_params
+        {}
       end
     end
 
@@ -68,7 +76,7 @@ module API
         args[:scope] = args[:scope].underscore if args[:scope]
 
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
-                           .reorder(order_options_with_tie_breaker)
+                           .reorder(order_options_with_tie_breaker(override_created_at: false))
         merge_requests = paginate(merge_requests)
                            .preload(:source_project, :target_project)
 
@@ -230,6 +238,10 @@ module API
           optional :squash, type: Grape::API::Boolean, desc: 'Squash commits into a single commit when merging.'
 
           use :optional_params_ee
+        end
+
+        params :optional_merge_params do
+          use :optional_merge_params_ee
         end
       end
 
@@ -505,6 +517,9 @@ module API
         ]
         tags %w[merge_requests]
       end
+      params do
+        use :with_unidiff
+      end
       get ':id/merge_requests/:merge_request_iid/changes', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -512,7 +527,8 @@ module API
           with: Entities::MergeRequestChanges,
           current_user: current_user,
           project: user_project,
-          access_raw_diffs: to_boolean(params.fetch(:access_raw_diffs, false))
+          access_raw_diffs: to_boolean(params.fetch(:access_raw_diffs, false)),
+          enable_unidiff: declared_params[:unidiff]
       end
 
       desc 'Get the merge request diffs' do
@@ -526,11 +542,12 @@ module API
       end
       params do
         use :pagination
+        use :with_unidiff
       end
       get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page])).diffs, with: Entities::Diff
+        present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page])).diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
       end
 
       desc 'Get single merge request pipelines' do
@@ -636,6 +653,8 @@ module API
                                                 desc: 'If `true`, the merge request is merged when the pipeline succeeds.'
         optional :sha, type: String, desc: 'If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.'
         optional :squash, type: Grape::API::Boolean, desc: 'If `true`, the commits are squashed into a single commit on merge.'
+
+        use :optional_merge_params
       end
       put ':id/merge_requests/:merge_request_iid/merge', feature_category: :code_review_workflow, urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/4796')
@@ -664,7 +683,7 @@ module API
           squash_commit_message: params[:squash_commit_message],
           should_remove_source_branch: params[:should_remove_source_branch],
           sha: params[:sha] || merge_request.diff_head_sha
-        ).compact
+        ).merge(ci_params).compact
 
         if immediately_mergeable
           ::MergeRequests::MergeService

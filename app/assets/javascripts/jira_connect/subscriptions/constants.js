@@ -37,11 +37,11 @@ export const I18N_OAUTH_FAILED_MESSAGE = s__(
 export const INTEGRATIONS_DOC_LINK = helpPagePath('integration/jira/development_panel', {
   anchor: 'use-the-integration',
 });
-export const OAUTH_SELF_MANAGED_DOC_LINK = helpPagePath('integration/jira/connect-app', {
-  anchor: 'connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances',
+export const OAUTH_SELF_MANAGED_DOC_LINK = helpPagePath('administration/settings/jira_cloud_app', {
+  anchor: 'set-up-oauth-authentication',
 });
-export const FAILED_TO_UPDATE_DOC_LINK = helpPagePath('integration/jira/connect-app', {
-  anchor: 'failed-to-update-the-gitlab-instance-for-self-managed-instances',
+export const FAILED_TO_UPDATE_DOC_LINK = helpPagePath('administration/settings/jira_cloud_app', {
+  anchor: 'failed-to-update-the-gitlab-instance',
 });
 
 export const GITLAB_COM_BASE_PATH = 'https://gitlab.com';

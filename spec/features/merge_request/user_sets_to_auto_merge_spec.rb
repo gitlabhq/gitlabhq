@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category: :code_review_workflow do
-  include ContentEditorHelpers
-
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) do
@@ -42,7 +40,6 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
     describe 'setting to auto-merge when pipeline succeeds' do
       shared_examples 'Set to auto-merge activator' do
         it 'activates auto-merge feature', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410055' do
-          close_rich_text_promo_popover_if_present
           expect(page).to have_content 'Set to auto-merge'
           click_button "Set to auto-merge"
           wait_for_requests
@@ -60,7 +57,6 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
 
       context 'when enabled after it was previously canceled' do
         before do
-          close_rich_text_promo_popover_if_present
           click_button "Set to auto-merge"
 
           wait_for_requests
@@ -119,8 +115,6 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
     end
 
     it 'allows to cancel the auto-merge', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410055' do
-      close_rich_text_promo_popover_if_present
-
       click_button "Cancel auto-merge"
 
       expect(page).to have_button "Set to auto-merge"

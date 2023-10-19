@@ -9,7 +9,6 @@ require 'spec_helper'
 # for each existing quick action unless they test something not tested by existing tests.
 RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_planning do
   include Features::NotesHelpers
-  include ContentEditorHelpers
 
   context "issuable common quick actions" do
     let(:new_url_opts) { {} }
@@ -35,7 +34,6 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
       sign_in(user)
       visit project_issue_path(project, issue)
       wait_for_all_requests
-      close_rich_text_promo_popover_if_present
     end
 
     after do

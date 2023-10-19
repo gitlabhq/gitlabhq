@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -55,7 +55,8 @@ Example response:
     "plan": "default",
     "trial_ends_on": null,
     "trial": false,
-    "root_repository_size": 100
+    "root_repository_size": 100,
+    "projects_count": 3
   },
   {
     "id": 2,
@@ -71,7 +72,8 @@ Example response:
     "plan": "default",
     "trial_ends_on": null,
     "trial": false,
-    "root_repository_size": 100
+    "root_repository_size": 100,
+    "projects_count": 3
   },
   {
     "id": 3,
@@ -87,8 +89,10 @@ Example response:
     "plan": "default",
     "trial_ends_on": null,
     "trial": false,
-    "root_repository_size": 100
+    "root_repository_size": 100,
+    "projects_count": 3
   }
+    "projects_count": 3
 ]
 ```
 
@@ -127,7 +131,7 @@ once a day.
 ```
 
 NOTE:
-Only group owners are presented with `members_count_with_descendants`, `root_repository_size` and `plan`.
+Only group owners are presented with `members_count_with_descendants`, `root_repository_size`, `projects_count` and `plan`.
 
 ## Get namespace by ID
 
@@ -166,7 +170,8 @@ Example response:
   "plan": "default",
   "trial_ends_on": null,
   "trial": false,
-  "root_repository_size": 100
+  "root_repository_size": 100,
+  "projects_count": 3
 }
 ```
 

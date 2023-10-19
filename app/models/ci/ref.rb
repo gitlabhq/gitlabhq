@@ -36,7 +36,7 @@ module Ci
         next unless ci_ref.artifacts_locked?
 
         ci_ref.run_after_commit do
-          Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(ci_ref.last_finished_pipeline_id)
+          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(ci_ref.id)
         end
       end
     end
@@ -52,7 +52,11 @@ module Ci
     end
 
     def last_finished_pipeline_id
-      Ci::Pipeline.last_finished_for_ref_id(self.id)&.id
+      last_finished_pipeline&.id
+    end
+
+    def last_finished_pipeline
+      Ci::Pipeline.last_finished_for_ref_id(self.id)
     end
 
     def artifacts_locked?

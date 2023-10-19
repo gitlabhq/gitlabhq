@@ -9,8 +9,8 @@
 module IssuableLink
   extend ActiveSupport::Concern
 
-  TYPE_RELATES_TO = 'relates_to'
-  TYPE_BLOCKS = 'blocks' ## EE-only. Kept here to be used on link_type enum.
+  MAX_LINKS_COUNT = 100
+  TYPE_RELATES_TO = Enums::IssuableLink::TYPE_RELATES_TO
 
   class_methods do
     def inverse_link_type(type)
@@ -38,10 +38,11 @@ module IssuableLink
     validates :source, uniqueness: { scope: :target_id, message: 'is already related' }
     validate :check_self_relation
     validate :check_opposite_relation
+    validate :validate_max_number_of_links, on: :create
 
     scope :for_source_or_target, ->(issuable) { where(source: issuable).or(where(target: issuable)) }
 
-    enum link_type: { TYPE_RELATES_TO => 0, TYPE_BLOCKS => 1 }
+    enum link_type: Enums::IssuableLink.link_types
 
     private
 
@@ -59,6 +60,27 @@ module IssuableLink
       if self.class.base_class.find_by(source: target, target: source)
         errors.add(:source, "is already related to this #{self.class.issuable_name}")
       end
+    end
+
+    def validate_max_number_of_links
+      return unless source && target
+
+      validate_max_number_of_links_for(source, :source)
+      validate_max_number_of_links_for(target, :target)
+    end
+
+    def validate_max_number_of_links_for(item, attribute_name)
+      return unless item.linked_items_count >= MAX_LINKS_COUNT
+
+      errors.add(
+        attribute_name,
+        format(
+          s_('This %{issuable} would exceed the maximum number of linked %{issuables} (%{limit}).'),
+          issuable: self.class.issuable_name,
+          issuables: self.class.issuable_name.pluralize,
+          limit: MAX_LINKS_COUNT
+        )
+      )
     end
   end
 end

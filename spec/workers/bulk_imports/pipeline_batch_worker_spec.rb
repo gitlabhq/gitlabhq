@@ -102,6 +102,7 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
           end
 
           expect(described_class).to receive(:perform_in).with(60, batch.id)
+          expect(BulkImports::FinishBatchedPipelineWorker).not_to receive(:perform_async).with(tracker.id)
 
           subject.perform(batch.id)
 

@@ -9,7 +9,7 @@ module Ci::TriggersHelper
     end
   end
 
-  def service_trigger_url(service)
-    "#{Settings.gitlab.url}/api/v4/projects/#{service.project_id}/services/#{service.to_param}/trigger"
+  def integration_trigger_url(integration)
+    "#{Settings.gitlab.url}/api/v4/projects/#{integration.project_id}/integrations/#{integration.to_param}/trigger"
   end
 end

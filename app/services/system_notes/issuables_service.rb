@@ -24,15 +24,16 @@ module SystemNotes
     end
 
     #
-    # noteable_ref - Referenced noteable object
+    # noteable_ref - Referenced noteable object, or array of objects
     #
     # Example Note text:
     #
     #   "marked this issue as related to gitlab-foss#9001"
+    #   "marked this issue as related to gitlab-foss#9001, gitlab-foss#9002, and gitlab-foss#9003"
     #
     # Returns the created Note object
     def relate_issuable(noteable_ref)
-      body = "marked this #{noteable_name} as related to #{noteable_ref.to_reference(noteable.resource_parent)}"
+      body = "marked this #{noteable_name} as related to #{extract_issuable_reference(noteable_ref)}"
 
       track_issue_event(:track_issue_related_action)
 
@@ -538,6 +539,14 @@ module SystemNotes
       name = noteable.try(:issue_type) || noteable.to_ability_name
 
       name.humanize(capitalize: false)
+    end
+
+    def extract_issuable_reference(reference)
+      if reference.is_a?(Array)
+        reference.map { |item| item.to_reference(noteable.resource_parent) }.to_sentence
+      else
+        reference.to_reference(noteable.resource_parent)
+      end
     end
   end
 end

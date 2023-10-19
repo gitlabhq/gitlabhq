@@ -7,7 +7,7 @@ module Gitlab
         class Item
           include Gitlab::Utils::StrongMemoize
 
-          VARIABLES_REGEXP = /\$\$|%%|\$(?<key>[a-zA-Z_][a-zA-Z0-9_]*)|\${\g<key>?}|%\g<key>%/.freeze.freeze
+          VARIABLES_REGEXP = /\$\$|%%|\$(?<key>[a-zA-Z_][a-zA-Z0-9_]*)|\${\g<key>?}|%\g<key>%/
           VARIABLE_REF_CHARS = %w[$ %].freeze
 
           def initialize(key:, value:, public: true, file: false, masked: false, raw: false)
@@ -32,6 +32,10 @@ module Gitlab
 
           def file?
             @variable.fetch(:file)
+          end
+
+          def masked?
+            @variable.fetch(:masked)
           end
 
           def [](key)

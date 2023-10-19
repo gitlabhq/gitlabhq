@@ -30,7 +30,7 @@ RSpec.describe Pajamas::Component do
         subject.send(
           :format_options,
           options: { foo: 'bar', class: 'gl-display-flex gl-py-5' },
-          css_classes: %w(gl-px-5 gl-mt-5),
+          css_classes: %w[gl-px-5 gl-mt-5],
           additional_options: { baz: 'bax' }
         )
       ).to match({

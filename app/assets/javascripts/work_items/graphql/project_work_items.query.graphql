@@ -9,6 +9,7 @@ query projectWorkItems(
     workItems(search: $searchTerm, types: $types, in: $in) {
       nodes {
         id
+        iid
         title
         state
         confidential

@@ -16,23 +16,18 @@ module QA
       end
 
       let!(:ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  job:
-                    tags:
-                      - #{executor}
-                    script: echo $PROTECTED_VARIABLE
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              job:
+                tags:
+                  - #{executor}
+                script: echo $PROTECTED_VARIABLE
+            YAML
+          }
+        ])
       end
 
       let(:developer) do
@@ -82,12 +77,7 @@ module QA
       private
 
       def add_ci_variable
-        Resource::CiVariable.fabricate_via_api! do |ci_variable|
-          ci_variable.project = project
-          ci_variable.key = 'PROTECTED_VARIABLE'
-          ci_variable.value = protected_value
-          ci_variable.protected = true
-        end
+        create(:ci_variable, :protected, project: project, key: 'PROTECTED_VARIABLE', value: protected_value)
       end
 
       def create_protected_branch
@@ -99,31 +89,23 @@ module QA
       end
 
       def user_commit_to_protected_branch(api_client)
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.api_client = api_client
-          commit.project = project
-          commit.branch = 'protected-branch'
-          commit.commit_message = Faker::Lorem.sentence
-          commit.add_files(
-            [
-              {
-                file_path: Faker::File.unique.file_name,
-                content: Faker::Lorem.sentence
-              }
-            ]
-          )
-        end
+        create(:commit,
+          api_client: api_client,
+          project: project,
+          branch: 'protected-branch',
+          commit_message: Faker::Lorem.sentence, actions: [
+            { action: 'create', file_path: Faker::File.unique.file_name, content: Faker::Lorem.sentence }
+          ])
       end
 
       def create_merge_request(api_client)
-        Resource::MergeRequest.fabricate_via_api! do |merge_request|
-          merge_request.api_client = api_client
-          merge_request.project = project
-          merge_request.description = Faker::Lorem.sentence
-          merge_request.target_new_branch = false
-          merge_request.file_name = Faker::File.unique.file_name
-          merge_request.file_content = Faker::Lorem.sentence
-        end
+        create(:merge_request,
+          api_client: api_client,
+          project: project,
+          description: Faker::Lorem.sentence,
+          target_new_branch: false,
+          file_name: Faker::File.unique.file_name,
+          file_content: Faker::Lorem.sentence)
       end
 
       def go_to_pipeline_job(user)

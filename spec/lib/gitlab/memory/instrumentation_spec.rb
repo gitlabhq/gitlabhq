@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :application_p
 
     subject do
       described_class.with_memory_allocations do
-        Array.new(1000).map { '0' * 100 }
+        Array.new(1000).map { '0' * 1000 }
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :application_p
       expect(result).to include(
         mem_objects: be > 1000,
         mem_mallocs: be > 1000,
-        mem_bytes: be > 100_000, # 100 items * 100 bytes each
+        mem_bytes: be > 1000_000, # 1000 items * 1000 bytes each
         mem_total_bytes: eq(result[:mem_bytes] + 40 * result[:mem_objects])
       )
     end

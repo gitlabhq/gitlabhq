@@ -44,6 +44,10 @@ module BitbucketServer
         state == 'merged'
       end
 
+      def closed?
+        state == 'closed'
+      end
+
       def created_at
         self.class.convert_timestamp(created_date)
       end

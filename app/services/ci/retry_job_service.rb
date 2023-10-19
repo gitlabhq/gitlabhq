@@ -39,7 +39,9 @@ module Ci
 
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
 
-        ::Deployments::CreateForJobService.new.execute(new_job)
+        if Feature.disabled?(:create_deployment_only_for_processable_jobs, project)
+          ::Deployments::CreateForJobService.new.execute(new_job)
+        end
 
         ::MergeRequests::AddTodoWhenBuildFailsService
           .new(project: project)

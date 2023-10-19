@@ -46,7 +46,7 @@ export default {
   },
   mounted() {
     const hash = getLocationHash();
-    const lineToMatch = `L${this.line.lineNumber + 1}`;
+    const lineToMatch = `L${this.line.lineNumber}`;
 
     if (hash === lineToMatch) {
       this.applyHashHighlight = true;
@@ -62,7 +62,7 @@ export default {
 
 <template>
   <div
-    class="log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start gl-relative"
+    class="js-log-line log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start gl-relative"
     :class="{ 'gl-bg-gray-700': isHighlighted || applyHashHighlight }"
     role="button"
     @click="handleOnClick"

@@ -167,13 +167,13 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
       it 'allows markup inside link elements' do
         aggregate_failures do
           expect(doc.at_css('a[href="#link-emphasis"]').to_html)
-            .to eq_no_sourcepos %{<a href="#link-emphasis"><em>text</em></a>}
+            .to eq_no_sourcepos %(<a href="#link-emphasis"><em>text</em></a>)
 
           expect(doc.at_css('a[href="#link-strong"]').to_html)
-            .to eq_no_sourcepos %{<a href="#link-strong"><strong>text</strong></a>}
+            .to eq_no_sourcepos %(<a href="#link-strong"><strong>text</strong></a>)
 
           expect(doc.at_css('a[href="#link-code"]').to_html)
-            .to eq_no_sourcepos %{<a href="#link-code"><code>text</code></a>}
+            .to eq_no_sourcepos %(<a href="#link-code"><code>text</code></a>)
         end
       end
     end

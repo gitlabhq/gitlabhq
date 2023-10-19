@@ -14,6 +14,11 @@ module QA
       it(
         'creates a basic merge request',
         :smoke, :skip_fips_env,
+        quarantine: {
+          only: { job: 'update-ee-to-ce' },
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412361',
+          type: :investigating
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347738'
       ) do
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|

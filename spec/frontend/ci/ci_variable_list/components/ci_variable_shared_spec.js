@@ -52,7 +52,6 @@ const mockProvide = {
 
 const defaultProps = {
   areScopedVariablesAvailable: true,
-  hasEnvScopeQuery: false,
   pageInfo: {},
   hideEnvironmentScope: false,
   refetchAfterMutation: false,
@@ -514,7 +513,6 @@ describe('Ci Variable Shared Component', () => {
               areEnvironmentsLoading: false,
               areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
               hideEnvironmentScope: defaultProps.hideEnvironmentScope,
-              hasEnvScopeQuery: props.hasEnvScopeQuery,
               pageInfo: defaultProps.pageInfo,
               isLoading: false,
               maxVariableLimit,

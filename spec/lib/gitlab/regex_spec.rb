@@ -86,33 +86,6 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('<any-Charact3r$|any-Charact3r$>') }
   end
 
-  describe '.group_path_regex' do
-    subject { described_class.group_path_regex }
-
-    it { is_expected.not_to match('?gitlab') }
-    it { is_expected.not_to match("Users's something") }
-    it { is_expected.not_to match('/source') }
-    it { is_expected.not_to match('http:') }
-    it { is_expected.not_to match('https:') }
-    it { is_expected.not_to match('example.com/?stuff=true') }
-    it { is_expected.not_to match('example.com:5000/?stuff=true') }
-    it { is_expected.not_to match('http://gitlab.example/gitlab-org/manage/import/gitlab-migration-test') }
-    it { is_expected.not_to match('_good_for_me!') }
-    it { is_expected.not_to match('good_for+you') }
-    it { is_expected.not_to match('source/') }
-    it { is_expected.not_to match('.source/full./path') }
-
-    it { is_expected.not_to match('source/full') }
-    it { is_expected.not_to match('source/full/path') }
-    it { is_expected.not_to match('.source/.full/.path') }
-
-    it { is_expected.to match('source') }
-    it { is_expected.to match('.source') }
-    it { is_expected.to match('_source') }
-    it { is_expected.to match('domain_namespace') }
-    it { is_expected.to match('gitlab-migration-test') }
-  end
-
   describe '.environment_name_regex' do
     subject { described_class.environment_name_regex }
 

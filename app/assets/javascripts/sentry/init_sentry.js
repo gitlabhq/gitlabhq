@@ -4,11 +4,10 @@ import {
   defaultStackParser,
   makeFetchTransport,
   defaultIntegrations,
+  BrowserTracing,
 
   // exports
   captureException,
-  captureMessage,
-  withScope,
   SDK_VERSION,
 } from 'sentrybrowser';
 
@@ -18,6 +17,8 @@ const initSentry = () => {
   }
 
   const hub = getCurrentHub();
+
+  const page = document?.body?.dataset?.page;
 
   const client = new BrowserClient({
     // Sentry.init(...) options
@@ -37,7 +38,19 @@ const initSentry = () => {
     // https://github.com/getsentry/sentry-javascript/blob/7.66.0/MIGRATION.md#explicit-client-options
     transport: makeFetchTransport,
     stackParser: defaultStackParser,
-    integrations: defaultIntegrations,
+    integrations: [
+      ...defaultIntegrations,
+      new BrowserTracing({
+        beforeNavigate(context) {
+          return {
+            ...context,
+            // `page` acts as transaction name for performance tracing.
+            // If missing, use default Sentry behavior: window.location.pathname
+            name: page || window?.location?.pathname,
+          };
+        },
+      }),
+    ],
   });
 
   hub.bindClient(client);
@@ -45,7 +58,7 @@ const initSentry = () => {
   hub.setTags({
     revision: gon.revision,
     feature_category: gon.feature_category,
-    page: document?.body?.dataset?.page,
+    page,
   });
 
   if (gon.current_user_id) {
@@ -68,8 +81,6 @@ const initSentry = () => {
   // eslint-disable-next-line no-underscore-dangle
   window._Sentry = {
     captureException,
-    captureMessage,
-    withScope,
     SDK_VERSION, // used to verify compatibility with the Sentry instance
   };
 };

@@ -149,7 +149,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
     it 'updates the repository' do
       importer = described_class.new(project, client)
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect_next_instance_of(Gitlab::GithubImport::Logger) do |logger|
         expect(logger)
           .to receive(:info)
           .with(an_instance_of(Hash))

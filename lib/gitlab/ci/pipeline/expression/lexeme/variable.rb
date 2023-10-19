@@ -6,7 +6,7 @@ module Gitlab
       module Expression
         module Lexeme
           class Variable < Lexeme::Value
-            PATTERN = /\$(?<name>\w+)/.freeze
+            PATTERN = /\$(?<name>\w+)/
 
             def evaluate(variables = {})
               unless variables.is_a?(ActiveSupport::HashWithIndifferentAccess)

@@ -102,7 +102,7 @@ export default {
     <draggable
       v-if="items.length > 0"
       v-model="draggableItems"
-      class="gl-p-0 gl-m-0"
+      class="gl-p-0 gl-m-0 gl-list-style-none"
       data-testid="pinned-nav-items"
       handle=".js-draggable-icon"
       tag="ul"

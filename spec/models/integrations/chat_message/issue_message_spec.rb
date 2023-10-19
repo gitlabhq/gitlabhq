@@ -125,4 +125,10 @@ RSpec.describe Integrations::ChatMessage::IssueMessage, feature_category: :integ
       end
     end
   end
+
+  describe '#attachment_color' do
+    it 'returns the correct color' do
+      expect(subject.attachment_color).to eq('#C95823')
+    end
+  end
 end

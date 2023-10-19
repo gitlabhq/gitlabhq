@@ -16,14 +16,30 @@ the API itself.
 
 The examples documented here can be run using:
 
-- [Command line](#command-line).
 - [GraphiQL](#graphiql).
+- [Command line](#command-line).
 - [Rails console](#rails-console).
+
+### GraphiQL
+
+GraphiQL (pronounced "graphical") allows you to run real GraphQL queries against the API interactively. 
+It makes exploring the schema easier by providing a UI with syntax highlighting and autocompletion.
+
+For most people, using GraphiQL will be the easiest way to explore the GitLab GraphQL API.
+
+You can either use GraphiQL:
+
+- [On GitLab.com](https://gitlab.com/-/graphql-explorer).
+- On your self-managed GitLab instance on `https://<your-gitlab-site.com>/-/graphql-explorer`.
+
+Sign in to GitLab first to authenticate the requests with your GitLab account.
+
+To get started, refer to the [example queries and mutations](#queries-and-mutations).
 
 ### Command line
 
 You can run GraphQL queries in a `curl` request on the command line on your
-local computer. A GraphQL request can be made as a `POST` request to `/api/graphql`
+local computer. The requests `POST` to `/api/graphql`
 with the query as the payload. You can authorize your request by generating a
 [personal access token](../../user/profile/personal_access_tokens.md) to use as
 a bearer token.
@@ -47,32 +63,6 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_T
     --data '{"query": "query {project(fullPath: \"<group>/<subgroup>/<project>\") {jobs {nodes {id duration}}}}"}'
       # or "{\"query\": \"query {project(fullPath: \\\"<group>/<subgroup>/<project>\\\") {jobs {nodes {id duration}}}}\"}"
 ```
-
-### GraphiQL
-
-GraphiQL (pronounced "graphical") allows you to run queries directly against
-the server endpoint with syntax highlighting and autocomplete. It also allows
-you to explore the schema and types.
-
-The examples below:
-
-- Can be run directly against GitLab.
-- Works against GitLab.com without any further setup. Make sure you are signed
-  in and navigate to the [GraphiQL Explorer](https://gitlab.com/-/graphql-explorer).
-
-If you want to run the queries locally, or on a self-managed instance, you must
-either:
-
-- Create the `gitlab-org` group with a project called `graphql-sandbox` under
-  it. Create several issues in the project.
-- Edit the queries to replace `gitlab-org/graphql-sandbox` with your own group
-  and project.
-
-Refer to [running GraphiQL](index.md#graphiql) for more information.
-
-NOTE:
-If you are running GitLab 12.0, enable the `graphql`
-[feature flag](../features.md#set-or-create-a-feature).
 
 ### Rails console **(FREE SELF)**
 
@@ -172,7 +162,7 @@ More about queries:
 ### Authorization
 
 Authorization uses the same engine as the GitLab application (and GitLab.com).
-If you've signed in to GitLab and use GraphiQL, all queries are performed as
+If you've signed in to GitLab and use [GraphiQL](#graphiql), all queries are performed as
 you, the authenticated user. For more information, read the
 [GitLab API documentation](../rest/index.md#authentication).
 
@@ -304,14 +294,15 @@ mutation DisableCI_JOB_TOKENscope {
 }
 ```
 
-### Introspective queries
+### Introspection queries
 
-Clients can query the GraphQL endpoint for information about its own schema.
-by making an [introspective query](https://graphql.org/learn/introspection/).
-The [GraphiQL Query Explorer](https://gitlab.com/-/graphql-explorer) uses an
+Clients can query the GraphQL endpoint for information about its schema
+by making an [introspection query](https://graphql.org/learn/introspection/).
+
+The [GraphiQL Query Explorer](#graphiql) uses an
 introspection query to:
 
-- Gain knowledge about our GraphQL schema.
+- Gain knowledge about the GitLab GraphQL schema.
 - Do autocompletion.
 - Provide its interactive `Docs` tab.
 

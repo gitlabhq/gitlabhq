@@ -66,8 +66,6 @@ ProjectPolicy:
 - create_test_case
 - read_group_saml_identity
 UserPolicy:
-- admin_observability
 - admin_terraform_state
-- read_observability
 
 # Permanent excludes (please provide a reason):

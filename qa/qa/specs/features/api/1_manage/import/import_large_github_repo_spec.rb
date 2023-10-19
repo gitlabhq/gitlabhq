@@ -6,14 +6,24 @@ require "etc"
 
 # rubocop:disable Rails/Pluck
 module QA
-  RSpec.describe 'Manage', :github, requires_admin: 'creates users', only: { job: 'large-github-import' } do
+  RSpec.describe 'Manage', :github, requires_admin: 'creates users',
+    only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
+    custom_test_metrics: {
+      tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "rspec/rspec-core" }
+    } do
     describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      # Full object comparison is a fairly heavy operation
+      # Importer itself returns counts of objects it fetched and counts it imported
+      # We can use that for a lightweight comparison for very large projects
+      let(:only_stats_comparison) { ENV["QA_LARGE_IMPORT_GH_ONLY_STATS_COMPARISON"] == "true" }
       let(:github_repo) { ENV['QA_LARGE_IMPORT_REPO'] || 'rspec/rspec-core' }
       let(:import_max_duration) { ENV['QA_LARGE_IMPORT_DURATION']&.to_i || 7200 }
+      let(:api_parallel_threads) { ENV['QA_LARGE_IMPORT_API_PARALLEL']&.to_i || Etc.nprocessors }
+
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
       let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address.chomp("/") }
-      let(:dummy_url) { "https://example.com" }
+      let(:dummy_url) { "https://example.com" } # this is used to replace all dynamic urls in descriptions and comments
       let(:api_request_params) { { auto_paginate: true, attempts: 2 } }
 
       let(:created_by_pattern) { /\*Created by: \S+\*\n\n/ }
@@ -95,9 +105,10 @@ module QA
       let(:github_client) do
         Octokit::Client.new(
           access_token: ENV['QA_LARGE_IMPORT_GH_TOKEN'] || Runtime::Env.github_access_token,
-          auto_paginate: true,
+          per_page: 100,
           middleware: Faraday::RackBuilder.new do |builder|
             builder.use(Faraday::Retry::Middleware, exceptions: [Octokit::InternalServerError, Octokit::ServerError])
+            builder.use(Faraday::Response::RaiseError) # faraday retry swallows errors, so it needs to be re-raised
           end
         )
       end
@@ -106,96 +117,79 @@ module QA
 
       let(:gh_branches) do
         logger.info("= Fetching branches =")
-        github_client.branches(github_repo).map(&:name)
+        with_paginated_request { github_client.branches(github_repo) }.map(&:name)
       end
 
       let(:gh_commits) do
         logger.info("= Fetching commits =")
-        github_client.commits(github_repo).map(&:sha)
+        with_paginated_request { github_client.commits(github_repo) }.map(&:sha)
       end
 
       let(:gh_labels) do
         logger.info("= Fetching labels =")
-        github_client.labels(github_repo).map { |label| { name: label.name, color: "##{label.color}" } }
+        with_paginated_request { github_client.labels(github_repo) }.map do |label|
+          { name: label.name, color: "##{label.color}" }
+        end
       end
 
       let(:gh_milestones) do
         logger.info("= Fetching milestones =")
-        github_client
-          .list_milestones(github_repo, state: 'all')
-          .map { |ms| { title: ms.title, description: ms.description } }
-      end
-
-      let(:gh_prs) do
-        gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
-          id = pr.number
-          hash[id] = {
-            url: pr.html_url,
-            title: pr.title,
-            body: pr.body || '',
-            comments: [*gh_pr_comments[id], *gh_issue_comments[id]].compact,
-            events: gh_pr_events[id].reject { |event| unsupported_events.include?(event) }
-          }
-        end
-      end
-
-      let(:gh_issues) do
-        gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
-          id = issue.number
-          hash[id] = {
-            url: issue.html_url,
-            title: issue.title,
-            body: issue.body || '',
-            comments: gh_issue_comments[id],
-            events: gh_issue_events[id].reject { |event| unsupported_events.include?(event) }
-          }
+        with_paginated_request { github_client.list_milestones(github_repo, state: 'all') }.map do |ms|
+          { title: ms.title, description: ms.description }
         end
       end
 
       let(:gh_all_issues) do
         logger.info("= Fetching issues and prs =")
-        github_client.list_issues(github_repo, state: 'all')
+        with_paginated_request { github_client.list_issues(github_repo, state: 'all') }
       end
 
-      let(:gh_all_events) do
-        logger.info("- Fetching issue and pr events -")
-        github_client.repository_issue_events(github_repo).map do |event|
-          { name: event[:event], **(event[:issue] || {}) } # some events don't have issue object at all
+      let(:gh_issues) do
+        issues = gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
+          id = issue.number
+          hash[id] = {
+            url: issue.html_url,
+            title: issue.title,
+            body: issue.body || '',
+            comments: gh_issue_comments[id]
+          }
         end
+
+        fetch_github_events(issues, "issue")
       end
 
-      let(:gh_issue_events) do
-        gh_all_events.each_with_object(Hash.new { |h, k| h[k] = [] }) do |event, hash|
-          next if event[:pull_request] || !event[:number]
-
-          hash[event[:number]] << event[:name]
+      let(:gh_prs) do
+        prs = gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
+          id = pr.number
+          hash[id] = {
+            url: pr.html_url,
+            title: pr.title,
+            body: pr.body || '',
+            comments: [*gh_pr_comments[id], *gh_issue_comments[id]].compact
+          }
         end
+
+        fetch_github_events(prs, "pr")
       end
 
-      let(:gh_pr_events) do
-        gh_all_events.each_with_object(Hash.new { |h, k| h[k] = [] }) do |event, hash|
-          next unless event[:pull_request]
-
-          hash[event[:number]] << event[:name]
-        end
-      end
-
+      # rubocop:disable Layout/LineLength
       let(:gh_issue_comments) do
         logger.info("- Fetching issue comments -")
-        github_client.issues_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
+        with_paginated_request { github_client.issues_comments(github_repo) }.each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
           hash[id_from_url(c.html_url)] << c.body&.gsub(gh_link_pattern, dummy_url)
         end
       end
 
       let(:gh_pr_comments) do
         logger.info("- Fetching pr comments -")
-        github_client.pull_requests_comments(github_repo).each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
+        with_paginated_request { github_client.pull_requests_comments(github_repo) }.each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
           hash[id_from_url(c.html_url)] << c.body
             # some suggestions can contain extra whitespaces which gitlab will remove
             &.gsub(/suggestion\s+\r/, "suggestion\r")
             &.gsub(gh_link_pattern, dummy_url)
         end
       end
+      # rubocop:enable Layout/LineLength
 
       let(:imported_project) do
         Resource::ProjectImportedFromGithub.fabricate_via_api! do |project|
@@ -216,75 +210,89 @@ module QA
       end
 
       after do |example|
-        next unless defined?(@import_time)
+        unless defined?(@import_time)
+          next save_data_json(test_result_data({
+            status: "failed",
+            importer: :github,
+            import_finished: false,
+            import_time: Time.now - @start
+          }))
+        end
 
         # add additional import time metric
-        example.metadata[:custom_test_metrics] = { fields: { import_time: @import_time } }
+        example.metadata[:custom_test_metrics][:fields] = { import_time: @import_time }
         # save data for comparison notification creation
-        save_json(
-          "data",
-          {
-            importer: :github,
+        if only_stats_comparison
+          next save_data_json(test_result_data({
+            status: example.exception ? "failed" : "passed",
             import_time: @import_time,
+            import_finished: true,
             errors: imported_project.project_import_status[:failed_relations],
-            reported_stats: @stats,
-            source: {
-              name: "GitHub",
-              project_name: github_repo,
-              address: "https://github.com",
-              data: {
-                branches: gh_branches.length,
-                commits: gh_commits.length,
-                labels: gh_labels.length,
-                milestones: gh_milestones.length,
-                mrs: gh_prs.length,
-                mr_comments: gh_prs.sum { |_k, v| v[:comments].length },
-                mr_events: gh_prs.sum { |_k, v| v[:events].length },
-                issues: gh_issues.length,
-                issue_comments: gh_issues.sum { |_k, v| v[:comments].length },
-                issue_events: gh_issues.sum { |_k, v| v[:events].length }
-              }
-            },
-            target: {
-              name: "GitLab",
-              project_name: imported_project.path_with_namespace,
-              address: gitlab_address,
-              data: {
-                branches: gl_branches.length,
-                commits: gl_commits.length,
-                labels: gl_labels.length,
-                milestones: gl_milestones.length,
-                mrs: mrs.length,
-                mr_comments: mrs.sum { |_k, v| v[:comments].length },
-                mr_events: mrs.sum { |_k, v| v[:events].length },
-                issues: gl_issues.length,
-                issue_comments: gl_issues.sum { |_k, v| v[:comments].length },
-                issue_events: gl_issues.sum { |_k, v| v[:events].length }
-              }
-            },
-            not_imported: {
-              mrs: @mr_diff,
-              issues: @issue_diff
+            reported_stats: @stats
+          }))
+        end
+
+        save_data_json(test_result_data({
+          status: example.exception ? "failed" : "passed",
+          import_time: @import_time,
+          import_finished: true,
+          errors: imported_project.project_import_status[:failed_relations],
+          reported_stats: @stats,
+          source: {
+            data: {
+              branches: gh_branches.length,
+              commits: gh_commits.length,
+              labels: gh_labels.length,
+              milestones: gh_milestones.length,
+              mrs: gh_prs.length,
+              mr_comments: gh_prs.sum { |_k, v| v[:comments].length },
+              mr_events: gh_prs.sum { |_k, v| v[:events].length },
+              issues: gh_issues.length,
+              issue_comments: gh_issues.sum { |_k, v| v[:comments].length },
+              issue_events: gh_issues.sum { |_k, v| v[:events].length }
             }
+          },
+          target: {
+            project_name: imported_project.path_with_namespace,
+            data: {
+              branches: gl_branches.length,
+              commits: gl_commits.length,
+              labels: gl_labels.length,
+              milestones: gl_milestones.length,
+              mrs: mrs.length,
+              mr_comments: mrs.sum { |_k, v| v[:comments].length },
+              mr_events: mrs.sum { |_k, v| v[:events].length },
+              issues: gl_issues.length,
+              issue_comments: gl_issues.sum { |_k, v| v[:comments].length },
+              issue_events: gl_issues.sum { |_k, v| v[:events].length }
+            }
+          },
+          not_imported: {
+            mrs: @mr_diff,
+            issues: @issue_diff
           }
-        )
+        }))
       end
 
       it(
         'imports large Github repo via api',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347668'
       ) do
-        start = Time.now
+        if only_stats_comparison
+          logger.warn("Test is running in lightweight comparison mode, only object counts will be compared!")
+        end
+
+        @start = Time.now
 
         # trigger import and log project paths
         logger.info("== Triggering import of project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
 
         # fetch all objects right after import has started
-        fetch_github_objects
+        fetch_github_objects unless only_stats_comparison
 
         import_status = -> {
           imported_project.project_import_status.yield_self do |status|
-            @stats = status.dig(:stats, :imported)
+            @stats = status[:stats]&.slice(:fetched, :imported)
 
             # fail fast if import explicitly failed
             raise "Import of '#{imported_project.full_path}' failed!" if status[:import_status] == 'failed'
@@ -296,15 +304,38 @@ module QA
         logger.info("== Waiting for import to be finished ==")
         expect(import_status).to eventually_eq('finished').within(max_duration: import_max_duration, sleep_interval: 30)
 
-        @import_time = Time.now - start
+        @import_time = Time.now - @start
 
-        aggregate_failures do
-          verify_repository_import
-          verify_labels_import
-          verify_milestones_import
-          verify_merge_requests_import
-          verify_issues_import
+        if only_stats_comparison
+          expect(@stats[:fetched]).to eq(@stats[:imported])
+        else
+          aggregate_failures do
+            verify_repository_import
+            verify_labels_import
+            verify_milestones_import
+            verify_merge_requests_import
+            verify_issues_import
+          end
         end
+      end
+
+      # Base test result data used for test result reporting
+      #
+      # @param [Hash] additional_data
+      # @return [Hash]
+      def test_result_data(additional_data = {})
+        {
+          importer: :github,
+          source: {
+            name: "GitHub",
+            project_name: github_repo,
+            address: "https://github.com"
+          },
+          target: {
+            name: "GitLab",
+            address: gitlab_address
+          }
+        }.deep_merge(additional_data)
       end
 
       # Persist all objects from repository being imported
@@ -318,8 +349,8 @@ module QA
         gh_commits
         gh_labels
         gh_milestones
-        gh_prs
         gh_issues
+        gh_prs
       end
 
       # Verify repository imported correctly
@@ -367,7 +398,26 @@ module QA
         @issue_diff = verify_mrs_or_issues('issue')
       end
 
+      # This has no real effect, mostly used to group the methods that are used directly from spec body and helpers
+      #
       private
+
+      # Fetch github events and add to issue object
+      #
+      # @param [Hash] issuables
+      # @param [String] type
+      # @return [Hash]
+      def fetch_github_events(issuables, type)
+        logger.info("- Fetching #{type} events -")
+        issuables.to_h do |id, issuable|
+          logger.debug("Fetching events for #{type} !#{id}")
+          events = with_paginated_request { github_client.issue_events(github_repo, id) }
+            .map { |event| event[:event] }
+            .reject { |event| unsupported_events.include?(event) }
+
+          [id, issuable.merge({ events: events })]
+        end
+      end
 
       # Verify imported mrs or issues and return missing items
       #
@@ -498,15 +548,14 @@ module QA
           logger.debug("= Fetching merge requests =")
           imported_mrs = imported_project.merge_requests(**api_request_params)
 
-          logger.debug("= Fetching merge request comments =")
-          Parallel.map(imported_mrs, in_threads: Etc.nprocessors) do |mr|
+          logger.debug("- Fetching merge request comments #{api_parallel_threads} parallel threads -")
+          Parallel.map(imported_mrs, in_threads: api_parallel_threads) do |mr|
             resource = Resource::MergeRequest.init do |resource|
               resource.project = imported_project
               resource.iid = mr[:iid]
               resource.api_client = api_client
             end
 
-            logger.debug("Fetching events and comments for mr '!#{mr[:iid]}'")
             comments = resource.comments(**api_request_params)
             label_events = resource.label_events(**api_request_params)
             state_events = resource.state_events(**api_request_params)
@@ -531,11 +580,10 @@ module QA
           logger.debug("= Fetching issues =")
           imported_issues = imported_project.issues(**api_request_params)
 
-          logger.debug("= Fetching issue comments =")
-          Parallel.map(imported_issues, in_threads: Etc.nprocessors) do |issue|
+          logger.debug("- Fetching issue comments #{api_parallel_threads} parallel threads -")
+          Parallel.map(imported_issues, in_threads: api_parallel_threads) do |issue|
             resource = build(:issue, project: imported_project, iid: issue[:iid], api_client: api_client)
 
-            logger.debug("Fetching events and comments for issue '!#{issue[:iid]}'")
             comments = resource.comments(**api_request_params)
             label_events = resource.label_events(**api_request_params)
             state_events = resource.state_events(**api_request_params)
@@ -607,11 +655,10 @@ module QA
 
       # Save json as file
       #
-      # @param [String] name
       # @param [Hash] json
       # @return [void]
-      def save_json(name, json)
-        File.open("tmp/#{name}.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
+      def save_data_json(json)
+        File.open("tmp/github-import-data.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
       end
 
       # Extract id number from web url of issue or pull request
@@ -622,6 +669,48 @@ module QA
       # @return [Integer]
       def id_from_url(url)
         url.match(%r{(?<type>issues|pull)/(?<id>\d+)})&.named_captures&.fetch("id", nil).to_i
+      end
+
+      # Custom pagination for github requests
+      #
+      # Default autopagination doesn't work correctly with rate limit
+      #
+      # @return [Array]
+      def with_paginated_request(&block)
+        resources = with_rate_limit(&block)
+
+        loop do
+          next_link = github_client.last_response.rels[:next]&.href
+          break unless next_link
+
+          logger.debug("Fetching resources from next page: '#{next_link}'")
+          resources.concat(with_rate_limit { github_client.get(next_link) })
+        end
+
+        resources
+      end
+
+      # Handle rate limit
+      #
+      # @return [Array]
+      def with_rate_limit
+        yield
+      rescue Faraday::ForbiddenError => e
+        raise e unless e.response[:status] == 403
+
+        wait = github_client.rate_limit.resets_in + 5
+        logger.warn("GitHub rate api rate limit reached, resuming in '#{wait}' seconds")
+        logger.debug(JSON.parse(e.response[:body])['message'])
+        sleep(wait)
+
+        retry
+      end
+
+      # Get current thread id for better logging
+      #
+      # @return [Integer]
+      def current_thread
+        Thread.current.object_id
       end
     end
   end

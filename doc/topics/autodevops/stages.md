@@ -588,15 +588,6 @@ When using Cloud Native Buildpacks, instead of `/bin/herokuish procfile exec`, u
 /cnb/lifecycle/launcher $COMMAND
 ```
 
-<!--- start_remove The following content will be removed on remove_date: '2023-09-22' -->
-
-### Auto Monitoring (removed)
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/10107) in GitLab 14.7
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
-
-<!--- end_remove -->
-
 ## Auto Code Intelligence
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216438) in GitLab 13.5.

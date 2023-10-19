@@ -4,7 +4,7 @@ module Resolvers
   class ProjectsResolver < BaseResolver
     include ProjectSearchArguments
 
-    type Types::ProjectType, null: true
+    type Types::ProjectType.connection_type, null: true
 
     argument :ids, [GraphQL::Types::ID],
              required: false,

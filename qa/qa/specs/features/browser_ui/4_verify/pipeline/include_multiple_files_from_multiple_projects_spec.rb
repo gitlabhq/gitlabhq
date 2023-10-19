@@ -7,13 +7,7 @@ module QA
       let(:main_project) { create(:project, name: 'project-with-pipeline') }
       let(:project1) { create(:project, name: 'external-project-1') }
       let(:project2) { create(:project, name: 'external-project-2') }
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = main_project
-          runner.name = executor
-          runner.tags = [executor]
-        end
-      end
+      let!(:runner) { create(:project_runner, project: main_project, name: executor, tags: [executor]) }
 
       before do
         Flow::Login.sign_in
@@ -24,7 +18,7 @@ module QA
         add_main_ci_file(main_project)
 
         main_project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'passed')
+        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
       end
 
       after do
@@ -32,7 +26,7 @@ module QA
       end
 
       it(
-        'runs the pipeline with composed config',
+        'runs the pipeline with composed config', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396374'
       ) do
         Page::Project::Pipeline::Show.perform do |pipeline|
@@ -51,6 +45,7 @@ module QA
       def add_included_files_for(project)
         files = [
           {
+            action: 'create',
             file_path: 'file1.yml',
             content: <<~YAML
               test1_for_#{project.full_path}:
@@ -59,6 +54,7 @@ module QA
             YAML
           },
           {
+            action: 'create',
             file_path: 'file2.yml',
             content: <<~YAML
               test2_for_#{project.full_path}:
@@ -68,23 +64,16 @@ module QA
           }
         ]
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add files'
-          commit.add_files(files)
-        end
+        create(:commit, project: project, commit_message: 'Add files', actions: files)
       end
 
       def add_main_ci_file(project)
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add config file'
-          commit.add_files([main_ci_file])
-        end
+        create(:commit, project: project, commit_message: 'Add config file', actions: [main_ci_file])
       end
 
       def main_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             include:

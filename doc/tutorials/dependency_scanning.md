@@ -23,9 +23,9 @@ To set up dependency scanning:
 - [Resolve the high severity vulnerability](#resolve-the-high-severity-vulnerability).
 - [Test vulnerability detection in a merge request](#test-vulnerability-detection-in-a-merge-request).
 
-## Prerequisites
+## Before you begin
 
-Before you begin, make sure you have GitPod enabled. GitPod is an on-demand cloud development
+Make sure you have GitPod enabled. GitPod is an on-demand cloud development
 environment. For details, see [GitPod](../integration/gitpod.md). Alternatively you can use your
 own development setup. In this case you need to have Yarn and Node.js installed.
 

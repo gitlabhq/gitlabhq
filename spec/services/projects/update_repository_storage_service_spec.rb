@@ -103,6 +103,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
           expect(project_repository_double).to receive(:replicate)
             .with(project.repository.raw)
             .and_raise(Gitlab::Git::CommandError)
+          expect(project_repository_double).to receive(:remove)
 
           expect do
             subject.execute
@@ -140,10 +141,11 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
             .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)
             .and_return('not matching checksum')
+          expect(project_repository_double).to receive(:remove)
 
           expect do
             subject.execute
-          end.to raise_error(UpdateRepositoryStorageMethods::Error, /Failed to verify project repository checksum/)
+          end.to raise_error(Repositories::ReplicateService::Error, /Failed to verify project repository checksum/)
 
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('default')
@@ -316,10 +318,14 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
           context 'when object pool checksum does not match' do
             let(:new_object_pool_checksum) { 'not_match' }
 
-            it 'raises an error and does not change state' do
+            it 'raises an error and removes the new object pool repository' do
+              expect(object_pool_repository_double).to receive(:remove)
+
               original_count = PoolRepository.count
 
-              expect { subject.execute }.to raise_error(UpdateRepositoryStorageMethods::Error)
+              expect do
+                subject.execute
+              end.to raise_error(Repositories::ReplicateService::Error, /Failed to verify object_pool repository/)
 
               project.reload
 

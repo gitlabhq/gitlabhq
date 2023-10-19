@@ -59,6 +59,18 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
       let(:item_id) { :access_tokens }
 
       it_behaves_like 'access rights checks'
+
+      describe 'when the user is not an admin but has manage_resource_access_tokens' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :admin_project, project).and_return(false)
+          allow(Ability).to receive(:allowed?).with(user, :manage_resource_access_tokens, project).and_return(true)
+        end
+
+        it 'includes access token menu item' do
+          expect(subject.title).to eql('Access Tokens')
+        end
+      end
     end
 
     describe 'Repository' do

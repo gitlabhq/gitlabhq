@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::FunctionsStack, feature_category: :pipeline_composition do
   let(:functions) { ['truncate(0,4)', 'truncate(1,2)'] }
   let(:input_value) { 'test_input_value' }
 
-  subject { described_class.new(functions).evaluate(input_value) }
+  subject { described_class.new(functions, nil).evaluate(input_value) }
 
   it 'modifies the given input value according to the function expressions' do
     expect(subject).to be_success

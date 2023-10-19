@@ -246,9 +246,9 @@ ORDER BY id;
 
 A few changes compared to the PostgreSQL version:
 
-- `target_type` uses [an optimization](https://clickhouse.com/docs/en/sql-reference/data-types/lowcardinality/) for low-cardinality column values.
+- `target_type` uses [an optimization](https://clickhouse.com/docs/en/sql-reference/data-types/lowcardinality) for low-cardinality column values.
 - `fingerprint` becomes an integer and leverages a performant integer-based hashing function such as xxHash64.
-- All columns get a default value, the 0 default value for the integer columns means no value. See the related [best practices](https://clickhouse.com/docs/en/cloud/bestpractices/avoid-nullable-columns/).
+- All columns get a default value, the 0 default value for the integer columns means no value. See the related [best practices](https://clickhouse.com/docs/en/cloud/bestpractices/avoid-nullable-columns).
 - `NOT NULL` to ensure that we always use the default values when data is missing (different behavior compared to PostgreSQL).
 - The "primary" key automatically becomes the `id` column due to the `ORDER BY` clause.
 
@@ -276,7 +276,7 @@ ClickHouse will eventually "replace" the rows with the same primary key in the b
 SELECT * FROM events FINAL
 ```
 
-Adding `FINAL` to a query can have significant performance consequences, some of the issues are documented in the [ClickHouse documentation](https://clickhouse.com/docs/en/sql-reference/statements/select/from/#final-modifier).
+Adding `FINAL` to a query can have significant performance consequences, some of the issues are documented in the [ClickHouse documentation](https://clickhouse.com/docs/en/sql-reference/statements/select/from#final-modifier).
 
 We should always expect duplicated values in the table, so we must take care of the deduplication in query time.
 

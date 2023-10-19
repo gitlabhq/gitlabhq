@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { __ } from '~/locale';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import StatusIcon from './mr_widget_status_icon.vue';
 import Actions from './action_buttons.vue';
@@ -12,14 +13,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-  },
-  inject: {
-    expandDetailsTooltip: {
-      default: '',
-    },
-    collapseDetailsTooltip: {
-      default: '',
-    },
   },
   props: {
     isCollapsible: {
@@ -56,6 +49,16 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    expandDetailsTooltip: {
+      required: false,
+      type: String,
+      default: __('Expand merge details'),
+    },
+    collapseDetailsTooltip: {
+      required: false,
+      type: String,
+      default: __('Collapse merge details'),
     },
   },
   computed: {
@@ -120,6 +123,7 @@ export default {
           <gl-button
             v-gl-tooltip
             :title="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
+            :aria-label="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
             :icon="collapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             size="small"

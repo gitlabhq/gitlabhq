@@ -5,14 +5,14 @@ require 'find'
 module Gitlab
   module Graphql
     module Queries
-      IMPORT_RE = /^#\s*import "(?<path>[^"]+)"$/m.freeze
-      EE_ELSE_CE = /^ee_else_ce/.freeze
-      HOME_RE = /^~/.freeze
-      HOME_EE = %r{^ee/}.freeze
-      DOTS_RE = %r{^(\.\./)+}.freeze
-      DOT_RE = %r{^\./}.freeze
-      IMPLICIT_ROOT = %r{^app/}.freeze
-      CONN_DIRECTIVE = /@connection\(key: "\w+"\)/.freeze
+      IMPORT_RE = /^#\s*import "(?<path>[^"]+)"$/m
+      EE_ELSE_CE = /^ee_else_ce/
+      HOME_RE = /^~/
+      HOME_EE = %r{^ee/}
+      DOTS_RE = %r{^(\.\./)+}
+      DOT_RE = %r{^\./}
+      IMPLICIT_ROOT = %r{^app/}
+      CONN_DIRECTIVE = /@connection\(key: "\w+"\)/
 
       class WrappedError
         delegate :message, to: :@error

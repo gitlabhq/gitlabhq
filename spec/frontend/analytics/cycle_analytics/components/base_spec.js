@@ -141,9 +141,11 @@ describe('Value stream analytics component', () => {
       namespacePath: groupPath,
       endDate: createdBefore,
       hasDateRangeFilter: true,
+      hasPredefinedDateRangesFilter: true,
       hasProjectFilter: false,
       selectedProjects: [],
       startDate: createdAfter,
+      predefinedDateRange: null,
     });
   });
 

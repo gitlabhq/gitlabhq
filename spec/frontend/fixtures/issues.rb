@@ -70,25 +70,29 @@ RSpec.describe API::Issues, '(JavaScript fixtures)', type: :request do
     issue_title = 'foo'
     issue_description = 'closed'
     milestone = create(:milestone, title: '1.0.0', project: project)
-    issue = create :issue,
-            author: user,
-            assignees: [user],
-            project: project,
-            milestone: milestone,
-            created_at: generate(:past_time),
-            updated_at: 1.hour.ago,
-            title: issue_title,
-            description: issue_description
+    issue = create(
+      :issue,
+      author: user,
+      assignees: [user],
+      project: project,
+      milestone: milestone,
+      created_at: generate(:past_time),
+      updated_at: 1.hour.ago,
+      title: issue_title,
+      description: issue_description
+    )
 
     project.add_reporter(user)
     create_referencing_mr(user, project, issue)
 
-    create(:merge_request,
-           :simple,
-           author: user,
-           source_project: project,
-           target_project: project,
-           description: "Some description")
+    create(
+      :merge_request,
+      :simple,
+      author: user,
+      source_project: project,
+      target_project: project,
+      description: "Some description"
+    )
     project2 = create(:project, :public, creator_id: user.id, namespace: user.namespace)
     create_referencing_mr(user, project2, issue).update!(head_pipeline: create(:ci_pipeline))
 

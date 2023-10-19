@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Created do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'created' }
+    it { expect(subject.text).to eq 'Created' }
   end
 
   describe '#label' do

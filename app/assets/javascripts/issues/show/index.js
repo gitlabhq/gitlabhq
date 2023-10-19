@@ -131,8 +131,8 @@ export function initIssuableApp(store) {
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
           issuableType: issueType,
-          issueId: this.getNoteableData?.id,
-          issueIid: this.getNoteableData?.iid,
+          issueId: this.getNoteableData?.id.toString(),
+          issueIid: this.getNoteableData?.iid.toString(),
           showTitleBorder: issueType !== TYPE_INCIDENT,
         },
       });

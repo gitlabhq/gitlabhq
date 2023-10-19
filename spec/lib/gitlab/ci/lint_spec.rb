@@ -7,8 +7,18 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
   let_it_be(:user) { create(:user) }
 
   let(:sha) { nil }
+  let(:verify_project_sha) { nil }
   let(:ref) { project.default_branch }
-  let(:lint) { described_class.new(project: project, current_user: user, sha: sha) }
+  let(:kwargs) do
+    {
+      project: project,
+      current_user: user,
+      sha: sha,
+      verify_project_sha: verify_project_sha
+    }.compact
+  end
+
+  let(:lint) { described_class.new(**kwargs) }
 
   describe '#validate' do
     subject { lint.validate(content, dry_run: dry_run, ref: ref) }
@@ -252,6 +262,19 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
           subject
         end
 
+        shared_examples 'when sha is not provided' do
+          it 'runs YamlProcessor with verify_project_sha: false' do
+            expect(Gitlab::Ci::YamlProcessor)
+              .to receive(:new)
+              .with(content, a_hash_including(verify_project_sha: false))
+              .and_call_original
+
+            subject
+          end
+        end
+
+        it_behaves_like 'when sha is not provided'
+
         context 'when sha is provided' do
           let(:sha) { project.commit.sha }
 
@@ -288,20 +311,16 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
             context 'when a project ref does not contain the sha' do
               it 'returns an error' do
                 expect(subject).not_to be_valid
-                expect(subject.errors).to include(/Could not validate configuration/)
+                expect(subject.errors).to include(
+                  /configuration originates from an external project or a commit not associated with a Git reference/)
               end
             end
           end
-        end
 
-        context 'when sha is not provided' do
-          it 'runs YamlProcessor with verify_project_sha: false' do
-            expect(Gitlab::Ci::YamlProcessor)
-              .to receive(:new)
-              .with(content, a_hash_including(verify_project_sha: false))
-              .and_call_original
+          context 'when verify_project_sha is false' do
+            let(:verify_project_sha) { false }
 
-            subject
+            it_behaves_like 'when sha is not provided'
           end
         end
       end
@@ -468,7 +487,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       end
 
       context 'when project is not provided' do
-        let(:project) { nil }
+        let(:lint) { described_class.new(project: nil, **kwargs) }
 
         let(:project_nil_loggable_data) do
           expected_data.except('project_id')

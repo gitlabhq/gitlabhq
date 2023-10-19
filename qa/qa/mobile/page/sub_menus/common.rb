@@ -8,7 +8,7 @@ module QA
           def open_mobile_nav_sidebar
             unless has_css?('.sidebar-expanded-mobile')
               Support::Retrier.retry_until do
-                click_element(:toggle_mobile_nav_button)
+                click_element('toggle-mobile-nav-button')
                 has_css?('.sidebar-expanded-mobile')
               end
             end

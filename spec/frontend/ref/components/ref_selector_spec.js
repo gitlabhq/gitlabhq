@@ -23,13 +23,17 @@ import {
   REF_TYPE_BRANCHES,
   REF_TYPE_TAGS,
   REF_TYPE_COMMITS,
+  BRANCH_REF_TYPE_ICON,
+  TAG_REF_TYPE_ICON,
 } from '~/ref/constants';
 import createStore from '~/ref/stores/';
 
 Vue.use(Vuex);
 
 describe('Ref selector component', () => {
-  const fixtures = { branches, tags, commit };
+  const branchRefTypeMock = { name: 'refs/heads/test_branch' };
+  const tagRefTypeMock = { name: 'refs/tags/test_tag' };
+  const fixtures = { branches: [branchRefTypeMock, tagRefTypeMock, ...branches], tags, commit };
 
   const projectId = '8';
   const totalBranchesCount = 123;
@@ -611,6 +615,19 @@ describe('Ref selector component', () => {
 
       expect(branchesApiCallSpy).toHaveBeenCalledTimes(2);
       expect(tagsApiCallSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it.each`
+      selectedBranch            | icon
+      ${branchRefTypeMock.name} | ${BRANCH_REF_TYPE_ICON}
+      ${tagRefTypeMock.name}    | ${TAG_REF_TYPE_ICON}
+      ${branches[0].name}       | ${''}
+    `('renders the correct icon for the selected ref', async ({ selectedBranch, icon }) => {
+      createComponent();
+      findListbox().vm.$emit('select', selectedBranch);
+      await nextTick();
+
+      expect(findListbox().props('icon')).toBe(icon);
     });
 
     it.each`

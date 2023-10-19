@@ -14,7 +14,7 @@ import {
 import { DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET_BASE = -179;
+const DROPDOWN_X_OFFSET_BASE = -177;
 const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
 
 export default {
@@ -62,7 +62,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip:super-sidebar.hover.bottom="dropdownOpen ? '' : $options.i18n.createNew"
+    v-gl-tooltip:super-sidebar.bottom="dropdownOpen ? '' : $options.i18n.createNew"
     category="tertiary"
     icon="plus"
     no-caret

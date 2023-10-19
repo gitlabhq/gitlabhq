@@ -35,3 +35,7 @@ export const ICON_MAP = {
   wiki_blobs: 'book',
   snippet_titles: 'snippet',
 };
+
+export const ZOEKT_SEARCH_TYPE = 'zoekt';
+export const ADVANCED_SEARCH_TYPE = 'advanced';
+export const BASIC_SEARCH_TYPE = 'basic';

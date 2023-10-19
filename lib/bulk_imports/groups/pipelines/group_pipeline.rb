@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class GroupPipeline
         include Pipeline
+        include HexdigestCacheStrategy
 
         abort_on_failure!
 

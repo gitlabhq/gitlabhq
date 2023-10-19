@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
 import { getBoardQuery } from 'ee_else_ce/boards/boards_util';
+import ToggleLabels from '~/vue_shared/components/toggle_labels.vue';
 import { setError } from '../graphql/cache_updates';
 import ConfigToggle from './config_toggle.vue';
 import NewBoardButton from './new_board_button.vue';
@@ -17,7 +18,7 @@ export default {
     ConfigToggle,
     NewBoardButton,
     ToggleFocus,
-    ToggleLabels: () => import('ee_component/boards/components/toggle_labels.vue'),
+    ToggleLabels,
     ToggleEpicsSwimlanes: () => import('ee_component/boards/components/toggle_epics_swimlanes.vue'),
     EpicBoardFilteredSearch: () =>
       import('ee_component/boards/components/epic_filtered_search.vue'),

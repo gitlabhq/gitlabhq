@@ -6,6 +6,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'spec/test_constants';
+
 import App from '~/diffs/components/app.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
@@ -16,6 +17,8 @@ import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
+
+import eventHub from '~/diffs/event_hub';
 
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -758,6 +761,31 @@ describe('diffs/components/app', () => {
           expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
+    });
+  });
+
+  describe('autoscroll', () => {
+    let loadSpy;
+
+    beforeEach(() => {
+      createComponent();
+      loadSpy = jest.spyOn(wrapper.vm, 'loadCollapsedDiff').mockResolvedValue('resolved');
+    });
+
+    it('does nothing if the location hash does not include a file hash', () => {
+      window.location.hash = 'not_a_file_hash';
+
+      eventHub.$emit('doneLoadingBatches');
+
+      expect(loadSpy).not.toHaveBeenCalled();
+    });
+
+    it('requests that the correct file be loaded', () => {
+      window.location.hash = '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_0_1';
+
+      eventHub.$emit('doneLoadingBatches');
+
+      expect(loadSpy).toHaveBeenCalledWith({ file: store.state.diffs.diffFiles[0] });
     });
   });
 });

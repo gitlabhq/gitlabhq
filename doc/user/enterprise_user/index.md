@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -13,29 +13,58 @@ has purchased a [GitLab subscription](../../subscriptions/index.md).
 Enterprise users are identified by the **Enterprise** badge
 next to their names on the [Members list](../group/index.md#filter-and-sort-members-in-a-group).
 
-## Provision an enterprise user
+## Automatic claims of enterprise users
 
-A user account is considered an enterprise account when:
+A user is automatically claimed as an enterprise user of a group when **all** of the following conditions are met:
 
-- A user without an existing GitLab user account uses the group's
-  [SAML SSO](../group/saml_sso/index.md) to sign in for the first time.
-- [SCIM](../group/saml_sso/scim_setup.md) creates the user account on behalf of
-  the group.
+1. The user's primary email has a domain that has been [verified](#verified-domains-for-groups) by the paid group.
+1. The user account meets at least **one** of the following conditions:
+    - It was created February 1, 2021 or later.
+    - It has a SAML or SCIM identity tied to the organization's group.
+    - It has a `provisioned_by_group_id` value that is the same as the organization's group's ID.
+    - It is a member of the organization's group, where the subscription was purchased or renewed February 1, 2021 or later.
 
-A user can also [manually connect an identity provider (IdP) to a GitLab account whose email address matches the subscribing organization's domain](../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
-By selecting **Authorize** when connecting these two accounts, the user account
-with the matching email address is classified as an enterprise user. However, this
-user account does not have an **Enterprise** badge in GitLab, and a group Owner cannot
-disable the user's two-factor authentication.
+After the user is claimed as an enterprise user:
 
-Although a user can be a member of more than one group, each user account can be
-provisioned by only one group. As a result, a user is considered an enterprise
-user under one top-level group only.
+- Their `enterprise_group_id` attribute is set to the organization's group's ID.
+- The user receives a [welcome email](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/views/notify/user_associated_with_enterprise_group_email.html.haml).
+
+If a group's purchased subscription expires or is canceled:
+
+- Users claimed as enterprise users remain enterprise users of that group.
+- The group is not able to [manage their enterprise users](#manage-enterprise-users-in-a-namespace).
+- [Enterprise user restrictions](#enterprise-user-restrictions) apply to those user accounts.
+- No new users can be [automatically associated with the group](#automatic-claims-of-enterprise-users) until the paid subscription is renewed.
+
+If a group's verified domains are removed:
+
+- Users claimed as enterprise users remain enterprise users of that group.
+- [Enterprise user restrictions](#enterprise-user-restrictions) apply to those user accounts.
+- No new users can be [automatically associated with the group](#automatic-claims-of-enterprise-users) until domains are verified.
+
+If the organization moves its verified domains to another paid group, its enterprise users are [automatically claimed](#automatic-claims-of-enterprise-users) as enterprise users of that group.
+
+## Enterprise user restrictions
+
+### Primary email change
+
+An enterprise user can only change their primary email to an email their organization owns as per its verified domains.
+If an organization removes all its verified domains, its enterprise users are not able to change their primary email address.
+
+Only GitLab administrators can change enterprise users' primary email address to an email with a non-verified domain.
+
+Providing the ability to group Owners to change their enterprise users' primary email to an email with a non-verified domain is proposed in [issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).
+
+## Dissociation of the user from their enterprise group
+
+Changing an enterprise user's primary email to an email with a non-verified domain automatically disassociates them from their enterprise group.
+However, there are [primary email change restrictions](#primary-email-change).
 
 ## Verified domains for groups
 
 The following automated processes use [verified domains](../project/pages/custom_domains_ssl_tls_certification/index.md) to run:
 
+- [Automatic claims of enterprise users](#automatic-claims-of-enterprise-users).
 - [Bypass email confirmation for provisioned users](#bypass-email-confirmation-for-provisioned-users).
 
 ### Set up a verified domain

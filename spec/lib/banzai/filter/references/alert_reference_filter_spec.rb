@@ -13,7 +13,7 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Alert #{reference}</#{elem}>"
 
@@ -47,7 +47,7 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
     end
 
     it 'escapes the title attribute' do
-      allow(alert).to receive(:title).and_return(%{"></a>whatever<a title="})
+      allow(alert).to receive(:title).and_return(%("></a>whatever<a title="))
       doc = reference_filter("Alert #{reference}")
 
       expect(doc.text).to eq "Alert #{reference}"
@@ -79,7 +79,7 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
       doc = reference_filter("Alert #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
-      expect(link).not_to match %r(https?://)
+      expect(link).not_to match %r{https?://}
       expect(link).to eq urls.details_project_alert_management_url(project, alert.iid, only_path: true)
     end
   end

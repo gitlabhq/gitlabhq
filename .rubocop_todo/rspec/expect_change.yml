@@ -408,7 +408,6 @@ RSpec/ExpectChange:
     - 'spec/services/snippets/update_statistics_service_spec.rb'
     - 'spec/services/spam/spam_action_service_spec.rb'
     - 'spec/services/suggestions/create_service_spec.rb'
-    - 'spec/services/tasks_to_be_done/base_service_spec.rb'
     - 'spec/services/terraform/states/trigger_destroy_service_spec.rb'
     - 'spec/services/todo_service_spec.rb'
     - 'spec/services/todos/destroy/destroyed_issuable_service_spec.rb'

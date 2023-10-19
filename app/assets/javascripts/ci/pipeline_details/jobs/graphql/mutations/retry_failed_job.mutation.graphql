@@ -1,4 +1,4 @@
-mutation retryFailedJob($id: CiBuildID!) {
+mutation retryFailedJob($id: CiProcessableID!) {
   jobRetry(input: { id: $id }) {
     job {
       id

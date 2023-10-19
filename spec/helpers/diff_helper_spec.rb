@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DiffHelper do
+RSpec.describe DiffHelper, feature_category: :code_review_workflow do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
@@ -196,26 +196,26 @@ RSpec.describe DiffHelper do
   end
 
   describe "#mark_inline_diffs" do
-    let(:old_line) { %{abc 'def'} }
-    let(:new_line) { %{abc "def"} }
+    let(:old_line) { %(abc 'def') }
+    let(:new_line) { %(abc "def") }
 
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-      expect(marked_old_line).to eq(%q{abc <span class="idiff left deletion">&#39;</span>def<span class="idiff right deletion">&#39;</span>})
+      expect(marked_old_line).to eq(%q(abc <span class="idiff left deletion">&#39;</span>def<span class="idiff right deletion">&#39;</span>))
       expect(marked_old_line).to be_html_safe
-      expect(marked_new_line).to eq(%q{abc <span class="idiff left addition">&quot;</span>def<span class="idiff right addition">&quot;</span>})
+      expect(marked_new_line).to eq(%q(abc <span class="idiff left addition">&quot;</span>def<span class="idiff right addition">&quot;</span>))
       expect(marked_new_line).to be_html_safe
     end
 
     context 'when given HTML' do
       it 'sanitizes it' do
-        old_line = %{test.txt}
+        old_line = %(test.txt)
         new_line = %{<img src=x onerror=alert(document.domain)>}
 
         marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-        expect(marked_old_line).to eq(%q{<span class="idiff left right deletion">test.txt</span>})
+        expect(marked_old_line).to eq(%q(<span class="idiff left right deletion">test.txt</span>))
         expect(marked_old_line).to be_html_safe
         expect(marked_new_line).to eq(%q{<span class="idiff left right addition">&lt;img src=x onerror=alert(document.domain)&gt;</span>})
         expect(marked_new_line).to be_html_safe
@@ -634,6 +634,29 @@ RSpec.describe DiffHelper do
         let(:has_no_commits) { false }
 
         it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  describe '#submodule_diff_compare_link' do
+    context 'when the diff includes submodule changes' do
+      it 'generates a link to compare a diff for a submodule' do
+        allow(helper).to receive(:submodule_links).and_return(
+          Gitlab::SubmoduleLinks::Urls.new(nil, nil, '/comparison-path')
+        )
+
+        output = helper.submodule_diff_compare_link(diff_file)
+        expect(output).to match(%r{href="/comparison-path"})
+        expect(output).to match(
+          %r{Compare <span class="commit-sha">5b812ff1</span>...<span class="commit-sha">7e3e39eb</span>}
+        )
+      end
+    end
+
+    context 'when the diff does not include submodule changes' do
+      it 'returns an empty string' do
+        output = helper.submodule_diff_compare_link(diff_file)
+        expect(output).to eq('')
       end
     end
   end

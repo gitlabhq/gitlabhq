@@ -13,6 +13,8 @@ export default {
     TimeAgo,
     RunnerTypeBadge,
     RunnerStatusBadge,
+    RunnerUpgradeStatusBadge: () =>
+      import('ee_component/ci/runner/components/runner_upgrade_status_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -40,6 +42,7 @@ export default {
     <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-flex-wrap gl-mt-3">
       <runner-status-badge :contacted-at="runner.contactedAt" :status="runner.status" />
       <runner-type-badge :type="runner.runnerType" />
+      <runner-upgrade-status-badge :runner="runner" />
       <span v-if="runner.createdAt">
         <gl-sprintf :message="__('%{locked} created %{timeago}')">
           <template #locked>

@@ -16,9 +16,7 @@ describe('~/environments/components/kubernetes_summary.vue', () => {
   const namespace = 'my-kubernetes-namespace';
   const configuration = {
     basePath: mockKasTunnelUrl,
-    baseOptions: {
-      headers: { 'GitLab-Agent-Id': '1' },
-    },
+    headers: { 'GitLab-Agent-Id': '1', 'Content-Type': 'application/json' },
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -121,7 +119,7 @@ describe('~/environments/components/kubernetes_summary.vue', () => {
       createWrapper(createErroredApolloProvider());
       await waitForPromises();
 
-      expect(wrapper.emitted('cluster-error')).toEqual([[error]]);
+      expect(wrapper.emitted('cluster-error')).toEqual([[error.message]]);
     });
   });
 });

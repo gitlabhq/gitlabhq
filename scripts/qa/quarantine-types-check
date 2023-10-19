@@ -7,8 +7,8 @@ QUARANTINE_TYPES = %w[stale bug investigating flaky broken test_environment wait
 
 missing_issues = []
 quarantine_type_errors = []
-invalid_type_message = %"\n*** The following quarantined tests have invalid types:\n\n%s\n"
-missing_issue_message = %"\n*** The following quarantined tests are missing issue links:\n\n%s\n"
+invalid_type_message = %(\n*** The following quarantined tests have invalid types:\n\n%s\n)
+missing_issue_message = %(\n*** The following quarantined tests are missing issue links:\n\n%s\n)
 
 test_metadata_file = ARGV.shift
 

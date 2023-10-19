@@ -43,7 +43,7 @@ describe('work items graphql cache utils', () => {
         title: 'New child',
       };
 
-      addHierarchyChild(mockCache, fullPath, iid, child);
+      addHierarchyChild({ cache: mockCache, fullPath, iid, workItem: child });
 
       expect(mockCache.writeQuery).toHaveBeenCalledWith({
         query: workItemByIidQuery,
@@ -88,7 +88,7 @@ describe('work items graphql cache utils', () => {
         title: 'New child',
       };
 
-      addHierarchyChild(mockCache, fullPath, iid, child);
+      addHierarchyChild({ cache: mockCache, fullPath, iid, workItem: child });
 
       expect(mockCache.writeQuery).not.toHaveBeenCalled();
     });
@@ -106,7 +106,7 @@ describe('work items graphql cache utils', () => {
         title: 'Child',
       };
 
-      removeHierarchyChild(mockCache, fullPath, iid, childToRemove);
+      removeHierarchyChild({ cache: mockCache, fullPath, iid, workItem: childToRemove });
 
       expect(mockCache.writeQuery).toHaveBeenCalledWith({
         query: workItemByIidQuery,
@@ -145,7 +145,7 @@ describe('work items graphql cache utils', () => {
         title: 'Child',
       };
 
-      removeHierarchyChild(mockCache, fullPath, iid, childToRemove);
+      removeHierarchyChild({ cache: mockCache, fullPath, iid, workItem: childToRemove });
 
       expect(mockCache.writeQuery).not.toHaveBeenCalled();
     });

@@ -19,8 +19,8 @@ module Banzai
     class FootnoteFilter < HTML::Pipeline::Filter
       FOOTNOTE_ID_PREFIX              = 'fn-'
       FOOTNOTE_LINK_ID_PREFIX         = 'fnref-'
-      FOOTNOTE_LI_REFERENCE_PATTERN   = /\A#{FOOTNOTE_ID_PREFIX}.+\z/.freeze
-      FOOTNOTE_LINK_REFERENCE_PATTERN = /\A#{FOOTNOTE_LINK_ID_PREFIX}.+\z/.freeze
+      FOOTNOTE_LI_REFERENCE_PATTERN   = /\A#{FOOTNOTE_ID_PREFIX}.+\z/
+      FOOTNOTE_LINK_REFERENCE_PATTERN = /\A#{FOOTNOTE_LINK_ID_PREFIX}.+\z/
 
       CSS_SECTION    = "section[data-footnotes]"
       XPATH_SECTION  = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_SECTION).freeze

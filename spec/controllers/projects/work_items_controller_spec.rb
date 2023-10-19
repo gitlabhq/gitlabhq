@@ -34,10 +34,10 @@ RSpec.describe Projects::WorkItemsController, feature_category: :team_planning d
     end
   end
 
-  describe 'GET index' do
+  describe 'GET show' do
     specify do
       expect(
-        get(:index, params: { namespace_id: project.namespace, project_id: project, work_items_path: work_item.id })
+        get(:show, params: { namespace_id: project.namespace, project_id: project, iid: work_item.iid })
       ).to have_request_urgency(:low)
     end
   end

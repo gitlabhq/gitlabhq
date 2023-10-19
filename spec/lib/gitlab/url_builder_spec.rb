@@ -23,7 +23,8 @@ RSpec.describe Gitlab::UrlBuilder do
       :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
       :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
       [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.iid}" }
-      :work_item         | ->(work_item)     { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
+      [:work_item, :task] | ->(work_item)    { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
+      [:work_item, :issue] | ->(work_item)   { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }
@@ -59,7 +60,8 @@ RSpec.describe Gitlab::UrlBuilder do
       :discussion_note_on_project_snippet  | ->(note) { "/#{note.project.full_path}/-/snippets/#{note.noteable_id}#note_#{note.id}" }
       :discussion_note_on_personal_snippet | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
       :note_on_personal_snippet            | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
-      :package                             | ->(package) { "/#{package.project.full_path}/-/packages/#{package.id}" }
+      :note_on_abuse_report | ->(note) { "/admin/abuse_reports/#{note.noteable_id}#note_#{note.id}" }
+      :package | ->(package) { "/#{package.project.full_path}/-/packages/#{package.id}" }
     end
 
     with_them do

@@ -29,7 +29,6 @@ Migration/BackgroundMigrationBaseClass:
     - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules_in_batch.rb'
     - 'lib/gitlab/background_migration/migrate_job_artifact_registry_to_ssf.rb'
     - 'lib/gitlab/background_migration/migrate_null_private_profile_to_false.rb'
-    - 'lib/gitlab/background_migration/migrate_pages_to_zip_storage.rb'
     - 'lib/gitlab/background_migration/migrate_personal_namespace_project_maintainer_to_owner.rb'
     - 'lib/gitlab/background_migration/migrate_requirements_to_work_items.rb'
     - 'lib/gitlab/background_migration/migrate_shimo_confluence_integration_category.rb'

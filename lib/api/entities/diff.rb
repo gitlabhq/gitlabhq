@@ -3,10 +3,12 @@
 module API
   module Entities
     class Diff < Grape::Entity
-      expose :json_safe_diff, as: :diff, documentation: {
+      expose :diff, documentation: {
         type: 'string',
         example: '@@ -71,6 +71,8 @@\n...'
-      }
+      } do |instance, options|
+        options[:enable_unidiff] == true ? instance.unidiff : instance.json_safe_diff
+      end
       expose :new_path, documentation: { type: 'string', example: 'doc/update/5.4-to-6.0.md' }
       expose :old_path, documentation: { type: 'string', example: 'doc/update/5.4-to-6.0.md' }
       expose :a_mode, documentation: { type: 'string', example: '100755' }

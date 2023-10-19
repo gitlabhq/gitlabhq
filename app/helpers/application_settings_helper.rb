@@ -282,6 +282,7 @@ module ApplicationSettingsHelper
       :external_pipeline_validation_service_timeout,
       :external_pipeline_validation_service_token,
       :external_pipeline_validation_service_url,
+      :failed_login_attempts_unlock_period_in_minutes,
       :first_day_of_week,
       :floc_enabled,
       :force_pages_access_control,
@@ -314,12 +315,14 @@ module ApplicationSettingsHelper
       :jira_connect_application_key,
       :jira_connect_public_key_storage_enabled,
       :jira_connect_proxy_url,
+      :math_rendering_limits_enabled,
       :max_artifacts_size,
       :max_attachment_size,
+      :max_decompressed_archive_size,
       :max_export_size,
       :max_import_size,
       :max_import_remote_file_size,
-      :max_decompressed_archive_size,
+      :max_login_attempts,
       :max_pages_size,
       :max_pages_custom_domains_per_project,
       :max_terraform_state_size_bytes,
@@ -507,7 +510,8 @@ module ApplicationSettingsHelper
       :allow_account_deletion,
       :gitlab_shell_operation_limit,
       :namespace_aggregation_schedule_lease_duration_in_seconds,
-      :ci_max_total_yaml_size_bytes
+      :ci_max_total_yaml_size_bytes,
+      :project_jobs_api_rate_limit
     ].tap do |settings|
       next if Gitlab.com?
 

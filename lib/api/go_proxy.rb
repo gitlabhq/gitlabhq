@@ -10,7 +10,7 @@ module API
     urgency :low
 
     # basic semver, except case encoded (A => !a)
-    MODULE_VERSION_REGEX = /v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([-.!a-z0-9]+))?(?:\+([-.!a-z0-9]+))?/.freeze
+    MODULE_VERSION_REGEX = /v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([-.!a-z0-9]+))?(?:\+([-.!a-z0-9]+))?/
 
     MODULE_VERSION_REQUIREMENTS = { module_version: MODULE_VERSION_REGEX }.freeze
 

@@ -30,7 +30,7 @@ Complete performance metrics should be collected for Gitaly instances for identi
 
 ### Gitaly performance guidelines
 
-Gitaly functions as the primary Git Repository Storage in GitLab. However, it's not a streaming file server. It also does a lot of demanding computing work, such as preparing and caching Git pack files which informs some of the performance recommendations below.
+Gitaly functions as the primary Git Repository Storage in GitLab. However, it's not a streaming file server. It also does a lot of demanding computing work, such as preparing and caching Git packfiles which informs some of the performance recommendations below.
 
 NOTE:
 All recommendations are for production configurations, including performance testing. For test configurations, like training or functional testing, you can use less expensive options. However, you should adjust or rebuild if performance is an issue.
@@ -48,7 +48,7 @@ All recommendations are for production configurations, including performance tes
 
 **To accommodate:**
 
-- Git Pack file operations are memory and CPU intensive.
+- Git packfile operations are memory and CPU intensive.
 - If repository commit traffic is dense, large, or very frequent, then more CPU and Memory are required to handle the load. Patterns such as storing binaries and/or busy or large monorepos are examples that can cause high loading.
 
 #### Disk I/O recommendations
@@ -60,8 +60,8 @@ All recommendations are for production configurations, including performance tes
 **To accommodate:**
 
 - Gitaly storage is expected to be local (not NFS of any type including EFS).
-- Gitaly servers also need disk space for building and caching Git pack files. This is above and beyond the permanent storage of your Git Repositories.
-- Git Pack files are cached in Gitaly. Creation of pack files in temporary disk benefits from fast disk, and disk caching of pack files benefits from ample disk space.
+- Gitaly servers also need disk space for building and caching Git packfiles. This is above and beyond the permanent storage of your Git Repositories.
+- Git packfiles are cached in Gitaly. Creation of packfiles in temporary disk benefits from fast disk, and disk caching of packfiles benefits from ample disk space.
 
 #### Network I/O recommendations
 

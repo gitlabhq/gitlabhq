@@ -543,7 +543,9 @@ class Issue < ApplicationRecord
     end
   end
 
-  def related_issues(current_user, preload: nil)
+  def related_issues(current_user = nil, authorize: true, preload: nil)
+    return [] if new_record?
+
     related_issues =
       linked_issues_select
         .joins("INNER JOIN issue_links ON
@@ -554,11 +556,16 @@ class Issue < ApplicationRecord
         .reorder('issue_link_id')
 
     related_issues = yield related_issues if block_given?
+    return related_issues unless authorize
 
     cross_project_filter = -> (issues) { issues.where(project: project) }
     Ability.issues_readable_by_user(related_issues,
       current_user,
       filters: { read_cross_project: cross_project_filter })
+  end
+
+  def linked_items_count
+    related_issues(authorize: false).size
   end
 
   def can_be_worked_on?
@@ -688,20 +695,14 @@ class Issue < ApplicationRecord
   # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
   # Make sure to sync this method with issue_policy.rb
   def readable_by?(user)
-    if !project.issues_enabled?
-      false
-    elsif user.can_read_all_resources?
+    if user.can_read_all_resources?
       true
-    elsif project.personal? && project.team.owner?(user)
-      true
-    elsif confidential? && !assignee_or_author?(user)
-      project.member?(user, Gitlab::Access::REPORTER)
     elsif hidden?
       false
-    elsif project.public? || (project.internal? && !user.external?)
-      project.feature_available?(:issues, user)
+    elsif project
+      project_level_readable_by?(user)
     else
-      project.member?(user)
+      group_level_readable_by?(user)
     end
   end
 
@@ -753,6 +754,31 @@ class Issue < ApplicationRecord
   end
 
   private
+
+  def project_level_readable_by?(user)
+    if !project.issues_enabled?
+      false
+    elsif project.personal? && project.team.owner?(user)
+      true
+    elsif confidential? && !assignee_or_author?(user)
+      project.member?(user, Gitlab::Access::REPORTER)
+    elsif project.public? || (project.internal? && !user.external?)
+      project.feature_available?(:issues, user)
+    else
+      project.member?(user)
+    end
+  end
+
+  def group_level_readable_by?(user)
+    # This should never happen as we don't support personal namespace level issues. Just additional safety.
+    return false unless namespace.is_a?(::Group)
+
+    if confidential? && !assignee_or_author?(user)
+      namespace.member?(user, Gitlab::Access::REPORTER)
+    else
+      namespace.member?(user)
+    end
+  end
 
   def due_date_after_start_date
     return unless start_date.present? && due_date.present?

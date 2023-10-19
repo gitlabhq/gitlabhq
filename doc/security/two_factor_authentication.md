@@ -1,7 +1,7 @@
 ---
 type: howto
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -70,6 +70,8 @@ To enforce 2FA only for certain groups:
    If there are multiple different grace periods in a top level group and its subgroups
    and projects, the shortest grace period is used.
 1. Select **Save changes**.
+
+Enforcement affects all [direct and inherited members](../user/project/members/index.md#membership-types) in the group.
 
 Access tokens are not required to provide a second factor for authentication because
 they are API-based. Tokens generated before 2FA is enforced remain valid.

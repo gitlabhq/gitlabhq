@@ -1,0 +1,13 @@
+- title: "`postgres_exporter['per_table_stats']` configuration setting"
+  announcement_milestone: "16.4"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: clemensbeck  # (required) GitLab username of the person reporting the change
+  stage: Enablement  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8164  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The Linux package provides custom queries for the bundled PostgreSQL exporter, which included a `per_table_stats` query controlled by `postgres_exporter['per_table_stats']`
+    configuration setting.
+
+    The PostgreSQL exporter now provides a `stat_user_tables` collector that provides the same metrics. If you had `postgres_exporter['per_table_stats']` enabled,
+    enable `postgres_exporter['flags']['collector.stat_user_tables']` instead.

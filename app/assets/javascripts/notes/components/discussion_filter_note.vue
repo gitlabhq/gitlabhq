@@ -26,7 +26,7 @@ export default {
 <template>
   <li
     class="timeline-entry note note-wrapper discussion-filter-note js-discussion-filter-note"
-    data-qa-selector="discussion_filter_container"
+    data-testid="discussion-filter-container"
   >
     <div
       class="gl-float-left gl--flex-center gl-rounded-full gl-mt-n1 gl-ml-2 gl-w-6 gl-h-6 gl-bg-gray-50 gl-text-gray-600"

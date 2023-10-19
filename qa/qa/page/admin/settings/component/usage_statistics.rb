@@ -7,11 +7,11 @@ module QA
         module Component
           class UsageStatistics < Page::Base
             view 'app/views/admin/application_settings/_usage.html.haml' do
-              element :enable_usage_data_checkbox
+              element 'enable-usage-data-checkbox'
             end
 
             def has_disabled_usage_data_checkbox?
-              has_element?(:enable_usage_data_checkbox, disabled: true, visible: false)
+              has_element?('enable-usage-data-checkbox', disabled: true, visible: false)
             end
           end
         end

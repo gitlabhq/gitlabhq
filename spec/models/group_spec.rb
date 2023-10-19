@@ -683,160 +683,126 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   context 'traversal queries' do
     let_it_be(:group, reload: true) { create(:group, :nested) }
 
-    context 'recursive' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
+    it_behaves_like 'namespace traversal'
 
-      it_behaves_like 'namespace traversal'
+    describe '#self_and_descendants' do
+      it { expect(group.self_and_descendants.to_sql).to include 'traversal_ids @>' }
+    end
 
-      describe '#self_and_descendants' do
-        it { expect(group.self_and_descendants.to_sql).not_to include 'traversal_ids @>' }
-      end
+    describe '#self_and_descendant_ids' do
+      it { expect(group.self_and_descendant_ids.to_sql).to include 'traversal_ids @>' }
+    end
 
-      describe '#self_and_descendant_ids' do
-        it { expect(group.self_and_descendant_ids.to_sql).not_to include 'traversal_ids @>' }
-      end
+    describe '#descendants' do
+      it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
+    end
 
-      describe '#descendants' do
-        it { expect(group.descendants.to_sql).not_to include 'traversal_ids @>' }
-      end
+    describe '#self_and_hierarchy' do
+      it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
+    end
 
-      describe '#self_and_hierarchy' do
-        it { expect(group.self_and_hierarchy.to_sql).not_to include 'traversal_ids @>' }
-      end
+    describe '#ancestors' do
+      it { expect(group.ancestors.to_sql).to include "\"namespaces\".\"id\" = #{group.parent_id}" }
 
-      describe '#ancestors' do
-        it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
-      end
-
-      describe '.shortest_traversal_ids_prefixes' do
-        it { expect { described_class.shortest_traversal_ids_prefixes }.to raise_error /Feature not supported since the `:use_traversal_ids` is disabled/ }
+      it 'hierarchy order' do
+        expect(group.ancestors(hierarchy_order: :asc).to_sql).to include 'ORDER BY "depth" ASC'
       end
     end
 
-    context 'linear' do
-      it_behaves_like 'namespace traversal'
+    describe '#ancestors_upto' do
+      it { expect(group.ancestors_upto.to_sql).to include "WITH ORDINALITY" }
+    end
 
-      describe '#self_and_descendants' do
-        it { expect(group.self_and_descendants.to_sql).to include 'traversal_ids @>' }
-      end
+    describe '.shortest_traversal_ids_prefixes' do
+      subject { filter.shortest_traversal_ids_prefixes }
 
-      describe '#self_and_descendant_ids' do
-        it { expect(group.self_and_descendant_ids.to_sql).to include 'traversal_ids @>' }
-      end
+      context 'for many top-level namespaces' do
+        let!(:top_level_groups) { create_list(:group, 4) }
 
-      describe '#descendants' do
-        it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
-      end
+        context 'when querying all groups' do
+          let(:filter) { described_class.id_in(top_level_groups) }
 
-      describe '#self_and_hierarchy' do
-        it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
-      end
-
-      describe '#ancestors' do
-        it { expect(group.ancestors.to_sql).to include "\"namespaces\".\"id\" = #{group.parent_id}" }
-
-        it 'hierarchy order' do
-          expect(group.ancestors(hierarchy_order: :asc).to_sql).to include 'ORDER BY "depth" ASC'
-        end
-      end
-
-      describe '#ancestors_upto' do
-        it { expect(group.ancestors_upto.to_sql).to include "WITH ORDINALITY" }
-      end
-
-      describe '.shortest_traversal_ids_prefixes' do
-        subject { filter.shortest_traversal_ids_prefixes }
-
-        context 'for many top-level namespaces' do
-          let!(:top_level_groups) { create_list(:group, 4) }
-
-          context 'when querying all groups' do
-            let(:filter) { described_class.id_in(top_level_groups) }
-
-            it "returns all traversal_ids" do
-              is_expected.to contain_exactly(
-                *top_level_groups.map { |group| [group.id] }
-              )
-            end
-          end
-
-          context 'when querying selected groups' do
-            let(:filter) { described_class.id_in(top_level_groups.first) }
-
-            it "returns only a selected traversal_ids" do
-              is_expected.to contain_exactly([top_level_groups.first.id])
-            end
+          it "returns all traversal_ids" do
+            is_expected.to contain_exactly(
+              *top_level_groups.map { |group| [group.id] }
+            )
           end
         end
 
-        context 'for namespace hierarchy' do
-          let!(:group_a) { create(:group) }
-          let!(:group_a_sub_1) { create(:group, parent: group_a) }
-          let!(:group_a_sub_2) { create(:group, parent: group_a) }
-          let!(:group_b) { create(:group) }
-          let!(:group_b_sub_1) { create(:group, parent: group_b) }
-          let!(:group_c) { create(:group) }
+        context 'when querying selected groups' do
+          let(:filter) { described_class.id_in(top_level_groups.first) }
 
-          context 'when querying all groups' do
-            let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_a_sub_2, group_b, group_b_sub_1, group_c]) }
-
-            it 'returns only shortest prefixes of top-level groups' do
-              is_expected.to contain_exactly(
-                [group_a.id],
-                [group_b.id],
-                [group_c.id]
-              )
-            end
-          end
-
-          context 'when sub-group is reparented' do
-            let(:filter) { described_class.id_in([group_b_sub_1, group_c]) }
-
-            before do
-              group_b_sub_1.update!(parent: group_c)
-            end
-
-            it 'returns a proper shortest prefix of a new group' do
-              is_expected.to contain_exactly(
-                [group_c.id]
-              )
-            end
-          end
-
-          context 'when querying sub-groups' do
-            let(:filter) { described_class.id_in([group_a_sub_1, group_b_sub_1, group_c]) }
-
-            it 'returns sub-groups as they are shortest prefixes' do
-              is_expected.to contain_exactly(
-                [group_a.id, group_a_sub_1.id],
-                [group_b.id, group_b_sub_1.id],
-                [group_c.id]
-              )
-            end
-          end
-
-          context 'when querying group and sub-group of this group' do
-            let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_c]) }
-
-            it 'returns parent groups as this contains all sub-groups' do
-              is_expected.to contain_exactly(
-                [group_a.id],
-                [group_c.id]
-              )
-            end
+          it "returns only a selected traversal_ids" do
+            is_expected.to contain_exactly([top_level_groups.first.id])
           end
         end
       end
 
-      context 'when project namespace exists in the group' do
-        let!(:project) { create(:project, group: group) }
-        let!(:project_namespace) { project.project_namespace }
+      context 'for namespace hierarchy' do
+        let!(:group_a) { create(:group) }
+        let!(:group_a_sub_1) { create(:group, parent: group_a) }
+        let!(:group_a_sub_2) { create(:group, parent: group_a) }
+        let!(:group_b) { create(:group) }
+        let!(:group_b_sub_1) { create(:group, parent: group_b) }
+        let!(:group_c) { create(:group) }
 
-        it 'filters out project namespace' do
-          expect(group.descendants.find_by_id(project_namespace.id)).to be_nil
+        context 'when querying all groups' do
+          let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_a_sub_2, group_b, group_b_sub_1, group_c]) }
+
+          it 'returns only shortest prefixes of top-level groups' do
+            is_expected.to contain_exactly(
+              [group_a.id],
+              [group_b.id],
+              [group_c.id]
+            )
+          end
         end
+
+        context 'when sub-group is reparented' do
+          let(:filter) { described_class.id_in([group_b_sub_1, group_c]) }
+
+          before do
+            group_b_sub_1.update!(parent: group_c)
+          end
+
+          it 'returns a proper shortest prefix of a new group' do
+            is_expected.to contain_exactly(
+              [group_c.id]
+            )
+          end
+        end
+
+        context 'when querying sub-groups' do
+          let(:filter) { described_class.id_in([group_a_sub_1, group_b_sub_1, group_c]) }
+
+          it 'returns sub-groups as they are shortest prefixes' do
+            is_expected.to contain_exactly(
+              [group_a.id, group_a_sub_1.id],
+              [group_b.id, group_b_sub_1.id],
+              [group_c.id]
+            )
+          end
+        end
+
+        context 'when querying group and sub-group of this group' do
+          let(:filter) { described_class.id_in([group_a, group_a_sub_1, group_c]) }
+
+          it 'returns parent groups as this contains all sub-groups' do
+            is_expected.to contain_exactly(
+              [group_a.id],
+              [group_c.id]
+            )
+          end
+        end
+      end
+    end
+
+    context 'when project namespace exists in the group' do
+      let!(:project) { create(:project, group: group) }
+      let!(:project_namespace) { project.project_namespace }
+
+      it 'filters out project namespace' do
+        expect(group.descendants.find_by_id(project_namespace.id)).to be_nil
       end
     end
   end
@@ -918,6 +884,143 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         it { is_expected.to match_array([private_subgroup, internal_group, group]) }
       end
+    end
+  end
+
+  describe '.sort_by_attribute' do
+    before do
+      group.destroy!
+    end
+
+    let!(:group_1) { create(:group, name: 'Y group') }
+    let!(:group_2) { create(:group, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
+    let!(:group_3) { create(:group, name: 'A group') }
+    let!(:group_4) { create(:group, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
+
+    subject { described_class.with_statistics.with_route.sort_by_attribute(sort) }
+
+    context 'when sort by is not provided (id desc by default)' do
+      let(:sort) { nil }
+
+      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
+    end
+
+    context 'when sort by name_asc' do
+      let(:sort) { 'name_asc' }
+
+      it { is_expected.to eq([group_3, group_4, group_2, group_1]) }
+    end
+
+    context 'when sort by name_desc' do
+      let(:sort) { 'name_desc' }
+
+      it { is_expected.to eq([group_1, group_2, group_4, group_3]) }
+    end
+
+    context 'when sort by recently_created' do
+      let(:sort) { 'created_desc' }
+
+      it { is_expected.to eq([group_3, group_1, group_4, group_2]) }
+    end
+
+    context 'when sort by oldest_created' do
+      let(:sort) { 'created_asc' }
+
+      it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
+    end
+
+    context 'when sort by latest_activity' do
+      let(:sort) { 'latest_activity_desc' }
+
+      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
+    end
+
+    context 'when sort by oldest_activity' do
+      let(:sort) { 'latest_activity_asc' }
+
+      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
+    end
+
+    context 'when sort by storage_size_desc' do
+      let!(:project_1) do
+        create(:project,
+          namespace: group_1,
+          statistics: build(
+            :project_statistics,
+            namespace: group_1,
+            repository_size: 2178370,
+            storage_size: 1278370,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let!(:project_2) do
+        create(:project,
+          namespace: group_2,
+          statistics: build(
+            :project_statistics,
+            namespace: group_2,
+            repository_size: 3178370,
+            storage_size: 3178370,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let!(:project_3) do
+        create(:project,
+          namespace: group_3,
+          statistics: build(
+            :project_statistics,
+            namespace: group_3,
+            repository_size: 1278370,
+            storage_size: 1178370,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let!(:project_4) do
+        create(:project,
+          namespace: group_4,
+          statistics: build(
+            :project_statistics,
+            namespace: group_4,
+            repository_size: 2178370,
+            storage_size: 2278370,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let(:sort) { 'storage_size_desc' }
+
+      it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
     end
   end
 
@@ -1152,21 +1255,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(group.group_members.developers.map(&:user)).to include(user)
       expect(group.group_members.guests.map(&:user)).not_to include(user)
     end
-
-    context 'when `tasks_to_be_done` and `tasks_project_id` are passed' do
-      let!(:project) { create(:project, group: group) }
-
-      before do
-        group.add_members([create(:user)], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
-      end
-
-      it 'creates a member_task with the correct attributes', :aggregate_failures do
-        member = group.group_members.last
-
-        expect(member.tasks_to_be_done).to match_array([:ci, :code])
-        expect(member.member_task.project).to eq(project)
-      end
-    end
   end
 
   describe '#avatar_type' do
@@ -1340,6 +1428,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       group.add_member(user, GroupMember::OWNER)
     end
 
+    before do
+      # Add an invite to the group, which should be filtered out
+      create(:group_member, :invited, source: group)
+    end
+
     it 'returns the member-owners' do
       expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
     end
@@ -1367,6 +1460,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           it 'returns only direct member-owners' do
             expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
           end
+
+          context 'when there is an invite in the linked group' do
+            before do
+              create(:group_member, :invited, source: subgroup)
+            end
+
+            it 'returns only direct member-owners' do
+              expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+            end
+          end
         end
       end
 
@@ -1381,6 +1484,31 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         it 'returns member-owners including parents' do
           expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2)
+        end
+
+        context 'with group sharing' do
+          let_it_be(:invited_group) { create(:group) }
+
+          let!(:invited_group_owner) { invited_group.add_member(user, GroupMember::OWNER) }
+
+          before do
+            create(:group_group_link, :owner, shared_group: subgroup, shared_with_group: invited_group)
+          end
+
+          it 'returns member-owners including parents, and member-owners of the invited group' do
+            expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2, invited_group_owner)
+          end
+
+          context 'when there is an invite in the linked group' do
+            before do
+              # Add an invite to this group, which should be filtered out
+              create(:group_member, :invited, source: invited_group)
+            end
+
+            it 'returns member-owners including parents, and member-owners of the invited group' do
+              expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2, invited_group_owner)
+            end
+          end
         end
       end
     end
@@ -1560,6 +1688,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'returns correct access level' do
         expect(group.max_member_access_for_user(group_user)).to eq(Gitlab::Access::OWNER)
+      end
+
+      context 'when user is not active' do
+        let_it_be(:group_user) { create(:user, :deactivated) }
+
+        it 'returns NO_ACCESS' do
+          expect(group.max_member_access_for_user(group_user)).to eq(Gitlab::Access::NO_ACCESS)
+        end
       end
     end
 
@@ -3317,13 +3453,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it_behaves_like 'no enforced expiration interval'
       it_behaves_like 'no effective expiration interval'
-    end
-  end
-
-  describe '#content_editor_on_issues_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :content_editor_on_issues }
-      let(:feature_flag_method) { :content_editor_on_issues_feature_flag_enabled? }
     end
   end
 

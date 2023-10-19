@@ -1,16 +1,8 @@
-import {
-  GlLoadingIcon,
-  GlTable,
-  GlLink,
-  GlBadge,
-  GlPagination,
-  GlModal,
-  GlFormCheckbox,
-} from '@gitlab/ui';
+import { GlLoadingIcon, GlTable, GlLink, GlPagination, GlModal, GlFormCheckbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobArtifactsTable from '~/ci/artifacts/components/job_artifacts_table.vue';
 import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_row_details.vue';
@@ -59,13 +51,13 @@ describe('JobArtifactsTable component', () => {
 
   const findStatuses = () => wrapper.findAllByTestId('job-artifacts-job-status');
   const findSuccessfulJobStatus = () => findStatuses().at(0);
-  const findFailedJobStatus = () => findStatuses().at(1);
+  const findCiBadgeLink = () => findSuccessfulJobStatus().findComponent(CiBadgeLink);
 
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findJobLink = () => findLinks().at(0);
   const findPipelineLink = () => findLinks().at(1);
-  const findRefLink = () => findLinks().at(2);
-  const findCommitLink = () => findLinks().at(3);
+  const findCommitLink = () => findLinks().at(2);
+  const findRefLink = () => findLinks().at(3);
 
   const findSize = () => wrapper.findByTestId('job-artifacts-size');
   const findCreated = () => wrapper.findByTestId('job-artifacts-created');
@@ -209,13 +201,13 @@ describe('JobArtifactsTable component', () => {
     });
 
     it('shows the job status as an icon for a successful job', () => {
-      expect(findSuccessfulJobStatus().findComponent(CiIcon).exists()).toBe(true);
-      expect(findSuccessfulJobStatus().findComponent(GlBadge).exists()).toBe(false);
-    });
-
-    it('shows the job status as a badge for other job statuses', () => {
-      expect(findFailedJobStatus().findComponent(GlBadge).exists()).toBe(true);
-      expect(findFailedJobStatus().findComponent(CiIcon).exists()).toBe(false);
+      expect(findCiBadgeLink().props()).toMatchObject({
+        status: {
+          group: 'success',
+        },
+        size: 'sm',
+        showText: false,
+      });
     });
 
     it('shows links to the job, pipeline, ref, and commit', () => {

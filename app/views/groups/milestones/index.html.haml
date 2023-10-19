@@ -9,13 +9,13 @@
       = render 'shared/milestones/search_form'
       = render 'shared/milestones_sort_dropdown'
       - if can?(current_user, :admin_milestone, @group)
-        = render Pajamas::ButtonComponent.new(href: new_group_milestone_path(@group), variant: :confirm, button_options: { data: { qa_selector: "new_group_milestone_link" }, class: "gl-ml-3" }) do
+        = render Pajamas::ButtonComponent.new(href: new_group_milestone_path(@group), variant: :confirm, button_options: { data: { testid: "new-group-milestone-link" }, class: "gl-ml-3" }) do
           = _('New milestone')
   - if @milestones.blank?
     = render 'shared/empty_states/milestones_tab', learn_more_path: help_page_path('user/project/milestones/index') do
       - if can?(current_user, :admin_milestone, @group)
         .text-center
-          = render Pajamas::ButtonComponent.new(href: new_group_milestone_path(@group), variant: :confirm, button_options: { data: { qa_selector: "new_group_milestone_link" }}) do
+          = render Pajamas::ButtonComponent.new(href: new_group_milestone_path(@group), variant: :confirm, button_options: { data: { testid: "new-group-milestone-link" }}) do
             = _('New milestone')
   - else
     .milestones
@@ -30,5 +30,5 @@
   = render 'shared/empty_states/milestones', learn_more_path: help_page_path('user/project/milestones/index') do
     - if can?(current_user, :admin_milestone, @group)
       .text-center
-        = render Pajamas::ButtonComponent.new(href: new_group_milestone_path(@group), variant: :confirm, button_options: { data: { qa_selector: "new_group_milestone_link" }}) do
+        = render Pajamas::ButtonComponent.new(href: new_group_milestone_path(@group), variant: :confirm, button_options: { data: { testid: "new-group-milestone-link" }}) do
           = _('New milestone')

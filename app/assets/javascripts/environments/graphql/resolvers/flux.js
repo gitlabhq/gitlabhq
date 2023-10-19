@@ -23,7 +23,7 @@ const buildFluxResourceUrl = ({
 };
 
 const getFluxResourceStatus = (configuration, url) => {
-  const { headers } = configuration.baseOptions;
+  const { headers } = configuration;
   const withCredentials = true;
 
   return axios
@@ -37,7 +37,7 @@ const getFluxResourceStatus = (configuration, url) => {
 };
 
 const getFluxResources = (configuration, url) => {
-  const { headers } = configuration.baseOptions;
+  const { headers } = configuration;
   const withCredentials = true;
 
   return axios

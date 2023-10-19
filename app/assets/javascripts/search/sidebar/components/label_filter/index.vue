@@ -225,7 +225,7 @@ export default {
       v-if="isFocused"
       v-outside="closeDropdown"
       data-testid="header-search-dropdown-menu"
-      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-w-full gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0 gl-mt-3 gl-z-index-1"
+      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-w-full gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0 gl-mt-3 gl-z-index-2"
       :class="{
         'gl-max-w-none!': useSidebarNavigation,
         'gl-min-w-full!': useSidebarNavigation,

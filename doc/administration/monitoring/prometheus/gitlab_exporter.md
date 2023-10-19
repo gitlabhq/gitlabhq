@@ -1,6 +1,6 @@
 ---
 stage: Data Stores
-group: Application Performance
+group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Renamed from `GitLab monitor exporter` to `GitLab exporter` in [GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16511).
 
-The [GitLab exporter](https://gitlab.com/gitlab-org/gitlab-exporter) enables you to
+The [GitLab exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter) enables you to
 measure various GitLab metrics pulled from Redis and the database in Linux package
 instances.
 

@@ -16,12 +16,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
 
-  ignore_columns %i[
-    dashboard_notification_limit
-    dashboard_enforcement_limit
-    dashboard_limit_new_namespace_creation_enforcement_date
-  ], remove_with: '16.5', remove_after: '2023-08-22'
-
   ignore_column %i[
     relay_state_domain_allowlist
     in_product_marketing_emails_enabled
@@ -36,7 +30,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     jitsu_project_xid
     jitsu_administrator_email
   ], remove_with: '16.5', remove_after: '2023-09-22'
-  ignore_columns %i[ai_access_token ai_access_token_iv], remove_with: '16.6', remove_after: '2023-10-22'
+  ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.6', remove_after: '2023-10-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -121,6 +115,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
+
+  validates :failed_login_attempts_unlock_period_in_minutes,
+    allow_nil: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :grafana_url,
     system_hook_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({
@@ -269,6 +267,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :max_login_attempts,
+    allow_nil: true,
+    numericality: { only_integer: true, greater_than: 0 }
+
   validates :max_pages_size,
     presence: true,
     numericality: {
@@ -311,7 +313,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     if: :auto_devops_enabled?
 
   validates :enabled_git_access_protocol,
-    inclusion: { in: %w[ssh http], allow_blank: true }
+    inclusion: { in: ->(_) { enabled_git_access_protocol_values }, allow_blank: true }
 
   validates :domain_denylist,
     presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
@@ -657,6 +659,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :throttle_authenticated_deprecated_api_period_in_seconds
     validates :throttle_protected_paths_requests_per_period
     validates :throttle_protected_paths_period_in_seconds
+    validates :project_jobs_api_rate_limit
   end
 
   with_options(numericality: { only_integer: true, greater_than_or_equal_to: 0 }) do
@@ -805,11 +808,12 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :vertex_ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   # Restricting the validation to `on: :update` only to avoid cyclical dependencies with
   # License <--> ApplicationSetting. This method calls a license check when we create
   # ApplicationSetting from defaults which in turn depends on ApplicationSetting record.
-  # The currect default is defined in the `defaults` method so we don't need to validate
+  # The correct default is defined in the `defaults` method so we don't need to validate
   # it here.
   validates :disable_feed_token,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }, on: :update
@@ -832,6 +836,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :gitlab_dedicated_instance,
     allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :math_rendering_limits_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   before_validation :ensure_uuid!
@@ -958,10 +965,22 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     false
   end
 
+  def max_login_attempts_column_exists?
+    self.class.database.cached_column_exists?(:max_login_attempts)
+  end
+
+  def failed_login_attempts_unlock_period_in_minutes_column_exists?
+    self.class.database.cached_column_exists?(:failed_login_attempts_unlock_period_in_minutes)
+  end
+
   private
 
   def self.human_attribute_name(attribute, *options)
     HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
+  end
+
+  def self.enabled_git_access_protocol_values
+    %w[ssh http]
   end
 
   def parsed_grafana_url
@@ -970,7 +989,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   def parsed_kroki_url
     @parsed_kroki_url ||= Gitlab::UrlBlocker.validate!(kroki_url, schemes: %w[http https], enforce_sanitization: true)[0]
-  rescue Gitlab::UrlBlocker::BlockedUrlError => e
+  rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     self.errors.add(
       :kroki_url,
       "is not valid. #{e}"

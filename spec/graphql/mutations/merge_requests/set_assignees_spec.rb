@@ -12,10 +12,12 @@ RSpec.describe Mutations::MergeRequests::SetAssignees do
 
     describe '#resolve' do
       subject do
-        mutation.resolve(project_path: merge_request.project.full_path,
-                         iid: merge_request.iid,
-                         operation_mode: described_class.arguments['operationMode'].default_value,
-                         assignee_usernames: [assignee.username])
+        mutation.resolve(
+          project_path: merge_request.project.full_path,
+          iid: merge_request.iid,
+          operation_mode: described_class.arguments['operationMode'].default_value,
+          assignee_usernames: [assignee.username]
+        )
       end
 
       it_behaves_like 'permission level for merge request mutation is correctly verified'

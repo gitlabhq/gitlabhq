@@ -13,17 +13,9 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = template_project
-          commit.commit_message = 'Add custom issue template'
-          commit.add_files(
-            [
-              {
-                file_path: ".gitlab/issue_templates/#{template_name}.md",
-                content: template_content
-              }
-            ])
-        end
+        create(:commit, project: template_project, commit_message: 'Add custom issue template', actions: [
+          { action: 'create', file_path: ".gitlab/issue_templates/#{template_name}.md", content: template_content }
+        ])
       end
 
       it 'creates an issue via custom template', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347945' do

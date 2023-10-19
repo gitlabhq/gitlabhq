@@ -40,13 +40,10 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     File.write(path, content)
   end
 
-  after do
-    # Reset memoized `definitions` result
-    described_class.instance_variable_set(:@definitions, nil)
-  end
-
-  it 'has all definitons valid' do
-    expect { described_class.definitions }.not_to raise_error
+  it 'has only valid definitions' do
+    described_class.all.each do |definition|
+      expect { definition.validate! }.not_to raise_error
+    end
   end
 
   describe 'not_removed' do
@@ -126,11 +123,13 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     context 'with data_source redis metric' do
       before do
         attributes[:data_source] = 'redis'
-        attributes[:options] = { prefix: 'web_ide', event: 'views_count', include_usage_prefix: false }
+        attributes[:events] = [
+          { name: 'web_ide_viewed' }
+        ]
       end
 
-      it 'returns a ServicePingContext with redis key as event_name' do
-        expect(subject.to_h[:data][:event_name]).to eq('WEB_IDE_VIEWS_COUNT')
+      it 'returns a ServicePingContext with first event as event_name' do
+        expect(subject.to_h[:data][:event_name]).to eq('web_ide_viewed')
       end
     end
 
@@ -181,20 +180,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
 
         described_class.new(path, attributes).validate!
-      end
-
-      context 'with skip_validation' do
-        it 'raise exception if skip_validation: false' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
-
-          described_class.new(path, attributes.merge( { skip_validation: false } )).validate!
-        end
-
-        it 'does not raise exception if has skip_validation: true' do
-          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
-
-          described_class.new(path, attributes.merge( { skip_validation: true } )).validate!
-        end
       end
     end
 
@@ -356,73 +341,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       write_metric(metric2, other_path, other_yaml_content)
 
       is_expected.to eq([attributes, other_attributes].map(&:deep_stringify_keys).to_yaml)
-    end
-  end
-
-  describe '.metric_definitions_changed?', :freeze_time do
-    let(:metric1) { Dir.mktmpdir('metric1') }
-    let(:metric2) { Dir.mktmpdir('metric2') }
-
-    before do
-      allow(Rails).to receive_message_chain(:env, :development?).and_return(is_dev)
-      allow(described_class).to receive(:paths).and_return(
-        [
-          File.join(metric1, '**', '*.yml'),
-          File.join(metric2, '**', '*.yml')
-        ]
-      )
-
-      write_metric(metric1, path, yaml_content)
-      write_metric(metric2, path, yaml_content)
-    end
-
-    after do
-      FileUtils.rm_rf(metric1)
-      FileUtils.rm_rf(metric2)
-    end
-
-    context 'in development', :freeze_time do
-      let(:is_dev) { true }
-
-      it 'has changes on the first invocation' do
-        expect(described_class.metric_definitions_changed?).to be_truthy
-      end
-
-      context 'when no files are changed' do
-        it 'does not have changes on the second invocation' do
-          described_class.metric_definitions_changed?
-
-          expect(described_class.metric_definitions_changed?).to be_falsy
-        end
-      end
-
-      context 'when file is changed' do
-        it 'has changes on the next invocation when more than 3 seconds have passed' do
-          described_class.metric_definitions_changed?
-
-          write_metric(metric1, path, yaml_content)
-          travel_to 10.seconds.from_now
-
-          expect(described_class.metric_definitions_changed?).to be_truthy
-        end
-
-        it 'does not have changes on the next invocation when less than 3 seconds have passed' do
-          described_class.metric_definitions_changed?
-
-          write_metric(metric1, path, yaml_content)
-          travel_to 1.second.from_now
-
-          expect(described_class.metric_definitions_changed?).to be_falsy
-        end
-      end
-
-      context 'in production' do
-        let(:is_dev) { false }
-
-        it 'does not detect changes' do
-          expect(described_class.metric_definitions_changed?).to be_falsy
-        end
-      end
     end
   end
 end

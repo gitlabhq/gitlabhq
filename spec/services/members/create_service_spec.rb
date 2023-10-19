@@ -167,12 +167,15 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     let(:user_id) { '' }
 
     it 'does not add a member' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:log_exception)
+              .with(an_instance_of(described_class::BlankInvitesError), class: described_class.to_s, user_id: user.id)
       expect(Gitlab::EventStore)
         .not_to receive(:publish)
         .with(an_instance_of(Members::MembersAddedEvent))
 
       expect(execute_service[:status]).to eq(:error)
-      expect(execute_service[:message]).to be_present
+      expect(execute_service[:message]).to eq(s_('AddMember|No users specified.'))
       expect(source.users).not_to include member
       expect(Onboarding::Progress.completed?(source.namespace, :user_added)).to be(false)
     end
@@ -182,6 +185,10 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     let(:user_id) { 1.upto(101).to_a.join(',') }
 
     it 'limits the number of users to 100' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:log_exception)
+              .with(an_instance_of(described_class::TooManyInvitesError), class: described_class.to_s, user_id: user.id)
+
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to be_present
       expect(source.users).not_to include member
@@ -294,115 +301,6 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           property: 'net_new_user',
           user: user
         )
-      end
-    end
-  end
-
-  context 'when assigning tasks to be done' do
-    let(:additional_params) do
-      { invite_source: '_invite_source_', tasks_to_be_done: %w(ci code), tasks_project_id: source.id }
-    end
-
-    it 'creates 2 task issues', :aggregate_failures do
-      expect(TasksToBeDone::CreateWorker)
-        .to receive(:perform_async)
-        .with(anything, user.id, [member.id])
-        .once
-        .and_call_original
-      expect { execute_service }.to change { source.issues.count }.by(2)
-
-      expect(source.issues).to all have_attributes(
-        project: source,
-        author: user
-      )
-    end
-
-    context 'when it is an invite by email passed to user_id' do
-      let(:user_id) { 'email@example.org' }
-
-      it 'does not create task issues' do
-        expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
-        execute_service
-      end
-    end
-
-    context 'when passing many user ids' do
-      before do
-        stub_licensed_features(multiple_issue_assignees: false)
-      end
-
-      let(:another_user) { create(:user) }
-      let(:user_id) { [member.id, another_user.id].join(',') }
-
-      it 'still creates 2 task issues', :aggregate_failures do
-        expect(TasksToBeDone::CreateWorker)
-          .to receive(:perform_async)
-          .with(anything, user.id, array_including(member.id, another_user.id))
-          .once
-          .and_call_original
-        expect { execute_service }.to change { source.issues.count }.by(2)
-
-        expect(source.issues).to all have_attributes(
-          project: source,
-          author: user
-        )
-      end
-    end
-
-    context 'when a `tasks_project_id` is missing' do
-      let(:additional_params) do
-        { invite_source: '_invite_source_', tasks_to_be_done: %w(ci code) }
-      end
-
-      it 'does not create task issues' do
-        expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
-        execute_service
-      end
-    end
-
-    context 'when `tasks_to_be_done` are missing' do
-      let(:additional_params) do
-        { invite_source: '_invite_source_', tasks_project_id: source.id }
-      end
-
-      it 'does not create task issues' do
-        expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
-        execute_service
-      end
-    end
-
-    context 'when invalid `tasks_to_be_done` are passed' do
-      let(:additional_params) do
-        { invite_source: '_invite_source_', tasks_project_id: source.id, tasks_to_be_done: %w(invalid_task) }
-      end
-
-      it 'does not create task issues' do
-        expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
-        execute_service
-      end
-    end
-
-    context 'when invalid `tasks_project_id` is passed' do
-      let(:another_project) { create(:project) }
-      let(:additional_params) do
-        { invite_source: '_invite_source_', tasks_project_id: another_project.id, tasks_to_be_done: %w(ci code) }
-      end
-
-      it 'does not create task issues' do
-        expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
-        execute_service
-      end
-    end
-
-    context 'when a member was already invited' do
-      let(:user_id) { create(:project_member, :invited, project: source).invite_email }
-      let(:additional_params) do
-        { invite_source: '_invite_source_', tasks_project_id: source.id, tasks_to_be_done: %w(ci code) }
-      end
-
-      it 'does not create task issues' do
-        expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
-        execute_service
       end
     end
   end

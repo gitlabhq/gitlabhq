@@ -31,23 +31,25 @@ RSpec.describe Types::BaseField, feature_category: :api do
     end
 
     it 'only tests the resolver authorization if it authorizes_object?' do
-      resolver = Class.new
+      resolver = Class.new(Resolvers::BaseResolver)
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
-                                  resolver_class: resolver)
+      field = described_class.new(
+        name: 'test', type: GraphQL::Types::String, null: true, resolver_class: resolver
+      )
 
       expect(field).to be_authorized(object, nil, ctx)
     end
 
     it 'tests the resolver authorization, if provided' do
-      resolver = Class.new do
+      resolver = Class.new(Resolvers::BaseResolver) do
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         authorizes_object!
       end
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
-                                  resolver_class: resolver)
+      field = described_class.new(
+        name: 'test', type: GraphQL::Types::String, null: true, resolver_class: resolver
+      )
 
       expect(resolver).to receive(:authorized?).with(object, ctx).and_return(false)
 
@@ -55,15 +57,19 @@ RSpec.describe Types::BaseField, feature_category: :api do
     end
 
     it 'tests field authorization before resolver authorization, when field auth fails' do
-      resolver = Class.new do
+      resolver = Class.new(Resolvers::BaseResolver) do
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         authorizes_object!
       end
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
-                                  authorize: :foo,
-                                  resolver_class: resolver)
+      field = described_class.new(
+        name: 'test',
+        type: GraphQL::Types::String,
+        null: true,
+        authorize: :foo,
+        resolver_class: resolver
+      )
 
       expect(Ability).to receive(:allowed?).with(current_user, :foo, object).and_return(false)
       expect(resolver).not_to receive(:authorized?)
@@ -72,15 +78,19 @@ RSpec.describe Types::BaseField, feature_category: :api do
     end
 
     it 'tests field authorization before resolver authorization, when field auth succeeds' do
-      resolver = Class.new do
+      resolver = Class.new(Resolvers::BaseResolver) do
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         authorizes_object!
       end
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true,
-                                  authorize: :foo,
-                                  resolver_class: resolver)
+      field = described_class.new(
+        name: 'test',
+        type: GraphQL::Types::String,
+        null: true,
+        authorize: :foo,
+        resolver_class: resolver
+      )
 
       expect(Ability).to receive(:allowed?).with(current_user, :foo, object).and_return(true)
       expect(resolver).to receive(:authorized?).with(object, ctx).and_return(false)
@@ -91,7 +101,7 @@ RSpec.describe Types::BaseField, feature_category: :api do
 
   context 'when considering complexity' do
     let(:resolver) do
-      Class.new(described_class) do
+      Class.new(Resolvers::BaseResolver) do
         def self.resolver_complexity(args, child_complexity:)
           2 if args[:foo]
         end

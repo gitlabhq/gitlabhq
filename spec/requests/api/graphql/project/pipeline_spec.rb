@@ -111,11 +111,14 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
 
   context 'when a job has been retried' do
     let_it_be(:retried) do
-      create(:ci_build, :retried,
-             name: build_job.name,
-             pipeline: pipeline,
-             stage_idx: 0,
-             stage: build_job.stage_name)
+      create(
+        :ci_build,
+        :retried,
+        name: build_job.name,
+        pipeline: pipeline,
+        stage_idx: 0,
+        stage: build_job.stage_name
+      )
     end
 
     let(:fields) do

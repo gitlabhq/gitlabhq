@@ -7,22 +7,22 @@ module QA
         module Component
           class IpLimits < Page::Base
             view 'app/views/admin/application_settings/_ip_limits.html.haml' do
-              element :throttle_unauthenticated_api_checkbox
-              element :throttle_unauthenticated_web_checkbox
-              element :throttle_authenticated_api_checkbox
-              element :throttle_authenticated_web_checkbox
-              element :save_changes_button
+              element 'throttle-unauthenticated-api-checkbox'
+              element 'throttle-unauthenticated-web-checkbox'
+              element 'throttle-authenticated-api-checkbox'
+              element 'throttle-authenticated-web-checkbox'
+              element 'save-changes-button'
             end
 
             def enable_throttles
-              check_element(:throttle_unauthenticated_api_checkbox, true)
-              check_element(:throttle_unauthenticated_web_checkbox, true)
-              check_element(:throttle_authenticated_api_checkbox, true)
-              check_element(:throttle_authenticated_web_checkbox, true)
+              check_element('throttle-unauthenticated-api-checkbox', true)
+              check_element('throttle-unauthenticated-web-checkbox', true)
+              check_element('throttle-authenticated-api-checkbox', true)
+              check_element('throttle-authenticated-web-checkbox', true)
             end
 
             def save_settings
-              click_element :save_changes_button
+              click_element 'save-changes-button'
             end
           end
         end

@@ -7,7 +7,7 @@ Usage:
 @font-face {
   font-family: 'GitLab Sans';
   font-weight: 100 900;
-  font-display: optional;
+  font-display: swap;
   font-style: normal;
   /* stylelint-disable-next-line property-no-unknown */
   font-named-instance: 'Regular';
@@ -17,7 +17,7 @@ Usage:
 @font-face {
   font-family: 'GitLab Sans';
   font-weight: 100 900;
-  font-display: optional;
+  font-display: swap;
   font-style: italic;
   /* stylelint-disable-next-line property-no-unknown */
   font-named-instance: 'Regular';
@@ -33,7 +33,7 @@ Usage:
 @font-face {
   font-family: 'GitLab Mono';
   font-weight: 100 900;
-  font-display: optional;
+  font-display: swap;
   font-style: normal;
   src: font-url('gitlab-mono/GitLabMono.woff2') format('woff2');
 }
@@ -41,7 +41,7 @@ Usage:
 @font-face {
   font-family: 'GitLab Mono';
   font-weight: 100 900;
-  font-display: optional;
+  font-display: swap;
   font-style: italic;
   src: font-url('gitlab-mono/GitLabMono-Italic.woff2') format('woff2');
 }

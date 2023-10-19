@@ -65,7 +65,7 @@ module API
               type: String,
               desc: 'Token for pagination'
           end
-          get 'search', urgency: :low do
+          post 'search', urgency: :low do
             params[:experiment_id] = params[:experiment_ids][0]
 
             max_results = [params[:max_results], 1000].min

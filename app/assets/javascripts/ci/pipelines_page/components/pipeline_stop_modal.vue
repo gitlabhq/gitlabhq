@@ -7,7 +7,7 @@ import CiIcon from '~/vue_shared/components/ci_icon.vue';
 /**
  * Pipeline Stop Modal.
  *
- * Renders the modal used to confirm stopping a pipeline.
+ * Renders the modal used to confirm cancelling a pipeline.
  */
 export default {
   components: {
@@ -22,8 +22,15 @@ export default {
       required: true,
       deep: true,
     },
+    showConfirmationModal: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
+    hasRef() {
+      return !isEmpty(this.pipeline.ref);
+    },
     modalTitle() {
       return sprintf(
         s__('Pipeline|Stop pipeline #%{pipelineId}?'),
@@ -34,10 +41,7 @@ export default {
       );
     },
     modalText() {
-      return s__(`Pipeline|You’re about to stop pipeline #%{pipelineId}.`);
-    },
-    hasRef() {
-      return !isEmpty(this.pipeline.ref);
+      return s__(`Pipeline|You're about to stop pipeline #%{pipelineId}.`);
     },
     primaryProps() {
       return {
@@ -45,10 +49,13 @@ export default {
         attributes: { variant: 'danger' },
       };
     },
-    cancelProps() {
-      return {
-        text: __('Cancel'),
-      };
+    showModal: {
+      get() {
+        return this.showConfirmationModal;
+      },
+      set() {
+        this.$emit('close-modal');
+      },
     },
   },
   methods: {
@@ -56,14 +63,16 @@ export default {
       this.$emit('submit', event);
     },
   },
+  cancelProps: { text: __('Cancel') },
 };
 </script>
 <template>
   <gl-modal
+    v-model="showModal"
     modal-id="confirmation-modal"
     :title="modalTitle"
     :action-primary="primaryProps"
-    :action-cancel="cancelProps"
+    :action-cancel="$options.cancelProps"
     @primary="emitSubmit($event)"
   >
     <p>
@@ -74,7 +83,7 @@ export default {
       </gl-sprintf>
     </p>
 
-    <p v-if="pipeline">
+    <p>
       <ci-icon
         v-if="pipeline.details"
         :status="pipeline.details.status"

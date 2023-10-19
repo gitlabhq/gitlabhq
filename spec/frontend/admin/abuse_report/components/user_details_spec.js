@@ -70,14 +70,6 @@ describe('UserDetails', () => {
       expect(findUserDetailLabel('credit-card-verification')).toBe(USER_DETAILS_I18N.creditCard);
     });
 
-    it('renders the users name', () => {
-      expect(findUserDetail('credit-card-verification').text()).toContain(
-        sprintf(USER_DETAILS_I18N.registeredWith, { ...user.creditCard }),
-      );
-
-      expect(findUserDetail('credit-card-verification').text()).toContain(user.creditCard.name);
-    });
-
     describe('similar credit cards', () => {
       it('renders the number of similar records', () => {
         expect(findUserDetail('credit-card-verification').text()).toContain(

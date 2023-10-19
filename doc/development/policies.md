@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -49,7 +49,7 @@ class FooPolicy < BasePolicy
   # ...
 
   rule { is_public }.enable :read
-  rule { thing }.prevent :read
+  rule { ~thing }.prevent :read
 
   # equivalently,
   rule { is_public }.policy do

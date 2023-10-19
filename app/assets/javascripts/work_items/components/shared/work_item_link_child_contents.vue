@@ -43,9 +43,14 @@ export default {
       type: Boolean,
       required: true,
     },
-    childPath: {
-      type: String,
-      required: true,
+    /*
+      This flag is added to manage between two different work items; Task and Objective/Key result.
+      Status icon is shown on the task while the actual task icon is shown on any Objective/Key result.
+    */
+    showTaskIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -69,7 +74,7 @@ export default {
       return this.childItem.state === STATE_OPEN;
     },
     iconName() {
-      if (this.childItemType === TASK_TYPE_NAME) {
+      if (this.childItemType === TASK_TYPE_NAME && !this.showTaskIcon) {
         return this.isChildItemOpen ? 'issue-open-m' : 'issue-close';
       }
       return WORK_ITEM_NAME_TO_ICON_MAP[this.childItemType];
@@ -78,7 +83,7 @@ export default {
       return this.childItem.workItemType.name;
     },
     iconClass() {
-      if (this.childItemType === TASK_TYPE_NAME) {
+      if (this.childItemType === TASK_TYPE_NAME && !this.showTaskIcon) {
         return this.isChildItemOpen ? 'gl-text-green-500' : 'gl-text-blue-500';
       }
       return '';
@@ -148,9 +153,8 @@ export default {
             />
           </span>
           <gl-link
-            :href="childPath"
-            class="gl-text-truncate gl-font-weight-semibold"
-            data-testid="item-title"
+            :href="childItem.webUrl"
+            class="gl-overflow-break-word gl-font-weight-semibold"
             @click="$emit('click', $event)"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"

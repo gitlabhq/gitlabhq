@@ -50,7 +50,7 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
       expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")
       expect(page).to have_content("moved from #{cross_reference}#{issue.to_reference}")
       expect(page).to have_content(issue.title)
-      expect(page).to have_current_path(%r(#{project_path(new_project)}))
+      expect(page).to have_current_path(%r{#{project_path(new_project)}})
     end
 
     it 'searching project dropdown', :js do

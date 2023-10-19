@@ -452,7 +452,7 @@ RSpec.describe SnippetsController do
 
       post :preview_markdown, params: { id: public_snippet, text: '*Markdown* text' }
 
-      expect(json_response.keys).to match_array(%w(body references))
+      expect(json_response.keys).to match_array(%w[body references])
     end
   end
 end

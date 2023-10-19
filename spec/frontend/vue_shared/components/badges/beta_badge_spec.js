@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { GlBadge } from '@gitlab/ui';
 import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 
@@ -7,7 +7,7 @@ describe('Beta badge component', () => {
 
   const findBadge = () => wrapper.findComponent(GlBadge);
   const createWrapper = (props = {}) => {
-    wrapper = shallowMount(BetaBadge, {
+    wrapper = mount(BetaBadge, {
       propsData: { ...props },
     });
   };

@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Experiment badge component renders the badge 1`] = `
+<div>
+  <a
+    class="badge badge-neutral badge-pill gl-badge gl-cursor-pointer md"
+    href="#"
+    target="_self"
+  >
+    Experiment
+  </a>
+  <div
+    class="gl-popover"
+  >
+    <p>
+      An Experiment is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback.
+    </p>
+    <p
+      class="gl-mb-0"
+    >
+      An Experiment:
+    </p>
+    <ul
+      class="gl-pl-4"
+    >
+      <li>
+        May be unstable.
+      </li>
+      <li>
+        Can cause data loss.
+      </li>
+      <li>
+        Has no support and might not be documented.
+      </li>
+      <li>
+        Can be removed at any time.
+      </li>
+    </ul>
+  </div>
+</div>
+`;

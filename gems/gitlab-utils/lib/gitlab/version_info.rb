@@ -7,9 +7,21 @@ module Gitlab
     attr_reader :major, :minor, :patch
 
     VERSION_REGEX = /(\d+)\.(\d+)\.(\d+)/
+    MILESTONE_REGEX = /\A(\d+)\.(\d+)\z/
     # To mitigate ReDoS, limit the length of the version string we're
     # willing to check
     MAX_VERSION_LENGTH = 128
+
+    InvalidMilestoneError = Class.new(StandardError)
+
+    def self.parse_from_milestone(str)
+      raise InvalidMilestoneError if str.length > MAX_VERSION_LENGTH
+
+      m = MILESTONE_REGEX.match(str)
+      raise InvalidMilestoneError if m.nil?
+
+      VersionInfo.new(m[1].to_i, m[2].to_i)
+    end
 
     def self.parse(str, parse_suffix: false)
       return str if str.is_a?(self)

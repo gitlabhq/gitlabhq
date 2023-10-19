@@ -1,7 +1,7 @@
 ---
 type: reference, dev
 stage: none
-group: Development
+group: unassigned
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
@@ -1423,7 +1423,7 @@ wrapper = mount(SomeComponent, {
 
 #### Testing subscriptions
 
-When testing subscriptions, be aware that default behavior for subscription in `vue-apollo@4` is to re-subscribe and immediatelly issue new request on error (unless value of `skip` restricts us from doing that)
+When testing subscriptions, be aware that default behavior for subscription in `vue-apollo@4` is to re-subscribe and immediately issue new request on error (unless value of `skip` restricts us from doing that)
 
 ```javascript
 import waitForPromises from 'helpers/wait_for_promises';

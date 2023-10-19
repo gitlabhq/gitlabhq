@@ -47,6 +47,7 @@ export default {
       v-else
       title=""
       :svg-path="emptyStateSvgPath"
+      :svg-height="null"
       :description="$options.i18n.noCiDescription"
     />
   </div>

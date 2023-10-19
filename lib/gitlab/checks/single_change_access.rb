@@ -54,6 +54,7 @@ module Gitlab
         Gitlab::Checks::PushCheck.new(self).validate!
         Gitlab::Checks::BranchCheck.new(self).validate!
         Gitlab::Checks::TagCheck.new(self).validate!
+        Gitlab::Checks::Security::PolicyCheck.new(self).validate!
       end
 
       def commits_check

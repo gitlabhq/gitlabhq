@@ -1,0 +1,65 @@
+- name: "Customizable roles"
+  description: |
+    Group Owners or administrators can now create and remove custom roles using the UI under the Roles and Permissions menu. To create a custom role, you add [permissions](https://docs.gitlab.com/ee/user/permissions.html#custom-role-requirements) on top of an existing [base role](https://docs.gitlab.com/ee/user/permissions.html#roles). Currently, there are a limited number of permissions that can be added to a base role, including [granular security permissions](#granular-security-permissions), the ability to approve merge requests, and view code. Each milestone, new permissions will be released that can then be added to existing permissions to create custom roles.
+  stage: Govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/permissions.html#create-a-custom-role'
+  image_url: 'https://img.youtube.com/vi/pSQ3CCdfaAs/hqdefault.jpg'
+  published_at: 2023-09-22
+  release: 16.4
+
+- name: "Group/sub-group level dependency list"
+  stage: Govern
+  description: |
+    When reviewing a list of dependencies, it is important to have an overall view. Managing dependencies at the project level is problematic for large organizations that want to audit their dependencies across all their projects. With this release, you can see all dependencies at the project or group level, including subgroups. This feature is now available by default.
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/dependency_list/'
+  image_url: 'https://about.gitlab.com/images/16_4/groupsubgroup_level_dependency_list.png'
+  published_at: 2023-09-22
+  release: 16.4
+
+- name: "Access clusters locally using your GitLab user identity"
+  stage: Deploy
+  description: |
+   Allowing developers access to Kubernetes clusters requires either developer cloud accounts or third-party authentication tools. This increases the complexity of cloud identity and access management. Now, you can grant developers access to Kubernetes clusters using only their GitLab identities and the agent for Kubernetes. Use traditional Kubernetes RBAC to manage authorizations within your cluster.
+
+   Together with the [OIDC cloud authentication](https://docs.gitlab.com/ee/ci/cloud_services/) offering in GitLab pipelines, these features allow GitLab users to access cloud resources without dedicated cloud accounts without jeopardizing security and compliance.
+
+   In this first iteration of cluster access, you must [manage your Kubernetes configuration manually](https://docs.gitlab.com/ee/user/clusters/agent/user_access.html). [Issue 7288](https://gitlab.com/gitlab-org/cli/-/issues/7288) proposes to simplify setup by extending the GitLab CLI with related commands.
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/clusters/agent/user_access.html#access-a-cluster-with-the-kubernetes-api'
+  image_url: 'https://img.youtube.com/vi/i9rLhmG7Aog/hqdefault.jpg'
+  published_at: 2023-09-22
+  release: 16.4
+
+- name: "Create workspaces for private projects"
+  stage: Create
+  description: |
+    Previously, it was not possible to [create a workspace](https://docs.gitlab.com/ee/user/workspace/configuration.html#set-up-a-workspace) for a private project. To clone a private project, you could only authenticate yourself after you created the workspace.
+
+    With GitLab 16.4, you can create a workspace for any public or private project. When you create a workspace, you get a personal access token to use with the workspace. With this token, you can clone private projects and perform Git operations without any additional configuration or authentication.
+  available_in: [Premium, Ultimate]
+  self-managed: true
+  gitlab-com: true
+  documentation_link: 'https://docs.gitlab.com/ee/user/workspace/#personal-access-token'
+  image_url: 'https://about.gitlab.com/images/16_4/create-workspace-from-private-repo.png'
+  published_at: 2023-09-22
+  release: 16.4
+
+- name: "`id_tokens` is now a global CI/CD configuration keyword"
+  stage: Verify
+  description: |
+    From GitLab 16.4, you can set `id_tokens` as a global default value in `.gitlab-ci.yml`. Use this feature to automatically set the `id_token` configuration to every job. Jobs that use the `secrets` keyword no longer require you to set up a separate `id_token`.
+  available_in: [Free, Premium, Ultimate]
+  self-managed: true
+  gitlab-com: true
+  documentation_link: 'https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens'
+  image_url: 'https://about.gitlab.com/images/16_4/id_tokens_img.png'
+  published_at: 2023-09-22
+  release: 16.4

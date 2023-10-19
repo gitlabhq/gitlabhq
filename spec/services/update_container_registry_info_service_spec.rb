@@ -53,7 +53,7 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
 
       it 'uses a token with no access permissions' do
         expect(Auth::ContainerRegistryAuthenticationService)
-          .to receive(:access_token).with([], []).and_return(token)
+          .to receive(:access_token).with({}).and_return(token)
         expect(ContainerRegistry::Client)
           .to receive(:new).with(api_url, token: token).and_return(client)
 
@@ -72,13 +72,14 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
         expect(application_settings.container_registry_vendor).to be_blank
         expect(application_settings.container_registry_version).to be_blank
         expect(application_settings.container_registry_features).to eq([])
+        expect(application_settings.container_registry_db_enabled).to be_falsey
       end
     end
 
     context 'when able to detect the container registry type' do
       context 'when using the GitLab container registry' do
         it 'updates application settings accordingly' do
-          stub_registry_info(vendor: 'gitlab', version: '2.9.1-gitlab', features: %w[a b c])
+          stub_registry_info(vendor: 'gitlab', version: '2.9.1-gitlab', features: %w[a b c], db_enabled: true)
           stub_supports_gitlab_api(true)
 
           subject
@@ -88,12 +89,13 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
           expect(application_settings.container_registry_version).to eq('2.9.1-gitlab')
           expect(application_settings.container_registry_features)
             .to match_array(%W[a b c #{ContainerRegistry::GitlabApiClient::REGISTRY_GITLAB_V1_API_FEATURE}])
+          expect(application_settings.container_registry_db_enabled).to be_truthy
         end
       end
 
       context 'when using a third-party container registry' do
         it 'updates application settings accordingly' do
-          stub_registry_info(vendor: 'other', version: nil, features: nil)
+          stub_registry_info(vendor: 'other', version: nil, features: nil, db_enabled: false)
           stub_supports_gitlab_api(false)
 
           subject
@@ -102,6 +104,7 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
           expect(application_settings.container_registry_vendor).to eq('other')
           expect(application_settings.container_registry_version).to be_blank
           expect(application_settings.container_registry_features).to eq([])
+          expect(application_settings.container_registry_db_enabled).to be_falsey
         end
       end
     end
@@ -109,7 +112,7 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
 
   def stub_access_token
     allow(Auth::ContainerRegistryAuthenticationService)
-      .to receive(:access_token).with([], []).and_return('foo')
+      .to receive(:access_token).with({}).and_return('foo')
   end
 
   def stub_registry_info(output)

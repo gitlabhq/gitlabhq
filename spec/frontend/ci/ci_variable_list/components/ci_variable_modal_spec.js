@@ -12,12 +12,10 @@ import {
   ENVIRONMENT_SCOPE_LINK_TITLE,
   AWS_TIP_TITLE,
   AWS_TIP_MESSAGE,
-  groupString,
   instanceString,
-  projectString,
   variableOptions,
 } from '~/ci/ci_variable_list/constants';
-import { mockEnvs, mockVariablesWithScopes, mockVariablesWithUniqueScopes } from '../mocks';
+import { mockVariablesWithScopes } from '../mocks';
 import ModalStub from '../stubs';
 
 describe('Ci variable modal', () => {
@@ -46,7 +44,6 @@ describe('Ci variable modal', () => {
     areScopedVariablesAvailable: true,
     environments: [],
     hideEnvironmentScope: false,
-    hasEnvScopeQuery: false,
     mode: ADD_VARIABLE_ACTION,
     selectedVariable: {},
     variables: [],
@@ -351,42 +348,6 @@ describe('Ci variable modal', () => {
 
           expect(link.attributes('title')).toBe(ENVIRONMENT_SCOPE_LINK_TITLE);
           expect(link.attributes('href')).toBe(defaultProvide.environmentScopeLink);
-        });
-
-        describe('when query for envioronment scope exists', () => {
-          beforeEach(() => {
-            createComponent({
-              props: {
-                environments: mockEnvs,
-                hasEnvScopeQuery: true,
-                variables: mockVariablesWithUniqueScopes(projectString),
-              },
-            });
-          });
-
-          it('does not merge environment scope sources', () => {
-            const expectedLength = mockEnvs.length;
-
-            expect(findCiEnvironmentsDropdown().props('environments')).toHaveLength(expectedLength);
-          });
-        });
-
-        describe('when feature flag is disabled', () => {
-          const mockGroupVariables = mockVariablesWithUniqueScopes(groupString);
-          beforeEach(() => {
-            createComponent({
-              props: {
-                environments: mockEnvs,
-                variables: mockGroupVariables,
-              },
-            });
-          });
-
-          it('merges environment scope sources', () => {
-            const expectedLength = mockGroupVariables.length + mockEnvs.length;
-
-            expect(findCiEnvironmentsDropdown().props('environments')).toHaveLength(expectedLength);
-          });
         });
       });
 

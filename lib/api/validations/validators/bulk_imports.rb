@@ -6,26 +6,14 @@ module API
       module BulkImports
         class DestinationSlugPath < Grape::Validations::Validators::Base
           def validate_param!(attr_name, params)
-            if Feature.disabled?(:restrict_special_characters_in_namespace_path)
-              return if params[attr_name] =~ Gitlab::Regex.group_path_regex
+            return if params[attr_name] =~ Gitlab::Regex.oci_repository_path_regex
 
-              raise Grape::Exceptions::Validation.new(
-                params: [@scope.full_name(attr_name)],
-                message: "#{Gitlab::Regex.group_path_regex_message} " \
-                         "It can only contain alphanumeric characters, periods, underscores, and dashes. " \
-                         "For example, 'destination_namespace' not 'destination/namespace'"
-              )
-            else
-              return if params[attr_name] =~ Gitlab::Regex.oci_repository_path_regex
-
-              raise Grape::Exceptions::Validation.new(
-                params: [@scope.full_name(attr_name)],
-                message: "#{Gitlab::Regex.oci_repository_path_regex_message} " \
-                         "It can only contain alphanumeric characters, periods, underscores, and dashes. " \
-                         "For example, 'destination_namespace' not 'destination/namespace'"
-              )
-
-            end
+            raise Grape::Exceptions::Validation.new(
+              params: [@scope.full_name(attr_name)],
+              message: "#{Gitlab::Regex.oci_repository_path_regex_message} " \
+                       "It can only contain alphanumeric characters, periods, underscores, and dashes. " \
+                       "For example, 'destination_namespace' not 'destination/namespace'"
+            )
           end
         end
 

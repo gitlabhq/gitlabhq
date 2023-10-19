@@ -3,21 +3,35 @@ import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { TRACKING_CATEGORIES } from '~/ci/constants';
+import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
-import eventHub from '~/ci/event_hub';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
-import PipelineStopModal from '../pipelines_page/components/pipeline_stop_modal.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
-import PipelinesStatusBadge from '../pipelines_page/components/pipelines_status_badge.vue';
+import PipelineStatusBadge from '../pipelines_page/components/pipeline_status_badge.vue';
 
 const HIDE_TD_ON_MOBILE = 'gl-display-none! gl-lg-display-table-cell!';
 const DEFAULT_TH_CLASSES =
   'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
+
+/**
+ * Pipelines Table
+ *
+ * Presentational component of a table of pipelines. This component does not
+ * fetch the list of pipelines and instead expects it as a prop.
+ * GraphQL actions for pipelines, such as retrying, canceling, etc.
+ * are handled within this component.
+ *
+ * Use this `legacy_pipelines_table_wrapper` if you need a fully functional REST component.
+ *
+ * IMPORTANT: When using this component, make sure to handle the following events:
+ * 1- @refresh-pipeline-table
+ * 2- @cancel-pipeline
+ * 3- @retry-pipeline
+ *
+ */
 
 export default {
   components: {
@@ -25,17 +39,16 @@ export default {
     LegacyPipelineMiniGraph,
     PipelineFailedJobsWidget,
     PipelineOperations,
-    PipelinesStatusBadge,
-    PipelineStopModal,
+    PipelineStatusBadge,
     PipelineTriggerer,
     PipelineUrl,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  mixins: [Tracking.mixin()],
   inject: {
-    withFailedJobsDetails: {
+    useFailedJobsWidget: {
       default: false,
     },
   },
@@ -44,37 +57,21 @@ export default {
       type: Array,
       required: true,
     },
-    pipelineScheduleUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
     updateGraphDropdown: {
       type: Boolean,
       required: false,
       default: false,
     },
-    viewType: {
+    pipelineIdType: {
       type: String,
-      required: true,
+      required: false,
+      default: PIPELINE_ID_KEY,
+      validator(value) {
+        return value === PIPELINE_IID_KEY || value === PIPELINE_ID_KEY;
+      },
     },
-    pipelineKeyOption: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      pipelineId: 0,
-      pipeline: {},
-      endpoint: '',
-      cancelingPipeline: null,
-    };
   },
   computed: {
-    showFailedJobsWidget() {
-      return this.glFeatures.ciJobFailuresInMr;
-    },
     tableFields() {
       return [
         {
@@ -119,10 +116,10 @@ export default {
       ];
     },
     tdClasses() {
-      return this.withFailedJobsDetails ? 'gl-pb-0! gl-border-none!' : 'pl-p-5!';
+      return this.useFailedJobsWidget ? 'gl-pb-0! gl-border-none!' : 'pl-p-5!';
     },
     pipelinesWithDetails() {
-      if (this.withFailedJobsDetails) {
+      if (this.useFailedJobsWidget) {
         return this.pipelines.map((p) => {
           return { ...p, _showDetails: true };
         });
@@ -130,17 +127,6 @@ export default {
 
       return this.pipelines;
     },
-  },
-  watch: {
-    pipelines() {
-      this.cancelingPipeline = null;
-    },
-  },
-  created() {
-    eventHub.$on('openConfirmationModal', this.setModalData);
-  },
-  beforeDestroy() {
-    eventHub.$off('openConfirmationModal', this.setModalData);
   },
   methods: {
     getDownstreamPipelines(pipeline) {
@@ -151,16 +137,19 @@ export default {
       return cleanLeadingSeparator(item.project.full_path);
     },
     failedJobsCount(pipeline) {
-      return pipeline?.failed_builds?.length || 0;
+      // Remove `pipeline?.failed_builds?.length` when we remove `ci_fix_performance_pipelines_json_endpoint`.
+      return pipeline?.failed_builds_count || pipeline?.failed_builds?.length || 0;
     },
-    setModalData(data) {
-      this.pipelineId = data.pipeline.id;
-      this.pipeline = data.pipeline;
-      this.endpoint = data.endpoint;
+    onRefreshPipelinesTable() {
+      this.$emit('refresh-pipelines-table');
     },
-    onSubmit() {
-      eventHub.$emit('postAction', this.endpoint);
-      this.cancelingPipeline = this.pipelineId;
+    onRetryPipeline(pipeline) {
+      // This emit is only used by the `legacy_pipelines_table_wrapper`.
+      this.$emit('retry-pipeline', pipeline);
+    },
+    onCancelPipeline(pipeline) {
+      // This emit is only used by the `legacy_pipelines_table_wrapper`.
+      this.$emit('cancel-pipeline', pipeline);
     },
     trackPipelineMiniGraph() {
       this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
@@ -168,7 +157,6 @@ export default {
   },
   TBODY_TR_ATTR: {
     'data-testid': 'pipeline-table-row',
-    'data-qa-selector': 'pipeline_row_container',
   },
 };
 </script>
@@ -191,14 +179,13 @@ export default {
       </template>
 
       <template #cell(status)="{ item }">
-        <pipelines-status-badge :pipeline="item" :view-type="viewType" />
+        <pipeline-status-badge :pipeline="item" />
       </template>
 
       <template #cell(pipeline)="{ item }">
         <pipeline-url
           :pipeline="item"
-          :pipeline-schedule-url="pipelineScheduleUrl"
-          :pipeline-key="pipelineKeyOption.value"
+          :pipeline-id-type="pipelineIdType"
           ref-color="gl-text-black-normal"
         />
       </template>
@@ -219,12 +206,17 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <pipeline-operations :pipeline="item" :canceling-pipeline="cancelingPipeline" />
+        <pipeline-operations
+          :pipeline="item"
+          @cancel-pipeline="onCancelPipeline"
+          @refresh-pipelines-table="onRefreshPipelinesTable"
+          @retry-pipeline="onRetryPipeline"
+        />
       </template>
 
       <template #row-details="{ item }">
         <pipeline-failed-jobs-widget
-          v-if="showFailedJobsWidget"
+          v-if="useFailedJobsWidget"
           :failed-jobs-count="failedJobsCount(item)"
           :is-pipeline-active="item.active"
           :pipeline-iid="item.iid"
@@ -234,7 +226,5 @@ export default {
         />
       </template>
     </gl-table-lite>
-
-    <pipeline-stop-modal :pipeline="pipeline" @submit="onSubmit" />
   </div>
 </template>

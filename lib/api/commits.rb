@@ -4,6 +4,7 @@ require 'mime/types'
 module API
   class Commits < ::API::Base
     include PaginationParams
+    include Helpers::Unidiff
 
     feature_category :source_code_management
 
@@ -274,6 +275,7 @@ module API
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
         use :pagination
+        use :with_unidiff
       end
       get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
         commit = user_project.commit(params[:sha])
@@ -282,7 +284,7 @@ module API
 
         raw_diffs = ::Kaminari.paginate_array(commit.diffs(expanded: true).diffs.to_a)
 
-        present paginate(raw_diffs), with: Entities::Diff
+        present paginate(raw_diffs), with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
       end
 
       desc "Get a commit's comments" do

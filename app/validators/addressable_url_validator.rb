@@ -84,7 +84,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     value = strip_value!(record, attribute, value)
 
     Gitlab::UrlBlocker.validate!(value, **blocker_args)
-  rescue Gitlab::UrlBlocker::BlockedUrlError => e
+  rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     record.errors.add(attribute, options.fetch(:blocked_message) % { exception_message: e.message })
   end
 

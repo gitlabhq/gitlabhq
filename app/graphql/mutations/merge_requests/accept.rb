@@ -7,7 +7,7 @@ module Mutations
       authorize :accept_merge_request
       description <<~DESC
         Accepts a merge request.
-        When accepted, the source branch will be merged into the target branch, either
+        When accepted, the source branch will be scheduled to merge into the target branch, either
         immediately if possible, or using one of the automatic merge strategies.
       DESC
 
@@ -59,7 +59,7 @@ module Mutations
                    service = AutoMergeService.new(project, current_user, merge_params)
                    service.execute(merge_request, merge_params[:auto_merge_strategy])
                  else
-                   merge_service.execute(merge_request)
+                   merge_request.merge_async(current_user.id, merge_params)
                  end
 
         {

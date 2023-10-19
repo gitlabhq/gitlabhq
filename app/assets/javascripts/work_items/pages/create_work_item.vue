@@ -10,6 +10,7 @@ import {
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
+import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
 import ItemTitle from '../components/item_title.vue';
@@ -22,7 +23,7 @@ export default {
     ItemTitle,
     GlFormSelect,
   },
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     initialTitle: {
       type: String,
@@ -94,7 +95,7 @@ export default {
             const { workItem } = workItemCreate;
 
             store.writeQuery({
-              query: workItemByIidQuery,
+              query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
               variables: {
                 fullPath: this.fullPath,
                 iid: workItem.iid,

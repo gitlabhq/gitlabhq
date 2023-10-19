@@ -4,6 +4,7 @@ import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import { AT_WHO_ACTIVE_CLASS } from '~/gfm_auto_complete';
 import eventHub from '~/environments/event_hub';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -75,14 +76,8 @@ describe('issue_note_form component', () => {
     });
   });
 
-  it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
-    createComponentWrapper({}, { contentEditorOnIssues: false });
-
-    expect(wrapper.text()).not.toContain('Switch to rich text editing');
-  });
-
-  it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
-    createComponentWrapper({}, { contentEditorOnIssues: true });
+  it('shows content editor switcher', () => {
+    createComponentWrapper();
 
     expect(wrapper.text()).toContain('Switch to rich text editing');
   });
@@ -237,6 +232,21 @@ describe('issue_note_form component', () => {
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
           label: 'markdown_editor',
           property: 'Issue_note',
+        });
+      });
+
+      describe('when discussion is confidential', () => {
+        beforeEach(() => {
+          createComponentWrapper({
+            discussion: {
+              ...discussionMock,
+              confidential: true,
+            },
+          });
+        });
+
+        it('passes correct confidentiality to CommentFieldLayout', () => {
+          expect(wrapper.findComponent(CommentFieldLayout).props('isInternalNote')).toBe(true);
         });
       });
     });

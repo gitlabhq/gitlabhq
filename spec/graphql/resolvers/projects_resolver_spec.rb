@@ -6,11 +6,11 @@ RSpec.describe Resolvers::ProjectsResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
-    subject { resolve(described_class, obj: nil, args: filters, ctx: { current_user: current_user }) }
+    subject { resolve(described_class, obj: nil, args: filters, ctx: { current_user: current_user }).items }
 
     let_it_be(:group) { create(:group, name: 'public-group') }
     let_it_be(:private_group) { create(:group, name: 'private-group') }
-    let_it_be(:project) { create(:project, :public, topic_list: %w(ruby javascript)) }
+    let_it_be(:project) { create(:project, :public, topic_list: %w[ruby javascript]) }
     let_it_be(:other_project) { create(:project, :public) }
     let_it_be(:group_project) { create(:project, :public, group: group) }
     let_it_be(:private_project) { create(:project, :private) }
@@ -68,7 +68,7 @@ RSpec.describe Resolvers::ProjectsResolver do
         end
 
         context 'when topics filter is provided' do
-          let(:filters) { { topics: %w(ruby) } }
+          let(:filters) { { topics: %w[ruby] } }
 
           it 'returns matching project' do
             is_expected.to contain_exactly(project)
@@ -148,7 +148,7 @@ RSpec.describe Resolvers::ProjectsResolver do
         end
 
         context 'when topics filter is provided' do
-          let(:filters) { { topics: %w(ruby) } }
+          let(:filters) { { topics: %w[ruby] } }
 
           it 'returns matching project' do
             is_expected.to contain_exactly(project)

@@ -66,10 +66,8 @@ describe('WorkItemMilestone component', () => {
         [projectMilestonesQuery, searchQueryHandler],
         [updateWorkItemMutation, mutationHandler],
       ]),
-      provide: {
-        fullPath: 'full-path',
-      },
       propsData: {
+        fullPath: 'full-path',
         canUpdate,
         workItemMilestone: milestone,
         workItemId,

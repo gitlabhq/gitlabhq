@@ -493,7 +493,11 @@ export default {
     </div>
     <!-- Get Started with ET -->
     <div v-else>
-      <gl-empty-state :title="__('Get started with error tracking')" :svg-path="illustrationPath">
+      <gl-empty-state
+        :title="__('Get started with error tracking')"
+        :svg-path="illustrationPath"
+        :svg-height="null"
+      >
         <template #description>
           <div>
             <span>{{ __('Monitor your errors directly in GitLab.') }}</span>

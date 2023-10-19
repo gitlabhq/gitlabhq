@@ -80,11 +80,11 @@ module GraphqlHelpers
     # All resolution goes through fields, so we need to create one here that
     # uses our resolver. Thankfully, apart from the field name, resolvers
     # contain all the configuration needed to define one.
-    field_options = resolver_class.field_options.merge(
+    field = ::Types::BaseField.new(
+      resolver_class: resolver_class,
       owner: resolver_parent,
       name: 'field_value'
     )
-    field = ::Types::BaseField.new(**field_options)
 
     # All mutations accept a single `:input` argument. Wrap arguments here.
     args = { input: args } if resolver_class <= ::Mutations::BaseMutation && !args.key?(:input)
@@ -221,6 +221,7 @@ module GraphqlHelpers
   def resolver_instance(resolver_class, obj: nil, ctx: {}, field: nil, schema: GitlabSchema, subscription_update: false)
     if ctx.is_a?(Hash)
       q = double('Query', schema: schema, subscription_update?: subscription_update, warden: GraphQL::Schema::Warden::PassThruWarden)
+      allow(q).to receive(:after_lazy) { |value, &block| schema.after_lazy(value, &block) }
       ctx = GraphQL::Query::Context.new(query: q, object: obj, values: ctx)
     end
 

@@ -2,6 +2,7 @@ import { GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { DEFAULT_FIELDS_ADMIN } from '~/ci/admin/jobs_table/constants';
 import ProjectCell from '~/ci/admin/jobs_table/components/cells/project_cell.vue';
@@ -47,11 +48,11 @@ describe('Jobs Table', () => {
       expect(findCiBadgeLink().exists()).toBe(true);
     });
 
-    it('displays the job stage and name', () => {
+    it('displays the job stage, id and name', () => {
       const [firstJob] = mockJobsNodes;
 
-      expect(findJobStage().text()).toBe(firstJob.stage.name);
-      expect(findJobName().text()).toBe(firstJob.name);
+      expect(findJobStage().text()).toBe(`Stage: ${firstJob.stage.name}`);
+      expect(findJobName().text()).toBe(`#${getIdFromGraphQLId(firstJob.id)}: ${firstJob.name}`);
     });
 
     it('displays the coverage for only jobs that have coverage', () => {

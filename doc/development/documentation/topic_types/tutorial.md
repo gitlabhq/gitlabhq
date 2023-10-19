@@ -1,6 +1,6 @@
 ---
 stage: none
-group: Style Guide
+group: Documentation Guidelines
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -25,7 +25,7 @@ In general, you might consider using a tutorial when:
   ideal to duplicate content that is available elsewhere, it's worse to force the reader to
   leave the page to find what they need.
 
-## Tutorial file name and location
+## Tutorial filename and location
 
 For tutorial Markdown files, you can either:
 
@@ -50,9 +50,9 @@ To create a website:
 1. [Do the first task](#do-the-first-task)
 1. [Do the second task](#do-the-second-task)
 
-## Prerequisites
+## Before you begin
 
-This topic is optional.
+This section is optional.
 
 - Thing 1
 - Thing 2
@@ -85,7 +85,7 @@ An example of a tutorial that follows this format is
 Start the page title with `Tutorial:` followed by an active verb, like `Tutorial: Create a website`.
 
 In the left nav, use the full page title. Do not abbreviate it.
-Put the text in quotes so the pipeline will pass. For example,
+Put the text in quotes so the pipeline succeeds. For example,
 `"Tutorial: Make your first Git commit"`.
 
 On [the **Learn GitLab with tutorials** page](../../../tutorials/index.md),

@@ -129,25 +129,25 @@ RSpec.describe AuditEvents::BuildService, feature_category: :audit_events do
       context 'when author is missing' do
         let(:author) { nil }
 
-        it { expect { service }.to raise_error(described_class::MissingAttributeError) }
+        it { expect { service }.to raise_error(described_class::MissingAttributeError, "author") }
       end
 
       context 'when scope is missing' do
         let(:scope) { nil }
 
-        it { expect { service }.to raise_error(described_class::MissingAttributeError) }
+        it { expect { service }.to raise_error(described_class::MissingAttributeError, "scope") }
       end
 
       context 'when target is missing' do
         let(:target) { nil }
 
-        it { expect { service }.to raise_error(described_class::MissingAttributeError) }
+        it { expect { service }.to raise_error(described_class::MissingAttributeError, "target") }
       end
 
       context 'when message is missing' do
         let(:message) { nil }
 
-        it { expect { service }.to raise_error(described_class::MissingAttributeError) }
+        it { expect { service }.to raise_error(described_class::MissingAttributeError, "message") }
       end
     end
   end

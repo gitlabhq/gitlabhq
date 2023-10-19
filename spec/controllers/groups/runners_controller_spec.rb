@@ -49,7 +49,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when the user is a maintainer' do
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -64,7 +64,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when the user is an owner' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 
@@ -79,7 +79,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is not maintainer' do
-      before do
+      before_all do
         group.add_developer(user)
       end
 
@@ -89,7 +89,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
 
   describe '#new' do
     context 'when user is owner' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 
@@ -102,7 +102,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is not owner' do
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -118,7 +118,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     subject(:register) { get :register, params: { group_id: group, id: new_runner } }
 
     context 'when user is owner' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 
@@ -145,7 +145,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is not owner' do
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -163,7 +163,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
 
   describe '#show' do
     context 'when user is maintainer' do
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -190,7 +190,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is not maintainer' do
-      before do
+      before_all do
         group.add_developer(user)
       end
 
@@ -216,7 +216,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
 
   describe '#edit' do
     context 'when user is owner' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 
@@ -248,7 +248,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is maintainer' do
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -273,7 +273,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is not maintainer' do
-      before do
+      before_all do
         group.add_developer(user)
       end
 
@@ -329,7 +329,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is owner' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 
@@ -353,7 +353,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is maintainer' do
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -377,7 +377,7 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'when user is not maintainer' do
-      before do
+      before_all do
         group.add_developer(user)
       end
 

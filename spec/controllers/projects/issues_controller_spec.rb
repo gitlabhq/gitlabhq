@@ -191,7 +191,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         it 'redirects to work item page using iid' do
           make_request
 
-          expect(response).to redirect_to(project_work_items_path(project, task.iid, query))
+          expect(response).to redirect_to(project_work_item_path(project, task.iid, query))
         end
       end
 
@@ -849,7 +849,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           update_issue(issue_params: { assignee_ids: [assignee.id] })
 
           expect(json_response['assignees'].first.keys)
-            .to include(*%w(id name username avatar_url state web_url))
+            .to include(*%w[id name username avatar_url state web_url])
         end
       end
 

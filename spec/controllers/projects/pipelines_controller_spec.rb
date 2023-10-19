@@ -216,7 +216,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     end
 
     def create_all_pipeline_types
-      %w(pending running success failed canceled).each_with_index do |status, index|
+      %w[pending running success failed canceled].each_with_index do |status, index|
         create_pipeline(status, project.commit("HEAD~#{index}"))
       end
 
@@ -821,7 +821,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         subject { get :charts, params: request_params, format: :html }
 
         let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }
-        let(:action) { tab[:event] }
+        let(:event) { tab[:event] }
         let(:namespace) { project.namespace }
       end
     end

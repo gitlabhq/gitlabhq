@@ -36,7 +36,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline do
 
   subject(:pipeline) { described_class.new(context) }
 
-  describe '#run' do
+  describe '#run', :clean_gitlab_redis_cache do
     before do
       group.add_owner(user)
       issue_with_index = [issue, 0]

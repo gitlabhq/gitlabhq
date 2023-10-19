@@ -5,7 +5,7 @@ module Gitlab
     module Status
       class Success < Status::Core
         def text
-          s_('CiStatusText|passed')
+          s_('CiStatusText|Passed')
         end
 
         def label

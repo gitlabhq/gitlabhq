@@ -84,6 +84,10 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## 16.3.0
 
+- **Update to GitLab 16.3.5 or later**. This avoids [issue 425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971) that causes an excessive use of database disk space for GitLab 16.3.3 and 16.3.4.
+
+- A unique index was added to ensure that there’s no duplicate NPM packages in the database. If you have duplicate NPM packages, you need to upgrade to 16.1 first, or you are likely to run into the following error: `PG::UniqueViolation: ERROR:  could not create unique index "idx_packages_on_project_id_name_version_unique_when_npm"`.
+
 - For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)
   introduced a hard limit of 8192 bits for RSA keys. In the context of Go applications at GitLab, RSA keys can be configured for:
 
@@ -95,6 +99,19 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
   for any of the applications above before
   upgrading.
+
+- A `BackfillCiPipelineVariablesForPipelineIdBigintConversion` background migration is finalized with
+  the `EnsureAgainBackfillForCiPipelineVariablesPipelineIdIsFinished` post-deploy migration.
+  GitLab 16.2.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+  [backfill bigint `pipeline_id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123132). This
+  migration may take a long time to complete on larger GitLab instances (4 hours to process 50 million rows reported in one case).
+  To avoid a prolonged upgrade downtime, make sure the migration has completed successfully before upgrading to 16.3.
+
+  You can check the size of the `ci_pipeline_variables` table in the [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console):
+
+  ```sql
+  select count(*) from ci_pipeline_variables;
+  ```
 
 ### Linux package installations
 
@@ -125,8 +142,10 @@ Specific information applies to installations using Geo:
 
 - Git pulls against a secondary Geo site are being proxied to the primary Geo site even when that secondary site is up to date. You are impacted if you are using Geo to accelerate remote users who make Git pull requests against a secondary Geo site.
 
-  - Impacted versions: 16.3.0 - 16.3.2
-  - Versions containing fix: 16.4.0
+  - Impacted versions:
+    - 16.3.0 to 16.3.3
+  - Versions containing fix:
+    - 16.3.4 and later
 
   For more information, see [issue 425224](https://gitlab.com/gitlab-org/gitlab/-/issues/425224).
 
@@ -159,9 +178,28 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 421629](https://gitlab.com/gitlab-org/gitlab/-/issues/421629).
 
+- You might encounter the following error after upgrading to GitLab 16.2 or later:
+
+  ```plaintext
+  PG::NotNullViolation: ERROR:  null value in column "source_partition_id" of relation "ci_sources_pipelines" violates not-null constraint
+  ```
+
+  Sidekiq and Puma processes must be restarted to resolve this issue.
+
 ### Linux package installations
 
 Specific information applies to Linux package installations:
+
+- As of GitLab 16.2, PostgreSQL 13.11 and 14.8 are both shipped with the Linux package.
+  During a package upgrade, the database isn't upgraded to PostgreSQL 14. If you
+  want to upgrade to PostgreSQL 14, you must do it manually:
+
+  ```shell
+  sudo gitlab-ctl pg-upgrade -V 14
+  ```
+
+  PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/epics/9065)
+  for future releases.
 
 - In 16.2, we are upgrading Redis from 6.2.11 to 7.0.12. This upgrade is expected to be fully backwards compatible.
 
@@ -197,6 +235,19 @@ Specific information applies to installations using Geo:
   [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
   migration may take multiple days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 16.1.0.
+- GitLab 16.1.0 includes a [batched background migration](../background_migrations.md#batched-background-migrations) `MarkDuplicateNpmPackagesForDestruction` to mark duplicate NPM packages for destruction. Make sure the migration has completed successfully before upgrading to 16.3.0 or later.
+- A `BackfillCiPipelineVariablesForBigintConversion` background migration is finalized with
+  the `EnsureBackfillBigintIdIsCompleted` post-deploy migration.
+  GitLab 16.0.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+  [backfill bigint `id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118878). This
+  migration may take a long time to complete on larger GitLab instances (4 hours to process 50 million rows reported in one case).
+  To avoid a prolonged upgrade downtime, make sure the migration has completed successfully before upgrading to 16.1.
+
+  You can check the size of the `ci_pipeline_variables` table in the [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console):
+
+  ```sql
+  select count(*) from ci_pipeline_variables;
+  ```
 
 ### Self-compiled installations
 
@@ -261,10 +312,9 @@ Specific information applies to Linux package installations:
   Prior to upgrading, administrators of Linux package installations must ensure the installation is using
   [PostgreSQL 13](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
-- Bundled Grafana is deprecated and is no longer supported. It is removed in GitLab 16.3.
-
-  For more information, see [deprecation notes](../../administration/monitoring/performance/grafana_configuration.md#deprecation-of-bundled-grafana).
-
+- Grafana that was bundled with GitLab is deprecated and is no longer supported. It is
+  [removed](../../administration/monitoring/performance/grafana_configuration.md#grafana-bundled-with-gitlab-removed) in
+  GitLab 16.3.
 - This upgrades `openssh-server` to `1:8.9p1-3`.
 
   Using `ssh-keyscan -t rsa` with older OpenSSH clients to obtain public key information is no longer viable because of
@@ -304,7 +354,7 @@ configuration. Some `gitaly['..']` configuration options continue to be used by 
 - `consul_service_name`
 - `consul_service_meta`
 
-Migrate by moving your existing configuration under the new structure. The new structure is supported from GitLab 15.10.
+Migrate by moving your existing configuration under the new structure. `git_data_dirs` is supported [until GitLab 17.0](https://gitlab.com/gitlab-org/gitaly/-/issues/5133). The new structure is supported from GitLab 15.10.
 
 **Migrate to the new structure**
 
@@ -746,7 +796,7 @@ differ for other installation types:
 
 :::TabTitle Self-compiled (source)
 
-- Use `sudo -u git -H bundle exec rake` instead of `sudo gitlab-rake`
+- Use `sudo -u git -H bundle exec rake RAILS_ENV=production` instead of `sudo gitlab-rake`
 - Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
 
 :::TabTitle Helm chart (Kubernetes)

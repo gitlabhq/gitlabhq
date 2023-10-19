@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285480
 milestone: '13.7'
 type: ops
-group: group::product_planning
+group: group::product planning
 default_enabled: false

@@ -15,7 +15,7 @@ module Backup
     end
 
     # restore task backup from `path`
-    def restore(path)
+    def restore(path, backup_id)
       raise NotImplementedError
     end
 

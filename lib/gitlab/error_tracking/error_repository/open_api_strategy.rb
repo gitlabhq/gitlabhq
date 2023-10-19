@@ -177,7 +177,7 @@ module Gitlab
           ErrorRepository::Pagination.new(pagination_hash['next'], pagination_hash['prev'])
         end
 
-        LINK_PATTERN = %r{cursor=(?<cursor>[^&]+).*; rel="(?<direction>\w+)"}.freeze
+        LINK_PATTERN = %r{cursor=(?<cursor>[^&]+).*; rel="(?<direction>\w+)"}
 
         def parse_pagination_link(content)
           match = LINK_PATTERN.match(content)

@@ -6,7 +6,7 @@ module Gitlab
       class MultiDocYaml
         include Gitlab::Utils::StrongMemoize
 
-        MULTI_DOC_DIVIDER = /^---\s+/.freeze
+        MULTI_DOC_DIVIDER = /^---\s+/
 
         def initialize(config, max_documents:, additional_permitted_classes: [], reject_empty: false)
           @config = config

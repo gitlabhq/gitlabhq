@@ -1,0 +1,10 @@
+#import "./work_item.fragment.graphql"
+
+mutation addLinkedItems($input: WorkItemAddLinkedItemsInput!) {
+  workItemAddLinkedItems(input: $input) {
+    workItem {
+      ...WorkItem
+    }
+    errors
+  }
+}

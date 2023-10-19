@@ -922,14 +922,14 @@ RSpec.describe ApplicationHelper do
 
     context 'when resource is an issue' do
       let_it_be(:resource) { build(:issue) }
-      let(:expected_title) { 'This issue is hidden because its author has been banned' }
+      let(:expected_title) { 'This issue is hidden because its author has been banned.' }
 
       it_behaves_like 'returns icon with tooltip'
     end
 
     context 'when resource is a merge request' do
       let_it_be(:resource) { build(:merge_request) }
-      let(:expected_title) { 'This merge request is hidden because its author has been banned' }
+      let(:expected_title) { 'This merge request is hidden because its author has been banned.' }
 
       it_behaves_like 'returns icon with tooltip'
     end

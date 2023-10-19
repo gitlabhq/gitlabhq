@@ -254,6 +254,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 
         if (totalLoaded === pagination.total_pages || pagination.total_pages === null) {
           commit(types.SET_RETRIEVING_BATCHES, false);
+          eventHub.$emit('doneLoadingBatches');
 
           // We need to check that the currentDiffFileId points to a file that exists
           if (
@@ -879,6 +880,7 @@ export function switchToFullDiffFromRenamedFile({ commit }, { diffFile }) {
           ...diffFile.alternate_viewer,
           automaticallyCollapsed: false,
           manuallyCollapsed: false,
+          forceOpen: false,
         },
       });
       commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });
@@ -892,6 +894,10 @@ export const setFileCollapsedByUser = ({ commit }, { filePath, collapsed }) => {
 export const setFileCollapsedAutomatically = ({ commit }, { filePath, collapsed }) => {
   commit(types.SET_FILE_COLLAPSED, { filePath, collapsed, trigger: DIFF_FILE_AUTOMATIC_COLLAPSE });
 };
+
+export function setFileForcedOpen({ commit }, { filePath, forced }) {
+  commit(types.SET_FILE_FORCED_OPEN, { filePath, forced });
+}
 
 export const setSuggestPopoverDismissed = ({ commit, state }) =>
   axios

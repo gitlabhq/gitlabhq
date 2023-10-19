@@ -12,7 +12,8 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
   let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
-  let(:work_items_path) { project_work_items_path(project, work_items_path: work_item.iid) }
+  let(:work_items_path) { project_work_item_path(project, work_item.iid) }
+  let_it_be(:label) { create(:label, project: work_item.project, title: "testing-label") }
 
   context 'for signed in user' do
     before do
@@ -56,25 +57,6 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       wait_for_requests
 
       expect(work_item.reload.assignees).to include(user2)
-    end
-
-    it 'updates the assignee in real-time' do
-      Capybara::Session.new(:other_session)
-
-      using_session :other_session do
-        visit work_items_path
-        expect(work_item.reload.assignees).not_to include(user)
-      end
-
-      find('[data-testid="work-item-assignees-input"]').hover
-      find('[data-testid="assign-self"]').click
-      wait_for_requests
-
-      expect(work_item.reload.assignees).to include(user)
-
-      using_session :other_session do
-        expect(work_item.reload.assignees).to include(user)
-      end
     end
 
     it_behaves_like 'work items title'
@@ -131,6 +113,12 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
     it 'assignees input field is disabled' do
       within('[data-testid="work-item-assignees-input"]') do
+        expect(page).to have_field(type: 'text', disabled: true)
+      end
+    end
+
+    it 'labels input field is disabled' do
+      within('[data-testid="work-item-labels-input"]') do
         expect(page).to have_field(type: 'text', disabled: true)
       end
     end

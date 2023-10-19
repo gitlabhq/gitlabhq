@@ -16,27 +16,22 @@ module QA
       end
 
       let!(:commit) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  variables:
-                    FOO:
-                      value: "Default Foo"
-                      description: "This is a description for the foo variable"
-                  #{pipeline_job_name}:
-                    tags:
-                      - #{executor}
-                    script: echo "$FOO"
-                YAML
-              }
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              variables:
+                FOO:
+                  value: "Default Foo"
+                  description: "This is a description for the foo variable"
+              #{pipeline_job_name}:
+                tags:
+                  - #{executor}
+                script: echo "$FOO"
+            YAML
+          }
+        ])
       end
 
       before do
@@ -51,7 +46,7 @@ module QA
         runner&.remove_via_api!
       end
 
-      it 'manually creates a pipeline and uses the defined custom variable value',
+      it 'manually creates a pipeline and uses the defined custom variable value', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378975' do
         Page::Project::Pipeline::New.perform do |new|
           new.configure_variable(value: variable_custom_value)
@@ -60,9 +55,9 @@ module QA
 
         Page::Project::Pipeline::Show.perform do |show|
           Support::Waiter.wait_until { show.passed? }
-        end
 
-        create(:job, id: project.job_by_name(pipeline_job_name)[:id], name: pipeline_job_name, project: project).visit!
+          show.click_job(pipeline_job_name)
+        end
 
         Page::Project::Job::Show.perform do |show|
           expect(show.output).to have_content(variable_custom_value)

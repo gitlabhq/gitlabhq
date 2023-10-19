@@ -1,9 +1,8 @@
 import { TEST_HOST } from 'helpers/test_constants';
 
 export const initialRequest = {
-  title: '<gl-emoji title="party-parrot"></gl-emoji>this is a title',
+  title: '<p>this is a title</p>',
   title_text: 'this is a title',
-  title_html: '<gl-emoji title="party-parrot"></gl-emoji>this is a title',
   description: '<p>this is a description!</p>',
   description_text: 'this is a description',
   task_completion_status: { completed_count: 2, count: 4 },

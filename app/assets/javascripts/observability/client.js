@@ -140,7 +140,7 @@ function filterObjToQueryParams(filterObj) {
       let value = rawValue;
       if (filterName === 'durationMs') {
         // converting durationMs to duration_nano
-        value *= 1000;
+        value *= 1000000;
       }
 
       if (paramName && value) {
@@ -166,28 +166,80 @@ function filterObjToQueryParams(filterObj) {
  *
  * @returns Array<Trace> : A list of traces
  */
-async function fetchTraces(tracingUrl, filters = {}) {
-  const filterParams = filterObjToQueryParams(filters);
+async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize } = {}) {
+  const params = filterObjToQueryParams(filters);
+  if (pageToken) {
+    params.append('page_token', pageToken);
+  }
+  if (pageSize) {
+    params.append('page_size', pageSize);
+  }
 
   try {
     const { data } = await axios.get(tracingUrl, {
       withCredentials: true,
-      params: filterParams,
+      params,
     });
     if (!Array.isArray(data.traces)) {
       throw new Error('traces are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
     }
-    return data.traces;
+    return data;
   } catch (e) {
     return reportErrorAndThrow(e);
   }
 }
 
-export function buildClient({ provisioningUrl, tracingUrl }) {
+async function fetchServices(servicesUrl) {
+  try {
+    const { data } = await axios.get(servicesUrl, {
+      withCredentials: true,
+    });
+
+    if (!Array.isArray(data.services)) {
+      throw new Error('failed to fetch services. invalid response'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
+
+    return data.services;
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
+}
+
+async function fetchOperations(operationsUrl, serviceName) {
+  try {
+    if (!serviceName) {
+      throw new Error('fetchOperations() - serviceName is required.');
+    }
+    if (!operationsUrl.includes('$SERVICE_NAME$')) {
+      throw new Error('fetchOperations() - operationsUrl must contain $SERVICE_NAME$');
+    }
+    const url = operationsUrl.replace('$SERVICE_NAME$', serviceName);
+    const { data } = await axios.get(url, {
+      withCredentials: true,
+    });
+
+    if (!Array.isArray(data.operations)) {
+      throw new Error('failed to fetch operations. invalid response'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
+
+    return data.operations;
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
+}
+
+export function buildClient({ provisioningUrl, tracingUrl, servicesUrl, operationsUrl } = {}) {
+  if (!provisioningUrl || !tracingUrl || !servicesUrl || !operationsUrl) {
+    throw new Error(
+      'missing required params. provisioningUrl, tracingUrl, servicesUrl, operationsUrl are required',
+    );
+  }
   return {
     enableTraces: () => enableTraces(provisioningUrl),
     isTracingEnabled: () => isTracingEnabled(provisioningUrl),
     fetchTraces: (filters) => fetchTraces(tracingUrl, filters),
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
+    fetchServices: () => fetchServices(servicesUrl),
+    fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
   };
 }

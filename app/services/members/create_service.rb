@@ -16,7 +16,6 @@ module Members
       @errors = []
       @invites = invites_from_params
       @source = params[:source]
-      @tasks_to_be_done_members = []
     end
 
     def execute
@@ -31,13 +30,13 @@ module Members
       validate_invitable!
 
       add_members
-      create_tasks_to_be_done
       enqueue_onboarding_progress_action
 
       publish_event!
 
       result
     rescue BlankInvitesError, TooManyInvitesError, MembershipLockedError => e
+      Gitlab::ErrorTracking.log_exception(e, class: self.class.to_s, user_id: current_user.id)
       error(e.message)
     end
 
@@ -47,8 +46,7 @@ module Members
 
     private
 
-    attr_reader :source, :errors, :invites, :member_created_namespace_id, :members,
-                :tasks_to_be_done_members, :member_created_member_task_id
+    attr_reader :source, :errors, :invites, :member_created_namespace_id, :members
 
     def adding_at_least_one_owner
       params[:access_level] == Gitlab::Access::OWNER
@@ -88,9 +86,7 @@ module Members
         invites,
         params[:access_level],
         expires_at: params[:expires_at],
-        current_user: current_user,
-        tasks_to_be_done: params[:tasks_to_be_done],
-        tasks_project_id: params[:tasks_project_id]
+        current_user: current_user
       )
 
       members.each { |member| process_result(member) }
@@ -123,7 +119,6 @@ module Members
     def after_execute(member:)
       super
 
-      build_tasks_to_be_done_members(member)
       track_invite_source(member)
     end
 
@@ -144,30 +139,6 @@ module Members
       # from being used in this class and if you send emails as a comma separated list to the api/members
       # endpoint, it will support invites
       member.invite? ? 'net_new_user' : 'existing_user'
-    end
-
-    def build_tasks_to_be_done_members(member)
-      return unless tasks_to_be_done?(member)
-
-      @tasks_to_be_done_members << member
-      # We can take the first `member_task` here, since all tasks will have the same attributes needed
-      # for the `TasksToBeDone::CreateWorker`, ie. `project` and `tasks_to_be_done`.
-      @member_created_member_task_id ||= member.member_task.id
-    end
-
-    def tasks_to_be_done?(member)
-      return false if params[:tasks_to_be_done].blank? || params[:tasks_project_id].blank?
-
-      # Only create task issues for existing users. Tasks for new users are created when they signup.
-      member.member_task&.valid? && member.user.present?
-    end
-
-    def create_tasks_to_be_done
-      return unless member_created_member_task_id # signal if there is any work to be done here
-
-      TasksToBeDone::CreateWorker.perform_async(member_created_member_task_id,
-                                                current_user.id,
-                                                tasks_to_be_done_members.map(&:user_id))
     end
 
     def user_limit

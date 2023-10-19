@@ -9,15 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab provides a variety of tools to help operate and maintain
 your applications.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-## Measure reliability and stability with metrics (removed)
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
-
-<!--- end_remove -->
-
 ## Manage alerts and incidents
 
 GitLab helps reduce alert fatigue for IT responders by providing tools to identify

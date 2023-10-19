@@ -35,6 +35,7 @@ POST /import/github
 | `github_hostname`          | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com.                                                                                                                       |
 | `optional_stages`          | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5 |
 | `additional_access_tokens` | string  | no  | Comma-separated list of [additional](#use-multiple-github-personal-access-tokens) GitHub personal access tokens. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337232) in GitLab 16.2 |
+| `timeout_strategy`          | string | no  | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422979) in GitLab 16.5. |
 
 ```shell
 curl --request POST \
@@ -206,6 +207,7 @@ POST /import/bitbucket_server
 | `bitbucket_server_repo` | string | yes | Bitbucket Repository Name |
 | `new_name` | string | no | New repository name |
 | `target_namespace` | string | no | Namespace to import repository into. Supports subgroups like `/namespace/subgroup` |
+| `timeout_strategy`          | string | no  | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422979) in GitLab 16.5. |
 
 ```shell
 curl --request POST \

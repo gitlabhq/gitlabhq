@@ -72,7 +72,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
     end
   end
 
-  %w(inline parallel).each do |view|
+  %w[inline parallel].each do |view|
     context "#{view} view" do
       let(:position) do
         build(:image_diff_position, file: path, diff_refs: merge_request.diff_refs)

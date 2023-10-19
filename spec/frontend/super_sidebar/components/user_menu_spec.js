@@ -2,7 +2,7 @@ import { GlAvatar, GlDisclosureDropdown } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import UserMenu from '~/super_sidebar/components/user_menu.vue';
-import UserNameGroup from '~/super_sidebar/components/user_name_group.vue';
+import UserMenuProfileItem from '~/super_sidebar/components/user_menu_profile_item.vue';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -56,7 +56,7 @@ describe('UserMenu component', () => {
     createWrapper(null, null, { isImpersonating: true });
 
     expect(findDropdown().props('dropdownOffset')).toEqual({
-      crossAxis: -179,
+      crossAxis: -177,
       mainAxis: 4,
     });
   });
@@ -86,9 +86,9 @@ describe('UserMenu component', () => {
   describe('User Menu Group', () => {
     it('renders and passes data to it', () => {
       createWrapper();
-      const userNameGroup = wrapper.findComponent(UserNameGroup);
-      expect(userNameGroup.exists()).toBe(true);
-      expect(userNameGroup.props('user')).toEqual(userMenuMockData);
+      const userMenuProfileItem = wrapper.findComponent(UserMenuProfileItem);
+      expect(userMenuProfileItem.exists()).toBe(true);
+      expect(userMenuProfileItem.props('user')).toEqual(userMenuMockData);
     });
   });
 

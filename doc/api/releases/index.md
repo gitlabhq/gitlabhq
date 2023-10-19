@@ -8,12 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
 > - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447).
-    Please pass the `include_html_description` query string parameter if you need it.
+    You might also pass the `include_html_description` query string as a parameter.
 > - [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
-    See [Release permissions](../../user/project/releases/index.md#release-permissions) for more information.
+    For more information, see [Release permissions](../../user/project/releases/index.md#release-permissions).
 
-Use this API to manipulate GitLab [Release](../../user/project/releases/index.md)
-entries. For manipulating links as a release asset, see [Release Links API](links.md).
+Use this API to manipulate [release entries](../../user/project/releases/index.md).
+
+To manipulate links as a release asset, see [Release Links API](links.md).
 
 ## Authentication
 
@@ -26,11 +27,7 @@ For authentication, the Releases API accepts either:
 
 ## List Releases
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-> - The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-<!--- end_remove -->
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Returns a paginated list of releases, sorted by `released_at`.
 
@@ -258,11 +255,7 @@ Example response:
 
 ## Get a Release by a tag name
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-> - The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-<!--- end_remove -->
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Gets a release for the given tag.
 
@@ -470,13 +463,6 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in issue 352945](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
 
 ## Create a release
-
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-> The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-
-<!--- end_remove -->
 
 Creates a release. Developer level access to the project is required to create a release.
 

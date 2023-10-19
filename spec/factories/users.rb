@@ -48,6 +48,15 @@ FactoryBot.define do
       after(:build) { |user, _| user.ban! }
     end
 
+    trait :trusted do
+      after(:create) do |user, _|
+        user.custom_attributes.create!(
+          key: UserCustomAttribute::TRUSTED_BY,
+          value: "placeholder"
+        )
+      end
+    end
+
     trait :ldap_blocked do
       after(:build) { |user, _| user.ldap_block! }
     end

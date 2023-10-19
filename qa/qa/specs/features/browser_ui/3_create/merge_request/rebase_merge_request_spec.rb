@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Merge request rebasing', product_group: :code_review do
-      let(:merge_request) { Resource::MergeRequest.fabricate_via_api! }
+      let(:merge_request) { create(:merge_request) }
 
       before do
         Flow::Login.sign_in
@@ -17,10 +17,9 @@ module QA
           settings.enable_ff_only
         end
 
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = merge_request.project
-          commit.add_files([{ file_path: 'other.txt', content: 'New file added!' }])
-        end
+        create(:commit, project: merge_request.project, actions: [
+          { action: 'create', file_path: 'other.txt', content: 'New file added!' }
+        ])
 
         merge_request.visit!
 

@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/prevent_index_creation'
 
 RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
-  let(:forbidden_tables) { %w(ci_builds) }
+  let(:forbidden_tables) { %w(ci_builds namespaces) }
   let(:forbidden_tables_list) { forbidden_tables.join(', ') }
 
   context 'when in migration' do
@@ -12,14 +12,26 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
       allow(cop).to receive(:in_migration?).and_return(true)
     end
 
+    let(:offense) { "Adding new index to #{forbidden_tables_list} is forbidden. [...]" }
+
     context 'when adding an index to a forbidden table' do
+      it 'does not register an offense when direction is down' do
+        forbidden_tables.each do |table_name|
+          expect_no_offenses(<<~RUBY)
+            def down
+              add_concurrent_index :#{table_name}, :runners_token, unique: true, name: INDEX_NAME
+            end
+          RUBY
+        end
+      end
+
       context 'when table_name is a symbol' do
         it "registers an offense when add_index is used", :aggregate_failures do
           forbidden_tables.each do |table_name|
             expect_offense(<<~RUBY)
               def change
                 add_index :#{table_name}, :protected
-                ^^^^^^^^^ Adding new index to #{forbidden_tables_list} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
+                ^^^^^^^^^ #{offense}
               end
             RUBY
           end
@@ -30,7 +42,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
             expect_offense(<<~RUBY)
               def change
                 add_concurrent_index :#{table_name}, :protected
-                ^^^^^^^^^^^^^^^^^^^^ Adding new index to #{forbidden_tables_list} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
+                ^^^^^^^^^^^^^^^^^^^^ #{offense}
               end
             RUBY
           end
@@ -43,7 +55,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
             expect_offense(<<~RUBY)
               def change
                 add_index "#{table_name}", :protected
-                ^^^^^^^^^ Adding new index to #{forbidden_tables_list} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
+                ^^^^^^^^^ #{offense}
               end
             RUBY
           end
@@ -54,7 +66,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
             expect_offense(<<~RUBY)
               def change
                 add_concurrent_index "#{table_name}", :protected
-                ^^^^^^^^^^^^^^^^^^^^ Adding new index to #{forbidden_tables_list} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
+                ^^^^^^^^^^^^^^^^^^^^ #{offense}
               end
             RUBY
           end
@@ -70,7 +82,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation do
 
             def change
               add_concurrent_index TABLE_NAME, :protected
-              ^^^^^^^^^^^^^^^^^^^^ Adding new index to #{forbidden_tables_list} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886
+              ^^^^^^^^^^^^^^^^^^^^ #{offense}
             end
           RUBY
         end

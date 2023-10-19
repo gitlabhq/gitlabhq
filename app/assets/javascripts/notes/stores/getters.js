@@ -2,7 +2,7 @@ import { flattenDeep, clone } from 'lodash';
 import { match } from '~/diffs/utils/diff_file';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
-import { badgeState } from '~/merge_requests/components/merge_request_status_badge.vue';
+import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import * as constants from '../constants';
 import { collapseSystemNotes } from './collapse_utils';
 
@@ -52,10 +52,7 @@ export const discussions = (state, getters, rootState) => {
   let discussionsInState = clone(state.discussions);
   // NOTE: not testing bc will be removed when backend is finished.
 
-  if (
-    state.noteableData.targetType === 'merge_request' &&
-    window.gon?.features?.mrActivityFilters
-  ) {
+  if (state.noteableData.targetType === 'merge_request') {
     discussionsInState = discussionsInState.reduce((acc, discussion) => {
       if (hideActivity(state.mergeRequestFilters, discussion)) {
         return acc;

@@ -9,51 +9,44 @@ exports[`packages_list_app renders 1`] = `
   <infrastructure-search-stub />
   <div>
     <section
-      class="empty-state gl-display-flex gl-flex-direction-column gl-text-center"
+      class="gl-display-flex gl-empty-state gl-flex-direction-column gl-text-center"
     >
       <div
         class="gl-max-w-full"
       >
-        <div
-          class="svg-250 svg-content"
-        >
-          <img
-            alt=""
-            class="gl-dark-invert-keep-hue gl-max-w-full"
-            role="img"
-            src="helpSvg"
-          />
-        </div>
+        <img
+          alt=""
+          class="gl-dark-invert-keep-hue gl-max-w-full"
+          height="144"
+          role="img"
+          src="helpSvg"
+        />
       </div>
       <div
-        class="gl-m-auto gl-max-w-full"
+        class="gl-empty-state-content gl-m-auto gl-mx-auto gl-my-0 gl-p-5"
         data-testid="gl-empty-state-content"
       >
-        <div
-          class="gl-mx-auto gl-my-0 gl-p-5"
+        <h1
+          class="gl-font-size-h-display gl-line-height-36 gl-mb-0 gl-mt-0 h4"
         >
-          <h1
-            class="gl-font-size-h-display gl-line-height-36 h4"
+          There are no packages yet
+        </h1>
+        <p
+          class="gl-mb-0 gl-mt-4"
+        >
+          Learn how to
+          <b-link-stub
+            class="gl-link"
+            href="helpUrl"
+            target="_blank"
           >
-            There are no packages yet
-          </h1>
-          <p
-            class="gl-mt-3"
-          >
-            Learn how to
-            <b-link-stub
-              class="gl-link"
-              href="helpUrl"
-              target="_blank"
-            >
-              publish and share your packages
-            </b-link-stub>
-            with GitLab.
-          </p>
-          <div
-            class="gl-display-flex gl-flex-wrap gl-justify-content-center"
-          />
-        </div>
+            publish and share your packages
+          </b-link-stub>
+          with GitLab.
+        </p>
+        <div
+          class="gl-display-flex gl-flex-wrap gl-justify-content-center gl-mt-5"
+        />
       </div>
     </section>
   </div>

@@ -80,7 +80,7 @@ RSpec.describe Gitlab::ImportExport::Importer do
 
       context 'with sample_data_template' do
         it 'initializes the Sample::TreeRestorer' do
-          project.create_or_update_import_data(data: { sample_data: true })
+          project.build_or_assign_import_data(data: { sample_data: true })
 
           expect(Gitlab::ImportExport::Project::Sample::TreeRestorer).to receive(:new).and_call_original
 
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::ImportExport::Importer do
       end
 
       it 'sets the correct visibility_level when visibility level is a string' do
-        project.create_or_update_import_data(
+        project.build_or_assign_import_data(
           data: { override_params: { visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s } }
         )
 

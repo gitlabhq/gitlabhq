@@ -4,10 +4,34 @@
 // https://gitlab.com/gitlab-org/gitlab/-/issues/420777
 // https://gitlab.com/gitlab-org/gitlab/-/issues/421441
 
-export const organization = {
-  id: 'gid://gitlab/Organization/1',
-  __typename: 'Organization',
-};
+export const organizations = [
+  {
+    id: 'gid://gitlab/Organization/1',
+    name: 'My First Organization',
+    descriptionHtml:
+      '<p>This is where an organization can be explained in <strong>detail</strong></p>',
+    avatarUrl: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61',
+    webUrl: '/-/organizations/default',
+    __typename: 'Organization',
+  },
+  {
+    id: 'gid://gitlab/Organization/2',
+    name: 'Vegetation Co.',
+    descriptionHtml:
+      '<p> Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolt   Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt<script>alert(1)</script></p>',
+    avatarUrl: null,
+    webUrl: '/-/organizations/default',
+    __typename: 'Organization',
+  },
+  {
+    id: 'gid://gitlab/Organization/3',
+    name: 'Dude where is my car?',
+    descriptionHtml: null,
+    avatarUrl: null,
+    webUrl: '/-/organizations/default',
+    __typename: 'Organization',
+  },
+];
 
 export const organizationProjects = {
   nodes: [
@@ -255,4 +279,12 @@ export const organizationGroups = {
       },
     },
   ],
+};
+
+export const createOrganizationResponse = {
+  organization: {
+    name: 'Default',
+    path: '/-/organizations/default',
+  },
+  errors: [],
 };

@@ -5,7 +5,7 @@ module Gitlab
     class ExtraDoneLogMetadata
       def call(worker, job, queue)
         yield
-
+      ensure
         # We needed a way to pass state from a worker in to the
         # Gitlab::SidekiqLogging::StructuredLogger . Unfortunately the
         # StructuredLogger itself is not a middleware so cannot access the

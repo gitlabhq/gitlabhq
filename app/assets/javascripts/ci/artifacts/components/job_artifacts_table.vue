@@ -5,16 +5,15 @@ import {
   GlLink,
   GlButtonGroup,
   GlButton,
-  GlBadge,
   GlIcon,
   GlPagination,
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import getJobArtifactsQuery from '../graphql/queries/get_job_artifacts.query.graphql';
 import { totalArtifactsSizeForJob, mapArchivesToJobNodes, mapBooleansToJobNodes } from '../utils';
@@ -65,12 +64,11 @@ export default {
     GlLink,
     GlButtonGroup,
     GlButton,
-    GlBadge,
     GlIcon,
     GlPagination,
     GlFormCheckbox,
-    CiIcon,
     TimeAgo,
+    CiBadgeLink,
     JobCheckbox,
     ArtifactsBulkDelete,
     BulkDeleteModal,
@@ -328,7 +326,7 @@ export default {
     {
       key: 'artifacts',
       label: I18N_ARTIFACTS,
-      thClass: 'gl-w-quarter',
+      thClass: 'gl-w-eighth',
     },
     {
       key: 'job',
@@ -350,7 +348,7 @@ export default {
     {
       key: 'actions',
       label: '',
-      thClass: 'gl-w-eighth',
+      thClass: 'gl-w-20p',
       tdClass: 'gl-text-right',
     },
   ],
@@ -403,6 +401,7 @@ export default {
           :checked="isAnyVisibleArtifactSelected"
           :indeterminate="isAnyVisibleArtifactSelected && !areAllVisibleArtifactsSelected"
           :disabled="isSelectedArtifactsLimitReached && !isAnyVisibleArtifactSelected"
+          data-testid="select-all-artifacts-checkbox"
           @change="handleSelectAllChecked"
         />
       </template>
@@ -441,45 +440,37 @@ export default {
         </span>
       </template>
       <template #cell(job)="{ item }">
-        <span class="gl-display-inline-flex gl-align-items-center gl-w-full gl-mb-4">
+        <div class="gl-display-inline-flex gl-align-items-center gl-mb-3 gl-gap-3">
           <span data-testid="job-artifacts-job-status">
-            <ci-icon v-if="item.succeeded" :status="item.detailedStatus" class="gl-mr-3" />
-            <gl-badge
-              v-else
-              :icon="item.detailedStatus.icon"
-              :variant="$options.STATUS_BADGE_VARIANTS[item.detailedStatus.group]"
-              class="gl-mr-3"
-            >
-              {{ item.detailedStatus.label }}
-            </gl-badge>
+            <ci-badge-link :status="item.detailedStatus" size="sm" :show-text="false" />
           </span>
-          <gl-link :href="item.webPath" class="gl-font-weight-bold">
+          <gl-link :href="item.webPath">
             {{ item.name }}
           </gl-link>
-        </span>
-        <span class="gl-display-inline-flex">
+        </div>
+        <div class="gl-mb-1">
           <gl-icon name="pipeline" class="gl-mr-2" />
-          <gl-link
-            :href="item.pipeline.path"
-            class="gl-text-black-normal gl-text-decoration-underline gl-mr-4"
-          >
+          <gl-link :href="item.pipeline.path" class="gl-mr-2">
             {{ pipelineId(item) }}
           </gl-link>
-          <gl-icon name="branch" class="gl-mr-2" />
-          <gl-link
-            :href="item.refPath"
-            class="gl-text-black-normal gl-text-decoration-underline gl-mr-4"
-          >
-            {{ item.refName }}
-          </gl-link>
-          <gl-icon name="commit" class="gl-mr-2" />
-          <gl-link
-            :href="item.commitPath"
-            class="gl-text-black-normal gl-text-decoration-underline gl-mr-4"
-          >
-            {{ item.shortSha }}
-          </gl-link>
-        </span>
+          <span class="gl-display-inline-block gl-rounded-base gl-px-2 gl-bg-gray-50">
+            <gl-icon name="commit" :size="12" class="gl-mr-2" />
+            <gl-link
+              :href="item.commitPath"
+              class="gl-text-black-normal gl-font-sm gl-font-monospace"
+            >
+              {{ item.shortSha }}
+            </gl-link>
+          </span>
+        </div>
+        <div>
+          <span class="gl-display-inline-block gl-rounded-base gl-px-2 gl-bg-gray-50">
+            <gl-icon name="branch" :size="12" class="gl-mr-1" />
+            <gl-link :href="item.refPath" class="gl-text-black-normal gl-font-sm gl-font-monospace">
+              {{ item.refName }}
+            </gl-link>
+          </span>
+        </div>
       </template>
       <template #cell(size)="{ item }">
         <span data-testid="job-artifacts-size">{{ artifactsSize(item) }}</span>

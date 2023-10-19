@@ -118,4 +118,47 @@ RSpec.describe Ml::Model, feature_category: :mlops do
       end
     end
   end
+
+  describe 'with_version_count' do
+    let(:model) { existing_model }
+
+    subject { described_class.with_version_count.find_by(id: model.id).version_count }
+
+    context 'when model has versions' do
+      before do
+        create(:ml_model_versions, model: model)
+      end
+
+      it { is_expected.to eq(1) }
+    end
+
+    context 'when model has no versions' do
+      let(:model) { another_existing_model }
+
+      it { is_expected.to eq(0) }
+    end
+  end
+
+  describe '#by_project_and_id' do
+    let(:id) { existing_model.id }
+    let(:project_id) { existing_model.project.id }
+
+    subject { described_class.by_project_id_and_id(project_id, id) }
+
+    context 'if exists' do
+      it { is_expected.to eq(existing_model) }
+    end
+
+    context 'if id has no match' do
+      let(:id) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+
+    context 'if project id does not match' do
+      let(:project_id) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+  end
 end

@@ -35,7 +35,7 @@ module API
     helpers do
       def packages
         strong_memoize(:packages) do
-          packages = ::Packages::Composer::PackagesFinder.new(current_user, user_group).execute
+          packages = ::Packages::Composer::PackagesFinder.new(current_user, find_authorized_group!).execute
 
           if params[:package_name].present?
             params[:package_name], params[:sha] = params[:package_name].split('$')
@@ -52,7 +52,7 @@ module API
       end
 
       def presenter
-        @presenter ||= ::Packages::Composer::PackagesPresenter.new(user_group, packages, composer_v2?)
+        @presenter ||= ::Packages::Composer::PackagesPresenter.new(find_authorized_group!, packages, composer_v2?)
       end
     end
 
@@ -66,7 +66,7 @@ module API
 
     resource :group, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
-        user_group
+        find_authorized_group!
       end
 
       desc 'Composer packages endpoint at group level' do
@@ -78,7 +78,7 @@ module API
         ]
         tags %w[composer_packages]
       end
-      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+      route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/packages', urgency: :low do
         presenter.root
       end
@@ -95,7 +95,7 @@ module API
       params do
         requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
       end
-      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+      route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/p/:sha', urgency: :low do
         presenter.provider
       end
@@ -112,7 +112,7 @@ module API
       params do
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
       end
-      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+      route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/p2/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true, urgency: :low do
         not_found! if packages.empty?
 
@@ -131,7 +131,7 @@ module API
       params do
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
       end
-      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+      route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true, urgency: :low do
         not_found! if packages.empty?
         not_found! if params[:sha].blank?
@@ -198,7 +198,7 @@ module API
           requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
           requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
         end
-        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+        route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
         get 'archives/*package_name', urgency: :default do
           project = authorized_user_project(action: :read_package)
 

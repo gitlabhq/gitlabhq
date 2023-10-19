@@ -18,43 +18,39 @@ module QA
       end
 
       let!(:ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              file_path: '.gitlab-ci.yml',
-              content: <<~YAML
-                test_blocked_pipeline:
-                  stage: build
-                  tags: [#{executor}]
-                  script: echo 'OK!'
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              test_blocked_pipeline:
+                stage: build
+                tags: [#{executor}]
+                script: echo 'OK!'
 
-                manual_job:
-                  stage: test
-                  needs: [test_blocked_pipeline]
-                  script: echo do not click me
-                  when: manual
-                  allow_failure: false
+              manual_job:
+                stage: test
+                needs: [test_blocked_pipeline]
+                script: echo do not click me
+                when: manual
+                allow_failure: false
 
-                dummy_job:
-                  stage: deploy
-                  needs: [manual_job]
-                  script: echo nothing
-              YAML
-            ]
-          )
-        end
+              dummy_job:
+                stage: deploy
+                needs: [manual_job]
+                script: echo nothing
+            YAML
+          }
+        ])
       end
 
       let(:merge_request) do
-        Resource::MergeRequest.fabricate_via_api! do |merge_request|
-          merge_request.project = project
-          merge_request.description = Faker::Lorem.sentence
-          merge_request.target_new_branch = false
-          merge_request.file_name = 'custom_file.txt'
-          merge_request.file_content = Faker::Lorem.sentence
-        end
+        create(:merge_request,
+          project: project,
+          description: Faker::Lorem.sentence,
+          target_new_branch: false,
+          file_name: 'custom_file.txt',
+          file_content: Faker::Lorem.sentence)
       end
 
       before do

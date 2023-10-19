@@ -97,7 +97,7 @@ RSpec.describe Projects::MergeRequests::ConflictsController, feature_category: :
 
             section['lines'].each do |line|
               if section['conflict']
-                expect(line['type']).to be_in(%w(old new))
+                expect(line['type']).to be_in(%w[old new])
                 expect(line.values_at('old_line', 'new_line')).to contain_exactly(nil, a_kind_of(Integer))
               elsif line['type'].nil?
                 expect(line['old_line']).not_to eq(nil)

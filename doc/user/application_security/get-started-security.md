@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Adopting GitLab application security](https://www.youtube.com/watch?v=5QlxkiKR04k).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an interactive reading and how-to demo playlist, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
 The following steps help you get the most from GitLab application security tools. These steps are a recommended order of operations. You can choose to implement capabilities in a different order or omit features that do not apply to your specific needs.
 

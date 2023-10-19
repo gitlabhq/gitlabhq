@@ -93,7 +93,7 @@ export default {
     }"
     :data-list-id="list.id"
     class="board gl-display-inline-block gl-h-full gl-px-3 gl-vertical-align-top gl-white-space-normal is-expandable"
-    data-qa-selector="board_list"
+    data-testid="board-list"
   >
     <div
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"

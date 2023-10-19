@@ -11,23 +11,23 @@ module QA
             super
 
             base.view 'app/assets/javascripts/sidebar/components/assignees/assignee_avatar.vue' do
-              element :avatar_image
+              element 'avatar-image'
             end
 
             base.view 'app/assets/javascripts/sidebar/components/assignees/uncollapsed_assignee_list.vue' do
-              element :more_assignees_link
+              element 'user-list-more-button'
             end
 
             base.view 'app/assets/javascripts/sidebar/components/reviewers/reviewer_title.vue' do
-              element :reviewers_edit_button
+              element 'reviewers-edit-button'
             end
 
             base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/labels_select_root.vue' do
-              element :labels_block
+              element 'sidebar-labels'
             end
 
             base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view.vue' do
-              element :dropdown_input_field
+              element 'dropdown-input-field'
             end
 
             base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue' do
@@ -35,17 +35,17 @@ module QA
             end
 
             base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_value.vue' do
-              element :selected_label_content
+              element 'selected-label-content'
             end
 
             base.view 'app/views/shared/issuable/_sidebar.html.haml' do
-              element :assignee_block_container
-              element :milestone_block
-              element :reviewers_block_container
+              element 'assignee-block-container'
+              element 'sidebar-milestones'
+              element 'reviewers-block-container'
             end
 
             base.view 'app/assets/javascripts/sidebar/components/sidebar_dropdown_widget.vue' do
-              element :milestone_link, 'data-qa-selector="`${formatIssuableAttribute.snake}_link`"' # rubocop:disable QA/ElementWithPattern
+              element 'milestone-link', 'data-testid="`${formatIssuableAttribute.kebab}-link`"' # rubocop:disable QA/ElementWithPattern
             end
 
             base.view 'app/assets/javascripts/sidebar/components/sidebar_editable_item.vue' do
@@ -53,7 +53,7 @@ module QA
             end
 
             base.view 'app/helpers/dropdowns_helper.rb' do
-              element :dropdown_list_content
+              element 'dropdown-list-content'
             end
           end
 
@@ -64,14 +64,14 @@ module QA
             end
 
             wait_until(reload: false) do
-              has_element?(:milestone_block, text: milestone.title, wait: 0)
+              has_element?('sidebar-milestones', text: milestone.title, wait: 0)
             end
 
             refresh
           end
 
           def click_milestone_link
-            click_element(:milestone_link)
+            click_element('milestone-link')
           end
 
           def has_assignee?(username)
@@ -106,39 +106,39 @@ module QA
 
           def has_avatar_image_count?(count)
             wait_assignees_block_finish_loading do
-              all_elements(:avatar_image, count: count)
+              all_elements('avatar-image', count: count)
             end
           end
 
           def has_label?(label)
             wait_labels_block_finish_loading do
-              has_element?(:selected_label_content, label_name: label)
+              has_element?('selected-label-content', label_name: label)
             end
           end
 
           def has_no_label?(label)
             wait_labels_block_finish_loading do
-              has_no_element?(:selected_label_content, label_name: label)
+              has_no_element?('selected-label-content', label_name: label)
             end
           end
 
           def has_milestone?(milestone_title)
             wait_milestone_block_finish_loading do
-              has_element?(:milestone_link, text: milestone_title)
+              has_element?('milestone-link', text: milestone_title)
             end
           end
 
           def more_assignees_link
-            find_element(:more_assignees_link)
+            find_element('user-list-more-button')
           end
 
           def select_labels(labels)
-            within_element(:labels_block) do
+            within_element('sidebar-labels') do
               click_element('edit-button')
 
               labels.each do |label|
                 within_element('labels-select-dropdown-contents') do
-                  fill_element(:dropdown_input_field, label)
+                  fill_element('dropdown-input-field', label)
                   click_button(text: label)
                 end
               end
@@ -148,21 +148,21 @@ module QA
           end
 
           def toggle_more_assignees_link
-            click_element(:more_assignees_link)
+            click_element('user-list-more-button')
           end
 
           def toggle_reviewers_edit
-            click_element(:reviewers_edit_button)
+            click_element('reviewers-edit-button')
           end
 
           def suggested_reviewer_usernames
-            within_element(:reviewers_block_container) do
+            within_element('reviewers-block-container') do
               wait_for_requests
 
-              click_element(:reviewers_edit_button)
+              click_element('reviewers-edit-button')
               wait_for_requests
 
-              list = find_element(:dropdown_list_content)
+              list = find_element('dropdown-list-content')
               suggested_reviewers = list.find_all('li[data-user-suggested="true"')
               raise ElementNotFound, 'No suggested reviewers found' if suggested_reviewers.nil?
 
@@ -177,10 +177,10 @@ module QA
           end
 
           def unassign_reviewers
-            within_element(:reviewers_block_container) do
+            within_element('reviewers-block-container') do
               wait_for_requests
 
-              click_element(:reviewers_edit_button)
+              click_element('reviewers-edit-button')
               wait_for_requests
             end
 
@@ -188,12 +188,12 @@ module QA
           end
 
           def select_reviewer(username)
-            within_element(:reviewers_block_container) do
-              within_element(:dropdown_list_content) do
+            within_element('reviewers-block-container') do
+              within_element('dropdown-list-content') do
                 click_on username
               end
 
-              click_element(:reviewers_edit_button)
+              click_element('reviewers-edit-button')
               wait_for_requests
             end
           end
@@ -201,7 +201,7 @@ module QA
           private
 
           def wait_assignees_block_finish_loading
-            within_element(:assignee_block_container) do
+            within_element('assignee-block-container') do
               wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield
@@ -210,7 +210,7 @@ module QA
           end
 
           def wait_reviewers_block_finish_loading
-            within_element(:reviewers_block_container) do
+            within_element('reviewers-block-container') do
               wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield
@@ -219,7 +219,7 @@ module QA
           end
 
           def wait_labels_block_finish_loading
-            within_element(:labels_block) do
+            within_element('sidebar-labels') do
               wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield
@@ -228,7 +228,7 @@ module QA
           end
 
           def wait_milestone_block_finish_loading
-            within_element(:milestone_block) do
+            within_element('sidebar-milestones') do
               wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield

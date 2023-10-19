@@ -16,7 +16,7 @@ module Projects
       delegate :root_ancestor, to: :project
 
       def valid_to_create?
-        can?(current_user, :read_namespace, shared_with_group) && sharing_allowed?
+        can?(current_user, :read_namespace_via_membership, shared_with_group) && sharing_allowed?
       end
 
       def build_link

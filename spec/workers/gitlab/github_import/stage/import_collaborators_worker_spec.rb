@@ -12,6 +12,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
   let(:importer) { instance_double(Gitlab::GithubImport::Importer::CollaboratorsImporter) }
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     let(:push_rights_granted) { true }
 
@@ -67,24 +69,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
 
         worker.import(client, project)
       end
-    end
-
-    it 'raises an error' do
-      exception = StandardError.new('_some_error_')
-
-      expect_next_instance_of(Gitlab::GithubImport::Importer::CollaboratorsImporter) do |importer|
-        expect(importer).to receive(:execute).and_raise(exception)
-      end
-      expect(Gitlab::Import::ImportFailureService).to receive(:track)
-        .with(
-          project_id: project.id,
-          exception: exception,
-          error_source: described_class.name,
-          fail_import: true,
-          metrics: true
-        ).and_call_original
-
-      expect { worker.import(client, project) }.to raise_error(StandardError)
     end
   end
 end

@@ -244,7 +244,19 @@ Keep the following in mind when you write your migration:
   - In one of the example MRs we also insert records in the `work_item_hierarchy_restrictions` table. This is only
     necessary if the new work item type is going to use the `Hierarchy` widget. In this table, you must add what
     work item type can have children and of what type. Also, you should specify the hierarchy depth for work items of the same
-    type.
+    type. By default a cross-hierarchy (cross group or project) relationship is disabled when creating new restrictions but
+    it can be enabled by specifying a value for `cross_hierarchy_enabled`.
+- Optional. Create linked item restrictions.
+  - Similarly to the `Hierarchy` widget, the `Linked items` widget also supports rules defining which work item types can be
+    linked to other types. A restriction can specify if the source type can be related to or blocking a target type. Current restrictions:
+
+  | Type       | Can be related to                        | Can block                                | Can be blocked by                        |
+  |------------|------------------------------------------|------------------------------------------|------------------------------------------|
+  | Epic       | Epic, issue, task, objective, key result | Epic, issue, task, objective, key result | Epic, issue, task                        |
+  | Issue      | Epic, issue, task, objective, key result | Epic, issue, task, objective, key result | Epic, issue, task                        |
+  | Task       | Epic, issue, task, objective, key result | Epic, issue, task, objective, key result | Epic, issue, task                        |
+  | Objective  | Epic, issue, task, objective, key result | Objective, key result                    | Epic, issue, task, objective, key result |
+  | Key result | Epic, issue, task, objective, key result | Objective, key result                    | Epic, issue, task, objective, key result |
 
 ##### Example of adding a ticket work item
 

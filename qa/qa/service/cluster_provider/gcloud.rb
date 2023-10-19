@@ -13,7 +13,7 @@ module QA
         def initialize(rbac:)
           super(rbac: rbac)
           @attempts = 0
-          @available_regions = %w(
+          @available_regions = %w[
             asia-east1 asia-east2
             asia-northeast1 asia-south1
             asia-southeast1 australia-southeast1
@@ -21,7 +21,7 @@ module QA
             northamerica-northeast1 southamerica-east1
             us-central1 us-east1 us-east4
             us-west1 us-west2
-          )
+          ]
         end
 
         def setup
@@ -95,10 +95,10 @@ module QA
               --set="auth.signing_key=#{Runtime::Env.workspaces_oauth_signing_key}" \
               --set="ingress.host.workspaceDomain=#{Runtime::Env.workspaces_proxy_domain}" \
               --set="ingress.host.wildcardDomain=*.#{Runtime::Env.workspaces_proxy_domain}" \
-              --set="ingress.tls.workspaceDomainCert=$(cat #{Runtime::Env.workspaces_domain_cert})" \
-              --set="ingress.tls.workspaceDomainKey=$(cat #{Runtime::Env.workspaces_domain_key})" \
-              --set="ingress.tls.wildcardDomainCert=$(cat #{Runtime::Env.workspaces_wildcard_cert})" \
-              --set="ingress.tls.wildcardDomainKey=$(cat #{Runtime::Env.workspaces_wildcard_key})" \
+              --set="ingress.tls.workspaceDomainCert=#{Runtime::Env.workspaces_domain_cert}" \
+              --set="ingress.tls.workspaceDomainKey=#{Runtime::Env.workspaces_domain_key}" \
+              --set="ingress.tls.wildcardDomainCert=#{Runtime::Env.workspaces_wildcard_cert}" \
+              --set="ingress.tls.wildcardDomainKey=#{Runtime::Env.workspaces_wildcard_key}" \
               --set="ingress.className=nginx"
           CMD
 

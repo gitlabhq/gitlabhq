@@ -9,7 +9,10 @@ import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import GroupFilter from '~/search/topbar/components/group_filter.vue';
 import ProjectFilter from '~/search/topbar/components/project_filter.vue';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
-import { SYNTAX_OPTIONS_DOCUMENT } from '~/search/topbar/constants';
+import {
+  SYNTAX_OPTIONS_ADVANCED_DOCUMENT,
+  SYNTAX_OPTIONS_ZOEKT_DOCUMENT,
+} from '~/search/topbar/constants';
 
 Vue.use(Vuex);
 
@@ -22,7 +25,7 @@ describe('GlobalSearchTopbar', () => {
     preloadStoredFrequentItems: jest.fn(),
   };
 
-  const createComponent = (initialState, props, stubs) => {
+  const createComponent = (initialState = {}, defaultBranchName = '', stubs = {}) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
@@ -33,7 +36,7 @@ describe('GlobalSearchTopbar', () => {
 
     wrapper = shallowMount(GlobalSearchTopbar, {
       store,
-      propsData: props,
+      propsData: { defaultBranchName },
       stubs,
     });
   };
@@ -76,80 +79,82 @@ describe('GlobalSearchTopbar', () => {
       });
     });
 
-    describe('syntax option feature', () => {
-      describe('template', () => {
-        beforeEach(() => {
-          createComponent(
-            { query: { repository_ref: '' } },
-            { elasticsearchEnabled: true, defaultBranchName: '' },
-          );
-        });
-
-        it('renders button correctly', () => {
-          expect(findSyntaxOptionButton().exists()).toBe(true);
-        });
-
-        it('renders drawer correctly', () => {
-          expect(findSyntaxOptionDrawer().exists()).toBe(true);
-          expect(findSyntaxOptionDrawer().attributes('documentpath')).toBe(SYNTAX_OPTIONS_DOCUMENT);
-        });
-
-        it('dispatched correct click action', () => {
-          const drawerToggleSpy = jest.fn();
-
-          createComponent(
-            { query: { repository_ref: '' } },
-            { elasticsearchEnabled: true, defaultBranchName: '' },
-            {
-              MarkdownDrawer: stubComponent(MarkdownDrawer, {
-                methods: { toggleDrawer: drawerToggleSpy },
-              }),
-            },
-          );
-
-          findSyntaxOptionButton().vm.$emit('click');
-          expect(drawerToggleSpy).toHaveBeenCalled();
-        });
+    describe.each`
+      searchType    | showSyntaxOptions
+      ${'basic'}    | ${false}
+      ${'advanced'} | ${true}
+      ${'zoekt'}    | ${true}
+    `('syntax options drawer with searchType: $searchType', ({ searchType, showSyntaxOptions }) => {
+      beforeEach(() => {
+        createComponent({ query: { repository_ref: '' }, searchType });
       });
 
-      describe.each`
-        query                                      | propsData                                                       | hasSyntaxOptions
-        ${null}                                    | ${{ elasticsearchEnabled: false, defaultBranchName: '' }}       | ${false}
-        ${{ query: { repository_ref: '' } }}       | ${{ elasticsearchEnabled: false, defaultBranchName: '' }}       | ${false}
-        ${{ query: { repository_ref: 'master' } }} | ${{ elasticsearchEnabled: false, defaultBranchName: 'master' }} | ${false}
-        ${{ query: { repository_ref: 'master' } }} | ${{ elasticsearchEnabled: true, defaultBranchName: '' }}        | ${false}
-        ${{ query: { repository_ref: '' } }}       | ${{ elasticsearchEnabled: true, defaultBranchName: 'master' }}  | ${true}
-        ${{ query: { repository_ref: '' } }}       | ${{ elasticsearchEnabled: true, defaultBranchName: '' }}        | ${true}
-        ${{ query: { repository_ref: 'master' } }} | ${{ elasticsearchEnabled: true, defaultBranchName: 'master' }}  | ${true}
-      `(
-        'renders the syntax option based on component state',
-        ({ query, propsData, hasSyntaxOptions }) => {
-          beforeEach(() => {
-            createComponent(query, { ...propsData });
-          });
+      it('renders button correctly', () => {
+        expect(findSyntaxOptionButton().exists()).toBe(showSyntaxOptions);
+      });
 
-          it(`does${
-            hasSyntaxOptions ? '' : ' not'
-          } have syntax option button when repository_ref: '${
-            query?.query?.repository_ref
-          }', elasticsearchEnabled: ${propsData.elasticsearchEnabled}, defaultBranchName: '${
-            propsData.defaultBranchName
-          }'`, () => {
+      it('renders drawer correctly', () => {
+        expect(findSyntaxOptionDrawer().exists()).toBe(showSyntaxOptions);
+      });
+    });
+
+    describe.each`
+      searchType    | documentPath
+      ${'advanced'} | ${SYNTAX_OPTIONS_ADVANCED_DOCUMENT}
+      ${'zoekt'}    | ${SYNTAX_OPTIONS_ZOEKT_DOCUMENT}
+    `('syntax options drawer with searchType: $searchType', ({ searchType, documentPath }) => {
+      beforeEach(() => {
+        createComponent({ query: { repository_ref: '' }, searchType });
+      });
+
+      it('renders drawer with correct document', () => {
+        expect(findSyntaxOptionDrawer()?.attributes('documentpath')).toBe(documentPath);
+      });
+    });
+
+    describe('actions', () => {
+      it('dispatched correct click action', () => {
+        const drawerToggleSpy = jest.fn();
+
+        createComponent({ query: { repository_ref: '' }, searchType: 'advanced' }, '', {
+          MarkdownDrawer: stubComponent(MarkdownDrawer, {
+            methods: { toggleDrawer: drawerToggleSpy },
+          }),
+        });
+
+        findSyntaxOptionButton().vm.$emit('click');
+        expect(drawerToggleSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe.each`
+      state                                                              | defaultBranchName | hasSyntaxOptions
+      ${{ query: { repository_ref: '' }, searchType: 'basic' }}          | ${'master'}       | ${false}
+      ${{ query: { repository_ref: 'v0.1' }, searchType: 'basic' }}      | ${''}             | ${false}
+      ${{ query: { repository_ref: 'master' }, searchType: 'basic' }}    | ${'master'}       | ${false}
+      ${{ query: { repository_ref: 'master' }, searchType: 'advanced' }} | ${''}             | ${false}
+      ${{ query: { repository_ref: '' }, searchType: 'advanced' }}       | ${'master'}       | ${true}
+      ${{ query: { repository_ref: 'v0.1' }, searchType: 'advanced' }}   | ${''}             | ${false}
+      ${{ query: { repository_ref: 'master' }, searchType: 'advanced' }} | ${'master'}       | ${true}
+      ${{ query: { repository_ref: 'master' }, searchType: 'zoekt' }}    | ${'master'}       | ${true}
+    `(
+      `the syntax option based on component state`,
+      ({ state, defaultBranchName, hasSyntaxOptions }) => {
+        beforeEach(() => {
+          createComponent({ ...state }, defaultBranchName);
+        });
+
+        describe(`repository: ${state.query.repository_ref}, searchType: ${state.searchType}`, () => {
+          it(`renders correctly button`, () => {
             expect(findSyntaxOptionButton().exists()).toBe(hasSyntaxOptions);
           });
 
-          it(`does${
-            hasSyntaxOptions ? '' : ' not'
-          } have syntax option drawer when repository_ref: '${
-            query?.query?.repository_ref
-          }', elasticsearchEnabled: ${propsData.elasticsearchEnabled}, defaultBranchName: '${
-            propsData.defaultBranchName
-          }'`, () => {
+          it(`renders correctly drawer when branch name is ${state.query.repository_ref}`, () => {
             expect(findSyntaxOptionDrawer().exists()).toBe(hasSyntaxOptions);
           });
-        },
-      );
-    });
+        });
+      },
+    );
   });
 
   describe('actions', () => {

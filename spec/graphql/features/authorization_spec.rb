@@ -386,7 +386,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
       issues = Issue.where(project: [visible_project, other_project]).order(id: :asc)
       type_factory do |type|
         type.graphql_name 'FakeProjectType'
-        type.field :test_issues, issue_type.connection_type,
+        type.field :test_issues, field_type,
                    null: false,
                    resolver: new_resolver(issues)
       end
@@ -398,32 +398,52 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
       end
     end
 
-    let(:query_string) do
-      <<~QRY
-        { testProject { testIssues(first: 3) { edges { node { id } } } } }
-      QRY
-    end
-
     before do
       allow(Ability).to receive(:allowed?).and_call_original
     end
 
-    it 'renders the issues the user has access to' do
-      issue_edges = result.dig('data', 'testProject', 'testIssues', 'edges')
-      issue_ids = issue_edges.map { |issue_edge| issue_edge['node']&.fetch('id') }
+    context 'for connection field type' do
+      let(:field_type) { issue_type.connection_type }
 
-      expect(issue_edges.size).to eq(visible_issues.size)
-      expect(issue_ids).to eq(visible_issues.map { |i| i.to_global_id.to_s })
+      let(:query_string) do
+        <<~QRY
+          { testProject { testIssues(first: 3) { edges { node { id } } } } }
+        QRY
+      end
+
+      it 'renders the issues the user has access to' do
+        issue_edges = result.dig('data', 'testProject', 'testIssues', 'edges')
+        issue_ids = issue_edges.map { |issue_edge| issue_edge['node']&.fetch('id') }
+
+        expect(issue_edges.size).to eq(visible_issues.size)
+        expect(issue_ids).to eq(visible_issues.map { |i| i.to_global_id.to_s })
+      end
+
+      it 'does not check access on fields that will not be rendered' do
+        expect(Ability).not_to receive(:allowed?).with(user, :read_issue, other_issues.last)
+
+        result
+      end
     end
 
-    it 'does not check access on fields that will not be rendered' do
-      expect(Ability).not_to receive(:allowed?).with(user, :read_issue, other_issues.last)
+    context 'for list field type' do
+      let(:field_type) { [issue_type] }
 
-      result
+      let(:query_string) do
+        <<~QRY
+          { testProject { testIssues { id } } }
+        QRY
+      end
+
+      it 'renders the issues the user has access to' do
+        issue_ids = result.dig('data', 'testProject', 'testIssues').pluck('id')
+
+        expect(issue_ids).to eq(visible_issues.map { |i| i.to_global_id.to_s })
+      end
     end
   end
 
-  describe 'Authorization on GraphQL::Execution::Execute::SKIP' do
+  describe 'Authorization on GraphQL::Execution::SKIP' do
     let(:type) do
       type_factory do |type|
         type.authorize permission_single
@@ -432,7 +452,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, [type], null: true, resolver: new_resolver(GraphQL::Execution::Execute::SKIP)
+        query.field :item, [type], null: true, resolver: new_resolver(GraphQL::Execution::SKIP)
       end
     end
 

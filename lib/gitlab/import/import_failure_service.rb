@@ -9,7 +9,8 @@ module Gitlab
         project_id: nil,
         error_source: nil,
         fail_import: false,
-        metrics: false
+        metrics: false,
+        external_identifiers: {}
       )
         new(
           exception: exception,
@@ -17,7 +18,8 @@ module Gitlab
           project_id: project_id,
           error_source: error_source,
           fail_import: fail_import,
-          metrics: metrics
+          metrics: metrics,
+          external_identifiers: external_identifiers
         ).execute
       end
 
@@ -27,7 +29,8 @@ module Gitlab
         project_id: nil,
         error_source: nil,
         fail_import: false,
-        metrics: false
+        metrics: false,
+        external_identifiers: {}
       )
 
         if import_state.blank? && project_id.blank?
@@ -46,6 +49,7 @@ module Gitlab
         @error_source = error_source
         @fail_import = fail_import
         @metrics = metrics
+        @external_identifiers = external_identifiers
       end
 
       def execute
@@ -58,19 +62,20 @@ module Gitlab
 
       private
 
-      attr_reader :exception, :import_state, :project, :error_source, :fail_import, :metrics
+      attr_reader :exception, :import_state, :project, :error_source, :fail_import, :metrics, :external_identifiers
 
       def track_exception
         attributes = {
           import_type: project.import_type,
           project_id: project.id,
-          source: error_source
+          source: error_source,
+          external_identifiers: external_identifiers
         }
 
         Gitlab::Import::Logger.error(
           attributes.merge(
             message: 'importer failed',
-            'error.message': exception.message
+            'exception.message': exception.message
           )
         )
 
@@ -85,7 +90,8 @@ module Gitlab
           exception_class: exception.class.to_s,
           exception_message: exception.message.truncate(255),
           correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
-          retry_count: fail_import ? 0 : nil
+          retry_count: fail_import ? 0 : nil,
+          external_identifiers: external_identifiers
         )
       end
 

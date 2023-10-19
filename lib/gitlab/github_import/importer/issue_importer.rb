@@ -29,8 +29,8 @@ module Gitlab
         def execute
           Issue.transaction do
             if (issue_id = create_issue)
-              create_assignees(issue_id)
               issuable_finder.cache_database_id(issue_id)
+              create_assignees(issue_id)
               update_search_data(issue_id)
             end
           end
@@ -64,9 +64,6 @@ module Gitlab
           issue.validate!
 
           insert_and_return_id(attributes, project.issues)
-        rescue ActiveRecord::InvalidForeignKey
-          # It's possible the project has been deleted since scheduling this
-          # job. In this case we'll just skip creating the issue.
         end
 
         # Stores all issue assignees in the database.

@@ -3,12 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning do
-  include ContentEditorHelpers
-
   let(:user) { create(:user) }
 
   def submit_comment(text)
-    close_rich_text_promo_popover_if_present
     fill_in 'note[note]', with: text
     click_button 'Comment'
     wait_for_requests

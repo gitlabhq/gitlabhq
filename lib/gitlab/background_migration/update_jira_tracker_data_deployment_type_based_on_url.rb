@@ -20,7 +20,7 @@ module Gitlab
       # rubocop: enable Gitlab/NamespacedClass
 
       # https://rubular.com/r/uwgK7k9KH23efa
-      JIRA_CLOUD_REGEX = %r{^https?://[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.atlassian\.net$}ix.freeze
+      JIRA_CLOUD_REGEX = %r{^https?://[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.atlassian\.net$}ix
 
       def perform
         cloud = []

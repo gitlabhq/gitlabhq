@@ -69,7 +69,7 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner_fleet do
             active: false,
             locked: true,
             run_untagged: false,
-            tag_list: %w(tag1 tag2)
+            tag_list: %w[tag1 tag2]
           }
         end
 

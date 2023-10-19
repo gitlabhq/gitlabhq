@@ -16,7 +16,7 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
 
-  %w(pre code a style).each do |elem|
+  %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Commit Range #{range.to_reference}</#{elem}>"
       expect(reference_filter(act).to_html).to eq exp
@@ -96,7 +96,7 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
       doc = reference_filter("See #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
-      expect(link).not_to match %r(https?://)
+      expect(link).not_to match %r{https?://}
       expect(link).to eq urls.project_compare_url(project, from: commit1.id, to: commit2.id, only_path: true)
     end
   end

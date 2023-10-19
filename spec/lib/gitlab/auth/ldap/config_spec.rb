@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::Ldap::Config do
+RSpec.describe Gitlab::Auth::Ldap::Config, feature_category: :system_access do
   include LdapHelpers
 
   before do
@@ -360,6 +360,19 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
         filter: '(uid=%{username})'
       )
       expect(config.omniauth_options.keys).not_to include(:bind_dn, :password)
+    end
+
+    it 'defaults to plain encryption when not configured' do
+      stub_ldap_config(
+        options: {
+          'host' => 'ldap.example.com',
+          'port' => 386,
+          'base' => 'ou=users,dc=example,dc=com',
+          'uid' => 'uid'
+        }
+      )
+
+      expect(config.omniauth_options).to include(encryption: 'plain')
     end
 
     it 'includes authentication options when auth is configured' do

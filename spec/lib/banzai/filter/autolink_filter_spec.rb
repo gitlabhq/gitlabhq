@@ -178,7 +178,7 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning 
 
     it 'does not double-encode HTML entities' do
       encoded_link = "#{link}?foo=bar&amp;baz=quux"
-      expected_encoded_link = %{<a href="#{encoded_link}">#{encoded_link}</a>}
+      expected_encoded_link = %(<a href="#{encoded_link}">#{encoded_link}</a>)
       actual = unescape(filter(encoded_link).to_html)
 
       expect(actual).to eq(Rinku.auto_link(encoded_link))

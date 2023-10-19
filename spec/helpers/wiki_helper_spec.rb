@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WikiHelper do
+RSpec.describe WikiHelper, feature_category: :wiki do
   describe '#wiki_page_title' do
     let_it_be(:page) { create(:wiki_page) }
 
@@ -75,38 +75,42 @@ RSpec.describe WikiHelper do
 
   describe '#wiki_sort_controls' do
     let(:wiki) { create(:project_wiki) }
-    let(:wiki_link) { helper.wiki_sort_controls(wiki, direction) }
-    let(:classes) { "gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn rspec-reverse-sort" }
 
-    def expected_link(direction, icon_class)
+    before do
+      allow(Pajamas::ButtonComponent).to receive(:new).and_call_original
+    end
+
+    def expected_link_args(direction, icon_class)
       path = "/#{wiki.project.full_path}/-/wikis/pages?direction=#{direction}"
       title = direction == 'desc' ? _('Sort direction: Ascending') : _('Sort direction: Descending')
-      helper.link_to(path, type: 'button', class: classes, title: title) do
-        helper.sprite_icon("sort-#{icon_class}")
+      {
+        href: path,
+        icon: "sort-#{icon_class}",
+        button_options: hash_including(title: title)
+      }
+    end
+
+    context 'when initially rendering' do
+      it 'uses default values' do
+        helper.wiki_sort_controls(wiki, nil)
+
+        expect(Pajamas::ButtonComponent).to have_received(:new).with(expected_link_args('desc', 'lowest'))
       end
     end
 
-    context 'initial call' do
-      let(:direction) { nil }
-
-      it 'renders with default values' do
-        expect(wiki_link).to eq(expected_link('desc', 'lowest'))
-      end
-    end
-
-    context 'sort by asc order' do
-      let(:direction) { 'asc' }
-
+    context 'when the current sort order is ascending' do
       it 'renders a link with opposite direction' do
-        expect(wiki_link).to eq(expected_link('desc', 'lowest'))
+        helper.wiki_sort_controls(wiki, 'asc')
+
+        expect(Pajamas::ButtonComponent).to have_received(:new).with(expected_link_args('desc', 'lowest'))
       end
     end
 
-    context 'sort by desc order' do
-      let(:direction) { 'desc' }
-
+    context 'when the current sort order is descending' do
       it 'renders a link with opposite direction' do
-        expect(wiki_link).to eq(expected_link('asc', 'highest'))
+        helper.wiki_sort_controls(wiki, 'desc')
+
+        expect(Pajamas::ButtonComponent).to have_received(:new).with(expected_link_args('asc', 'highest'))
       end
     end
   end

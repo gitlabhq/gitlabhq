@@ -438,8 +438,7 @@ export default {
         v-for="(variable, index) in variables"
         :key="variable.uniqueId"
         class="gl-mb-3 gl-pb-2"
-        data-testid="ci-variable-row"
-        data-qa-selector="ci_variable_row_container"
+        data-testid="ci-variable-row-container"
       >
         <div
           class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row"
@@ -461,8 +460,7 @@ export default {
             v-model="variable.key"
             :placeholder="s__('CiVariables|Input variable key')"
             :class="$options.formElementClasses"
-            data-testid="pipeline-form-ci-variable-key"
-            data-qa-selector="ci_variable_key_field"
+            data-testid="pipeline-form-ci-variable-key-field"
             @change="addEmptyVariable(refFullName)"
           />
           <gl-dropdown
@@ -471,12 +469,11 @@ export default {
             :class="$options.formElementClasses"
             class="gl-flex-grow-1 gl-mr-0!"
             data-testid="pipeline-form-ci-variable-value-dropdown"
-            data-qa-selector="ci_variable_value_dropdown"
           >
             <gl-dropdown-item
               v-for="option in configVariablesWithDescription.options[variable.key]"
               :key="option"
-              data-qa-selector="ci_variable_value_dropdown_item"
+              data-testid="ci-variable-value-dropdown-item"
               @click="setVariableAttribute(variable.key, 'value', option)"
             >
               {{ option }}
@@ -489,8 +486,7 @@ export default {
             class="gl-mb-3"
             :style="$options.textAreaStyle"
             :no-resize="false"
-            data-testid="pipeline-form-ci-variable-value"
-            data-qa-selector="ci_variable_value_field"
+            data-testid="pipeline-form-ci-variable-value-field"
           />
 
           <template v-if="variables.length > 1">
@@ -542,8 +538,7 @@ export default {
         category="primary"
         variant="confirm"
         class="js-no-auto-disable gl-mr-3"
-        data-qa-selector="run_pipeline_button"
-        data-testid="run_pipeline_button"
+        data-testid="run-pipeline-button"
         :disabled="submitted"
         >{{ s__('Pipeline|Run pipeline') }}</gl-button
       >

@@ -114,13 +114,15 @@ module API
           requires :user_id, types: [Integer, String], desc: 'The user ID of the new member or multiple IDs separated by commas.'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'members-api'
-          optional :tasks_to_be_done, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Tasks the inviter wants the member to do'
-          optional :tasks_project_id, type: Integer, desc: 'The project ID in which to create the task issues'
         end
 
         post ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
-          authorize_admin_source!(source_type, source)
+          if ::Feature.enabled?(:admin_group_member, source)
+            authorize_admin_source_member!(source_type, source)
+          else
+            authorize_admin_source!(source_type, source)
+          end
 
           create_service_params = params.merge(source: source)
 
@@ -144,9 +146,13 @@ module API
         # rubocop: disable CodeReuse/ActiveRecord
         put ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params.delete(:id))
-          authorize_admin_source!(source_type, source)
-
           member = source_members(source).find_by!(user_id: params[:user_id])
+
+          if ::Feature.enabled?(:admin_group_member, source)
+            authorize_update_source_member!(source_type, member)
+          else
+            authorize_admin_source!(source_type, source)
+          end
 
           result = ::Members::UpdateService
             .new(current_user, declared_params(include_missing: false))

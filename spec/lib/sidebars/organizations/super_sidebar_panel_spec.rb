@@ -22,7 +22,8 @@ RSpec.describe Sidebars::Organizations::SuperSidebarPanel, feature_category: :na
     let(:category_menu) do
       [
         Sidebars::StaticMenu,
-        Sidebars::Organizations::Menus::ManageMenu
+        Sidebars::Organizations::Menus::ManageMenu,
+        Sidebars::Organizations::Menus::SettingsMenu
       ]
     end
 

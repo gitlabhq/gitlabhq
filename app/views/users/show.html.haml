@@ -5,6 +5,7 @@
 - page_description @user.bio unless @user.blocked? || !@user.confirmed?
 - page_itemtype    'http://schema.org/Person'
 - add_page_specific_style 'page_bundles/profile'
+- add_page_specific_style 'page_bundles/projects'
 - if show_super_sidebar?
   - @left_sidebar = true
   - @force_desktop_expanded_sidebar = true
@@ -17,7 +18,7 @@
   .cover-block.user-cover-block.gl-border-t.gl-border-b.gl-mt-n1
     %div{ class: container_class }
       - if Feature.enabled?(:user_profile_overflow_menu_vue)
-        .cover-controls.d-flex.px-2.pb-4.d-sm-block.p-sm-0
+        .cover-controls.gl-display-flex.gl-gap-3.gl-pb-4
           = render 'users/follow_user'
           -# The following edit button is mutually exclusive to the follow user button, they won't be shown together
           - if @user == current_user
@@ -32,14 +33,14 @@
           - if @user == current_user
             = render Pajamas::ButtonComponent.new(href: profile_path,
               icon: 'pencil',
-              button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
+              button_options: { class: 'gl-flex-grow-1 has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
           - elsif current_user
             #js-report-abuse{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: @user.id, reported_from_url: user_url(@user) } }
           = render 'users/view_gpg_keys'
           - if can?(current_user, :read_user_profile, @user)
             = render Pajamas::ButtonComponent.new(href: user_path(@user, rss_url_options),
               icon: 'rss',
-              button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
+              button_options: { class: 'gl-flex-grow-1 has-tooltip', title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
           = render 'users/view_user_in_admin_area'
           = render 'users/follow_user'
 

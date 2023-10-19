@@ -11,6 +11,10 @@ import {
   REF_TYPE_BRANCHES,
   REF_TYPE_TAGS,
   REF_TYPE_COMMITS,
+  TAG_REF_TYPE,
+  BRANCH_REF_TYPE,
+  TAG_REF_TYPE_ICON,
+  BRANCH_REF_TYPE_ICON,
 } from '../constants';
 import createStore from '../stores';
 import { formatListBoxItems, formatErrors } from '../format_refs';
@@ -159,6 +163,17 @@ export default {
           })
         : this.i18n.noResults;
     },
+    dropdownIcon() {
+      let icon;
+
+      if (this.selectedRef.includes(`refs/${TAG_REF_TYPE}`)) {
+        icon = TAG_REF_TYPE_ICON;
+      } else if (this.selectedRef.includes(`refs/${BRANCH_REF_TYPE}`)) {
+        icon = BRANCH_REF_TYPE_ICON;
+      }
+
+      return icon;
+    },
   },
   watch: {
     // Keep the Vuex store synchronized if the parent
@@ -246,6 +261,7 @@ export default {
       :search-placeholder="i18n.searchPlaceholder"
       :toggle-class="extendedToggleButtonClass"
       :toggle-text="buttonText"
+      :icon="dropdownIcon"
       v-bind="$attrs"
       v-on="$listeners"
       @hidden="$emit('hide')"

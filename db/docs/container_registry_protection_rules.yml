@@ -1,0 +1,10 @@
+---
+table_name: container_registry_protection_rules
+classes:
+- ContainerRegistry::Protection::Rule
+feature_categories:
+- container_registry
+description: Represents container protection rules for the container registry.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133297
+milestone: '16.5'
+gitlab_schema: gitlab_main

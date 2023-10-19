@@ -2,9 +2,9 @@
 data_category: optional
 key_path: counts.keys
 description: Number of keys.
-product_section: dev
-product_stage: manage
-product_group: authentication_and_authorization
+product_section: sec
+product_stage: govern
+product_group: authentication
 value_type: number
 status: active
 time_frame: all

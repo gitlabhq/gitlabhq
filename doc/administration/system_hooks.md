@@ -47,8 +47,7 @@ You can also enable triggers for other events, such as push events, and disable 
 when you create a system hook.
 
 NOTE:
-We follow the same structure and deprecations as [Webhooks](../user/project/integrations/webhooks.md)
-for Push and Tag events, but we never display commits.
+For push and tag events, the same structure and deprecations are followed as [project and group webhooks](../user/project/integrations/webhooks.md). However, commits are never displayed.
 
 ## Create a system hook
 

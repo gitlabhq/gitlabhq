@@ -9,6 +9,7 @@ module WorkItems
         return error(_('No matching work item found.'), 404) unless can?(current_user, :admin_work_item_link, issuable)
 
         response = super
+        create_notes_async if new_links.any?
 
         if response[:status] == :success
           response[:message] = format(
@@ -30,6 +31,10 @@ module WorkItems
 
       private
 
+      def create_notes(_issuable_link)
+        # no-op notes are created asynchronously
+      end
+
       def link_class
         WorkItems::RelatedWorkItemLink
       end
@@ -49,9 +54,23 @@ module WorkItems
         created_links.collect(&:target_id)
       end
 
+      def create_notes_async
+        link_ids = new_links.collect(&:id)
+
+        worker_params = {
+          issuable_class: issuable.class.name,
+          issuable_id: issuable.id,
+          link_ids: link_ids,
+          link_type: params[:link_type] || 'relates_to',
+          user_id: current_user.id
+        }
+
+        Issuable::RelatedLinksCreateWorker.perform_async(worker_params)
+      end
+
       override :issuables_already_assigned_message
       def issuables_already_assigned_message
-        _('Work items are already linked')
+        _('Items are already linked')
       end
 
       override :issuables_not_found_message

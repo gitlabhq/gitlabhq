@@ -1,8 +1,8 @@
 import { GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -55,14 +55,15 @@ describe('import table', () => {
     wrapper.findAll('tbody td button').wrappers.filter((w) => w.text() === 'Import with projects')[
       idx
     ];
-  const findPaginationDropdown = () => wrapper.find('[data-testid="page-size"]');
+  const findPaginationDropdown = () => wrapper.findByTestId('page-size');
   const findTargetNamespaceDropdown = (rowWrapper) =>
-    rowWrapper.find('[data-testid="target-namespace-selector"]');
+    extendedWrapper(rowWrapper).findByTestId('target-namespace-dropdown');
+  const findTargetNamespaceInput = (rowWrapper) =>
+    extendedWrapper(rowWrapper).findByTestId('target-namespace-input');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
   const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
-  const findUnavailableFeaturesWarning = () =>
-    wrapper.find('[data-testid="unavailable-features-alert"]');
+  const findUnavailableFeaturesWarning = () => wrapper.findByTestId('unavailable-features-alert');
 
   const triggerSelectAllCheckbox = (checked = true) =>
     wrapper.find('thead input[type=checkbox]').setChecked(checked);
@@ -88,7 +89,7 @@ describe('import table', () => {
       },
     );
 
-    wrapper = mount(ImportTable, {
+    wrapper = mountExtended(ImportTable, {
       propsData: {
         groupPathRegex: /.*/,
         jobsPath: '/fake_job_path',
@@ -220,32 +221,42 @@ describe('import table', () => {
     expect(wrapper.text()).not.toContain('Showing 1-0');
   });
 
-  it('invokes importGroups mutation when row button is clicked', async () => {
-    createComponent({
-      bulkImportSourceGroups: () => ({
-        nodes: [FAKE_GROUP],
-        pageInfo: FAKE_PAGE_INFO,
-        versionValidation: FAKE_VERSION_VALIDATION,
-      }),
+  describe('when import button is clicked', () => {
+    beforeEach(async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [FAKE_GROUP],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
+
+      await waitForPromises();
+
+      await findRowImportDropdownAtIndex(0).trigger('click');
     });
 
-    jest.spyOn(apolloProvider.defaultClient, 'mutate');
+    it('invokes importGroups mutation', () => {
+      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
+        mutation: importGroupsMutation,
+        variables: {
+          importRequests: [
+            {
+              migrateProjects: true,
+              newName: FAKE_GROUP.lastImportTarget.newName,
+              sourceGroupId: FAKE_GROUP.id,
+              targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
+            },
+          ],
+        },
+      });
+    });
 
-    await waitForPromises();
-
-    await findRowImportDropdownAtIndex(0).trigger('click');
-    expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
-      mutation: importGroupsMutation,
-      variables: {
-        importRequests: [
-          {
-            migrateProjects: true,
-            newName: FAKE_GROUP.lastImportTarget.newName,
-            sourceGroupId: FAKE_GROUP.id,
-            targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
-          },
-        ],
-      },
+    it('disables the import target input', () => {
+      const firstRow = wrapper.find('tbody tr');
+      expect(findTargetNamespaceInput(firstRow).attributes('disabled')).toBe('disabled');
     });
   });
 
@@ -294,6 +305,42 @@ describe('import table', () => {
     expect(wrapper.find('tbody tr').text()).toContain(i18n.ERROR_TOO_MANY_REQUESTS);
   });
 
+  it('displays inline error if backend returns validation error', async () => {
+    const mockValidationError =
+      'Import failed. Destination URL must not start or end with a special character and must not contain consecutive special characters.';
+    const mockMutationWithProgressError = jest.fn().mockResolvedValue({
+      __typename: 'ClientBulkImportSourceGroup',
+      id: 1,
+      lastImportTarget: { id: 1, targetNamespace: 'root', newName: 'group1' },
+      progress: {
+        __typename: 'ClientBulkImportProgress',
+        id: null,
+        status: 'failed',
+        message: mockValidationError,
+      },
+    });
+
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: [FAKE_GROUP],
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+      importGroups: mockMutationWithProgressError,
+    });
+
+    await waitForPromises();
+    await findRowImportDropdownAtIndex(0).trigger('click');
+    await waitForPromises();
+
+    expect(mockMutationWithProgressError).toHaveBeenCalled();
+    expect(createAlert).not.toHaveBeenCalled();
+
+    const firstRow = wrapper.find('tbody tr');
+    expect(findTargetNamespaceInput(firstRow).attributes('disabled')).toBeUndefined();
+    expect(firstRow.text()).toContain(mockValidationError);
+  });
+
   describe('pagination', () => {
     const bulkImportSourceGroupsQueryMock = jest.fn().mockResolvedValue({
       nodes: [FAKE_GROUP],
@@ -340,6 +387,28 @@ describe('import table', () => {
       expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ page: REQUESTED_PAGE }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('resets page to 1 when page size is changed', async () => {
+      wrapper.findComponent(PaginationBar).vm.$emit('set-page', 2);
+      await waitForPromises();
+
+      expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ page: 2, perPage: 50 }),
+        expect.anything(),
+        expect.anything(),
+      );
+
+      wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', 200);
+      await waitForPromises();
+
+      expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ page: 1, perPage: 200 }),
         expect.anything(),
         expect.anything(),
       );
@@ -601,7 +670,7 @@ describe('import table', () => {
   });
 
   describe('re-import', () => {
-    it('renders finished row as disabled by default', async () => {
+    beforeEach(async () => {
       createComponent({
         bulkImportSourceGroups: () => ({
           nodes: [generateFakeEntry({ id: 5, status: STATUSES.FINISHED })],
@@ -609,21 +678,15 @@ describe('import table', () => {
           versionValidation: FAKE_VERSION_VALIDATION,
         }),
       });
-      await waitForPromises();
 
+      await waitForPromises();
+    });
+
+    it('renders finished row as disabled by default', () => {
       expect(findRowCheckbox(0).attributes('disabled')).toBeDefined();
     });
 
     it('enables row after clicking re-import', async () => {
-      createComponent({
-        bulkImportSourceGroups: () => ({
-          nodes: [generateFakeEntry({ id: 5, status: STATUSES.FINISHED })],
-          pageInfo: FAKE_PAGE_INFO,
-          versionValidation: FAKE_VERSION_VALIDATION,
-        }),
-      });
-      await waitForPromises();
-
       const reimportButton = wrapper
         .findAll('tbody td button')
         .wrappers.find((w) => w.text().includes('Re-import'));

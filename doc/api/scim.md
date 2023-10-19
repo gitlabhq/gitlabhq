@@ -1,20 +1,29 @@
 ---
 type: reference, howto
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# SCIM API **(PREMIUM ALL)**
+# SCIM API **(PREMIUM SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
 
-GitLab provides an SCIM API that both implements [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644)
-and provides the `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
+The GitLab SCIM API manages SCIM identities within groups and provides the `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
 
 To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.
 This API is only in use where [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
 
-Not to be confused with the [internal group SCIM API](../development/internal_api/index.md#group-scim-api).
+This API is different to the [internal group SCIM API](../development/internal_api/index.md#group-scim-api) and the [instance SCIM API](../development/internal_api/index.md#instance-scim-api):
+
+- This API:
+  - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+  - Gets, checks, updates, and deletes SCIM identities within groups.
+
+- The internal group and instance SCIM APIs:
+  - Are for system use for SCIM provider integration.
+  - Implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+  - Get a list of SCIM provisioned users for the group or instance.
+  - Create, delete and update SCIM provisioned users for the group or instance.
 
 ## Get SCIM identities for a group
 
@@ -116,4 +125,34 @@ Example request:
 curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones" \
 --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
 --form "extern_uid=sydney_jones_new"
+```
+
+## Delete a single SCIM identity
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
+
+```plaintext
+DELETE /groups/:id/scim/:uid
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description               |
+| --------- | ------- | -------- | ------------------------- |
+| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `uid`     | string  | yes      | External UID of the user. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones"
+
+```
+
+Example response:
+
+```json
+{
+    "message" : "204 No Content"
+}
 ```

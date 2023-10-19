@@ -20,7 +20,7 @@ RSpec.describe "User removes labels", feature_category: :team_planning do
 
     it "removes label", :js do
       page.within(".other-labels") do
-        page.first(".label-list-item") do
+        page.first(".js-label-list-item") do
           first('.js-label-options-dropdown').click
           first('.js-delete-label-modal-button').click
         end
@@ -43,7 +43,7 @@ RSpec.describe "User removes labels", feature_category: :team_planning do
 
     it "removes all labels" do
       loop do
-        li = page.first(".label-list-item", minimum: 0)
+        li = page.first(".js-label-list-item", minimum: 0)
         break unless li
 
         li.find('.js-label-options-dropdown').click

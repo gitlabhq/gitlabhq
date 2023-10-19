@@ -29,6 +29,8 @@ export default () => {
   gl.mrWidgetData.gitlabLogo = gon.gitlab_logo;
   gl.mrWidgetData.defaultAvatarUrl = gon.default_avatar_url;
 
+  const dismissalDescriptions = JSON.parse(gl.mrWidgetData.dismissal_descriptions || '{}');
+
   // This is a false violation of @gitlab/no-runtime-template-compiler, since it
   // creates a new Vue instance by spreading a _valid_ Vue component definition
   // into the Vue constructor.
@@ -43,6 +45,8 @@ export default () => {
       canCreatePipelineInTargetProject: parseBoolean(
         gl.mrWidgetData.can_create_pipeline_in_target_project,
       ),
+      commitPathTemplate: gl.mrWidgetData.commit_path_template,
+      dismissalDescriptions,
     },
     ...MrWidgetOptions,
     apolloProvider,

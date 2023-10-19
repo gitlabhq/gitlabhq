@@ -8,9 +8,11 @@ module RuboCop
       class PreventIndexCreation < RuboCop::Cop::Base
         include MigrationHelpers
 
-        FORBIDDEN_TABLES = %i[ci_builds].freeze
+        FORBIDDEN_TABLES = %i[ci_builds namespaces].freeze
 
-        MSG = "Adding new index to #{FORBIDDEN_TABLES.join(", ")} is forbidden, see https://gitlab.com/gitlab-org/gitlab/-/issues/332886".freeze
+        MSG = "Adding new index to #{FORBIDDEN_TABLES.join(", ")} is forbidden. " \
+              "For `ci_builds` see https://gitlab.com/gitlab-org/gitlab/-/issues/332886, " \
+              "for `namespaces` see https://gitlab.com/groups/gitlab-org/-/epics/11543".freeze
 
         def on_new_investigation
           super
@@ -39,6 +41,9 @@ module RuboCop
 
         def on_def(node)
           return unless in_migration?(node)
+
+          direction = node.children[0]
+          return if direction == :down
 
           node.each_descendant(:send) do |send_node|
             add_offense(send_node.loc.selector) if offense?(send_node)

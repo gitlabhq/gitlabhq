@@ -101,8 +101,9 @@ class Projects::BlobController < Projects::ApplicationController
     )
   rescue Files::UpdateService::FileChangedError
     @conflict = true
-    @different_project = different_project?
-    render :edit
+    render "edit", locals: {
+      commit_to_fork: @different_project
+    }
   end
 
   def preview
@@ -164,7 +165,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     @ref_type = ref_type
 
-    if @ref_type == ExtractsRef::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
+    if @ref_type == ExtractsRef::RefExtractor::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
       branch = @project.repository.find_branch(@ref)
       redirect_to project_blob_path(@project, File.join(branch.target, @path))
     end

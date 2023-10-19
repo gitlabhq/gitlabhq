@@ -11,7 +11,6 @@ module Ml
 
     def execute
       model = Ml::FindOrCreateModelService.new(project, name).execute
-
       Ml::ModelVersion.find_or_create!(model, version, package)
     end
 

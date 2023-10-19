@@ -13,10 +13,9 @@ module Users
       @records = []
     end
 
-    def add(user, campaign: nil, track: nil, series: nil)
+    def add(user, track: nil, series: nil)
       @records << Users::InProductMarketingEmail.new(
         user: user,
-        campaign: campaign,
         track: track,
         series: series,
         created_at: Time.zone.now,

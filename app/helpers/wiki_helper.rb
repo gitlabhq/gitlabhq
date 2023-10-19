@@ -22,9 +22,7 @@ module WikiHelper
   end
 
   def wiki_sidebar_toggle_button
-    content_tag :button, class: 'gl-button btn btn-default btn-icon sidebar-toggle js-sidebar-wiki-toggle', role: 'button', type: 'button' do
-      sprite_icon('chevron-double-lg-left')
-    end
+    render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left', button_options: { class: 'sidebar-toggle js-sidebar-wiki-toggle' })
   end
 
   # Produces a pure text breadcrumb for a given page.
@@ -60,17 +58,14 @@ module WikiHelper
   end
 
   def wiki_sort_controls(wiki, direction)
-    link_class = 'gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn rspec-reverse-sort'
+    link_class = 'has-tooltip reverse-sort-btn rspec-reverse-sort'
     reversed_direction = direction == 'desc' ? 'asc' : 'desc'
     icon_class = direction == 'desc' ? 'highest' : 'lowest'
     title = direction == 'desc' ? _('Sort direction: Descending') : _('Sort direction: Ascending')
 
     link_options = { action: :pages, direction: reversed_direction }
 
-    link_to(wiki_path(wiki, **link_options),
-      type: 'button', class: link_class, title: title) do
-      sprite_icon("sort-#{icon_class}")
-    end
+    render Pajamas::ButtonComponent.new(href: wiki_path(wiki, **link_options), icon: "sort-#{icon_class}", button_options: { class: link_class, title: title })
   end
 
   def wiki_sort_title(key)

@@ -80,7 +80,7 @@ export default {
       :href="linkUrl"
       target="_blank"
       rel="noopener noreferrer"
-      data-qa-selector="badge_image_link"
+      data-testid="badge-image-link"
       :data-qa-link-url="linkUrl"
     >
       <img

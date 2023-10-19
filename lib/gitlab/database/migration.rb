@@ -34,7 +34,7 @@ module Gitlab
       # to indicate backwards-compatible or otherwise minor changes (e.g. a Rails version bump).
       # However, this hasn't been strictly formalized yet.
 
-      class V1_0 < ActiveRecord::Migration[6.1] # rubocop:disable Naming/ClassAndModuleCamelCase
+      class V1_0 < ActiveRecord::Migration[6.1]
         include LockRetriesConcern
         include Gitlab::Database::MigrationHelpers::V2
         include Gitlab::Database::MigrationHelpers::AnnounceDatabase
@@ -47,11 +47,11 @@ module Gitlab
         end
       end
 
-      class V2_0 < V1_0 # rubocop:disable Naming/ClassAndModuleCamelCase
+      class V2_0 < V1_0
         include Gitlab::Database::MigrationHelpers::RestrictGitlabSchema
       end
 
-      class V2_1 < V2_0 # rubocop:disable Naming/ClassAndModuleCamelCase
+      class V2_1 < V2_0
         include Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables
         include Gitlab::Database::Migrations::RunnerBackoff::MigrationHelpers
       end

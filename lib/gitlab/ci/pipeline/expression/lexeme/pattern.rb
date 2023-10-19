@@ -5,23 +5,17 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          require_dependency 're2'
-
           class Pattern < Lexeme::Value
-            PATTERN = %r{^\/([^\/]|\\/)+[^\\]\/[ismU]*}.freeze
+            PATTERN = %r{^\/([^\/]|\\/)+[^\\]\/[ismU]*}
 
             def initialize(regexp)
               super(regexp.gsub(%r{\\/}, '/'))
 
-              unless Gitlab::UntrustedRegexp::RubySyntax.valid?(@value)
-                raise Lexer::SyntaxError, 'Invalid regular expression!'
-              end
+              raise Lexer::SyntaxError, 'Invalid regular expression!' unless cached_regexp.valid?
             end
 
             def evaluate(variables = {})
-              Gitlab::UntrustedRegexp::RubySyntax.fabricate!(@value)
-            rescue RegexpError
-              raise Expression::RuntimeError, 'Invalid regular expression!'
+              cached_regexp.expression
             end
 
             def inspect
@@ -46,6 +40,12 @@ module Gitlab
               end
 
               new_pattern.evaluate(variables)
+            end
+
+            private
+
+            def cached_regexp
+              @cached_regexp ||= RegularExpression.new(@value)
             end
           end
         end

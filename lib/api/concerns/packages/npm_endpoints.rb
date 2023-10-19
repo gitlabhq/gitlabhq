@@ -76,12 +76,14 @@ module API
               ]
               failure [
                 { code: 400, message: 'Bad Request' },
+                { code: 401, message: 'Unauthorized' },
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
               tags %w[npm_packages]
             end
-            route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+            route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
+                                           authenticate_non_public: true
             get 'dist-tags', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               package_name = params[:package_name]
 
@@ -186,6 +188,7 @@ module API
             ]
             failure [
               { code: 400, message: 'Bad Request' },
+              { code: 401, message: 'Unauthorized' },
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
@@ -194,7 +197,8 @@ module API
           params do
             use :package_name
           end
-          route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+          route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
+                                         authenticate_non_public: true
           get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
             package_name = params[:package_name]
             available_packages =
@@ -224,9 +228,7 @@ module API
                 ).execute
 
                 if available_packages.any? && available_packages_to_user.empty?
-                  forbidden! if current_user
-
-                  not_found!('Packages')
+                  current_user ? forbidden! : unauthorized!
                 end
 
                 available_packages = available_packages_to_user

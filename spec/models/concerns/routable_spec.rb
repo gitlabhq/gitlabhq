@@ -3,16 +3,10 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'routable resource' do
-  shared_examples_for '.find_by_full_path' do
+  shared_examples_for '.find_by_full_path' do |has_cross_join: false|
     it 'finds records by their full path' do
       expect(described_class.find_by_full_path(record.full_path)).to eq(record)
       expect(described_class.find_by_full_path(record.full_path.upcase)).to eq(record)
-    end
-
-    it 'checks if `optimize_routable` is enabled only once' do
-      expect(Routable).to receive(:optimize_routable_enabled?).once
-
-      described_class.find_by_full_path(record.full_path)
     end
 
     it 'returns nil for unknown paths' do
@@ -51,27 +45,23 @@ RSpec.shared_examples 'routable resource' do
         end
       end
     end
+
+    if has_cross_join
+      it 'has a cross-join' do
+        expect(Gitlab::Database).to receive(:allow_cross_joins_across_databases)
+
+        described_class.find_by_full_path(record.full_path)
+      end
+    else
+      it 'does not have cross-join' do
+        expect(Gitlab::Database).not_to receive(:allow_cross_joins_across_databases)
+
+        described_class.find_by_full_path(record.full_path)
+      end
+    end
   end
 
   it_behaves_like '.find_by_full_path', :aggregate_failures
-
-  context 'when the `optimize_routable` feature flag is turned OFF' do
-    before do
-      stub_feature_flags(optimize_routable: false)
-    end
-
-    it_behaves_like '.find_by_full_path', :aggregate_failures
-
-    it 'includes route information when loading a record' do
-      control_count = ActiveRecord::QueryRecorder.new do
-        described_class.find_by_full_path(record.full_path)
-      end.count
-
-      expect do
-        described_class.find_by_full_path(record.full_path).route
-      end.not_to exceed_all_query_limit(control_count)
-    end
-  end
 end
 
 RSpec.shared_examples 'routable resource with parent' do
@@ -271,22 +261,6 @@ RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache
     expect do
       described_class.create!(project: nil, parent: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, path: 'foo', name: 'foo')
     end.not_to change { Route.count }
-  end
-end
-
-RSpec.describe Routable, feature_category: :groups_and_projects do
-  describe '.optimize_routable_enabled?' do
-    subject { described_class.optimize_routable_enabled? }
-
-    it { is_expected.to eq(true) }
-
-    context 'when the `optimize_routable` feature flag is turned OFF' do
-      before do
-        stub_feature_flags(optimize_routable: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
   end
 end
 

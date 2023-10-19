@@ -55,12 +55,12 @@ describe('Pipeline New Form', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findRefsDropdown = () => wrapper.findComponent(RefsDropdown);
-  const findSubmitButton = () => wrapper.findByTestId('run_pipeline_button');
-  const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row');
+  const findSubmitButton = () => wrapper.findByTestId('run-pipeline-button');
+  const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row-container');
   const findRemoveIcons = () => wrapper.findAllByTestId('remove-ci-variable-row');
   const findVariableTypes = () => wrapper.findAllByTestId('pipeline-form-ci-variable-type');
-  const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key');
-  const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value');
+  const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key-field');
+  const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value-field');
   const findValueDropdowns = () =>
     wrapper.findAllByTestId('pipeline-form-ci-variable-value-dropdown');
   const findValueDropdownItems = (dropdown) => dropdown.findAllComponents(GlDropdownItem);

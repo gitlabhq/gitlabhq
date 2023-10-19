@@ -47,7 +47,9 @@ module HamlLint
       def validate_node(node, match)
         return if match.empty?
 
-        path_to_file = detect_path_to_file(match[:link])
+        link = match[:link]
+
+        path_to_file = detect_path_to_file(link)
 
         unless File.file?(path_to_file)
           record_lint(node, "help_page_path points to the unknown location: #{path_to_file}")
@@ -57,6 +59,8 @@ module HamlLint
         unless correct_anchor?(path_to_file, match[:anchor])
           record_lint(node, "anchor (#{match[:anchor]}) is missing in: #{path_to_file}")
         end
+
+        record_lint(node, "remove .md extension from the link: #{link}") if link.end_with?('.md')
       end
 
       def extract_link_and_anchor(ast_tree)

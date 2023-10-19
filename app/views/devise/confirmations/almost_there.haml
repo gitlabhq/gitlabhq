@@ -3,10 +3,10 @@
 - registration_link_start = '<a href="%{new_user_registration_path}">'.html_safe % { new_user_registration_path: new_user_registration_path }
 - link_end = '</a>'.html_safe
 - content_for :page_specific_javascripts do
-  = render "layouts/google_tag_manager_head"
+  = render_if_exists "layouts/google_tag_manager_head"
   = render "layouts/one_trust"
   = render "layouts/bizible"
-= render "layouts/google_tag_manager_body"
+= render_if_exists "layouts/google_tag_manager_body"
 
 = render_if_exists 'devise/shared/delete_unconfirmed_users_flash'
 

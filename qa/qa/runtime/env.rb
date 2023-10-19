@@ -473,10 +473,6 @@ module QA
         ENV.fetch("WORKSPACES_OAUTH_APP_SECRET")
       end
 
-      def workspaces_oauth_redirect_uri
-        ENV.fetch("WORKSPACES_OAUTH_REDIRECT_URI")
-      end
-
       def workspaces_oauth_signing_key
         ENV.fetch("WORKSPACES_OAUTH_SIGNING_KEY")
       end
@@ -630,6 +626,14 @@ module QA
 
       def runner_container_image
         ENV.fetch('QA_RUNNER_CONTAINER_IMAGE', 'gitlab-runner:alpine')
+      end
+
+      def runner_container_namespace
+        ENV['QA_RUNNER_CONTAINER_NAMESPACE'] || 'gitlab-org'
+      end
+
+      def gitlab_qa_build_image
+        ENV['QA_GITLAB_QA_BUILD_IMAGE'] || 'gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
       end
 
       # ENV variables for authenticating against a private container registry

@@ -70,7 +70,7 @@ export default {
     <gl-form-input
       :id="id"
       :disabled="duplicatesAllowed || loading"
-      size="lg"
+      width="lg"
       :value="duplicateExceptionRegex"
       :state="isExceptionRegexValid"
       @change="update(name, $event)"

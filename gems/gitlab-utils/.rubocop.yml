@@ -1,6 +1,9 @@
 inherit_from:
   - ../config/rubocop.yml
 
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
 RSpec/InstanceVariable:
   Exclude:
     - spec/**/*.rb

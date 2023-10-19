@@ -188,7 +188,10 @@ export default {
           v-text="authorName"
         ></span>
       </a>
-      <span v-if="!isSystemNote && !emailParticipant" class="text-nowrap author-username">
+      <span
+        v-if="!isSystemNote && !emailParticipant"
+        class="text-nowrap author-username gl-text-truncate"
+      >
         <a
           ref="authorUsernameLink"
           class="author-username-link"
@@ -205,7 +208,7 @@ export default {
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-headline-meta">
-      <span class="system-note-message" data-qa-selector="system_note_content">
+      <span class="system-note-message" data-testid="system-note-content">
         <slot></slot>
       </span>
       <template v-if="createdAt">

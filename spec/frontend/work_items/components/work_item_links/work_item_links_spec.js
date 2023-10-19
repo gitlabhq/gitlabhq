@@ -13,9 +13,11 @@ import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/wor
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { FORM_TYPES } from '~/work_items/constants';
+import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   getIssueDetailsResponse,
+  groupWorkItemByIidResponseFactory,
   workItemHierarchyResponse,
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
@@ -32,6 +34,9 @@ describe('WorkItemLinks', () => {
   let mockApollo;
 
   const responseWithAddChildPermission = jest.fn().mockResolvedValue(workItemHierarchyResponse);
+  const groupResponseWithAddChildPermission = jest
+    .fn()
+    .mockResolvedValue(groupWorkItemByIidResponseFactory());
   const responseWithoutAddChildPermission = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ adminParentLink: false }));
@@ -40,20 +45,22 @@ describe('WorkItemLinks', () => {
     fetchHandler = responseWithAddChildPermission,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
     hasIterationsFeature = false,
+    isGroup = false,
   } = {}) => {
     mockApollo = createMockApollo(
       [
         [workItemByIidQuery, fetchHandler],
+        [groupWorkItemByIidQuery, groupResponseWithAddChildPermission],
         [issueDetailsQuery, issueDetailsQueryHandler],
       ],
       resolvers,
-      { addTypename: true },
     );
 
     wrapper = shallowMountExtended(WorkItemLinks, {
       provide: {
         fullPath: 'project/path',
         hasIterationsFeature,
+        isGroup,
         reportAbusePath: '/report/abuse/path',
       },
       propsData: {
@@ -241,6 +248,34 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findAbuseCategorySelector().exists()).toBe(false);
+    });
+  });
+
+  describe('when project context', () => {
+    it('calls the project work item query', () => {
+      createComponent();
+
+      expect(responseWithAddChildPermission).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work item query', () => {
+      createComponent();
+
+      expect(groupResponseWithAddChildPermission).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when group context', () => {
+    it('skips calling the project work item query', () => {
+      createComponent({ isGroup: true });
+
+      expect(responseWithAddChildPermission).not.toHaveBeenCalled();
+    });
+
+    it('calls the group work item query', () => {
+      createComponent({ isGroup: true });
+
+      expect(groupResponseWithAddChildPermission).toHaveBeenCalled();
     });
   });
 });

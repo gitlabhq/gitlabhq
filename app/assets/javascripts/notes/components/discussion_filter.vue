@@ -175,7 +175,7 @@ export default {
     <gl-disclosure-dropdown
       id="discussion-preferences-dropdown"
       class="full-width-mobile"
-      data-qa-selector="discussion_preferences_dropdown"
+      data-testid="discussion-preferences-dropdown"
       :toggle-text="__('Sort or filter')"
       :disabled="isLoading"
       placement="right"
@@ -213,7 +213,7 @@ export default {
           :is-selected="filter.value === currentValue"
           :class="{ 'is-active': filter.value === currentValue }"
           :data-filter-type="filterType(filter.value)"
-          data-qa-selector="filter_menu_item"
+          data-testid="filter-menu-item"
           @action="selectFilter(filter.value)"
         >
           <template #list-item>

@@ -240,14 +240,6 @@ RSpec.shared_examples 'namespace traversal' do
 
   describe '#ancestors_upto' do
     include_examples '#ancestors_upto'
-
-    context 'with use_traversal_ids disabled' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      include_examples '#ancestors_upto'
-    end
   end
 
   describe '#descendants' do

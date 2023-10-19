@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :reliable, product_group: :source_code do
+  RSpec.describe 'Create', :reliable, product_group: :source_code,
+    quarantine: {
+      type: :investigating,
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/427992"
+    } do
     describe 'Multiple file snippet' do
       let(:first_file_content) { 'First file content' }
       let(:second_file_content) { 'Second file content' }
@@ -51,7 +55,7 @@ module QA
       end
 
       shared_examples 'copying snippet file contents' do |snippet_type, testcase|
-        it "copies file contents of a multi-file #{snippet_type} to a comment and verifies them", testcase: testcase do
+        it "copies a multi-file #{snippet_type} to a comment and verifies them", testcase: testcase do
           send(snippet_type).visit!
 
           files.each do |files|

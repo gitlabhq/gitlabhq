@@ -1,5 +1,5 @@
-query getK8sServices($configuration: LocalConfiguration) {
-  k8sServices(configuration: $configuration) @client {
+query getK8sServices($configuration: LocalConfiguration, $namespace: String) {
+  k8sServices(configuration: $configuration, namespace: $namespace) @client {
     metadata {
       name
       namespace

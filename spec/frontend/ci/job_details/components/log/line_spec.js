@@ -224,7 +224,7 @@ describe('Job Log Line', () => {
             offset: 24526,
             content: [{ text: 'job log content' }],
             section: 'custom-section',
-            lineNumber: 76,
+            lineNumber: 77,
           },
           path: '/root/ci-project/-/jobs/6353',
         });

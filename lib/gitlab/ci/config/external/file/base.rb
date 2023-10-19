@@ -10,7 +10,7 @@ module Gitlab
 
             attr_reader :location, :params, :context, :errors
 
-            YAML_WHITELIST_EXTENSION = /.+\.(yml|yaml)$/i.freeze
+            YAML_WHITELIST_EXTENSION = /.+\.(yml|yaml)$/i
 
             def initialize(params, context)
               @params = params
@@ -114,7 +114,9 @@ module Gitlab
 
             def content_result
               context.logger.instrument(:config_file_fetch_content_hash) do
-                ::Gitlab::Ci::Config::Yaml::Loader.new(content, inputs: content_inputs).load
+                ::Gitlab::Ci::Config::Yaml::Loader.new(
+                  content, inputs: content_inputs, variables: context.variables
+                ).load
               end
             end
             strong_memoize_attr :content_result

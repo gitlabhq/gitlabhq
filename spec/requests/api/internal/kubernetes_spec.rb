@@ -507,15 +507,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         expect(response).to have_gitlab_http_status(:success)
       end
 
-      it 'returns 400 when the feature flag is disabled' do
-        deployment_project.add_member(user, :developer)
-        stub_feature_flags(k8s_proxy_pat: false)
-
-        send_request(params: { agent_id: agent.id, access_type: 'personal_access_token', access_key: personal_access_token.token })
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
-
       it 'returns 403 when user has no access' do
         send_request(params: { agent_id: agent.id, access_type: 'personal_access_token', access_key: personal_access_token.token })
 

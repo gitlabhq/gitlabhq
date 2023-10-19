@@ -1,0 +1,20 @@
+query getCiCatalogResourceComponents($id: CiCatalogResourceID!) {
+  ciCatalogResource(id: $id) {
+    id
+    components @client {
+      nodes {
+        id
+        name
+        description
+        path
+        inputs {
+          nodes {
+            name
+            defaultValue
+            required
+          }
+        }
+      }
+    }
+  }
+}

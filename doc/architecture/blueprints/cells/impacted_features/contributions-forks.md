@@ -53,7 +53,9 @@ From a [data exploration](https://gitlab.com/gitlab-data/product-analytics/-/iss
   - The remaining 14% are forked from a source Project within a different company.
 - 9% of top-level Groups (95k) with activity in the last 12 months have a project with a fork relationship, compared to 5% of top-level Groups (91k) with no activity in the last 12 months. We expect these top-level Groups to be impacted by Cells.
 
-## 3. Proposal - Forks are created in a dedicated contribution space of the current Organization
+## 3. Proposals
+
+### 3.1. Forks are created in a dedicated contribution space of the current Organization
 
 Instead of creating Projects across Organizations, forks are created in a contribution space tied to the Organization.
 A contribution space is similar to a personal namespace but rather than existing in the default Organization, it exists within the Organization someone is trying to contribute to.
@@ -74,11 +76,9 @@ Example:
 - Data in contribution spaces do not contribute to customer usage from a billing perspective.
 - Today we do not have organization-scoped runners but if we do implement that they will likely need special settings for how or if they can be used by contribution space projects.
 
-## 4. Alternative proposals considered
+### 3.2. Intra-cluster forks
 
-### 4.1. Intra-cluster forks
-
-This proposal implements forks as intra-Cluster forks where communication is done via API between all trusted Cells of a cluster:
+This proposal implements forks as intra-cluster forks where communication is done via API between all trusted Cells of a cluster:
 
 - Forks are created always in the context of a user's choice of Group.
 - Forks are isolated from the Organization.
@@ -98,7 +98,7 @@ Cons:
 - However, this is no different to the ability of users today to clone a repository to a local computer and push it to any repository of choice.
 - Access control of the source Project can be lower than that of the target Project. Today, the system requires that in order to contribute back, the access level needs to be the same for fork and upstream Project.
 
-### 4.2. Forks are created as internal Projects under current Projects
+### 3.3. Forks are created as internal Projects under current Projects
 
 Instead of creating Projects across Organizations, forks are attachments to existing Projects.
 Each user forking a Project receives their unique Project.
@@ -114,13 +114,37 @@ Cons:
 - Does not answer how to handle and migrate all existing forks.
 - Might share current Group/Project settings, which could be breaking some security boundaries.
 
-## 5. Evaluation
+### 3.4. Forks are created in personal namespaces of the current Organization
 
-### 5.1. Pros
+Every User can potentially have a personal namespace in each public Organization.
+On the first visit to an Organization the User will receive a personal namespace scoped to that Organization.
+A User can fork into a personal namespace provided the upstream repository is in the same Organization as the personal namespace.
+Removal of an Organization will remove any personal namespaces in the Organization.
 
-### 5.2. Cons
+Pros:
 
-## 6. Example
+- We re-use most existing code paths.
+- We re-use most existing product design rules.
+- Organization boundaries are naturally isolated.
+- Multiple personal namespaces will mean Users can divide personal Projects across Organizations instead of having them mixed together.
+- We expect most Users to work in one Organization, which means that the majority of them would not need to remember in which Organization they stored each of their personal Projects.
+
+Cons:
+
+- Redundant personal namespaces will be created. We expect to improve this in future iterations.
+- Multiple personal namespaces could be difficult to navigate, especially when working across a large number of Organizations. We expect this to be an edge case.
+- The life cycle of personal namespaces will be dependent on the Organization as is already the case for user accounts privately owned (such as Enterprise Users), and self-managed installations that are not public.
+- Organization personal namespaces will need new URL paths.
+- The legacy personal namespace path will need to be adapted.
+
+URL path changes are under [discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/427367).
+
+## 4. Evaluation
+
+We will follow [3.4. Forks are created in personal namespaces of the current Organization](#34-forks-are-created-in-personal-namespaces-of-the-current-organization) because it has already solved a lot of the hard problems.
+The short falls of this solution like reworking URL paths or handling multiple personal namespaces are manageable and less critical than problems created through other alternative proposals.
+
+## 5. Example
 
 As an example, we will demonstrate the impact of this proposal for the case that we move `gitlab-org/gitlab` to a different Organization.
 `gitlab-org/gitlab` has [over 8K forks](https://gitlab.com/gitlab-org/gitlab/-/forks).
@@ -128,9 +152,9 @@ As an example, we will demonstrate the impact of this proposal for the case that
 ### Does this direction impact the canonical URLs of those forks?
 
 Yes canonical URLs will change for forks.
-Existing users that have forks in personal namespaces and want to continue contributing merge requests, will be required to migrate their fork to a new fork in a contribution space.
-For example, a personal namespace fork at `https://gitlab.com/DylanGriffith/gitlab` will
-need to be migrated to `https://gitlab.com/-/contributions/gitlab-inc/@DylanGriffith/gitlab`.
+Specific path changes are under [discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/427367).
+Existing Users that have forks in legacy personal namespaces and want to continue contributing merge requests, will be required to migrate their fork to their personal namespace in the source project Organization.
+For example, a personal namespace fork at `https://gitlab.com/DylanGriffith/gitlab` will need to be migrated to `https://gitlab.com/-/organizations/gitlab-inc/@DylanGriffith/gitlab`.
 We may offer automated ways to move this, but manually the process would involve:
 
 1. Create the contribution space fork
@@ -140,12 +164,11 @@ We may offer automated ways to move this, but manually the process would involve
 ### Does it impact the Git URL of the repositories themselves?
 
 Yes.
-In the above the example the Git URL would change from
-`gitlab.com:DylanGriffith/gitlab.git` to `gitlab.com:/-/contributions/gitlab-inc/@DylanGriffith/gitlab.git`.
+Specific path changes are under [discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/427367).
 
 ### Would there be any user action required to accept their fork being moved within an Organization or towards a contribution space?
 
-If we offer an automated process we'd present this as an option for the user as they will become the new owner of the contribution space.
+No. If the Organization is public, then a user will have a personal namespace.
 
 ### Can we make promises that we will not break the existing forks of public Projects hosted on GitLab.com?
 

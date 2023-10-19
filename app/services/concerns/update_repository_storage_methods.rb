@@ -82,7 +82,6 @@ module UpdateRepositoryStorageMethods
     repository = type.repository_for(type.design? ? container.design_management_repository : container)
     full_path = repository.full_path
     raw_repository = repository.raw
-    checksum = repository.checksum
 
     # Initialize a git repository on the target path
     new_repository = Gitlab::Git::Repository.new(
@@ -92,12 +91,7 @@ module UpdateRepositoryStorageMethods
       full_path
     )
 
-    new_repository.replicate(raw_repository)
-    new_checksum = new_repository.checksum
-
-    if checksum != new_checksum
-      raise Error, s_('UpdateRepositoryStorage|Failed to verify %{type} repository checksum from %{old} to %{new}') % { type: type.name, old: checksum, new: new_checksum }
-    end
+    Repositories::ReplicateService.new(raw_repository).execute(new_repository, type.name)
   end
 
   def same_filesystem?

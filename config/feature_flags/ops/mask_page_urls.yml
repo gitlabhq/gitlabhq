@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69448
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340181
 milestone: '14.3'
 type: ops
-group: group::product intelligence
+group: group::analytics instrumentation
 default_enabled: false

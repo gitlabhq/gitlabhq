@@ -16,7 +16,7 @@ import GroupSelect from './group_select.vue';
 import InviteGroupNotification from './invite_group_notification.vue';
 
 export default {
-  name: 'InviteMembersModal',
+  name: 'InviteGroupsModal',
   components: {
     GroupSelect,
     InviteModalBase,

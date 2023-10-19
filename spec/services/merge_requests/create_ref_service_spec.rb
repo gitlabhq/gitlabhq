@@ -246,13 +246,13 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
             expect_next_instance_of(described_class) do |instance|
               original = instance.method(:maybe_merge!)
 
-              expect(instance).to receive(:maybe_merge!) do |*args|
+              expect(instance).to receive(:maybe_merge!) do |*args, **kwargs|
                 # Corrupt target_ref before the merge, simulating a race with
                 # another instance of the service for the same MR. source_sha is
                 # just an arbitrary valid commit that differs from what was just
                 # written.
                 project.repository.write_ref(target_ref, source_sha)
-                original.call(*args)
+                original.call(*args, **kwargs)
               end
             end
 

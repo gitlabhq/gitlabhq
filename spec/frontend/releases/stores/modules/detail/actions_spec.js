@@ -1,9 +1,11 @@
 import { cloneDeep } from 'lodash';
 import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
 import testAction from 'helpers/vuex_action_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { getTag } from '~/api/tags_api';
 import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import AccessorUtilities from '~/lib/utils/accessor';
 import { s__ } from '~/locale';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
 import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
@@ -20,6 +22,7 @@ jest.mock('~/api/tags_api');
 
 jest.mock('~/alert');
 
+jest.mock('~/lib/utils/accessor');
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
@@ -34,32 +37,42 @@ jest.mock('~/releases/util', () => ({
 }));
 
 describe('Release edit/new actions', () => {
+  useLocalStorageSpy();
+
   let state;
   let releaseResponse;
   let error;
 
   const projectPath = 'test/project-path';
+  const draftActions = [{ type: 'saveDraftRelease' }, { type: 'saveDraftCreateFrom' }];
 
   const setupState = (updates = {}) => {
     state = {
       ...createState({
         projectPath,
         projectId: '18',
-        isExistingRelease: true,
+        isExistingRelease: false,
         tagName: releaseResponse.tag_name,
         releasesPagePath: 'path/to/releases/page',
         markdownDocsPath: 'path/to/markdown/docs',
         markdownPreviewPath: 'path/to/markdown/preview',
       }),
+      localStorageKey: `${projectPath}/release/new`,
+      localStorageCreateFromKey: `${projectPath}/release/new/createFrom`,
       ...updates,
     };
   };
 
   beforeEach(() => {
+    AccessorUtilities.canUseLocalStorage.mockReturnValue(true);
     releaseResponse = cloneDeep(originalOneReleaseForEditingQueryResponse);
     gon.api_version = 'v4';
     error = new Error('Yikes!');
     createAlert.mockClear();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('when creating a new release', () => {
@@ -68,44 +81,159 @@ describe('Release edit/new actions', () => {
     });
 
     describe('initializeRelease', () => {
-      it(`commits ${types.INITIALIZE_EMPTY_RELEASE}`, () => {
-        testAction(actions.initializeRelease, undefined, state, [
-          { type: types.INITIALIZE_EMPTY_RELEASE },
-        ]);
+      it('dispatches loadDraftRelease', () => {
+        return testAction({
+          action: actions.initializeRelease,
+          state,
+          expectedMutations: [],
+          expectedActions: [{ type: 'loadDraftRelease' }],
+        });
+      });
+    });
+
+    describe('loadDraftRelease', () => {
+      it(`with no saved release, it commits ${types.INITIALIZE_EMPTY_RELEASE}`, () => {
+        testAction({
+          action: actions.loadDraftRelease,
+          state,
+          expectedMutations: [{ type: types.INITIALIZE_EMPTY_RELEASE }],
+        });
+      });
+
+      it('with saved release, loads the release from local storage', () => {
+        const release = {
+          tagName: 'v1.3',
+          tagMessage: 'hello',
+          name: '',
+          description: '',
+          milestones: [],
+          groupMilestones: [],
+          releasedAt: new Date(),
+          assets: {
+            links: [],
+          },
+        };
+        const createFrom = 'main';
+
+        window.localStorage.setItem(`${state.projectPath}/release/new`, JSON.stringify(release));
+        window.localStorage.setItem(
+          `${state.projectPath}/release/new/createFrom`,
+          JSON.stringify(createFrom),
+        );
+
+        return testAction({
+          action: actions.loadDraftRelease,
+          state,
+          expectedMutations: [
+            { type: types.INITIALIZE_RELEASE, payload: release },
+            { type: types.UPDATE_CREATE_FROM, payload: createFrom },
+          ],
+        });
+      });
+    });
+
+    describe('clearDraftRelease', () => {
+      it('calls window.localStorage.clear', () => {
+        return testAction({ action: actions.clearDraftRelease, state }).then(() => {
+          expect(window.localStorage.removeItem).toHaveBeenCalledTimes(2);
+          expect(window.localStorage.removeItem).toHaveBeenCalledWith(state.localStorageKey);
+          expect(window.localStorage.removeItem).toHaveBeenCalledWith(
+            state.localStorageCreateFromKey,
+          );
+        });
+      });
+    });
+
+    describe('saveDraftCreateFrom', () => {
+      it('saves the create from to local storage', () => {
+        const createFrom = 'main';
+        setupState({ createFrom });
+        return testAction({ action: actions.saveDraftCreateFrom, state }).then(() => {
+          expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
+          expect(window.localStorage.setItem).toHaveBeenCalledWith(
+            state.localStorageCreateFromKey,
+            JSON.stringify(createFrom),
+          );
+        });
+      });
+    });
+
+    describe('saveDraftRelease', () => {
+      let release;
+
+      beforeEach(() => {
+        release = {
+          tagName: 'v1.3',
+          tagMessage: 'hello',
+          name: '',
+          description: '',
+          milestones: [],
+          groupMilestones: [],
+          releasedAt: new Date(),
+          assets: {
+            links: [],
+          },
+        };
+      });
+
+      it('saves the draft release to local storage', () => {
+        setupState({ release, releasedAtChanged: true });
+
+        return testAction({ action: actions.saveDraftRelease, state }).then(() => {
+          expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
+          expect(window.localStorage.setItem).toHaveBeenCalledWith(
+            state.localStorageKey,
+            JSON.stringify(state.release),
+          );
+        });
+      });
+
+      it('ignores the released at date if it has not been changed', () => {
+        setupState({ release, releasedAtChanged: false });
+
+        return testAction({ action: actions.saveDraftRelease, state }).then(() => {
+          expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
+          expect(window.localStorage.setItem).toHaveBeenCalledWith(
+            state.localStorageKey,
+            JSON.stringify({ ...state.release, releasedAt: undefined }),
+          );
+        });
       });
     });
 
     describe('saveRelease', () => {
       it(`commits ${types.REQUEST_SAVE_RELEASE} and then dispatched "createRelease"`, () => {
-        testAction(
-          actions.saveRelease,
-          undefined,
+        testAction({
+          action: actions.saveRelease,
           state,
-          [{ type: types.REQUEST_SAVE_RELEASE }],
-          [{ type: 'createRelease' }],
-        );
+          expectedMutations: [{ type: types.REQUEST_SAVE_RELEASE }],
+          expectedActions: [{ type: 'createRelease' }],
+        });
       });
     });
   });
 
   describe('when editing an existing release', () => {
-    beforeEach(setupState);
+    beforeEach(() => setupState({ isExistingRelease: true }));
 
     describe('initializeRelease', () => {
       it('dispatches "fetchRelease"', () => {
-        testAction(actions.initializeRelease, undefined, state, [], [{ type: 'fetchRelease' }]);
+        testAction({
+          action: actions.initializeRelease,
+          state,
+          expectedActions: [{ type: 'fetchRelease' }],
+        });
       });
     });
 
     describe('saveRelease', () => {
       it(`commits ${types.REQUEST_SAVE_RELEASE} and then dispatched "updateRelease"`, () => {
-        testAction(
-          actions.saveRelease,
-          undefined,
+        testAction({
+          action: actions.saveRelease,
           state,
-          [{ type: types.REQUEST_SAVE_RELEASE }],
-          [{ type: 'updateRelease' }],
-        );
+          expectedMutations: [{ type: types.REQUEST_SAVE_RELEASE }],
+          expectedActions: [{ type: 'updateRelease' }],
+        });
       });
     });
   });
@@ -120,15 +248,19 @@ describe('Release edit/new actions', () => {
         });
 
         it(`commits ${types.REQUEST_RELEASE} and then commits ${types.RECEIVE_RELEASE_SUCCESS} with the converted release object`, () => {
-          return testAction(actions.fetchRelease, undefined, state, [
-            {
-              type: types.REQUEST_RELEASE,
-            },
-            {
-              type: types.RECEIVE_RELEASE_SUCCESS,
-              payload: convertOneReleaseGraphQLResponse(releaseResponse).data,
-            },
-          ]);
+          return testAction({
+            action: actions.fetchRelease,
+            state,
+            expectedMutations: [
+              {
+                type: types.REQUEST_RELEASE,
+              },
+              {
+                type: types.RECEIVE_RELEASE_SUCCESS,
+                payload: convertOneReleaseGraphQLResponse(releaseResponse).data,
+              },
+            ],
+          });
         });
       });
 
@@ -138,15 +270,19 @@ describe('Release edit/new actions', () => {
         });
 
         it(`commits ${types.REQUEST_RELEASE} and then commits ${types.RECEIVE_RELEASE_ERROR} with an error object`, () => {
-          return testAction(actions.fetchRelease, undefined, state, [
-            {
-              type: types.REQUEST_RELEASE,
-            },
-            {
-              type: types.RECEIVE_RELEASE_ERROR,
-              payload: expect.any(Error),
-            },
-          ]);
+          return testAction({
+            action: actions.fetchRelease,
+            state,
+            expectedMutations: [
+              {
+                type: types.REQUEST_RELEASE,
+              },
+              {
+                type: types.RECEIVE_RELEASE_ERROR,
+                payload: expect.any(Error),
+              },
+            ],
+          });
         });
 
         it(`shows an alert message`, () => {
@@ -163,89 +299,140 @@ describe('Release edit/new actions', () => {
     describe('updateReleaseTagName', () => {
       it(`commits ${types.UPDATE_RELEASE_TAG_NAME} with the updated tag name`, () => {
         const newTag = 'updated-tag-name';
-        return testAction(actions.updateReleaseTagName, newTag, state, [
-          { type: types.UPDATE_RELEASE_TAG_NAME, payload: newTag },
-        ]);
+        return testAction({
+          action: actions.updateReleaseTagName,
+          payload: newTag,
+          state,
+          expectedMutations: [{ type: types.UPDATE_RELEASE_TAG_NAME, payload: newTag }],
+          expectedActions: draftActions,
+        });
+      });
+      it('does not save drafts when editing', () => {
+        const newTag = 'updated-tag-name';
+        return testAction({
+          action: actions.updateReleaseTagName,
+          payload: newTag,
+          state: { ...state, isExistingRelease: true },
+          expectedMutations: [{ type: types.UPDATE_RELEASE_TAG_NAME, payload: newTag }],
+        });
       });
     });
 
     describe('updateReleaseTagMessage', () => {
       it(`commits ${types.UPDATE_RELEASE_TAG_MESSAGE} with the updated tag name`, () => {
         const newMessage = 'updated-tag-message';
-        return testAction(actions.updateReleaseTagMessage, newMessage, state, [
-          { type: types.UPDATE_RELEASE_TAG_MESSAGE, payload: newMessage },
-        ]);
+        return testAction({
+          action: actions.updateReleaseTagMessage,
+          payload: newMessage,
+          state,
+          expectedMutations: [{ type: types.UPDATE_RELEASE_TAG_MESSAGE, payload: newMessage }],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('updateReleasedAt', () => {
       it(`commits ${types.UPDATE_RELEASED_AT} with the updated date`, () => {
         const newDate = new Date();
-        return testAction(actions.updateReleasedAt, newDate, state, [
-          { type: types.UPDATE_RELEASED_AT, payload: newDate },
-        ]);
+        return testAction({
+          action: actions.updateReleasedAt,
+          payload: newDate,
+          state,
+          expectedMutations: [{ type: types.UPDATE_RELEASED_AT, payload: newDate }],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('updateCreateFrom', () => {
       it(`commits ${types.UPDATE_CREATE_FROM} with the updated ref`, () => {
         const newRef = 'my-feature-branch';
-        return testAction(actions.updateCreateFrom, newRef, state, [
-          { type: types.UPDATE_CREATE_FROM, payload: newRef },
-        ]);
+        return testAction({
+          action: actions.updateCreateFrom,
+          payload: newRef,
+          state,
+          expectedMutations: [{ type: types.UPDATE_CREATE_FROM, payload: newRef }],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('updateShowCreateFrom', () => {
       it(`commits ${types.UPDATE_SHOW_CREATE_FROM} with the updated ref`, () => {
         const newRef = 'my-feature-branch';
-        return testAction(actions.updateShowCreateFrom, newRef, state, [
-          { type: types.UPDATE_SHOW_CREATE_FROM, payload: newRef },
-        ]);
+        return testAction({
+          action: actions.updateShowCreateFrom,
+          payload: newRef,
+          state,
+          expectedMutations: [{ type: types.UPDATE_SHOW_CREATE_FROM, payload: newRef }],
+        });
       });
     });
 
     describe('updateReleaseTitle', () => {
       it(`commits ${types.UPDATE_RELEASE_TITLE} with the updated release title`, () => {
         const newTitle = 'The new release title';
-        return testAction(actions.updateReleaseTitle, newTitle, state, [
-          { type: types.UPDATE_RELEASE_TITLE, payload: newTitle },
-        ]);
+        return testAction({
+          action: actions.updateReleaseTitle,
+          payload: newTitle,
+          state,
+          expectedMutations: [{ type: types.UPDATE_RELEASE_TITLE, payload: newTitle }],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('updateReleaseNotes', () => {
       it(`commits ${types.UPDATE_RELEASE_NOTES} with the updated release notes`, () => {
         const newReleaseNotes = 'The new release notes';
-        return testAction(actions.updateReleaseNotes, newReleaseNotes, state, [
-          { type: types.UPDATE_RELEASE_NOTES, payload: newReleaseNotes },
-        ]);
+        return testAction({
+          action: actions.updateReleaseNotes,
+          payload: newReleaseNotes,
+          state,
+          expectedMutations: [{ type: types.UPDATE_RELEASE_NOTES, payload: newReleaseNotes }],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('updateReleaseMilestones', () => {
       it(`commits ${types.UPDATE_RELEASE_MILESTONES} with the updated release milestones`, () => {
         const newReleaseMilestones = ['v0.0', 'v0.1'];
-        return testAction(actions.updateReleaseMilestones, newReleaseMilestones, state, [
-          { type: types.UPDATE_RELEASE_MILESTONES, payload: newReleaseMilestones },
-        ]);
+        return testAction({
+          action: actions.updateReleaseMilestones,
+          payload: newReleaseMilestones,
+          state,
+          expectedMutations: [
+            { type: types.UPDATE_RELEASE_MILESTONES, payload: newReleaseMilestones },
+          ],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('updateReleaseGroupMilestones', () => {
       it(`commits ${types.UPDATE_RELEASE_GROUP_MILESTONES} with the updated release group milestones`, () => {
         const newReleaseGroupMilestones = ['v0.0', 'v0.1'];
-        return testAction(actions.updateReleaseGroupMilestones, newReleaseGroupMilestones, state, [
-          { type: types.UPDATE_RELEASE_GROUP_MILESTONES, payload: newReleaseGroupMilestones },
-        ]);
+        return testAction({
+          action: actions.updateReleaseGroupMilestones,
+          payload: newReleaseGroupMilestones,
+          state,
+          expectedMutations: [
+            { type: types.UPDATE_RELEASE_GROUP_MILESTONES, payload: newReleaseGroupMilestones },
+          ],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('addEmptyAssetLink', () => {
       it(`commits ${types.ADD_EMPTY_ASSET_LINK}`, () => {
-        return testAction(actions.addEmptyAssetLink, undefined, state, [
-          { type: types.ADD_EMPTY_ASSET_LINK },
-        ]);
+        return testAction({
+          action: actions.addEmptyAssetLink,
+          state,
+          expectedMutations: [{ type: types.ADD_EMPTY_ASSET_LINK }],
+          expectedActions: draftActions,
+        });
       });
     });
 
@@ -256,9 +443,13 @@ describe('Release edit/new actions', () => {
           newUrl: 'https://example.com/updated',
         };
 
-        return testAction(actions.updateAssetLinkUrl, params, state, [
-          { type: types.UPDATE_ASSET_LINK_URL, payload: params },
-        ]);
+        return testAction({
+          action: actions.updateAssetLinkUrl,
+          payload: params,
+          state,
+          expectedMutations: [{ type: types.UPDATE_ASSET_LINK_URL, payload: params }],
+          expectedActions: draftActions,
+        });
       });
     });
 
@@ -269,9 +460,13 @@ describe('Release edit/new actions', () => {
           newName: 'Updated link name',
         };
 
-        return testAction(actions.updateAssetLinkName, params, state, [
-          { type: types.UPDATE_ASSET_LINK_NAME, payload: params },
-        ]);
+        return testAction({
+          action: actions.updateAssetLinkName,
+          payload: params,
+          state,
+          expectedMutations: [{ type: types.UPDATE_ASSET_LINK_NAME, payload: params }],
+          expectedActions: draftActions,
+        });
       });
     });
 
@@ -282,30 +477,45 @@ describe('Release edit/new actions', () => {
           newType: ASSET_LINK_TYPE.RUNBOOK,
         };
 
-        return testAction(actions.updateAssetLinkType, params, state, [
-          { type: types.UPDATE_ASSET_LINK_TYPE, payload: params },
-        ]);
+        return testAction({
+          action: actions.updateAssetLinkType,
+          payload: params,
+          state,
+          expectedMutations: [{ type: types.UPDATE_ASSET_LINK_TYPE, payload: params }],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('removeAssetLink', () => {
       it(`commits ${types.REMOVE_ASSET_LINK} with the ID of the asset link to remove`, () => {
         const idToRemove = 2;
-        return testAction(actions.removeAssetLink, idToRemove, state, [
-          { type: types.REMOVE_ASSET_LINK, payload: idToRemove },
-        ]);
+        return testAction({
+          action: actions.removeAssetLink,
+          payload: idToRemove,
+          state,
+          expectedMutations: [{ type: types.REMOVE_ASSET_LINK, payload: idToRemove }],
+          expectedActions: draftActions,
+        });
       });
     });
 
     describe('receiveSaveReleaseSuccess', () => {
-      it(`commits ${types.RECEIVE_SAVE_RELEASE_SUCCESS}`, () =>
-        testAction(actions.receiveSaveReleaseSuccess, releaseResponse, state, [
-          { type: types.RECEIVE_SAVE_RELEASE_SUCCESS },
-        ]));
+      it(`commits ${types.RECEIVE_SAVE_RELEASE_SUCCESS} and dispatches clearDraftRelease`, () =>
+        testAction({
+          action: actions.receiveSaveReleaseSuccess,
+          payload: releaseResponse,
+          state,
+          expectedMutations: [{ type: types.RECEIVE_SAVE_RELEASE_SUCCESS }],
+          expectedActions: [{ type: 'clearDraftRelease' }],
+        }));
 
       it("redirects to the release's dedicated page", () => {
         const { selfUrl } = releaseResponse.data.project.release.links;
-        actions.receiveSaveReleaseSuccess({ commit: jest.fn(), state }, selfUrl);
+        actions.receiveSaveReleaseSuccess(
+          { commit: jest.fn(), state, dispatch: jest.fn() },
+          selfUrl,
+        );
         expect(redirectTo).toHaveBeenCalledTimes(1); // eslint-disable-line import/no-deprecated
         expect(redirectTo).toHaveBeenCalledWith(selfUrl); // eslint-disable-line import/no-deprecated
       });
@@ -346,18 +556,16 @@ describe('Release edit/new actions', () => {
         });
 
         it(`dispatches "receiveSaveReleaseSuccess" with the converted release object`, () => {
-          return testAction(
-            actions.createRelease,
-            undefined,
+          return testAction({
+            action: actions.createRelease,
             state,
-            [],
-            [
+            expectedActions: [
               {
                 type: 'receiveSaveReleaseSuccess',
                 payload: selfUrl,
               },
             ],
-          );
+          });
         });
       });
 
@@ -367,12 +575,16 @@ describe('Release edit/new actions', () => {
         });
 
         it(`commits ${types.RECEIVE_SAVE_RELEASE_ERROR} with an error object`, () => {
-          return testAction(actions.createRelease, undefined, state, [
-            {
-              type: types.RECEIVE_SAVE_RELEASE_ERROR,
-              payload: expect.any(Error),
-            },
-          ]);
+          return testAction({
+            action: actions.createRelease,
+            state,
+            expectedMutations: [
+              {
+                type: types.RECEIVE_SAVE_RELEASE_ERROR,
+                payload: expect.any(Error),
+              },
+            ],
+          });
         });
 
         it(`shows an alert message`, () => {
@@ -393,12 +605,16 @@ describe('Release edit/new actions', () => {
         });
 
         it(`commits ${types.RECEIVE_SAVE_RELEASE_ERROR} with an error object`, () => {
-          return testAction(actions.createRelease, undefined, state, [
-            {
-              type: types.RECEIVE_SAVE_RELEASE_ERROR,
-              payload: expect.any(Error),
-            },
-          ]);
+          return testAction({
+            action: actions.createRelease,
+            state,
+            expectedMutations: [
+              {
+                type: types.RECEIVE_SAVE_RELEASE_ERROR,
+                payload: expect.any(Error),
+              },
+            ],
+          });
         });
 
         it(`shows an alert message`, () => {
@@ -760,16 +976,15 @@ describe('Release edit/new actions', () => {
       const tag = { message: 'this is a tag' };
       getTag.mockResolvedValue({ data: tag });
 
-      await testAction(
-        actions.fetchTagNotes,
-        tagName,
+      await testAction({
+        action: actions.fetchTagNotes,
+        payload: tagName,
         state,
-        [
+        expectedMutations: [
           { type: types.REQUEST_TAG_NOTES },
           { type: types.RECEIVE_TAG_NOTES_SUCCESS, payload: tag },
         ],
-        [],
-      );
+      });
 
       expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);
     });
@@ -777,16 +992,15 @@ describe('Release edit/new actions', () => {
       error = new Error();
       getTag.mockRejectedValue(error);
 
-      await testAction(
-        actions.fetchTagNotes,
-        tagName,
+      await testAction({
+        action: actions.fetchTagNotes,
+        payload: tagName,
         state,
-        [
+        expectedMutations: [
           { type: types.REQUEST_TAG_NOTES },
           { type: types.RECEIVE_TAG_NOTES_ERROR, payload: error },
         ],
-        [],
-      );
+      });
 
       expect(createAlert).toHaveBeenCalledWith({
         message: s__('Release|Unable to fetch the tag notes.'),

@@ -5,7 +5,6 @@ module MembershipActions
   extend ActiveSupport::Concern
 
   def update
-    update_params = params.require(root_params_key).permit(:access_level, :expires_at)
     member = members_and_requesters.find(params[:id])
     result = Members::UpdateService
       .new(current_user, update_params)
@@ -148,6 +147,10 @@ module MembershipActions
     membershipable.requesters
   end
 
+  def update_params
+    params.require(root_params_key).permit(:access_level, :expires_at)
+  end
+
   def requested_relations(inherited_permissions = :with_inherited_permissions)
     case params[inherited_permissions].presence
     when 'exclude'
@@ -156,7 +159,8 @@ module MembershipActions
       [:inherited]
     else
       if Feature.enabled?(:webui_members_inherited_users, current_user)
-        [:inherited, :direct, :shared_from_groups, (:invited_groups if params[:project_id])].compact
+        project_relations = [:invited_groups, :shared_into_ancestors]
+        [:inherited, :direct, :shared_from_groups, *(project_relations if params[:project_id])]
       else
         [:inherited, :direct]
       end

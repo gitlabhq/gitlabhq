@@ -3,6 +3,8 @@ import VueApollo from 'vue-apollo';
 import { defaultDataIdFromObject } from '@apollo/client/core';
 import { concatPagination } from '@apollo/client/utilities';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
+import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
@@ -20,6 +22,20 @@ export const config = {
         : defaultDataIdFromObject(object);
     },
     typePolicies: {
+      Query: {
+        fields: {
+          isShowingLabels: {
+            read(currentState) {
+              return currentState ?? true;
+            },
+          },
+          selectedBoardItems: {
+            read(currentState) {
+              return currentState ?? [];
+            },
+          },
+        },
+      },
       Project: {
         fields: {
           projectMembers: {
@@ -77,14 +93,6 @@ export const config = {
                 const incomingWidget = incoming.find(
                   (w) => w.type && w.type === existingWidget.type,
                 );
-                // We don't want to override existing notes or award emojis with empty widget on work item updates
-                if (
-                  (incomingWidget?.type === WIDGET_TYPE_NOTES ||
-                    incomingWidget?.type === WIDGET_TYPE_AWARD_EMOJI) &&
-                  !context.variables.pageSize
-                ) {
-                  return existingWidget;
-                }
 
                 // we want to concat next page of awardEmoji to the existing ones
                 if (incomingWidget?.type === WIDGET_TYPE_AWARD_EMOJI && context.variables.after) {
@@ -116,7 +124,7 @@ export const config = {
                   };
                 }
 
-                return incomingWidget || existingWidget;
+                return { ...existingWidget, ...incomingWidget };
               });
             },
           },
@@ -211,6 +219,16 @@ export const config = {
                 epicBoardList: {
                   keyArgs: ['id'],
                 },
+                isShowingLabels: {
+                  read(currentState) {
+                    return currentState ?? true;
+                  },
+                },
+                selectedBoardItems: {
+                  read(currentState) {
+                    return currentState ?? [];
+                  },
+                },
               },
             },
           }
@@ -235,6 +253,21 @@ export const resolvers = {
       });
       return boardItem;
     },
+    setSelectedBoardItems(_, { itemId }, { cache }) {
+      const sourceData = cache.readQuery({ query: selectedBoardItemsQuery });
+      cache.writeQuery({
+        query: selectedBoardItemsQuery,
+        data: { selectedBoardItems: [...sourceData.selectedBoardItems, itemId] },
+      });
+      return [...sourceData.selectedBoardItems, itemId];
+    },
+    unsetSelectedBoardItems(_, _variables, { cache }) {
+      cache.writeQuery({
+        query: selectedBoardItemsQuery,
+        data: { selectedBoardItems: [] },
+      });
+      return [];
+    },
     setError(_, { error }, { cache }) {
       cache.writeQuery({
         query: errorQuery,
@@ -257,6 +290,13 @@ export const resolvers = {
           collapsed,
         },
       };
+    },
+    setIsShowingLabels(_, { isShowingLabels }, { cache }) {
+      cache.writeQuery({
+        query: isShowingLabelsQuery,
+        data: { isShowingLabels },
+      });
+      return isShowingLabels;
     },
   },
 };

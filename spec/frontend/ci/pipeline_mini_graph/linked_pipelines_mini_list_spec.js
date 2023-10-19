@@ -50,19 +50,6 @@ describe('Linked pipeline mini list', () => {
       expect(findCiIcon().exists()).toBe(true);
     });
 
-    it('should render a borderless ci-icon', () => {
-      expect(findCiIcon().exists()).toBe(true);
-
-      expect(findCiIcon().props('isBorderless')).toBe(true);
-      expect(findCiIcon().classes('borderless')).toBe(true);
-    });
-
-    it('should render a ci-icon with a custom border class', () => {
-      expect(findCiIcon().exists()).toBe(true);
-
-      expect(findCiIcon().classes('gl-border')).toBe(true);
-    });
-
     it('should render the correct ci status icon', () => {
       expect(findCiIcon().classes('ci-status-icon-running')).toBe(true);
     });
@@ -122,19 +109,6 @@ describe('Linked pipeline mini list', () => {
       expect(findLinkedPipelineMiniList().exists()).toBe(true);
 
       expect(findLinkedPipelineMiniList().classes('is-downstream')).toBe(true);
-    });
-
-    it('should render a borderless ci-icon', () => {
-      expect(findCiIcon().exists()).toBe(true);
-
-      expect(findCiIcon().props('isBorderless')).toBe(true);
-      expect(findCiIcon().classes('borderless')).toBe(true);
-    });
-
-    it('should render a ci-icon with a custom border class', () => {
-      expect(findCiIcon().exists()).toBe(true);
-
-      expect(findCiIcon().classes('gl-border')).toBe(true);
     });
 
     it('should render the pipeline counter', () => {

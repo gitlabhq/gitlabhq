@@ -7,26 +7,20 @@ module QA
         let(:job_name) { 'test_job' }
         let(:project) { create(:project, name: 'web-only-pipeline') }
         let!(:ci_file) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files(
-              [
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: <<~YAML
-                    #{job_name}:
-                      tags:
-                        - #{project.name}
-                      script: echo 'OK'
-                      only:
-                        - web
-
-                  YAML
-                }
-              ]
-            )
-          end
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            {
+              action: 'create',
+              file_path: '.gitlab-ci.yml',
+              content: <<~YAML
+                #{job_name}:
+                  tags:
+                    - #{project.name}
+                  script: echo 'OK'
+                  only:
+                    - web
+              YAML
+            }
+          ])
         end
 
         before do

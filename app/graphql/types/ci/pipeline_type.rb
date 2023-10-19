@@ -18,6 +18,9 @@ module Types
       field :iid, GraphQL::Types::String, null: false,
                                           description: 'Internal ID of the pipeline.'
 
+      field :name, GraphQL::Types::String, null: true,
+                                          description: 'Name of the pipeline.'
+
       field :sha, GraphQL::Types::String, null: true,
                                           method: :sha,
                                           description: "SHA of the pipeline's commit." do
@@ -61,7 +64,7 @@ module Types
                                           description: "Timestamp of the pipeline's last activity."
 
       field :started_at, Types::TimeType, null: true,
-                                          description: 'Timestamp when the pipeline was started.'
+                                            description: 'Timestamp when the pipeline was started.'
 
       field :finished_at, Types::TimeType, null: true,
                                            description: "Timestamp of the pipeline's completion."
@@ -177,6 +180,24 @@ module Types
 
       field :merge_request_event_type, Types::Ci::PipelineMergeRequestEventTypeEnum, null: true,
                                                                                      description: "Event type of the pipeline associated with a merge request."
+
+      field :total_jobs, GraphQL::Types::Int, null: false, method: :total_size, description: "The total number of jobs in the pipeline"
+
+      field :failure_reason, GraphQL::Types::String, null: true, description: "The reason why the pipeline failed"
+
+      field :triggered_by_path, GraphQL::Types::String, null: true, description: "The path that triggered this pipeline"
+
+      field :source, GraphQL::Types::String, null: true, method: :source, description: "The source of the pipeline"
+
+      field :child, GraphQL::Types::Boolean, null: false, method: :child?, description: "If the pipeline is a child or not"
+
+      field :latest, GraphQL::Types::Boolean, null: false, method: :latest?, calls_gitaly: true, description: "If the pipeline is the latest one or not"
+
+      field :ref_text, GraphQL::Types::String, null: false, method: :ref_text, description: "The reference text from the presenter", calls_gitaly: true
+
+      field :merge_request, Types::MergeRequestType, null: true, description: "The MR which the Pipeline is attached to"
+
+      field :stuck, GraphQL::Types::Boolean, method: :stuck?, null: false, description: "If the pipeline is stuck."
 
       def commit
         BatchLoader::GraphQL.wrap(object.commit)

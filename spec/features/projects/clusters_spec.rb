@@ -20,7 +20,7 @@ RSpec.describe 'Clusters', :js, feature_category: :groups_and_projects do
     end
 
     it 'sees empty state' do
-      expect(page).to have_selector('.empty-state')
+      expect(page).to have_selector('[data-testid="clusters-empty-state"]')
     end
   end
 

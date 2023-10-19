@@ -17,7 +17,8 @@ RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_s
       merge_request.reset
     end
 
-    it 'schedules non-latest merge request diffs removal' do
+    it 'schedules non-latest merge request diffs removal',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/426807' do
       diffs = merge_request.merge_request_diffs
 
       expect(diffs.count).to eq(4)

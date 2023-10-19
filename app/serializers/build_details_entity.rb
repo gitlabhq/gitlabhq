@@ -139,10 +139,11 @@ class BuildDetailsEntity < Ci::JobEntity
     return super unless build.failure_reason.to_sym == :missing_dependency_failure
 
     docs_url = "https://docs.gitlab.com/ee/ci/yaml/index.html#dependencies"
+    troubleshooting_url = "https://docs.gitlab.com/ee/ci/jobs/job_artifacts_troubleshooting.html#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts"
 
     [
       failure_message,
-      help_message(docs_url).html_safe
+      help_message(docs_url, troubleshooting_url).html_safe
     ].join("<br />")
   end
 
@@ -157,8 +158,8 @@ class BuildDetailsEntity < Ci::JobEntity
       { invalid_dependencies: html_escape(invalid_dependencies), punctuation: punctuation }
   end
 
-  def help_message(docs_url)
-    html_escape(_("<a href=\"#{docs_url}\">Learn more.</a>".html_safe))
+  def help_message(docs_url, troubleshooting_url)
+    html_escape(_("Learn more about <a href=\"#{docs_url}\">dependencies</a> and <a href=\"#{troubleshooting_url}\">common causes</a> of this error.</a>".html_safe))
   end
 end
 

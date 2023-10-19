@@ -7,7 +7,6 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import {
   WORK_ITEMS_TYPE_MAP,
-  WORK_ITEM_TYPE_ENUM_TASK,
   I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
   sprintfWorkItem,
 } from '../../constants';
@@ -29,7 +28,7 @@ export default {
     childrenType: {
       type: String,
       required: false,
-      default: WORK_ITEM_TYPE_ENUM_TASK,
+      default: '',
     },
     childrenIds: {
       type: Array,
@@ -53,7 +52,7 @@ export default {
         return {
           fullPath: this.fullPath,
           searchTerm: this.search?.title || this.search,
-          types: [this.childrenType],
+          types: this.childrenType ? [this.childrenType] : [],
           in: this.search ? 'TITLE' : undefined,
         };
       },
@@ -106,6 +105,7 @@ export default {
     },
     handleFocus() {
       this.searchStarted = true;
+      this.$emit('searching', true);
     },
     handleMouseOver() {
       this.timeout = setTimeout(() => {
@@ -115,11 +115,22 @@ export default {
     handleMouseOut() {
       clearTimeout(this.timeout);
     },
+    handleBlur() {
+      this.$emit('searching', false);
+    },
+    focusInputText() {
+      this.$nextTick(() => {
+        if (this.areWorkItemsToAddValid) {
+          this.$refs.tokenSelector.$el.querySelector('input[type="text"]').focus();
+        }
+      });
+    },
   },
 };
 </script>
 <template>
   <gl-token-selector
+    ref="tokenSelector"
     v-model="workItemsToAdd"
     :dropdown-items="availableWorkItems"
     :loading="isLoading"
@@ -131,13 +142,14 @@ export default {
     @focus="handleFocus"
     @mouseover.native="handleMouseOver"
     @mouseout.native="handleMouseOut"
+    @token-add="focusInputText"
+    @token-remove="focusInputText"
+    @blur="handleBlur"
   >
-    <template #token-content="{ token }">
-      {{ token.title }}
-    </template>
+    <template #token-content="{ token }"> {{ token.iid }} {{ token.title }} </template>
     <template #dropdown-item-content="{ dropdownItem }">
       <div class="gl-display-flex">
-        <div class="gl-text-secondary gl-mr-4">{{ getIdFromGraphQLId(dropdownItem.id) }}</div>
+        <div class="gl-text-secondary gl-font-sm gl-mr-4">{{ dropdownItem.iid }}</div>
         <div class="gl-text-truncate">{{ dropdownItem.title }}</div>
       </div>
     </template>

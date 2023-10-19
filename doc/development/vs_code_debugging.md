@@ -6,13 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # VS Code debugging
 
-This document describes how to set up Rails debugging in [Visual Studio Code (VSCode)](https://code.visualstudio.com/) using the [GitLab Development Kit (GDK)](contributing/first_contribution.md#step-1-configure-the-gitlab-development-kit).
+This document describes how to set up Rails debugging in [Visual Studio Code (VS Code)](https://code.visualstudio.com/) using the [GitLab Development Kit (GDK)](contributing/first_contribution.md#step-1-configure-the-gitlab-development-kit).
 
 ## Setup
 
 1. Install the `debug` gem by running `gem install debug` inside your `gitlab` folder.
-1. Install the [VSCode Ruby rdbg Debugger](https://marketplace.visualstudio.com/items?itemName=KoichiSasada.vscode-rdbg) extension to add support for the `rdbg` debugger type to VSCode.
-1. In case you want to automatically stop and start GitLab and its associated Ruby Rails server, you may add the following VSCode task to your configuration under the `.vscode/tasks.json` file:
+1. Install the [VS Code Ruby `rdbg` Debugger](https://marketplace.visualstudio.com/items?itemName=KoichiSasada.vscode-rdbg) extension to add support for the `rdbg` debugger type to VS Code.
+1. In case you want to automatically stop and start GitLab and its associated Ruby Rails server, you may add the following VS Code task to your configuration under the `.vscode/tasks.json` file:
 
     ```json
     {
@@ -59,7 +59,7 @@ This document describes how to set up Rails debugging in [Visual Studio Code (VS
     ```
 
 WARNING:
-The VSCode Ruby extension might have issues finding the correct Ruby installation and the appropriate `rdbg` command. In this case, add `"rdbgPath": "/home/user/.asdf/shims/` (in the case of asdf) to the launch configuration above.
+The VS Code Ruby extension might have issues finding the correct Ruby installation and the appropriate `rdbg` command. In this case, add `"rdbgPath": "/home/user/.asdf/shims/` (in the case of asdf) to the launch configuration above.
 
 ## Debugging
 

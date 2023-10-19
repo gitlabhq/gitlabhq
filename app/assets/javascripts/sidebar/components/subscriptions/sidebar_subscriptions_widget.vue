@@ -1,7 +1,7 @@
 <script>
 import {
+  GlButton,
   GlDisclosureDropdownItem,
-  GlDropdownForm,
   GlIcon,
   GlLoadingIcon,
   GlToggle,
@@ -30,8 +30,8 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    GlButton,
     GlDisclosureDropdownItem,
-    GlDropdownForm,
     GlIcon,
     GlLoadingIcon,
     GlToggle,
@@ -130,6 +130,12 @@ export default {
     canSubscribe() {
       return this.emailsDisabled || !this.isLoggedIn;
     },
+    isNotificationsTodosButtons() {
+      return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
+    },
+    isMergeRequest() {
+      return this.issuableType === 'merge_request';
+    },
   },
   methods: {
     setSubscribed(subscribed) {
@@ -194,20 +200,8 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-form v-if="isMovedMrSidebar && isIssuable" class="gl-dropdown-item">
-    <div class="gl-px-5 gl-pb-2 gl-pt-1">
-      <gl-toggle
-        :value="subscribed"
-        :label="$options.i18n.notifications"
-        class="merge-request-notification-toggle"
-        label-position="left"
-        data-testid="notification-toggle"
-        @change="toggleSubscribed"
-      />
-    </div>
-  </gl-dropdown-form>
   <gl-disclosure-dropdown-item
-    v-else-if="isMovedMrSidebar"
+    v-if="isMovedMrSidebar && !isNotificationsTodosButtons"
     data-testid="notification-toggle"
     @action="toggleSubscribed"
   >
@@ -220,6 +214,32 @@ export default {
       />
     </template>
   </gl-disclosure-dropdown-item>
+  <div v-else-if="isNotificationsTodosButtons" :class="{ 'inline-block': !isMergeRequest }">
+    <gl-button
+      ref="tooltip"
+      v-gl-tooltip.hover.top
+      category="secondary"
+      data-testid="subscribe-button"
+      class="hide-collapsed"
+      :title="notificationTooltip"
+      :class="{ 'gl-ml-2': isIssuable, 'btn-icon': isNotificationsTodosButtons }"
+      @click="toggleSubscribed"
+    >
+      <gl-icon :name="notificationIcon" :size="16" :class="{ 'gl-fill-blue-500': subscribed }" />
+    </gl-button>
+    <gl-button
+      v-if="!isMergeRequest"
+      ref="tooltip"
+      v-gl-tooltip.left.viewport
+      category="secondary"
+      data-testid="subscribe-button"
+      :title="notificationTooltip"
+      class="sidebar-collapsed-icon sidebar-collapsed-container gl-rounded-0! gl-shadow-none!"
+      @click="toggleSubscribed"
+    >
+      <gl-icon :name="notificationIcon" :size="16" :class="{ 'gl-fill-blue-500': subscribed }" />
+    </gl-button>
+  </div>
   <sidebar-editable-item
     v-else
     ref="editable"

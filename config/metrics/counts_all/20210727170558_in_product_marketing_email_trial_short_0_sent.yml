@@ -5,8 +5,10 @@ product_section: growth
 product_stage: growth
 product_group: activation
 value_type: number
-status: active
-milestone: "14.2"
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131860
+milestone_removed: '16.5'
+milestone: '14.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66943
 time_frame: all
 data_source: database
@@ -16,9 +18,9 @@ options:
   series: 0
 data_category: optional
 distribution:
-- ce
-- ee
+  - ce
+  - ee
 tier:
-- free
-- premium
-- ultimate
+  - free
+  - premium
+  - ultimate

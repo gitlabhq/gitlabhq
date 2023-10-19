@@ -38,6 +38,10 @@ module Gitlab
           raise NotImplementedError
         end
 
+        def name
+          self.class.name.demodulize.underscore.upcase
+        end
+
         def group
           self.class.name.demodulize.underscore
         end

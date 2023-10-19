@@ -7,7 +7,7 @@ module QA
       let(:new_wiki_content) { "this content is changed or added" }
       let(:commit_message) { "this is a new addition to the wiki" }
 
-      let(:wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
+      let(:wiki) { create(:project_wiki_page) }
 
       before do
         Flow::Login.sign_in

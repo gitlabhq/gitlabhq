@@ -6,6 +6,8 @@ class AbuseReport < ApplicationRecord
   include Gitlab::FileTypeDetection
   include WithUploads
   include Gitlab::Utils::StrongMemoize
+  include Mentionable
+  include Noteable
 
   MAX_CHAR_LIMIT_URL = 512
   MAX_FILE_SIZE = 1.megabyte
@@ -22,6 +24,9 @@ class AbuseReport < ApplicationRecord
   has_many :labels, through: :label_links
 
   has_many :abuse_events, class_name: 'Abuse::Event', inverse_of: :abuse_report
+
+  has_many :notes, as: :noteable
+  has_many :user_mentions, class_name: 'Abuse::Reports::UserMention'
 
   validates :reporter, presence: true, on: :create
   validates :user, presence: true, on: :create
@@ -158,6 +163,10 @@ class AbuseReport < ApplicationRecord
     Project.find_by_full_path(route_hash.values_at(:namespace_id, :project_id).join('/'))
   end
 
+  def group
+    Group.find_by_full_path(route_hash[:group_id])
+  end
+
   def route_hash
     match = Rails.application.routes.recognize_path(reported_from_url)
     return {} if match[:unmatched_route].present?
@@ -200,7 +209,7 @@ class AbuseReport < ApplicationRecord
         format(_('contains URLs that exceed the %{limit} character limit'), limit: MAX_CHAR_LIMIT_URL)
       )
     end
-  rescue ::Gitlab::UrlBlocker::BlockedUrlError
+  rescue ::Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError
     errors.add(:links_to_spam, _('only supports valid HTTP(S) URLs'))
   end
 

@@ -16,8 +16,6 @@ module Mutations
         private
 
         def update_links(work_item, params)
-          Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/419555')
-
           gids = params.delete(:work_items_ids)
           work_items = begin
             GitlabSchema.parse_gids(gids, expected_type: ::WorkItem).map(&:find)

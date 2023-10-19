@@ -10,7 +10,7 @@ RSpec.describe Resolvers::Clusters::AgentsResolver do
   end
 
   specify do
-    expect(described_class.field_options).to include(extras: include(:lookahead))
+    expect(described_class.extras).to include(:lookahead)
   end
 
   describe '#resolve' do
@@ -52,17 +52,9 @@ end
 RSpec.describe Resolvers::Clusters::AgentsResolver.single do
   it { expect(described_class).to be < Resolvers::Clusters::AgentsResolver }
 
-  describe '.field_options' do
-    subject { described_class.field_options }
-
-    specify do
-      expect(subject).to include(
-        type: ::Types::Clusters::AgentType,
-        null: true,
-        extras: [:lookahead]
-      )
-    end
-  end
+  it { expect(described_class.type).to eq(::Types::Clusters::AgentType) }
+  it { expect(described_class.null).to eq(true) }
+  it { expect(described_class.extras).to include(:lookahead) }
 
   describe 'arguments' do
     subject { described_class.arguments[argument] }

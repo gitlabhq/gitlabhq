@@ -7,16 +7,16 @@ module QA
         module Component
           class AccountAndLimit < Page::Base
             view 'app/views/admin/application_settings/_account_and_limit.html.haml' do
-              element :receive_max_input_size_field
-              element :save_changes_button
+              element 'receive-max-input-size-field'
+              element 'save-changes-button'
             end
 
             def set_max_file_size(size)
-              fill_element :receive_max_input_size_field, size
+              fill_element 'receive-max-input-size-field', size
             end
 
             def save_settings
-              click_element :save_changes_button
+              click_element 'save-changes-button'
             end
           end
         end

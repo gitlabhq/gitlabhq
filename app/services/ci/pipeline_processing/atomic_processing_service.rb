@@ -93,6 +93,8 @@ module Ci
         # We do not continue to process the job if the previous status is not completed
         return unless Ci::HasStatus::COMPLETED_STATUSES.include?(previous_status)
 
+        ::Deployments::CreateForJobService.new.execute(job)
+
         Gitlab::OptimisticLocking.retry_lock(job, name: 'atomic_processing_update_job') do |subject|
           Ci::ProcessBuildService.new(project, subject.user)
             .execute(subject, previous_status)

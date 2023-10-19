@@ -60,7 +60,7 @@ module QA
         end
 
         with_them do
-          it 'applies pull policy in job correctly', testcase: params[:testcase] do
+          it 'applies pull policy in job correctly', :reliable, testcase: params[:testcase] do
             visit_job
 
             if pull_image
@@ -106,7 +106,7 @@ module QA
         QA::Service::Shellout.shell("docker cp #{runner_name}:/etc/gitlab-runner/config.toml #{tempdir.path}")
 
         File.open(tempdir.path, 'a') do |f|
-          f << %[    allowed_pull_policies = #{allowed_policies}\n]
+          f << %(    allowed_pull_policies = #{allowed_policies}\n)
         end
 
         QA::Service::Shellout.shell("docker cp #{tempdir.path} #{runner_name}:/etc/gitlab-runner/config.toml")
@@ -117,28 +117,23 @@ module QA
       end
 
       def add_ci_file
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  default:
-                    image: ruby:2.6
-                    tags: [#{runner_name}]
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              default:
+                image: ruby:2.6
+                tags: [#{runner_name}]
 
-                  #{job_name}:
-                    script: echo "Using pull policies #{pull_policies}"
-                    image:
-                      name: ruby:2.6
-                      pull_policy: #{pull_policies}
-                YAML
-              }
-            ]
-          )
-        end
+              #{job_name}:
+                script: echo "Using pull policies #{pull_policies}"
+                image:
+                  name: ruby:2.6
+                  pull_policy: #{pull_policies}
+            YAML
+          }
+        ])
       end
 
       def visit_job

@@ -5,7 +5,7 @@ module Gitlab
     module Dvcs
       ENCODED_SLASH = '@'
       SLASH = '/'
-      ENCODED_ROUTE_REGEX = /[a-zA-Z0-9_\-\.#{ENCODED_SLASH}]+/.freeze
+      ENCODED_ROUTE_REGEX = /[a-zA-Z0-9_\-\.#{ENCODED_SLASH}]+/
 
       def self.encode_slash(path)
         path.gsub(SLASH, ENCODED_SLASH)

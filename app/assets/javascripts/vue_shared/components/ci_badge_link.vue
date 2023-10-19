@@ -57,16 +57,29 @@ export default {
         return badgeSizeOptions[value] !== undefined;
       },
     },
+    showTooltip: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    useLink: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
   },
   computed: {
-    isSmallBadgeSize() {
-      return this.size === badgeSizeOptions.sm;
+    isNotLargeBadgeSize() {
+      return this.size !== badgeSizeOptions.lg;
     },
     title() {
-      return !this.showText ? this.status?.text : '';
+      return this.showTooltip && !this.showText ? this.status?.text : '';
     },
     detailsPath() {
       // For now, this can either come from graphQL with camelCase or REST API in snake_case
+      if (!this.useLink) {
+        return null;
+      }
       return this.status.detailsPath || this.status.details_path;
     },
     badgeStyles() {
@@ -121,7 +134,7 @@ export default {
 <template>
   <gl-badge
     v-gl-tooltip
-    :class="{ 'gl-pl-2': isSmallBadgeSize }"
+    :class="{ 'gl-px-2': !showText && isNotLargeBadgeSize }"
     :title="title"
     :href="detailsPath"
     :size="size"

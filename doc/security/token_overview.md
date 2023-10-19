@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -93,9 +93,9 @@ Project maintainers and owners can add or enable a deploy key for a project repo
 
 ## Runner authentication tokens
 
-In GitLab 16.0 and later, you can use a runner authentication token to register
-runners instead of a runner registration token. Runner registration tokens have
-been [deprecated](../update/deprecations.md#registration-tokens-and-server-side-runner-arguments-in-gitlab-runner-register-command).
+In GitLab 16.0 and later, to register a runner, you can use a runner authentication token
+instead of a runner registration token. Runner registration tokens have
+been [deprecated](../ci/runners/new_creation_workflow.md).
 
 After you create a runner and its configuration, you receive a runner authentication token
 that you use to register the runner. The runner authentication token is stored locally in the
@@ -117,7 +117,7 @@ for the following executors only have access to the job token and not the runner
 - SSH
 
 Malicious access to a runner's file system may expose the `config.toml` file and the
-runner authentication token. The attacker could use the runner authentication
+runner authentication token. The attacker could use the runner authentication token
 to [clone the runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
 
 You can use the `runners` API to
@@ -126,7 +126,7 @@ programmatically [rotate or revoke a runner authentication token](../api/runners
 ## Runner registration tokens (deprecated)
 
 WARNING:
-The ability to pass a runner registration token has been [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) and is
+The ability to pass a runner registration token has been [deprecated](../ci/runners/new_creation_workflow.md) and is
 planned for removal in GitLab 18.0, along with support for certain configuration arguments. This change is a breaking change. GitLab has implemented a new
 [GitLab Runner token architecture](../ci/runners/new_creation_workflow.md), which introduces
 a new method for registering runners and eliminates the
@@ -145,6 +145,40 @@ API authentication uses the job token, by using the authorization of the user
 triggering the job.
 
 The job token is secured by its short life-time and limited scope. It could possibly be leaked if multiple jobs run on the same machine ([like with the shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)). On Docker Machine runners, configuring [`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section) is recommended to make sure runner machines only ever run one build and are destroyed afterwards. This may impact performance, as provisioning machines takes some time.
+
+## GitLab cluster agent tokens
+
+When [registering a GitLab Agent for Kubernetes](../user/clusters/agent/install/index.md#register-the-agent-with-gitlab), GitLab generates an access token to authenticate the cluster agent with GitLab.
+
+To revoke this cluster agent token, you can use either the:
+
+- [Agents API](../api/cluster_agents.md#revoke-an-agent-token) to revoke the token.
+- [UI](../user/clusters/agent/work_with_agent.md#reset-the-agent-token) to reset the token.
+
+For both methods, you must know the token, agent, and project IDs. To find this information, use the [Rails console](../administration/operations/rails_console.md)
+
+```irb
+# Find token ID
+Clusters::AgentToken.find_by_token('glagent-xxx').id
+
+# Find agent ID
+Clusters::AgentToken.find_by_token('glagent-xxx').agent.id
+=> 1234
+
+# Find project ID
+Clusters::AgentToken.find_by_token('glagent-xxx').agent.project_id
+=> 12345
+```
+
+You can also revoke a token directly in the Rails console:
+
+```irb
+# Revoke token with RevokeService, including generating an audit event
+Clusters::AgentTokens::RevokeService.new(token: Clusters::AgentToken.find_by_token('glagent-xxx'), current_user: User.find_by_username('admin-user')).execute
+
+# Revoke token manually, which does not generate an audit event
+Clusters::AgentToken.find_by_token('glagent-xxx').revoke!
+```
 
 ## Other tokens
 

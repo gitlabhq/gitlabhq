@@ -7,7 +7,7 @@ RSpec.describe QA::Git::Repository do
     let(:logger) { instance_double(Logger, info: nil, debug: nil) }
     let(:repo_uri) { 'http://foo/bar.git' }
     let(:repo_uri_with_credentials) { 'http://root@foo/bar.git' }
-    let(:env_vars) { [%q{HOME="temp"}] }
+    let(:env_vars) { [%q(HOME="temp")] }
     let(:extra_env_vars) { [] }
     let(:run_params) { { env: env_vars + extra_env_vars, log_prefix: "Git: " } }
     let(:repository) do

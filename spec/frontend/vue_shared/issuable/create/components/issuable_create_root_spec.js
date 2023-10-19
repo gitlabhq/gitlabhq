@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import IssuableCreateRoot from '~/vue_shared/issuable/create/components/issuable_create_root.vue';
 import IssuableForm from '~/vue_shared/issuable/create/components/issuable_form.vue';
+import { TYPE_TEST_CASE } from '~/issues/constants';
 
 Vue.use(VueApollo);
 
@@ -13,6 +14,7 @@ const createComponent = ({
   descriptionHelpPath = '/help/user/markdown',
   labelsFetchPath = '/gitlab-org/gitlab-shell/-/labels.json',
   labelsManagePath = '/gitlab-org/gitlab-shell/-/labels',
+  issuableType = TYPE_TEST_CASE,
 } = {}) => {
   return mount(IssuableCreateRoot, {
     propsData: {
@@ -20,6 +22,7 @@ const createComponent = ({
       descriptionHelpPath,
       labelsFetchPath,
       labelsManagePath,
+      issuableType,
     },
     apolloProvider: createMockApollo(),
     slots: {

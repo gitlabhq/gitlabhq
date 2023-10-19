@@ -3,7 +3,7 @@
 require 'gon'
 require 'fogbugz'
 
-class ApplicationController < ActionController::Base
+class ApplicationController < BaseActionController
   include Gitlab::GonHelper
   include Gitlab::NoCacheHeaders
   include GitlabRoutingHelper
@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   include ::Gitlab::EndpointAttributes
   include FlocOptOut
   include CheckRateLimit
+  include RequestPayloadLogger
   extend ContentSecurityPolicyPatch
 
   before_action :limit_session_time, if: -> { !current_user }
@@ -178,29 +179,6 @@ class ApplicationController < ActionController::Base
 
   def workhorse_excluded_content_types
     @workhorse_excluded_content_types ||= %w[text/html application/json]
-  end
-
-  def append_info_to_payload(payload)
-    super
-
-    payload[:ua] = request.env["HTTP_USER_AGENT"]
-    payload[:remote_ip] = request.remote_ip
-
-    payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
-    payload[:metadata] = @current_context
-    payload[:request_urgency] = urgency&.name
-    payload[:target_duration_s] = urgency&.duration
-    logged_user = auth_user
-    if logged_user.present?
-      payload[:user_id] = logged_user.try(:id)
-      payload[:username] = logged_user.try(:username)
-    end
-
-    payload[:queue_duration_s] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
-
-    payload[:response_bytes] = response.body_parts.sum(&:bytesize) if Feature.enabled?(:log_response_length)
-
-    store_cloudflare_headers!(payload, request)
   end
 
   ##

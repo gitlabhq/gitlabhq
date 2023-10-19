@@ -31,8 +31,8 @@ module Backup
     end
 
     override :restore
-    def restore(destination_path)
-      strategy.start(:restore, destination_path, remove_all_repositories: remove_all_repositories)
+    def restore(destination_path, backup_id)
+      strategy.start(:restore, destination_path, remove_all_repositories: remove_all_repositories, backup_id: backup_id)
       enqueue_consecutive
 
     ensure
@@ -58,11 +58,8 @@ module Backup
     end
 
     def enqueue_consecutive_projects
-      cross_join_issue = "https://gitlab.com/gitlab-org/gitlab/-/issues/417467"
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: cross_join_issue) do
-        project_relation.find_each(batch_size: 1000) do |project|
-          enqueue_project(project)
-        end
+      project_relation.find_each(batch_size: 1000) do |project|
+        enqueue_project(project)
       end
     end
 
@@ -84,7 +81,7 @@ module Backup
     end
 
     def project_relation
-      scope = Project.includes(:route, :group, namespace: :owner)
+      scope = Project.includes(:route, :group, :namespace)
       scope = scope.id_in(ProjectRepository.for_repository_storage(storages).select(:project_id)) if storages.any?
       if paths.any?
         scope = scope.where_full_path_in(paths).or(

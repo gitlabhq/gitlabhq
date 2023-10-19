@@ -1,0 +1,8 @@
+---
+name: admin_group_member
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426580
+milestone: '16.5'
+type: development
+group: group::authentication and authorization
+default_enabled: false

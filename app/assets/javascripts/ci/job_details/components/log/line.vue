@@ -56,7 +56,7 @@ export default {
 
     if (window.location.hash) {
       const hash = getLocationHash();
-      const lineToMatch = `L${line.lineNumber + 1}`;
+      const lineToMatch = `L${line.lineNumber}`;
 
       if (hash === lineToMatch) {
         applyHashHighlight = true;
@@ -66,7 +66,11 @@ export default {
     return h(
       'div',
       {
-        class: ['js-line', 'log-line', { 'gl-bg-gray-700': isHighlighted || applyHashHighlight }],
+        class: [
+          'js-log-line',
+          'log-line',
+          { 'gl-bg-gray-700': isHighlighted || applyHashHighlight },
+        ],
       },
       [
         h(LineNumber, {

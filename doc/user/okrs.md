@@ -354,6 +354,51 @@ Prerequisites:
 By default, child OKRs are ordered by creation date.
 To reorder them, drag them around.
 
+### Schedule OKR check-in reminders
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422761) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `okr_checkin_reminders`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `okr_checkin_reminders`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Schedule check-in reminders to remind your team to provide status updates on the key results you care
+about.
+Reminders are sent to all assignees of descendant objects and key results as email notifications
+and to-do items.
+Users can't unsubscribe from the email notifications, but check-in reminders can be turned off.
+Reminders are sent on Tuesdays.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- There must be at least one objective with at least one key result in the project.
+- You can schedule reminders only for top-level objectives.
+  Scheduling a check-in reminder for child objectives has no effect.
+  The setting from the top-level objective is inherited to all child objectives.
+
+To schedule a recurring reminder for an objective, in a new comment use the `/checkin_reminder <cadence>`
+[quick action](project/quick_actions.md#work-items).
+The options for `<cadence>` are:
+
+- `weekly`
+- `twice-monthly`
+- `monthly`
+- `never` (default)
+
+For example, to schedule a weekly check-in reminder, enter:
+
+```plaintext
+/checkin_reminder weekly
+```
+
+To turn off a check-in reminder, enter:
+
+```plaintext
+/checkin_reminder never
+```
+
 ## Confidential OKRs
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
@@ -442,3 +487,50 @@ The description and threads are on the left, and attributes, such as labels
 or assignees, on the right.
 
 ![OKR two column view](img/objective_two_column_view_v16_2.png)
+
+## Linked items in OKRs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `linked_work_items`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Linked items are a bi-directional relationship and appear in a block below
+the Child objectives and key results. You can link an objective, key result, or a task in the same project with each other.
+
+The relationship only shows up in the UI if the user can see both items.
+
+### Add a linked item
+
+Prerequisite:
+
+- You must have at least the Guest role for the project.
+
+To link an item to an objective or key result:
+
+1. In the **Linked items** section of an objective or key result,
+   select the **Add** button.
+1. Select the relationship between the two items. Either:
+   - **relates to**
+   - **blocks**
+   - **is blocked by**
+1. Enter the search text of the item.
+1. When you have added all the items to be linked, select **Add** below the search box.
+
+When you have finished adding all linked items, you can see
+them categorized so their relationships can be better understood visually.
+
+![Linked items block](img/linked_items_list_v16_5.png)
+
+### Remove a linked item
+
+Prerequisite:
+
+- You must have at least the Guest role for the project.
+
+In the **Linked items** section of an objective or key result,
+next to each item, select the vertical ellipsis (**{ellipsis_v}**) and then select **Remove**.
+
+Due to the bi-directional relationship, the relationship no longer appears in either item.

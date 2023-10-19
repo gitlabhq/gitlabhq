@@ -5,7 +5,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
-import { trackTrialAcceptTerms } from '~/google_tag_manager';
+import { trackTrialAcceptTerms } from 'ee_else_ce/google_tag_manager';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 export default {

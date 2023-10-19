@@ -27,7 +27,8 @@ module Gitlab
         #
         # If the `Feature.enabled?` check is false, we return nil implicitly,
         # which will assign the control. Otherwise we call super, which will
-        # assign a variant evenly, or based on our provided distribution rules.
+        # assign a variant based on our provided distribution rules.
+        # Otherwise we will assign a variant evenly across the behaviours without control.
         def execute_assignment
           super if ::Feature.enabled?(feature_flag_name, self, type: :experiment)
         end
@@ -66,6 +67,10 @@ module Gitlab
 
         def feature_flag_name
           experiment.name.tr('/', '_')
+        end
+
+        def behavior_names
+          super - [:control]
         end
       end
     end

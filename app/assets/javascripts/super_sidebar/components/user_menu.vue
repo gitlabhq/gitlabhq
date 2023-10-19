@@ -12,7 +12,7 @@ import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import Tracking from '~/tracking';
 import PersistentUserCallout from '~/persistent_user_callout';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
-import UserNameGroup from './user_name_group.vue';
+import UserMenuProfileItem from './user_menu_profile_item.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
 const DROPDOWN_X_OFFSET_BASE = -211;
@@ -40,7 +40,7 @@ export default {
     GlDisclosureDropdownItem,
     GlButton,
     NewNavToggle,
-    UserNameGroup,
+    UserMenuProfileItem,
   },
   directives: {
     SafeHtml,
@@ -247,7 +247,10 @@ export default {
         </gl-button>
       </template>
 
-      <user-name-group :user="data" />
+      <gl-disclosure-dropdown-group>
+        <user-menu-profile-item :user="data" />
+      </gl-disclosure-dropdown-group>
+
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
           v-if="data.status.can_update"

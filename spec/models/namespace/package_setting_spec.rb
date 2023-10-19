@@ -11,13 +11,9 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
     it { is_expected.to validate_presence_of(:namespace) }
 
     describe '#maven_duplicates_allowed' do
-      it { is_expected.to allow_value(true, false).for(:maven_duplicates_allowed) }
-      it { is_expected.not_to allow_value(nil).for(:maven_duplicates_allowed) }
-      it { is_expected.to allow_value(true, false).for(:generic_duplicates_allowed) }
-      it { is_expected.not_to allow_value(nil).for(:generic_duplicates_allowed) }
-      it { is_expected.to allow_value(true).for(:nuget_duplicates_allowed) }
-      it { is_expected.to allow_value(false).for(:nuget_duplicates_allowed) }
-      it { is_expected.not_to allow_value(nil).for(:nuget_duplicates_allowed) }
+      it { is_expected.to validate_inclusion_of(:maven_duplicates_allowed).in_array([true, false]) }
+      it { is_expected.to validate_inclusion_of(:generic_duplicates_allowed).in_array([true, false]) }
+      it { is_expected.to validate_inclusion_of(:nuget_duplicates_allowed).in_array([true, false]) }
     end
 
     describe 'regex values' do

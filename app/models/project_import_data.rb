@@ -5,6 +5,11 @@ require 'carrierwave/orm/activerecord'
 class ProjectImportData < ApplicationRecord
   prepend_mod_with('ProjectImportData') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
+  # Timeout strategy can only be changed via API, currently only with GitHub and BitBucket Server
+  OPTIMISTIC_TIMEOUT = "optimistic"
+  PESSIMISTIC_TIMEOUT = "pessimistic"
+  TIMEOUT_STRATEGIES = [OPTIMISTIC_TIMEOUT, PESSIMISTIC_TIMEOUT].freeze
+
   belongs_to :project, inverse_of: :import_data
   attr_encrypted :credentials,
     key: Settings.attr_encrypted_db_key_base,

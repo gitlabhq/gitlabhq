@@ -6,7 +6,7 @@ module Gitlab
       module Expression
         module Lexeme
           class Matches < Lexeme::LogicalOperator
-            PATTERN = /=~/.freeze
+            PATTERN = /=~/
 
             def evaluate(variables = {})
               text = @left.evaluate(variables)

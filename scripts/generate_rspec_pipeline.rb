@@ -110,7 +110,7 @@ class GenerateRspecPipeline
   end
 
   def optimal_nodes_count(test_level, rspec_files)
-    nodes_count = (rspec_files.size / optimal_test_file_count_per_node_per_test_level(test_level)).ceil
+    nodes_count = (rspec_files.size / optimal_test_file_count_per_node_per_test_level(test_level, rspec_files)).ceil
     info "Optimal node count for #{rspec_files.size} #{test_level} RSpec files is #{nodes_count}."
 
     if nodes_count > MAX_NODES_COUNT
@@ -123,14 +123,27 @@ class GenerateRspecPipeline
     end
   end
 
-  def optimal_test_file_count_per_node_per_test_level(test_level)
+  def optimal_test_file_count_per_node_per_test_level(test_level, rspec_files)
     [
-      (OPTIMAL_TEST_RUNTIME_DURATION_IN_SECONDS / average_test_file_duration_in_seconds_per_test_level[test_level]),
+      (OPTIMAL_TEST_RUNTIME_DURATION_IN_SECONDS / average_test_file_duration(test_level, rspec_files)),
       1
     ].max
   end
 
-  def average_test_file_duration_in_seconds_per_test_level
+  def average_test_file_duration(test_level, rspec_files)
+    if rspec_files.any? && knapsack_report.any?
+      rspec_files_duration = rspec_files.sum do |rspec_file|
+        knapsack_report.fetch(
+          rspec_file, average_test_file_duration_per_test_level[test_level])
+      end
+
+      rspec_files_duration / rspec_files.size
+    else
+      average_test_file_duration_per_test_level[test_level]
+    end
+  end
+
+  def average_test_file_duration_per_test_level
     @optimal_test_file_count_per_node_per_test_level ||=
       if knapsack_report.any?
         remaining_knapsack_report = knapsack_report.dup

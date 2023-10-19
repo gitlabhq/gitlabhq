@@ -20,9 +20,10 @@ module Gitlab
               function_expression_pattern.match?(function_expression)
             end
 
-            def initialize(function_expression)
+            def initialize(function_expression, ctx)
               @errors = []
               @function_args = parse_args(function_expression)
+              @ctx = ctx
             end
 
             def valid?
@@ -35,10 +36,11 @@ module Gitlab
 
             private
 
-            attr_reader :function_args
+            attr_reader :function_args, :ctx
 
             def error(message)
               errors << "error in `#{self.class.name}` function: #{message}"
+              nil
             end
 
             def parse_args(function_expression)

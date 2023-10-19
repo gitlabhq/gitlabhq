@@ -66,4 +66,10 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::FeatureCategory, feature_categ
       RUBY
     end
   end
+
+  describe '#external_dependency_checksum' do
+    it 'returns a SHA256 digest used by RuboCop to invalid cache' do
+      expect(cop.external_dependency_checksum).to match(/^\h{64}$/)
+    end
+  end
 end

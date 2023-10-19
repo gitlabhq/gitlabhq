@@ -56,9 +56,9 @@ module QA
       # Checks if a resource already exists
       #
       # @return [Boolean] true if the resource returns HTTP status code 200
-      def exists?
+      def exists?(**args)
         request = Runtime::API::Request.new(api_client, api_get_path)
-        response = get(request.url)
+        response = get(request.url, args)
 
         response.code == HTTP_STATUS_OK
       end

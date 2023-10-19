@@ -146,6 +146,7 @@ export const workItemQueryResponse = {
         setWorkItemMetadata: false,
         adminParentLink: false,
         createNote: false,
+        adminWorkItemLink: true,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -193,6 +194,7 @@ export const workItemQueryResponse = {
                 confidential: false,
                 title: '123',
                 state: 'OPEN',
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                 workItemType: {
                   id: '1',
                   name: 'Task',
@@ -251,6 +253,7 @@ export const updateWorkItemMutationResponse = {
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -269,6 +272,7 @@ export const updateWorkItemMutationResponse = {
                   confidential: false,
                   title: '123',
                   state: 'OPEN',
+                  webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                   workItemType: {
                     id: '1',
                     name: 'Task',
@@ -360,6 +364,7 @@ export const convertWorkItemMutationResponse = {
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'gitlab-org/gitlab-test#1',
@@ -378,6 +383,7 @@ export const convertWorkItemMutationResponse = {
                   confidential: false,
                   title: '123',
                   state: 'OPEN',
+                  webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                   workItemType: {
                     id: '1',
                     name: 'Task',
@@ -486,6 +492,7 @@ export const mockBlockingLinkedItem = {
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
+          webUrl: '/gitlab-org/gitlab-test/-/work_items/83',
           widgets: [],
           __typename: 'WorkItem',
         },
@@ -518,6 +525,7 @@ export const mockLinkedItems = {
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
+          webUrl: '/gitlab-org/gitlab-test/-/work_items/83',
           widgets: [],
           __typename: 'WorkItem',
         },
@@ -540,6 +548,7 @@ export const mockLinkedItems = {
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
+          webUrl: '/gitlab-org/gitlab-test/-/work_items/55',
           widgets: [],
           __typename: 'WorkItem',
         },
@@ -562,6 +571,7 @@ export const mockLinkedItems = {
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
+          webUrl: '/gitlab-org/gitlab-test/-/work_items/56',
           widgets: [],
           __typename: 'WorkItem',
         },
@@ -579,6 +589,7 @@ export const workItemResponseFactory = ({
   canDelete = false,
   canCreateNote = false,
   adminParentLink = false,
+  canAdminWorkItemLink = true,
   notificationsWidgetPresent = true,
   currentUserTodosWidgetPresent = true,
   awardEmojiWidgetPresent = true,
@@ -636,6 +647,7 @@ export const workItemResponseFactory = ({
         updateWorkItem: canUpdate,
         setWorkItemMetadata: canUpdate,
         adminParentLink,
+        adminWorkItemLink: canAdminWorkItemLink,
         createNote: canCreateNote,
         __typename: 'WorkItemPermissions',
       },
@@ -756,6 +768,7 @@ export const workItemResponseFactory = ({
                 confidential: false,
                 title: '123',
                 state: 'OPEN',
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
                 workItemType: {
                   id: '1',
                   name: 'Task',
@@ -828,13 +841,16 @@ export const workItemByIidResponseFactory = (options) => {
   };
 };
 
-export const updateWorkItemMutationResponseFactory = (options) => {
+export const groupWorkItemByIidResponseFactory = (options) => {
   const response = workItemResponseFactory(options);
   return {
     data: {
-      workItemUpdate: {
-        workItem: response.data.workItem,
-        errors: [],
+      workspace: {
+        __typename: 'Group',
+        id: 'gid://gitlab/Group/1',
+        workItems: {
+          nodes: [response.data.workItem],
+        },
       },
     },
   };
@@ -914,6 +930,7 @@ export const createWorkItemMutationResponse = {
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -996,6 +1013,7 @@ export const workItemHierarchyEmptyResponse = {
               setWorkItemMetadata: false,
               adminParentLink: false,
               createNote: false,
+              adminWorkItemLink: true,
               __typename: 'WorkItemPermissions',
             },
             confidential: false,
@@ -1046,6 +1064,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         setWorkItemMetadata: false,
         adminParentLink: false,
         createNote: false,
+        adminWorkItemLink: true,
         __typename: 'WorkItemPermissions',
       },
       project: {
@@ -1077,6 +1096,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
                 widgets: [
                   {
                     type: 'HIERARCHY',
@@ -1110,6 +1130,7 @@ export const workItemTask = {
   confidential: false,
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
   widgets: [],
   __typename: 'WorkItem',
 };
@@ -1128,6 +1149,7 @@ export const confidentialWorkItemTask = {
   confidential: true,
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
   widgets: [],
   __typename: 'WorkItem',
 };
@@ -1146,6 +1168,7 @@ export const closedWorkItemTask = {
   confidential: false,
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: '2022-08-12T13:07:52Z',
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/3',
   widgets: [],
   __typename: 'WorkItem',
 };
@@ -1168,6 +1191,7 @@ export const childrenWorkItems = [
     confidential: false,
     createdAt: '2022-08-03T12:41:54Z',
     closedAt: null,
+    webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
     widgets: [],
     __typename: 'WorkItem',
   },
@@ -1196,6 +1220,7 @@ export const workItemHierarchyResponse = {
               setWorkItemMetadata: true,
               adminParentLink: true,
               createNote: true,
+              adminWorkItemLink: true,
               __typename: 'WorkItemPermissions',
             },
             author: {
@@ -1297,6 +1322,7 @@ export const workItemObjectiveWithChild = {
     setWorkItemMetadata: true,
     adminParentLink: true,
     createNote: true,
+    adminWorkItemLink: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -1368,6 +1394,7 @@ export const workItemHierarchyTreeResponse = {
         setWorkItemMetadata: true,
         adminParentLink: true,
         createNote: true,
+        adminWorkItemLink: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -1403,6 +1430,7 @@ export const workItemHierarchyTreeResponse = {
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/13',
                 widgets: [
                   {
                     type: 'HIERARCHY',
@@ -1449,6 +1477,7 @@ export const changeIndirectWorkItemParentMutationResponse = {
           setWorkItemMetadata: true,
           adminParentLink: true,
           createNote: true,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -1517,6 +1546,7 @@ export const changeWorkItemParentMutationResponse = {
           setWorkItemMetadata: true,
           adminParentLink: true,
           createNote: true,
+          adminWorkItemLink: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -1568,6 +1598,7 @@ export const availableWorkItemsResponse = {
         nodes: [
           {
             id: 'gid://gitlab/WorkItem/458',
+            iid: '2',
             title: 'Task 1',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
@@ -1576,6 +1607,7 @@ export const availableWorkItemsResponse = {
           },
           {
             id: 'gid://gitlab/WorkItem/459',
+            iid: '3',
             title: 'Task 2',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
@@ -1584,10 +1616,69 @@ export const availableWorkItemsResponse = {
           },
           {
             id: 'gid://gitlab/WorkItem/460',
+            iid: '4',
             title: 'Task 3',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
             confidential: true,
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const availableObjectivesResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/716',
+            iid: '122',
+            title: 'Objective 101',
+            state: 'OPEN',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/712',
+            iid: '118',
+            title: 'Objective 103',
+            state: 'OPEN',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/711',
+            iid: '117',
+            title: 'Objective 102',
+            state: 'OPEN',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const searchedObjectiveResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/716',
+            iid: '122',
+            title: 'Objective 101',
+            state: 'OPEN',
+            confidential: false,
             __typename: 'WorkItem',
           },
         ],
@@ -1605,6 +1696,7 @@ export const searchedWorkItemsResponse = {
         nodes: [
           {
             id: 'gid://gitlab/WorkItem/459',
+            iid: '3',
             title: 'Task 2',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
@@ -1929,6 +2021,21 @@ export const mockMilestoneWidgetResponse = {
   expired: false,
   id: 'gid://gitlab/Milestone/30',
   title: 'v4.0',
+};
+
+export const mockParentWidgetResponse = {
+  id: 'gid://gitlab/WorkItem/716',
+  iid: '122',
+  title: 'Objective 101',
+  confidential: false,
+  webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_items/122',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/6',
+    name: 'Objective',
+    iconName: 'issue-type-objective',
+    __typename: 'WorkItemType',
+  },
+  __typename: 'WorkItem',
 };
 
 export const projectMilestonesResponse = {
@@ -3439,6 +3546,31 @@ export const getTodosMutationResponse = (state) => {
   };
 };
 
+export const linkedWorkItemResponse = (options, errors = []) => {
+  const response = workItemResponseFactory(options);
+  return {
+    data: {
+      workItemAddLinkedItems: {
+        workItem: response.data.workItem,
+        errors,
+        __typename: 'WorkItemAddLinkedItemsPayload',
+      },
+    },
+  };
+};
+
+export const removeLinkedWorkItemResponse = (message, errors = []) => {
+  return {
+    data: {
+      workItemRemoveLinkedItems: {
+        errors,
+        message,
+        __typename: 'WorkItemRemoveLinkedItemsPayload',
+      },
+    },
+  };
+};
+
 export const groupWorkItemsQueryResponse = {
   data: {
     group: {
@@ -3498,3 +3630,36 @@ export const groupWorkItemsQueryResponse = {
     },
   },
 };
+
+export const updateWorkItemMutationResponseFactory = (options) => {
+  const response = workItemResponseFactory(options);
+  return {
+    data: {
+      workItemUpdate: {
+        workItem: response.data.workItem,
+        errors: [],
+      },
+    },
+  };
+};
+
+export const updateWorkItemNotificationsMutationResponse = (subscribed) => ({
+  data: {
+    workItemSubscribe: {
+      workItem: {
+        id: 'gid://gitlab/WorkItem/1',
+        widgets: [
+          {
+            __typename: 'WorkItemWidgetNotifications',
+            type: 'NOTIFICATIONS',
+            subscribed,
+          },
+        ],
+      },
+      errors: [],
+    },
+  },
+});
+
+export const generateWorkItemsListWithId = (count) =>
+  Array.from({ length: count }, (_, i) => ({ id: `gid://gitlab/WorkItem/${i + 1}` }));

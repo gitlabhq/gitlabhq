@@ -20,9 +20,9 @@ In this tutorial, you:
 - [Link project B to the security policy project](#link-project-b-to-the-security-policy-project).
 - [Test the scan execution policy with project B](#test-the-scan-execution-policy-with-project-b).
 
-Prerequisite:
+## Before you begin
 
-- Permission to create new projects in an existing group.
+- You need permission to create new projects in an existing group.
 
 ## Create project A
 

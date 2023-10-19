@@ -15,24 +15,19 @@ module QA
         end
 
         let!(:ci_file) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files(
-              [
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: <<~YAML
-                    test:
-                      tags: ["#{runner_name}"]
-                      script: sleep 15
-                      only:
-                        - merge_requests
-                  YAML
-                }
-              ]
-            )
-          end
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            {
+              action: 'create',
+              file_path: '.gitlab-ci.yml',
+              content: <<~YAML
+                test:
+                  tags: ["#{runner_name}"]
+                  script: sleep 15
+                  only:
+                    - merge_requests
+              YAML
+            }
+          ])
         end
 
         before do
@@ -53,12 +48,11 @@ module QA
             QA::Runtime::Logger.info("Transient bug test - Trial #{i + 1}") if transient_test
 
             # Create a merge request to trigger pipeline
-            merge_request = Resource::MergeRequest.fabricate_via_api! do |merge_request|
-              merge_request.project = project
-              merge_request.description = Faker::Lorem.sentence
-              merge_request.target_new_branch = false
-              merge_request.source_branch = "mr-test-#{SecureRandom.hex(6)}-#{i + 1}"
-            end
+            merge_request = create(:project,
+              project: project,
+              description: Faker::Lorem.sentence,
+              target_new_branch: false,
+              source_branch: "mr-test-#{SecureRandom.hex(6)}-#{i + 1}")
 
             # Load the page so that the browser is as prepared as possible to display the pipeline in progress when we
             # start it.
@@ -75,7 +69,7 @@ module QA
 
               mr.retry_until(reload: true, message: 'Wait until ready to click MWPS') do
                 # Click the MWPS button if we can
-                break mr.merge_when_pipeline_succeeds! if mr.has_element?(:merge_button, text: 'Merge when pipeline succeeds')
+                break mr.merge_when_pipeline_succeeds! if mr.has_element?('merge-button', text: 'Merge when pipeline succeeds')
 
                 # But fail if the button is missing because the pipeline is complete
                 raise "The pipeline already finished before we could click MWPS" if mr.wait_until { project.pipelines.first }[:status] == 'success'

@@ -1,7 +1,7 @@
 ---
 type: reference, dev
 stage: none
-group: Development
+group: unassigned
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 description: "GitLab development guidelines - testing best practices."
 ---
@@ -303,14 +303,14 @@ There are various ways to create objects and store them in variables in your tes
 - `let_it_be_with_reload` creates an object one time for all examples in the same context, but after each example, the database changes are rolled back, and `object.reload` will be called to restore the object to its original state. This means you can make changes to the object before or during an example. However, there are cases where [state leaks across other models](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection) can occur. In these cases, `let` may be an easier option, especially if only a few examples exist.
 - `let_it_be` creates an object one time for all of the examples in the same context. This is a great alternative to `let` and `let!` for objects that do not need to change from one example to another. Using `let_it_be` can dramatically speed up tests that create database models. See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#let-it-be> for more details and examples.
 
-Pro-tip: When writing tests, it is best to consider the objects inside a `let_it_be` as **immutable**, as there are some important caveats when modifying objects inside a `let_it_be` declaration ([1](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#database-is-rolled-back-to-a-pristine-state-but-the-objects-are-not), [2](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#modifiers)). To make your `let_it_be` objects immutable, consider using `.freeze`:
+Pro-tip: When writing tests, it is best to consider the objects inside a `let_it_be` as **immutable**, as there are some important caveats when modifying objects inside a `let_it_be` declaration ([1](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#database-is-rolled-back-to-a-pristine-state-but-the-objects-are-not), [2](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#modifiers)). To make your `let_it_be` objects immutable, consider using `freeze: true`:
 
 ```shell
 # Before
-let_it_be(:namespace) { create_default(:namespace)
+let_it_be(:namespace) { create_default(:namespace) }
 
 # After
-let_it_be(:namespace) { create_default(:namespace).freeze
+let_it_be(:namespace, freeze: true) { create_default(:namespace) }
 ```
 
 See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection> for more information on `let_it_be` freezing.
@@ -607,7 +607,7 @@ This means preferring Capybara's semantic methods and avoiding querying by IDs, 
 
 The benefits of testing in this way are that:
 
-- It ensures all interactive elements have an [accessible name](../fe_guide/accessibility.md#provide-accessible-names-for-screen-readers).
+- It ensures all interactive elements have an [accessible name](../fe_guide/accessibility/best_practices.md#provide-accessible-names-for-screen-readers).
 - It is more readable, as it uses more natural language.
 - It is less brittle, as it avoids querying by IDs, classes, and attributes, which are not visible to the user.
 
@@ -617,7 +617,7 @@ If needed, you can scope interactions within a specific area of the page by usin
 As you will likely be scoping to an element such as a `div`, which typically does not have a label,
 you may use a `data-testid` selector in this case.
 
-You can use the `be_axe_clean` matcher to run [axe automated accessibility testing](../fe_guide/accessibility.md#automated-accessibility-testing-with-axe) in feature tests.
+You can use the `be_axe_clean` matcher to run [axe automated accessibility testing](../fe_guide/accessibility/automated_testing.md) in feature tests.
 
 ##### Externalized contents
 

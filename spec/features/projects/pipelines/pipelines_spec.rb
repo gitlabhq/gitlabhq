@@ -115,7 +115,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         it 'indicates that pipeline can be canceled' do
           expect(page).to have_selector('.js-pipelines-cancel-button')
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'running')
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
         end
 
         context 'when canceling' do
@@ -127,7 +127,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'indicated that pipelines was canceled', :sidekiq_might_not_need_inline do
             expect(page).not_to have_selector('.js-pipelines-cancel-button')
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'canceled')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Canceled')
           end
         end
       end
@@ -144,7 +144,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         it 'indicates that pipeline can be retried' do
           expect(page).to have_selector('.js-pipelines-retry-button')
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'failed')
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Failed')
         end
 
         context 'when retrying' do
@@ -155,7 +155,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'shows running pipeline that is not retryable' do
             expect(page).not_to have_selector('.js-pipelines-retry-button')
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'running')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
           end
         end
       end
@@ -255,7 +255,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         it 'contains badge with tooltip which contains error' do
           expect(pipeline).to have_yaml_errors
           expect(page).to have_selector(
-            %{span[title="#{pipeline.yaml_errors}"]})
+            %(span[title="#{pipeline.yaml_errors}"]))
         end
 
         it 'contains badge that indicates failure reason' do
@@ -265,7 +265,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         it 'contains badge with tooltip which contains failure reason' do
           expect(pipeline.failure_reason?).to eq true
           expect(page).to have_selector(
-            %{span[title="#{pipeline.present.failure_reason}"]})
+            %(span[title="#{pipeline.present.failure_reason}"]))
         end
       end
 
@@ -396,7 +396,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'shows the pipeline as preparing' do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'preparing')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Preparing')
           end
         end
 
@@ -417,7 +417,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'has pipeline running' do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'running')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
           end
 
           context 'when canceling' do
@@ -428,7 +428,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
             it 'indicates that pipeline was canceled', :sidekiq_might_not_need_inline do
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
-              expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'canceled')
+              expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Canceled')
             end
           end
         end
@@ -450,7 +450,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'has failed pipeline', :sidekiq_might_not_need_inline do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'failed')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Failed')
           end
         end
       end
@@ -694,7 +694,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'creates a new pipeline' do
             expect do
-              find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
+              find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -704,13 +704,13 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           context 'when variables are specified' do
             it 'creates a new pipeline with variables' do
-              page.within(find("[data-testid='ci-variable-row']")) do
-                find("[data-testid='pipeline-form-ci-variable-key']").set('key_name')
-                find("[data-testid='pipeline-form-ci-variable-value']").set('value')
+              page.within(find("[data-testid='ci-variable-row-container']")) do
+                find("[data-testid='pipeline-form-ci-variable-key-field']").set('key_name')
+                find("[data-testid='pipeline-form-ci-variable-value-field']").set('value')
               end
 
               expect do
-                find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
+                find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
                 wait_for_requests
               end
                 .to change { Ci::Pipeline.count }.by(1)
@@ -723,7 +723,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'without gitlab-ci.yml' do
           before do
-            find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
+            find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
             wait_for_requests
           end
 
@@ -733,7 +733,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
-              find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
+              find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -818,7 +818,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       describe 'when the `ios_specific_templates` experiment is enabled and the "Set up a runner" button is clicked' do
         before do
           stub_experiments(ios_specific_templates: :candidate)
-          project.project_setting.update!(target_platforms: %w(ios))
+          project.project_setting.update!(target_platforms: %w[ios])
           visit project_pipelines_path(project)
           click_button 'Set up a runner'
         end

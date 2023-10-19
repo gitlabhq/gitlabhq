@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
   it_behaves_like "chat integration", "Hangouts Chat" do
-    let(:client) { HangoutsChat::Sender }
+    let(:client) { Gitlab::HTTP }
     let(:client_arguments) { webhook_url }
     let(:payload) do
       {

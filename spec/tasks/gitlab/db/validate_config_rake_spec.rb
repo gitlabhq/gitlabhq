@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
   # We don't need to delete this data since it only modifies `ar_internal_metadata`
@@ -11,9 +11,6 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_sc
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db/validate_config'
-
-    # empty task as env is already loaded
-    Rake::Task.define_task :environment
   end
 
   context "when validating config" do

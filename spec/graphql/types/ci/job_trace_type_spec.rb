@@ -123,22 +123,6 @@ RSpec.describe GitlabSchema.types['CiJobTrace'], feature_category: :continuous_i
         end
       end
 
-      context 'when FF graphql_job_trace_html_summary_max_size is disabled' do
-        before do
-          stub_feature_flags(graphql_job_trace_html_summary_max_size: false)
-        end
-
-        let(:args) { { last_lines: 20 } }
-
-        it 'does not limit the read size from the raw trace' do
-          expect_next_instance_of(Gitlab::Ci::Trace) do |trace|
-            expect(trace).to receive(:html).with(last_lines: 20, max_size: nil).and_call_original
-          end
-
-          is_expected.to eq "<span>#{(1..20).map { (1..1024).map { 'a' }.join('') }.join('<br/>')}</span>"
-        end
-      end
-
       context 'when trace is cut in middle of a line' do
         let(:args) { {} }
 

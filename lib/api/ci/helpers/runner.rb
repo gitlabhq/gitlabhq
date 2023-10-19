@@ -55,7 +55,7 @@ module API
         def current_runner_manager
           strong_memoize(:current_runner_manager) do
             system_xid = params.fetch(:system_id, LEGACY_SYSTEM_XID)
-            current_runner&.ensure_manager(system_xid) { |m| m.contacted_at = Time.current }
+            current_runner&.ensure_manager(system_xid)
           end
         end
 

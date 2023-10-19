@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Plan' do
     describe 'Testing project wiki', product_group: :knowledge do
-      let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
+      let(:initial_wiki) { create(:project_wiki_page) }
 
       before do
         Flow::Login.sign_in

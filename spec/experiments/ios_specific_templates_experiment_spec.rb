@@ -13,7 +13,7 @@ RSpec.describe IosSpecificTemplatesExperiment do
   let_it_be(:project) { create(:project, :auto_devops_disabled) }
 
   let!(:project_setting) { create(:project_setting, project: project, target_platforms: target_platforms) }
-  let(:target_platforms) { %w(ios) }
+  let(:target_platforms) { %w[ios] }
 
   before do
     stub_experiments(ios_specific_templates: :candidate)

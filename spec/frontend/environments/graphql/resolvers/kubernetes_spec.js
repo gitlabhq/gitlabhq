@@ -29,9 +29,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('k8sPods', () => {
     const mockPodsListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
-        data: {
-          items: k8sPodsMock,
-        },
+        items: k8sPodsMock,
       });
     });
 
@@ -50,7 +48,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should request namespaced pods from the cluster_client library if namespace is specified', async () => {
       const pods = await mockResolvers.Query.k8sPods(null, { configuration, namespace });
 
-      expect(mockNamespacedPodsListFn).toHaveBeenCalledWith(namespace);
+      expect(mockNamespacedPodsListFn).toHaveBeenCalledWith({ namespace });
       expect(mockAllPodsListFn).not.toHaveBeenCalled();
 
       expect(pods).toEqual(k8sPodsMock);
@@ -76,22 +74,42 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('k8sServices', () => {
     const mockServicesListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
-        data: {
-          items: k8sServicesMock,
-        },
+        items: k8sServicesMock,
       });
     });
+
+    const mockNamespacedServicesListFn = jest.fn().mockImplementation(mockServicesListFn);
+    const mockAllServicesListFn = jest.fn().mockImplementation(mockServicesListFn);
 
     beforeEach(() => {
       jest
         .spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces')
         .mockImplementation(mockServicesListFn);
+
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedService')
+        .mockImplementation(mockNamespacedServicesListFn);
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces')
+        .mockImplementation(mockAllServicesListFn);
     });
 
-    it('should request services from the cluster_client library', async () => {
-      const services = await mockResolvers.Query.k8sServices(null, { configuration });
+    it('should request namespaced services from the cluster_client library if namespace is specified', async () => {
+      const services = await mockResolvers.Query.k8sServices(null, { configuration, namespace });
+
+      expect(mockNamespacedServicesListFn).toHaveBeenCalledWith({ namespace });
+      expect(mockAllServicesListFn).not.toHaveBeenCalled();
+
+      expect(services).toEqual(k8sServicesMock);
+    });
+    it('should request all services from the cluster_client library if namespace is not specified', async () => {
+      const services = await mockResolvers.Query.k8sServices(null, {
+        configuration,
+        namespace: '',
+      });
 
       expect(mockServicesListFn).toHaveBeenCalled();
+      expect(mockNamespacedServicesListFn).not.toHaveBeenCalled();
 
       expect(services).toEqual(k8sServicesMock);
     });
@@ -159,7 +177,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace });
 
       namespacedMocks.forEach((workloadMock) => {
-        expect(workloadMock.spy).toHaveBeenCalledWith(namespace);
+        expect(workloadMock.spy).toHaveBeenCalledWith({ namespace });
       });
     });
 
@@ -194,9 +212,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('k8sNamespaces', () => {
     const mockNamespacesListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
-        data: {
-          items: k8sNamespacesMock,
-        },
+        items: k8sNamespacesMock,
       });
     });
 
@@ -221,13 +237,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     ])(
       'should throw an error if the API call fails with the reason "%s"',
       async (reason, message) => {
-        jest.spyOn(CoreV1Api.prototype, 'listCoreV1Namespace').mockRejectedValue({
-          response: {
-            data: {
-              reason,
-            },
-          },
-        });
+        jest.spyOn(CoreV1Api.prototype, 'listCoreV1Namespace').mockRejectedValue({ reason });
 
         await expect(mockResolvers.Query.k8sNamespaces(null, { configuration })).rejects.toThrow(
           message,

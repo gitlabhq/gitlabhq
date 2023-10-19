@@ -24,7 +24,7 @@ module Gitlab
           private
 
           def collection
-            project.issues.select(:id, :description, :iid)
+            project.issues.id_not_in(already_imported_ids).select(:id, :description, :iid)
           end
 
           def ordering_column

@@ -10,14 +10,14 @@ module Gitlab
         # - https://docs.drone.io/pipeline/environment/reference/drone-system-hostname/
         'Integrations::DroneCi' => [
           :drone_url,
-          /\Acloud\.drone\.io\z/i.freeze
+          /\Acloud\.drone\.io\z/i
         ],
         # This matches the logic in `Integrations::Teamcity#url_is_saas?`
         # - https://gitlab.com/gitlab-org/gitlab/blob/65b7fc1ad1ad33247890324e9a3396993b7718a1/app/models/integrations/teamcity.rb#L117-122
         # - https://www.jetbrains.com/help/teamcity/cloud/migrate-from-teamcity-on-premises-to-teamcity-cloud.html#Migration+Process
         'Integrations::Teamcity' => [
           :teamcity_url,
-          /\A[^\.]+\.teamcity\.com\z/i.freeze
+          /\A[^\.]+\.teamcity\.com\z/i
         ]
 
         # Other CI integrations which don't seem to have a SaaS offering:

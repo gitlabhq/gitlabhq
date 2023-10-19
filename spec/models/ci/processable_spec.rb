@@ -93,7 +93,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
            pipeline_id report_results pending_state pages_deployments
            queuing_entry runtime_metadata trace_metadata
            dast_site_profile dast_scanner_profile stage_id dast_site_profiles_build
-           dast_scanner_profiles_build].freeze
+           dast_scanner_profiles_build auto_canceled_by_partition_id].freeze
       end
 
       before_all do

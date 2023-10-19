@@ -21,7 +21,7 @@ module QA
       end
 
       it(
-        'user registers a new group runner',
+        'user registers a new group runner', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/388740'
       ) do
         Flow::Login.sign_in

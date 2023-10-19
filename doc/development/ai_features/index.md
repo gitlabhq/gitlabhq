@@ -58,10 +58,10 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. Enable the required general feature flags:
 
    ```ruby
-   Feature.enable(:ai_related_settings)
    Feature.enable(:openai_experimentation)
    ```
 
+1. Ensure you have followed [the process to obtain an EE license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
 1. Enable `Experimental features` and `Third-party AI services`
    1. Go to the group with the Ultimate license
@@ -80,7 +80,7 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 
 For features that use the embedding database, additional setup is needed.
 
-1. Enable [pgvector](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
+1. Enable [`pgvector`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
 1. Enable the embedding database in GDK
 
    ```shell
@@ -101,26 +101,21 @@ To populate the embedding database for GitLab chat:
 
 In order to obtain a GCP service key for local development, please follow the steps below:
 
-- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
-- In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
-- Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
-- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account.
-- If you are using your own project, you may also need to enable the Vertex AI API:
+- Create a sandbox GCP project by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group GCP project by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
+- If you are using an individual GCP project, you may also need to enable the Vertex AI API:
     1. Go to **APIs & Services > Enabled APIs & services**.
     1. Select **+ Enable APIs and Services**.
     1. Search for `Vertex AI API`.
     1. Select **Vertex AI API**, then select **Enable**.
+- Install the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install)
+- Authenticate locally with GCP using the [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
 - Open the Rails console. Update the settings to:
 
 ```ruby
-Gitlab::CurrentSettings.update(vertex_ai_credentials: File.read('/YOUR_FILE.json'))
+# PROJECT_ID = "your-gcp-project-name"
 
-# Note: These credential examples will not work locally for all models
-Gitlab::CurrentSettings.update(vertex_ai_host: "<root-domain>") # Example: us-central1-aiplatform.googleapis.com
-Gitlab::CurrentSettings.update(vertex_ai_project: "<project-id>") # Example: cloud-large-language-models
+Gitlab::CurrentSettings.update(vertex_ai_project: PROJECT_ID)
 ```
-
-Internal team members can [use this snippet](https://gitlab.com/gitlab-com/gl-infra/production/-/snippets/2541742) for help configuring these endpoints.
 
 ### Configure OpenAI access
 
@@ -134,17 +129,49 @@ Gitlab::CurrentSettings.update(openai_api_key: "<open-ai-key>")
 Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 ```
 
-#### Populating embeddings and using embeddings fixture
+### Populating embeddings and using embeddings fixture
+
+Currently we have embeddings generate both with OpenAI and VertexAI. Bellow sections explain how to populate
+embeddings in the DB or extract embeddings to be used in specs.
+
+FLAG:
+We are moving towards having VertexAI embeddings only, so eventually the OpenAI embeddings support will be drop
+as well as the section bellow will be removed.
+
+#### OpenAI embeddings
 
 To seed your development database with the embeddings for GitLab Documentation,
-you may use the pre-generated embeddings and a Rake test.
+you may use the pre-generated embeddings and a Rake task.
 
 ```shell
 RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:seed_pre_generated
 ```
 
 The DBCleaner gem we use clear the database tables before each test runs.
-Instead of fully populating the table `tanuki_bot_mvc` where we store embeddings for the documentations,
+Instead of fully populating the table `tanuki_bot_mvc` where we store OpenAI embeddings for the documentations,
+we can add a few selected embeddings to the table from a pre-generated fixture.
+
+For instance, to test that the question "How can I reset my password" is correctly
+retrieving the relevant embeddings and answered, we can extract the top N closet embeddings
+to the question into a fixture and only restore a small number of embeddings quickly.
+To facilitate an extraction process, a Rake task been written.
+You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:extract_embeddings
+```
+
+#### VertexAI embeddings
+
+To seed your development database with the embeddings for GitLab Documentation,
+you may use the pre-generated embeddings and a Rake task.
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:seed
+```
+
+The DBCleaner gem we use clear the database tables before each test runs.
+Instead of fully populating the table `vertex_gitlab_docs` where we store VertexAI embeddings for the documentations,
 we can add a few selected embeddings to the table from a pre-generated fixture.
 
 For instance, to test that the question "How can I reset my password" is correctly
@@ -154,8 +181,10 @@ To faciliate an extraction process, a Rake task been written.
 You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
 
 ```shell
-RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:extract_embeddings
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:extract_embeddings
 ```
+
+#### Using embeddings in specs
 
 In the specs where you need to use the embeddings,
 use the RSpec config hook `:ai_embedding_fixtures` on a context.
@@ -165,6 +194,11 @@ context 'when asking about how to use GitLab', :ai_embedding_fixtures do
   # ...examples
 end
 ```
+
+### Tips for local development
+
+1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
+1. Alternatively, bypass Sidekiq entirely and run the chat service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline`
 
 ### Working with GitLab Duo Chat
 
@@ -184,7 +218,7 @@ The endpoints are:
 
 These endpoints are only for prototyping, not for rolling features out to customers.
 
-In your local dev environment, you can experiment with these endpoints locally with the feature flag enabled:
+In your local development environment, you can experiment with these endpoints locally with the feature flag enabled:
 
 ```ruby
 Feature.enable(:ai_experimentation_api)
@@ -565,7 +599,7 @@ Gitlab::Llm::Anthropic::Client.new(user)
 
 ### Monitoring Ai Actions
 
-- Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under "SLI Detail: llm_completion".
+- Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under **SLI Detail: `llm_completion`**.
 - Spent tokens, usage of each Ai feature and other statistics can be found on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features).
 
 ### Add Ai Action to GraphQL

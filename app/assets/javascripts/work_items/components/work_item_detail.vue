@@ -16,7 +16,6 @@ import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
@@ -37,6 +36,7 @@ import {
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
+import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { findHierarchyWidgetChildren } from '../utils';
 
@@ -52,6 +52,7 @@ import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemStateToggleButton from './work_item_state_toggle_button.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
+import WorkItemTypeIcon from './work_item_type_icon.vue';
 
 export default {
   i18n,
@@ -84,7 +85,7 @@ export default {
     WorkItemRelationships,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'reportAbusePath'],
+  inject: ['fullPath', 'isGroup', 'reportAbusePath'],
   props: {
     isModal: {
       type: Boolean,
@@ -118,7 +119,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,
@@ -189,8 +192,8 @@ export default {
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
     },
-    fullPath() {
-      return this.workItem?.project.fullPath;
+    projectFullPath() {
+      return this.workItem?.project?.fullPath;
     },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
@@ -460,11 +463,12 @@ export default {
             v-if="showWorkItemCurrentUserTodos"
             :work-item-id="workItem.id"
             :work-item-iid="workItemIid"
-            :work-item-fullpath="workItem.project.fullPath"
+            :work-item-fullpath="projectFullPath"
             :current-user-todos="currentUserTodos"
             @error="updateError = $event"
           />
           <work-item-actions
+            :full-path="fullPath"
             :work-item-id="workItem.id"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
@@ -476,7 +480,6 @@ export default {
             :work-item-reference="workItem.reference"
             :work-item-create-note-email="workItem.createNoteEmail"
             :is-modal="isModal"
-            :work-item-iid="workItemIid"
             @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
             @toggleWorkItemConfidentiality="toggleConfidentiality"
             @error="updateError = $event"
@@ -503,6 +506,7 @@ export default {
             @error="updateError = $event"
           />
           <work-item-created-updated
+            :full-path="fullPath"
             :work-item-iid="workItemIid"
             :update-in-progress="updateInProgress"
           />
@@ -535,11 +539,12 @@ export default {
                   v-if="showWorkItemCurrentUserTodos"
                   :work-item-id="workItem.id"
                   :work-item-iid="workItemIid"
-                  :work-item-fullpath="workItem.project.fullPath"
+                  :work-item-fullpath="projectFullPath"
                   :current-user-todos="currentUserTodos"
                   @error="updateError = $event"
                 />
                 <work-item-actions
+                  :full-path="fullPath"
                   :work-item-id="workItem.id"
                   :subscribed-to-notifications="workItemNotificationsSubscribed"
                   :work-item-type="workItemType"
@@ -551,7 +556,6 @@ export default {
                   :work-item-reference="workItem.reference"
                   :work-item-create-note-email="workItem.createNoteEmail"
                   :is-modal="isModal"
-                  :work-item-iid="workItemIid"
                   @deleteWorkItem="
                     $emit('deleteWorkItem', { workItemType, workItemId: workItem.id })
                   "
@@ -571,12 +575,14 @@ export default {
             <work-item-attributes-wrapper
               :class="{ 'gl-md-display-none!': workItemsMvc2Enabled }"
               class="gl-border-b"
+              :full-path="fullPath"
               :work-item="workItem"
               :work-item-parent-id="workItemParentId"
               @error="updateError = $event"
             />
             <work-item-description
               v-if="hasDescriptionWidget"
+              :full-path="fullPath"
               :work-item-id="workItem.id"
               :work-item-iid="workItem.iid"
               class="gl-pt-5"
@@ -585,7 +591,7 @@ export default {
             <work-item-award-emoji
               v-if="workItemAwardEmoji"
               :work-item-id="workItem.id"
-              :work-item-fullpath="workItem.project.fullPath"
+              :work-item-fullpath="projectFullPath"
               :award-emoji="workItemAwardEmoji.awardEmoji"
               :work-item-iid="workItemIid"
               @error="updateError = $event"
@@ -593,6 +599,7 @@ export default {
             />
             <work-item-tree
               v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
+              :full-path="fullPath"
               :work-item-type="workItemType"
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
@@ -605,12 +612,15 @@ export default {
             />
             <work-item-relationships
               v-if="showWorkItemLinkedItems"
+              :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
-              :work-item-full-path="workItem.project.fullPath"
+              :work-item-full-path="projectFullPath"
+              :work-item-type="workItem.workItemType.name"
               @showModal="openInModal"
             />
             <work-item-notes
               v-if="workItemNotes"
+              :full-path="fullPath"
               :work-item-id="workItem.id"
               :work-item-iid="workItem.iid"
               :work-item-type="workItemType"
@@ -629,6 +639,7 @@ export default {
               :title="$options.i18n.fetchErrorTitle"
               :description="error"
               :svg-path="noAccessSvgPath"
+              :svg-height="null"
             />
           </section>
           <aside
@@ -638,6 +649,7 @@ export default {
             :class="{ 'is-modal': isModal }"
           >
             <work-item-attributes-wrapper
+              :full-path="fullPath"
               :work-item="workItem"
               :work-item-parent-id="workItemParentId"
               @error="updateError = $event"

@@ -12,12 +12,11 @@ introduced_by_url: <%= options.fetch(:mr) %>
 time_frame: <%= args.third %>
 data_source: internal_events
 data_category: optional
-instrumentation_class: <%= class_name %>
+instrumentation_class: <%= class_name(args.third) %>
 distribution: <%= distributions %>
 tier: <%= tiers %>
 options:
   events:
     - <%= event %>
 events:
-  - name: <%= event %>
-    unique: <%= options.fetch(:unique) %>
+  - name: <%= event %><%= unique(args.third) %>

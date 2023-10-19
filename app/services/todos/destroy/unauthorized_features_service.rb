@@ -27,6 +27,14 @@ module Todos
 
       private
 
+      def without_authorized(items)
+        items.not_in_users(authorized_users)
+      end
+
+      def authorized_users
+        ProjectAuthorization.select(:user_id).for_project(project_ids)
+      end
+
       def related_todos
         base_scope = Todo.for_project(project_id)
         base_scope = base_scope.for_user(user_id) if user_id

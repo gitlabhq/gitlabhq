@@ -131,19 +131,19 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :import
       end
 
       it 'generates the correct hash for a relation with included attributes' do
-        setup_yaml(tree: { project: [:issues] },
-                   included_attributes: { issues: [:name, :description] })
+        setup_yaml(
+          tree: { project: [:issues] },
+          included_attributes: { issues: [:name, :description] }
+        )
 
         is_expected.to match(
-          include: [{ issues: { include: [],
-                                only: [:name, :description] } }],
+          include: [{ issues: { include: [], only: [:name, :description] } }],
           preload: { issues: nil }
         )
       end
 
       it 'generates the correct hash for a relation with excluded attributes' do
-        setup_yaml(tree: { project: [:issues] },
-                   excluded_attributes: { issues: [:name] })
+        setup_yaml(tree: { project: [:issues] }, excluded_attributes: { issues: [:name] })
 
         is_expected.to match(
           include: [{ issues: { except: [:name],
@@ -153,25 +153,23 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :import
       end
 
       it 'generates the correct hash for a relation with both excluded and included attributes' do
-        setup_yaml(tree: { project: [:issues] },
-                   excluded_attributes: { issues: [:name] },
-                   included_attributes: { issues: [:description] })
+        setup_yaml(
+          tree: { project: [:issues] },
+          excluded_attributes: { issues: [:name] },
+          included_attributes: { issues: [:description] }
+        )
 
         is_expected.to match(
-          include: [{ issues: { except: [:name],
-                                include: [],
-                                only: [:description] } }],
+          include: [{ issues: { except: [:name], include: [], only: [:description] } }],
           preload: { issues: nil }
         )
       end
 
       it 'generates the correct hash for a relation with custom methods' do
-        setup_yaml(tree: { project: [:issues] },
-                   methods: { issues: [:name] })
+        setup_yaml(tree: { project: [:issues] }, methods: { issues: [:name] })
 
         is_expected.to match(
-          include: [{ issues: { include: [],
-                                methods: [:name] } }],
+          include: [{ issues: { include: [], methods: [:name] } }],
           preload: { issues: nil }
         )
       end

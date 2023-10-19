@@ -24,7 +24,7 @@
         - if @project && can?(current_user, :admin_milestone, @project)
           = link_to s_('MilestoneSidebar|Edit'), edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
       .value
-        %span.value-content{ data: { qa_selector: 'start_date_content' } }
+        %span.value-content{ data: { testid: 'start-date-content' } }
           - if milestone.start_date
             %span.bold= milestone.start_date.to_fs(:medium)
           - else
@@ -61,7 +61,7 @@
         - if @project && can?(current_user, :admin_milestone, @project)
           = link_to s_('MilestoneSidebar|Edit'), edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
       .value.hide-collapsed
-        %span.value-content{ data: { qa_selector: 'due_date_content' } }
+        %span.value-content{ data: { testid: 'due-date-content' } }
           - if milestone.due_date
             %span.bold= milestone.due_date.to_fs(:medium)
           - else

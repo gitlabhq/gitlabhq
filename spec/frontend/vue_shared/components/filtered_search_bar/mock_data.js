@@ -97,6 +97,19 @@ export const projectMilestonesResponse = {
   },
 };
 
+export const projectUsersResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      attributes: {
+        nodes: mockUsers,
+        __typename: 'UserConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockCrmContacts = [
   {
     __typename: 'CustomerRelationsContact',
@@ -247,8 +260,8 @@ export const mockAuthorToken = {
   symbol: '@',
   token: UserToken,
   operators: OPERATORS_IS,
-  fetchPath: 'gitlab-org/gitlab-test',
-  fetchUsers: Api.projectUsers.bind(Api),
+  fullPath: 'gitlab-org/gitlab-test',
+  isProject: true,
 };
 
 export const mockLabelToken = {

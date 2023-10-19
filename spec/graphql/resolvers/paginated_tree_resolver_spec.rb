@@ -120,12 +120,13 @@ RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_
   end
 
   def resolve_repository(args, opts = {})
-    field_options = described_class.field_options.merge(
+    field_options = {
       owner: resolver_parent,
-      name: 'field_value'
-    ).merge(opts)
+      resolver: described_class,
+      connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
+    }.merge(opts)
 
-    field = ::Types::BaseField.new(**field_options)
+    field = ::Types::BaseField.from_options('field_value', **field_options)
     resolve_field(field, repository, args: args, object_type: resolver_parent)
   end
 end

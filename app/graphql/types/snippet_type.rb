@@ -45,6 +45,11 @@ module Types
           description: 'Visibility Level of the snippet.',
           null: false
 
+    field :hidden, GraphQL::Types::Boolean,
+          description: 'Indicates the snippet is hidden because the author has been banned.',
+          null: false,
+          method: :hidden_due_to_author_ban?
+
     field :created_at, Types::TimeType,
           description: 'Timestamp this snippet was created.',
           null: false

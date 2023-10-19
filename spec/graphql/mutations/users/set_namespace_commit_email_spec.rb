@@ -71,5 +71,5 @@ RSpec.describe Mutations::Users::SetNamespaceCommitEmail, feature_category: :use
     end
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_namespace) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_namespace_via_membership) }
 end

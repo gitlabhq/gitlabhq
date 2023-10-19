@@ -9,7 +9,7 @@ module Gitlab
       #
       class SuccessWarning < Status::Extended
         def text
-          s_('CiStatusText|warning')
+          s_('CiStatusText|Warning')
         end
 
         def label
@@ -18,6 +18,10 @@ module Gitlab
 
         def icon
           'status_warning'
+        end
+
+        def name
+          'SUCCESS_WITH_WARNINGS'
         end
 
         def group

@@ -6,7 +6,6 @@ class Namespace < ApplicationRecord
   include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
-  include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
   include FeatureGate
   include FromUnion
@@ -18,6 +17,9 @@ class Namespace < ApplicationRecord
   include Ci::NamespaceSettings
   include Referable
   include CrossDatabaseIgnoredTables
+  include IgnorableColumns
+
+  ignore_column :unlock_membership_to_ldap, remove_with: '16.7', remove_after: '2023-11-16'
 
   cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
@@ -97,7 +99,10 @@ class Namespace < ApplicationRecord
   validates :path,
     presence: true,
     length: { maximum: URL_MAX_LENGTH }
-  validate :container_registry_namespace_path_validation
+
+  validates :path,
+    format: { with: Gitlab::Regex.oci_repository_path_regex, message: Gitlab::Regex.oci_repository_path_regex_message },
+    if: :path_changed?
 
   validates :path, namespace_path: true, if: ->(n) { !n.project_namespace? }
   # Project path validator is used for project namespaces for now to assure
@@ -147,15 +152,12 @@ class Namespace < ApplicationRecord
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
-  after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
 
   after_save :reload_namespace_details
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
-
-  # Legacy Storage specific hooks
 
   after_commit :expire_child_caches, on: :update, if: -> {
     Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
@@ -289,13 +291,6 @@ class Namespace < ApplicationRecord
     "#{self.class.reference_prefix}#{full_path}"
   end
 
-  def container_registry_namespace_path_validation
-    return if Feature.disabled?(:restrict_special_characters_in_namespace_path, self)
-    return if !path_changed? || path.match?(Gitlab::Regex.oci_repository_path_regex)
-
-    errors.add(:path, Gitlab::Regex.oci_repository_path_regex_message)
-  end
-
   def package_settings
     package_setting_relation || build_package_setting_relation
   end
@@ -313,7 +308,7 @@ class Namespace < ApplicationRecord
   end
 
   def human_name
-    owner_name
+    owner_name || path
   end
 
   def any_project_has_container_registry_tags?

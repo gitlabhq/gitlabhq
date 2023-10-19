@@ -140,7 +140,10 @@ module Gitlab
                 signatures: signatures,
                 project_id: @project.id,
                 found_by_pipeline: report.pipeline,
-                vulnerability_finding_signatures_enabled: @signatures_enabled))
+                vulnerability_finding_signatures_enabled: @signatures_enabled,
+                cvss: data['cvss'] || []
+              )
+            )
           end
 
           def create_signatures(tracking)

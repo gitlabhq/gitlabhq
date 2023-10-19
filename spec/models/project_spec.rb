@@ -103,6 +103,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:mock_monitoring_integration) }
     it { is_expected.to have_one(:service_desk_custom_email_verification).class_name('ServiceDesk::CustomEmailVerification') }
     it { is_expected.to have_one(:container_registry_data_repair_detail).class_name('ContainerRegistry::DataRepairDetail') }
+    it { is_expected.to have_many(:container_registry_protection_rules).class_name('ContainerRegistry::Protection::Rule') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }
@@ -817,6 +818,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'contains errors related to the project being deleted' do
         expect(new_project.errors.full_messages).to include(_('The project is still being deleted. Please try again later.'))
+      end
+    end
+
+    describe 'name format validation' do
+      context 'name is unchanged' do
+        let_it_be(:invalid_path_project) do
+          project = create(:project)
+          project.update_attribute(:name, '.invalid_name')
+          project
+        end
+
+        it 'does not raise validation error for name for existing project' do
+          expect { invalid_path_project.update!(description: 'Foo') }.not_to raise_error
+        end
+      end
+
+      %w[. - $].each do |special_character|
+        it "rejects a name starting with '#{special_character}'" do
+          project = build(:project, name: "#{special_character}foo")
+
+          expect(project).not_to be_valid
+        end
       end
     end
 
@@ -2218,7 +2241,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when the Slack app setting is not enabled' do
       before do
         stub_application_setting(slack_app_enabled: false)
-        allow(Rails.env).to receive(:test?).and_return(false, true)
+        allow(Rails.env).to receive(:test?).and_return(false)
       end
 
       it 'includes all projects' do
@@ -5124,28 +5147,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#pages_available?' do
-    let(:project) { create(:project, group: group) }
-
-    subject { project.pages_available? }
-
-    before do
-      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
-    end
-
-    context 'when the project is in a top level namespace' do
-      let(:group) { create(:group) }
-
-      it { is_expected.to be(true) }
-    end
-
-    context 'when the project is in a subgroup' do
-      let(:group) { create(:group, :nested) }
-
-      it { is_expected.to be(true) }
-    end
-  end
-
   describe '#remove_private_deploy_keys' do
     let!(:project) { create(:project) }
 
@@ -5296,62 +5297,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project.hashed_storage?(:repository)).to be_falsey
       end
     end
-
-    describe '#pages_path' do
-      it 'returns a path where pages are stored' do
-        expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
-      end
-    end
-
-    describe '#migrate_to_hashed_storage!' do
-      let(:project) { create(:project, :empty_repo, :legacy_storage) }
-
-      it 'returns true' do
-        expect(project.migrate_to_hashed_storage!).to be_truthy
-      end
-
-      it 'does not run validation' do
-        expect(project).not_to receive(:valid?)
-
-        project.migrate_to_hashed_storage!
-      end
-
-      it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the project repo is in use' do
-        Gitlab::ReferenceCounter.new(Gitlab::GlRepository::PROJECT.identifier_for_container(project)).increase
-
-        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
-
-        project.migrate_to_hashed_storage!
-      end
-
-      it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the wiki repo is in use' do
-        Gitlab::ReferenceCounter.new(Gitlab::GlRepository::WIKI.identifier_for_container(project.wiki)).increase
-
-        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
-
-        project.migrate_to_hashed_storage!
-      end
-
-      it 'schedules HashedStorage::ProjectMigrateWorker' do
-        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_async).with(project.id)
-
-        project.migrate_to_hashed_storage!
-      end
-    end
-
-    describe '#rollback_to_legacy_storage!' do
-      let(:project) { create(:project, :empty_repo, :legacy_storage) }
-
-      it 'returns nil' do
-        expect(project.rollback_to_legacy_storage!).to be_nil
-      end
-
-      it 'does not run validations' do
-        expect(project).not_to receive(:valid?)
-
-        project.rollback_to_legacy_storage!
-      end
-    end
   end
 
   context 'hashed storage' do
@@ -5389,58 +5334,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
         expect(project.disk_path).to eq(hashed_path)
-      end
-    end
-
-    describe '#pages_path' do
-      it 'returns a path where pages are stored' do
-        expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
-      end
-    end
-
-    describe '#migrate_to_hashed_storage!' do
-      let(:project) { create(:project, :repository, skip_disk_validation: true) }
-
-      it 'returns nil' do
-        expect(project.migrate_to_hashed_storage!).to be_nil
-      end
-
-      it 'does not flag as read-only' do
-        expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
-      end
-
-      context 'when partially migrated' do
-        it 'enqueues a job' do
-          project = create(:project, storage_version: 1, skip_disk_validation: true)
-
-          Sidekiq::Testing.fake! do
-            expect { project.migrate_to_hashed_storage! }.to change(HashedStorage::ProjectMigrateWorker.jobs, :size).by(1)
-          end
-        end
-      end
-    end
-
-    describe '#rollback_to_legacy_storage!' do
-      let(:project) { create(:project, :repository, skip_disk_validation: true) }
-
-      it 'returns true' do
-        expect(project.rollback_to_legacy_storage!).to be_truthy
-      end
-
-      it 'does not run validations' do
-        expect(project).not_to receive(:valid?)
-
-        project.rollback_to_legacy_storage!
-      end
-
-      it 'does not flag as read-only' do
-        expect { project.rollback_to_legacy_storage! }.not_to change { project.repository_read_only }
-      end
-
-      it 'enqueues a job' do
-        Sidekiq::Testing.fake! do
-          expect { project.rollback_to_legacy_storage! }.to change(HashedStorage::ProjectRollbackWorker.jobs, :size).by(1)
-        end
       end
     end
   end
@@ -6908,6 +6801,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_package_registry_enabled' do
+    subject { described_class.with_package_registry_enabled }
+
+    it 'returns projects with the package registry enabled' do
+      project_1 = create(:project)
+      create(:project, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false)
+
+      expect(subject).to contain_exactly(project_1)
+    end
+  end
+
   describe '.deployments' do
     subject { project.deployments }
 
@@ -7435,7 +7339,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#has_pool_repsitory?' do
+  describe '#has_pool_repository?' do
     it 'returns false when it does not have a pool repository' do
       subject = create(:project, :repository)
 
@@ -8807,16 +8711,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#content_editor_on_issues_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group feature flag' do
-      let(:feature_flag_method) { :content_editor_on_issues_feature_flag_enabled? }
-      let(:feature_flag) { :content_editor_on_issues }
-      let(:subject_project) { group_project }
-    end
-  end
-
   describe '#work_items_mvc_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
@@ -9273,5 +9167,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       status: new_pipeline.status,
       name: name
     )
+  end
+
+  context 'with loose foreign key on projects.creator_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:project, creator: parent) }
+    end
   end
 end

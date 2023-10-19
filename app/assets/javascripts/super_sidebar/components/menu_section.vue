@@ -152,20 +152,20 @@ export default {
     <gl-collapse
       :id="itemId"
       v-model="isExpanded"
-      :aria-label="item.title"
       class="gl-list-style-none gl-p-0 gl-m-0 gl-transition-duration-medium gl-transition-timing-function-ease"
       data-qa-selector="menu_section"
       :data-qa-section-name="item.title"
-      tag="ul"
     >
       <slot>
-        <nav-item
-          v-for="subItem of item.items"
-          :key="`${item.title}-${subItem.title}`"
-          :item="subItem"
-          @pin-add="(itemId) => $emit('pin-add', itemId)"
-          @pin-remove="(itemId) => $emit('pin-remove', itemId)"
-        />
+        <ul :aria-label="item.title" class="gl-list-style-none gl-p-0 gl-m-0">
+          <nav-item
+            v-for="subItem of item.items"
+            :key="`${item.title}-${subItem.title}`"
+            :item="subItem"
+            @pin-add="(itemId) => $emit('pin-add', itemId)"
+            @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+          />
+        </ul>
       </slot>
     </gl-collapse>
   </component>

@@ -111,7 +111,21 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
 
           it_behaves_like '<testcase> XML parser',
             ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED,
-            'Some failure'
+            "System Err:\n\nSome failure"
+        end
+
+        context 'and has failure with message, system-out and system-err' do
+          let(:testcase_content) do
+            <<-EOF.strip_heredoc
+              <failure>Some failure</failure>
+              <system-out>This is the system output</system-out>
+              <system-err>This is the system err</system-err>
+            EOF
+          end
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED,
+            "Some failure\n\nSystem Out:\n\nThis is the system output\n\nSystem Err:\n\nThis is the system err"
         end
 
         context 'and has error' do
@@ -132,7 +146,21 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
 
           it_behaves_like '<testcase> XML parser',
             ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR,
-            'Some error'
+            "System Err:\n\nSome error"
+        end
+
+        context 'and has error with message, system-out and system-err' do
+          let(:testcase_content) do
+            <<-EOF.strip_heredoc
+              <error>Some error</error>
+              <system-out>This is the system output</system-out>
+              <system-err>This is the system err</system-err>
+            EOF
+          end
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR,
+            "Some error\n\nSystem Out:\n\nThis is the system output\n\nSystem Err:\n\nThis is the system err"
         end
 
         context 'and has skipped' do

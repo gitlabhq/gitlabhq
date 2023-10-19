@@ -49,9 +49,7 @@ RSpec.shared_examples 'groups routing' do
 
   it 'routes to the avatars controller' do
     expect(delete("/groups/#{group_path}/-/avatar"))
-      .to route_to(group_id: group_path,
-                   controller: 'groups/avatars',
-                   action: 'destroy')
+      .to route_to(group_id: group_path, controller: 'groups/avatars', action: 'destroy')
   end
 
   it 'routes to the boards controller' do
@@ -70,14 +68,6 @@ RSpec.shared_examples 'groups routing' do
 
   it 'routes to the harbor tags controller' do
     expect(get("groups/#{group_path}/-/harbor/repositories/test/artifacts/test/tags")).to route_to('groups/harbor/tags#index', group_id: group_path, repository_id: 'test', artifact_id: 'test')
-  end
-
-  it 'routes to the observability controller explore method' do
-    expect(get("groups/#{group_path}/-/observability/explore")).to route_to('groups/observability#explore', group_id: group_path)
-  end
-
-  it 'routes to the observability controller datasources method' do
-    expect(get("groups/#{group_path}/-/observability/datasources")).to route_to('groups/observability#datasources', group_id: group_path)
   end
 
   it 'routes to the usage quotas controller' do

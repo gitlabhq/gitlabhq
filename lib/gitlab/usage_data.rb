@@ -135,15 +135,6 @@ module Gitlab
         }
       end
       # rubocop: enable Metrics/AbcSize
-
-      def system_usage_data_monthly
-        {
-          counts_monthly: {
-            projects: count(Project.where(monthly_time_range_db_params), start: minimum_id(Project), finish: maximum_id(Project)),
-            packages: count(::Packages::Package.where(monthly_time_range_db_params))
-          }
-        }
-      end
       # rubocop: enable CodeReuse/ActiveRecord
 
       def system_usage_data_license
@@ -379,8 +370,6 @@ module Gitlab
           bulk_imports: {
             gitlab_v1: count(::BulkImport.where(**time_period, source_type: :gitlab))
           },
-          project_imports: project_imports(time_period),
-          issue_imports: issue_imports(time_period),
           group_imports: group_imports(time_period)
         }
       end
@@ -498,7 +487,6 @@ module Gitlab
       def usage_data_metrics
         system_usage_data_license
           .merge(system_usage_data)
-          .merge(system_usage_data_monthly)
           .merge(system_usage_data_weekly)
           .merge(features_usage_data)
           .merge(components_usage_data)
@@ -567,33 +555,6 @@ module Gitlab
       # no internal details leak via usage ping.
       def filtered_omniauth_provider_names
         omniauth_provider_names.reject { |name| name.starts_with?('ldap') }
-      end
-
-      def project_imports(time_period)
-        time_frame = metric_time_period(time_period)
-        counters = {
-          gitlab_project: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'gitlab_project' }),
-          github: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'github' }),
-          bitbucket: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'bitbucket' }),
-          bitbucket_server: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'bitbucket_server' }),
-          gitea: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'gitea' }),
-          git: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'git' }),
-          manifest: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'manifest' }),
-          gitlab_migration: add_metric('CountBulkImportsEntitiesMetric', time_frame: time_frame, options: { source_type: :project_entity })
-        }
-
-        counters[:total] = add_metric('CountImportedProjectsTotalMetric', time_frame: time_frame)
-
-        counters
-      end
-
-      def issue_imports(time_period)
-        time_frame = metric_time_period(time_period)
-        {
-          jira: count(::JiraImportState.where(time_period)), # rubocop: disable CodeReuse/ActiveRecord
-          fogbugz: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'fogbugz' }),
-          csv: count(::Issues::CsvImport.where(time_period)) # rubocop: disable CodeReuse/ActiveRecord
-        }
       end
 
       def group_imports(time_period)

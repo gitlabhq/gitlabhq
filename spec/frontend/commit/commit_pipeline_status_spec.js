@@ -137,7 +137,7 @@ describe('Commit pipeline status component', () => {
       });
 
       it('renders CI icon with the correct title and status', () => {
-        expect(findCiIcon().attributes('title')).toEqual('Pipeline: passed');
+        expect(findCiIcon().attributes('title')).toEqual('Pipeline: Passed');
         expect(findCiIcon().props('status')).toEqual(mockCiStatus);
       });
     });

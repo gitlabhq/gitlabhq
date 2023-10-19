@@ -17,16 +17,18 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
 
     context 'when there are remaining jobs' do
       it 'reschedules itself' do
-        expect(worker)
-          .to receive(:wait_for_jobs)
-          .with({ '123' => 2 })
-          .and_return({ '123' => 1 })
+        freeze_time do
+          expect(worker)
+            .to receive(:wait_for_jobs)
+            .with({ '123' => 2 })
+            .and_return({ '123' => 1 })
 
-        expect(described_class)
-          .to receive(:perform_in)
-          .with(described_class::INTERVAL, project.id, { '123' => 1 }, next_stage)
+          expect(described_class)
+            .to receive(:perform_in)
+            .with(described_class::INTERVAL, project.id, { '123' => 1 }, next_stage, Time.zone.now, 1)
 
-        worker.perform(project.id, { '123' => 2 }, next_stage)
+          worker.perform(project.id, { '123' => 2 }, next_stage)
+        end
       end
 
       context 'when the project import is not running' do
@@ -72,6 +74,83 @@ RSpec.shared_examples Gitlab::Import::AdvanceStage do |factory:|
       it 'raises KeyError when the stage name is invalid' do
         expect { worker.perform(project.id, { '123' => 2 }, :kittens) }
           .to raise_error(KeyError)
+      end
+    end
+
+    context 'on worker timeouts' do
+      it 'refreshes timeout and updates counter if jobs have been processed' do
+        freeze_time do
+          expect(described_class)
+            .to receive(:perform_in)
+            .with(described_class::INTERVAL, project.id, { '123' => 2 }, next_stage, Time.zone.now, 2)
+
+          worker.perform(project.id, { '123' => 2 }, next_stage, 3.hours.ago, 5)
+        end
+      end
+
+      it 'converts string timeout argument to time' do
+        freeze_time do
+          expect_next_instance_of(described_class) do |klass|
+            expect(klass).to receive(:handle_timeout)
+          end
+
+          worker.perform(project.id, { '123' => 2 }, next_stage, 3.hours.ago.to_s, 2)
+        end
+      end
+
+      context 'with an optimistic strategy' do
+        before do
+          project.build_or_assign_import_data(data: { timeout_strategy: "optimistic" })
+          project.save!
+        end
+
+        it 'advances to next stage' do
+          freeze_time do
+            next_worker = described_class::STAGES[next_stage]
+
+            expect(next_worker).to receive(:perform_async).with(project.id)
+
+            stuck_start_time = 3.hours.ago
+
+            worker.perform(project.id, { '123' => 2 }, next_stage, stuck_start_time, 2)
+          end
+        end
+      end
+
+      context 'with a pessimistic strategy' do
+        let(:expected_error_message) { "Failing advance stage, timeout reached with pessimistic strategy" }
+
+        it 'logs error and fails import' do
+          freeze_time do
+            next_worker = described_class::STAGES[next_stage]
+
+            expect(next_worker).not_to receive(:perform_async).with(project.id)
+            expect_next_instance_of(described_class) do |klass|
+              expect(klass).to receive(:find_import_state).and_call_original
+            end
+            expect(Gitlab::Import::ImportFailureService)
+              .to receive(:track)
+              .with(
+                import_state: import_state,
+                exception: Gitlab::Import::AdvanceStage::AdvanceStageTimeoutError,
+                error_source: described_class.name,
+                fail_import: true
+              )
+              .and_call_original
+
+            stuck_start_time = 3.hours.ago
+
+            worker.perform(project.id, { '123' => 2 }, next_stage, stuck_start_time, 2)
+
+            expect(import_state.reload.status).to eq("failed")
+
+            if import_state.is_a?(ProjectImportState)
+              expect(import_state.reload.last_error).to eq(expected_error_message)
+            else
+              expect(import_state.reload.error_message).to eq(expected_error_message)
+            end
+          end
+        end
       end
     end
   end

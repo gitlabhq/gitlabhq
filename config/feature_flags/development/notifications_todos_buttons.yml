@@ -1,0 +1,8 @@
+---
+name: notifications_todos_buttons
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426305
+milestone: '16.5'
+type: development
+group: group::ux paper cuts
+default_enabled: false

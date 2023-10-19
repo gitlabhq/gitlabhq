@@ -11,8 +11,7 @@ RSpec.describe DependencyProxy::ImageTtlGroupPolicy, type: :model do
     it { is_expected.to validate_presence_of(:group) }
 
     describe '#enabled' do
-      it { is_expected.to allow_value(true, false).for(:enabled) }
-      it { is_expected.not_to allow_value(nil).for(:enabled) }
+      it { is_expected.to validate_inclusion_of(:enabled).in_array([true, false]) }
     end
 
     describe '#ttl' do

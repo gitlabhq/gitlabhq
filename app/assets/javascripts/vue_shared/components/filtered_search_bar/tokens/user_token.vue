@@ -4,6 +4,8 @@ import { compact } from 'lodash';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
 import { OPTIONS_NONE_ANY } from '../constants';
 
 import BaseToken from './base_token.vue';
@@ -41,6 +43,12 @@ export default {
     preloadedUsers() {
       return this.config.preloadedUsers || [];
     },
+    namespace() {
+      return this.config.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
+    },
+    fetchUsersQuery() {
+      return this.config.fetchUsers ? this.config.fetchUsers : this.fetchUsersBySearchTerm;
+    },
   },
   methods: {
     getActiveUser(users, data) {
@@ -49,11 +57,19 @@ export default {
     getAvatarUrl(user) {
       return user.avatarUrl || user.avatar_url;
     },
+    fetchUsersBySearchTerm(search) {
+      return this.$apollo
+        .query({
+          query: usersAutocompleteQuery,
+          variables: { fullPath: this.config.fullPath, search, isProject: this.config.isProject },
+        })
+        .then(({ data }) => data[this.namespace]?.autocompleteUsers);
+    },
     fetchUsers(searchTerm) {
       this.loading = true;
       const fetchPromise = this.config.fetchPath
         ? this.config.fetchUsers(this.config.fetchPath, searchTerm)
-        : this.config.fetchUsers(searchTerm);
+        : this.fetchUsersQuery(searchTerm);
 
       fetchPromise
         .then((res) => {

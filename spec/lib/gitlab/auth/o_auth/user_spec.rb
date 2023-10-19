@@ -535,6 +535,37 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
             end
           end
 
+          context "and a corresponding LDAP person with some values being nil" do
+            before do
+              allow(ldap_user).to receive(:uid) { uid }
+              allow(ldap_user).to receive(:username) { uid }
+              allow(ldap_user).to receive(:name) { nil }
+              allow(ldap_user).to receive(:email) { nil }
+              allow(ldap_user).to receive(:dn) { dn }
+
+              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
+
+              oauth_user.save # rubocop:disable Rails/SaveBang
+            end
+
+            it "creates the user correctly" do
+              expect(gl_user).to be_valid
+              expect(gl_user.username).to eq(uid)
+              expect(gl_user.name).to eq(info_hash[:name])
+              expect(gl_user.email).to eq(info_hash[:email])
+            end
+
+            it "does not have the attributes not provided by LDAP set as synced" do
+              expect(gl_user.user_synced_attributes_metadata.name_synced).to be_falsey
+              expect(gl_user.user_synced_attributes_metadata.email_synced).to be_falsey
+            end
+
+            it "does not have the attributes not provided by LDAP set as read-only" do
+              expect(gl_user.read_only_attribute?(:name)).to be_falsey
+              expect(gl_user.read_only_attribute?(:email)).to be_falsey
+            end
+          end
+
           context 'and a corresponding LDAP person with a non-default username' do
             before do
               allow(ldap_user).to receive(:uid) { uid }

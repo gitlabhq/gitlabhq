@@ -1195,6 +1195,8 @@ There are two ways to fix this:
 
 ###### Environment variable overrides
 
+> Multiple databases support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133177) in GitLab 16.5.
+
 By default, GitLab uses the database configuration stored in a
 configuration file (`database.yml`). However, you can override the database settings
 for the backup and restore task by setting environment
@@ -1216,6 +1218,15 @@ and port 5432 with the Linux package (Omnibus):
 
 ```shell
 sudo GITLAB_BACKUP_PGHOST=192.168.1.10 GITLAB_BACKUP_PGPORT=5432 /opt/gitlab/bin/gitlab-backup create
+```
+
+If you run GitLab on [multiple databases](../postgresql/multiple_databases.md), you can override database settings by including
+the database name in the environment variable. For example if your `main` and `ci` databases are
+hosted on different database servers, you would append their name after the `GITLAB_BACKUP_` prefix,
+leaving the `PG*` names as is:
+
+```shell
+sudo GITLAB_BACKUP_MAIN_PGHOST=192.168.1.10 GITLAB_BACKUP_CI_PGHOST=192.168.1.12 /opt/gitlab/bin/gitlab-backup create
 ```
 
 See the [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-envars.html)

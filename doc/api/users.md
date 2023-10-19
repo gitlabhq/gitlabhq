@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -44,6 +44,7 @@ GET /users
     "username": "john_smith",
     "name": "John Smith",
     "state": "active",
+    "locked": false,
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
     "web_url": "http://localhost:3000/john_smith"
   },
@@ -52,13 +53,14 @@ GET /users
     "username": "jack_smith",
     "name": "Jack Smith",
     "state": "blocked",
+    "locked": false,
     "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
     "web_url": "http://localhost:3000/jack_smith"
   }
 ]
 ```
 
-This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination). Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5 [with a flag](../user/feature_flags.md) named `api_keyset_pagination_multi_order`. Disabled by default.
+This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination). Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5.
 
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 
@@ -160,6 +162,7 @@ You can use all [parameters available for everyone](#for-non-administrator-users
     "email": "john@example.com",
     "name": "John Smith",
     "state": "active",
+    "locked": false,
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
@@ -202,6 +205,7 @@ You can use all [parameters available for everyone](#for-non-administrator-users
     "email": "jack@example.com",
     "name": "Jack Smith",
     "state": "blocked",
+    "locked": false,
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
@@ -348,6 +352,7 @@ Parameters:
   "username": "john_smith",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
@@ -395,6 +400,7 @@ Example Responses:
   "email": "john@example.com",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
@@ -675,6 +681,7 @@ GET /user
   "email": "john@example.com",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
@@ -739,6 +746,7 @@ Parameters:
   "email": "john@example.com",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
@@ -957,6 +965,7 @@ Example response:
   "username": "john_smith",
   "name": "John Smith",
   "state": "active",
+  "locked": false,
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith"
 }
@@ -993,6 +1002,7 @@ Example response:
     "name": "Lennie Donnelly",
     "username": "evette.kilback",
     "state": "active",
+    "locked": false,
     "avatar_url": "https://www.gravatar.com/avatar/7955171a55ac4997ed81e5976287890a?s=80&d=identicon",
     "web_url": "http://127.0.0.1:3000/evette.kilback"
   },
@@ -1001,6 +1011,7 @@ Example response:
     "name": "Serena Bradtke",
     "username": "cammy",
     "state": "active",
+    "locked": false,
     "avatar_url": "https://www.gravatar.com/avatar/a2daad869a7b60d3090b7b9bef4baf57?s=80&d=identicon",
     "web_url": "http://127.0.0.1:3000/cammy"
   }
@@ -2123,6 +2134,47 @@ Example response:
     "active": true,
     "expires_at": "2020-12-31",
     "token": "ggbfKkC4n-Lujy8jwCR2"
+}
+```
+
+## Create a personal access token with limited scopes for the currently authenticated user **(FREE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5.
+
+Use this API to create a new personal access token for the currently authenticated user.
+For security purposes, the scopes are limited to only `k8s_proxy` and by default the token will expire by
+the end of the day it was created at.
+Token values are returned once so, make sure you save it as you can't access it again.
+
+```plaintext
+POST /user/personal_access_tokens
+```
+
+| Attribute    | Type   | Required | Description                                                                                                                                                                                                                                                                                           |
+|--------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`       | string | yes      | Name of the personal access token                                                                                                                                                                                                                                                                     |
+| `scopes`     | array  | yes      | Array of scopes of the personal access token. Possible values are `k8s_proxy`                                                                                                                                                                                                                         |
+| `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is at the end of the current day. The expiration is subject to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "scopes[]=k8s_proxy" "https://gitlab.example.com/api/v4/user/personal_access_tokens"
+```
+
+Example response:
+
+```json
+{
+    "id": 3,
+    "name": "mytoken",
+    "revoked": false,
+    "created_at": "2020-10-14T11:58:53.526Z",
+    "scopes": [
+        "k8s_proxy"
+    ],
+    "user_id": 42,
+    "active": true,
+    "expires_at": "2020-10-15",
+    "token": "<your_new_access_token>"
 }
 ```
 

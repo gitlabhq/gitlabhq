@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Configure',
-    only: { pipeline: %i[staging staging-canary canary production] }, product_group: :configure do
+    only: { pipeline: %i[staging staging-canary canary production] }, product_group: :environments do
     describe 'Auto DevOps with a Kubernetes Agent' do
       let!(:app_project) { create(:project, :auto_devops, name: 'autodevops-app-project', template_name: 'express') }
       let!(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::Gcloud).create! }
@@ -62,21 +62,14 @@ module QA
     private
 
     def set_kube_ingress_base_domain(project)
-      Resource::CiVariable.fabricate_via_api! do |resource|
-        resource.project = project
-        resource.key = 'KUBE_INGRESS_BASE_DOMAIN'
-        resource.value = 'example.com'
-        resource.masked = false
-      end
+      create(:ci_variable, project: project, key: 'KUBE_INGRESS_BASE_DOMAIN', value: 'example.com')
     end
 
     def set_kube_context(project)
-      Resource::CiVariable.fabricate_via_api! do |resource|
-        resource.project = project
-        resource.key = 'KUBE_CONTEXT'
-        resource.value = "#{project.path_with_namespace}:#{kubernetes_agent.name}"
-        resource.masked = false
-      end
+      create(:ci_variable,
+        project: project,
+        key: 'KUBE_CONTEXT',
+        value: "#{project.path_with_namespace}:#{kubernetes_agent.name}")
     end
 
     def upload_agent_config(project, agent)
@@ -108,12 +101,7 @@ module QA
         CONTAINER_SCANNING_DISABLED DAST_DISABLED REVIEW_DISABLED
         CODE_INTELLIGENCE_DISABLED CLUSTER_IMAGE_SCANNING_DISABLED
       ].each do |key|
-        Resource::CiVariable.fabricate_via_api! do |resource|
-          resource.project = project
-          resource.key = key
-          resource.value = '1'
-          resource.masked = false
-        end
+        create(:ci_variable, project: project, key: key, value: '1')
       end
     end
   end

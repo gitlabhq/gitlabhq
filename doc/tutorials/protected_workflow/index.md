@@ -24,7 +24,7 @@ release branches, and creates a minimal approval workflow for the project:
 1. [Enforce CODEOWNER approval on branches](#enforce-codeowner-approval-on-branches)
 1. [Create the release branches](#create-the-release-branches)
 
-## Prerequisites
+## Before you begin
 
 - You must have the Maintainer or Owner role.
 - You need a list of managers and their email addresses.

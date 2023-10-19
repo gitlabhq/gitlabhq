@@ -11,7 +11,7 @@ class UpdateContainerRegistryInfoService
     # associated user when running this (e.g. from a rake task or a cron job),
     # so we need to generate a valid JWT token with no access permissions to
     # authenticate as a trusted client.
-    token = Auth::ContainerRegistryAuthenticationService.access_token([], [])
+    token = Auth::ContainerRegistryAuthenticationService.access_token({})
     client = ContainerRegistry::Client.new(registry_config.api_url, token: token)
     info = client.registry_info
 
@@ -24,7 +24,8 @@ class UpdateContainerRegistryInfoService
     Gitlab::CurrentSettings.update!(
       container_registry_vendor: info[:vendor] || '',
       container_registry_version: info[:version] || '',
-      container_registry_features: info[:features] || []
+      container_registry_features: info[:features] || [],
+      container_registry_db_enabled: info[:db_enabled] || false
     )
   end
 end

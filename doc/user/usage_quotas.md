@@ -16,6 +16,15 @@ Statistics include:
 - Storage usage that exceeds the storage quota.
 - Available purchased storage.
 
+Storage and network usage are calculated with the binary measurement system (1024 unit multiples).
+Storage usage is displayed in kibibytes (KiB), mebibytes (MiB),
+or gibibytes (GiB). 1 KiB is 2^10 bytes (1024 bytes),
+1 MiB is 2^20 bytes (1024 kibibytes), 1 GiB is 2^30 bytes (1024 mebibytes).
+
+NOTE:
+Storage usage labels are being transitioned from `KB` to `KiB`, `MB` to `MiB`, and `GB` to `GiB`. During this transition,
+you might see references to `KB`, `MB`, and `GB` in the UI and documentation.
+
 ## View storage usage
 
 Prerequisites:
@@ -123,7 +132,7 @@ Depending on your role, to manage your transfer usage you can [reduce Container 
 
 ## Project storage limit
 
-Projects on GitLab SaaS have a 10 GB storage limit on their Git repository and LFS storage.
+Projects on GitLab SaaS have a 10 GiB storage limit on their Git repository and LFS storage.
 After namespace-level storage limits are applied, the project limit is removed. A namespace has either a namespace-level storage limit or a project-level storage limit, but not both.
 
 When a project's repository and LFS reaches the quota, the project is set to a read-only state.
@@ -153,28 +162,28 @@ The following example describes an excess storage scenario for a namespace:
 
 | Repository | Storage used | Excess storage | Quota  | Status               |
 |------------|--------------|----------------|--------|----------------------|
-| Red        | 10 GB        | 0 GB           | 10 GB  | Read-only **{lock}** |
-| Blue       | 8 GB         | 0 GB           | 10 GB  | Not read-only        |
-| Green      | 10 GB        | 0 GB           | 10 GB  | Read-only **{lock}** |
-| Yellow     | 2 GB         | 0 GB           | 10 GB  | Not read-only        |
-| **Totals** | **30 GB**    | **0 GB**       | -      | -                    |
+| Red        | 10 GiB        | 0 GiB           | 10 GiB  | Read-only **{lock}** |
+| Blue       | 8 GiB         | 0 GiB           | 10 GiB  | Not read-only        |
+| Green      | 10 GiB        | 0 GiB           | 10 GiB  | Read-only **{lock}** |
+| Yellow     | 2 GiB         | 0 GiB           | 10 GiB  | Not read-only        |
+| **Totals** | **30 GiB**    | **0 GiB**       | -      | -                    |
 
 The Red and Green projects are read-only because their repositories and LFS have reached the quota. In this
 example, no additional storage has yet been purchased.
 
-To remove the read-only state from the Red and Green projects, 50 GB additional storage is purchased.
+To remove the read-only state from the Red and Green projects, 50 GiB additional storage is purchased.
 
-Assuming the Green and Red projects' repositories and LFS grow past the 10 GB quota, the purchased storage
-available decreases. All projects no longer have the read-only status because 40 GB purchased storage is available:
-50 GB (purchased storage) - 10 GB (total excess storage used).
+Assuming the Green and Red projects' repositories and LFS grow past the 10 GiB quota, the purchased storage
+available decreases. All projects no longer have the read-only status because 40 GiB purchased storage is available:
+50 GiB (purchased storage) - 10 GiB (total excess storage used).
 
 | Repository | Storage used | Excess storage | Quota   | Status            |
 |------------|--------------|----------------|---------|-------------------|
-| Red        | 15 GB        | 5 GB           | 10 GB   | Not read-only     |
-| Blue       | 14 GB        | 4 GB           | 10 GB   | Not read-only     |
-| Green      | 11 GB        | 1 GB           | 10 GB   | Not read-only     |
-| Yellow     | 5 GB         | 0 GB           | 10 GB   | Not read-only     |
-| **Totals** | **45 GB**    | **10 GB**      | -       | -                 |
+| Red        | 15 GiB        | 5 GiB           | 10 GiB   | Not read-only     |
+| Blue       | 14 GiB        | 4 GiB           | 10 GiB   | Not read-only     |
+| Green      | 11 GiB        | 1 GiB           | 10 GiB   | Not read-only     |
+| Yellow     | 5 GiB         | 0 GiB           | 10 GiB   | Not read-only     |
+| **Totals** | **45 GiB**    | **10 GiB**      | -       | -                 |
 
 ## Namespace storage limit
 
@@ -212,7 +221,7 @@ To prevent exceeding the namespace storage limit, you can:
   - [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/)
   - [GitLab for Startups](https://about.gitlab.com/solutions/startups/)
 - Consider using a [self-managed instance](../subscriptions/self_managed/index.md) of GitLab, which does not have these limits on the Free tier.
-- [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10 GB of storage.
+- [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60 per year for 10 GiB of storage.
 - [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), which include higher limits and features to enable growing teams to ship faster without sacrificing on quality.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
 

@@ -124,9 +124,6 @@ module Projects
           # Notifications
           project.send_move_instructions(@old_path)
 
-          # Directories on disk
-          move_project_folders(project)
-
           transfer_missing_group_resources(@old_group)
 
           # Move uploads
@@ -235,42 +232,13 @@ module Projects
     end
 
     def rollback_side_effects
-      rollback_folder_move
       project.reset
       update_namespace_and_visibility(@old_namespace)
       update_repository_configuration(@old_path)
     end
 
-    def rollback_folder_move
-      return if project.hashed_storage?(:repository)
-
-      move_repo_folder(@new_path, @old_path)
-      move_repo_folder(new_wiki_repo_path, old_wiki_repo_path)
-      move_repo_folder(new_design_repo_path, old_design_repo_path)
-    end
-
-    def move_repo_folder(from_name, to_name)
-      gitlab_shell.mv_repository(project.repository_storage, from_name, to_name)
-    end
-
     def execute_system_hooks
       system_hook_service.execute_hooks_for(project, :transfer)
-    end
-
-    def move_project_folders(project)
-      return if project.hashed_storage?(:repository)
-
-      # Move main repository
-      unless move_repo_folder(@old_path, @new_path)
-        raise TransferError, s_("TransferProject|Cannot move project")
-      end
-
-      # Disk path is changed; we need to ensure we reload it
-      project.reload_repository!
-
-      # Move wiki and design repos also if present
-      move_repo_folder(old_wiki_repo_path, new_wiki_repo_path)
-      move_repo_folder(old_design_repo_path, new_design_repo_path)
     end
 
     def move_project_uploads(project)

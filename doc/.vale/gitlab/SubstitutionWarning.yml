@@ -47,6 +47,8 @@ swap:
   once that: "after that"
   once the: "after the"
   once you: "after you"
+  pack file: packfile
+  pack files: packfiles
   pop-up window: "dialog"
   pop-up: "dialog"
   popup: "dialog"

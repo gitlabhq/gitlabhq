@@ -1774,6 +1774,35 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#copy_indexes' do
+    context 'when index name is too long' do
+      it 'does not fail' do
+        index = double(:index,
+                       columns: %w(uuid),
+                       name: 'index_vuln_findings_on_uuid_including_vuln_id_1',
+                       using: nil,
+                       where: nil,
+                       opclasses: {},
+                       unique: true,
+                       lengths: [],
+                       orders: [])
+
+        allow(model).to receive(:indexes_for).with(:vulnerability_occurrences, 'uuid')
+          .and_return([index])
+
+        expect(model).to receive(:add_concurrent_index)
+          .with(:vulnerability_occurrences,
+               %w(tmp_undo_cleanup_column_8cbf300838),
+              {
+               unique: true,
+               name: 'idx_copy_191a1af1a0',
+               length: [],
+               order: []
+              })
+
+        model.copy_indexes(:vulnerability_occurrences, :uuid, :tmp_undo_cleanup_column_8cbf300838)
+      end
+    end
+
     context 'using a regular index using a single column' do
       it 'copies the index' do
         index = double(:index,
@@ -2326,6 +2355,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#revert_initialize_conversion_of_integer_to_bigint' do
+    let(:setup_table) { true }
     let(:table) { :_test_table }
 
     before do
@@ -2334,7 +2364,18 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
         t.integer :other_id
       end
 
-      model.initialize_conversion_of_integer_to_bigint(table, columns)
+      model.initialize_conversion_of_integer_to_bigint(table, columns) if setup_table
+    end
+
+    context 'when column and trigger do not exist' do
+      let(:setup_table) { false }
+      let(:columns) { :id }
+
+      it 'does not raise an error' do
+        expect do
+          model.revert_initialize_conversion_of_integer_to_bigint(table, columns)
+        end.not_to raise_error
+      end
     end
 
     context 'when single column is given' do
@@ -2904,6 +2945,22 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       let(:column_name) { :int_without_default }
 
       it { expect(recorder.log).to be_empty }
+    end
+  end
+
+  describe '#lock_tables' do
+    let(:lock_statement) do
+      /LOCK TABLE ci_builds, ci_pipelines IN ACCESS EXCLUSIVE MODE/
+    end
+
+    subject(:recorder) do
+      ActiveRecord::QueryRecorder.new do
+        model.lock_tables(:ci_builds, :ci_pipelines)
+      end
+    end
+
+    it 'locks the tables' do
+      expect(recorder.log).to include(lock_statement)
     end
   end
 end

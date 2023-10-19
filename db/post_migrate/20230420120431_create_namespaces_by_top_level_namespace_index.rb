@@ -5,9 +5,11 @@ class CreateNamespacesByTopLevelNamespaceIndex < Gitlab::Database::Migration[2.1
 
   INDEX_NAME = 'index_on_namespaces_namespaces_by_top_level_namespace'
 
+  # rubocop:disable Migration/PreventIndexCreation
   def up
     add_concurrent_index :namespaces, '(traversal_ids[1]), type, id', name: INDEX_NAME
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :namespaces, INDEX_NAME

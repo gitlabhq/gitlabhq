@@ -167,19 +167,23 @@ module Gitlab
         cert_file = config[:ssl_params].delete(:cert_file)
         key_file = config[:ssl_params].delete(:key_file)
 
-        unless ::File.exist?(cert_file)
-          raise InvalidPathError,
-            "Certificate file #{cert_file} specified in in `resque.yml` does not exist."
+        if cert_file
+          unless ::File.exist?(cert_file)
+            raise InvalidPathError,
+              "Certificate file #{cert_file} specified in in `resque.yml` does not exist."
+          end
+
+          config[:ssl_params][:cert] = OpenSSL::X509::Certificate.new(File.read(cert_file))
         end
 
-        config[:ssl_params][:cert] = OpenSSL::X509::Certificate.new(File.read(cert_file))
+        if key_file
+          unless ::File.exist?(key_file)
+            raise InvalidPathError,
+              "Key file #{key_file} specified in in `resque.yml` does not exist."
+          end
 
-        unless ::File.exist?(key_file)
-          raise InvalidPathError,
-            "Key file #{key_file} specified in in `resque.yml` does not exist."
+          config[:ssl_params][:key] = OpenSSL::PKey.read(File.read(key_file))
         end
-
-        config[:ssl_params][:key] = OpenSSL::PKey.read(File.read(key_file))
 
         config
       end

@@ -7,7 +7,7 @@ module Gitlab
   module Metrics
     module Exporter
       class BaseExporter < Daemon
-        CERT_REGEX = /-----BEGIN CERTIFICATE-----(?:.|\n)+?-----END CERTIFICATE-----/.freeze
+        CERT_REGEX = /-----BEGIN CERTIFICATE-----(?:.|\n)+?-----END CERTIFICATE-----/
 
         attr_reader :server
 

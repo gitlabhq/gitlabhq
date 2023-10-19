@@ -49,7 +49,6 @@ export const getIssuesQueryResponse = {
             moved: false,
             state: 'opened',
             title: 'Issue title',
-            titleHtml: 'Issue title',
             updatedAt: '2021-05-22T04:08:01Z',
             closedAt: null,
             upvotes: 3,

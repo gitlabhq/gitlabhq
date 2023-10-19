@@ -470,34 +470,6 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
         end
       end
 
-      context 'with tasks_to_be_done and tasks_project_id in the params' do
-        let(:project_id) { source_type == 'project' ? source.id : create(:project, namespace: source).id }
-
-        context 'when there is 1 user to add' do
-          it 'creates a member_task with the correct attributes' do
-            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                 params: { user_id: stranger.id, access_level: Member::DEVELOPER, tasks_to_be_done: %w(code ci), tasks_project_id: project_id }
-
-            member = source.members.find_by(user_id: stranger.id)
-            expect(member.tasks_to_be_done).to match_array([:code, :ci])
-            expect(member.member_task.project_id).to eq(project_id)
-          end
-        end
-
-        context 'when there are multiple users to add' do
-          it 'creates a member_task with the correct attributes' do
-            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                 params: { user_id: [developer.id, stranger.id].join(','), access_level: Member::DEVELOPER, tasks_to_be_done: %w(code ci), tasks_project_id: project_id }
-
-            members = source.members.where(user_id: [developer.id, stranger.id])
-            members.each do |member|
-              expect(member.tasks_to_be_done).to match_array([:code, :ci])
-              expect(member.member_task.project_id).to eq(project_id)
-            end
-          end
-        end
-      end
-
       it "returns 409 if member already exists" do
         source.add_guest(stranger)
 
@@ -831,10 +803,6 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
   end
 
   describe 'POST /projects/:id/members' do
-    it_behaves_like 'POST /:source_type/:id/members', 'project' do
-      let(:source) { project }
-    end
-
     context 'adding owner to project' do
       it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
         let(:route) do
@@ -858,16 +826,48 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
     end
   end
 
-  it_behaves_like 'POST /:source_type/:id/members', 'group' do
-    let(:source) { group }
+  context 'with admin_group_member FF disabled' do
+    before do
+      stub_feature_flags(admin_group_member: false)
+    end
+
+    it_behaves_like 'POST /:source_type/:id/members', 'project' do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'POST /:source_type/:id/members', 'group' do
+      let(:source) { group }
+    end
+
+    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
+      let(:source) { group }
+    end
   end
 
-  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
-    let(:source) { project }
-  end
+  context 'with admin_group_member FF enabled' do
+    before do
+      stub_feature_flags(admin_group_member: true)
+    end
 
-  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
-    let(:source) { group }
+    it_behaves_like 'POST /:source_type/:id/members', 'project' do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'POST /:source_type/:id/members', 'group' do
+      let(:source) { group }
+    end
+
+    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
+      let(:source) { group }
+    end
   end
 
   it_behaves_like 'DELETE /:source_type/:id/members/:user_id', 'project' do

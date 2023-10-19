@@ -72,9 +72,9 @@ To continue using registration tokens after GitLab 17.0:
 
 Plans to implement a UI setting to re-enable registration tokens are proposed in [issue 411923](https://gitlab.com/gitlab-org/gitlab/-/issues/411923)
 
-## Runners registered with a registration token will continue to work after 18.0
+## Impact on existing runners
 
-Existing runners will not be affected by these changes, they will still work even after the legacy registration method is removed.
+Existing runners will continue to work as usual even after 18.0. This change only affects registration of new runners.
 
 ## Changes to the `gitlab-runner register` command syntax
 
@@ -118,7 +118,7 @@ gitlab-runner register \
 
 In GitLab 15.10 and later, you create the runner and some of the attributes in the UI, like the
 tag list, locked status, and access level.
-In GitLab 15.11 and later, these attributes are no longer accepted as arguments to `register`.
+In GitLab 15.11 and later, these attributes are no longer accepted as arguments to `register` when a runner authentication token with the `glrt-` prefix is specified.
 
 The following example shows the new command:
 
@@ -138,10 +138,6 @@ This means that the same runner configuration is reused across jobs, instead of 
 for each job.
 The specific runner can be identified by the unique system ID that is generated when the runner
 process is started.
-
-## Impact on existing runners
-
-Existing runners will continue to work as usual. This change only affects registration of new runners.
 
 ## Creating runners programmatically
 
@@ -203,3 +199,8 @@ data:
 NOTE:
 If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
 you can set it to any string - it will be ignored when `runner-token` is present.
+
+## Known issues
+
+- When you use the new registration workflow to register your runners with the Helm chart, the pod name is not visible
+  in the runner details page. For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).

@@ -12,6 +12,7 @@ module Types
     mount_mutation Mutations::Achievements::DeleteUserAchievement, alpha: { milestone: '16.1' }
     mount_mutation Mutations::Achievements::Revoke, alpha: { milestone: '15.10' }
     mount_mutation Mutations::Achievements::Update, alpha: { milestone: '15.11' }
+    mount_mutation Mutations::Achievements::UpdateUserAchievementPriorities, alpha: { milestone: '16.5' }
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
     mount_mutation Mutations::AlertManagement::CreateAlertIssue
     mount_mutation Mutations::AlertManagement::UpdateAlertStatus
@@ -169,6 +170,7 @@ module Types
     mount_mutation Mutations::Packages::BulkDestroy,
                    extensions: [::Gitlab::Graphql::Limit::FieldCallCount => { limit: 1 }]
     mount_mutation Mutations::Packages::DestroyFile
+    mount_mutation Mutations::Packages::Protection::Rule::Create, alpha: { milestone: '16.5' }
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo

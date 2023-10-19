@@ -174,7 +174,9 @@ module GroupsHelper
   end
 
   def show_group_readme?(group)
-    group.group_readme
+    return false unless group.group_readme
+
+    can?(current_user, :read_code, group.readme_project)
   end
 
   def group_settings_readme_app_data(group)
@@ -186,7 +188,7 @@ module GroupsHelper
     }
   end
 
-  def enabled_git_access_protocol_options_for_group
+  def enabled_git_access_protocol_options_for_group(_)
     case ::Gitlab::CurrentSettings.enabled_git_access_protocol
     when nil, ""
       [[_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]]
@@ -195,6 +197,14 @@ module GroupsHelper
     when "http"
       [[_("Only HTTP(S)"), "http"]]
     end
+  end
+
+  def new_custom_emoji_path(group)
+    return unless Feature.enabled?(:custom_emoji)
+    return unless group
+    return unless can?(current_user, :create_custom_emoji, group)
+
+    new_group_custom_emoji_path(group)
   end
 
   private

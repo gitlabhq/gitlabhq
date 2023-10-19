@@ -12,8 +12,8 @@ to introduce custom integrations without modifying the GitLab source code.
 
 A file hook runs on each event. You can filter events or projects
 in a file hook's code, and create many file hooks as you need. Each file hook is
-triggered by GitLab asynchronously in case of an event. For a list of events
-see the [system hooks](system_hooks.md) documentation.
+triggered by GitLab asynchronously in case of an event. For a list of events,
+see the [system hooks](system_hooks.md) and [webhooks](../user/project/integrations/webhook_events.md) documentation.
 
 NOTE:
 File hooks must be configured on the file system of the GitLab server. Only GitLab

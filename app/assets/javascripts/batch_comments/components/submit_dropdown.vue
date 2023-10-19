@@ -6,7 +6,6 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
@@ -23,7 +22,6 @@ export default {
     SummarizeMyReview: () =>
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
   },
@@ -127,7 +125,7 @@ export default {
     dropup
     class="submit-review-dropdown"
     :class="{ 'submit-review-dropdown-animated': shouldAnimateReviewButton }"
-    data-qa-selector="submit_review_dropdown"
+    data-testid="submit-review-dropdown"
     variant="info"
     category="primary"
   >
@@ -151,7 +149,6 @@ export default {
         <markdown-editor
           ref="markdownEditor"
           v-model="noteData.note"
-          :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
           class="js-no-autosize"
           :is-submitting="isSubmitting"
           :render-markdown-path="getNoteableData.preview_note_path"
@@ -192,7 +189,6 @@ export default {
           type="submit"
           class="js-no-auto-disable"
           data-testid="submit-review-button"
-          data-qa-selector="submit_review_button"
         >
           {{ __('Submit review') }}
         </gl-button>

@@ -76,20 +76,6 @@ RSpec.describe SortingHelper do
     end
   end
 
-  describe '#issuable_sort_option_title' do
-    it 'returns correct title for issuable_sort_option_overrides key' do
-      expect(issuable_sort_option_title('created_asc')).to eq('Created date')
-    end
-
-    it 'returns correct title for a valid sort value' do
-      expect(issuable_sort_option_title('priority')).to eq('Priority')
-    end
-
-    it 'returns nil for invalid sort value' do
-      expect(issuable_sort_option_title('invalid_key')).to eq(nil)
-    end
-  end
-
   describe '#issuable_sort_direction_button' do
     before do
       set_sorting_url 'test_label'
@@ -156,6 +142,23 @@ RSpec.describe SortingHelper do
     end
   end
 
+  describe '#groups_sort_options_hash' do
+    let(:expected_options) do
+      {
+        sort_value_name => sort_title_name,
+        sort_value_name_desc => sort_title_name_desc,
+        sort_value_recently_created => sort_title_recently_created,
+        sort_value_oldest_created => sort_title_oldest_created,
+        sort_value_latest_activity => sort_title_recently_updated,
+        sort_value_oldest_activity => sort_title_oldest_updated
+      }
+    end
+
+    it 'returns a hash of available sorting options for the groups' do
+      expect(groups_sort_options_hash).to eq(expected_options)
+    end
+  end
+
   describe 'with `projects` controller' do
     before do
       stub_controller_path 'projects'
@@ -190,17 +193,6 @@ RSpec.describe SortingHelper do
   describe 'with `forks` controller' do
     before do
       stub_controller_path 'forks'
-    end
-
-    describe '#forks_sort_options_hash' do
-      it 'returns a hash of available sorting options' do
-        expect(forks_sort_options_hash).to include({
-          sort_value_recently_created => sort_title_created_date,
-          sort_value_oldest_created => sort_title_created_date,
-          sort_value_latest_activity => sort_title_latest_activity,
-          sort_value_oldest_activity => sort_title_latest_activity
-        })
-      end
     end
 
     describe '#forks_reverse_sort_options_hash' do

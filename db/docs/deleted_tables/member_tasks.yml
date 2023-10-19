@@ -1,0 +1,10 @@
+---
+table_name: member_tasks
+feature_categories:
+- activation
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69299
+milestone: '14.5'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134452
+removed_in_milestone: '16.6'

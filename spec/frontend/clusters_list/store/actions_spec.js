@@ -18,10 +18,6 @@ describe('Clusters store actions', () => {
 
   describe('reportSentryError', () => {
     beforeEach(() => {
-      jest.spyOn(Sentry, 'withScope').mockImplementation((fn) => {
-        const mockScope = { setTag: () => {} };
-        fn(mockScope);
-      });
       captureException = jest.spyOn(Sentry, 'captureException');
     });
 
@@ -34,7 +30,11 @@ describe('Clusters store actions', () => {
       const tag = 'sentryErrorTag';
 
       await testAction(actions.reportSentryError, { error: sentryError, tag }, {}, [], []);
-      expect(captureException).toHaveBeenCalledWith(sentryError);
+      expect(captureException).toHaveBeenCalledWith(sentryError, {
+        tags: {
+          javascript_clusters_list: tag,
+        },
+      });
     });
   });
 

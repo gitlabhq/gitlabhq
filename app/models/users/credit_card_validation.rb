@@ -23,18 +23,18 @@ module Users
 
     scope :find_or_initialize_by_user, ->(user_id) { where(user_id: user_id).first_or_initialize }
     scope :by_banned_user, -> { joins(:banned_user) }
-    scope :similar_by_holder_name, ->(holder_name) do
-      if holder_name.present?
-        where('lower(holder_name) = lower(:value)', value: holder_name)
+    scope :similar_by_holder_name, ->(holder_name_hash) do
+      if holder_name_hash.present?
+        where(holder_name_hash: holder_name_hash)
       else
         none
       end
     end
     scope :similar_to, ->(credit_card_validation) do
       where(
-        expiration_date: credit_card_validation.expiration_date,
-        last_digits: credit_card_validation.last_digits,
-        network: credit_card_validation.network
+        expiration_date_hash: credit_card_validation.expiration_date_hash,
+        last_digits_hash: credit_card_validation.last_digits_hash,
+        network_hash: credit_card_validation.network_hash
       )
     end
 
@@ -48,11 +48,11 @@ module Users
     end
 
     def similar_holder_names_count
-      self.class.similar_by_holder_name(holder_name).count
+      self.class.similar_by_holder_name(holder_name_hash).count
     end
 
     def used_by_banned_user?
-      self.class.by_banned_user.similar_to(self).similar_by_holder_name(holder_name).exists?
+      self.class.by_banned_user.similar_to(self).similar_by_holder_name(holder_name_hash).exists?
     end
 
     def set_last_digits_hash

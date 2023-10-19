@@ -245,6 +245,7 @@ export default {
     :title="s__('PackageRegistry|Unable to load package')"
     :description="s__('PackageRegistry|There was a problem fetching the details for this package.')"
     :svg-path="emptyListIllustration"
+    :svg-height="null"
   />
   <div v-else-if="projectName" class="packages-app">
     <package-title :package-entity="packageEntity">

@@ -5,6 +5,7 @@ module BulkImports
     extend ActiveSupport::Concern
 
     include Pipeline
+    include Pipeline::IndexCacheStrategy
 
     included do
       file_extraction_pipeline!

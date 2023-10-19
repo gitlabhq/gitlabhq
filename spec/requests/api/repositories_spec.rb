@@ -538,6 +538,18 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response['compare_same_ref']).to be_truthy
       end
 
+      context 'when unidiff format is requested' do
+        let(:commit) { project.repository.commit('feature') }
+        let(:diff) { commit.diffs.diffs.first }
+
+        it 'returns a diff in Unified format' do
+          get api(route, current_user), params: { from: 'master', to: 'feature', unidiff: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.dig('diffs', 0, 'diff')).to eq(diff.unidiff)
+        end
+      end
+
       it "returns an empty string when the diff overflows" do
         allow(Gitlab::Git::DiffCollection)
           .to receive(:default_limits)

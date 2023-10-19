@@ -33,6 +33,7 @@ fragment WorkItem on WorkItem {
     adminParentLink
     setWorkItemMetadata
     createNote
+    adminWorkItemLink
   }
   widgets {
     ...WorkItemWidgets

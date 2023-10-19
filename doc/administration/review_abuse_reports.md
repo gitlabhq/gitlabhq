@@ -32,13 +32,15 @@ To find out more about reporting abuse, see
 
 ## Resolving abuse reports
 
+> **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131102) in GitLab 16.4.
+
 To access abuse reports:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Abuse Reports**.
 
-There are 3 ways to resolve an abuse report, with a button for each method:
+There are four ways to resolve an abuse report, with a button for each method:
 
 - Remove user & report. This:
   - [Deletes the reported user](../user/profile/account/delete_account.md) from the
@@ -48,6 +50,9 @@ There are 3 ways to resolve an abuse report, with a button for each method:
 - Remove report. This:
   - Removes the abuse report from the list.
   - Removes access restrictions for the reported user.
+- Trust user. This:
+  - Allows the user to create issues, notes, snippets, and merge requests without being blocked for spam.
+  - Prevents abuse reports from being created for this user.
 
 The following is an example of the **Abuse Reports** page:
 

@@ -156,7 +156,7 @@ export default {
       <gl-form-input
         ref="input"
         :readonly="readonly"
-        :size="size"
+        :width="size"
         class="gl-font-monospace! gl-cursor-default!"
         v-bind="formInputGroupProps"
         :value="value"
@@ -183,7 +183,7 @@ export default {
           v-if="showCopyButton"
           :text="value"
           :title="copyButtonTitle"
-          data-qa-selector="clipboard_button"
+          data-testid="clipboard-button"
           @click="handleCopyButtonClick"
         />
       </template>

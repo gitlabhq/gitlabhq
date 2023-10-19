@@ -6,7 +6,7 @@ module Gitlab
       module DiffNotes
         class DiscussionId
           NOTEABLE_TYPE = 'MergeRequest'
-          DISCUSSION_CACHE_REGEX = %r{/(?<repo>[^/]*)/pull/(?<iid>\d+)}i.freeze
+          DISCUSSION_CACHE_REGEX = %r{/(?<repo>[^/]*)/pull/(?<iid>\d+)}i
           DISCUSSION_CACHE_KEY = 'github-importer/discussion-id-map/%{project}/%{noteable_id}/%{original_note_id}'
 
           def initialize(note)

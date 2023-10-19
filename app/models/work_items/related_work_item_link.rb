@@ -11,7 +11,7 @@ module WorkItems
     belongs_to :source, class_name: 'WorkItem'
     belongs_to :target, class_name: 'WorkItem'
 
-    validate :validate_max_number_of_links, on: :create
+    validate :validate_related_link_restrictions
 
     class << self
       extend ::Gitlab::Utils::Override
@@ -28,14 +28,39 @@ module WorkItems
       end
     end
 
-    def validate_max_number_of_links
-      if source && source.linked_work_items(authorize: false).size >= MAX_LINKS_COUNT
-        errors.add :source, s_('WorkItems|This work item would exceed the maximum number of linked items.')
-      end
+    private
 
-      return unless target && target.linked_work_items(authorize: false).size >= MAX_LINKS_COUNT
+    def validate_related_link_restrictions
+      return unless source && target
 
-      errors.add :target, s_('WorkItems|This work item would exceed the maximum number of linked items.')
+      source_type = source.work_item_type
+      target_type = target.work_item_type
+
+      return if link_restriction_exists?(source_type.id, target_type.id)
+
+      errors.add :source, format(
+        s_('%{source_type} cannot be related to %{type_type}'),
+        source_type: source_type.name.downcase.pluralize,
+        type_type: target_type.name.downcase.pluralize
+      )
+    end
+
+    def link_restriction_exists?(source_type_id, target_type_id)
+      source_restriction = find_restriction(source_type_id, target_type_id)
+      return true if source_restriction.present?
+      return false if source_type_id == target_type_id
+
+      find_restriction(target_type_id, source_type_id).present?
+    end
+
+    def find_restriction(source_type_id, target_type_id)
+      ::WorkItems::RelatedLinkRestriction.find_by_source_type_id_and_target_type_id_and_link_type(
+        source_type_id,
+        target_type_id,
+        link_type
+      )
     end
   end
 end
+
+WorkItems::RelatedWorkItemLink.prepend_mod

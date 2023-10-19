@@ -1,6 +1,8 @@
 <script>
 import { GlIcon, GlBadge, GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
+import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { issuableStatusText, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { isExternal } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
@@ -16,6 +18,8 @@ export default {
     GlButton,
     GlLink,
     GlSprintf,
+    HiddenBadge,
+    LockedBadge,
     TimeAgoTooltip,
     WorkItemTypeIcon,
   },
@@ -101,16 +105,6 @@ export default {
         ? 'success'
         : 'info';
     },
-    blockedTooltip() {
-      return sprintf(__('This %{issuable} is locked. Only project members can comment.'), {
-        issuable: this.issuableType,
-      });
-    },
-    hiddenTooltip() {
-      return sprintf(__('This %{issuable} is hidden because its author has been banned'), {
-        issuable: this.issuableType,
-      });
-    },
     shouldShowWorkItemTypeIcon() {
       return this.showWorkItemTypeIcon && this.issuableType;
     },
@@ -174,22 +168,8 @@ export default {
         :issuable-type="issuableType"
         :workspace-type="workspaceType"
       />
-      <span v-if="blocked" class="issuable-warning-icon">
-        <gl-icon
-          v-gl-tooltip.bottom
-          name="lock"
-          :title="blockedTooltip"
-          :aria-label="__('Blocked')"
-        />
-      </span>
-      <span v-if="isHidden" class="issuable-warning-icon">
-        <gl-icon
-          v-gl-tooltip.bottom
-          name="spam"
-          :title="hiddenTooltip"
-          :aria-label="__('Hidden')"
-        />
-      </span>
+      <locked-badge v-if="blocked" :issuable-type="issuableType" />
+      <hidden-badge v-if="isHidden" :issuable-type="issuableType" />
       <work-item-type-icon
         v-if="shouldShowWorkItemTypeIcon"
         show-text

@@ -48,6 +48,26 @@ export const mockSinglePipelineScheduleNodeNoVars = {
   },
 };
 
+export const mockPipelineSchedulesResponseWithPagination = {
+  data: {
+    currentUser: mockGetPipelineSchedulesGraphQLResponse.data.currentUser,
+    project: {
+      id: mockGetPipelineSchedulesGraphQLResponse.data.project.id,
+      pipelineSchedules: {
+        count: 3,
+        nodes: mockGetPipelineSchedulesGraphQLResponse.data.project.pipelineSchedules.nodes,
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjQ0In0',
+          endCursor: 'eyJpZCI6IjI4In0',
+          __typename: 'PageInfo',
+        },
+      },
+    },
+  },
+};
+
 export const emptyPipelineSchedulesResponse = {
   data: {
     currentUser: {
@@ -59,6 +79,13 @@ export const emptyPipelineSchedulesResponse = {
       pipelineSchedules: {
         count: 0,
         nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: '',
+          endCursor: '',
+          __typename: 'PageInfo',
+        },
       },
     },
   },

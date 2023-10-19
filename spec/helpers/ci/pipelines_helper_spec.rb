@@ -88,10 +88,7 @@ RSpec.describe Ci::PipelinesHelper do
                                            :params,
                                            :artifacts_endpoint,
                                            :artifacts_endpoint_placeholder,
-                                           :pipeline_schedule_url,
-                                           :empty_state_svg_path,
-                                           :error_state_svg_path,
-                                           :no_pipelines_svg_path,
+                                           :pipeline_schedules_path,
                                            :can_create_pipeline,
                                            :new_pipeline_path,
                                            :ci_lint_path,
@@ -110,7 +107,7 @@ RSpec.describe Ci::PipelinesHelper do
       before do
         allow(helper).to receive(:current_user).and_return(user)
         project.add_developer(user)
-        create(:project_setting, project: project, target_platforms: %w(ios))
+        create(:project_setting, project: project, target_platforms: %w[ios])
       end
 
       describe 'the `registration_token` attribute' do

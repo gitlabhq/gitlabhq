@@ -673,14 +673,6 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       expect(controller).to set_flash[:notice]
     end
 
-    it 'does not update the path on error' do
-      allow_any_instance_of(Group).to receive(:move_dir).and_raise(Gitlab::UpdatePathError)
-      post :update, params: { id: group.to_param, group: { path: 'new_path' } }
-
-      expect(assigns(:group).errors).not_to be_empty
-      expect(assigns(:group).path).not_to eq('new_path')
-    end
-
     it 'updates the project_creation_level successfully' do
       post :update, params: { id: group.to_param, group: { project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS } }
 

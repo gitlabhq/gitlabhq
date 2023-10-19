@@ -6,7 +6,8 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   let_it_be(:namespace) { create(:group) }
   let_it_be(:project_1) { create(:project, namespace: namespace, name: 'X Project') }
   let_it_be(:project_2) { create(:project, namespace: namespace, name: 'B Project') }
-  let_it_be(:project_3) { create(:project) }
+  let_it_be(:project_3) { create(:project, namespace: namespace, name: 'A Project') }
+  let_it_be(:project_4) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   let(:list) { described_class.new(namespace, user) }
@@ -34,12 +35,20 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the namespace has catalog resources' do
-        let_it_be(:resource) { create(:ci_catalog_resource, project: project_1) }
-        let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2) }
-        let_it_be(:other_namespace_resource) { create(:ci_catalog_resource, project: project_3) }
+        let_it_be(:today) { Time.zone.now }
+        let_it_be(:yesterday) { today - 1.day }
+        let_it_be(:tomorrow) { today + 1.day }
+
+        let_it_be(:resource) { create(:ci_catalog_resource, project: project_1, latest_released_at: yesterday) }
+        let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2, latest_released_at: today) }
+        let_it_be(:resource_3) { create(:ci_catalog_resource, project: project_3, latest_released_at: nil) }
+
+        let_it_be(:other_namespace_resource) do
+          create(:ci_catalog_resource, project: project_4, latest_released_at: tomorrow)
+        end
 
         it 'contains only catalog resources for projects in that namespace' do
-          is_expected.to contain_exactly(resource, resource_2)
+          is_expected.to contain_exactly(resource, resource_2, resource_3)
         end
 
         context 'with a sort parameter' do
@@ -48,16 +57,32 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
           context 'when the sort is name ascending' do
             let_it_be(:sort) { :name_asc }
 
-            it 'contains catalog resources for projects sorted by name' do
-              is_expected.to eq([resource_2, resource])
+            it 'contains catalog resources for projects sorted by name ascending' do
+              is_expected.to eq([resource_3, resource_2, resource])
             end
           end
 
           context 'when the sort is name descending' do
             let_it_be(:sort) { :name_desc }
 
-            it 'contains catalog resources for projects sorted by name' do
-              is_expected.to eq([resource, resource_2])
+            it 'contains catalog resources for projects sorted by name descending' do
+              is_expected.to eq([resource, resource_2, resource_3])
+            end
+          end
+
+          context 'when the sort is latest_released_at ascending' do
+            let_it_be(:sort) { :latest_released_at_asc }
+
+            it 'contains catalog resources sorted by latest_released_at ascending with nulls last' do
+              is_expected.to eq([resource, resource_2, resource_3])
+            end
+          end
+
+          context 'when the sort is latest_released_at descending' do
+            let_it_be(:sort) { :latest_released_at_desc }
+
+            it 'contains catalog resources sorted by latest_released_at descending with nulls last' do
+              is_expected.to eq([resource_2, resource, resource_3])
             end
           end
         end

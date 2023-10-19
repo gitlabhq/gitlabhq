@@ -168,9 +168,11 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::PipelineBridgeStatusWorker' => 3,
         'Ci::PipelineSuccessUnlockArtifactsWorker' => 3,
         'Ci::RefDeleteUnlockArtifactsWorker' => 3,
+        'Ci::Refs::UnlockPreviousPipelinesWorker' => 3,
         'Ci::ResourceGroups::AssignResourceFromResourceGroupWorker' => 3,
         'Ci::TestFailureHistoryWorker' => 3,
         'Ci::TriggerDownstreamSubscriptionsWorker' => 3,
+        'Ci::UnlockPipelinesInQueueWorker' => 0,
         'Ci::SyncReportsToReportApprovalRulesWorker' => 3,
         'CleanupContainerRepositoryWorker' => 3,
         'ClusterConfigureIstioWorker' => 3,
@@ -198,7 +200,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Database::LockTablesWorker' => false,
         'Database::BatchedBackgroundMigration::CiExecutionWorker' => 0,
         'Database::BatchedBackgroundMigration::MainExecutionWorker' => 0,
-        'DeleteContainerRepositoryWorker' => 3,
         'DeleteDiffFilesWorker' => 3,
         'DeleteMergedBranchesWorker' => 3,
         'DeleteStoredFilesWorker' => 3,
@@ -258,7 +259,11 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'GeoRepositoryDestroyWorker' => 3,
         'Gitlab::BitbucketImport::AdvanceStageWorker' => 3,
         'Gitlab::BitbucketImport::Stage::FinishImportWorker' => 3,
+        'Gitlab::BitbucketImport::Stage::ImportIssuesWorker' => 3,
+        'Gitlab::BitbucketImport::Stage::ImportIssuesNotesWorker' => 3,
+        'Gitlab::BitbucketImport::Stage::ImportLfsObjectsWorker' => 3,
         'Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker' => 3,
+        'Gitlab::BitbucketImport::Stage::ImportPullRequestsNotesWorker' => 3,
         'Gitlab::BitbucketImport::Stage::ImportRepositoryWorker' => 3,
         'Gitlab::BitbucketServerImport::AdvanceStageWorker' => 3,
         'Gitlab::BitbucketServerImport::Stage::FinishImportWorker' => 3,
@@ -310,7 +315,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Gitlab::JiraImport::Stage::StartImportWorker' => 5,
         'GitlabPerformanceBarStatsWorker' => 3,
         'GitlabSubscriptions::RefreshSeatsWorker' => 0,
-        'GitlabShellWorker' => 3,
+        'GitlabSubscriptions::AddOnPurchases::BulkRefreshUserAssignmentsWorker' => 0,
         'GitlabServicePingWorker' => 3,
         'GroupDestroyWorker' => 3,
         'GroupExportWorker' => false,
@@ -480,7 +485,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'WorkItems::ImportWorkItemsCsvWorker' => 3,
         'X509CertificateRevokeWorker' => 3,
         'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3,
-        'Zoekt::IndexerWorker' => 2
+        'Zoekt::IndexerWorker' => 2,
+        'Issuable::RelatedLinksCreateWorker' => 3
       }.merge(extra_retry_exceptions)
     end
 

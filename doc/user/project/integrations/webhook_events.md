@@ -6,8 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Webhook events **(FREE ALL)**
 
-You can configure a [webhook](webhooks.md) in your project that triggers when
-an event occurs. The following events are supported.
+This page lists the events that are triggered for [project webhooks](webhooks.md) and [group webhooks](webhooks.md#group-webhooks).
+
+For a list of events triggered for system webhooks, see [system webhooks](../../../administration/system_hooks.md).
+
+**Events triggered for both project and group webhooks:**
 
 Event type                                   | Trigger
 ---------------------------------------------|-----------------------------------------------------------------------------
@@ -20,11 +23,16 @@ Event type                                   | Trigger
 [Pipeline event](#pipeline-events)           | A pipeline status changes.
 [Job event](#job-events)                     | A job status changes.
 [Deployment event](#deployment-events)       | A deployment starts, succeeds, fails, or is canceled.
+[Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
+[Release event](#release-events)             | A release is created, updated, or deleted.
+[Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
+
+**Events triggered for group webhooks only:**
+
+Event type                                   | Trigger
+---------------------------------------------|-----------------------------------------------------------------------------
 [Group member event](#group-member-events)   | A user is added or removed from a group, or a user's access level or access expiration date changes.
 [Subgroup event](#subgroup-events)           | A subgroup is created or removed from a group.
-[Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
-[Release event](#release-events)             | A release is created or updated.
-[Emoji event](#emoji-events)                 | An emoji is awarded or revoked.
 
 NOTE:
 If an author has no public email listed in their
@@ -1578,7 +1586,7 @@ Payload example:
 
 ## Group member events **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260347) in GitLab 13.7.
+These events are triggered for [group webhooks](webhooks.md#group-webhooks) only.
 
 Member events are triggered when:
 
@@ -1673,7 +1681,7 @@ Payload example:
 
 ## Subgroup events **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260419) in GitLab 13.9.
+These events are triggered for [group webhooks](webhooks.md#group-webhooks) only.
 
 Subgroup events are triggered when:
 
@@ -1790,12 +1798,15 @@ Payload example:
 
 ## Release events
 
-Release events are triggered when a release is created or updated.
+> Delete release event [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418113) in GitLab 16.5.
+
+Release events are triggered when a release is created, updated, or deleted.
 
 The available values for `object_attributes.action` in the payload are:
 
 - `create`
 - `update`
+- `delete`
 
 Request header:
 
@@ -1891,7 +1902,7 @@ On self-managed GitLab, by default this feature is available. To hide the featur
 NOTE:
 To have the `emoji_webhooks` flag enabled on GitLab.com, see [issue 417288](https://gitlab.com/gitlab-org/gitlab/-/issues/417288).
 
-An emoji event is triggered when an emoji is awarded or revoked on:
+An emoji event is triggered when an [emoji reaction](../../emoji_reactions.md) is added or removed on:
 
 - Issues
 - Merge requests
@@ -1904,8 +1915,8 @@ An emoji event is triggered when an emoji is awarded or revoked on:
 
 The available values for `object_attributes.action` in the payload are:
 
-- `award`
-- `revoke`
+- `award` to add a reaction
+- `revoke` to remove a reaction
 
 Request header:
 

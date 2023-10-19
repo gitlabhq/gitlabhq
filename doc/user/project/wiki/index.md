@@ -177,6 +177,25 @@ You need at least the Developer role to move a wiki page:
    change the **Title** from `about` to `/about`.
 1. Select **Save changes**.
 
+## Export a wiki page
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `print_wiki`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134251/) in GitLab 16.5.
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `print_wiki`.
+On GitLab.com, this feature is available.
+
+You can export a wiki page as a PDF file:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Plan > Wiki**.
+1. Go to the page you want to export.
+1. Select the vertical ellipsis (**{ellipsis_v}**), and then select **Print as PDF**.
+
+A PDF of the wiki page is created.
+
 ## View history of a wiki page
 
 The changes of a wiki page over time are recorded in the wiki's Git repository.
@@ -389,7 +408,7 @@ To clear all data from a project wiki and recreate it in a blank state:
    p = Project.find_by_full_path('<username-or-group>/<project-name>')
 
    # This command deletes the wiki project from the filesystem.
-   GitlabShellWorker.perform_in(0, :remove_repository, p.repository_storage, p.wiki.disk_path)
+   p.wiki.repository.remove
 
    # Refresh the wiki repository state.
    p.wiki.repository.expire_exists_cache

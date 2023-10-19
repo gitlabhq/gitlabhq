@@ -14,17 +14,52 @@ module Gitlab
           ticket = find_or_create_type(::WorkItems::Type::TYPE_NAMES[:ticket])
 
           restrictions = [
-            { parent_type_id: objective.id, child_type_id: objective.id, maximum_depth: 9 },
-            { parent_type_id: objective.id, child_type_id: key_result.id, maximum_depth: 1 },
-            { parent_type_id: issue.id, child_type_id: task.id, maximum_depth: 1 },
-            { parent_type_id: incident.id, child_type_id: task.id, maximum_depth: 1 },
-            { parent_type_id: epic.id, child_type_id: epic.id, maximum_depth: 9 },
-            { parent_type_id: epic.id, child_type_id: issue.id, maximum_depth: 1 },
-            { parent_type_id: ticket.id, child_type_id: task.id, maximum_depth: 1 }
+            {
+              parent_type_id: objective.id,
+              child_type_id: objective.id,
+              maximum_depth: 9,
+              cross_hierarchy_enabled: false
+            },
+            {
+              parent_type_id: objective.id,
+              child_type_id: key_result.id,
+              maximum_depth: 1,
+              cross_hierarchy_enabled: false
+            },
+            {
+              parent_type_id: issue.id,
+              child_type_id: task.id,
+              maximum_depth: 1,
+              cross_hierarchy_enabled: false
+            },
+            {
+              parent_type_id: incident.id,
+              child_type_id: task.id,
+              maximum_depth: 1,
+              cross_hierarchy_enabled: false
+            },
+            {
+              parent_type_id: epic.id,
+              child_type_id: epic.id,
+              maximum_depth: 9,
+              cross_hierarchy_enabled: true
+            },
+            {
+              parent_type_id: epic.id,
+              child_type_id: issue.id,
+              maximum_depth: 1,
+              cross_hierarchy_enabled: true
+            },
+            {
+              parent_type_id: ticket.id,
+              child_type_id: task.id,
+              maximum_depth: 1,
+              cross_hierarchy_enabled: false
+            }
           ]
 
           ::WorkItems::HierarchyRestriction.upsert_all(
-            restrictions,
+            filtered_restrictions(restrictions),
             unique_by: :index_work_item_hierarchy_restrictions_on_parent_and_child
           )
         end
@@ -35,6 +70,16 @@ module Gitlab
 
           Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
           ::WorkItems::Type.find_by_name_and_namespace_id(name, nil)
+        end
+
+        def self.filtered_restrictions(restrictions)
+          missing_columns = restrictions.first.keys.select do |attribute|
+            ::WorkItems::HierarchyRestriction.column_names.exclude?(attribute.to_s)
+          end
+
+          return restrictions if missing_columns.empty?
+
+          restrictions.map { |restriction| restriction.except(*missing_columns) }
         end
       end
     end

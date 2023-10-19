@@ -56,6 +56,7 @@ export default {
       'hasNoAccessError',
       'groupPath',
       'namespace',
+      'predefinedDateRange',
     ]),
     ...mapGetters(['pathNavigationData', 'filterParams']),
     isLoaded() {
@@ -132,6 +133,7 @@ export default {
       'fetchStageData',
       'setSelectedStage',
       'setDateRange',
+      'setPredefinedDateRange',
       'updateStageTablePagination',
     ]),
     onSetDateRange({ startDate, endDate }) {
@@ -170,7 +172,9 @@ export default {
       :start-date="createdAfter"
       :end-date="createdBefore"
       :group-path="groupPath"
+      :predefined-date-range="predefinedDateRange"
       @setDateRange="onSetDateRange"
+      @setPredefinedDateRange="setPredefinedDateRange"
     />
     <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
       <path-navigation

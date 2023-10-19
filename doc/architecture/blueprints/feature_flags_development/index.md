@@ -93,7 +93,7 @@ allow us to have:
 name: ci_disallow_to_create_merge_request_pipelines_in_target_project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40724
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/235119
-group: group::release
+group: group::environments
 type: development
 default_enabled: false
 ```

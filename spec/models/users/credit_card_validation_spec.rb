@@ -15,41 +15,43 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
   it { is_expected.to validate_length_of(:network_hash).is_at_most(44) }
 
   describe '#similar_records' do
-    let(:card_details) do
-      subject.attributes.with_indifferent_access.slice(:expiration_date, :last_digits, :network, :holder_name)
+    let_it_be(:credit_card_validation) { create(:credit_card_validation) }
+
+    let_it_be(:card_details) do
+      credit_card_validation.attributes.with_indifferent_access.slice(
+        :expiration_date, :last_digits, :network, :holder_name
+      )
     end
 
-    subject!(:credit_card_validation) { create(:credit_card_validation, holder_name: 'Alice') }
+    let_it_be(:match_1) { create(:credit_card_validation, card_details) }
+    let_it_be(:match_2) { create(:credit_card_validation, card_details.merge(holder_name: 'Bob')) }
 
-    let!(:match1) { create(:credit_card_validation, card_details) }
-    let!(:match2) { create(:credit_card_validation, card_details.merge(holder_name: 'Bob')) }
-    let!(:non_match1) { create(:credit_card_validation, card_details.merge(last_digits: 9)) }
-    let!(:non_match2) { create(:credit_card_validation, card_details.merge(network: 'unknown')) }
-    let!(:non_match3) do
-      create(:credit_card_validation, card_details.dup.tap { |h| h[:expiration_date] += 1.year })
+    let_it_be(:non_match_1) { create(:credit_card_validation, card_details.merge(last_digits: 9999)) }
+    let_it_be(:non_match_2) { create(:credit_card_validation, card_details.merge(network: 'Mastercard')) }
+    let_it_be(:non_match_3) do
+      create(:credit_card_validation, card_details.merge(expiration_date: 2.years.from_now.to_date))
     end
 
     it 'returns matches with the same last_digits, expiration and network, ordered by credit_card_validated_at' do
-      expect(subject.similar_records).to eq([match2, match1, subject])
+      # eq is used instead of match_array because rows are sorted by credit_card_validated_at in desc order
+      expect(credit_card_validation.similar_records).to eq([match_2, match_1, credit_card_validation])
     end
   end
 
   describe '#similar_holder_names_count' do
-    subject!(:credit_card_validation) { create(:credit_card_validation, holder_name: holder_name) }
-
     context 'when holder_name is present' do
-      let(:holder_name) { 'ALICE M SMITH' }
+      let_it_be(:credit_card_validation) { create(:credit_card_validation, holder_name: 'ALICE M SMITH') }
 
-      let!(:match) { create(:credit_card_validation, holder_name: 'Alice M Smith') }
-      let!(:non_match) { create(:credit_card_validation, holder_name: 'Bob B Brown') }
+      let_it_be(:match) { create(:credit_card_validation, holder_name: 'Alice M Smith') }
+      let_it_be(:non_match) { create(:credit_card_validation, holder_name: 'Bob B Brown') }
 
       it 'returns the count of cards with similar case insensitive holder names' do
-        expect(subject.similar_holder_names_count).to eq(2)
+        expect(credit_card_validation.similar_holder_names_count).to eq(2)
       end
     end
 
     context 'when holder_name is nil' do
-      let(:holder_name) { nil }
+      let_it_be(:credit_card_validation) { create(:credit_card_validation, holder_name: nil) }
 
       it 'returns 0' do
         expect(subject.similar_holder_names_count).to eq(0)
@@ -75,104 +77,117 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
     end
 
     describe '.by_banned_user' do
-      let(:banned_user) { create(:banned_user) }
-      let!(:credit_card) { create(:credit_card_validation) }
-      let!(:banned_user_credit_card) { create(:credit_card_validation, user: banned_user.user) }
+      subject(:by_banned_user) { described_class.by_banned_user }
+
+      let_it_be(:banned_user) { create(:banned_user) }
+      let_it_be(:credit_card) { create(:credit_card_validation) }
+      let_it_be(:banned_user_credit_card) { create(:credit_card_validation, user: banned_user.user) }
 
       it 'returns only records associated to banned users' do
-        expect(described_class.by_banned_user).to match_array([banned_user_credit_card])
+        expect(by_banned_user).to match_array([banned_user_credit_card])
       end
     end
 
     describe '.similar_by_holder_name' do
-      let!(:credit_card) { create(:credit_card_validation, holder_name: 'CARD MCHODLER') }
-      let!(:credit_card2) { create(:credit_card_validation, holder_name: 'RICHIE RICH') }
+      subject(:similar_by_holder_name) { described_class.similar_by_holder_name(holder_name_hash) }
 
-      it 'returns only records that case-insensitive match the given holder name' do
-        expect(described_class.similar_by_holder_name('card mchodler')).to match_array([credit_card])
+      let_it_be(:credit_card_validation) { create(:credit_card_validation, holder_name: 'Alice M Smith') }
+      let_it_be(:match) { create(:credit_card_validation, holder_name: 'ALICE M SMITH') }
+
+      context 'when holder_name_hash is present' do
+        let_it_be(:holder_name_hash) { credit_card_validation.holder_name_hash }
+
+        it 'returns records with similar holder names case-insensitively' do
+          expect(similar_by_holder_name).to match_array([credit_card_validation, match])
+        end
       end
 
-      context 'when given holder name is falsey' do
-        it 'returns [] when given holder name is ""' do
-          expect(described_class.similar_by_holder_name('')).to match_array([])
-        end
+      context 'when holder_name_hash is nil' do
+        let_it_be(:holder_name_hash) { nil }
 
-        it 'returns [] when given holder name is nil' do
-          expect(described_class.similar_by_holder_name(nil)).to match_array([])
+        it 'returns an empty array' do
+          expect(similar_by_holder_name).to match_array([])
         end
       end
     end
 
     describe '.similar_to' do
-      let(:credit_card) { create(:credit_card_validation) }
+      subject(:similar_to) { described_class.similar_to(credit_card_validation) }
 
-      let!(:credit_card2) do
+      let_it_be(:credit_card_validation) { create(:credit_card_validation) }
+
+      let_it_be(:match) do
         create(:credit_card_validation,
-          expiration_date: credit_card.expiration_date,
-          last_digits: credit_card.last_digits,
-          network: credit_card.network
+          expiration_date: credit_card_validation.expiration_date,
+          last_digits: credit_card_validation.last_digits,
+          network: credit_card_validation.network
         )
       end
 
-      let!(:credit_card3) do
+      let_it_be(:non_match) do
         create(:credit_card_validation,
-          expiration_date: credit_card.expiration_date,
-          last_digits: credit_card.last_digits,
-          network: 'UnknownCCNetwork'
+          expiration_date: credit_card_validation.expiration_date,
+          last_digits: credit_card_validation.last_digits,
+          network: 'Mastercard'
         )
       end
 
       it 'returns only records with similar expiration_date, last_digits, and network attribute values' do
-        expect(described_class.similar_to(credit_card)).to match_array([credit_card, credit_card2])
+        expect(similar_to).to match_array([credit_card_validation, match])
       end
     end
   end
 
   describe '#used_by_banned_user?' do
-    let(:credit_card_details) do
-      {
-        holder_name: 'Christ McLovin',
-        expiration_date: 2.years.from_now.end_of_month,
-        last_digits: 4242,
-        network: 'Visa'
-      }
+    subject(:used_by_banned_user) { credit_card_validation.used_by_banned_user? }
+
+    let_it_be(:credit_card_validation) { create(:credit_card_validation) }
+
+    let_it_be(:card_details) do
+      credit_card_validation.attributes.with_indifferent_access.slice(
+        :expiration_date, :last_digits, :network, :holder_name
+      )
     end
 
-    let!(:credit_card) { create(:credit_card_validation, credit_card_details) }
-
-    subject { credit_card }
+    let_it_be(:banned_user) { create(:banned_user) }
 
     context 'when there is a similar credit card associated to a banned user' do
-      let_it_be(:banned_user) { create(:banned_user) }
-
-      let(:attrs) { credit_card_details.merge({ user: banned_user.user }) }
-      let!(:similar_credit_card) { create(:credit_card_validation, attrs) }
-
-      it { is_expected.to be_used_by_banned_user }
-
-      context 'when holder names do not match' do
-        let!(:similar_credit_card) do
-          create(:credit_card_validation, attrs.merge({ holder_name: 'Mary Goody' }))
+      context 'when holder names match exactly' do
+        before do
+          create(:credit_card_validation, card_details.merge(user: banned_user.user))
         end
 
-        it { is_expected.not_to be_used_by_banned_user }
+        it { is_expected.to be(true) }
       end
 
-      context 'when .similar_to returns nothing' do
-        let!(:similar_credit_card) do
-          create(:credit_card_validation, attrs.merge({ network: 'DifferentNetwork' }))
+      context 'when holder names do not match exactly' do
+        before do
+          create(:credit_card_validation, card_details.merge(user: banned_user.user, holder_name: 'John M Smith'))
         end
 
-        it { is_expected.not_to be_used_by_banned_user }
+        it { is_expected.to be(false) }
       end
     end
 
-    context 'when there is a similar credit card not associated to a banned user' do
-      let!(:similar_credit_card) do
-        create(:credit_card_validation, credit_card_details)
+    context 'when there are no similar credit cards associated to a banned user' do
+      before do
+        create(:credit_card_validation,
+          user: banned_user.user,
+          network: 'Mastercard',
+          last_digits: 1111,
+          holder_name: 'Jane Smith'
+        )
       end
 
-      it { is_expected.not_to be_used_by_banned_user }
+      it { is_expected.to be(false) }
+    end
+
+    context 'when there is a similar credit card but it is not associated to a banned user' do
+      before do
+        create(:credit_card_validation, card_details)
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 

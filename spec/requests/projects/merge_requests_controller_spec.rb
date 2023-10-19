@@ -14,19 +14,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     let(:merge_request) { create :merge_request, source_project: project, author: user }
 
-    context 'when logged in' do
-      before do
-        group.add_developer(user)
-        login_as(user)
-      end
-
-      it_behaves_like "observability csp policy", described_class do
-        let(:tested_path) do
-          project_merge_request_path(project, merge_request)
-        end
-      end
-    end
-
     context 'when the author of the merge request is banned', feature_category: :insider_threat do
       let_it_be(:user) { create(:user, :banned) }
 
@@ -159,6 +146,62 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(Gitlab::Json.parse(response.body)['count']['all']).to eq(2)
+    end
+
+    context 'when there are pipelines with failed builds' do
+      before do
+        pipeline = create_pipeline
+
+        create(:ci_build, :failed, pipeline: pipeline)
+        create(:ci_build, :failed, pipeline: pipeline)
+      end
+
+      it 'returns the failed build count but not the failed builds' do
+        get pipelines_project_merge_request_path(project, merge_request, format: :json)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::Json.parse(response.body)['pipelines'].size).to eq(1)
+        expect(Gitlab::Json.parse(response.body)['pipelines'][0]['failed_builds_count']).to eq(2)
+        expect(Gitlab::Json.parse(response.body)['pipelines'][0]).not_to have_key('failed_builds')
+      end
+
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        # warm up
+        get pipelines_project_merge_request_path(project, merge_request, format: :json)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get pipelines_project_merge_request_path(project, merge_request, format: :json)
+        end
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::Json.parse(response.body)['count']['all']).to eq(1)
+
+        pipeline_2 = create_pipeline
+        create(:ci_build, :failed, pipeline: pipeline_2)
+        create(:ci_build, :failed, pipeline: pipeline_2)
+
+        expect do
+          get pipelines_project_merge_request_path(project, merge_request, format: :json)
+        end.to issue_same_number_of_queries_as(control)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::Json.parse(response.body)['count']['all']).to eq(2)
+      end
+
+      context 'when the FF ci_fix_performance_pipelines_json_endpoint is disabled' do
+        before do
+          stub_feature_flags(ci_fix_performance_pipelines_json_endpoint: false)
+        end
+
+        it 'returns the failed builds' do
+          get pipelines_project_merge_request_path(project, merge_request, format: :json)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(Gitlab::Json.parse(response.body)['pipelines'].size).to eq(1)
+          expect(Gitlab::Json.parse(response.body)['pipelines'][0]['failed_builds_count']).to eq(2)
+          expect(Gitlab::Json.parse(response.body)['pipelines'][0]['failed_builds'].size).to eq(2)
+        end
+      end
     end
 
     private

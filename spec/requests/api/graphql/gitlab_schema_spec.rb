@@ -239,6 +239,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
             graphql_name 'BarEnum'
 
             value 'FOOBAR', value: 'foobar', deprecated: { milestone: '0.1', reason: :renamed }
+            value 'FOOBARNEW', value: 'foobarnew'
           end)
 
           field :baz, GraphQL::Types::Boolean do

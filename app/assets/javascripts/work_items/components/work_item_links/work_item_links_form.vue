@@ -37,8 +37,12 @@ export default {
     GlTooltip,
     WorkItemTokenInput,
   },
-  inject: ['fullPath', 'hasIterationsFeature'],
+  inject: ['hasIterationsFeature', 'isGroup'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     issuableGid: {
       type: String,
       required: false,
@@ -225,7 +229,6 @@ export default {
       this.error = null;
     },
     addChild() {
-      this.searchStarted = false;
       this.$apollo
         .mutate({
           mutation: updateWorkItemMutation,
@@ -261,7 +264,13 @@ export default {
             input: this.workItemInput,
           },
           update: (cache, { data }) =>
-            addHierarchyChild(cache, this.fullPath, this.workItemIid, data.workItemCreate.workItem),
+            addHierarchyChild({
+              cache,
+              fullPath: this.fullPath,
+              iid: this.workItemIid,
+              isGroup: this.isGroup,
+              workItem: data.workItemCreate.workItem,
+            }),
         })
         .then(({ data }) => {
           if (data.workItemCreate?.errors?.length) {

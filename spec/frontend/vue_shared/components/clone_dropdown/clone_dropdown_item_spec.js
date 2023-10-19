@@ -6,11 +6,11 @@ describe('Clone Dropdown Button', () => {
   let wrapper;
   const link = 'ssh://foo.bar';
   const label = 'SSH';
-  const qaSelector = 'some-selector';
+  const testId = 'some-selector';
   const defaultPropsData = {
     link,
     label,
-    qaSelector,
+    testId,
   };
 
   const findCopyButton = () => wrapper.findComponent(GlButton);
@@ -46,7 +46,7 @@ describe('Clone Dropdown Button', () => {
     });
 
     it('sets the qa selector', () => {
-      expect(findCopyButton().attributes('data-qa-selector')).toBe(qaSelector);
+      expect(findCopyButton().attributes('data-testid')).toBe(testId);
     });
   });
 });

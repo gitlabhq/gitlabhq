@@ -164,7 +164,7 @@ To remove a worker class, follow these steps over two minor releases:
 1. Add a migration (not a post-deployment migration) that uses `sidekiq_remove_jobs`:
 
    ```ruby
-   class RemoveMyDeprecatedWorkersJobInstances < Gitlab::Database::Migration[2.0]
+   class RemoveMyDeprecatedWorkersJobInstances < Gitlab::Database::Migration[2.1]
      DEPRECATED_JOB_CLASSES = %w[
        MyDeprecatedWorkerOne
        MyDeprecatedWorkerTwo

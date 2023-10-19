@@ -11,6 +11,7 @@ module API
   class NugetGroupPackages < ::API::Base
     helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers
+    helpers ::API::Helpers::Packages::Nuget
     include ::API::Helpers::Authentication
 
     feature_category :package_registry

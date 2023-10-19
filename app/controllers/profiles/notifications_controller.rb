@@ -45,11 +45,17 @@ class Profiles::NotificationsController < Profiles::ApplicationController
     projects = project_notifications.map(&:source)
     ActiveRecord::Associations::Preloader.new(
       records: projects,
-      associations: { namespace: [:route, :owner], group: [], creator: [], project_setting: [] }
+      associations: project_associations
     ).call
     Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
 
     project_notifications.select { |notification| current_user.can?(:read_project, notification.source) }
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def project_associations
+    { namespace: [:route, :owner], group: [], creator: [], project_setting: [] }
+  end
 end
+
+Profiles::NotificationsController.prepend_mod

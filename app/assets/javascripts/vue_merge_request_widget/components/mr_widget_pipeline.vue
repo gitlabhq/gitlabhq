@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import PipelineArtifacts from '~/ci/pipelines_page/components/pipelines_artifacts.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
@@ -21,7 +21,7 @@ import { MT_MERGE_STRATEGY } from '../constants';
 export default {
   name: 'MRWidgetPipeline',
   components: {
-    CiIcon,
+    CiBadgeLink,
     GlLink,
     GlLoadingIcon,
     GlIcon,
@@ -194,24 +194,23 @@ export default {
       </p>
     </template>
     <template v-else-if="hasPipeline">
-      <a :href="status.details_path" class="gl-align-self-start gl-mt-2 gl-mr-3">
-        <ci-icon :status="status" :size="24" class="gl-display-flex" />
-      </a>
+      <ci-badge-link
+        :status="status"
+        :href="status.details_path"
+        size="md"
+        :show-text="false"
+        class="gl-align-self-start gl-mt-2 gl-mr-3"
+      />
       <div class="ci-widget-container d-flex">
         <div class="ci-widget-content">
           <div class="media-body">
             <div
               data-testid="pipeline-info-container"
-              data-qa-selector="merge_request_pipeline_info_content"
               class="gl-display-flex gl-flex-wrap gl-align-items-center gl-justify-content-space-between"
             >
               <p class="mr-pipeline-title gl-m-0! gl-mr-3! gl-font-weight-bold gl-text-gray-900">
                 {{ pipeline.details.event_type_name }}
-                <gl-link
-                  :href="pipeline.path"
-                  class="pipeline-id"
-                  data-testid="pipeline-id"
-                  data-qa-selector="pipeline_link"
+                <gl-link :href="pipeline.path" class="pipeline-id" data-testid="pipeline-id"
                   >#{{ pipeline.id }}</gl-link
                 >
                 {{ pipeline.details.status.label }}
@@ -240,7 +239,7 @@ export default {
                 {{ s__('Pipeline|for') }}
                 <gl-link
                   :href="pipeline.commit.commit_path"
-                  class="commit-sha gl-font-weight-normal"
+                  class="commit-sha-container"
                   data-testid="commit-link"
                   >{{ pipeline.commit.short_id }}</gl-link
                 >
@@ -251,7 +250,7 @@ export default {
                   v-safe-html="sourceBranchLink"
                   :title="sourceBranch"
                   truncate-target="child"
-                  class="label-branch label-truncate gl-font-weight-normal"
+                  class="label-branch label-truncate ref-container"
                 />
               </template>
               <template v-if="finishedAt">

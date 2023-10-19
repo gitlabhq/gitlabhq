@@ -72,17 +72,18 @@ RSpec.describe Gitlab::UsageDataQueries do
 
   describe '.add' do
     it 'returns the combined raw SQL with an inner query' do
-      expect(described_class.add('SELECT COUNT("users"."id") FROM "users"',
-                                 'SELECT COUNT("issues"."id") FROM "issues"'))
-        .to eq('SELECT (SELECT COUNT("users"."id") FROM "users") + (SELECT COUNT("issues"."id") FROM "issues")')
+      expect(described_class.add(
+        'SELECT COUNT("users"."id") FROM "users"',
+        'SELECT COUNT("issues"."id") FROM "issues"'
+      )).to eq('SELECT (SELECT COUNT("users"."id") FROM "users") + (SELECT COUNT("issues"."id") FROM "issues")')
     end
   end
 
   describe '.histogram' do
     it 'returns the histogram sql' do
-      expect(described_class.histogram(AlertManagement::HttpIntegration.active,
-            :project_id, buckets: 1..2, bucket_size: 101))
-        .to match(/^WITH "count_cte" AS MATERIALIZED/)
+      expect(described_class.histogram(
+        AlertManagement::HttpIntegration.active, :project_id, buckets: 1..2, bucket_size: 101
+      )).to match(/^WITH "count_cte" AS MATERIALIZED/)
     end
   end
 

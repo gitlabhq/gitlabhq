@@ -91,14 +91,14 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       render
 
-      expect(page.find('.tags .content-list li', text: tag)).to have_css 'a.ci-status-icon-success'
-      expect(page.all('.tags .content-list li')).to all(have_css('svg.s24'))
+      expect(page.find('.tags .content-list li', text: tag)).to have_css '.gl-badge .ci-status-icon-success'
+      expect(page.all('.tags .content-list li')).to all(have_css('svg.s16'))
     end
 
     it 'shows no build status or placeholder when no pipelines present' do
       render
 
-      expect(page.all('.tags .content-list li')).not_to have_css 'svg.s24'
+      expect(page.all('.tags .content-list li')).not_to have_css 'svg.s16'
     end
 
     it 'shows no build status or placeholder when pipelines are private' do
@@ -107,7 +107,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       render
 
-      expect(page.all('.tags .content-list li')).not_to have_css 'svg.s24'
+      expect(page.all('.tags .content-list li')).not_to have_css 'svg.s16'
     end
   end
 

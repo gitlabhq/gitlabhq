@@ -6,11 +6,11 @@ module QA
       module Milestone
         class Index < Page::Milestone::Index
           view 'app/views/groups/milestones/index.html.haml' do
-            element :new_group_milestone_link
+            element 'new-group-milestone-link'
           end
 
           def click_new_milestone_link
-            click_element(:new_group_milestone_link)
+            click_element('new-group-milestone-link')
           end
         end
       end

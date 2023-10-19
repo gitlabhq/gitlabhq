@@ -1,7 +1,7 @@
 - issuable = @issue || @merge_request
 - discussion_locked = issuable&.discussion_locked?
 
-%ul#notes-list.notes.main-notes-list.timeline{ data: { 'qa_selector': 'notes_list' } }
+%ul#notes-list.notes.main-notes-list.timeline{ data: { 'testid': 'notes-list' } }
   = render "shared/notes/notes"
 
 = render 'shared/notes/edit_form', project: @project

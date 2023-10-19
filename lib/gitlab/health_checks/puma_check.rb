@@ -20,7 +20,7 @@ module Gitlab
         def check
           return unless Gitlab::Runtime.puma?
 
-          stats = Puma.stats
+          stats = ::Puma.stats
           stats = Gitlab::Json.parse(stats)
 
           # If `workers` is missing this means that

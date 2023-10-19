@@ -138,24 +138,18 @@ module DiffHelper
 
   def submodule_diff_compare_link(diff_file)
     compare_url = submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository, diff_file)&.compare
+    return '' unless compare_url
 
-    link = ""
+    link_text = [
+      _('Compare'),
+      ' ',
+      content_tag(:span, Commit.truncate_sha(diff_file.old_blob.id), class: 'commit-sha'),
+      '...',
+      content_tag(:span, Commit.truncate_sha(diff_file.blob.id), class: 'commit-sha')
+    ].join('').html_safe
 
-    if compare_url
-
-      link_text = [
-        _('Compare'),
-        ' ',
-        content_tag(:span, Commit.truncate_sha(diff_file.old_blob.id), class: 'commit-sha'),
-        '...',
-        content_tag(:span, Commit.truncate_sha(diff_file.blob.id), class: 'commit-sha')
-      ].join('').html_safe
-
-      tooltip = _('Compare submodule commit revisions')
-      link = content_tag(:span, link_to(link_text, compare_url, class: 'btn gl-button has-tooltip', title: tooltip), class: 'submodule-compare')
-    end
-
-    link
+    tooltip = _('Compare submodule commit revisions')
+    link_button_to link_text, compare_url, class: 'has-tooltip submodule-compare', title: tooltip
   end
 
   def diff_file_blob_raw_url(diff_file, only_path: false)
@@ -270,11 +264,6 @@ module DiffHelper
     toggle_whitespace_link(url, options)
   end
 
-  def diff_merge_request_whitespace_link(project, merge_request, options)
-    url = diffs_project_merge_request_path(project, merge_request, params_with_whitespace)
-    toggle_whitespace_link(url, options)
-  end
-
   def diff_compare_whitespace_link(project, from, to, options)
     url = project_compare_path(project, from, to, params_with_whitespace)
     toggle_whitespace_link(url, options)
@@ -285,9 +274,8 @@ module DiffHelper
   end
 
   def toggle_whitespace_link(url, options)
-    options[:class] = [*options[:class], 'btn gl-button btn-default'].join(' ')
     toggle_text = hide_whitespace? ? s_('Diffs|Show whitespace changes') : s_('Diffs|Hide whitespace changes')
-    link_to toggle_text, url, class: options[:class]
+    link_button_to toggle_text, url, class: options[:class]
   end
 
   def code_navigation_path(diffs)

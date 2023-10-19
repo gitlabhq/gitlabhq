@@ -177,7 +177,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :team_planning d
       stub_asset_proxy_setting(enabled: true)
       stub_asset_proxy_setting(secret_key: 'shared-secret')
       stub_asset_proxy_setting(url: 'https://assets.example.com')
-      stub_asset_proxy_setting(allowlist: %W(gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}))
+      stub_asset_proxy_setting(allowlist: %W[gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}])
       stub_asset_proxy_setting(domain_regexp: Banzai::Filter::AssetProxyFilter.compile_allowlist(Gitlab.config.asset_proxy.allowlist))
     end
 

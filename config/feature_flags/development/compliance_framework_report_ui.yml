@@ -1,0 +1,8 @@
+---
+name: compliance_framework_report_ui
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131838
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425242
+milestone: '16.5'
+type: development
+group: group::compliance
+default_enabled: false

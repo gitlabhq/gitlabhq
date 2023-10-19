@@ -157,7 +157,7 @@ class SshHostKey
     url.port = url.inferred_port
 
     [url, ip]
-  rescue Gitlab::UrlBlocker::BlockedUrlError
+  rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError
     raise ArgumentError, "Invalid URL"
   end
 

@@ -16,10 +16,12 @@ RSpec.describe Gitlab::ImportExport::MergeRequestParser do
   let(:diff_head_sha) { SecureRandom.hex(20) }
 
   let(:parsed_merge_request) do
-    described_class.new(project,
-                        diff_head_sha,
-                        merge_request,
-                        merge_request.as_json).parse!
+    described_class.new(
+      project,
+      diff_head_sha,
+      merge_request,
+      merge_request.as_json
+    ).parse!
   end
 
   after do

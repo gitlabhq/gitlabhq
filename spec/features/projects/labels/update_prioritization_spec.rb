@@ -101,19 +101,19 @@ RSpec.describe 'Prioritize labels', feature_category: :team_planning do
       expect(page).to have_content 'wontfix'
 
       # Sort labels
-      drag_to(selector: '.label-list-item .label-content', from_index: 1, to_index: 2)
+      drag_to(selector: '.js-label-list-item .label-content', from_index: 1, to_index: 2)
 
       page.within('.prioritized-labels') do
-        expect(first('.label-list-item')).to have_content('feature')
-        expect(page.all('.label-list-item').last).to have_content('bug')
+        expect(first('.js-label-list-item')).to have_content('feature')
+        expect(page.all('.js-label-list-item').last).to have_content('bug')
       end
 
       refresh
       wait_for_requests
 
       page.within('.prioritized-labels') do
-        expect(first('.label-list-item')).to have_content('feature')
-        expect(page.all('.label-list-item').last).to have_content('bug')
+        expect(first('.js-label-list-item')).to have_content('feature')
+        expect(page.all('.js-label-list-item').last).to have_content('bug')
       end
     end
 
@@ -159,11 +159,11 @@ RSpec.describe 'Prioritize labels', feature_category: :team_planning do
     end
 
     it 'cannot sort prioritized labels', :js do
-      drag_to(selector: '.prioritized-labels .label-list-item', from_index: 1, to_index: 2)
+      drag_to(selector: '.prioritized-labels .js-label-list-item', from_index: 1, to_index: 2)
 
       page.within('.prioritized-labels') do
-        expect(first('.label-list-item')).to have_content('bug')
-        expect(page.all('.label-list-item').last).to have_content('feature')
+        expect(first('.js-label-list-item')).to have_content('bug')
+        expect(page.all('.js-label-list-item').last).to have_content('feature')
       end
     end
   end

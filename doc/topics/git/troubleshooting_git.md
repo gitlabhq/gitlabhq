@@ -197,7 +197,7 @@ The root causes vary, so multiple potential solutions exist, and you may need to
 apply more than one:
 
 - If this error occurs when cloning a large repository, you can
-  [decrease the cloning depth](../../user/project/repository/managing_large_repositories.md#shallow-cloning)
+  [decrease the cloning depth](../../user/project/repository/monorepos/index.md#shallow-cloning)
   to a value of `1`. For example:
 
   ```shell

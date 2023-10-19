@@ -141,11 +141,7 @@ module API
 
         users = users.preload(:user_detail)
 
-        if Feature.enabled?(:api_keyset_pagination_multi_order)
-          present paginate_with_strategies(users), options
-        else
-          present paginate(users), options
-        end
+        present paginate_with_strategies(users), options
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -1372,6 +1368,33 @@ module API
       end
       get 'status', feature_category: :user_profile do
         present current_user.status || {}, with: Entities::UserStatus
+      end
+
+      resource :personal_access_tokens do
+        desc 'Create a personal access token with limited scopes for the currently authenticated user' do
+          detail 'This feature was introduced in GitLab 16.5'
+          success Entities::PersonalAccessTokenWithToken
+        end
+        params do
+          requires :name, type: String, desc: 'The name of the personal access token'
+          # NOTE: for security reasons only the k8s_proxy scope is allowed at the moment.
+          # See details in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923#note_1571272897
+          # and in https://gitlab.com/gitlab-org/gitlab/-/issues/425171
+          requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE].map(&:to_s),
+                   desc: 'The array of scopes of the personal access token'
+          optional :expires_at, type: Date, default: -> { 1.day.from_now.to_date }, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
+        end
+        post feature_category: :system_access do
+          response = ::PersonalAccessTokens::CreateService.new(
+            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false)
+          ).execute
+
+          if response.success?
+            present response.payload[:personal_access_token], with: Entities::PersonalAccessTokenWithToken
+          else
+            render_api_error!(response.message, response.http_status || :unprocessable_entity)
+          end
+        end
       end
     end
   end

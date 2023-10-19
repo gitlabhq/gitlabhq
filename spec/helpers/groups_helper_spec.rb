@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupsHelper do
+RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   include ApplicationHelper
   include AvatarsHelper
 
@@ -97,23 +97,11 @@ RSpec.describe GroupsHelper do
         end
       end
 
-      context 'recursive' do
-        before do
-          stub_feature_flags(use_traversal_ids: false)
-        end
-
-        include_examples 'correct ancestor order'
+      before do
+        very_deep_nested_group.reload # make sure traversal_ids are reloaded
       end
 
-      context 'linear' do
-        before do
-          stub_feature_flags(use_traversal_ids: true)
-
-          very_deep_nested_group.reload # make sure traversal_ids are reloaded
-        end
-
-        include_examples 'correct ancestor order'
-      end
+      include_examples 'correct ancestor order'
     end
 
     it 'enqueues the elements in the breadcrumb schema list' do
@@ -269,21 +257,7 @@ RSpec.describe GroupsHelper do
         end
       end
 
-      context 'recursive' do
-        before do
-          stub_feature_flags(use_traversal_ids: false)
-        end
-
-        include_examples 'correct ancestor order'
-      end
-
-      context 'linear' do
-        before do
-          stub_feature_flags(use_traversal_ids: true)
-        end
-
-        include_examples 'correct ancestor order'
-      end
+      include_examples 'correct ancestor order'
     end
   end
 
@@ -524,23 +498,58 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe "#enabled_git_access_protocol_options_for_group" do
-    subject { helper.enabled_git_access_protocol_options_for_group }
+  describe '#show_group_readme?' do
+    let_it_be_with_refind(:group) { create(:group, :public) }
+    let_it_be(:current_user) { nil }
 
     before do
-      expect(::Gitlab::CurrentSettings).to receive(:enabled_git_access_protocol).and_return(instance_setting)
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    context 'when project is public' do
+      let_it_be(:project) { create(:project, :public, :readme, group: group, path: 'gitlab-profile') }
+
+      it { expect(helper.show_group_readme?(group)).to be(true) }
+    end
+
+    context 'when project is private' do
+      let_it_be(:project) { create(:project, :private, :readme, group: group, path: 'gitlab-profile') }
+
+      context 'when user can see the project' do
+        let_it_be(:current_user) { create(:user) }
+
+        before do
+          project.add_developer(current_user)
+        end
+
+        it { expect(helper.show_group_readme?(group)).to be(true) }
+      end
+
+      it 'when user can not see the project' do
+        expect(helper.show_group_readme?(group)).to be(false)
+      end
+    end
+  end
+
+  describe "#enabled_git_access_protocol_options_for_group" do
+    let_it_be(:group) { create(:group) }
+
+    subject { helper.enabled_git_access_protocol_options_for_group(group) }
+
+    before do
+      allow(::Gitlab::CurrentSettings).to receive(:enabled_git_access_protocol).and_return(instance_setting)
     end
 
     context "instance setting is nil" do
       let(:instance_setting) { nil }
 
-      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+      it { is_expected.to include([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
     end
 
     context "instance setting is blank" do
-      let(:instance_setting) { nil }
+      let(:instance_setting) { '' }
 
-      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+      it { is_expected.to include([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
     end
 
     context "instance setting is ssh" do
@@ -553,6 +562,46 @@ RSpec.describe GroupsHelper do
       let(:instance_setting) { "http" }
 
       it { is_expected.to contain_exactly([_("Only HTTP(S)"), "http"]) }
+    end
+  end
+
+  describe '#new_custom_emoji_path' do
+    subject { helper.new_custom_emoji_path(group) }
+
+    let_it_be(:group) { create(:group) }
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(custom_emoji: false)
+      end
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'with feature flag enabled' do
+      context 'with nil group' do
+        let(:group) { nil }
+
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'with current_user who has no permissions' do
+        before do
+          allow(helper).to receive(:current_user).and_return(create(:user))
+        end
+
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'with current_user who has permissions' do
+        before do
+          user = create(:user)
+          group.add_owner(user)
+          allow(helper).to receive(:current_user).and_return(user)
+        end
+
+        it { is_expected.to eq(new_group_custom_emoji_path(group)) }
+      end
     end
   end
 end

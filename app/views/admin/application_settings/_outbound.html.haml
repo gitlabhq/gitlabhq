@@ -15,7 +15,7 @@
           = s_('OutboundRequests|Webhooks and integrations might not work properly.')
       = f.gitlab_ui_checkbox_component :allow_local_requests_from_web_hooks_and_services,
           s_('OutboundRequests|Allow requests to the local network from webhooks and integrations'),
-          checkbox_options: { disabled: deny_all_requests, class: 'js-allow-local-requests', data: { qa_selector: 'allow_requests_from_services_checkbox' } }
+          checkbox_options: { disabled: deny_all_requests, class: 'js-allow-local-requests', data: { testid: 'allow-requests-from-services-checkbox' } }
       = f.gitlab_ui_checkbox_component :allow_local_requests_from_system_hooks,
           s_('OutboundRequests|Allow requests to the local network from system hooks'),
           checkbox_options: { disabled: deny_all_requests, class: 'js-allow-local-requests' }
@@ -33,4 +33,4 @@
           s_('OutboundRequests|Enforce DNS-rebinding attack protection'),
           help_text: s_('OutboundRequests|Resolve IP addresses for outbound requests to prevent DNS-rebinding attacks.')
 
-  = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-changes-button' }

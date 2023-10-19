@@ -165,11 +165,11 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       end
 
       it 'presents plaintext codes for the user to save' do
-        expect(user).to receive(:generate_otp_backup_codes!).and_return(%w(a b c))
+        expect(user).to receive(:generate_otp_backup_codes!).and_return(%w[a b c])
 
         go
 
-        expect(assigns[:codes]).to match_array %w(a b c)
+        expect(assigns[:codes]).to match_array %w[a b c]
       end
 
       it 'calls to delete other sessions' do
@@ -216,11 +216,11 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         end
 
         it 'presents plaintext codes for the user to save' do
-          expect(user).to receive(:generate_otp_backup_codes!).and_return(%w(a b c))
+          expect(user).to receive(:generate_otp_backup_codes!).and_return(%w[a b c])
 
           go
 
-          expect(assigns[:codes]).to match_array %w(a b c)
+          expect(assigns[:codes]).to match_array %w[a b c]
         end
 
         it 'calls to delete other sessions' do
@@ -288,10 +288,10 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     let(:current_password) { user.password }
 
     it 'presents plaintext codes for the user to save' do
-      expect(user).to receive(:generate_otp_backup_codes!).and_return(%w(a b c))
+      expect(user).to receive(:generate_otp_backup_codes!).and_return(%w[a b c])
 
       post :codes, params: { current_password: current_password }
-      expect(assigns[:codes]).to match_array %w(a b c)
+      expect(assigns[:codes]).to match_array %w[a b c]
     end
 
     it 'persists the generated codes' do

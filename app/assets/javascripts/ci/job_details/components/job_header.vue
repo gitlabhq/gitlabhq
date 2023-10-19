@@ -89,18 +89,36 @@ export default {
 
 <template>
   <header
-    class="page-content-header gl-md-display-flex gl-min-h-7"
+    class="page-content-header gl-md-display-flex gl-flex-wrap gl-min-h-7 gl-pb-2! gl-w-full"
     data-testid="job-header-content"
   >
-    <section class="header-main-content gl-mr-3">
+    <div
+      v-if="name"
+      class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full"
+    >
+      <h1 class="gl-font-size-h-display gl-my-0 gl-display-inline-block" data-testid="job-name">
+        {{ name }}
+      </h1>
+
+      <div class="gl-display-flex gl-align-self-start gl-mt-n2">
+        <div class="gl-flex-grow-1 gl-flex-shrink-0 gl-text-right">
+          <gl-button
+            :aria-label="__('Toggle sidebar')"
+            category="secondary"
+            class="gl-lg-display-none gl-ml-2"
+            icon="chevron-double-lg-left"
+            @click="onClickSidebarButton"
+          />
+        </div>
+      </div>
+    </div>
+    <section class="header-main-content gl-display-flex gl-align-items-center gl-mr-3">
       <ci-badge-link class="gl-mr-3" :status="status" />
 
-      <strong data-testid="job-name">{{ name }}</strong>
+      <template v-if="shouldRenderTriggeredLabel">{{ __('Started') }}</template>
+      <template v-else>{{ __('Created') }}</template>
 
-      <template v-if="shouldRenderTriggeredLabel">{{ __('started') }}</template>
-      <template v-else>{{ __('created') }}</template>
-
-      <timeago-tooltip :time="time" />
+      <timeago-tooltip :time="time" class="gl-mx-2" />
 
       {{ __('by') }}
 
@@ -133,16 +151,5 @@ export default {
         </gl-avatar-link>
       </template>
     </section>
-
-    <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-    <section v-if="$slots.default" data-testid="job-header-action-buttons" class="gl-display-flex">
-      <slot></slot>
-    </section>
-    <gl-button
-      class="gl-md-display-none gl-ml-auto gl-align-self-start js-sidebar-build-toggle"
-      icon="chevron-double-lg-left"
-      :aria-label="__('Toggle sidebar')"
-      @click="onClickSidebarButton"
-    />
   </header>
 </template>

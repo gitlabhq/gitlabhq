@@ -6,10 +6,6 @@ fragment RunnerDetailsShared on CiRunner {
   accessLevel
   runUntagged
   locked
-  ipAddress
-  executorName
-  architectureName
-  platformName
   description
   maximumTimeout
   jobCount

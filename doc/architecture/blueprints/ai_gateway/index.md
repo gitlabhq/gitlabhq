@@ -32,7 +32,7 @@ translate the content of the redirected request where needed.
 
 ![architecture diagram](img/architecture.png)
 
-[src of the architecture diagram](https://docs.google.com/drawings/d/1PYl5Q5oWHnQAuxM-Jcw0C3eYoGw8a9w8atFpoLhhEas/edit)
+[Diagram source](https://docs.google.com/drawings/d/1PYl5Q5oWHnQAuxM-Jcw0C3eYoGw8a9w8atFpoLhhEas/edit)
 
 By using a hosted service under the control of GitLab we can ensure
 that we provide all GitLab instances with AI features in a scalable
@@ -385,15 +385,19 @@ different.
 
 ## Authentication & Authorization
 
-GitLab will provide the first layer of authorization: It authenticate
-the user and check if the license allows using the feature the user is
-trying to use. This can be done using the authentication and license
+GitLab provides the first layer of authorization: It authenticates
+the user and checks if the license allows using the feature the user is
+trying to use. This can be done using the authentication, policy and license
 checks that are already built into GitLab.
 
-Authenticating the GitLab-instance on the AI-gateway will be discussed
-in[#177](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/177).
-Because the AI-gateway exposes proxied endpoints to AI providers, it
-is important that the authentication tokens have limited validity.
+Authenticating the GitLab-instance on the AI-gateway was discussed
+in:
+
+- [Issue 177](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/177)
+- [Epic 10808](https://gitlab.com/groups/gitlab-org/-/epics/10808)
+
+The specific mechanism by which trust is delegated between end-users, GitLab instances,
+and the AI-gateway is covered in the [AI gateway access token validation documentation](../../../development/cloud_connector/code_suggestions_for_sm.md#ai-gateway-access-token-validation).
 
 ## Embeddings
 

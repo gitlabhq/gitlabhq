@@ -103,7 +103,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Account and Limit Settings' do
-        page.within(find('[data-testid="account-limit"]')) do
+        page.within(find('[data-testid="account-and-limit-settings-content"]')) do
           uncheck 'Gravatar enabled'
           click_button 'Save changes'
         end
@@ -165,43 +165,44 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_field('Days of inactivity before deactivation')
           end
 
-          it 'changes dormant users', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408224' do
-            expect(page).to have_unchecked_field('Deactivate dormant users after a period of inactivity')
+          it 'changes dormant users', :js do
+            expect(page).to have_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
-            page.within(find('[data-testid="account-limit"]')) do
-              check 'application_setting_deactivate_dormant_users'
-              click_button 'Save changes'
+            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+              check _('Deactivate dormant users after a period of inactivity')
+              click_button _('Save changes')
             end
 
-            expect(page).to have_content "Application settings saved successfully"
+            expect(page).to have_content _('Application settings saved successfully')
 
             page.refresh
 
+            expect(page).to have_checked_field(_('Deactivate dormant users after a period of inactivity'))
             expect(current_settings.deactivate_dormant_users).to be_truthy
-            expect(page).to have_checked_field('Deactivate dormant users after a period of inactivity')
           end
 
-          it 'change dormant users period', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408224' do
-            expect(page).to have_field _('Days of inactivity before deactivation')
+          it 'change dormant users period', :js do
+            expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: true)
 
-            page.within(find('[data-testid="account-limit"]')) do
-              fill_in _('application_setting_deactivate_dormant_users_period'), with: '90'
-              click_button 'Save changes'
+            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+              check _('Deactivate dormant users after a period of inactivity')
+              fill_in _('Days of inactivity before deactivation'), with: '180'
+              click_button _('Save changes')
             end
 
-            expect(page).to have_content "Application settings saved successfully"
+            expect(page).to have_content _('Application settings saved successfully')
 
             page.refresh
 
-            expect(page).to have_field _('Days of inactivity before deactivation'), with: '90'
+            expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: false, with: '180')
           end
 
           it 'displays dormant users period field validation error', :js do
             selector = '#application_setting_deactivate_dormant_users_period_error'
             expect(page).not_to have_selector(selector, visible: :visible)
 
-            page.within(find('[data-testid="account-limit"]')) do
+            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
               check 'application_setting_deactivate_dormant_users'
               fill_in _('application_setting_deactivate_dormant_users_period'), with: '30'
               click_button 'Save changes'
@@ -730,6 +731,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           fill_in 'Maximum authenticated web requests per rate limit period per user', with: 700
           fill_in 'Authenticated web rate limit period in seconds', with: 800
 
+          fill_in "Maximum authenticated requests to project/:id/jobs per minute", with: 1000
+
           fill_in 'Plain-text response to send to clients that hit a rate limit', with: 'Custom message'
 
           click_button 'Save changes'
@@ -750,6 +753,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           throttle_authenticated_web_enabled: true,
           throttle_authenticated_web_requests_per_period: 700,
           throttle_authenticated_web_period_in_seconds: 800,
+          project_jobs_api_rate_limit: 1000,
           rate_limiting_response_text: 'Custom message'
         )
       end
@@ -883,11 +887,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
     context 'Preferences page' do
       before do
-        stub_feature_flags(deactivation_email_additional_text: deactivation_email_additional_text_feature_flag)
         visit preferences_admin_application_settings_path
       end
-
-      let(:deactivation_email_additional_text_feature_flag) { true }
 
       describe 'Email page' do
         context 'when deactivation email additional text feature flag is enabled' do
@@ -901,14 +902,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
             expect(page).to have_content 'Application settings saved successfully'
             expect(current_settings.deactivation_email_additional_text).to eq('So long and thanks for all the fish!')
-          end
-        end
-
-        context 'when deactivation email additional text feature flag is disabled' do
-          let(:deactivation_email_additional_text_feature_flag) { false }
-
-          it 'does not show deactivation email additional text field' do
-            expect(page).not_to have_field 'Additional text for deactivation email'
           end
         end
       end

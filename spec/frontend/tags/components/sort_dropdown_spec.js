@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SortDropdown from '~/tags/components/sort_dropdown.vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 describe('Tags sort dropdown', () => {
   let wrapper;
@@ -45,20 +46,33 @@ describe('Tags sort dropdown', () => {
     });
   });
 
+  describe('when url contains a search param', () => {
+    const branchName = 'branch-1';
+
+    beforeEach(() => {
+      setWindowLocation(`/root/ci-cd-project-demo/-/branches?search=${branchName}`);
+      wrapper = createWrapper();
+    });
+
+    it('should set the default the input value to search param', () => {
+      expect(findSearchBox().props('value')).toBe(branchName);
+    });
+  });
+
   describe('when submitting a search term', () => {
     beforeEach(() => {
       urlUtils.visitUrl = jest.fn();
-
       wrapper = createWrapper();
     });
 
     it('should call visitUrl', () => {
+      const searchTerm = 'branch-1';
       const searchBox = findSearchBox();
-
+      searchBox.vm.$emit('input', searchTerm);
       searchBox.vm.$emit('submit');
 
       expect(urlUtils.visitUrl).toHaveBeenCalledWith(
-        '/root/ci-cd-project-demo/-/tags?sort=updated_desc',
+        '/root/ci-cd-project-demo/-/tags?search=branch-1&sort=updated_desc',
       );
     });
 

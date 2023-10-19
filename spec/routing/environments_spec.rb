@@ -6,8 +6,7 @@ RSpec.describe 'environments routing' do
   let(:project) { create(:project) }
 
   let(:environment) do
-    create(:environment, project: project,
-                         name: 'staging-1.0/review')
+    create(:environment, project: project, name: 'staging-1.0/review')
   end
 
   let(:environments_route) do
@@ -42,8 +41,7 @@ RSpec.describe 'environments routing' do
   end
 
   def folder_action(**opts)
-    options = { namespace_id: project.namespace.path,
-                project_id: project.path }
+    options = { namespace_id: project.namespace.path, project_id: project.path }
 
     ['projects/environments#folder', options.merge(opts)]
   end

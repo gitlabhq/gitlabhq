@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Dedicated is a fully isolated, single-tenant SaaS service that is:
 
 - Hosted and managed by GitLab, Inc.
-- Deployed on AWS in a cloud region of your choice. See [unavailable AWS regions](#unavailable-aws-regions).
+- Deployed on AWS in a cloud region of your choice. See [available AWS regions](#available-aws-regions).
 
 GitLab Dedicated removes the overhead of platform management to increase your operational efficiency, reduce risk, and enhance the speed and agility of your organization. Each GitLab Dedicated instance is highly available with disaster recovery and deployed into the cloud region of your choice. GitLab teams fully manage the maintenance and operations of each isolated instance, so customers can access our latest product improvements while meeting the most complex compliance standards.
 
@@ -19,17 +19,17 @@ It's the offering of choice for enterprises and organizations in highly regulate
 
 ### Data residency
 
-GitLab Dedicated allows you to select the cloud region where your data will be stored. Upon [onboarding](../../administration/dedicated/index.md#onboarding), choose the cloud region where you want to deploy your Dedicated instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [list of unavailable AWS regions](#unavailable-aws-regions).
+GitLab Dedicated allows you to select the cloud region where your data will be stored. Upon [onboarding](../../administration/dedicated/index.md#onboarding-to-gitlab-dedicated-using-switchboard), choose the cloud region where you want to deploy your Dedicated instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [list of available AWS regions](#available-aws-regions).
 
 ### Availability and scalability
 
-GitLab Dedicated leverages the GitLab [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/index.md#onboarding), GitLab will match you to the closest reference architecture size based on your number of users. Learn about the [current Service Level Objective](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
+GitLab Dedicated leverages the GitLab [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/index.md#onboarding-to-gitlab-dedicated-using-switchboard), GitLab will match you to the closest reference architecture size based on your number of users. Learn about the [current Service Level Objective](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
 
 #### Disaster Recovery
 
-When [onboarding](../../administration/dedicated/index.md#onboarding) to GitLab Dedicated, you can provide a Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
+When [onboarding](../../administration/dedicated/index.md#onboarding-to-gitlab-dedicated-using-switchboard) to GitLab Dedicated, you can provide a Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
 
-For more information, read about the [recovery plan for GitLab Dedicated](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of unavailable AWS regions](#unavailable-aws-regions) for GitLab Dedicated.
+For more information, read about the [recovery plan for GitLab Dedicated](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of available AWS regions](#available-aws-regions) for GitLab Dedicated.
 
 ### Security
 
@@ -124,7 +124,8 @@ The following GitLab application features are not available:
 - Service Desk
 - GitLab-managed runners (hosted runners)
 - GitLab AI capabilities (Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information)
-- Features other than [available features](#available-features) that must be configured outside of the GitLab user interface including those behind feature flags
+- Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
+- [Feature Flags](../../administration/feature_flags.md) and functionality behind them
 
 The following features will not be supported:
 
@@ -144,31 +145,19 @@ The following operational features are not available:
 - Observability Dashboard using Switchboard
 - Pre-Production Instance
 
-### Unavailable AWS regions
+### Available AWS regions
 
-The following is an incomplete list of unavailable AWS regions. Regions must support `io2` volumes and meet other requirements. GitLab team members can view our evaluation of additional
-regions in this confidential issue: `https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/1405`.
+The following is a list of AWS regions verified for use in GitLab Dedicated. Regions must support io2 volumes and meet other requirements. If there is a region you are interested in that is not on this list, please reach out through your account representative or [GitLab Support](https://about.gitlab.com/support/) to inquire about its availability. This list will be updated from time to time as additional regions are verified.
 
-Contact [GitLab Support](https://about.gitlab.com/support/) if you have any questions.
-
-- Jakarta (`ap-southeast-3`)
-- Bahrain (`me-south-1`)
-- Hong Kong (`ap-east-1`)
-- Cape Town (`af-south-1`)
-- Milan (`eu-south-1`)
-- Paris (`eu-west-3`)
-- Zurich (`eu-central-2`)
-- GovCloud (US-East) (`us-gov-east-1`)
-- GovCloud (US-West) (`us-gov-west-1`)
-- Melbourne (`ap-southeast-4`)
-- Hyderabad (`ap-south-2`)
-- Osaka (`ap-northeast-3`)
-- Beijing (`cn-north-1`)
-- Ningxia (`cn-northwest-1`)
-- Spain (`eu-south-2`)
-- Tel Aviv (`il-central-1`)
-- UAE (`me-central-1`)
-- São Paulo (`sa-east-1`)
+- Asia Pacific (Singapore)
+- Asia Pacific (Sydney)
+- Europe (Frankfurt)
+- Europe (Ireland)
+- Europe (London)
+- US East (Ohio)
+- US East (N. Virginia)
+- US West (N. California)
+- US West (Oregon)
 
 ## Planned features
 

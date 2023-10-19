@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 require_relative '../../../../lib/tasks/gitlab/audit_event_types/check_docs_task'
 require_relative '../../../../lib/tasks/gitlab/audit_event_types/compile_docs_task'
 

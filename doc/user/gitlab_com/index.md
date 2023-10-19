@@ -210,21 +210,22 @@ varies by format:
 GitLab.com has the following account limits enabled. If a setting is not listed,
 the default value [is the same as for self-managed instances](../../administration/settings/account_and_limit_settings.md):
 
-| Setting                                                                                                            | GitLab.com default |
-|--------------------------------------------------------------------------------------------------------------------|--------------------|
-| [Repository size including LFS](../../administration/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB              |
-| [Maximum import size](../project/settings/import_export.md#import-a-project-and-its-data)                          | 5 GB               |
-| Maximum remote file size for imports from external object storages                                                 | 10 GB              |
-| Maximum download file size when importing from source GitLab instances by direct transfer                          | 5 GB               |
-| Maximum attachment size                                                                                            | 100 MB             |
-| [Maximum decompressed file size for imported archives](../../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives) | 25 GB |
+| Setting                                                                                                                                                                                                            | GitLab.com default |
+|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
+| [Repository size including LFS](../../administration/settings/account_and_limit_settings.md#repository-size-limit)                                                                                                 | 10 GB              |
+| [Maximum import size](../project/settings/import_export.md#import-a-project-and-its-data)                                                                                                                          | 5 GiB              |
+| [Maximum remote file size for imports from external object storages](../../administration/settings/import_and_export_settings.md#maximum-remote-file-size-for-imports)                                             | 10 GiB             |
+| [Maximum download file size when importing from source GitLab instances by direct transfer](../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-transfer) | 5 GiB              |
+| Maximum attachment size                                                                                                                                                                                            | 100 MiB            |
+| [Maximum decompressed file size for imported archives](../../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives)                                           | 25 GiB             |
 
-If you are near or over the repository size limit, you can either
-[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md)
-or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
+If you are near or over the repository size limit, you can either:
+
+- [Reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+- [Purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
 NOTE:
-`git push` and GitLab project imports are limited to 5 GB per request through
+`git push` and GitLab project imports are limited to 5 GiB per request through
 Cloudflare. Imports other than a file upload are not affected by
 this limit. Repository limits apply to both public and private projects.
 

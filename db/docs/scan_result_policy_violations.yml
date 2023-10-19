@@ -1,0 +1,10 @@
+---
+table_name: scan_result_policy_violations
+classes:
+- Security::ScanResultPolicyViolation
+feature_categories:
+- security_policy_management
+description: Stores scan result policy violations.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132254
+milestone: '16.5'
+gitlab_schema: gitlab_main

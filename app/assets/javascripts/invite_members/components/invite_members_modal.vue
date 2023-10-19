@@ -1,12 +1,14 @@
 <script>
 import { GlAlert, GlButton, GlCollapse, GlIcon } from '@gitlab/ui';
 import { partition, isString, uniqueId, isEmpty } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
 import Tracking from '~/tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { n__, sprintf } from '~/locale';
 import { memberName, triggerExternalAlert } from 'ee_else_ce/invite_members/utils/member_utils';
+import { captureException } from '~/ci/runner/sentry_utils';
 import {
   USERS_FILTER_ALL,
   MEMBER_MODAL_LABELS,
@@ -36,6 +38,9 @@ export default {
     UserLimitNotification,
     ActiveTrialNotification: () =>
       import('ee_component/invite_members/components/active_trial_notification.vue'),
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
   props: {
@@ -262,8 +267,9 @@ export default {
         } else {
           this.onInviteSuccess();
         }
-      } catch (e) {
-        this.showInvalidFeedbackMessage(e);
+      } catch (error) {
+        captureException({ error, component: this.$options.name });
+        this.showInvalidFeedbackMessage(error);
       } finally {
         this.isLoading = false;
       }
@@ -391,7 +397,8 @@ export default {
               :key="error.member"
               data-testid="errors-limited-item"
             >
-              <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
+              <strong>{{ error.displayedMemberName }}:</strong>
+              <span v-safe-html="error.message"></span>
             </li>
           </ul>
           <template v-if="shouldErrorsSectionExpand">
@@ -402,7 +409,8 @@ export default {
                   :key="error.member"
                   data-testid="errors-expanded-item"
                 >
-                  <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
+                  <strong>{{ error.displayedMemberName }}:</strong>
+                  <span v-safe-html="error.message"></span>
                 </li>
               </ul>
             </gl-collapse>

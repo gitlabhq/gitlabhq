@@ -3,8 +3,8 @@
 module Gitlab
   module RobotsTxt
     class Parser
-      DISALLOW_REGEX = /^disallow: /i.freeze
-      ALLOW_REGEX = /^allow: /i.freeze
+      DISALLOW_REGEX = /^disallow: /i
+      ALLOW_REGEX = /^allow: /i
 
       attr_reader :disallow_rules, :allow_rules
 

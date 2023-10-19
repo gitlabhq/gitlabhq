@@ -34,7 +34,7 @@ An instance of the `Security::Scan` class. Security scans are representative of 
 
 ### State Transition
 
-An instance of the `Vulnerabilities::StateTransition` class. This model represents a state change of a respecitve Vulnerability record, for example the dismissal of a vulnerability which has been determined to be safe.
+An instance of the `Vulnerabilities::StateTransition` class. This model represents a state change of a respective Vulnerability record, for example the dismissal of a vulnerability which has been determined to be safe.
 
 ### Vulnerability
 
@@ -50,7 +50,7 @@ An instance of the `Vulnerabilities::Identifier` class. Each vulnerability is gi
 
 ### Vulnerability Read
 
-An instance of the `Vulnerabilities::Read` class. This is a denormalised record of `Vulnerability` and `Vulnerability::Finding` data to improve performance of filtered querying of vulnerability data to the front end.
+An instance of the `Vulnerabilities::Read` class. This is a denormalized record of `Vulnerability` and `Vulnerability::Finding` data to improve performance of filtered querying of vulnerability data to the front end.
 
 ### Remediation
 
@@ -112,6 +112,6 @@ Security Findings detected in scan run on the default branch are saved as `Vulne
 
 ## Vulnerability Read Creation
 
-`Vulnerability::Read` records are created via postgres database trigger upon the creation of a `Vulnerability::Finding` record and as such are part of our ingestion process, though they have no impact on it bar it's denormalization performance benefits on the report pages.
+`Vulnerability::Read` records are created via PostgreSQL database trigger upon the creation of a `Vulnerability::Finding` record and as such are part of our ingestion process, though they have no impact on it bar it's denormalization performance benefits on the report pages.
 
 This style of creation was intended to be fast and seamless, but has proven difficult to debug and maintain and may be [migrated to the application layer later](https://gitlab.com/gitlab-org/gitlab/-/issues/393912).

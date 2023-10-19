@@ -1,16 +1,12 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlModalDirective as GlModal } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import uniqueId from 'lodash/uniqueId';
 import { s__ } from '~/locale';
 import { CANARY_UPDATE_MODAL } from '../constants';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
-  },
-  directives: {
-    GlModal,
+    GlCollapsibleListbox,
   },
   props: {
     canaryIngress: {
@@ -25,8 +21,10 @@ export default {
   },
   ingressOptions: Array(100 / 5 + 1)
     .fill(0)
-    .map((_, i) => i * 5),
-
+    .map((_, i) => {
+      const value = i * 5;
+      return { value, text: value.toString() };
+    }),
   translations: {
     stableLabel: s__('CanaryIngress|Stable'),
     canaryLabel: s__('CanaryIngress|Canary'),
@@ -59,17 +57,19 @@ export default {
       return this.canaryIngress.canary_weight;
     },
     stableWeight() {
-      return (100 - this.weight).toString();
+      return 100 - this.weight;
     },
     canaryWeight() {
-      return this.weight.toString();
+      return this.weight;
     },
   },
   methods: {
     changeCanary(weight) {
+      this.$root.$emit('bv::show::modal', CANARY_UPDATE_MODAL);
       this.$emit('change', weight);
     },
     changeStable(weight) {
+      this.$root.$emit('bv::show::modal', CANARY_UPDATE_MODAL);
       this.$emit('change', 100 - weight);
     },
   },
@@ -81,40 +81,27 @@ export default {
       <label :for="stableWeightId" :class="$options.css.label" class="gl-rounded-top-left-base">
         {{ $options.translations.stableLabel }}
       </label>
-      <gl-dropdown
+      <gl-collapsible-listbox
         :id="stableWeightId"
-        :text="stableWeight"
-        data-testid="stable-weight"
-        class="gl-w-full"
-        toggle-class="gl-rounded-top-left-none! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-      >
-        <gl-dropdown-item
-          v-for="option in $options.ingressOptions"
-          :key="option"
-          v-gl-modal="$options.CANARY_UPDATE_MODAL"
-          @click="changeStable(option)"
-          >{{ option }}</gl-dropdown-item
-        >
-      </gl-dropdown>
+        :selected="stableWeight"
+        :items="$options.ingressOptions"
+        class="gl-min-w-full gl-text-black-normal"
+        toggle-class="gl-min-w-full gl-rounded-top-left-none! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
+        @select="changeStable"
+      />
     </div>
     <div class="gl-display-flex gl-display-flex gl-flex-direction-column">
       <label :for="canaryWeightId" :class="$options.css.label" class="gl-rounded-top-right-base">{{
         $options.translations.canaryLabel
       }}</label>
-      <gl-dropdown
+      <gl-collapsible-listbox
         :id="canaryWeightId"
-        :text="canaryWeight"
-        data-testid="canary-weight"
-        toggle-class="gl-rounded-top-left-none! gl-rounded-top-right-none! gl-rounded-bottom-left-none! gl-border-l-none!"
-      >
-        <gl-dropdown-item
-          v-for="option in $options.ingressOptions"
-          :key="option"
-          v-gl-modal="$options.CANARY_UPDATE_MODAL"
-          @click="changeCanary(option)"
-          >{{ option }}</gl-dropdown-item
-        >
-      </gl-dropdown>
+        :selected="canaryWeight"
+        :items="$options.ingressOptions"
+        class="gl-min-w-full"
+        toggle-class="gl-min-w-full gl-rounded-top-left-none! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
+        @select="changeCanary"
+      />
     </div>
   </section>
 </template>

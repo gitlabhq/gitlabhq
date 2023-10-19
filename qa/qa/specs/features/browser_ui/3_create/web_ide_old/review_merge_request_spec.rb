@@ -14,11 +14,7 @@ module QA
       let(:project) { create(:project, :with_readme, name: 'review-mr-spec-project') }
 
       let(:merge_request) do
-        Resource::MergeRequest.fabricate_via_api! do |mr|
-          mr.file_name = new_file
-          mr.file_content = original_text
-          mr.project = project
-        end
+        create(:merge_request, file_name: new_file, file_content: original_text, project: project)
       end
 
       before do

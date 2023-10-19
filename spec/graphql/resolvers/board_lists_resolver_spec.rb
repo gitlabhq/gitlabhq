@@ -41,7 +41,7 @@ RSpec.describe Resolvers::BoardListsResolver do
         lists = resolve_board_lists
 
         expect(lists.count).to eq 3
-        expect(lists.map(&:list_type)).to eq %w(backlog label closed)
+        expect(lists.map(&:list_type)).to eq %w[backlog label closed]
       end
 
       context 'when another user has list preferences' do
@@ -100,8 +100,12 @@ RSpec.describe Resolvers::BoardListsResolver do
   end
 
   def resolve_board_lists(args: {}, current_user: user)
-    resolve(described_class, obj: board, args: args, ctx: { current_user: current_user },
-                             arg_style: :internal
+    resolve(
+      described_class,
+      obj: board,
+      args: args,
+      ctx: { current_user: current_user },
+      arg_style: :internal
     )
   end
 end

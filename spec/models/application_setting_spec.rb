@@ -69,8 +69,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value("dev.gitlab.com").for(:commit_email_hostname) }
     it { is_expected.not_to allow_value("@dev.gitlab").for(:commit_email_hostname) }
 
-    it { is_expected.to allow_value(true, false).for(:container_expiration_policies_enable_historic_entries) }
-    it { is_expected.not_to allow_value(nil).for(:container_expiration_policies_enable_historic_entries) }
+    it { is_expected.to validate_inclusion_of(:container_expiration_policies_enable_historic_entries).in_array([true, false]) }
 
     it { is_expected.to allow_value("myemail@gitlab.com").for(:lets_encrypt_notification_email) }
     it { is_expected.to allow_value(nil).for(:lets_encrypt_notification_email) }
@@ -113,7 +112,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_numericality_of(:container_registry_cleanup_tags_service_max_list_size).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_data_repair_detail_worker_max_concurrency).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to allow_value(true, false).for(:container_registry_expiration_policies_caching) }
+    it { is_expected.to validate_inclusion_of(:container_registry_expiration_policies_caching).in_array([true, false]) }
 
     it { is_expected.to validate_numericality_of(:container_registry_import_max_tags_count).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_import_max_retries).only_integer.is_greater_than_or_equal_to(0) }
@@ -149,8 +148,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
-    it { is_expected.to allow_value(true, false).for(:wiki_asciidoc_allow_uri_includes) }
-    it { is_expected.not_to allow_value(nil).for(:wiki_asciidoc_allow_uri_includes) }
+    it { is_expected.to validate_inclusion_of(:wiki_asciidoc_allow_uri_includes).in_array([true, false]) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
     it { is_expected.to validate_presence_of(:max_yaml_size_bytes) }
@@ -162,11 +160,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_presence_of(:max_terraform_state_size_bytes) }
     it { is_expected.to validate_numericality_of(:max_terraform_state_size_bytes).only_integer.is_greater_than_or_equal_to(0) }
 
-    it { is_expected.to allow_value(true, false).for(:user_defaults_to_private_profile) }
-    it { is_expected.not_to allow_value(nil).for(:user_defaults_to_private_profile) }
+    it { is_expected.to validate_inclusion_of(:user_defaults_to_private_profile).in_array([true, false]) }
 
-    it { is_expected.to allow_values([true, false]).for(:deny_all_requests_except_allowed) }
-    it { is_expected.not_to allow_value(nil).for(:deny_all_requests_except_allowed) }
+    it { is_expected.to validate_inclusion_of(:deny_all_requests_except_allowed).in_array([true, false]) }
 
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
@@ -254,8 +250,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value('http://example.com/').for(:public_runner_releases_url) }
     it { is_expected.not_to allow_value(nil).for(:public_runner_releases_url) }
 
-    it { is_expected.to allow_value([true, false]).for(:update_runner_versions_enabled) }
-    it { is_expected.not_to allow_value(nil).for(:update_runner_versions_enabled) }
+    it { is_expected.to validate_inclusion_of(:update_runner_versions_enabled).in_array([true, false]) }
 
     it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
@@ -268,21 +263,17 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
 
-    it { is_expected.to allow_value(true, false).for(:bulk_import_enabled) }
-    it { is_expected.not_to allow_value(nil).for(:bulk_import_enabled) }
+    it { is_expected.to validate_inclusion_of(:bulk_import_enabled).in_array([true, false]) }
 
-    it { is_expected.to allow_value(true, false).for(:allow_runner_registration_token) }
-    it { is_expected.not_to allow_value(nil).for(:allow_runner_registration_token) }
+    it { is_expected.to validate_inclusion_of(:allow_runner_registration_token).in_array([true, false]) }
 
-    it { is_expected.to allow_value(true, false).for(:gitlab_dedicated_instance) }
-    it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
+    it { is_expected.to validate_inclusion_of(:gitlab_dedicated_instance).in_array([true, false]) }
 
     it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(valid_prometheus_alert_db_indicators_settings).for(:prometheus_alert_db_indicators_settings) }
 
-    it { is_expected.to allow_value([true, false]).for(:silent_mode_enabled) }
-    it { is_expected.not_to allow_value(nil).for(:silent_mode_enabled) }
+    it { is_expected.to validate_inclusion_of(:silent_mode_enabled).in_array([true, false]) }
 
     it { is_expected.to allow_value(0).for(:ci_max_includes) }
     it { is_expected.to allow_value(200).for(:ci_max_includes) }
@@ -298,16 +289,16 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(10.5).for(:ci_max_total_yaml_size_bytes) }
     it { is_expected.not_to allow_value(-1).for(:ci_max_total_yaml_size_bytes) }
 
-    it { is_expected.to allow_value([true, false]).for(:remember_me_enabled) }
-    it { is_expected.not_to allow_value(nil).for(:remember_me_enabled) }
+    it { is_expected.to validate_inclusion_of(:remember_me_enabled).in_array([true, false]) }
 
     it { is_expected.to validate_numericality_of(:namespace_aggregation_schedule_lease_duration_in_seconds).only_integer.is_greater_than(0) }
 
-    it { is_expected.to allow_values([true, false]).for(:instance_level_code_suggestions_enabled) }
-    it { is_expected.not_to allow_value(nil).for(:instance_level_code_suggestions_enabled) }
+    it { is_expected.to validate_inclusion_of(:instance_level_code_suggestions_enabled).in_array([true, false]) }
 
-    it { is_expected.to allow_values([true, false]).for(:package_registry_allow_anyone_to_pull_option) }
-    it { is_expected.not_to allow_value(nil).for(:package_registry_allow_anyone_to_pull_option) }
+    it { is_expected.to validate_inclusion_of(:package_registry_allow_anyone_to_pull_option).in_array([true, false]) }
+
+    it { is_expected.to allow_value([true, false]).for(:math_rendering_limits_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:math_rendering_limits_enabled) }
 
     context 'when deactivate_dormant_users is enabled' do
       before do
@@ -636,6 +627,18 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       is_expected.to validate_numericality_of(:max_decompressed_archive_size)
         .only_integer
         .is_greater_than_or_equal_to(0)
+    end
+
+    specify do
+      is_expected.to validate_numericality_of(:failed_login_attempts_unlock_period_in_minutes)
+                       .only_integer
+                       .is_greater_than(0)
+    end
+
+    specify do
+      is_expected.to validate_numericality_of(:max_login_attempts)
+                       .only_integer
+                       .is_greater_than(0)
     end
 
     specify do

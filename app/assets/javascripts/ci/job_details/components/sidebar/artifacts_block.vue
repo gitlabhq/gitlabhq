@@ -78,7 +78,7 @@ export default {
       <span v-if="willExpire" data-testid="artifacts-unlocked-message-content">
         {{ $options.i18n.willExpireText }}
       </span>
-      <timeago-tooltip v-if="artifact.expire_at" :time="artifact.expire_at" />
+      <timeago-tooltip v-if="artifact.expireAt" :time="artifact.expireAt" />
       <gl-link
         :href="helpUrl"
         target="_blank"
@@ -95,23 +95,23 @@ export default {
     </p>
     <gl-button-group class="gl-display-flex gl-mt-3">
       <gl-button
-        v-if="artifact.keep_path"
-        :href="artifact.keep_path"
+        v-if="artifact.keepPath"
+        :href="artifact.keepPath"
         data-method="post"
         data-testid="keep-artifacts"
         >{{ $options.i18n.keepText }}</gl-button
       >
       <gl-button
-        v-if="artifact.download_path"
-        :href="artifact.download_path"
+        v-if="artifact.downloadPath"
+        :href="artifact.downloadPath"
         rel="nofollow"
         data-testid="download-artifacts"
         download
         >{{ $options.i18n.downloadText }}</gl-button
       >
       <gl-button
-        v-if="artifact.browse_path"
-        :href="artifact.browse_path"
+        v-if="artifact.browsePath"
+        :href="artifact.browsePath"
         data-testid="browse-artifacts-button"
         >{{ $options.i18n.browseText }}</gl-button
       >

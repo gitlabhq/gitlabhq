@@ -5,12 +5,6 @@ module Types
   class BaseEnum < GraphQL::Schema::Enum
     class CustomValue < GraphQL::Schema::EnumValue
       include Gitlab::Graphql::Deprecations
-
-      def initialize(name, desc = nil, **kwargs)
-        init_gitlab_deprecation(kwargs)
-
-        super(name, desc, **kwargs)
-      end
     end
 
     enum_value_class(CustomValue)

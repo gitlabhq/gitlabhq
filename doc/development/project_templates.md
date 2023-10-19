@@ -47,11 +47,11 @@ To make the project template available when creating a new project, the vendorin
    [this example](https://gitlab.com/gitlab-org/gitlab-svgs/merge_requests/195). If a logo
    is not available for the project, use the default 'Tanuki' logo instead.
 1. Run `yarn run svgs` on `gitlab-svgs` project and commit result.
-1. Forward changes in `gitlab-svgs` project to master. This involves:
+1. Forward changes in `gitlab-svgs` project to the `main` branch. This involves:
    - Merging your MR in `gitlab-svgs`
    - [The bot](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot/)
      will pick the new release up and create an MR in `gitlab-org/gitlab`.
-1. Once the bot-created MR created above is merged, you can rebase your template MR onto the updated `master` to pick up the new svgs.
+1. After the bot-created MR created above is merged, you can rebase your template MR onto the updated `master` to pick up the new SVGs.
 1. Test everything is working.
 
 ### Contributing an improvement to an existing template

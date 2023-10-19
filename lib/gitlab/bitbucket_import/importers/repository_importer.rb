@@ -23,6 +23,7 @@ module Gitlab
           end
 
           import_wiki
+          create_labels
 
           log_info(import_stage: 'import_repository', message: 'finished import')
 
@@ -57,6 +58,11 @@ module Gitlab
           Gitlab::ErrorTracking.log_exception(
             e, import_stage: 'import_repository', message: 'failed to import wiki', error: e.message
           )
+        end
+
+        def create_labels
+          importer = Gitlab::BitbucketImport::Importer.new(project)
+          importer.create_labels
         end
 
         def wiki

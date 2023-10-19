@@ -1,0 +1,14 @@
+- title: "Integrated error tracking disabled by default"
+  announcement_milestone: "14.9"
+  announcement_date: "2022-02-23"  # This is the date customers were notified about the change in rate limits, making integrated error tracking unusable, see https://gitlab.com/groups/gitlab-org/-/epics/7580#communication-to-rate-limit-impacted-users
+  removal_milestone: "14.9"
+  removal_date: "2022-03-10"  # The MR was merged on this date, outside of the normal release cycle, https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81767
+  breaking_change: true
+  reporter: abellucci
+  body: |
+    In GitLab 14.4, GitLab released an integrated error tracking backend that replaces Sentry. This feature caused database performance issues. In GitLab 14.9, integrated error tracking is removed from GitLab.com, and turned off by default in GitLab self-managed. While we explore the future development of this feature, please consider switching to the Sentry backend by [changing your error tracking to Sentry in your project settings](https://docs.gitlab.com/ee/operations/error_tracking.html#sentry-error-tracking).
+
+    For additional background on this removal, please reference [Disable Integrated Error Tracking by Default](https://gitlab.com/groups/gitlab-org/-/epics/7580). If you have feedback please add a comment to [Feedback: Removal of Integrated Error Tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/355493).
+  stage: monitor
+  tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353639

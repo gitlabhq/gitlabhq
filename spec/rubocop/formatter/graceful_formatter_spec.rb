@@ -220,19 +220,20 @@ RSpec.describe RuboCop::Formatter::GracefulFormatter, :isolated_environment do
 
   def fake_offense(cop_name)
     # rubocop:disable RSpec/VerifiedDoubles
-    double(:offense,
-           cop_name: cop_name,
-           corrected?: false,
-           correctable?: false,
-           severity: double(:severity, name: :convention, code: :C),
-           line: 5,
-           column: 23,
-           real_column: 23,
-           corrected_with_todo?: false,
-           message: "#{cop_name} message",
-           location: double(:location, source_line: 'line', first_line: 1, last_line: 1, single_line?: true),
-           highlighted_area: double(:highlighted_area, begin_pos: 1, size: 2, source_buffer: 'line', source: 'i')
-          )
+    double(
+      :offense,
+      cop_name: cop_name,
+      corrected?: false,
+      correctable?: false,
+      severity: double(:severity, name: :convention, code: :C),
+      line: 5,
+      column: 23,
+      real_column: 23,
+      corrected_with_todo?: false,
+      message: "#{cop_name} message",
+      location: double(:location, source_line: 'line', first_line: 1, last_line: 1, single_line?: true),
+      highlighted_area: double(:highlighted_area, begin_pos: 1, size: 2, source_buffer: 'line', source: 'i')
+    )
     # rubocop:enable RSpec/VerifiedDoubles
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_category: :experimentation_expansion do
+RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_category: :acquisition do
   let_it_be(:owner) { create(:user, name: 'John Doe') }
   # private will ensure we really have access to the group when we land on the activity page
   let_it_be(:group) { create(:group, :private, name: 'Owned') }
@@ -113,7 +113,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             end
 
             it 'declines application and redirects to dashboard' do
-              expect(page).to have_current_path(dashboard_projects_path, ignore_query: true)
+              expect(page).to have_current_path(dashboard_projects_path)
               expect(page).to have_content('You have declined the invitation to join group Owned.')
               expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
             end
@@ -178,7 +178,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'when the user signs up for an account with the invitation email address' do
           it 'redirects to the most recent membership activity page with all invitations automatically accepted' do
             fill_in_sign_up_form(new_user)
-            fill_in_welcome_form
 
             expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
             expect(page).to have_content('You have been granted Owner access to group Owned.')
@@ -190,7 +189,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
           it 'signs up and redirects to the projects dashboard' do
             fill_in_sign_up_form(new_user)
-            fill_in_welcome_form
 
             expect_to_be_on_projects_dashboard_with_zero_authorized_projects
           end
@@ -226,7 +224,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'when the user signs up for an account with the invitation email address' do
           it 'redirects to the most recent membership activity page with all invitations automatically accepted' do
             fill_in_sign_up_form(new_user)
-            fill_in_welcome_form
 
             expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
           end
@@ -245,7 +242,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
               fill_in_sign_up_form(new_user)
               confirm_email(new_user)
               gitlab_sign_in(new_user, remember: true, visit: false)
-              fill_in_welcome_form
 
               expect_to_be_on_projects_dashboard_with_zero_authorized_projects
             end
@@ -259,7 +255,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
             it 'signs up and redirects to the projects dashboard' do
               fill_in_sign_up_form(new_user)
-              fill_in_welcome_form
 
               expect_to_be_on_projects_dashboard_with_zero_authorized_projects
             end
@@ -283,7 +278,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
         fill_in_sign_up_form(new_user, 'Register')
 
-        expect(page).to have_current_path(users_sign_up_welcome_path, ignore_query: true)
+        expect(page).to have_current_path(activity_group_path(group))
+        expect(page).to have_content('You have been granted Owner access to group Owned.')
       end
     end
 
@@ -294,6 +290,30 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         expect(page).to have_current_path(decline_invite_path(group_invite.raw_invite_token), ignore_query: true)
         expect(page).to have_content('You successfully declined the invitation')
         expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
+      end
+    end
+
+    context 'when inviting a registered user by a secondary email address' do
+      let(:user) { create(:user) }
+      let(:secondary_email) { create(:email, user: user) }
+
+      before do
+        create(:group_member, :invited, group: group, invite_email: secondary_email.email, created_by: owner)
+        gitlab_sign_in(user)
+      end
+
+      it 'does not accept the pending invitation and does not redirect to the groups activity path' do
+        expect(page).not_to have_current_path(activity_group_path(group), ignore_query: true)
+        expect(group.reload.users).not_to include(user)
+      end
+
+      context 'when the secondary email address is confirmed' do
+        let(:secondary_email) { create(:email, :confirmed, user: user) }
+
+        it 'accepts the pending invitation and redirects to the groups activity path' do
+          expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+          expect(group.reload.users).to include(user)
+        end
       end
     end
   end

@@ -177,9 +177,14 @@ To populate the metadata, include this information:
 
 ### Additional metadata
 
-Each page can have additional, optional metadata (set in the
-[default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
-Nanoc layout), which is displayed at the top of the page if defined.
+The following metadata is optional and is not actively maintained.
+
+- `description`: A short description of what the page is about. See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for writing tips. This content can be used in search result snippets and is shown in social media previews.
+- `feedback`: Set to `false` to not include the "Help & Feedback" footer.
+- `noindex`: Set to `false` to prevent the page from being indexed by search engines.
+- `redirect_to`: Used to control redirects. For more information, see [Redirects in GitLab documentation](../redirects.md).
+- `searchbar`: Set to `false` to not include the search bar in the page header.
+- `toc`: Set to `false` to not include the "On this page" navigation.
 
 ### Deprecated metadata
 
@@ -1435,7 +1440,7 @@ different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for
 `/help`, because the GitLab Markdown processor doesn't support iframes. It's
 hidden on the documentation site, but is displayed by `/help`.
-> - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode) of the YouTube embedded player. This mode allows users with resticted cookie preferences to view embedded videos.
+> - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode) of the YouTube embedded player. This mode allows users with restricted cookie preferences to view embedded videos.
 
 ## Alert boxes
 
@@ -1980,3 +1985,44 @@ It renders as:
    ```
 
 ::EndTabs
+
+### Changes for a version upgrade
+
+To document upgrade notes and changes, create a new page for each major version of GitLab.
+For an example, see [GitLab 16 changes](../../../update/versions/gitlab_16_changes.md).
+Use the following template to add information to the page.
+
+```markdown
+# GitLab X changes **(FREE SELF)**
+
+This page contains upgrade information for minor and patch versions of GitLab X. Review these instructions for:
+
+- Your installation type.
+- All versions between your current version and your target version.
+
+For more information about upgrading GitLab Helm Chart, see [the release notes for X.0](https://docs.gitlab.com/charts/releases/X_0.html).
+
+## X.Y.1 (add the latest version at the top of the page)
+
+- General upgrade notes and issues.
+- ...
+
+### Linux package installations
+
+- Information specific to Linux package installations.
+- ...
+
+### Self-compiled installations
+
+- Information specific to self-compiled installations.
+- ...
+
+### Geo installations **(PREMIUM SELF)**
+
+ - Information specific to Geo.
+ - ...
+
+## X.Y.0
+
+ ...
+```

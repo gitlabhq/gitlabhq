@@ -52,14 +52,12 @@ export default {
     });
 
     eventHub.$on('postAction', this.postAction);
-    eventHub.$on('retryPipeline', this.postAction);
     eventHub.$on('clickedDropdown', this.updateTable);
     eventHub.$on('updateTable', this.updateTable);
     eventHub.$on('runMergeRequestPipeline', this.runMergeRequestPipeline);
   },
   beforeDestroy() {
     eventHub.$off('postAction', this.postAction);
-    eventHub.$off('retryPipeline', this.postAction);
     eventHub.$off('clickedDropdown', this.updateTable);
     eventHub.$off('updateTable', this.updateTable);
     eventHub.$off('runMergeRequestPipeline', this.runMergeRequestPipeline);
@@ -68,6 +66,15 @@ export default {
     this.poll.stop();
   },
   methods: {
+    onCancelPipeline(pipeline) {
+      this.postAction(pipeline.cancel_path);
+    },
+    onRefreshPipelinesTable() {
+      this.updateTable();
+    },
+    onRetryPipeline(pipeline) {
+      this.postAction(pipeline.retry_path);
+    },
     updateInternalState(parameters) {
       this.poll.stop();
 

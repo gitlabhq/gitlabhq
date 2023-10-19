@@ -1,0 +1,8 @@
+---
+name: additional_merge_when_checks_ready
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128359
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/424784
+milestone: '16.5'
+type: development
+group: group::code review
+default_enabled: false

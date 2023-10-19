@@ -253,7 +253,6 @@ export default {
   <gl-modal
     ref="modal"
     :modal-id="modalId"
-    data-qa-selector="invite_members_modal_content"
     data-testid="invite-modal"
     size="sm"
     dialog-class="gl-mx-5"

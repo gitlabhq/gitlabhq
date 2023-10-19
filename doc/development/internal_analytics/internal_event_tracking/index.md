@@ -1,17 +1,11 @@
 ---
-stage: Analyze
-group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../internal_event_instrumentation/index.md'
+remove_date: '2023-12-27'
 ---
 
-# Internal Event Tracking
+This document was moved to [another location](../internal_event_instrumentation/index.md).
 
-This page provides detailed guidelines on using the Internal Event Tracking system to instrument features on GitLab.
-
-This page is a work in progress. For any questions or clarifications, reach out to us in the Slack channel [#g_analyze_analytics_instrumentation](https://gitlab.slack.com/archives/CL3A7GFPF).
-
-- [Introduction to internal event tracking](introduction.md#internal-event-tracking)
-- [Quick start guide](quick_start.md#quick-start-for-internal-event-tracking)
-- [Event definition guide](event_definition_guide.md#internal-event-tracking-definition-guide)
-- [Metrics dictionary guide](../service_ping/metrics_dictionary.md#metrics-dictionary-guide)
-- [Architecture](architecture.md#internal-event-tracking-architecture)
+<!-- This redirect file can be deleted after <2023-12-27>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

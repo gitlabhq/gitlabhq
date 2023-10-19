@@ -10,7 +10,7 @@ module Packages
 
         package =
           ::Packages::Maven::PackageFinder.new(current_user, project, path: path)
-                                          .execute
+          .execute&.last
 
         unless Namespace::PackageSetting.duplicates_allowed?(package)
           return ServiceResponse.error(message: 'Duplicate package is not allowed') if target_package_is_duplicate?(package)

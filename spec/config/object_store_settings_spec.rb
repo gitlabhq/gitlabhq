@@ -300,4 +300,26 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
       end
     end
   end
+
+  describe '.enabled_endpoint_uris' do
+    subject(:enabled_endpoint_uris) { described_class.enabled_endpoint_uris }
+
+    it 'returns a list of enabled endpoint URIs' do
+      stub_config(
+        artifacts: { enabled: true, object_store: { enabled: true, connection: { endpoint: 'http://example1.com' } } },
+        external_diffs: {
+          enabled: true, object_store: { enabled: true, connection: { endpoint: 'http://example1.com' } }
+        },
+        lfs: { enabled: false, object_store: { enabled: true, connection: { endpoint: 'http://example2.com' } } },
+        uploads: { enabled: true, object_store: { enabled: false, connection: { endpoint: 'http://example3.com' } } },
+        packages: { enabled: true, object_store: { enabled: true, connection: { provider: 'AWS' } } },
+        pages: { enabled: true, object_store: { enabled: true, connection: { endpoint: 'http://example4.com' } } }
+      )
+
+      expect(enabled_endpoint_uris).to contain_exactly(
+        URI('http://example1.com'),
+        URI('http://example4.com')
+      )
+    end
+  end
 end

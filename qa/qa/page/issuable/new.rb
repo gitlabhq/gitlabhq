@@ -4,8 +4,6 @@ module QA
   module Page
     module Issuable
       class New < Page::Base
-        include Page::Component::RichTextPopover
-
         view 'app/views/shared/issuable/form/_title.html.haml' do
           element 'issuable-form-title-field'
         end
@@ -15,11 +13,11 @@ module QA
         end
 
         view 'app/assets/javascripts/sidebar/components/milestone/milestone_dropdown.vue' do
-          element :issuable_milestone_dropdown
+          element 'issuable-milestone-dropdown'
         end
 
         view 'app/views/shared/issuable/_label_dropdown.html.haml' do
-          element :issuable_label_dropdown
+          element 'issuable-label-dropdown'
         end
 
         view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue' do
@@ -27,11 +25,11 @@ module QA
         end
 
         view 'app/views/shared/issuable/form/_metadata_issuable_assignee.html.haml' do
-          element :assign_to_me_link
+          element 'assign-to-me-link'
         end
 
         view 'app/views/shared/issuable/form/_template_selector.html.haml' do
-          element :template_dropdown
+          element 'template-dropdown'
         end
 
         def fill_title(title)
@@ -43,30 +41,29 @@ module QA
         end
 
         def choose_milestone(milestone)
-          within_element(:issuable_milestone_dropdown) do
-            click_button 'Select milestone'
-            click_button milestone.title
+          within_element('issuable-milestone-dropdown') do
+            click_button('Select milestone')
+            click_button(milestone.title)
           end
         end
 
         def choose_template(template_name)
-          close_rich_text_promo_popover_if_present
-          click_element :template_dropdown
-          within_element(:template_dropdown) do
-            click_on template_name
+          click_element('template-dropdown')
+          within_element('template-dropdown') do
+            click_on(template_name)
           end
         end
 
         def select_label(label)
-          click_element :issuable_label_dropdown
+          click_element('issuable-label-dropdown')
 
           click_on(label.title, match: :prefer_exact)
 
-          click_element :issuable_label_dropdown # So that the dropdown goes away(click away action)
+          click_element('issuable-label-dropdown') # So that the dropdown goes away(click away action)
         end
 
         def assign_to_me
-          click_element :assign_to_me_link
+          click_element('assign-to-me-link')
         end
       end
     end

@@ -362,7 +362,6 @@ export default {
       'is-embedded': isDropdownVariantEmbedded(variant),
     }"
     data-testid="sidebar-labels"
-    data-qa-selector="labels_block"
   >
     <template v-if="isDropdownVariantSidebar(variant)">
       <sidebar-editable-item

@@ -11,6 +11,96 @@ RSpec.describe Admin::GroupsController do
     sign_in(admin)
   end
 
+  describe 'GET #index' do
+    let!(:group_2) { create(:group, name: 'Ygroup') }
+    let!(:group_3) { create(:group, name: 'Jgroup', created_at: 2.days.ago, updated_at: 1.day.ago) }
+
+    render_views
+
+    it 'lists available groups' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:index)
+      expect(assigns(:groups)).to eq([group, group_2, group_3])
+    end
+
+    it 'renders a correct list of sort by options' do
+      get :index
+
+      html_rendered = Nokogiri::HTML(response.body)
+      sort_options = Gitlab::Json.parse(html_rendered.css('div.dropdown')[0]['data-items'])
+
+      expect(response).to render_template('shared/groups/_dropdown')
+
+      expect(sort_options.size).to eq(7)
+      expect(sort_options[0]['value']).to eq('name_asc')
+      expect(sort_options[0]['text']).to eq(s_('SortOptions|Name'))
+
+      expect(sort_options[1]['value']).to eq('name_desc')
+      expect(sort_options[1]['text']).to eq(s_('SortOptions|Name, descending'))
+
+      expect(sort_options[2]['value']).to eq('created_desc')
+      expect(sort_options[2]['text']).to eq(s_('SortOptions|Last created'))
+
+      expect(sort_options[3]['value']).to eq('created_asc')
+      expect(sort_options[3]['text']).to eq(s_('SortOptions|Oldest created'))
+
+      expect(sort_options[4]['value']).to eq('latest_activity_desc')
+      expect(sort_options[4]['text']).to eq(_('Updated date'))
+
+      expect(sort_options[5]['value']).to eq('latest_activity_asc')
+      expect(sort_options[5]['text']).to eq(s_('SortOptions|Oldest updated'))
+
+      expect(sort_options[6]['value']).to eq('storage_size_desc')
+      expect(sort_options[6]['text']).to eq(s_('SortOptions|Largest group'))
+    end
+
+    context 'when a sort param is present' do
+      it 'returns a sorted by name_asc result' do
+        get :index, params: { sort: 'name_asc' }
+
+        expect(assigns(:groups)).to eq([group, group_3, group_2])
+      end
+    end
+
+    context 'when a name param is present' do
+      it 'returns a search by name result' do
+        get :index, params: { name: 'Ygr' }
+
+        expect(assigns(:groups)).to eq([group_2])
+      end
+
+      it 'returns an empty list if no match' do
+        get :index, params: { name: 'nomatch' }
+
+        expect(assigns(:groups)).to be_empty
+      end
+    end
+
+    context 'when page is specified' do
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+      end
+
+      it 'redirects to the page' do
+        get :index, params: { page: 1 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:groups).current_page).to eq(1)
+        expect(assigns(:groups)).to eq([group])
+      end
+
+      it 'redirects to the page' do
+        get :index, params: { page: 2 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:groups).current_page).to eq(2)
+        expect(assigns(:groups)).to eq([group_2])
+      end
+    end
+  end
+
   describe 'DELETE #destroy' do
     it 'schedules a group destroy' do
       Sidekiq::Testing.fake! do

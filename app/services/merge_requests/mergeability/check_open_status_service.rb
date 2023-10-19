@@ -3,6 +3,10 @@
 module MergeRequests
   module Mergeability
     class CheckOpenStatusService < CheckBaseService
+      def self.failure_reason
+        :not_open
+      end
+
       def execute
         if merge_request.open?
           success
@@ -17,12 +21,6 @@ module MergeRequests
 
       def cacheable?
         false
-      end
-
-      private
-
-      def failure_reason
-        :not_open
       end
     end
   end

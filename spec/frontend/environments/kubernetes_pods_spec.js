@@ -123,7 +123,7 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
     });
 
     it('emits an error message', () => {
-      expect(wrapper.emitted('cluster-error')).toMatchObject([[error]]);
+      expect(wrapper.emitted('cluster-error')).toMatchObject([[error.message]]);
     });
   });
 });

@@ -4,17 +4,21 @@ import {
   sprintfWorkItem,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
+  WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
+  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '../constants';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
+import WorkItemParent from './work_item_parent.vue';
 
 export default {
   components: {
@@ -22,6 +26,7 @@ export default {
     WorkItemMilestone,
     WorkItemAssignees,
     WorkItemDueDate,
+    WorkItemParent,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
@@ -29,8 +34,11 @@ export default {
       import('ee_component/work_items/components/work_item_health_status.vue'),
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItem: {
       type: Object,
       required: true,
@@ -81,8 +89,20 @@ export default {
     workItemHealthStatus() {
       return this.isWidgetPresent(WIDGET_TYPE_HEALTH_STATUS);
     },
+    workItemHierarchy() {
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
+    },
     workItemMilestone() {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
+    },
+    showWorkItemParent() {
+      return (
+        this.workItemType === WORK_ITEM_TYPE_VALUE_OBJECTIVE ||
+        this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT
+      );
+    },
+    workItemParent() {
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
   },
   methods: {
@@ -98,6 +118,7 @@ export default {
     <work-item-assignees
       v-if="workItemAssignees"
       :can-update="canUpdate"
+      :full-path="fullPath"
       :work-item-id="workItem.id"
       :assignees="workItemAssignees.assignees.nodes"
       :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
@@ -108,6 +129,7 @@ export default {
     <work-item-labels
       v-if="workItemLabels"
       :can-update="canUpdate"
+      :full-path="fullPath"
       :work-item-id="workItem.id"
       :work-item-iid="workItem.iid"
       @error="$emit('error', $event)"
@@ -123,6 +145,7 @@ export default {
     />
     <work-item-milestone
       v-if="workItemMilestone"
+      :full-path="fullPath"
       :work-item-id="workItem.id"
       :work-item-milestone="workItemMilestone.milestone"
       :work-item-type="workItemType"
@@ -151,6 +174,7 @@ export default {
     <work-item-iteration
       v-if="workItemIteration"
       class="gl-mb-5"
+      :full-path="fullPath"
       :iteration="workItemIteration.iteration"
       :can-update="canUpdate"
       :work-item-id="workItem.id"
@@ -166,6 +190,15 @@ export default {
       :work-item-id="workItem.id"
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
+      @error="$emit('error', $event)"
+    />
+    <work-item-parent
+      v-if="showWorkItemParent"
+      class="gl-mb-5"
+      :can-update="canUpdate"
+      :work-item-id="workItem.id"
+      :work-item-type="workItemType"
+      :parent="workItemParent"
       @error="$emit('error', $event)"
     />
   </div>

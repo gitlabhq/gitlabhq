@@ -69,8 +69,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe 'validations' do
-    it { is_expected.not_to allow_value(nil).for(:confidential) }
-    it { is_expected.to allow_value(true, false).for(:confidential) }
+    it { is_expected.to validate_inclusion_of(:confidential).in_array([true, false]) }
   end
 
   describe 'custom validations' do
@@ -302,7 +301,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         let(:issue) { create(:issue) }
         let(:project) { issue.project }
         let(:user) { issue.author }
-        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
+        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
         let(:namespace) { project.namespace }
 
         subject(:service_action) { issue }
@@ -866,6 +865,29 @@ RSpec.describe Issue, feature_category: :team_planning do
         expect(authorized_issue_a.related_issues(user))
           .to contain_exactly(authorized_issue_b, authorized_incident_a)
       end
+    end
+
+    context 'when authorize argument is false' do
+      it 'returns all related issues' do
+        expect(authorized_issue_a.related_issues(authorize: false))
+          .to contain_exactly(authorized_issue_b, authorized_issue_c, authorized_incident_a, unauthorized_issue)
+      end
+    end
+
+    context 'when current_user argument is nil' do
+      let_it_be(:public_issue) { create(:issue, project: create(:project, :public)) }
+
+      it 'returns public linked issues only' do
+        create(:issue_link, source: authorized_issue_a, target: public_issue)
+
+        expect(authorized_issue_a.related_issues).to contain_exactly(public_issue)
+      end
+    end
+
+    context 'when issue is a new record' do
+      let(:new_issue) { build(:issue, project: authorized_project) }
+
+      it { expect(new_issue.related_issues(user)).to be_empty }
     end
   end
 
@@ -2036,6 +2058,136 @@ RSpec.describe Issue, feature_category: :team_planning do
       issue = create(:issue)
 
       expect(issue.search_data.namespace_id).to eq(issue.namespace_id)
+    end
+  end
+
+  describe '#linked_items_count' do
+    let_it_be(:issue1) { create(:issue, project: reusable_project) }
+    let_it_be(:issue2) { create(:issue, project: reusable_project) }
+    let_it_be(:issue3) { create(:issue, project: reusable_project) }
+    let_it_be(:issue4) { build(:issue, project: reusable_project) }
+
+    it 'returns number of issues linked to the issue' do
+      create(:issue_link, source: issue1, target: issue2)
+      create(:issue_link, source: issue1, target: issue3)
+
+      expect(issue1.linked_items_count).to eq(2)
+      expect(issue2.linked_items_count).to eq(1)
+      expect(issue3.linked_items_count).to eq(1)
+      expect(issue4.linked_items_count).to eq(0)
+    end
+  end
+
+  describe '#readable_by?' do
+    let_it_be(:admin_user) { create(:user, :admin) }
+
+    subject { issue_subject.readable_by?(user) }
+
+    context 'when issue belongs directly to a project' do
+      let_it_be_with_reload(:project_issue) { create(:issue, project: reusable_project) }
+      let_it_be(:project_reporter) { create(:user).tap { |u| reusable_project.add_reporter(u) } }
+      let_it_be(:project_guest) { create(:user).tap { |u| reusable_project.add_guest(u) } }
+
+      let(:issue_subject) { project_issue }
+
+      context 'when user is in admin mode', :enable_admin_mode do
+        let(:user) { admin_user }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when user is a reporter' do
+        let(:user) { project_reporter }
+
+        it { is_expected.to be_truthy }
+
+        context 'when issues project feature is not enabled' do
+          before do
+            reusable_project.project_feature.update!(issues_access_level: ProjectFeature::DISABLED)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when issue is hidden (banned author)' do
+          before do
+            issue_subject.author.ban!
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+
+      context 'when user is a guest' do
+        let(:user) { project_guest }
+
+        context 'when issue is confidential' do
+          before do
+            issue_subject.update!(confidential: true)
+          end
+
+          it { is_expected.to be_falsey }
+
+          context 'when user is assignee of the issue' do
+            before do
+              issue_subject.update!(assignees: [user])
+            end
+
+            it { is_expected.to be_truthy }
+          end
+        end
+      end
+    end
+
+    context 'when issue belongs directly to the group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
+      let_it_be(:group_reporter) { create(:user).tap { |u| group.add_reporter(u) } }
+      let_it_be(:group_guest) { create(:user).tap { |u| group.add_guest(u) } }
+
+      let(:issue_subject) { group_issue }
+
+      context 'when user is in admin mode', :enable_admin_mode do
+        let(:user) { admin_user }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when user is a reporter' do
+        let(:user) { group_reporter }
+
+        it { is_expected.to be_truthy }
+
+        context 'when issue is hidden (banned author)' do
+          before do
+            issue_subject.author.ban!
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+
+      context 'when user is a guest' do
+        let(:user) { group_guest }
+
+        it { is_expected.to be_truthy }
+
+        context 'when issue is confidential' do
+          before do
+            issue_subject.update!(confidential: true)
+          end
+
+          it { is_expected.to be_falsey }
+
+          context 'when user is assignee of the issue' do
+            before do
+              issue_subject.update!(assignees: [user])
+            end
+
+            it { is_expected.to be_truthy }
+          end
+        end
+      end
     end
   end
 end

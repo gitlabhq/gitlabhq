@@ -85,14 +85,15 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
     it 'unmarks the repository as read-only without updating the repository storage' do
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
-      allow(project_repository_double).to receive(:replicate)
+      expect(project_repository_double).to receive(:replicate)
         .with(project.repository.raw)
-      allow(project_repository_double).to receive(:checksum)
+      expect(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:replicate)
+      expect(repository_double).to receive(:replicate)
         .with(repository.raw)
         .and_raise(Gitlab::Git::CommandError)
+      expect(repository_double).to receive(:remove)
 
       expect do
         subject.execute
@@ -138,14 +139,15 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:replicate)
+      expect(repository_double).to receive(:replicate)
         .with(repository.raw)
-      allow(repository_double).to receive(:checksum)
+      expect(repository_double).to receive(:checksum)
         .and_return('not matching checksum')
+      expect(repository_double).to receive(:remove)
 
       expect do
         subject.execute
-      end.to raise_error(UpdateRepositoryStorageMethods::Error, /Failed to verify \w+ repository checksum from \w+ to not matching checksum/)
+      end.to raise_error(Repositories::ReplicateService::Error, /Failed to verify \w+ repository checksum from \w+ to not matching checksum/)
 
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('default')

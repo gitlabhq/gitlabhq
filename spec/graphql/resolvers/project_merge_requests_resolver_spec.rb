@@ -11,13 +11,15 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
   let_it_be(:reviewer) { create(:user) }
 
   let_it_be(:merge_request) do
-    create(:merge_request,
-           :unique_branches,
-           source_project: project,
-           target_project: project,
-           author: other_user,
-           assignee: other_user,
-           reviewers: [reviewer])
+    create(
+      :merge_request,
+      :unique_branches,
+      source_project: project,
+      target_project: project,
+      author: other_user,
+      assignee: other_user,
+      reviewers: [reviewer]
+    )
   end
 
   before do

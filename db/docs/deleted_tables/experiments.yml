@@ -3,7 +3,7 @@ table_name: experiments
 classes:
   - Experiment
 feature_categories:
-  - experimentation_conversion
+  - acquisition
 description:
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38397
 milestone: '13.3'

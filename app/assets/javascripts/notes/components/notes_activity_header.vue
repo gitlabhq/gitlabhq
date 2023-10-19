@@ -38,7 +38,11 @@ export default {
   },
   computed: {
     showAiActions() {
-      return this.resourceGlobalId && this.glFeatures.summarizeComments;
+      return (
+        this.resourceGlobalId &&
+        this.glFeatures.openaiExperimentation &&
+        this.glFeatures.summarizeNotes
+      );
     },
   },
 };
@@ -56,7 +60,7 @@ export default {
         :loading="aiLoading"
       />
       <timeline-toggle v-if="showTimelineViewToggle" />
-      <mr-discussion-filter v-if="mrFilter && glFeatures.mrActivityFilters" />
+      <mr-discussion-filter v-if="mrFilter" />
       <discussion-filter v-else :filters="notesFilters" :selected-value="notesFilterValue" />
     </div>
   </div>

@@ -96,7 +96,7 @@ export default {
 };
 </script>
 <template>
-  <gl-button-group data-qa-selector="default_actions_container">
+  <gl-button-group data-testid="default-actions-container">
     <gl-button
       v-if="showCopyButton"
       v-gl-tooltip.hover
@@ -104,8 +104,7 @@ export default {
       :title="$options.BTN_COPY_CONTENTS_TITLE"
       :disabled="copyDisabled"
       :data-clipboard-target="getBlobHashTarget"
-      data-testid="copyContentsButton"
-      data-qa-selector="copy_contents_button"
+      data-testid="copy-contents-button"
       icon="copy-to-clipboard"
       category="primary"
       variant="default"

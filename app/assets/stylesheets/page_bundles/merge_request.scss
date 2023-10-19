@@ -205,7 +205,11 @@ $comparison-empty-state-height: 62px;
   top: $calc-application-header-height;
   z-index: $tabs-holder-z-index;
   border-bottom: 1px solid var(--border-color, $border-color);
-  background-color: var(--gray-10, $white);
+  background-color: $white;
+
+  .gl-dark & {
+    background-color: var(--gray-10);
+  }
 
   @include media-breakpoint-up(md) {
     position: sticky;

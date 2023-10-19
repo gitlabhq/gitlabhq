@@ -6,7 +6,6 @@ Style/SingleArgumentDig:
     - 'app/models/ci/build.rb'
     - 'app/models/ci/build_report_result.rb'
     - 'app/models/error_tracking/error_event.rb'
-    - 'app/models/integrations/bamboo.rb'
     - 'app/serializers/codequality_degradation_entity.rb'
     - 'app/services/ci/update_build_state_service.rb'
     - 'ee/app/controllers/subscriptions_controller.rb'

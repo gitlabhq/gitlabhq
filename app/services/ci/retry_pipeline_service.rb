@@ -26,9 +26,7 @@ module Ci
         .new(project: project, current_user: current_user)
         .close_all(pipeline)
 
-      Ci::ProcessPipelineService
-        .new(pipeline)
-        .execute
+      start_pipeline(pipeline)
 
       ServiceResponse.success
     rescue Gitlab::Access::AccessDeniedError => e
@@ -51,6 +49,10 @@ module Ci
 
     def can_be_retried?(build)
       can?(current_user, :update_build, build)
+    end
+
+    def start_pipeline(pipeline)
+      Ci::PipelineCreation::StartPipelineService.new(pipeline).execute
     end
   end
 end

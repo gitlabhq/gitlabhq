@@ -94,8 +94,13 @@ To enable this setting:
 1. Select **Settings > Merge requests**.
 1. Scroll to **Merge checks**, and select **Pipelines must succeed**.
    This setting also prevents merge requests from being merged if there is no pipeline,
-   which can [conflict with some rules](#merge-requests-dont-merge-when-successful-pipeline-is-required).
+   which can [conflict with some rules](#merge-request-cannot-be-merged-despite-no-failed-pipeline).
 1. Select **Save**.
+
+If [multiple pipeline types run for the same merge request](#merge-request-can-still-be-merged-despite-a-failed-pipeline),
+merge request pipelines take precedence over other pipeline types. For example,
+an older but successful merge request pipeline allows a merge request to be merged,
+despite a newer but failed branch pipeline.
 
 ### Allow merge after skipped pipelines
 
@@ -120,44 +125,30 @@ To change this behavior:
 
 ## Troubleshooting
 
-### Merge requests don't merge when successful pipeline is required
+### Merge request cannot be merged despite no failed pipeline
 
-If you require a successful pipeline for a merge, this setting can conflict with some
-use cases that do not generate pipelines, such as [`only/except`](../../../ci/yaml/index.md#only--except)
-or [`rules`](../../../ci/yaml/index.md#rules). Ensure your project
-[runs a pipeline](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54226) for
-every merge request, and that the pipeline is successful.
+In some cases, you can [require a successful pipeline for merge](#require-a-successful-pipeline-for-merge),
+but be unable to merge a merge request with no failed pipelines. The setting requires
+the existence of a successful pipeline, not the absence of failed pipelines. If the merge request
+has no pipelines at all, it is not considered to have a successful pipeline and cannot be merged.
 
-### Ensure test parity between pipeline types
+When the setting is enabled, use [`rules`](../../../ci/yaml/index.md#rules) or [`workflow:rules`](../../../ci/yaml/index.md#workflowrules)
+to ensure pipelines run for every merge request.
 
-If a merge request triggers both a branch pipeline and a merge request pipeline,
-the success or failure of only the *merge request pipeline* is checked.
-If the merge request pipeline contains fewer jobs than the branch pipeline,
-it could allow code that fails tests to be merged, like in this example:
+### Merge request can still be merged despite a failed pipeline
 
-```yaml
-branch-pipeline-job:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-  script:
-    - echo "Testing happens here."
+In some cases, you can [require a successful pipeline for merge](#require-a-successful-pipeline-for-merge),
+but still merge a merge request with a failed pipeline.
 
-merge-request-pipeline-job:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - echo "No testing happens here. This pipeline always succeeds, and enables merge."
-    - echo true
-```
+Merge request pipelines have the highest priority for the **Pipelines must succeed** setting.
+If multiple pipeline types run for the same merge request, only the merge request pipelines
+are checked for success.
 
-Instead, use branch (`push`) pipelines or merge request pipelines, when possible.
-For details on avoiding two pipelines for a single merge request, read the
-[`rules` documentation](../../../ci/jobs/job_control.md#avoid-duplicate-pipelines).
+Multiple pipeline types in the same merge request can be caused by:
 
-### Merged results pipeline allows merge, despite a failed branch pipeline
+- A [`rules`](../../../ci/yaml/index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_control.md#avoid-duplicate-pipelines):
+  one merge request pipeline and one branch pipeline. In this case, the status of the
+  latest merge request pipeline determines if a merge request can be merged, not the branch pipeline.
+- Pipelines triggered by external tools that target the same branch as the merge request.
 
-When [the **Pipelines must succeed** setting](#require-a-successful-pipeline-for-merge)
-is combined with
-[the **Merged results pipelines** feature](../../../ci/pipelines/merged_results_pipelines.md),
-failed branch pipeline may be ignored.
-[Issue 385841](https://gitlab.com/gitlab-org/gitlab/-/issues/385841) is open to track this.
+In all cases, update your CI/CD configuration to prevent multiple pipeline types for the same merge request.

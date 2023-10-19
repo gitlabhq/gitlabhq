@@ -185,7 +185,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
     end
   end
 
-  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/runs/search' do
+  describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/search' do
     let_it_be(:search_experiment) { create(:ml_experiments, user: nil, project: project) }
     let_it_be(:first_candidate) do
       create(:ml_candidates, experiment: search_experiment, name: 'c', user: nil).tap do |c|
@@ -215,6 +215,8 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       }
     end
 
+    let(:request) { post api(route), params: params, headers: headers }
+
     it 'searches runs for a project', :aggregate_failures do
       is_expected.to have_gitlab_http_status(:ok)
       is_expected.to match_response_schema('ml/search_runs')
@@ -231,7 +233,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
 
           params = default_params.merge(page_token: json_response['next_page_token'])
 
-          get api(route), params: params, headers: headers
+          post api(route), params: params, headers: headers
 
           second_page_response = Gitlab::Json.parse(response.body)
           second_page_runs = second_page_response['runs']

@@ -52,14 +52,9 @@ module QA
         project.visit!
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([{
-              file_path: '.gitlab-ci.yml',
-              content: gitlab_ci_yaml
-            }])
-          end
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml }
+          ])
         end
 
         Flow::Pipeline.visit_latest_pipeline

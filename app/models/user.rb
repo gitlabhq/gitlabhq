@@ -271,6 +271,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :bulk_imports
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
+  has_one  :trusted_with_spam_attribute, -> { UserCustomAttribute.trusted_with_spam }, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'Users::Callout'
   has_many :group_callouts, class_name: 'Users::GroupCallout'
   has_many :project_callouts, class_name: 'Users::ProjectCallout'
@@ -306,6 +307,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :awarded_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'awarded_by_user_id', inverse_of: :awarded_by_user
   has_many :revoked_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'revoked_by_user_id', inverse_of: :revoked_by_user
   has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
+  has_many :vscode_settings, class_name: 'VsCode::Settings::VsCodeSetting', inverse_of: :user
 
   #
   # Validations
@@ -1232,10 +1234,6 @@ class User < MainClusterwide::ApplicationRecord
   # This logic is duplicated from `Ability#project_abilities` into a SQL form.
   def projects_where_can_admin_issues
     authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
-  end
-
-  def preloaded_member_roles_for_projects(projects)
-    # overridden in EE
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2226,8 +2224,8 @@ class User < MainClusterwide::ApplicationRecord
     }
   end
 
-  def allow_possible_spam?
-    custom_attributes.by_key(UserCustomAttribute::ALLOW_POSSIBLE_SPAM).exists?
+  def trusted?
+    trusted_with_spam_attribute.present?
   end
 
   def namespace_commit_email_for_namespace(namespace)
@@ -2510,14 +2508,6 @@ class User < MainClusterwide::ApplicationRecord
 
   def ci_namespace_mirrors_for_group_members(level)
     search_members = group_members.where('access_level >= ?', level)
-
-    # This reduces searched prefixes to only shortest ones
-    # to avoid querying descendants since they are already covered
-    # by ancestor namespaces. If the FF is not available fallback to
-    # inefficient search: https://gitlab.com/gitlab-org/gitlab/-/issues/336436
-    unless Feature.enabled?(:use_traversal_ids)
-      return Ci::NamespaceMirror.contains_any_of_namespaces(search_members.pluck(:source_id))
-    end
 
     traversal_ids = Group.joins(:all_group_members)
       .merge(search_members)

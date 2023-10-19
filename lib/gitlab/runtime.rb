@@ -78,16 +78,16 @@ module Gitlab
 
       def puma_in_clustered_mode?
         return unless puma?
-        return unless Puma.respond_to?(:cli_config)
+        return unless ::Puma.respond_to?(:cli_config)
 
-        Puma.cli_config.options[:workers].to_i > 0
+        ::Puma.cli_config.options[:workers].to_i > 0
       end
 
       def max_threads
         threads = 1 # main thread
 
-        if puma? && Puma.respond_to?(:cli_config)
-          threads += Puma.cli_config.options[:max_threads]
+        if puma? && ::Puma.respond_to?(:cli_config)
+          threads += ::Puma.cli_config.options[:max_threads]
         elsif sidekiq?
           # 2 extra threads for the pollers in Sidekiq and Sidekiq Cron:
           # https://github.com/ondrejbartas/sidekiq-cron#under-the-hood

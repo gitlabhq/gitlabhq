@@ -105,7 +105,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
         context 'to all issues' do
           before do
             check 'Select all'
-            open_labels_dropdown %w(bug feature)
+            open_labels_dropdown %w[bug feature]
             update_issues
           end
 
@@ -120,7 +120,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
         context 'to a issue' do
           before do
             check issue1.title
-            open_labels_dropdown %w(bug feature)
+            open_labels_dropdown %w[bug feature]
             update_issues
           end
 
@@ -162,7 +162,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
 
           enable_bulk_update
           check 'Select all'
-          unmark_labels_in_dropdown %w(bug feature)
+          unmark_labels_in_dropdown %w[bug feature]
           update_issues
         end
 

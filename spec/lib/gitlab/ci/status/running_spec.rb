@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Running do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'running' }
+    it { expect(subject.text).to eq 'Running' }
   end
 
   describe '#label' do

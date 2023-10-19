@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Tracker, type: :model do
+RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers do
   describe 'associations' do
     it do
       is_expected.to belong_to(:entity).required.class_name('BulkImports::Entity')
@@ -30,19 +30,14 @@ RSpec.describe BulkImports::Tracker, type: :model do
     end
   end
 
-  describe '.stage_running?' do
-    it 'returns true if there is any unfinished pipeline in the given stage' do
-      tracker = create(:bulk_import_tracker)
+  describe '.running_trackers' do
+    it 'returns trackers that are running for a given entity' do
+      entity = create(:bulk_import_entity)
+      BulkImports::Tracker.state_machines[:status].states.map(&:value).each do |status|
+        create(:bulk_import_tracker, status: status, entity: entity)
+      end
 
-      expect(described_class.stage_running?(tracker.entity.id, 0))
-        .to eq(true)
-    end
-
-    it 'returns false if there are no unfinished pipeline in the given stage' do
-      tracker = create(:bulk_import_tracker, :finished)
-
-      expect(described_class.stage_running?(tracker.entity.id, 0))
-        .to eq(false)
+      expect(described_class.running_trackers(entity.id).pluck(:status)).to include(1, 3)
     end
   end
 

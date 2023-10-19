@@ -17,17 +17,6 @@ import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initWorkItemLinks from '~/work_items/components/work_item_links';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
-import FilteredSearchServiceDesk from './filtered_search_service_desk';
-
-export function initFilteredSearchServiceDesk() {
-  if (document.querySelector('.filtered-search')) {
-    const supportBotData = JSON.parse(
-      document.querySelector('.js-service-desk-issues').dataset.supportBot,
-    );
-    const filteredSearchManager = new FilteredSearchServiceDesk(supportBotData);
-    filteredSearchManager.setup();
-  }
-}
 
 export function initForm() {
   new IssuableForm($('.issue-form')); // eslint-disable-line no-new

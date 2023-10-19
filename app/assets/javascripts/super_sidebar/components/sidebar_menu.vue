@@ -158,7 +158,11 @@ export default {
 
 <template>
   <div class="gl-p-2 gl-relative">
-    <ul v-if="hasStaticItems" class="gl-p-0 gl-m-0" data-testid="static-items-section">
+    <ul
+      v-if="hasStaticItems"
+      class="gl-list-style-none gl-p-0 gl-m-0"
+      data-testid="static-items-section"
+    >
       <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
     </ul>
     <pinned-section
@@ -174,7 +178,11 @@ export default {
       class="gl-my-2 gl-mx-4"
       data-testid="main-menu-separator"
     />
-    <ul class="gl-p-0 gl-list-style-none" data-testid="non-static-items-section">
+    <ul
+      aria-labelledby="super-sidebar-context-header"
+      class="gl-p-0 gl-list-style-none"
+      data-testid="non-static-items-section"
+    >
       <template v-for="item in nonStaticItems">
         <menu-section
           v-if="isSection(item)"
@@ -182,6 +190,7 @@ export default {
           :item="item"
           :separated="item.separated"
           :has-flyout="showFlyoutMenus"
+          tag="li"
           @pin-add="createPin"
           @pin-remove="destroyPin"
         />
@@ -189,7 +198,6 @@ export default {
           v-else
           :key="item.id"
           :item="item"
-          tag="li"
           @pin-add="createPin"
           @pin-remove="destroyPin"
         />

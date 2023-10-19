@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlModal, GlModalDirective, GlCollapsibleListbox } from '@gitlab/ui';
+import {
+  GlButton,
+  GlTooltipDirective,
+  GlModal,
+  GlModalDirective,
+  GlCollapsibleListbox,
+} from '@gitlab/ui';
 
 import { __, s__ } from '~/locale';
 import { sortOrders, sortOrderOptions } from '../constants';
@@ -13,6 +19,7 @@ export default {
     GlCollapsibleListbox,
   },
   directives: {
+    GlTooltip: GlTooltipDirective,
     'gl-modal': GlModalDirective,
   },
   props: {
@@ -133,14 +140,17 @@ export default {
   <div
     v-if="currentRequest.details && metricDetails"
     :id="`peek-view-${metric}`"
-    class="gl-display-flex gl-align-items-center view"
+    class="gl-display-flex gl-align-items-baseline view"
     data-qa-selector="detailed_metric_content"
   >
-    <gl-button v-gl-modal="modalId" class="gl-mr-2" type="button" variant="link">
-      <span
-        class="gl-text-blue-200 gl-font-weight-bold"
-        data-testid="performance-bar-details-label"
-      >
+    <gl-button
+      v-gl-tooltip.viewport
+      v-gl-modal="modalId"
+      class="gl-mr-2"
+      :title="header"
+      variant="link"
+    >
+      <span class="gl-font-sm gl-font-weight-semibold" data-testid="performance-bar-details-label">
         {{ metricDetailsLabel }}
       </span>
     </gl-button>
@@ -150,7 +160,7 @@ export default {
           <div v-for="(value, name) in metricDetailsSummary" :key="name" class="gl-pr-8">
             <div v-if="value" data-testid="performance-bar-summary-item">
               <div>{{ name }}</div>
-              <div class="gl-font-size-h1 gl-font-weight-bold">{{ value }}</div>
+              <div class="gl-font-size-h1 gl-font-weight-semibold">{{ value }}</div>
             </div>
           </div>
         </div>
@@ -178,7 +188,7 @@ export default {
                   v-for="(key, keyIndex) in keys"
                   :key="key"
                   class="text-break-word"
-                  :class="{ 'mb-3 bold': keyIndex == 0 }"
+                  :class="{ 'mb-3 gl-font-weight-semibold': keyIndex == 0 }"
                 >
                   {{ item[key] }}
                   <gl-button
@@ -214,7 +224,7 @@ export default {
         <div></div>
       </template>
     </gl-modal>
-    {{ actualTitle }}
+    <span class="gl-opacity-7">{{ actualTitle }}</span>
     <request-warning :html-id="htmlId" :warnings="warnings" />
   </div>
 </template>

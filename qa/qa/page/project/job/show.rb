@@ -72,8 +72,11 @@ module QA
             has_element?('artifacts-locked-message-content')
           end
 
-          def has_unlocked_artifact?
-            has_element?('artifacts-unlocked-message-content')
+          # Artifact unlock is async and depends on queue size on target env
+          def has_unlocked_artifact?(wait: 120)
+            wait_until(reload: true, max_duration: wait, sleep_interval: 1) do
+              has_element?('artifacts-unlocked-message-content')
+            end
           end
 
           def go_to_pipeline

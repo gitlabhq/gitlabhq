@@ -78,7 +78,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
                 tabindex="-1"
               >
                 <span
-                  class="gl-bg-gray-50! gl-new-dropdown-item-content"
+                  class="gl-new-dropdown-item-content"
                 >
                   <svg
                     aria-hidden="true"

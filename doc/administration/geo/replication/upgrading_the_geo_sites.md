@@ -11,6 +11,8 @@ WARNING:
 Read these sections carefully before updating your Geo sites. Not following
 version-specific upgrade steps may result in unexpected downtime. If you have
 any specific questions, [contact Support](https://about.gitlab.com/support/#contact-support).
+A database major version upgrade requires [re-initializing the PostgreSQL replication](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+to Geo secondaries. This may result in a larger than expected downtime.
 
 Upgrading Geo sites involves performing:
 

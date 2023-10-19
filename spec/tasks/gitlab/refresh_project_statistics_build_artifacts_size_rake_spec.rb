@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task', :silence_stdout, feature_category: :build_artifacts do
   let(:rake_task) { 'gitlab:refresh_project_statistics_build_artifacts_size' }

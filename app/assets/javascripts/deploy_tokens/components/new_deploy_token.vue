@@ -283,7 +283,7 @@ export default {
           </template>
         </gl-sprintf>
       </template>
-      <gl-form-input id="deploy_token_username" v-model="username" class="gl-form-input-xl" />
+      <gl-form-input id="deploy_token_username" v-model="username" width="xl" />
     </gl-form-group>
     <gl-form-group
       :label="$options.translations.addTokenScopesLabel"

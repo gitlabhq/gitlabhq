@@ -153,7 +153,6 @@ module Gitlab
         end
 
         def run_analyze_on_partitioned_table
-          return if Feature.disabled?(:database_analyze_on_partitioned_tables)
           return if ineligible_for_analyzing?
 
           primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do

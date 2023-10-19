@@ -36,7 +36,7 @@ module Banzai
       # Rubular: http://rubular.com/r/nrL3r9yUiq
       # Note that it's not possible to use Gitlab::UntrustedRegexp for LINK_PATTERN,
       # as `(?<!` is unsupported in `re2`, see https://github.com/google/re2/wiki/Syntax
-      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}.freeze
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}
 
       ENTITY_UNTRUSTED = '((?:&[\w#]+;)+)\z'
       ENTITY_UNTRUSTED_REGEX = Gitlab::UntrustedRegexp.new(ENTITY_UNTRUSTED, multiline: false)

@@ -139,9 +139,7 @@ RSpec.describe 'sentry errors requests', feature_category: :error_tracking do
 
     context 'when reactive cache returns data' do
       before do
-        stub_setting_for(:list_sentry_issues,
-                         issues: [sentry_error],
-                         pagination: pagination)
+        stub_setting_for(:list_sentry_issues, issues: [sentry_error], pagination: pagination)
 
         post_graphql(query, current_user: current_user)
       end

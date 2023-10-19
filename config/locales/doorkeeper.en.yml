@@ -114,6 +114,41 @@ en:
         Grants create access to the runners.
       k8s_proxy:
         Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+    group_access_token_scope_desc:
+      api:
+        Grants complete read and write access to the scoped group and related project API, including the Package Registry.
+      read_api:
+        Grants read access to the scoped group and related project API, including the Package Registry.
+      read_user:
+        Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.
+      read_repository:
+        Grants read access (pull) to all repositories within a group.
+      write_repository:
+        Grants read and write access (pull and push) to all repositories within a group.
+      read_registry:
+        Grants read access (pull) to the Container Registry images if any project within a group is private and authorization is required.
+      write_registry:
+        Grants write access (push) to the Container Registry.
+      read_observability:
+        Grants read-only access to GitLab Observability.
+      write_observability:
+        Grants write access to GitLab Observability.
+      ai_features:
+        Grants permission to perform API actions for GitLab Duo.
+      openid:
+        Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
+      sudo:
+        Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
+      profile:
+        Grants read-only access to the user's profile data using OpenID Connect.
+      email:
+        Grants read-only access to the user's primary email address using OpenID Connect.
+      admin_mode:
+        Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
+      create_runner:
+        Grants permission to create runners in a group.
+      k8s_proxy:
+        Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.
     project_access_token_scope_desc:
       api:
         Grants complete read and write access to the scoped project API, including the Package Registry.
@@ -127,10 +162,16 @@ en:
         Grants read access (pull) to the Container Registry images if a project is private and authorization is required.
       write_registry:
         Grants write access (push) to the Container Registry.
+      read_observability:
+        Grants read-only access to GitLab Observability.
+      write_observability:
+        Grants write access to GitLab Observability.
       create_runner:
         Grants create access to the runners.
       k8s_proxy:
         Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+      ai_features:
+        Grants access to GitLab Duo related API endpoints.
     flash:
       applications:
         create:

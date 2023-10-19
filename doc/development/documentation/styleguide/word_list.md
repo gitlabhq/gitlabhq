@@ -1,6 +1,6 @@
 ---
 stage: none
-group: Style Guide
+group: Documentation Guidelines
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
@@ -207,6 +207,14 @@ Instead, use **assign**. For example:
 ## authenticated user
 
 Use **authenticated user** instead of other variations, like **signed in user** or **logged in user**.
+
+## before you begin
+
+Use **before you begin** when documenting the tasks that must be completed or the conditions that must be met before a user can complete a tutorial. Do not use **requirements** or **prerequisites**.
+
+For more information, see [the tutorial page type](../topic_types/tutorial.md).
+
+For task topic types, use [**prerequisites**](#prerequisites) instead.
 
 ## below
 
@@ -666,6 +674,10 @@ Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trad
 
 ## GitLab Dedicated
 
+Use **GitLab Dedicated** to refer to the product offering. It refers to a GitLab instance that's hosted and managed by GitLab for customers.
+
+GitLab Dedicated can be referred to as a single-tenant SaaS service.
+
 Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
 
 ## GitLab Duo
@@ -732,16 +744,16 @@ See also:
 
 ## GitLab SaaS
 
-**GitLab SaaS** refers to the product license that provides access to GitLab.com. It does not refer to the
-GitLab instance managed by GitLab itself.
+Use **GitLab SaaS** to refer to the product offering.
+It does not refer to the GitLab instance, which is [GitLab.com](#gitlabcom).
 
 ## GitLab self-managed
 
-Use **GitLab self-managed** to refer to the product license for GitLab instances managed by customers themselves.
+Use **GitLab self-managed** to refer to the product offering. It refers to a GitLab instance managed by customers themselves.
 
 ## GitLab.com
 
-**GitLab.com** refers to the GitLab instance managed by GitLab itself.
+Use **GitLab.com** to refer to the URL. GitLab.com is the instance that's managed by GitLab.
 
 ## guide
 
@@ -1124,6 +1136,16 @@ Instead of:
 
 - Note that you can change the settings.
 
+## offerings
+
+The current product offerings are:
+
+- [GitLab SaaS](#gitlab-saas)
+- [GitLab self-managed](#gitlab-self-managed)
+- [GitLab Dedicated](#gitlab-dedicated)
+
+The [tier badges](index.md#available-product-tier-badges) reflect these offerings.
+
 ## older
 
 Do not use **older** when talking about version numbers.
@@ -1253,9 +1275,11 @@ in the context of other subscription tiers, follow [the subscription tier](#subs
 
 ## prerequisites
 
-Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+Use **prerequisites** when documenting the tasks that must be completed or the conditions that must be met before a user can complete a task. Do not use **requirements**.
 
 For more information, see [the task topic type](../topic_types/task.md).
+
+For tutorial page types, use [**before you begin**](#before-you-begin) instead.
 
 ## press
 
@@ -1321,9 +1345,12 @@ Use title case for **Repository Mirroring**.
 
 ## requirements
 
-Use **prerequisites** when documenting the steps before a task. Do not use **requirements**.
+When documenting the tasks that must be completed or the conditions that must be met before a user can complete the steps:
 
-For more information, see [the task topic type](../topic_types/task.md).
+- Use **prerequisites** for tasks. For more information, see [the task topic type](../topic_types/task.md).
+- Use **before you begin** for tutorials. For more information, see [the tutorial page type](../topic_types/tutorial.md).
+
+Do not use **requirements**.
 
 ## respectively
 

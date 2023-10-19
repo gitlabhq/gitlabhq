@@ -206,18 +206,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect { parent.update!(name: 'Foo') }.not_to raise_error
         end
       end
-
-      context 'when restrict_special_characters_in_namespace_path feature flag is disabled' do
-        before do
-          stub_feature_flags(restrict_special_characters_in_namespace_path: false)
-        end
-
-        it 'allows special character at the start or end of project namespace path' do
-          namespace = build(:namespace, type: project_sti_name, parent: parent, path: '_path_')
-
-          expect(namespace).to be_valid
-        end
-      end
     end
 
     describe '1 char path length' do
@@ -673,23 +661,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   context 'traversal scopes' do
-    context 'recursive' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it_behaves_like 'namespace traversal scopes'
-    end
-
-    context 'linear' do
-      it_behaves_like 'namespace traversal scopes'
-    end
-
-    shared_examples 'makes recursive queries' do
-      specify do
-        expect { subject }.to make_queries_matching(/WITH RECURSIVE/)
-      end
-    end
+    it_behaves_like 'namespace traversal scopes'
 
     shared_examples 'does not make recursive queries' do
       specify do
@@ -703,14 +675,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       subject { described_class.where(id: namespace).self_and_descendants.load }
 
       it_behaves_like 'does not make recursive queries'
-
-      context 'when feature flag :use_traversal_ids is disabled' do
-        before do
-          stub_feature_flags(use_traversal_ids: false)
-        end
-
-        it_behaves_like 'makes recursive queries'
-      end
     end
 
     describe '.self_and_descendant_ids' do
@@ -719,14 +683,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       subject { described_class.where(id: namespace).self_and_descendant_ids.load }
 
       it_behaves_like 'does not make recursive queries'
-
-      context 'when feature flag :use_traversal_ids is disabled' do
-        before do
-          stub_feature_flags(use_traversal_ids: false)
-        end
-
-        it_behaves_like 'makes recursive queries'
-      end
     end
   end
 
@@ -845,6 +801,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '#human_name' do
     it { expect(namespace.human_name).to eq(namespace.owner_name) }
+
+    context 'when the owner is missing' do
+      before do
+        namespace.update_column(:owner_id, non_existing_record_id)
+      end
+
+      it { expect(namespace.human_name).to eq(namespace.path) }
+    end
   end
 
   describe '#any_project_has_container_registry_tags?' do
@@ -1207,70 +1171,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#move_dir', :request_store do
-    context 'hashed storage' do
-      let_it_be(:namespace) { create(:namespace) }
-      let_it_be(:project) { create(:project_empty_repo, namespace: namespace) }
-
-      context 'when any project has container images' do
-        let(:container_repository) { create(:container_repository) }
-
-        before do
-          stub_container_registry_config(enabled: true)
-          stub_container_registry_tags(repository: :any, tags: ['tag'])
-
-          create(:project, namespace: namespace, container_repositories: [container_repository])
-
-          allow(namespace).to receive(:path_was).and_return(namespace.path)
-          allow(namespace).to receive(:path).and_return('new_path')
-          allow(namespace).to receive(:first_project_with_container_registry_tags).and_return(project)
-        end
-
-        it 'raises an error about not movable project' do
-          expect { namespace.move_dir }.to raise_error(
-            Gitlab::UpdatePathError, /Namespace .* cannot be moved/
-          )
-        end
-      end
-
-      it "repository directory remains unchanged if path changed" do
-        before_disk_path = project.disk_path
-        namespace.update!(path: namespace.full_path + '_new')
-
-        expect(before_disk_path).to eq(project.disk_path)
-        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
-      end
-    end
-
-    context 'for each project inside the namespace' do
-      let!(:parent) { create(:group, name: 'mygroup', path: 'mygroup') }
-      let!(:subgroup) { create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent) }
-      let!(:project_in_parent_group) { create(:project, :legacy_storage, :repository, namespace: parent, name: 'foo1') }
-      let!(:hashed_project_in_subgroup) { create(:project, :repository, namespace: subgroup, name: 'foo2') }
-      let!(:legacy_project_in_subgroup) { create(:project, :legacy_storage, :repository, namespace: subgroup, name: 'foo3') }
-
-      it 'updates project full path in .git/config' do
-        parent.update!(path: 'mygroup_new')
-
-        expect(project_in_parent_group.reload.repository.full_path).to eq "mygroup_new/#{project_in_parent_group.path}"
-        expect(hashed_project_in_subgroup.reload.repository.full_path).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
-        expect(legacy_project_in_subgroup.reload.repository.full_path).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
-      end
-
-      it 'updates the project storage location' do
-        repository_project_in_parent_group = project_in_parent_group.project_repository
-        repository_hashed_project_in_subgroup = hashed_project_in_subgroup.project_repository
-        repository_legacy_project_in_subgroup = legacy_project_in_subgroup.project_repository
-
-        parent.update!(path: 'mygroup_moved')
-
-        expect(repository_project_in_parent_group.reload.disk_path).to eq "mygroup_moved/#{project_in_parent_group.path}"
-        expect(repository_hashed_project_in_subgroup.reload.disk_path).to eq hashed_project_in_subgroup.disk_path
-        expect(repository_legacy_project_in_subgroup.reload.disk_path).to eq "mygroup_moved/mysubgroup/#{legacy_project_in_subgroup.path}"
-      end
-    end
-  end
-
   describe '.find_by_path_or_name' do
     before do
       @namespace = create(:namespace, name: 'WoW', path: 'woW')
@@ -1358,30 +1258,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     it { is_expected.to eq false }
-  end
-
-  describe '#use_traversal_ids?' do
-    let_it_be(:namespace, reload: true) { create(:namespace) }
-
-    subject { namespace.use_traversal_ids? }
-
-    context 'when use_traversal_ids feature flag is true' do
-      before do
-        stub_feature_flags(use_traversal_ids: true)
-      end
-
-      it { is_expected.to eq true }
-
-      it_behaves_like 'disabled feature flag when traversal_ids is blank'
-    end
-
-    context 'when use_traversal_ids feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it { is_expected.to eq false }
-    end
   end
 
   describe '#users_with_descendants' do
@@ -1487,28 +1363,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#all_projects' do
-    context 'with use_traversal_ids feature flag enabled' do
-      before do
-        stub_feature_flags(use_traversal_ids: true)
-      end
+    include_examples '#all_projects'
 
-      include_examples '#all_projects'
-
-      # Using #self_and_descendant instead of #self_and_descendant_ids can produce
-      # very slow queries.
-      it 'calls self_and_descendant_ids' do
-        namespace = create(:group)
-        expect(namespace).to receive(:self_and_descendant_ids)
-        namespace.all_projects
-      end
-    end
-
-    context 'with use_traversal_ids feature flag disabled' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      include_examples '#all_projects'
+    # Using #self_and_descendant instead of #self_and_descendant_ids can produce
+    # very slow queries.
+    it 'calls self_and_descendant_ids' do
+      namespace = create(:group)
+      expect(namespace).to receive(:self_and_descendant_ids)
+      namespace.all_projects
     end
   end
 

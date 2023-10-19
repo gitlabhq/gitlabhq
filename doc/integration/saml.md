@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -407,9 +407,6 @@ You can configure GitLab to use multiple SAML IdPs if:
 - The `assertion_consumer_service_url` matches the provider name.
 - The `strategy_class` is explicitly set because it cannot be inferred from provider
   name.
-
-NOTE:
-[SAML group memberships](#configure-users-based-on-saml-group-membership) and [Group Sync](../user/group/saml_sso/group_sync.md) do not support multiple IdPs. For more information, see [issue 386605](https://gitlab.com/gitlab-org/gitlab/-/issues/386605). This also includes `required_groups`, as mentioned in [issue 391926](https://gitlab.com/gitlab-org/gitlab/-/issues/391926).
 
 To set up multiple SAML IdPs:
 
@@ -3092,7 +3089,7 @@ To configure group SAML SSO:
 ::EndTabs
 
 As a multi-tenant solution, group SAML on a self-managed instance is limited compared
-to the recommended [instance-wide SAML](../user/group/saml_sso/index.md). Use
+to the recommended [instance-wide SAML](../integration/saml.md). Use
 instance-wide SAML to take advantage of:
 
 - [LDAP compatibility](../administration/auth/ldap/index.md).

@@ -69,7 +69,6 @@ Style/SymbolProc:
     - 'ee/app/helpers/ee/mirror_helper.rb'
     - 'ee/app/helpers/ee/registrations_helper.rb'
     - 'ee/app/models/concerns/epic_tree_sorting.rb'
-    - 'ee/app/models/ee/integrations/jira.rb'
     - 'ee/app/models/ee/issue.rb'
     - 'ee/app/serializers/ee/fork_namespace_entity.rb'
     - 'ee/app/serializers/ee/group_child_entity.rb'

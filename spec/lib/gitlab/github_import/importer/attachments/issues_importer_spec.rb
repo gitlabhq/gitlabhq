@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Attachments::IssuesImporter do
+RSpec.describe Gitlab::GithubImport::Importer::Attachments::IssuesImporter, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project) }
@@ -17,6 +17,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::IssuesImporter do
     let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
 
     it 'imports each project issue attachments' do
+      expect(project.issues).to receive(:id_not_in).with([]).and_return(project.issues)
       expect(project.issues).to receive(:select).with(:id, :description, :iid).and_call_original
 
       expect_next_instances_of(
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::IssuesImporter do
       it "doesn't import this issue attachments" do
         importer.mark_as_imported(issue_1)
 
+        expect(project.issues).to receive(:id_not_in).with([issue_1.id.to_s]).and_call_original
         expect_next_instance_of(
           Gitlab::GithubImport::Importer::NoteAttachmentsImporter, *importer_attrs
         ) do |note_attachments_importer|

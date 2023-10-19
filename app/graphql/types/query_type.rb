@@ -109,7 +109,7 @@ module Types
           null: true,
           resolver: Resolvers::ProjectResolver,
           description: "Find a project."
-    field :projects, Types::ProjectType.connection_type,
+    field :projects,
           null: true,
           resolver: Resolvers::ProjectsResolver,
           description: "Find projects visible to the current user."
@@ -154,7 +154,7 @@ module Types
           null: true,
           resolver: Resolvers::TopicsResolver,
           description: "Find project topics."
-    field :usage_trends_measurements, Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,
+    field :usage_trends_measurements,
           null: true,
           description: 'Get statistics on the instance.',
           resolver: Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver

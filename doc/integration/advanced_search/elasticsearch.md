@@ -788,11 +788,11 @@ Make sure to prepare for this task by having a
 1. [Select the **Elasticsearch indexing** checkbox](#enable-advanced-search).
 1. Indexing large Git repositories can take a while. To speed up the process, you can [tune for indexing speed](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html#tune-for-indexing-speed):
 
-   - You can temporarily disable [`refresh`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html), the operation responsible for making changes to an index available to search.
+   - You can temporarily increase [`refresh_interval`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html).
 
    - You can set the number of replicas to 0. This setting controls the number of copies each primary shard of an index has. Thus, having 0 replicas effectively disables the replication of shards across nodes, which should increase the indexing performance. This is an important trade-off in terms of reliability and query performance. It is important to remember to set the replicas to a considered value after the initial indexing is complete.
 
-   In our experience, you can expect a 20% decrease in indexing time. After completing indexing in a later step, you can return `refresh` and `number_of_replicas` to their desired settings.
+   You can expect a 20% decrease in indexing time. After the indexing is complete, you can set `refresh_interval` and `number_of_replicas` back to their desired values.
 
    NOTE:
    This step is optional but may help significantly speed up large indexing operations.
@@ -801,7 +801,7 @@ Make sure to prepare for this task by having a
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
         --data '{
           "index" : {
-              "refresh_interval" : "-1",
+              "refresh_interval" : "30s",
               "number_of_replicas" : 0
           } }'
    ```
@@ -869,7 +869,7 @@ Make sure to prepare for this task by having a
    bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
    ```
 
-1. Enable replication and refreshing again after indexing (only if you previously disabled it):
+1. Enable replication and refreshing again after indexing (only if you previously increased `refresh_interval`):
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \

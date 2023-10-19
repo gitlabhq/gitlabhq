@@ -192,7 +192,7 @@ class Import::GithubController < Import::BaseController
 
   def client_proxy
     @client_proxy ||= Gitlab::GithubImport::Clients::Proxy.new(
-      session[access_token_key], client_options
+      session[access_token_key]
     )
   end
 
@@ -264,10 +264,6 @@ class Import::GithubController < Import::BaseController
     current_user.identities.exists?(provider: provider_name)
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def client_options
-    { wait_for_rate_limit_reset: false }
-  end
 
   def rate_limit_threshold_exceeded
     head :too_many_requests

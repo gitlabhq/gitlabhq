@@ -74,10 +74,10 @@ module Gitlab
         end
 
         def edit_description(original_description)
-          @original_description = original_description
-          return unless original_description
+          @original_description = original_description&.strip
+          return unless @original_description
 
-          original_description + description_suffix
+          @original_description + description_suffix
         end
 
         def original_description

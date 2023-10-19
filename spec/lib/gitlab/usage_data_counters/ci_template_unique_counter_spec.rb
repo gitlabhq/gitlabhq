@@ -17,24 +17,24 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter, feature_categ
         described_class.ci_template_event_name(expanded_template_name, config_source)
       end
 
-      it "has an event defined for template" do
+      it 'has an event defined for template' do
         expect do
           subject
         end.not_to raise_error
       end
 
-      it "tracks template" do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(receive(:track_event)).with(template_name, values: project.id)
+      it 'tracks template' do
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+          .to receive(:track_event).with(template_name, values: project.id).once
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+          .to receive(:track_event).with('ci_template_included', values: project.id).once
 
         subject
       end
 
-      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:category) { described_class.to_s }
-        let(:action) { 'ci_templates_unique' }
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'ci_template_included' }
         let(:namespace) { project.namespace }
-        let(:label) { 'redis_hll_counters.ci_templates.ci_templates_total_unique_counts_monthly' }
-        let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: template_name).to_context] }
       end
     end
 

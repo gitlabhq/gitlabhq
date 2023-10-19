@@ -169,3 +169,5 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 |:---|:------|:---------|:-----|
 | [113.1](113.1.md) | Improper Neutralization of CRLF Sequences in HTTP Headers | High | Active |
 | [22.1](22.1.md) | Improper limitation of a pathname to a restricted directory (Path traversal) | High | Active |
+| [611.1](611.1.md) | External XML Entity Injection (XXE) | High | Active |
+| [94.4](94.4.md) | Server-side code injection (NodeJS) | High | Active |

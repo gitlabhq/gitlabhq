@@ -84,6 +84,7 @@ module API
       expose(:feature_flags_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :feature_flags) }
       expose(:infrastructure_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :infrastructure) }
       expose(:monitor_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :monitor) }
+      expose(:model_experiments_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :model_experiments) }
 
       expose(:emails_disabled, documentation: { type: 'boolean' }) { |project, options| project.emails_disabled? }
       expose :emails_enabled, documentation: { type: 'boolean' }
@@ -159,9 +160,6 @@ module API
       }
 
       expose :autoclose_referenced_issues, documentation: { type: 'boolean' }
-      expose :repository_storage, documentation: { type: 'string', example: 'default' }, if: ->(project, options) {
-        Ability.allowed?(options[:current_user], :change_repository_storage, project)
-      }
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_resource(project)

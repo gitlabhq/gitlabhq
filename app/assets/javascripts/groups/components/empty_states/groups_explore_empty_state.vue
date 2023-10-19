@@ -13,5 +13,9 @@ export default {
 </script>
 
 <template>
-  <gl-empty-state :title="$options.i18n.title" :svg-path="groupsEmptyStateIllustration" />
+  <gl-empty-state
+    :title="$options.i18n.title"
+    :svg-path="groupsEmptyStateIllustration"
+    :svg-height="null"
+  />
 </template>

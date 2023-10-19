@@ -355,7 +355,7 @@ export default {
               <span data-testid="action-primary-text" class="gl-font-weight-bold gl-mb-2">{{
                 action.text
               }}</span>
-              <span data-testid="action-secondary-text" class="gl-text-gray-700">
+              <span data-testid="action-secondary-text" class="gl-font-sm gl-text-secondary">
                 {{ action.secondaryText }}
               </span>
             </div>

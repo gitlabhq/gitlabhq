@@ -113,7 +113,7 @@ module Gitlab
           schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(all_tables)
           schemas += ApplicationRecord.gitlab_transactions_stack
 
-          unless ::Gitlab::Database::GitlabSchema.cross_transactions_allowed?(schemas)
+          unless ::Gitlab::Database::GitlabSchema.cross_transactions_allowed?(schemas, all_tables)
             messages = []
             messages << "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
                         "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. "

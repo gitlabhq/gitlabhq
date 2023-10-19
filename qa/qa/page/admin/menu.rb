@@ -9,15 +9,15 @@ module QA
         include Sidebar::Settings
 
         view 'lib/sidebars/admin/menus/admin_overview_menu.rb' do
-          element :admin_overview_submenu_content
+          element 'admin-overview-submenu-content'
         end
 
         view 'lib/sidebars/admin/menus/analytics_menu.rb' do
-          element :admin_sidebar_analytics_submenu_content
+          element 'admin-sidebar-analytics-submenu-content'
         end
 
         view 'lib/sidebars/admin/menus/monitoring_menu.rb' do
-          element :admin_monitoring_menu_link
+          element 'admin-monitoring-menu-link'
         end
 
         def go_to_applications

@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class ProjectEntitiesPipeline
         include Pipeline
+        include HexdigestCacheStrategy
 
         extractor Common::Extractors::GraphqlExtractor, query: Graphql::GetProjectsQuery
         transformer Common::Transformers::ProhibitedAttributesTransformer

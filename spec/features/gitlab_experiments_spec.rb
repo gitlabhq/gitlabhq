@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Gitlab::Experiment", :js, feature_category: :experimentation_activation do
+RSpec.describe "Gitlab::Experiment", :js, feature_category: :activation do
   # This is part of a set of tests that ensure that tracking remains
   # consistent at the front end layer. Since we don't want to actually
   # introduce an experiment in real code, we're going to simulate it

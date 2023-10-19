@@ -35,6 +35,10 @@ module Gitlab
           { status: status, payload: payload }
         end
 
+        def identifier
+          payload&.fetch(:identifier)&.to_sym
+        end
+
         def failed?
           status == FAILED_STATUS
         end

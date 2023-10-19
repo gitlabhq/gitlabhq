@@ -5,9 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, :private, group: group) }
+  let_it_be(:developer) { create(:user).tap { |u| group.add_developer(u) } }
+  let_it_be(:guest) { create(:user).tap { |u| group.add_guest(u) } }
   let_it_be(:work_item) do
     create(
       :work_item,
@@ -35,6 +36,21 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     graphql_query_for('workItem', { 'id' => global_id }, work_item_fields)
   end
 
+  context 'when project is archived' do
+    before do
+      project.update!(archived: true)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns the correct value in the archived field' do
+      expect(work_item_data).to include(
+        'id' => work_item.to_gid.to_s,
+        'iid' => work_item.iid.to_s,
+        'archived' => true
+      )
+    end
+  end
+
   context 'when the user can read the work item' do
     let(:incoming_email_token) { current_user.incoming_email_token }
     let(:work_item_email) do
@@ -42,10 +58,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     end
 
     before do
-      project.add_developer(developer)
-      project.add_guest(guest)
       stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
-
       post_graphql(query, current_user: current_user)
     end
 
@@ -63,6 +76,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
         'reference' => work_item.to_reference,
         'createNoteEmail' => work_item_email,
+        'archived' => false,
         'userPermissions' => {
           'readWorkItem' => true,
           'updateWorkItem' => true,
@@ -75,6 +89,19 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
+    end
+
+    context 'when work item is created at the group level' do
+      let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
+      let(:global_id) { group_work_item.to_gid.to_s }
+
+      it 'always returns false in the archived field' do
+        expect(work_item_data).to include(
+          'id' => group_work_item.to_gid.to_s,
+          'iid' => group_work_item.iid.to_s,
+          'archived' => false
+        )
+      end
     end
 
     context 'when querying widgets' do
@@ -684,7 +711,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           GRAPHQL
         end
 
-        let_it_be(:note) { create(:note, project: work_item.project, noteable: work_item) }
+        let_it_be(:note) { create(:note, project: work_item.project, noteable: work_item, author: developer) }
 
         before_all do
           create(:award_emoji, awardable: note, name: 'rocket', user: developer)
@@ -717,7 +744,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
 
           expect(notes).to contain_exactly(
-            hash_including('maxAccessLevelOfAuthor' => 'Owner', 'authorIsContributor' => false)
+            hash_including('maxAccessLevelOfAuthor' => 'Developer', 'authorIsContributor' => false)
           )
         end
 
@@ -738,7 +765,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           create(:award_emoji, awardable: note_with_different_user, name: 'star', user: developer)
 
           # TODO: Fix existing N+1 queries in https://gitlab.com/gitlab-org/gitlab/-/issues/414747
-          expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control).with_threshold(3)
+          expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control).with_threshold(4)
           expect_graphql_errors_to_be_empty
         end
       end
@@ -772,7 +799,6 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     let(:current_user) { guest }
 
     before do
-      project.add_guest(guest)
       post_graphql(query, current_user: current_user)
     end
 

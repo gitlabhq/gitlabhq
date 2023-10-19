@@ -13,7 +13,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue title edit actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_TITLE_CHANGED }
+      let(:event) { described_class::ISSUE_TITLE_CHANGED }
 
       subject(:track_event) { described_class.track_issue_title_changed_action(author: user, project: project) }
     end
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue description edit actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_DESCRIPTION_CHANGED }
+      let(:event) { described_class::ISSUE_DESCRIPTION_CHANGED }
 
       subject(:track_event) { described_class.track_issue_description_changed_action(author: user, project: project) }
     end
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue assignee edit actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_ASSIGNEE_CHANGED }
+      let(:event) { described_class::ISSUE_ASSIGNEE_CHANGED }
 
       subject(:track_event) { described_class.track_issue_assignee_changed_action(author: user, project: project) }
     end
@@ -37,7 +37,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue make confidential actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_MADE_CONFIDENTIAL }
+      let(:event) { described_class::ISSUE_MADE_CONFIDENTIAL }
 
       subject(:track_event) { described_class.track_issue_made_confidential_action(author: user, project: project) }
     end
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue make visible actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_MADE_VISIBLE }
+      let(:event) { described_class::ISSUE_MADE_VISIBLE }
 
       subject(:track_event) { described_class.track_issue_made_visible_action(author: user, project: project) }
     end
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue created actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_CREATED }
+      let(:event) { described_class::ISSUE_CREATED }
       let(:project) { nil }
 
       subject(:track_event) { described_class.track_issue_created_action(author: user, namespace: namespace) }
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue closed actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_CLOSED }
+      let(:event) { described_class::ISSUE_CLOSED }
 
       subject(:track_event) { described_class.track_issue_closed_action(author: user, project: project) }
     end
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue reopened actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_REOPENED }
+      let(:event) { described_class::ISSUE_REOPENED }
 
       subject(:track_event) { described_class.track_issue_reopened_action(author: user, project: project) }
     end
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue label changed actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_LABEL_CHANGED }
+      let(:event) { described_class::ISSUE_LABEL_CHANGED }
 
       subject(:track_event) { described_class.track_issue_label_changed_action(author: user, project: project) }
     end
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue label milestone actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_MILESTONE_CHANGED }
+      let(:event) { described_class::ISSUE_MILESTONE_CHANGED }
 
       subject(:track_event) { described_class.track_issue_milestone_changed_action(author: user, project: project) }
     end
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue cross-referenced actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_CROSS_REFERENCED }
+      let(:event) { described_class::ISSUE_CROSS_REFERENCED }
 
       subject(:track_event) { described_class.track_issue_cross_referenced_action(author: user, project: project) }
     end
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue moved actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_MOVED }
+      let(:event) { described_class::ISSUE_MOVED }
 
       subject(:track_event) { described_class.track_issue_moved_action(author: user, project: project) }
     end
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue cloned actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_CLONED }
+      let(:event) { described_class::ISSUE_CLONED }
 
       subject(:track_event) { described_class.track_issue_cloned_action(author: user, project: project) }
     end
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue relate actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_RELATED }
+      let(:event) { described_class::ISSUE_RELATED }
 
       subject(:track_event) { described_class.track_issue_related_action(author: user, project: project) }
     end
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue unrelate actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_UNRELATED }
+      let(:event) { described_class::ISSUE_UNRELATED }
 
       subject(:track_event) { described_class.track_issue_unrelated_action(author: user, project: project) }
     end
@@ -134,7 +134,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue marked as duplicate actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_MARKED_AS_DUPLICATE }
+      let(:event) { described_class::ISSUE_MARKED_AS_DUPLICATE }
 
       subject(:track_event) { described_class.track_issue_marked_as_duplicate_action(author: user, project: project) }
     end
@@ -142,7 +142,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue locked actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_LOCKED }
+      let(:event) { described_class::ISSUE_LOCKED }
 
       subject(:track_event) { described_class.track_issue_locked_action(author: user, project: project) }
     end
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue unlocked actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_UNLOCKED }
+      let(:event) { described_class::ISSUE_UNLOCKED }
 
       subject(:track_event) { described_class.track_issue_unlocked_action(author: user, project: project) }
     end
@@ -158,7 +158,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue designs added actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_DESIGNS_ADDED }
+      let(:event) { described_class::ISSUE_DESIGNS_ADDED }
 
       subject(:track_event) { described_class.track_issue_designs_added_action(author: user, project: project) }
     end
@@ -166,7 +166,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue designs modified actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_DESIGNS_MODIFIED }
+      let(:event) { described_class::ISSUE_DESIGNS_MODIFIED }
 
       subject(:track_event) { described_class.track_issue_designs_modified_action(author: user, project: project) }
     end
@@ -174,7 +174,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue designs removed actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_DESIGNS_REMOVED }
+      let(:event) { described_class::ISSUE_DESIGNS_REMOVED }
 
       subject(:track_event) { described_class.track_issue_designs_removed_action(author: user, project: project) }
     end
@@ -182,7 +182,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue due date changed actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_DUE_DATE_CHANGED }
+      let(:event) { described_class::ISSUE_DUE_DATE_CHANGED }
 
       subject(:track_event) { described_class.track_issue_due_date_changed_action(author: user, project: project) }
     end
@@ -190,7 +190,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue time estimate changed actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_TIME_ESTIMATE_CHANGED }
+      let(:event) { described_class::ISSUE_TIME_ESTIMATE_CHANGED }
 
       subject(:track_event) { described_class.track_issue_time_estimate_changed_action(author: user, project: project) }
     end
@@ -198,7 +198,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue time spent changed actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_TIME_SPENT_CHANGED }
+      let(:event) { described_class::ISSUE_TIME_SPENT_CHANGED }
 
       subject(:track_event) { described_class.track_issue_time_spent_changed_action(author: user, project: project) }
     end
@@ -206,7 +206,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue comment added actions', :snowplow do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_COMMENT_ADDED }
+      let(:event) { described_class::ISSUE_COMMENT_ADDED }
 
       subject(:track_event) { described_class.track_issue_comment_added_action(author: user, project: project) }
     end
@@ -214,7 +214,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue comment edited actions', :snowplow do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_COMMENT_EDITED }
+      let(:event) { described_class::ISSUE_COMMENT_EDITED }
 
       subject(:track_event) { described_class.track_issue_comment_edited_action(author: user, project: project) }
     end
@@ -222,7 +222,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue comment removed actions', :snowplow do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_COMMENT_REMOVED }
+      let(:event) { described_class::ISSUE_COMMENT_REMOVED }
 
       subject(:track_event) { described_class.track_issue_comment_removed_action(author: user, project: project) }
     end
@@ -230,7 +230,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
 
   context 'for Issue design comment removed actions' do
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::ISSUE_DESIGN_COMMENT_REMOVED }
+      let(:event) { described_class::ISSUE_DESIGN_COMMENT_REMOVED }
 
       subject(:track_event) { described_class.track_issue_design_comment_removed_action(author: user, project: project) }
     end

@@ -4,7 +4,11 @@
 
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", :skip_live_env, only: { job: "large-gitlab-import" } do
+  RSpec.describe "Manage", :skip_live_env,
+    only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
+    custom_test_metrics: {
+      tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
+    } do
     describe "Gitlab migration", orchestrated: false, product_group: :import_and_integrate do
       include_context "with gitlab group migration"
 
@@ -14,6 +18,7 @@ module QA
       let!(:gitlab_source_group) { ENV["QA_LARGE_IMPORT_GROUP"] || "gitlab-migration-large-import-test" }
       let!(:gitlab_source_project) { ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
       let!(:import_wait_duration) { { max_duration: (ENV["QA_LARGE_IMPORT_DURATION"] || 3600).to_i, sleep_interval: 30 } }
+      let!(:api_parallel_threads) { ENV['QA_LARGE_IMPORT_API_PARALLEL']&.to_i || Etc.nprocessors }
 
       # test uses production as source which doesn't have actual admin user
       let!(:source_admin_user) { nil }
@@ -50,9 +55,20 @@ module QA
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:source_milestones) { source_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
-      let(:source_pipelines) { source_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
       let(:source_mrs) { fetch_mrs(source_project, source_api_client, transform_urls: true) }
       let(:source_issues) { fetch_issues(source_project, source_api_client, transform_urls: true) }
+      let(:source_pipelines) do
+        source_project
+          .pipelines(auto_paginate: true)
+          .sort_by { |pipeline| pipeline[:created_at] }
+          .map do |pipeline|
+            pp = pipeline.except(:id, :web_url, :project_id)
+            # pending and manual pipelines are imported with status set to canceled
+            next pp unless pp[:status] == "pending" || pp[:status] == "manual"
+
+            pp.merge({ status: "canceled" })
+          end
+      end
 
       # Imported objects
       #
@@ -61,9 +77,14 @@ module QA
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:milestones) { imported_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
-      let(:pipelines) { imported_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
       let(:mrs) { fetch_mrs(imported_project, api_client) }
       let(:issues) { fetch_issues(imported_project, api_client) }
+      let(:pipelines) do
+        imported_project
+          .pipelines(auto_paginate: true)
+          .sort_by { |pipeline| pipeline[:created_at] }
+          .map { |pipeline| pipeline.except(:id, :web_url, :project_id) }
+      end
 
       before do
         QA::Support::Helpers::ImportSource.enable(%w[gitlab_project])
@@ -71,16 +92,35 @@ module QA
 
       # rubocop:disable RSpec/InstanceVariable
       after do |example|
-        next unless defined?(@import_time)
+        unless defined?(@import_time)
+          next save_json(
+            {
+              status: "failed",
+              importer: :gitlab,
+              import_finished: false,
+              import_time: Time.now - @start,
+              source: {
+                name: "GitLab Source",
+                project_name: source_project.path_with_namespace,
+                address: source_gitlab_address
+              },
+              target: {
+                name: "GitLab Target",
+                address: QA::Runtime::Scenario.gitlab_address
+              }
+            }
+          )
+        end
 
         # add additional import time metric
-        example.metadata[:custom_test_metrics] = { fields: { import_time: @import_time } }
+        example.metadata[:custom_test_metrics][:fields] = { import_time: @import_time }
         # save data for comparison notification creation
         save_json(
-          "data",
           {
+            status: example.exception ? "failed" : "passed",
             importer: :gitlab,
             import_time: @import_time,
+            import_finished: true,
             errors: import_failures,
             source: {
               name: "GitLab Source",
@@ -121,10 +161,9 @@ module QA
           }
         )
       end
-      # rubocop:enable RSpec/InstanceVariable
 
       it "migrates large gitlab group via api", testcase: "https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358842" do
-        start = Time.now
+        @start = Time.now
 
         # trigger import and log imported group path
         logger.info("== Importing group '#{gitlab_source_group}' in to '#{imported_group.full_path}' ==")
@@ -136,7 +175,7 @@ module QA
         logger.info("== Waiting for import to be finished ==")
         expect_group_import_finished_successfully
 
-        @import_time = Time.now - start
+        @import_time = Time.now - @start
 
         aggregate_failures do
           verify_repository_import
@@ -147,6 +186,7 @@ module QA
           verify_issues_import
         end
       end
+      # rubocop:enable RSpec/InstanceVariable
 
       # Fetch source project objects for comparison
       #
@@ -194,7 +234,7 @@ module QA
       # @return [void]
       def verify_pipelines_import
         logger.info("== Verifying pipelines import ==")
-        expect(pipelines).to match_array(source_pipelines)
+        expect(pipelines).to eq(source_pipelines)
       end
 
       # Verify imported merge requests and mr issues
@@ -302,7 +342,7 @@ module QA
       def fetch_mrs(project, client, transform_urls: false)
         imported_mrs = project.merge_requests(auto_paginate: true, attempts: 2)
 
-        Parallel.map(imported_mrs, in_threads: 6) do |mr|
+        Parallel.map(imported_mrs, in_threads: api_parallel_threads) do |mr|
           resource = Resource::MergeRequest.init do |resource|
             resource.project = project
             resource.iid = mr[:iid]
@@ -330,7 +370,7 @@ module QA
       def fetch_issues(project, client, transform_urls: false)
         imported_issues = project.issues(auto_paginate: true, attempts: 2)
 
-        Parallel.map(imported_issues, in_threads: 6) do |issue|
+        Parallel.map(imported_issues, in_threads: api_parallel_threads) do |issue|
           resource = build(:issue, project: project, iid: issue[:iid], api_client: client)
 
           [issue[:iid], {
@@ -401,11 +441,10 @@ module QA
 
       # Save json as file
       #
-      # @param [String] name
       # @param [Hash] json
       # @return [void]
-      def save_json(name, json)
-        File.open("tmp/#{name}.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
+      def save_json(json)
+        File.open("tmp/gitlab-import-data.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
       end
     end
   end

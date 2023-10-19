@@ -5,7 +5,6 @@ require "spec_helper"
 RSpec.describe "User comments on issue", :js, feature_category: :team_planning do
   include Features::AutocompleteHelpers
   include Features::NotesHelpers
-  include ContentEditorHelpers
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
@@ -16,7 +15,6 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
     sign_in(user)
 
     visit(project_issue_path(project, issue))
-    close_rich_text_promo_popover_if_present
   end
 
   context "when adding comments" do
@@ -53,6 +51,17 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
       fill_in 'Comment', with: '/l'
 
       expect(find_highlighted_autocomplete_item).to have_content('/label')
+    end
+
+    it "switches back to edit mode if a comment is submitted in preview mode" do
+      fill_in 'Comment', with: 'just a regular comment'
+      click_button 'Preview'
+
+      expect(page).to have_content('Continue editing')
+
+      click_button 'Comment'
+
+      expect(page).not_to have_content('Continue editing')
     end
   end
 

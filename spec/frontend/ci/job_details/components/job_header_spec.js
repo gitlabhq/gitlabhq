@@ -16,7 +16,7 @@ describe('Header CI Component', () => {
       text: 'failed',
       details_path: 'path',
     },
-    name: 'Job build_job',
+    name: 'build_job',
     time: '2017-05-08T14:57:39.781Z',
     user: {
       id: 1234,
@@ -34,17 +34,15 @@ describe('Header CI Component', () => {
   const findUserLink = () => wrapper.findComponent(GlAvatarLink);
   const findSidebarToggleBtn = () => wrapper.findComponent(GlButton);
   const findStatusTooltip = () => wrapper.findComponent(GlTooltip);
-  const findActionButtons = () => wrapper.findByTestId('job-header-action-buttons');
   const findJobName = () => wrapper.findByTestId('job-name');
 
-  const createComponent = (props, slots) => {
+  const createComponent = (props) => {
     wrapper = extendedWrapper(
       shallowMount(JobHeader, {
         propsData: {
           ...defaultProps,
           ...props,
         },
-        ...slots,
       }),
     );
   };
@@ -52,6 +50,10 @@ describe('Header CI Component', () => {
   describe('render', () => {
     beforeEach(() => {
       createComponent();
+    });
+
+    it('renders the correct job name', () => {
+      expect(findJobName().text()).toBe(defaultProps.name);
     });
 
     it('should render status badge', () => {
@@ -64,10 +66,6 @@ describe('Header CI Component', () => {
 
     it('should render sidebar toggle button', () => {
       expect(findSidebarToggleBtn().exists()).toBe(true);
-    });
-
-    it('should not render header action buttons when slot is empty', () => {
-      expect(findActionButtons().exists()).toBe(false);
     });
   });
 
@@ -124,31 +122,12 @@ describe('Header CI Component', () => {
     });
   });
 
-  describe('job name', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('should render the job name', () => {
-      expect(findJobName().text()).toBe('Job build_job');
-    });
-  });
-
-  describe('slot', () => {
-    it('should render header action buttons', () => {
-      createComponent({}, { slots: { default: 'Test Actions' } });
-
-      expect(findActionButtons().exists()).toBe(true);
-      expect(findActionButtons().text()).toBe('Test Actions');
-    });
-  });
-
   describe('shouldRenderTriggeredLabel', () => {
     it('should render created keyword when the shouldRenderTriggeredLabel is false', () => {
       createComponent({ shouldRenderTriggeredLabel: false });
 
-      expect(wrapper.text()).toContain('created');
-      expect(wrapper.text()).not.toContain('started');
+      expect(wrapper.text()).toContain('Created');
+      expect(wrapper.text()).not.toContain('Started');
     });
   });
 });

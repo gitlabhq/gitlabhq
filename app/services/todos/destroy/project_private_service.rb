@@ -7,27 +7,32 @@ module Todos
 
       attr_reader :project
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def initialize(project_id)
-        @project = Project.find_by(id: project_id)
+        @project = Project.find_by_id(project_id)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
+
+      def execute
+        return unless todos_to_remove?
+
+        delete_todos
+      end
 
       private
 
-      override :todos
-      # rubocop: disable CodeReuse/ActiveRecord
-      def todos
-        Todo.where(project_id: project.id)
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
+      def delete_todos
+        authorized_users = ProjectAuthorization.select(:user_id).for_project(project_ids)
 
-      override :project_ids
+        todos.not_in_users(authorized_users).delete_all
+      end
+
+      def todos
+        Todo.for_project(project.id)
+      end
+
       def project_ids
         project.id
       end
 
-      override :todos_to_remove?
       def todos_to_remove?
         project&.private?
       end

@@ -35,6 +35,10 @@ module Integrations
         }
       end
 
+      def attachment_color
+        '#345'
+      end
+
       private
 
       def humanized_action(short: false)
@@ -110,10 +114,6 @@ module Integrations
         else
           ['pushed to', ref_link, "of #{project_link} (#{compare_link})"]
         end
-      end
-
-      def attachment_color
-        '#345'
       end
     end
   end

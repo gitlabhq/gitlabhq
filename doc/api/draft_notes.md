@@ -16,10 +16,10 @@ Gets a list of all draft notes for a single merge request.
 GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
 ```
 
-| Attribute           | Type             | Required   | Description                                                                                                                                         |
-| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)
-| `merge_request_iid` | integer             | yes        | The IID of a project merge request
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `merge_request_iid` | integer           | yes      | The IID of a project merge request |
 
 ```json
 [{
@@ -48,7 +48,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes"
+  --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes"
 ```
 
 ## Get a single draft note
@@ -59,11 +59,11 @@ Returns a single draft note for a given merge request.
 GET /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 ```
 
-| Attribute           | Type             | Required   | Description                                                                                                                                         |
-| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
-| `draft_note_id`     | integer             | yes        | The ID of a draft note.
-| `merge_request_iid` | integer             | yes        | The IID of a project merge request.
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `draft_note_id`     | integer           | yes      | The ID of a draft note. |
+| `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
 
 ```json
 {
@@ -91,7 +91,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
 
 ## Create a draft note
@@ -126,7 +127,8 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
 | `position[y]`                            | float             | no          | For `image` diff notes, Y coordinate. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes?note=note
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes?note=note"
 ```
 
 ## Modify existing draft note
@@ -159,7 +161,8 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 | `position[y]`                            | float             | no          | For `image` diff notes, Y coordinate. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
 
 ## Delete a draft note
@@ -177,7 +180,8 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_i
 | `merge_request_iid` | integer           | yes        | The IID of a project merge request.
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5"
 ```
 
 ## Publish a draft note
@@ -195,7 +199,8 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/p
 | `merge_request_iid` | integer           | yes        | The IID of a project merge request.
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5/publish"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/5/publish"
 ```
 
 ## Publish all pending draft notes
@@ -206,11 +211,12 @@ Bulk publishes all existing draft notes for a given merge request that belong to
 POST /projects/:id/merge_requests/:merge_request_iid/draft_notes/bulk_publish
 ```
 
-| Attribute           | Type              | Required | Description           |
-| ------------------- | ----------------- | -------- | --------------------- |
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
-| `merge_request_iid` | integer           | yes      | The IID of a project merge request.
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/bulk_publish"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/14/merge_requests/11/draft_notes/bulk_publish"
 ```

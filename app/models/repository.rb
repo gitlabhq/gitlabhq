@@ -688,7 +688,7 @@ class Repository
   def head_tree(skip_flat_paths: true)
     return if empty? || root_ref.nil?
 
-    @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths)
+    @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths, ref_type: 'heads')
   end
 
   def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil, rescue_not_found: true)
@@ -1244,7 +1244,14 @@ class Repository
 
   def get_patch_id(old_revision, new_revision)
     raw_repository.get_patch_id(old_revision, new_revision)
-  rescue Gitlab::Git::CommandError
+  rescue Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository => e
+    Gitlab::ErrorTracking.track_exception(
+      e,
+      project_id: project.id,
+      old_revision: old_revision,
+      new_revision: new_revision
+    )
+
     nil
   end
 
@@ -1256,6 +1263,12 @@ class Repository
     source_project = project&.pool_repository&.source_project
 
     Gitlab::Git::ObjectPool.init_from_gitaly(gitaly_object_pool, source_project&.repository)
+  end
+
+  def get_file_attributes(revision, paths, attributes)
+    raw_repository
+      .get_file_attributes(revision, paths, attributes)
+      .map(&:to_h)
   end
 
   private

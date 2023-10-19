@@ -340,3 +340,16 @@ Resolve this by either:
           "Authorization: Bearer $CI_JOB_TOKEN" \
         "${CI_API_V4_URL}/job")
   ```
+
+### Job log output is not formatted as expected or contains unexpected characters
+
+Sometimes the formatting in the job log displays incorrectly with tools that rely
+on the `TERM` environment variable for coloring or formatting. For example, with the `mypy` command:
+
+![Example output](img/incorrect_log_rendering.png)
+
+GitLab Runner runs the container's shell in non-interactive mode, so the shell's `TERM`
+environment variable is set to `dumb`. To fix the formatting for these tools, you can:
+
+- Add an additional script line to set `TERM=ansi` in the shell's environment before running the command.
+- Add a `TERM` [CI/CD variable](../variables/index.md) with a value of `ansi`.

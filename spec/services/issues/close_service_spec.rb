@@ -194,7 +194,7 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       end
     end
 
-    context "closed by a merge request", :sidekiq_might_not_need_inline do
+    context "closed by a merge request" do
       subject(:close_issue) do
         perform_enqueued_jobs do
           described_class.new(container: project, current_user: user).close_issue(issue, closed_via: closing_merge_request)

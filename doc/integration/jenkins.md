@@ -130,7 +130,7 @@ with your Jenkins server URL and authentication information.
    - Merge request
    - Tag push
 1. Enter the **Jenkins server URL**.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/index.md#manage-ssl-verification).
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/index.md#ssl-verification).
 1. Enter the **Project name**.
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure
    the project name is valid, copy it from your browser's address bar while viewing the Jenkins
@@ -197,8 +197,7 @@ which is set to 10 seconds by default.
 
 For this issue, check:
 
-- [Integration webhook logs](../user/project/integrations/index.md#troubleshooting)
-for request failures.
+- The integration webhook logs for request failures.
 - `/var/log/gitlab/gitlab-rails/production.log` for messages like:
 
   ```plaintext

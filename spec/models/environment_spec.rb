@@ -1516,42 +1516,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
   end
 
-  describe '#metrics' do
-    let_it_be(:project) { create(:project, :with_prometheus_integration) }
-
-    subject { environment.metrics }
-
-    context 'when the environment has metrics' do
-      before do
-        allow(environment).to receive(:has_metrics?).and_return(true)
-      end
-
-      it 'returns the metrics from the deployment service' do
-        expect(environment.prometheus_adapter)
-          .to receive(:query).with(:environment, environment)
-          .and_return(:fake_metrics)
-
-        is_expected.to eq(:fake_metrics)
-      end
-
-      context 'and the prometheus client is not present' do
-        before do
-          allow(environment.prometheus_adapter).to receive(:promethus_client).and_return(nil)
-        end
-
-        it { is_expected.to be_nil }
-      end
-    end
-
-    context 'when the environment does not have metrics' do
-      before do
-        allow(environment).to receive(:has_metrics?).and_return(false)
-      end
-
-      it { is_expected.to be_nil }
-    end
-  end
-
   describe '#additional_metrics' do
     let_it_be(:project) { create(:project, :with_prometheus_integration) }
     let(:metric_params) { [] }

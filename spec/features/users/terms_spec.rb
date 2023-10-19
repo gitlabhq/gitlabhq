@@ -157,8 +157,7 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
         it 'allows the user to sign out without a response' do
           visit terms_path
 
-          find('.header-user-dropdown-toggle').click
-          click_link('Sign out')
+          click_button('Decline and sign out')
 
           expect(page).to have_content('Sign in')
           expect(page).to have_content('Register')

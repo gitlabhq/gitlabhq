@@ -81,11 +81,27 @@
   - 1
 - - bitbucket_import_advance_stage
   - 1
+- - bitbucket_import_import_issue
+  - 1
+- - bitbucket_import_import_issue_notes
+  - 1
+- - bitbucket_import_import_lfs_object
+  - 1
 - - bitbucket_import_import_pull_request
+  - 1
+- - bitbucket_import_import_pull_request_notes
   - 1
 - - bitbucket_import_stage_finish_import
   - 1
+- - bitbucket_import_stage_import_issues
+  - 1
+- - bitbucket_import_stage_import_issues_notes
+  - 1
+- - bitbucket_import_stage_import_lfs_objects
+  - 1
 - - bitbucket_import_stage_import_pull_requests
+  - 1
+- - bitbucket_import_stage_import_pull_requests_notes
   - 1
 - - bitbucket_import_stage_import_repository
   - 1
@@ -147,9 +163,11 @@
   - 1
 - - ci_runners_process_runner_version_update
   - 1
+- - ci_unlock_pipelines_in_queue
+  - 1
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
-- - click_house_events_sync
+- - click_house_ci_finished_builds_sync
   - 1
 - - cluster_agent
   - 1
@@ -158,6 +176,8 @@
 - - compliance_management_framework_export_mailer
   - 1
 - - compliance_management_merge_requests_compliance_violations
+  - 1
+- - compliance_management_pending_status_check
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals
   - 1
@@ -257,6 +277,8 @@
   - 1
 - - environments_canary_ingress_update
   - 1
+- - environments_stop_job_failed
+  - 1
 - - environments_stop_job_success
   - 1
 - - epics
@@ -285,8 +307,8 @@
   - 1
 - - gitlab_performance_bar_stats
   - 1
-- - gitlab_shell
-  - 2
+- - gitlab_subscriptions_add_on_purchases_bulk_refresh_user_assignments
+  - 1
 - - gitlab_subscriptions_add_on_purchases_cleanup_user_add_on_assignment
   - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
@@ -312,6 +334,8 @@
 - - groups_create_event
   - 1
 - - groups_enterprise_users_associate
+  - 1
+- - groups_enterprise_users_bulk_associate_by_domain
   - 1
 - - groups_enterprise_users_disassociate
   - 1
@@ -361,6 +385,8 @@
   - 1
 - - issuable_label_links_destroy
   - 1
+- - issuable_related_links_create
+  - 1
 - - issuables_clear_groups_issue_counter
   - 1
 - - issues_close
@@ -383,7 +409,11 @@
   - 1
 - - llm_embedding_gitlab_documentation_set_embeddings_on_the_record
   - 1
+- - llm_namespace_access_cache_reset
+  - 1
 - - llm_tanuki_bot_update
+  - 1
+- - llm_vertex_ai_access_token_refresh
   - 1
 - - mail_scheduler
   - 2
@@ -442,6 +472,8 @@
 - - ml_experiment_tracking_associate_ml_candidate_to_package
   - 1
 - - namespaces_process_sync_events
+  - 1
+- - namespaces_storage_usage_export
   - 1
 - - namespaces_sync_namespace_name
   - 1
@@ -624,6 +656,8 @@
 - - security_refresh_project_policies
   - 1
 - - security_scan_execution_policies_rule_schedule
+  - 1
+- - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
 - - security_scan_result_policies_sync_opened_merge_requests
   - 1

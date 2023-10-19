@@ -1247,6 +1247,124 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       end
     end
 
+    describe 'deployments creation' do
+      let(:config) do
+        <<-YAML
+        stages: [stage-0, stage-1, stage-2, stage-3, stage-4]
+
+        test:
+          stage: stage-0
+          script: exit 0
+
+        review:
+          stage: stage-1
+          environment:
+            name: review
+            action: start
+          script: exit 0
+
+        staging:
+          stage: stage-2
+          environment:
+            name: staging
+            action: start
+          script: exit 0
+          when: manual
+          allow_failure: false
+
+        canary:
+          stage: stage-3
+          environment:
+            name: canary
+            action: start
+          script: exit 0
+          when: manual
+
+        production-a:
+          stage: stage-4
+          environment:
+            name: production-a
+            action: start
+          script: exit 0
+          when: manual
+
+        production-b:
+          stage: stage-4
+          environment:
+            name: production-b
+            action: start
+          script: exit 0
+          when: manual
+          needs: [canary]
+        YAML
+      end
+
+      let(:pipeline) do
+        Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
+      end
+
+      let(:test_job) { all_builds.find_by(name: 'test') }
+      let(:review_deploy_job) { all_builds.find_by(name: 'review') }
+      let(:staging_deploy_job) { all_builds.find_by(name: 'staging') }
+      let(:canary_deploy_job) { all_builds.find_by(name: 'canary') }
+      let(:production_a_deploy_job) { all_builds.find_by(name: 'production-a') }
+      let(:production_b_deploy_job) { all_builds.find_by(name: 'production-b') }
+
+      before do
+        create(:environment, name: 'review', project: project)
+        create(:environment, name: 'staging', project: project)
+        create(:environment, name: 'canary', project: project)
+        create(:environment, name: 'production-a', project: project)
+        create(:environment, name: 'production-b', project: project)
+
+        stub_ci_pipeline_yaml_file(config)
+        pipeline # create the pipeline
+      end
+
+      it 'creates deployment records for the deploy jobs', :aggregate_failures do
+        # processes the 'test' job, not creating a Deployment record
+        expect { process_pipeline }.not_to change { Deployment.count }
+        succeed_pending
+        expect(test_job.status).to eq 'success'
+
+        # processes automatic 'review' deploy job, creating a Deployment record
+        expect { process_pipeline }.to change { Deployment.count }.by(1)
+        succeed_pending
+        expect(review_deploy_job.status).to eq 'success'
+
+        # processes manual 'staging' deploy job, creating a Deployment record
+        # the subsequent manual deploy jobs ('canary', 'production-a', 'production-b')
+        #   are not yet processed because 'staging' is set as `allow_failure: false`
+        expect { process_pipeline }.to change { Deployment.count }.by(1)
+        play_manual_action('staging')
+        succeed_pending
+        expect(staging_deploy_job.reload.status).to eq 'success'
+
+        # processes manual 'canary' deployment job
+        # the subsequent manual deploy jobs ('production-a' and 'production-b')
+        #   are also processed because 'canary' is set by default as `allow_failure: true`
+        #   the 'production-b' is set as `needs: [canary]`, but it is still processed
+        # overall, 3 Deployment records are created
+        expect { process_pipeline }.to change { Deployment.count }.by(3)
+        expect(canary_deploy_job.status).to eq 'manual'
+        expect(production_a_deploy_job.status).to eq 'manual'
+        expect(production_b_deploy_job.status).to eq 'skipped'
+
+        # play and succeed the manual 'canary' and 'production-a' jobs
+        play_manual_action('canary')
+        play_manual_action('production-a')
+        succeed_pending
+        expect(canary_deploy_job.reload.status).to eq 'success'
+        expect(production_a_deploy_job.reload.status).to eq 'success'
+        expect(production_b_deploy_job.reload.status).to eq 'created'
+
+        # process the manual 'production-b' job again, no Deployment record is created
+        #   because it has already been created when 'production-b' was first processed
+        expect { process_pipeline }.not_to change { Deployment.count }
+        expect(production_b_deploy_job.reload.status).to eq 'manual'
+      end
+    end
+
     private
 
     def all_builds

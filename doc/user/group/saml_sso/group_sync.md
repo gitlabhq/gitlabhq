@@ -1,7 +1,7 @@
 ---
 type: reference, howto
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -69,9 +69,11 @@ For example, Azure AD sends the Azure Group Object ID instead of the name. Use t
 ```
 
 Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
-are not accepted as a source of groups. For more information on configuring the
-required attribute name in the SAML identity provider's settings, see
-[example group SAML and SCIM configurations](../../../user/group/saml_sso/example_saml_config.md).
+are not accepted as a source of groups.
+
+For more information on configuring the
+required group attribute name in the SAML identity provider's settings, see
+example configurations for [Azure AD](../../../user/group/saml_sso/example_saml_config.md#group-sync) and [Okta](../../../user/group/saml_sso/example_saml_config.md#group-sync-1).
 
 ## Configure SAML Group Links
 
@@ -135,7 +137,7 @@ To integrate Microsoft Azure AD, you:
 
 <!-- vale gitlab.SentenceSpacing = NO -->
 
-1. In the [Azure Portal](https://portal.azure.com), go to **Azure Active Directory > App registrations > All applications**, and select your GitLab SAML application.
+1. In the [Azure Portal](https://portal.azure.com), go to **Microsoft Entra ID > App registrations > All applications**, and select your GitLab SAML application.
 1. Under **Essentials**, the **Application (client) ID** and **Directory (tenant) ID** values are displayed. Copy these values, because you need them for the GitLab configuration.
 1. In the left navigation, select **Certificates & secrets**.
 1. On the **Client secrets** tab, select **New client secret**.

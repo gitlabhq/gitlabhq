@@ -3,15 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redis_cache, feature_category: :code_review_workflow do
+  let(:checks) { MergeRequest.all_mergeability_checks }
+  let(:execute_all) { false }
+
   subject(:run_checks) { described_class.new(merge_request: merge_request, params: {}) }
 
   describe '#execute' do
-    subject(:execute) { run_checks.execute }
+    subject(:execute) { run_checks.execute(checks, execute_all: execute_all) }
 
     let_it_be(:merge_request) { create(:merge_request) }
 
     let(:params) { {} }
     let(:success_result) { Gitlab::MergeRequests::Mergeability::CheckResult.success }
+
+    shared_examples 'checks are all executed' do
+      context 'when all checks are set to be executed' do
+        let(:execute_all) { true }
+
+        specify do
+          result = execute
+
+          expect(result.success?).to eq(success?)
+          expect(result.payload[:results].count).to eq(expected_count)
+        end
+      end
+    end
 
     context 'when every check is skipped', :eager_load do
       before do
@@ -25,23 +41,62 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
       it 'is still a success' do
         expect(execute.success?).to eq(true)
       end
+
+      it_behaves_like 'checks are all executed' do
+        let(:success?) { true }
+        let(:expected_count) { 0 }
+      end
     end
 
     context 'when a check is skipped' do
-      it 'does not execute the check' do
-        merge_request.mergeability_checks.each do |check|
+      before do
+        checks.each do |check|
           allow_next_instance_of(check) do |service|
             allow(service).to receive(:skip?).and_return(false)
             allow(service).to receive(:execute).and_return(success_result)
           end
         end
 
+        allow_next_instance_of(MergeRequests::Mergeability::CheckCiStatusService) do |service|
+          allow(service).to receive(:skip?).and_return(true)
+        end
+      end
+
+      it 'does not execute the check' do
         expect_next_instance_of(MergeRequests::Mergeability::CheckCiStatusService) do |service|
           expect(service).to receive(:skip?).and_return(true)
           expect(service).not_to receive(:execute)
         end
 
         expect(execute.success?).to eq(true)
+      end
+
+      it_behaves_like 'checks are all executed' do
+        let(:success?) { true }
+        let(:expected_count) { checks.count - 1 }
+      end
+
+      context 'when one check fails' do
+        let(:failed_result) { Gitlab::MergeRequests::Mergeability::CheckResult.failed(payload: { reason: 'failed' }) }
+
+        before do
+          allow_next_instance_of(MergeRequests::Mergeability::CheckOpenStatusService) do |service|
+            allow(service).to receive(:skip?).and_return(false)
+            allow(service).to receive(:execute).and_return(failed_result)
+          end
+        end
+
+        it 'returns the failure reason' do
+          result = execute
+
+          expect(result.success?).to eq(false)
+          expect(execute.payload[:failure_reason]).to eq(:failed)
+        end
+
+        it_behaves_like 'checks are all executed' do
+          let(:success?) { false }
+          let(:expected_count) { checks.count - 1 }
+        end
       end
     end
 
@@ -50,7 +105,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
       let(:merge_check) { instance_double(MergeRequests::Mergeability::CheckCiStatusService) }
 
       before do
-        merge_request.mergeability_checks.each do |check|
+        checks.each do |check|
           allow_next_instance_of(check) do |service|
             allow(service).to receive(:skip?).and_return(true)
           end
@@ -64,11 +119,13 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
       context 'when the check is cacheable' do
         context 'when the check is cached' do
-          it 'returns the cached result' do
+          before do
             expect_next_instance_of(Gitlab::MergeRequests::Mergeability::ResultsStore) do |service|
               expect(service).to receive(:read).with(merge_check: merge_check).and_return(success_result)
             end
+          end
 
+          it 'returns the cached result' do
             expect_next_instance_of(MergeRequests::Mergeability::Logger, merge_request: merge_request) do |logger|
               expect(logger).to receive(:instrument).with(mergeability_name: 'check_ci_status_service').and_call_original
               expect(logger).to receive(:commit)
@@ -76,21 +133,33 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
             expect(execute.success?).to eq(true)
           end
+
+          it_behaves_like 'checks are all executed' do
+            let(:success?) { true }
+            let(:expected_count) { 1 }
+          end
         end
 
         context 'when the check is not cached' do
-          it 'writes and returns the result' do
+          before do
             expect_next_instance_of(Gitlab::MergeRequests::Mergeability::ResultsStore) do |service|
               expect(service).to receive(:read).with(merge_check: merge_check).and_return(nil)
               expect(service).to receive(:write).with(merge_check: merge_check, result_hash: success_result.to_hash).and_return(true)
             end
+          end
 
+          it 'writes and returns the result' do
             expect_next_instance_of(MergeRequests::Mergeability::Logger, merge_request: merge_request) do |logger|
               expect(logger).to receive(:instrument).with(mergeability_name: 'check_ci_status_service').and_call_original
               expect(logger).to receive(:commit)
             end
 
             expect(execute.success?).to eq(true)
+          end
+
+          it_behaves_like 'checks are all executed' do
+            let(:success?) { true }
+            let(:expected_count) { 1 }
           end
         end
       end
@@ -103,78 +172,6 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
           expect(execute.success?).to eq(true)
         end
-      end
-    end
-  end
-
-  describe '#success?' do
-    subject(:success) { run_checks.success? }
-
-    let_it_be(:merge_request) { create(:merge_request) }
-
-    context 'when the execute method has been executed' do
-      before do
-        run_checks.execute
-      end
-
-      context 'when all the checks succeed' do
-        it 'returns true' do
-          expect(success).to eq(true)
-        end
-      end
-
-      context 'when one check fails' do
-        before do
-          allow(merge_request).to receive(:open?).and_return(false)
-          run_checks.execute
-        end
-
-        it 'returns false' do
-          expect(success).to eq(false)
-        end
-      end
-    end
-
-    context 'when execute has not been exectued' do
-      it 'raises an error' do
-        expect { subject }
-          .to raise_error(/Execute needs to be called before/)
-      end
-    end
-  end
-
-  describe '#failure_reason' do
-    subject(:failure_reason) { run_checks.failure_reason }
-
-    let_it_be(:merge_request) { create(:merge_request) }
-
-    context 'when the execute method has been executed' do
-      context 'when all the checks succeed' do
-        before do
-          run_checks.execute
-        end
-
-        it 'returns nil' do
-          expect(failure_reason).to eq(nil)
-        end
-      end
-
-      context 'when one check fails' do
-        before do
-          allow(merge_request).to receive(:open?).and_return(false)
-          run_checks.execute
-        end
-
-        it 'returns the open reason' do
-          expect(failure_reason).to eq(:not_open)
-        end
-      end
-    end
-
-    context 'when execute has not been exectued' do
-      it 'raises an error' do
-        expect { subject }
-          .to raise_error(/Execute needs to be called before/)
       end
     end
   end

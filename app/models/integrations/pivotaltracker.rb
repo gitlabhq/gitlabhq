@@ -65,6 +65,10 @@ module Integrations
       end
     end
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/pivotal-tracker.svg')
+    end
+
     private
 
     def allowed_branch?(ref)

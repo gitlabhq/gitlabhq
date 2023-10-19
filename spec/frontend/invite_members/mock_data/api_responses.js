@@ -6,36 +6,56 @@ const ERROR_EMAIL_INVALID = {
   error: 'email contains an invalid email address',
 };
 
+const BASE_ERROR_MEMBER_NOT_ALLOWED = `The member's email address is not allowed for this project. \
+Go to the &#39;Admin area &gt; Sign-up restrictions&#39;, and check`;
+
+const ALLOWED_DOMAIN_ERROR = `${BASE_ERROR_MEMBER_NOT_ALLOWED} &#39;Allowed domains for sign-ups&#39;.`;
+const DOMAIN_DENYLIST_ERROR = `${BASE_ERROR_MEMBER_NOT_ALLOWED} the &#39;Domain denylist&#39;.`;
+
+function htmlDecode(input) {
+  const doc = new DOMParser().parseFromString(input, 'text/html');
+  return doc.documentElement.textContent;
+}
+
+const DECODED_ALLOWED_DOMAIN_ERROR = htmlDecode(ALLOWED_DOMAIN_ERROR);
+const DECODED_DOMAIN_DENYLIST_ERROR = htmlDecode(DOMAIN_DENYLIST_ERROR);
+
 const EMAIL_RESTRICTED = {
   message: {
-    'email@example.com':
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
+    'email@example.com': ALLOWED_DOMAIN_ERROR,
+  },
+  parsedMessage: {
+    'email@example.com': DECODED_ALLOWED_DOMAIN_ERROR,
   },
   status: 'error',
 };
 
 const MULTIPLE_RESTRICTED = {
   message: {
-    'email@example.com':
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
-    'email4@example.com':
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check the Domain denylist.",
-    root:
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
+    'email@example.com': ALLOWED_DOMAIN_ERROR,
+    'email4@example.com': DOMAIN_DENYLIST_ERROR,
+    root: ALLOWED_DOMAIN_ERROR,
+  },
+  parsedMessage: {
+    'email@example.com': DECODED_ALLOWED_DOMAIN_ERROR,
+    'email4@example.com': DECODED_DOMAIN_DENYLIST_ERROR,
+    root: DECODED_ALLOWED_DOMAIN_ERROR,
   },
   status: 'error',
 };
 
 const EXPANDED_RESTRICTED = {
   message: {
-    'email@example.com':
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
-    'email4@example.com':
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check the Domain denylist.",
-    'email5@example.com':
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check the Domain denylist.",
-    root:
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
+    'email@example.com': ALLOWED_DOMAIN_ERROR,
+    'email4@example.com': DOMAIN_DENYLIST_ERROR,
+    'email5@example.com': DOMAIN_DENYLIST_ERROR,
+    root: ALLOWED_DOMAIN_ERROR,
+  },
+  parsedMessage: {
+    'email@example.com': DECODED_ALLOWED_DOMAIN_ERROR,
+    'email4@example.com': DECODED_DOMAIN_DENYLIST_ERROR,
+    'email5@example.com': DECODED_DOMAIN_DENYLIST_ERROR,
+    root: DECODED_ALLOWED_DOMAIN_ERROR,
   },
   status: 'error',
 };

@@ -1,6 +1,7 @@
 import { ZERO_CHANGES_ALT_DISPLAY } from '../constants';
 
 const endpointRE = /^(\/?(.+\/)+(.+)\/-\/merge_requests\/(\d+)).*$/i;
+const SHA1RE = /([a-f0-9]{40})/g;
 
 function getVersionInfo({ endpoint } = {}) {
   const dummyRoot = 'https://gitlab.com';
@@ -50,4 +51,10 @@ export function getDerivedMergeRequestInformation({ endpoint } = {}) {
     diffId,
     startSha,
   };
+}
+
+export function extractFileHash({ input = '' } = {}) {
+  const matches = input.match(SHA1RE);
+
+  return matches?.[0];
 }

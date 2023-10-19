@@ -14,8 +14,10 @@ import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import {
   ACTIONS_I18N,
   NO_ACTION,
+  TRUST_ACTION,
   USER_ACTION_OPTIONS,
   REASON_OPTIONS,
+  TRUST_REASON,
   STATUS_OPEN,
   SUCCESS_ALERT,
   FAILED_ALERT,
@@ -77,6 +79,16 @@ export default {
     userActionOptions() {
       return this.isNotCurrentUser ? USER_ACTION_OPTIONS : [NO_ACTION];
     },
+    reasonOptions() {
+      if (!this.isNotCurrentUser) {
+        return [];
+      }
+
+      if (this.form.user_action === TRUST_ACTION.value) {
+        return [TRUST_REASON];
+      }
+      return REASON_OPTIONS;
+    },
   },
   methods: {
     toggleActionsDrawer() {
@@ -120,7 +132,6 @@ export default {
     },
   },
   i18n: ACTIONS_I18N,
-  reasonOptions: REASON_OPTIONS,
   DRAWER_Z_INDEX,
 };
 </script>
@@ -173,7 +184,7 @@ export default {
               id="reason"
               v-model="form.reason"
               data-testid="reason-select"
-              :options="$options.reasonOptions"
+              :options="reasonOptions"
               :state="validationState.reason"
               @change="validateReason"
             />

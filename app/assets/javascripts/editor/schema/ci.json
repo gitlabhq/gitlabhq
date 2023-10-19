@@ -9,22 +9,27 @@
       "format": "uri"
     },
     "image": {
-      "$ref": "#/definitions/image"
+      "$ref": "#/definitions/image",
+      "markdownDescription": "Defining `image` globally is deprecated. Use [`default`](https://docs.gitlab.com/ee/ci/yaml/#default) instead. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#globally-defined-image-services-cache-before_script-after_script)."
     },
     "services": {
-      "$ref": "#/definitions/services"
+      "$ref": "#/definitions/services",
+      "markdownDescription": "Defining `services` globally is deprecated. Use [`default`](https://docs.gitlab.com/ee/ci/yaml/#default) instead. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#globally-defined-image-services-cache-before_script-after_script)."
     },
     "before_script": {
-      "$ref": "#/definitions/before_script"
+      "$ref": "#/definitions/before_script",
+      "markdownDescription": "Defining `before_script` globally is deprecated. Use [`default`](https://docs.gitlab.com/ee/ci/yaml/#default) instead. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#globally-defined-image-services-cache-before_script-after_script)."
     },
     "after_script": {
-      "$ref": "#/definitions/after_script"
+      "$ref": "#/definitions/after_script",
+      "markdownDescription": "Defining `after_script` globally is deprecated. Use [`default`](https://docs.gitlab.com/ee/ci/yaml/#default) instead. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#globally-defined-image-services-cache-before_script-after_script)."
     },
     "variables": {
       "$ref": "#/definitions/globalVariables"
     },
     "cache": {
-      "$ref": "#/definitions/cache"
+      "$ref": "#/definitions/cache",
+      "markdownDescription": "Defining `cache` globally is deprecated. Use [`default`](https://docs.gitlab.com/ee/ci/yaml/#default) instead. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#globally-defined-image-services-cache-before_script-after_script)."
     },
     "!reference": {
       "$ref": "#/definitions/!reference"
@@ -744,39 +749,61 @@
         }
       }
     },
-    "before_script": {
-      "type": "array",
-      "markdownDescription": "Defines scripts that should run *before* the job. Can be set globally or per job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#before_script).",
-      "items": {
-        "anyOf": [
-          {
-            "type": "string"
+    "script": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
           },
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "minItems": 1
+        }
+      ]
+    },
+    "optional_script": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
           }
-        ]
-      }
+        }
+      ]
+    },
+    "before_script": {
+      "$ref": "#/definitions/optional_script",
+      "markdownDescription": "Defines scripts that should run *before* the job. Can be set globally or per job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#before_script)."
     },
     "after_script": {
-      "type": "array",
-      "markdownDescription": "Defines scripts that should run *after* the job. Can be set globally or per job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#after_script).",
-      "items": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        ]
-      }
+      "$ref": "#/definitions/optional_script",
+      "markdownDescription": "Defines scripts that should run *after* the job. Can be set globally or per job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#after_script)."
     },
     "rules": {
       "type": [
@@ -1508,30 +1535,8 @@
           "$ref": "#/definitions/secrets"
         },
         "script": {
-          "markdownDescription": "Shell scripts executed by the Runner. The only required property of jobs. Be careful with special characters (e.g. `:`, `{`, `}`, `&`) and use single or double quotes to avoid issues. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#script)",
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 1
-            },
-            {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                ]
-              },
-              "minItems": 1
-            }
-          ]
+          "$ref": "#/definitions/script",
+          "markdownDescription": "Shell scripts executed by the Runner. The only required property of jobs. Be careful with special characters (e.g. `:`, `{`, `}`, `&`) and use single or double quotes to avoid issues. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#script)"
         },
         "stage": {
           "description": "Define what stage the job will run in.",
@@ -2145,30 +2150,8 @@
       "markdownDescription": "Specifies lists of commands to execute on the runner at certain stages of job execution. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#hooks).",
       "properties": {
         "pre_get_sources_script": {
-          "markdownDescription": "Specifies a list of commands to execute on the runner before updating the Git repository and any submodules. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).",
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 1
-            },
-            {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                ]
-              },
-              "minItems": 1
-            }
-          ]
+          "$ref": "#/definitions/optional_script",
+          "markdownDescription": "Specifies a list of commands to execute on the runner before updating the Git repository and any submodules. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script)."
         }
       },
       "additionalProperties": false

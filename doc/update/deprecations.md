@@ -637,6 +637,20 @@ settings for the group using either the GitLab UI or GraphQL API.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Offset pagination for `/users` REST API endpoint is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/426547).
+</div>
+
+Offset pagination for the `/users` REST API is deprecated in GitLab 16.5, and will be removed in GitLab 17.0. Use [keyset pagination](https://docs.gitlab.com/ee/api/rest/index.html#keyset-based-pagination) instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Old versions of JSON web tokens are deprecated
 
 <div class="deprecation-notes">
@@ -825,6 +839,20 @@ We will have another update communicated (as well as the deprecation note) when 
 This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
 This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
 Before upgrading to GitLab 17.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Security policy field `newly_detected` is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422414).
+</div>
+
+In [Support additional filters for scan result policies](https://gitlab.com/groups/gitlab-org/-/epics/6826#note_1341377224), we broke the `newly_detected` field into two options: `new_needs_triage` and `new_dismissed`. By including both options in the security policy YAML, you will achieve the same result as the original `newly_detected` field. However, you may now narrow your filter to ignore findings that have been dismissed by only using `new_needs_triage`.
 
 </div>
 
@@ -1037,6 +1065,24 @@ removed in 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### `postgres_exporter['per_table_stats']` configuration setting
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8164).
+</div>
+
+The Linux package provides custom queries for the bundled PostgreSQL exporter, which included a `per_table_stats` query controlled by `postgres_exporter['per_table_stats']`
+configuration setting.
+
+The PostgreSQL exporter now provides a `stat_user_tables` collector that provides the same metrics. If you had `postgres_exporter['per_table_stats']` enabled,
+enable `postgres_exporter['flags']['collector.stat_user_tables']` instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated
 
 <div class="deprecation-notes">
@@ -1092,6 +1138,32 @@ We hope this will simplify infrastructure setup and add several improvements to 
 </div>
 
 Previous work helped [align the vulnerabilities calls for pipeline security tabs](https://gitlab.com/gitlab-org/gitlab/-/issues/343469) to match the vulnerabilities calls for project-level and group-level vulnerability reports. This helped the frontend have a more consistent interface. The old `project.pipeline.securityReportFindings` query was formatted differently than other vulnerability data calls. Now that it has been replaced with the new `project.pipeline.vulnerabilities` field, the old `project.pipeline.securityReportFindings` is being deprecated and will be removed in GitLab 17.0.
+
+</div>
+</div>
+
+<div class="milestone-wrapper" data-milestone="16.8">
+
+## GitLab 16.8
+
+<div class="deprecation " data-milestone="16.8">
+
+### openSUSE Leap 15.4 packages
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">16.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8212).
+</div>
+
+Support and security updates for openSUSE Leap 15.4 is [ending November 2023](https://en.opensuse.org/Lifetime#openSUSE_Leap).
+
+GitLab 15.4 provided packages for openSUSE Leap 15.5. GitLab 15.8 and later will not provide packages for openSUSE Leap 15.4.
+
+To prepare for GitLab 15.8 and later, you should:
+
+1. Move instances from openSUSE Leap 15.4 to openSUSE Leap 15.5.
+1. Switch from the openSUSE Leap 15.4 GitLab-provided packages to the openSUSE Leap 15.5 GitLab-provided packages.
 
 </div>
 </div>
@@ -1285,7 +1357,7 @@ set the `POSTGRES_ENABLED` CI/CD variable to `true`.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/854).
 </div>
 
-The Azure Storage Driver writes to `//` as the default root directory. This default root directory appears in some places within the Azure UI as `/<no-name>/`. We have maintained this legacy behavior to support older deployments using this storage driver. However, when moving to Azure from another storage driver, this behavior hides all your data until you configure the storage driver to build root paths without an extra leading slash by setting `trimlegacyrootprefix: true`.
+The container registry's Azure Storage Driver writes to `//` as the default root directory. This default root directory appears in some places within the Azure UI as `/<no-name>/`. We have maintained this legacy behavior to support older deployments using this storage driver. However, when moving to Azure from another storage driver, this behavior hides all your data until you configure the storage driver to build root paths without an extra leading slash by setting `trimlegacyrootprefix: true`.
 
 The new default configuration for the storage driver will set `trimlegacyrootprefix: true`, and `/` will be the default root directory. You can add `trimlegacyrootprefix: false` to your current configuration to avoid any disruptions.
 
@@ -1750,6 +1822,20 @@ In secondary Geo sites, the button to "Redownload" a project repository is
 deprecated. The redownload logic has inherent data consistency issues which
 are difficult to resolve when encountered. The button will be removed in
 GitLab 16.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
+### GitLab administrators must have permission to modify protected branches or tags
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.0</span>
+- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12776).
+</div>
+
+GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/protected_branches.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
 
 </div>
 
@@ -2377,6 +2463,20 @@ GitLab's operational container scanning capabilities no longer require starboard
 
 </div>
 
+<div class="deprecation " data-milestone="16.0">
+
+### Stop publishing GitLab Runner images based on Windows Server 2004 and 20H2
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.0</span>
+- Removal in GitLab <span class="milestone">16.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/31001).
+</div>
+
+As of GitLab 16.0, GitLab Runner images based on Windows Server 2004 and 20H2 will not be provided as these operating systems are end-of-life.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="16.0">
 
 ### Support for Praefect custom metrics endpoint configuration
@@ -2763,6 +2863,20 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 GitLab self-managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/ee/update/deprecations.html#self-managed-certificate-based-integration-with-kubernetes).
 
 </div>
+
+<div class="deprecation breaking-change" data-milestone="15.9">
+
+### `omniauth-authentiq` gem no longer available
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">15.9</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/389452).
+</div>
+
+`omniauth-authentiq` is an OmniAuth strategy gem that was part of GitLab. The company providing authentication services, Authentiq, has shut down. Therefore the gem is being removed.
+
+</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="15.7">
@@ -2782,6 +2896,20 @@ GitLab self-managed customers can still use the feature [with a feature flag](ht
 Previously, variables that referenced or applied alias file variables expanded the value of the `File` type variable. For example, the file contents. This behavior was incorrect because it did not comply with typical shell variable expansion rules. To leak secrets or sensitive information stored in `File` type variables, a user could run an $echo command with the variable as an input parameter.
 
 This breaking change fixes this issue but could disrupt user workflows that work around the behavior. With this change, job variable expansions that reference or apply alias file variables, expand to the file name or path of the `File` type variable, instead of its value, such as the file contents.
+
+</div>
+
+<div class="deprecation " data-milestone="15.7">
+
+### Flowdock integration
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.7</span>
+- Removal in GitLab <span class="milestone">15.7</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379197).
+</div>
+
+As of December 22, 2022, we are removing the Flowdock integration because the service was shut down on August 15, 2022.
 
 </div>
 </div>
@@ -4316,6 +4444,22 @@ Configuring the `per_repository` Gitaly election strategy is [deprecated](https:
 `per_repository` has been the only option since GitLab 14.0.
 
 This change is part of regular maintenance to keep our codebase clean.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="14.9">
+
+### Integrated error tracking disabled by default
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">14.9</span>
+- Removal in GitLab <span class="milestone">14.9</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/353639).
+</div>
+
+In GitLab 14.4, GitLab released an integrated error tracking backend that replaces Sentry. This feature caused database performance issues. In GitLab 14.9, integrated error tracking is removed from GitLab.com, and turned off by default in GitLab self-managed. While we explore the future development of this feature, please consider switching to the Sentry backend by [changing your error tracking to Sentry in your project settings](https://docs.gitlab.com/ee/operations/error_tracking.html#sentry-error-tracking).
+
+For additional background on this removal, please reference [Disable Integrated Error Tracking by Default](https://gitlab.com/groups/gitlab-org/-/epics/7580). If you have feedback please add a comment to [Feedback: Removal of Integrated Error Tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/355493).
 
 </div>
 </div>

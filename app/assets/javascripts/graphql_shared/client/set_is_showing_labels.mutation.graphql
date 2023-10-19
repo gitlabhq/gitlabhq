@@ -1,0 +1,3 @@
+mutation setIsShowingLabels($isShowingLabels: Boolean!) {
+  setIsShowingLabels(isShowingLabels: $isShowingLabels) @client
+}

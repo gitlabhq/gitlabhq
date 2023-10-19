@@ -15,14 +15,6 @@ module Gitlab
         # this is better than a project being stuck in the "import" state
         # forever.
         sidekiq_options dead: false, retry: 5
-
-        sidekiq_retries_exhausted do |msg, e|
-          Gitlab::Import::ImportFailureService.track(
-            project_id: msg['args'][0],
-            exception: e,
-            fail_import: true
-          )
-        end
       end
     end
   end

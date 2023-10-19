@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::HasWebHook do
+RSpec.describe Integrations::HasWebHook, feature_category: :webhooks do
   let(:integration_class) do
     Class.new(Integration) do
       include Integrations::HasWebHook
@@ -21,7 +21,7 @@ RSpec.describe Integrations::HasWebHook do
   end
 
   context 'when integration responds to enable_ssl_verification' do
-    let(:integration) { build(:drone_ci_integration) }
+    let(:integration) { build(:drone_ci_integration, enable_ssl_verification: true) }
 
     it { expect(integration.hook_ssl_verification).to eq true }
   end

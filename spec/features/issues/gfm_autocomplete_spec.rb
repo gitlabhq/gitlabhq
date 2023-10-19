@@ -3,9 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
-  include CookieHelper
   include Features::AutocompleteHelpers
-  include ContentEditorHelpers
 
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let_it_be(:user2) { create(:user, name: 'Marge Simpson', username: 'msimpson') }
@@ -33,7 +31,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
     before do
       sign_in(user)
       visit new_project_issue_path(project)
-      close_rich_text_promo_popover_if_present
 
       wait_for_requests
     end
@@ -50,9 +47,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
 
     before do
       sign_in(user)
-      set_cookie('new-actions-popover-viewed', 'true')
       visit project_issue_path(project, issue_to_edit)
-      close_rich_text_promo_popover_if_present
 
       wait_for_requests
     end
@@ -88,7 +83,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
     before do
       sign_in(user)
       visit project_issue_path(project, issue)
-      close_rich_text_promo_popover_if_present
 
       wait_for_requests
     end

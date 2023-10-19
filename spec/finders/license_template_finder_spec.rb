@@ -75,7 +75,7 @@ RSpec.describe LicenseTemplateFinder do
 
     context 'template names hash keys' do
       it 'has all the expected keys' do
-        expect(template_names.values.flatten.first.keys).to match_array(%i(id key name project_id))
+        expect(template_names.values.flatten.first.keys).to match_array(%i[id key name project_id])
       end
     end
   end

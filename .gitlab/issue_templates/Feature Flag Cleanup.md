@@ -4,7 +4,7 @@
 
 This issue is to cleanup the `<feature-flag-name>` feature flag, after the feature flag has been enabled by default for an appropriate amount of time in production.
 
-<!-- Short description of what the feature is about and link to relevant other issues. -->
+<!-- Short description of what the feature is about and link to relevant other issues. Ensure to note if the feature will be removed completely or will be productized-->
 
 ## Owners
 
@@ -32,6 +32,7 @@ Are there any other stages or teams involved that need to be kept in the loop?
 ### Cleaning up the feature flag
 
 <!-- The checklist here is to help stakeholders keep track of the feature flag status -->
+- [ ] Specify in the issue description if this feature will be removed completely or will be productized as part of the Feature Flag cleanup 
 - [ ] Create a merge request to remove `<feature-flag-name>` feature flag. Ask for review and merge it.
     - [ ] Remove all references to the feature flag from the codebase.
     - [ ] Remove the YAML definitions for the feature from the repository.
@@ -41,10 +42,7 @@ Are there any other stages or teams involved that need to be kept in the loop?
       the feature can be officially announced in a release blog post.
     - [ ] `/chatops run auto_deploy status <merge-commit-of-cleanup-mr>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
-- [ ] If not already done, clean up the feature flag from all environments by running these chatops command in `#production` channel:
-    - [ ] `/chatops run feature delete <feature-flag-name> --dev`
-    - [ ] `/chatops run feature delete <feature-flag-name> --staging`
-    - [ ] `/chatops run feature delete <feature-flag-name>`
+- [ ] If not already done, clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --staging --staging-ref --production`
 - [ ] Close this rollout issue.
 
 

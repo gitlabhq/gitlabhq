@@ -82,6 +82,18 @@ RSpec.describe BitbucketServer::Representation::PullRequest, feature_category: :
     it { expect(subject.merged?).to be_truthy }
   end
 
+  describe '#closed?' do
+    it { expect(subject.closed?).to be_falsey }
+
+    context 'for declined pull requests' do
+      before do
+        sample_data['state'] = 'DECLINED'
+      end
+
+      it { expect(subject.closed?).to be_truthy }
+    end
+  end
+
   describe '#created_at' do
     it { expect(subject.created_at.to_i).to eq(sample_data['createdDate'] / 1000) }
   end

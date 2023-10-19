@@ -18,8 +18,11 @@ export default {
     DiscussionNotesRepliesWrapper,
     WorkItemNoteReplying,
   },
-  inject: ['fullPath'],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     workItemId: {
       type: String,
       required: true,
@@ -154,6 +157,7 @@ export default {
     :is-first-note="true"
     :note="note"
     :discussion-id="discussionId"
+    :full-path="fullPath"
     :has-replies="hasReplies"
     :work-item-type="workItemType"
     :is-modal="isModal"
@@ -180,6 +184,7 @@ export default {
                   :is-first-note="true"
                   :note="note"
                   :discussion-id="discussionId"
+                  :full-path="fullPath"
                   :has-replies="hasReplies"
                   :work-item-type="workItemType"
                   :is-modal="isModal"
@@ -207,6 +212,7 @@ export default {
                       <work-item-note
                         :key="threadKey(reply)"
                         :discussion-id="discussionId"
+                        :full-path="fullPath"
                         :note="reply"
                         :work-item-type="workItemType"
                         :is-modal="isModal"
@@ -231,6 +237,7 @@ export default {
                       v-if="shouldShowReplyForm"
                       :notes-form="false"
                       :autofocus="autofocus"
+                      :full-path="fullPath"
                       :work-item-id="workItemId"
                       :work-item-iid="workItemIid"
                       :discussion-id="discussionId"

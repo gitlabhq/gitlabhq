@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:container_registry namespace rake tasks', :silence_stdout do
   let(:api_url) { 'http://registry.gitlab' }

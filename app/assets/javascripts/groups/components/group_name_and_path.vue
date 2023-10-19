@@ -294,7 +294,7 @@ export default {
         :name="fields.name.name"
         :placeholder="$options.i18n.inputs.name.placeholder"
         data-testid="group-name-field"
-        :size="$options.inputSize"
+        :width="$options.inputSize"
         :state="nameFeedbackState"
         @invalid="handleInvalidName"
       />
@@ -374,7 +374,7 @@ export default {
             :maxlength="fields.path.maxLength"
             :pattern="fields.path.pattern"
             :state="pathFeedbackState"
-            :size="pathInputSize"
+            :width="pathInputSize"
             required
             data-testid="group-path-field"
             :data-bind-in="mattermostEnabled ? $options.mattermostDataBindName : null"
@@ -397,7 +397,7 @@ export default {
           :id="fields.groupId.id"
           :value="fields.groupId.value"
           :name="fields.groupId.name"
-          size="sm"
+          width="sm"
           readonly
         />
       </gl-form-group>

@@ -5,6 +5,7 @@ module Gitlab
     module Importers
       class PullRequestImporter
         include Loggable
+        include ErrorTracking
 
         def initialize(project, hash)
           @project = project
@@ -48,7 +49,7 @@ module Gitlab
 
           log_info(import_stage: 'import_pull_request', message: 'finished', iid: object[:iid])
         rescue StandardError => e
-          Gitlab::Import::ImportFailureService.track(project_id: project.id, exception: e)
+          track_import_failure!(project, exception: e)
         end
 
         private

@@ -154,8 +154,8 @@ RSpec.describe Ci::PipelinePresenter do
       let(:pipeline) { merge_request.all_pipelines.last }
 
       it 'returns a correct ref text' do
-        is_expected.to eq("Related merge request <a class=\"mr-iid\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
-                          "to merge <a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{project_commits_path(merge_request.source_project, merge_request.source_branch)}\">#{merge_request.source_branch}</a>")
+        is_expected.to eq("Related merge request <a class=\"mr-iid ref-container\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
+                          "to merge <a class=\"ref-container gl-link\" href=\"#{project_commits_path(merge_request.source_project, merge_request.source_branch)}\">#{merge_request.source_branch}</a>")
       end
     end
 
@@ -164,9 +164,9 @@ RSpec.describe Ci::PipelinePresenter do
       let(:pipeline) { merge_request.all_pipelines.last }
 
       it 'returns a correct ref text' do
-        is_expected.to eq("Related merge request <a class=\"mr-iid\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
-                          "to merge <a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{project_commits_path(merge_request.source_project, merge_request.source_branch)}\">#{merge_request.source_branch}</a> " \
-                          "into <a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{project_commits_path(merge_request.target_project, merge_request.target_branch)}\">#{merge_request.target_branch}</a>")
+        is_expected.to eq("Related merge request <a class=\"mr-iid ref-container\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
+                          "to merge <a class=\"ref-container gl-link\" href=\"#{project_commits_path(merge_request.source_project, merge_request.source_branch)}\">#{merge_request.source_branch}</a> " \
+                          "into <a class=\"ref-container gl-link\" href=\"#{project_commits_path(merge_request.target_project, merge_request.target_branch)}\">#{merge_request.target_branch}</a>")
       end
     end
 
@@ -177,7 +177,7 @@ RSpec.describe Ci::PipelinePresenter do
         end
 
         it 'returns a correct ref text' do
-          is_expected.to eq("For <a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{project_commits_path(pipeline.project, pipeline.ref)}\">#{pipeline.ref}</a>")
+          is_expected.to eq("For <a class=\"ref-container gl-link\" href=\"#{project_commits_path(pipeline.project, pipeline.ref)}\">#{pipeline.ref}</a>")
         end
 
         context 'when ref contains malicious script' do
@@ -204,100 +204,6 @@ RSpec.describe Ci::PipelinePresenter do
           it 'does not include the malicious script' do
             is_expected.not_to include("<script>alter('1')</script>")
           end
-        end
-      end
-    end
-  end
-
-  describe '#all_related_merge_requests' do
-    subject(:all_related_merge_requests) do
-      presenter.send(:all_related_merge_requests)
-    end
-
-    it 'memoizes the returned relation' do
-      expect(pipeline).to receive(:all_merge_requests_by_recency).exactly(1).time.and_call_original
-      2.times { presenter.send(:all_related_merge_requests).count }
-    end
-
-    context 'for a branch pipeline with two open MRs' do
-      let!(:one) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
-      let!(:two) { create(:merge_request, source_project: project, source_branch: pipeline.ref, target_branch: 'fix') }
-
-      it { is_expected.to contain_exactly(one, two) }
-    end
-
-    context 'permissions' do
-      let_it_be_with_refind(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
-
-      let(:pipeline) { merge_request.all_pipelines.take }
-
-      shared_examples 'private merge requests' do
-        context 'when not logged in' do
-          let(:current_user) {}
-
-          it { is_expected.to be_empty }
-        end
-
-        context 'when logged in as a non_member' do
-          let(:current_user) { create(:user) }
-
-          it { is_expected.to be_empty }
-        end
-
-        context 'when logged in as a guest' do
-          let(:current_user) { create(:user) }
-
-          before do
-            project.add_guest(current_user)
-          end
-
-          it { is_expected.to be_empty }
-        end
-
-        context 'when logged in as a developer' do
-          it { is_expected.to contain_exactly(merge_request) }
-        end
-
-        context 'when logged in as a maintainer' do
-          let(:current_user) { create(:user) }
-
-          before do
-            project.add_maintainer(current_user)
-          end
-
-          it { is_expected.to contain_exactly(merge_request) }
-        end
-      end
-
-      context 'with a private project' do
-        it_behaves_like 'private merge requests'
-      end
-
-      context 'with a public project with private merge requests' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-
-          project
-            .project_feature
-            .update!(merge_requests_access_level: ProjectFeature::PRIVATE)
-        end
-
-        it_behaves_like 'private merge requests'
-      end
-
-      context 'with a public project with public merge requests' do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-
-          project
-            .project_feature
-            .update!(merge_requests_access_level: ProjectFeature::ENABLED)
-        end
-
-        context 'when not logged in' do
-          let(:current_user) {}
-
-          it { is_expected.to contain_exactly(merge_request) }
         end
       end
     end
@@ -351,6 +257,26 @@ RSpec.describe Ci::PipelinePresenter do
 
     context 'when pipeline is branch pipeline' do
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#triggered_by_path' do
+    subject { presenter.triggered_by_path }
+
+    context 'when the pipeline is a child ' do
+      let(:upstream_pipeline) { create(:ci_pipeline) }
+      let(:pipeline) { create(:ci_pipeline, child_of: upstream_pipeline) }
+      let(:expected_path) { project_pipeline_path(upstream_pipeline.project, upstream_pipeline) }
+
+      it 'returns the pipeline path' do
+        expect(subject).to eq(expected_path)
+      end
+    end
+
+    context 'when the pipeline is not a child ' do
+      it 'returns the pipeline path' do
+        expect(subject).to eq('')
+      end
     end
   end
 end

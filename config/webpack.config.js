@@ -359,7 +359,7 @@ module.exports = {
         use: [],
       },
       {
-        test: /(@cubejs-client\/vue).*\.(js)?$/,
+        test: /(@cubejs-client\/(vue|core)).*\.(js)?$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },
@@ -429,7 +429,7 @@ module.exports = {
         loader: 'graphql-tag/loader',
       },
       {
-        test: /icons\.svg$/,
+        test: /@gitlab\/svgs\/.+\.svg$/,
         loader: 'file-loader',
         options: {
           name: '[name].[contenthash:8].[ext]',
@@ -437,7 +437,7 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        exclude: /icons\.svg$/,
+        exclude: /@gitlab\/svgs\/.+\.svg$/,
         resourceQuery: /url/,
         loader: 'file-loader',
         options: {

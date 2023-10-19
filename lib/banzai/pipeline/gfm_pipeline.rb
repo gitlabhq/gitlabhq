@@ -32,12 +32,11 @@ module Banzai
           Filter::ExternalLinkFilter,
           Filter::SuggestionFilter,
           Filter::FootnoteFilter,
+          Filter::InlineDiffFilter,
           *reference_filters,
           Filter::EmojiFilter,
           Filter::CustomEmojiFilter,
           Filter::TaskListFilter,
-          Filter::InlineDiffFilter,
-          Filter::InlineObservabilityFilter,
           Filter::SetDirectionFilter,
           Filter::SyntaxHighlightFilter # this filter should remain at the end
         ]

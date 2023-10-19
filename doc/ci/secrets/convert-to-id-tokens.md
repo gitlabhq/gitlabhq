@@ -9,18 +9,13 @@ type: tutorial
 
 This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](../secrets/id_token_authentication.md).
 
-The `CI_JOB_JWT` variables are deprecated, but updating to ID tokens requires some important configuration changes to work with Vault. If you have more than a handful of jobs, converting everything at once is a daunting task.
+The `CI_JOB_JWT` variables are deprecated, but updating to ID tokens requires some
+important configuration changes to work with Vault. If you have more than a handful of jobs,
+converting everything at once is a daunting task.
 
-From GitLab 15.9 to 15.11, [enable the automatic ID token authentication](../secrets/id_token_authentication.md#enable-automatic-id-token-authentication-deprecated)
-setting to enable ID Tokens and disable `CI_JOB_JWT` tokens.
-
-In GitLab 16.0 and later you can use ID tokens without any settings changes.
-Jobs that use `secrets:vault` automatically do not have `CI_JOB_JWT` tokens available,
-Jobs that don't use `secrets:vault` can still use `CI_JOB_JWT` tokens.
-
-This tutorial will focus on v16 onwards, if you are running a slightly older version you will need to toggle the `Limit JSON Web Token (JWT) access` setting as appropriate.
-
-There isn't one standard method to migrate to [ID tokens](../secrets/id_token_authentication.md), so this tutorial includes two variations for how to convert your existing CI/CD secrets. Choose the method that is most appropriate for your use case:
+There isn't one standard method to migrate to [ID tokens](../secrets/id_token_authentication.md), so this tutorial
+includes two variations for how to convert your existing CI/CD secrets. Choose the method that is most appropriate for
+your use case:
 
 1. Update your Vault configuration:
    - Method A: Migrate JWT roles to the new Vault auth method
@@ -37,7 +32,7 @@ This tutorial assumes you are familiar with GitLab CI/CD and Vault.
 
 To follow along, you must have:
 
-- An instance running GitLab 15.9 or later, or be on GitLab.com.
+- An instance running GitLab 16.0 or later, or be on GitLab.com.
 - A Vault server that you are already using.
 - CI/CD jobs retrieving secrets from Vault with `CI_JOB_JWT`.
 
@@ -57,7 +52,7 @@ As part of the transition from `CI_JOB_JWT` to ID tokens, you must update the `b
 
 ```shell
 $ vault write auth/jwt/config \
-    jwks_url="https://gitlab.example.com/-/jwks" \
+    oidc_discovery_url="https://gitlab.example.com" \
     bound_issuer="https://gitlab.example.com"
 ```
 
@@ -77,7 +72,7 @@ You can create multiple authentication paths in Vault, which enable you to trans
 
    ```shell
    $ vault write auth/jwt_v2/config \
-       jwks_url="https://gitlab.example.com/-/jwks" \
+       oidc_discovery_url="https://gitlab.example.com" \
        bound_issuer="https://gitlab.example.com"
    ```
 
@@ -175,7 +170,7 @@ After all roles have been updated with the `bound_claims.iss` claims, you can re
 
 ```shell
 $ vault write auth/jwt/config \
-    jwks_url="https://gitlab.example.com/-/jwks" \
+    oidc_discovery_url="https://gitlab.example.com" \
     bound_issuer=""
 ```
 

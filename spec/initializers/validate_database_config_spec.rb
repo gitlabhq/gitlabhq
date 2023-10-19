@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'validate database config' do
-  include RakeHelpers
   include StubENV
 
   let(:rails_configuration) { Rails::Application::Configuration.new(Rails.root) }
@@ -50,9 +49,7 @@ RSpec.describe 'validate database config' do
     end
 
     it 'validates configuration without errors and warnings' do
-      expect(main_object).not_to receive(:warn)
-
-      expect { subject }.not_to raise_error
+      expect { subject }.not_to output.to_stderr
     end
   end
 

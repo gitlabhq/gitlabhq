@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:smtp:secret rake tasks' do
   let(:smtp_secret_file) { 'tmp/tests/smtpenc/smtp_secret.yaml.enc' }

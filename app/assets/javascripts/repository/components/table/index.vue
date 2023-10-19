@@ -118,7 +118,7 @@ export default {
         class="table tree-table"
         :class="{ 'gl-table-layout-fixed': !showParentRow }"
         aria-live="polite"
-        data-qa-selector="file_tree_table"
+        data-testid="file-tree-table"
       >
         <table-header v-once />
         <tbody>

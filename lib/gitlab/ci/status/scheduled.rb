@@ -5,7 +5,7 @@ module Gitlab
     module Status
       class Scheduled < Status::Core
         def text
-          s_('CiStatusText|scheduled')
+          s_('CiStatusText|Scheduled')
         end
 
         def label

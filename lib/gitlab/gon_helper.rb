@@ -7,15 +7,16 @@ module Gitlab
     include WebpackHelper
 
     def add_gon_variables
-      gon.api_version             = 'v4'
-      gon.default_avatar_url      = default_avatar_url
-      gon.max_file_size           = Gitlab::CurrentSettings.max_attachment_size
-      gon.asset_host              = ActionController::Base.asset_host
-      gon.webpack_public_path     = webpack_public_path
-      gon.relative_url_root       = Gitlab.config.gitlab.relative_url_root
-      gon.user_color_scheme       = Gitlab::ColorSchemes.for_user(current_user).css_class
-      gon.markdown_surround_selection = current_user&.markdown_surround_selection
-      gon.markdown_automatic_lists = current_user&.markdown_automatic_lists
+      gon.api_version                   = 'v4'
+      gon.default_avatar_url            = default_avatar_url
+      gon.max_file_size                 = Gitlab::CurrentSettings.max_attachment_size
+      gon.asset_host                    = ActionController::Base.asset_host
+      gon.webpack_public_path           = webpack_public_path
+      gon.relative_url_root             = Gitlab.config.gitlab.relative_url_root
+      gon.user_color_scheme             = Gitlab::ColorSchemes.for_user(current_user).css_class
+      gon.markdown_surround_selection   = current_user&.markdown_surround_selection
+      gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
+      gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
 
       add_browsersdk_tracking
 
@@ -75,10 +76,8 @@ module Gitlab
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:unbatch_graphql_queries, current_user)
-      push_frontend_feature_flag(:server_side_frecent_namespaces, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:gitlab_duo, current_user)
       push_frontend_feature_flag(:custom_emoji)
     end
 
@@ -121,7 +120,9 @@ module Gitlab
     end
 
     def add_browsersdk_tracking
-      return unless Gitlab.com? && Feature.enabled?(:browsersdk_tracking)
+      return unless Gitlab.com? && Feature.enabled?(:browsersdk_tracking) && Feature.enabled?(:gl_analytics_tracking,
+Feature.current_request)
+
       return if ENV['GITLAB_ANALYTICS_URL'].blank? || ENV['GITLAB_ANALYTICS_ID'].blank?
 
       gon.analytics_url = ENV['GITLAB_ANALYTICS_URL']

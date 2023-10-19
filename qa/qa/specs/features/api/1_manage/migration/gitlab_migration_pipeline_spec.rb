@@ -10,7 +10,9 @@ module QA
 
         let(:source_pipelines) do
           source_project.pipelines.map do |pipeline|
-            pipeline.except(:id, :web_url, :project_id)
+            # source project creates pipelines in pending status to not rely on pipeline actually finishing
+            # by default, in the imported project status is converted to canceled
+            pipeline.except(:id, :web_url, :project_id).merge({ status: "canceled" })
           end
         end
 
@@ -21,22 +23,19 @@ module QA
         end
 
         before do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.api_client = source_admin_api_client
-            commit.project = source_project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files(
-              [
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: <<~YML
-                    test-success:
-                      script: echo 'OK'
-                  YML
-                }
-              ]
-            )
-          end
+          create(:commit,
+            api_client: source_admin_api_client,
+            project: source_project,
+            commit_message: 'Add .gitlab-ci.yml', actions: [
+              {
+                action: 'create',
+                file_path: '.gitlab-ci.yml',
+                content: <<~YML
+                  test-success:
+                    script: echo 'OK'
+                YML
+              }
+            ])
 
           Support::Waiter.wait_until(max_duration: 10, sleep_interval: 1) do
             !source_project.pipelines.empty?

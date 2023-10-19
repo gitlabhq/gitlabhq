@@ -66,7 +66,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         wait_for_requests
 
-        expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'passed')
+        expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Passed')
       end
 
       it 'shows commit`s data', :js do
@@ -93,7 +93,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
 
         within '.js-pipeline-info' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} #{pipeline.status} for #{pipeline.ref}")
+          expect(page).to have_content("Pipeline ##{pipeline.id} Pending for #{pipeline.ref}")
         end
       end
 
@@ -306,7 +306,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         artifact_request = requests.find { |req| req.url.include?('artifacts/download') }
 
-        expect(artifact_request.response_headers['Content-Disposition']).to eq(%{attachment; filename="#{job.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}})
+        expect(artifact_request.response_headers['Content-Disposition']).to eq(%(attachment; filename="#{job.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}))
         expect(artifact_request.response_headers['Content-Transfer-Encoding']).to eq("binary")
         expect(artifact_request.response_headers['Content-Type']).to eq("image/gif")
         expect(artifact_request.body).to eq(job.artifacts_file.file.read.b)
@@ -939,7 +939,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
       context 'when available runners can not run specified tag' do
         let(:runner) { create(:ci_runner, :instance, active: false) }
-        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, tag_list: %w(docker linux)) }
+        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, tag_list: %w[docker linux]) }
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
           expect(page).to have_selector('[data-testid="job-stuck-with-tags"')
@@ -951,7 +951,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
       context 'when runners are offline and build has tags' do
         let(:runner) { create(:ci_runner, :instance, active: true) }
-        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, tag_list: %w(docker linux)) }
+        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, tag_list: %w[docker linux]) }
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
           expect(page).to have_selector('[data-testid="job-stuck-with-tags"')
@@ -1052,7 +1052,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         find('[data-testid="retry-button-modal"]').click
 
         within '[data-testid="job-header-content"]' do
-          expect(page).to have_content('pending')
+          expect(page).to have_content('Pending')
         end
       end
     end

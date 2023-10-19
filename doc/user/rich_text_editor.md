@@ -12,15 +12,7 @@ type: index, reference
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382636) for [discussions](discussions/index.md), and creating and editing issues and merge requests in GitLab 15.11 with the same flag.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407507) for epics in GitLab 16.1 with the same flag.
 > - Feature flag `content_editor_on_issues` enabled by default in GitLab 16.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator
-can [disable the feature flag](../administration/feature_flags.md) named `content_editor_on_issues`.
-On GitLab.com, this feature is available.
-
-The rich text editor is a "what you see is what you get" (WYSIWYG) editor so you can use
-[GitLab Flavored Markdown](markdown.md) in descriptions and comments, even if you can't remember all
-of its syntax.
+> - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
 
 ![Rich text editor in GitLab](img/rich_text_editor_01_v16_2.png)
 

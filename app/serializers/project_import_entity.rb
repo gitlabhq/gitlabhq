@@ -19,7 +19,7 @@ class ProjectImportEntity < ProjectEntity
 
   # Only for GitHub importer where we pass client through
   expose :relation_type do |project, options|
-    next nil if options[:client].nil? || Feature.disabled?(:remove_legacy_github_client)
+    next nil if options[:client].nil?
 
     ::Gitlab::GithubImport::ProjectRelationType.new(options[:client]).for(project.import_source)
   end

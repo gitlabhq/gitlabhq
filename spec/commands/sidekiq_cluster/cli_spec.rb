@@ -63,11 +63,11 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
                                             .with([['foo'] + described_class::DEFAULT_QUEUES], default_options)
                                             .and_return([])
 
-        cli.run(%w(foo))
+        cli.run(%w[foo])
       end
 
       it 'allows the special * selector' do
-        worker_queues = %w(foo bar baz)
+        worker_queues = %w[foo bar baz]
 
         expect(Gitlab::SidekiqConfig::CliMethods)
           .to receive(:worker_queues).and_return(worker_queues)
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
         expect(Gitlab::SidekiqCluster)
           .to receive(:start).with([worker_queues], default_options).and_return([])
 
-        cli.run(%w(*))
+        cli.run(%w[*])
       end
 
       it 'raises an error when the arguments contain newlines' do
@@ -97,31 +97,31 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
                                               .with([['baz'] + described_class::DEFAULT_QUEUES], default_options)
                                               .and_return([])
 
-          cli.run(%w(foo -n))
+          cli.run(%w[foo -n])
         end
       end
 
       context 'with --max-concurrency flag' do
         it 'starts Sidekiq workers for specified queues with a max concurrency' do
-          expected_queues = [%w(foo bar baz), %w(solo)].each { |queues| queues.concat(described_class::DEFAULT_QUEUES) }
-          expect(Gitlab::SidekiqConfig::CliMethods).to receive(:worker_queues).and_return(%w(foo bar baz))
+          expected_queues = [%w[foo bar baz], %w[solo]].each { |queues| queues.concat(described_class::DEFAULT_QUEUES) }
+          expect(Gitlab::SidekiqConfig::CliMethods).to receive(:worker_queues).and_return(%w[foo bar baz])
           expect(Gitlab::SidekiqCluster).to receive(:start)
                                               .with(expected_queues, default_options.merge(max_concurrency: 2))
                                               .and_return([])
 
-          cli.run(%w(foo,bar,baz solo -m 2))
+          cli.run(%w[foo,bar,baz solo -m 2])
         end
       end
 
       context 'with --min-concurrency flag' do
         it 'starts Sidekiq workers for specified queues with a min concurrency' do
-          expected_queues = [%w(foo bar baz), %w(solo)].each { |queues| queues.concat(described_class::DEFAULT_QUEUES) }
-          expect(Gitlab::SidekiqConfig::CliMethods).to receive(:worker_queues).and_return(%w(foo bar baz))
+          expected_queues = [%w[foo bar baz], %w[solo]].each { |queues| queues.concat(described_class::DEFAULT_QUEUES) }
+          expect(Gitlab::SidekiqConfig::CliMethods).to receive(:worker_queues).and_return(%w[foo bar baz])
           expect(Gitlab::SidekiqCluster).to receive(:start)
                                               .with(expected_queues, default_options.merge(min_concurrency: 2))
                                               .and_return([])
 
-          cli.run(%w(foo,bar,baz solo --min-concurrency 2))
+          cli.run(%w[foo,bar,baz solo --min-concurrency 2])
         end
       end
 
@@ -131,7 +131,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             .with([['foo'] + described_class::DEFAULT_QUEUES], default_options.merge(timeout: 10))
             .and_return([])
 
-          cli.run(%w(foo --timeout 10))
+          cli.run(%w[foo --timeout 10])
         end
 
         it 'when not given', 'starts Sidekiq workers with default timeout' do
@@ -140,13 +140,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
                                                             Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS))
             .and_return([])
 
-          cli.run(%w(foo))
+          cli.run(%w[foo])
         end
       end
 
       context 'with --list-queues flag' do
         it 'errors when given --list-queues and --dryrun' do
-          expect { cli.run(%w(foo --list-queues --dryrun)) }.to raise_error(described_class::CommandError)
+          expect { cli.run(%w[foo --list-queues --dryrun]) }.to raise_error(described_class::CommandError)
         end
 
         it 'prints out a list of queues in alphabetical order' do
@@ -163,7 +163,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
 
           expect(cli).to receive(:puts).with([expected_queues])
 
-          cli.run(%w(--queue-selector feature_category=epics --list-queues))
+          cli.run(%w[--queue-selector feature_category=epics --list-queues])
         end
       end
 
@@ -175,7 +175,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
                                                        described_class::DEFAULT_QUEUES], default_options)
                                               .and_return([])
 
-          cli.run(%w(cronjob))
+          cli.run(%w[cronjob])
         end
       end
 
@@ -184,33 +184,33 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
           {
             'memory-bound queues' => {
               query: 'resource_boundary=memory',
-              included_queues: %w(project_export),
-              excluded_queues: %w(merge)
+              included_queues: %w[project_export],
+              excluded_queues: %w[merge]
             },
             'memory- or CPU-bound queues' => {
               query: 'resource_boundary=memory,cpu',
-              included_queues: %w(auto_merge:auto_merge_process project_export),
-              excluded_queues: %w(merge)
+              included_queues: %w[auto_merge:auto_merge_process project_export],
+              excluded_queues: %w[merge]
             },
             'high urgency CI queues' => {
               query: 'feature_category=continuous_integration&urgency=high',
-              included_queues: %w(pipeline_default:ci_drop_pipeline),
-              excluded_queues: %w(merge)
+              included_queues: %w[pipeline_default:ci_drop_pipeline],
+              excluded_queues: %w[merge]
             },
             'CPU-bound high urgency CI queues' => {
               query: 'feature_category=continuous_integration&urgency=high&resource_boundary=cpu',
-              included_queues: %w(pipeline_default:ci_create_downstream_pipeline),
-              excluded_queues: %w(pipeline_default:ci_drop_pipeline merge)
+              included_queues: %w[pipeline_default:ci_create_downstream_pipeline],
+              excluded_queues: %w[pipeline_default:ci_drop_pipeline merge]
             },
             'CPU-bound high urgency non-CI queues' => {
               query: 'feature_category!=continuous_integration&urgency=high&resource_boundary=cpu',
-              included_queues: %w(new_issue),
-              excluded_queues: %w(pipeline_default:ci_create_downstream_pipeline)
+              included_queues: %w[new_issue],
+              excluded_queues: %w[pipeline_default:ci_create_downstream_pipeline]
             },
             'CI and SCM queues' => {
               query: 'feature_category=continuous_integration|feature_category=source_code_management',
-              included_queues: %w(pipeline_default:ci_drop_pipeline merge),
-              excluded_queues: %w()
+              included_queues: %w[pipeline_default:ci_drop_pipeline merge],
+              excluded_queues: %w[]
             }
           }
         end
@@ -226,7 +226,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
               []
             end
 
-            cli.run(%W(--queue-selector #{query}))
+            cli.run(%W[--queue-selector #{query}])
           end
 
           it 'works when negated' do
@@ -239,7 +239,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
               []
             end
 
-            cli.run(%W(--negate --queue-selector #{query}))
+            cli.run(%W[--negate --queue-selector #{query}])
           end
         end
 
@@ -264,11 +264,11 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             .with(expected_workers, default_options)
             .and_return([])
 
-          cli.run(%w(--queue-selector feature_category=incident_management&has_external_dependencies=true resource_boundary=memory&feature_category=importers))
+          cli.run(%w[--queue-selector feature_category=incident_management&has_external_dependencies=true resource_boundary=memory&feature_category=importers])
         end
 
         it 'allows the special * selector' do
-          worker_queues = %w(foo bar baz)
+          worker_queues = %w[foo bar baz]
 
           expect(Gitlab::SidekiqConfig::CliMethods)
             .to receive(:worker_queues).and_return(worker_queues)
@@ -276,20 +276,20 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
           expect(Gitlab::SidekiqCluster)
             .to receive(:start).with([worker_queues], default_options).and_return([])
 
-          cli.run(%w(--queue-selector *))
+          cli.run(%w[--queue-selector *])
         end
 
         it 'errors when the selector matches no queues' do
           expect(Gitlab::SidekiqCluster).not_to receive(:start)
 
-          expect { cli.run(%w(--queue-selector has_external_dependencies=true&has_external_dependencies=false)) }
+          expect { cli.run(%w[--queue-selector has_external_dependencies=true&has_external_dependencies=false]) }
             .to raise_error(described_class::CommandError)
         end
 
         it 'errors on an invalid query multiple queue groups correctly' do
           expect(Gitlab::SidekiqCluster).not_to receive(:start)
 
-          expect { cli.run(%w(--queue-selector unknown_field=chatops)) }
+          expect { cli.run(%w[--queue-selector unknown_field=chatops]) }
             .to raise_error(Gitlab::SidekiqConfig::WorkerMatcher::QueryError)
         end
       end
@@ -304,7 +304,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
                                               .with([['foo']], default_options)
                                               .and_return([])
 
-          cli.run(%w(foo))
+          cli.run(%w[foo])
         end
       end
 
@@ -316,7 +316,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
         it "does not throw an error" do
           allow(Gitlab::SidekiqCluster).to receive(:start).and_return([])
 
-          expect { cli.run(%w(foo)) }.not_to raise_error
+          expect { cli.run(%w[foo]) }.not_to raise_error
         end
 
         it "starts Sidekiq workers with given queues, and additional default and mailers queues (DEFAULT_QUEUES)" do
@@ -324,7 +324,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
                                               .with([['foo'] + described_class::DEFAULT_QUEUES], default_options)
                                               .and_return([])
 
-          cli.run(%w(foo))
+          cli.run(%w[foo])
         end
       end
     end
@@ -351,7 +351,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             expect(metrics_cleanup_service).to receive(:execute).ordered
             expect(Gitlab::SidekiqCluster).to receive(:start).ordered.and_return([])
 
-            cli.run(%w(foo))
+            cli.run(%w[foo])
           end
 
           context 'when sidekiq_exporter is not set up' do
@@ -362,7 +362,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             it 'does not start a sidekiq metrics server' do
               expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
-              cli.run(%w(foo))
+              cli.run(%w[foo])
             end
           end
 
@@ -374,11 +374,11 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             it 'does not start a sidekiq metrics server' do
               expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
-              cli.run(%w(foo))
+              cli.run(%w[foo])
             end
 
             it 'does not throw an error' do
-              expect { cli.run(%w(foo)) }.not_to raise_error
+              expect { cli.run(%w[foo]) }.not_to raise_error
             end
           end
 
@@ -386,7 +386,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             it 'does not start a sidekiq metrics server' do
               expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
-              cli.run(%w(foo))
+              cli.run(%w[foo])
             end
           end
 
@@ -396,7 +396,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             it 'starts the metrics server' do
               expect(MetricsServer).to receive(:start_for_sidekiq).with(metrics_dir: metrics_dir, reset_signals: trapped_signals)
 
-              cli.run(%w(foo))
+              cli.run(%w[foo])
             end
           end
 
@@ -404,8 +404,8 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             it 'writes the PID to a file' do
               expect(Gitlab::ProcessManagement).to receive(:write_pid).with('/dev/null')
 
-              cli.option_parser.parse!(%w(-P /dev/null))
-              cli.run(%w(foo))
+              cli.option_parser.parse!(%w[-P /dev/null])
+              cli.run(%w[foo])
             end
           end
 
@@ -413,7 +413,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             it 'does not write a PID' do
               expect(Gitlab::ProcessManagement).not_to receive(:write_pid)
 
-              cli.run(%w(foo))
+              cli.run(%w[foo])
             end
           end
         end
@@ -424,7 +424,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
           it 'does not start the server' do
             expect(MetricsServer).not_to receive(:start_for_sidekiq)
 
-            cli.run(%w(foo --dryrun))
+            cli.run(%w[foo --dryrun])
           end
         end
       end
@@ -456,7 +456,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
           expect(supervisor).to receive(:shutdown)
           expect(cli).not_to receive(:exit).with(1)
 
-          cli.run(%w(foo))
+          cli.run(%w[foo])
         end
       end
 
@@ -468,7 +468,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
           expect(process_status).to receive(:success?).and_return(false)
           expect(cli).to receive(:exit).with(1)
 
-          cli.run(%w(foo))
+          cli.run(%w[foo])
         end
       end
 
@@ -477,14 +477,14 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
         expect(supervisor).to receive(:supervise).and_yield([2, 99])
         expect(supervisor).to receive(:shutdown)
 
-        cli.run(%w(foo))
+        cli.run(%w[foo])
       end
 
       it 'restarts the metrics server when it is down' do
         expect(supervisor).to receive(:supervise).and_yield([metrics_server_pid])
         expect(MetricsServer).to receive(:start_for_sidekiq).twice.and_return(metrics_server_pid)
 
-        cli.run(%w(foo))
+        cli.run(%w[foo])
       end
     end
   end

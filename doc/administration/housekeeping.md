@@ -163,9 +163,18 @@ Background maintenance of Git repositories is configured in Gitaly. By default,
 Gitaly performs background repository maintenance every day at 12:00 noon for a
 duration of 10 minutes.
 
-You can change this default in Gitaly configuration. The following snippet
-enables daily background repository maintenance starting at 23:00 for 1 hour
-for the `default` storage:
+You can change this default in Gitaly configuration.
+
+For environments with Gitaly Cluster, the scheduled housekeeping start time can be
+staggered across Gitaly nodes so the scheduled housekeeping is not running
+simultaneously on multiple nodes.
+
+If a scheduled housekeeping run reaches the `duration` specified, the running tasks are
+gracefully cancelled. On subsequent scheduled housekeeping runs, Gitaly randomly shuffles
+the repository list to process.
+
+The following snippet enables daily background repository maintenance starting at
+23:00 for 1 hour for the `default` storage:
 
 ::Tabs
 
@@ -213,6 +222,21 @@ gitaly['configuration'] = {
 ```
 
 ::EndTabs
+
+When the scheduled housekeeping is executed, you can see the following entries in
+your [Gitaly log](logs/index.md#gitaly-logs):
+
+```json
+# When the scheduled housekeeping starts
+{"level":"info","msg":"maintenance: daily scheduled","pid":197260,"scheduled":"2023-09-27T13:10:00+13:00","time":"2023-09-27T00:08:31.624Z"}
+
+# When the scheduled housekeeping completes
+{"actual_duration":321181874818,"error":null,"level":"info","max_duration":"1h0m0s","msg":"maintenance: daily completed","pid":197260,"time":"2023-09-27T00:15:21.182Z"}
+```
+
+The `actual_duration` (in nanoseconds) indicates how long the scheduled maintenance
+took to execute. In the example above, the scheduled housekeeping completed
+in just over 5 minutes.
 
 ## Object pool repositories
 

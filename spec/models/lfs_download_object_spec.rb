@@ -24,6 +24,19 @@ RSpec.describe LfsDownloadObject do
     end
   end
 
+  describe '#to_hash' do
+    it 'returns specified Hash' do
+      expected_hash = {
+        'oid' => oid,
+        'size' => size,
+        'link' => link,
+        'headers' => headers
+      }
+
+      expect(subject.to_hash).to eq(expected_hash)
+    end
+  end
+
   describe '#has_authorization_header?' do
     it 'returns false' do
       expect(subject.has_authorization_header?).to be false

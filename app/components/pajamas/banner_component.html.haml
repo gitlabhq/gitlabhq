@@ -1,22 +1,26 @@
-%section.gl-banner{ @banner_options, class: banner_class }
-  - if illustration?
-    .gl-banner-illustration
-      = illustration
-  - elsif @svg_path.present?
-    .gl-banner-illustration
-      = image_tag @svg_path, alt: ""
+-# This is using gl-card classes to match Vue component
+-# Here's the issue to refactor away from gl-card
+-# https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2324
+.gl-banner.gl-card.gl-pl-6.gl-pr-8.gl-py-6{ @banner_options, class: banner_class }
+  .gl-display-flex
+    - if illustration?
+      .gl-banner-illustration
+        = illustration
+    - elsif @svg_path.present?
+      .gl-banner-illustration
+        = image_tag @svg_path, alt: ""
 
-  .gl-banner-content
-    %h1.gl-banner-title= title
+    .gl-banner-content
+      %h1.gl-banner-title= title
 
-    = content
+      = content
 
-    - if primary_action?
-      = primary_action
-    - else
-      = link_button_to @button_text, @button_link, **@button_options, class: 'js-close-callout', variant: :confirm
+      - if primary_action?
+        = primary_action
+      - else
+        = link_button_to @button_text, @button_link, **@button_options, class: 'js-close-callout', variant: :confirm
 
-    - actions.each do |action|
-      = action
+      - actions.each do |action|
+        = action
 
   = render Pajamas::ButtonComponent.new(category: :tertiary, variant: close_button_variant, size: :small, icon: 'close', button_options: @close_options)

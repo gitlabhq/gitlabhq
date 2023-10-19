@@ -5,36 +5,6 @@ require 'spec_helper'
 RSpec.describe Organizations::OrganizationsController, feature_category: :cell do
   let_it_be(:organization) { create(:organization) }
 
-  shared_examples 'successful response' do
-    it 'renders 200 OK' do
-      gitlab_request
-
-      expect(response).to have_gitlab_http_status(:ok)
-    end
-  end
-
-  shared_examples 'redirects to sign in page' do
-    it 'redirects to sign in page' do
-      gitlab_request
-
-      expect(response).to redirect_to(new_user_session_path)
-    end
-  end
-
-  shared_examples 'action disabled by `ui_for_organizations` feature flag' do
-    context 'when `ui_for_organizations` feature flag is disabled' do
-      before do
-        stub_feature_flags(ui_for_organizations: false)
-      end
-
-      it 'renders 404' do
-        gitlab_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
   shared_examples 'when the user is signed in' do
     context 'when the user is signed in' do
       before do
@@ -44,15 +14,15 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
       context 'with no association to an organization' do
         let_it_be(:user) { create(:user) }
 
-        it_behaves_like 'successful response'
-        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - successful response'
+        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
       end
 
       context 'as as admin', :enable_admin_mode do
         let_it_be(:user) { create(:admin) }
 
-        it_behaves_like 'successful response'
-        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - successful response'
+        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
       end
 
       context 'as an organization user' do
@@ -62,22 +32,22 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
           create :organization_user, organization: organization, user: user
         end
 
-        it_behaves_like 'successful response'
-        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - successful response'
+        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
       end
     end
   end
 
   shared_examples 'controller action that requires authentication' do
     context 'when the user is not signed in' do
-      it_behaves_like 'redirects to sign in page'
+      it_behaves_like 'organization - redirects to sign in page'
 
       context 'when `ui_for_organizations` feature flag is disabled' do
         before do
           stub_feature_flags(ui_for_organizations: false)
         end
 
-        it_behaves_like 'redirects to sign in page'
+        it_behaves_like 'organization - redirects to sign in page'
       end
     end
 
@@ -86,8 +56,8 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
 
   shared_examples 'controller action that does not require authentication' do
     context 'when the user is not logged in' do
-      it_behaves_like 'successful response'
-      it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - successful response'
+      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
     end
 
     it_behaves_like 'when the user is signed in'

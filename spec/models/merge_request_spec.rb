@@ -570,6 +570,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '.by_merged_commit_sha' do
+    it 'returns merge requests that match the given merged commit' do
+      mr = create(:merge_request, :merged, merged_commit_sha: '123abc')
+
+      create(:merge_request, :merged, merged_commit_sha: '123def')
+
+      expect(described_class.by_merged_commit_sha('123abc')).to eq([mr])
+    end
+  end
+
   describe '.by_merge_commit_sha' do
     it 'returns merge requests that match the given merge commit' do
       mr = create(:merge_request, :merged, merge_commit_sha: '123abc')
@@ -591,16 +601,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '.by_merge_or_squash_commit_sha' do
-    subject { described_class.by_merge_or_squash_commit_sha([sha1, sha2]) }
+  describe '.by_merged_or_merge_or_squash_commit_sha' do
+    subject { described_class.by_merged_or_merge_or_squash_commit_sha([sha1, sha2, sha3]) }
 
     let(:sha1) { '123abc' }
     let(:sha2) { '456abc' }
+    let(:sha3) { '111111' }
     let(:mr1) { create(:merge_request, :merged, squash_commit_sha: sha1) }
     let(:mr2) { create(:merge_request, :merged, merge_commit_sha: sha2) }
+    let(:mr3) { create(:merge_request, :merged, merged_commit_sha: sha3) }
 
-    it 'returns merge requests that match the given squash and merge commits' do
-      is_expected.to include(mr1, mr2)
+    it 'returns merge requests that match the given squash, merge and merged commits' do
+      is_expected.to include(mr1, mr2, mr3)
     end
   end
 
@@ -639,6 +651,13 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'when commit is a merge commit' do
       let!(:merge_request) { create(:merge_request, :merged, merge_commit_sha: sha) }
+      let(:sha) { '123abc' }
+
+      it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is a rebased fast-forward commit' do
+      let!(:merge_request) { create(:merge_request, :merged, merged_commit_sha: sha) }
       let(:sha) { '123abc' }
 
       it { is_expected.to eq([merge_request]) }
@@ -2416,6 +2435,19 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.has_terraform_reports?).to be_falsey
       end
     end
+
+    context 'when head pipeline is not finished and has terraform reports' do
+      before do
+        stub_feature_flags(mr_show_reports_immediately: false)
+      end
+
+      it 'returns true' do
+        merge_request = create(:merge_request, :with_terraform_reports)
+        merge_request.actual_head_pipeline.update!(status: :running)
+
+        expect(merge_request.has_terraform_reports?).to be_truthy
+      end
+    end
   end
 
   describe '#has_sast_reports?' do
@@ -3473,6 +3505,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
+      end
+
+      it 'returns true when skipping draft check' do
+        expect(subject.mergeable_state?(skip_draft_check: true)).to be(true)
       end
     end
 
@@ -4554,7 +4590,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     describe '#unlock_mr' do
       subject { create(:merge_request, state: 'locked', source_project: project, merge_jid: 123) }
 
-      it 'updates merge request head pipeline and sets merge_jid to nil', :sidekiq_might_not_need_inline do
+      it 'updates merge request head pipeline and sets merge_jid to nil', :sidekiq_inline do
         pipeline = create(:ci_empty_pipeline, project: subject.project, ref: subject.source_branch, sha: subject.source_branch_sha)
 
         subject.unlock_mr
@@ -5954,6 +5990,79 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#current_patch_id_sha' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:merge_request_diff) { build_stubbed(:merge_request_diff) }
+    let(:patch_id) { 'ghi789' }
+
+    subject(:current_patch_id_sha) { merge_request.current_patch_id_sha }
+
+    before do
+      allow(merge_request).to receive(:merge_request_diff).and_return(merge_request_diff)
+      allow(merge_request_diff).to receive(:patch_id_sha).and_return(patch_id)
+    end
+
+    it { is_expected.to eq(patch_id) }
+
+    context 'when related merge_request_diff does not have a patch_id_sha' do
+      let(:diff_refs) { instance_double(Gitlab::Diff::DiffRefs, base_sha: base_sha, head_sha: head_sha) }
+      let(:base_sha) { 'abc123' }
+      let(:head_sha) { 'def456' }
+
+      before do
+        allow(merge_request_diff).to receive(:patch_id_sha).and_return(nil)
+        allow(merge_request).to receive(:diff_refs).and_return(diff_refs)
+
+        allow_next_instance_of(Repository) do |repo|
+          allow(repo)
+            .to receive(:get_patch_id)
+            .with(diff_refs.base_sha, diff_refs.head_sha)
+            .and_return(patch_id)
+        end
+      end
+
+      it { is_expected.to eq(patch_id) }
+
+      context 'when base_sha is nil' do
+        let(:base_sha) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when head_sha is nil' do
+        let(:head_sha) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when base_sha and head_sha match' do
+        let(:head_sha) { base_sha }
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
+  describe '#all_mergeability_checks_results' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:result) { instance_double(ServiceResponse, payload: { results: ['result'] }) }
+
+    it 'executes MergeRequests::Mergeability::RunChecksService with all mergeability checks' do
+      expect_next_instance_of(
+        MergeRequests::Mergeability::RunChecksService,
+        merge_request: merge_request,
+        params: {}
+      ) do |svc|
+        expect(svc)
+          .to receive(:execute)
+          .with(described_class.all_mergeability_checks, execute_all: true)
+          .and_return(result)
+      end
+
+      expect(merge_request.all_mergeability_checks_results).to eq(result.payload[:results])
     end
   end
 end

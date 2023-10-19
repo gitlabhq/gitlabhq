@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -240,8 +240,7 @@ If you are having issues configuring GitLab, see the [troubleshooting documentat
 
 ## User access and management
 
-> - SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an ][**Enterprise**](../../enterprise_user/index.md) badge in the **Members** view.
+> SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
 
 After group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard.
 If [SCIM](scim_setup.md) is configured, see [user access](scim_setup.md#user-access) on the SCIM page.
@@ -357,7 +356,7 @@ when the account was created either:
 #### Supported user attributes
 
 - **can_create_group** - `true` or `false` to indicate whether the user can create
-  new groups. Default is `true`.
+  new top-level groups. Default is `true`.
 - **projects_limit** - The total number of personal projects a user can create.
   A value of `0` means the user cannot create new projects in their personal
   namespace. Default is `10000`.
@@ -532,6 +531,7 @@ immediately. If the user:
 
 - [SAML SSO for self-managed GitLab instances](../../../integration/saml.md)
 - [Glossary](../../../integration/saml.md#glossary)
+- [Blog post: The ultimate guide to enabling SAML and SSO on GitLab.com](https://about.gitlab.com/blog/2023/09/14/the-ultimate-guide-to-enabling-saml/)
 - [Authentication comparison between SaaS and self-managed](../../../administration/auth/index.md#saas-vs-self-managed-comparison)
 - [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
 - [SAML Group Sync](group_sync.md)

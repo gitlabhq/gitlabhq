@@ -24,10 +24,6 @@ export default {
       type: Array,
       required: true,
     },
-    hasEnvScopeQuery: {
-      type: Boolean,
-      required: true,
-    },
     selectedEnvironmentScope: {
       type: String,
       required: false,
@@ -36,6 +32,7 @@ export default {
   },
   data() {
     return {
+      customEnvScope: null,
       isDropdownShown: false,
       selectedEnvironment: '',
       searchTerm: '',
@@ -45,27 +42,23 @@ export default {
     composedCreateButtonLabel() {
       return sprintf(__('Create wildcard: %{searchTerm}'), { searchTerm: this.searchTerm });
     },
-    filteredEnvironments() {
-      const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
-      return this.environments.filter((environment) => {
-        return environment.toLowerCase().includes(lowerCasedSearchTerm);
-      });
-    },
     isDropdownLoading() {
-      return this.areEnvironmentsLoading && this.hasEnvScopeQuery && !this.isDropdownShown;
+      return this.areEnvironmentsLoading && !this.isDropdownShown;
     },
     isDropdownSearching() {
-      return this.areEnvironmentsLoading && this.hasEnvScopeQuery && this.isDropdownShown;
+      return this.areEnvironmentsLoading && this.isDropdownShown;
     },
     searchedEnvironments() {
-      // If hasEnvScopeQuery (applies only to projects for now), search query will be fired so this
-      // component will already receive filtered environments during the refetch.
-      // Otherwise (applies to groups), search the existing list of environments in the frontend
-      let filtered = this.hasEnvScopeQuery ? this.environments : this.filteredEnvironments;
+      let filtered = this.environments;
 
       // If there is no search term, make sure to include *
-      if (this.hasEnvScopeQuery && !this.searchTerm) {
+      if (!this.searchTerm) {
         filtered = uniq([...filtered, '*']);
+      }
+
+      // add custom env scope if it matches the search term
+      if (this.customEnvScope && this.customEnvScope.startsWith(this.searchTerm)) {
+        filtered = uniq([...filtered, this.customEnvScope]);
       }
 
       return filtered.sort().map((environment) => ({
@@ -74,12 +67,12 @@ export default {
       }));
     },
     shouldRenderCreateButton() {
-      return this.searchTerm && !this.environments.includes(this.searchTerm);
+      return (
+        this.searchTerm && ![...this.environments, this.customEnvScope].includes(this.searchTerm)
+      );
     },
     shouldRenderDivider() {
-      return (
-        (this.hasEnvScopeQuery || this.shouldRenderCreateButton) && !this.areEnvironmentsLoading
-      );
+      return !this.areEnvironmentsLoading;
     },
     environmentScopeLabel() {
       return convertEnvironmentScope(this.selectedEnvironmentScope);
@@ -89,16 +82,14 @@ export default {
     debouncedSearch: debounce(function debouncedSearch(searchTerm) {
       const newSearchTerm = searchTerm.trim();
       this.searchTerm = newSearchTerm;
-      if (this.hasEnvScopeQuery) {
-        this.$emit('search-environment-scope', newSearchTerm);
-      }
+      this.$emit('search-environment-scope', newSearchTerm);
     }, 500),
     selectEnvironment(selected) {
       this.$emit('select-environment', selected);
       this.selectedEnvironment = selected;
     },
     createEnvironmentScope() {
-      this.$emit('create-environment-scope', this.searchTerm);
+      this.customEnvScope = this.searchTerm;
       this.selectEnvironment(this.searchTerm);
     },
     toggleDropdownShown(isShown) {
@@ -129,7 +120,7 @@ export default {
   >
     <template #footer>
       <gl-dropdown-divider v-if="shouldRenderDivider" />
-      <div v-if="hasEnvScopeQuery" data-testid="max-envs-notice">
+      <div data-testid="max-envs-notice">
         <gl-dropdown-item class="gl-list-style-none" disabled>
           <gl-sprintf :message="$options.i18n.maxEnvsNote" class="gl-font-sm">
             <template #limit>

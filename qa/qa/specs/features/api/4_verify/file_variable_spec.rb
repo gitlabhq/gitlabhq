@@ -15,39 +15,34 @@ module QA
       end
 
       let(:add_ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
-                  default:
-                    tags: [#{executor}]
+        create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              default:
+                tags: [#{executor}]
 
-                  variables:
-                    EXTRA_ARGS: "-f $TEST_FILE"
-                    DOCKER_REMOTE_ARGS: --tlscacert="$DOCKER_CA_CERT"
-                    EXTRACTED_CRT_FILE: ${DOCKER_CA_CERT}.crt
-                    MY_FILE_VAR: $TEST_FILE
+              variables:
+                EXTRA_ARGS: "-f $TEST_FILE"
+                DOCKER_REMOTE_ARGS: --tlscacert="$DOCKER_CA_CERT"
+                EXTRACTED_CRT_FILE: ${DOCKER_CA_CERT}.crt
+                MY_FILE_VAR: $TEST_FILE
 
-                  job_echo:
-                    script:
-                      - echo "run something $EXTRA_ARGS"
-                      - echo "docker run $DOCKER_REMOTE_ARGS"
-                      - echo "run --output=$EXTRACTED_CRT_FILE"
-                      - echo "Will read private key from $MY_FILE_VAR"
+              job_echo:
+                script:
+                  - echo "run something $EXTRA_ARGS"
+                  - echo "docker run $DOCKER_REMOTE_ARGS"
+                  - echo "run --output=$EXTRACTED_CRT_FILE"
+                  - echo "Will read private key from $MY_FILE_VAR"
 
-                  job_cat:
-                    script:
-                      - cat "$MY_FILE_VAR"
-                      - cat "$DOCKER_CA_CERT"
-                YAML
-              }
-            ]
-          )
-        end
+              job_cat:
+                script:
+                  - cat "$MY_FILE_VAR"
+                  - cat "$DOCKER_CA_CERT"
+            YAML
+          }
+        ])
       end
 
       let(:add_file_variables) do

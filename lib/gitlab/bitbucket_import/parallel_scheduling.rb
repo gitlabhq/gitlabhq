@@ -4,6 +4,7 @@ module Gitlab
   module BitbucketImport
     module ParallelScheduling
       include Loggable
+      include ErrorTracking
 
       attr_reader :project, :already_enqueued_cache_key, :job_waiter_cache_key
 
@@ -78,15 +79,6 @@ module Gitlab
         multiplier = (job_index / BATCH_SIZE)
 
         (multiplier * 1.minute) + 1.second
-      end
-
-      def track_import_failure!(project, exception:, **args)
-        Gitlab::Import::ImportFailureService.track(
-          project_id: project.id,
-          error_source: self.class.name,
-          exception: exception,
-          **args
-        )
       end
     end
   end

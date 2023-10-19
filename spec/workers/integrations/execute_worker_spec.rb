@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Integrations::ExecuteWorker, '#perform', feature_category: :integrations do

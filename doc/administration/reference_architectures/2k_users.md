@@ -25,7 +25,8 @@ For a full list of reference architectures, see
 | Load balancer<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
-| Gitaly<sup>5</sup>         | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| Gitaly                     | 1     | 4 vCPU, 15 GB memory<sup>5</sup>   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| Sidekiq<sup>6</sup>        | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
 | GitLab Rails<sup>6</sup>   | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node            | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>4</sup> | -     | -                      | -               | -            | -        |
@@ -36,9 +37,9 @@ For a full list of reference architectures, see
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
-5. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large
-   repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to
-   [Large repositories](index.md#large-repositories) for more information.
+5. Gitaly specifications are based on the use of normal-sized repositories in good health.
+   However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
+   Refer to [large monorepos](index.md#large-monorepos) for more information.
 6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
    However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
 <!-- markdownlint-enable MD029 -->
@@ -53,7 +54,7 @@ skinparam linetype ortho
 card "**External Load Balancer**" as elb #6a9be7
 
 collections "**GitLab Rails** x3" as gitlab #32CD32
-card "**Prometheus + Grafana**" as monitor #7FFFD4
+card "**Prometheus**" as monitor #7FFFD4
 card "**Gitaly**" as gitaly #FF8C00
 card "**PostgreSQL**" as postgres #4EA7FF
 card "**Redis**" as redis #FF6347
@@ -332,9 +333,12 @@ to be used with GitLab.
 
 ### Provide your own Redis instance
 
-You can optionally use a third party external service for Redis as long as it meets the [requirements](../../install/requirements.md#redis).
+You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
-A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS Elasticache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work. However, note that the Redis Cluster mode specifically isn't supported by GitLab. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
+- Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
+
+For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
 
 ### Standalone Redis using the Linux package
 
@@ -390,16 +394,10 @@ are supported and can be added if needed.
 [Gitaly](../gitaly/index.md) server node requirements are dependent on data size,
 specifically the number of projects and those projects' sizes.
 
-NOTE:
-Increased specs for Gitaly nodes may be required in some circumstances such as
-significantly large repositories or if any [additional workloads](index.md#additional-workloads),
-such as [server hooks](../server_hooks.md), have been added.
-
-NOTE:
-Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
-However, large repositories or monorepos not following these practices can significantly
-impact Gitaly performance and requirements.
-Refer to [Large repositories](index.md#large-repositories) for more information.
+WARNING:
+**Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
+**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -458,7 +456,6 @@ Updates to example must be made at:
    gitlab_workhorse['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false
-   grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
@@ -591,6 +588,136 @@ To configure Gitaly with TLS:
   </a>
 </div>
 
+## Configure Sidekiq
+
+Sidekiq requires connection to the [Redis](#configure-redis),
+[PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
+It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
+
+To configure the Sidekiq server, on the server node you want to use for Sidekiq:
+
+1. SSH in to the Sidekiq server.
+1. [Download and install](https://about.gitlab.com/install/) the Linux
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page.
+1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
+
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
+- all reference architecture pages
+-->
+
+   ```ruby
+   roles ["sidekiq_role"]
+
+   # External URL
+   external_url 'https://gitlab.example.com'
+
+   ## Redis connection details
+   gitlab_rails['redis_port'] = '6379'
+   gitlab_rails['redis_host'] = '10.1.0.6' # IP/hostname of Redis server
+   gitlab_rails['redis_password'] = 'Redis Password'
+
+   # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
+   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
+   # The following two values must be the same as their respective values
+   # of the Gitaly setup
+   gitlab_rails['gitaly_token'] = 'gitalysecret'
+   gitlab_shell['secret_token'] = 'shellsecret'
+
+   git_data_dirs({
+     'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+     'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+     'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
+   })
+
+   ## PostgreSQL connection details
+   gitlab_rails['db_adapter'] = 'postgresql'
+   gitlab_rails['db_encoding'] = 'unicode'
+   gitlab_rails['db_host'] = '10.1.0.5' # IP/hostname of database server
+   gitlab_rails['db_password'] = 'DB password'
+
+   ## Prevent database migrations from running on upgrade automatically
+   gitlab_rails['auto_migrate'] = false
+
+   # Sidekiq
+   sidekiq['enable'] = true
+   sidekiq['listen_address'] = "0.0.0.0"
+
+   ## Set number of Sidekiq queue processes to the same number as available CPUs
+   sidekiq['queue_groups'] = ['*'] * 4
+
+   ## Set number of Sidekiq threads per queue process to the recommend number of 20
+   sidekiq['max_concurrency'] = 20
+
+   ## Set the network addresses that the exporters will listen on
+   node_exporter['listen_address'] = '0.0.0.0:9100'
+
+   # Object Storage
+   ## This is an example for configuring Object Storage on GCP
+   ## Replace this config with your chosen Object Storage provider as desired
+   gitlab_rails['object_store']['enabled'] = true
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "<gcp-artifacts-bucket-name>"
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "<gcp-external-diffs-bucket-name>"
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = "<gcp-lfs-bucket-name>"
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = "<gcp-uploads-bucket-name>"
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = "<gcp-packages-bucket-name>"
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "<gcp-dependency-proxy-bucket-name>"
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "<gcp-terraform-state-bucket-name>"
+
+   gitlab_rails['backup_upload_connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<gcp-project-name>',
+     'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+   ```
+
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
+
+1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
+
+   ```shell
+   sudo touch /etc/gitlab/skip-auto-reconfigure
+   ```
+
+   Only a single designated node should handle migrations as detailed in the
+   [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+1. Verify the GitLab services are running:
+
+   ```shell
+   sudo gitlab-ctl status
+   ```
+
+   The output should be similar to the following:
+
+   ```plaintext
+   run: logrotate: (pid 192292) 2990s; run: log: (pid 26374) 93048s
+   run: node-exporter: (pid 26864) 92997s; run: log: (pid 26446) 93036s
+   run: sidekiq: (pid 26870) 92996s; run: log: (pid 26391) 93042s
+   ```
+
+NOTE:
+If you find that the environment's Sidekiq job processing is slow with long queues,
+more nodes can be added as required. You can also tune your Sidekiq nodes to
+run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
+
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
@@ -648,7 +775,6 @@ On each node perform the following:
    node_exporter['listen_address'] = '0.0.0.0:9100'
    gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
    puma['listen'] = '0.0.0.0'
-   sidekiq['listen_address'] = "0.0.0.0"
 
    # Configure Sidekiq with 2 workers and 20 max concurrency
    sidekiq['max_concurrency'] = 20
@@ -769,8 +895,7 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 ## Configure Prometheus
 
 The Linux package can be used to configure a standalone Monitoring node
-running [Prometheus](../monitoring/prometheus/index.md) and
-[Grafana](../monitoring/performance/grafana_configuration.md):
+running [Prometheus](../monitoring/prometheus/index.md):
 
 1. SSH in to the Monitoring node.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
@@ -780,20 +905,13 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 
    ```ruby
    roles(['monitoring_role'])
+   nginx['enable'] = false
 
    external_url 'http://gitlab.example.com'
 
    # Prometheus
    prometheus['listen_address'] = '0.0.0.0:9090'
    prometheus['monitor_kubernetes'] = false
-
-   # Grafana
-   grafana['enable'] = true
-   grafana['admin_password'] = '<grafana_password>'
-   grafana['disable_login_form'] = false
-
-   # Nginx - For Grafana access
-   nginx['enable'] = true
    ```
 
 1. Prometheus also needs some scrape configurations to pull all the data from the various
@@ -864,8 +982,6 @@ running [Prometheus](../monitoring/prometheus/index.md) and
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. In the GitLab UI, set `admin/application_settings/metrics_and_profiling` > Metrics - Grafana to `/-/grafana` to
-`http[s]://<MONITOR NODE>/-/grafana`
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -930,12 +1046,9 @@ cluster alongside your instance, read how to
 
 ## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
 
-As an alternative approach, you can also run select components of GitLab as Cloud Native
-in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/).
-In this setup, we support running the equivalent of GitLab Rails and Sidekiq nodes
-in a Kubernetes cluster, named Webservice and Sidekiq respectively. In addition,
-the following other supporting services are supported: NGINX, Task Runner, Migrations,
-Prometheus, and Grafana.
+Run select components of cloud-native GitLab in Kubernetes with the [GitLab Helm chart](https://docs.gitlab.com/charts/). In this setup, you can run the equivalent of GitLab Rails in the Kubernetes cluster called Webservice. You also can run the equivalent of Sidekiq nodes in the Kubernetes cluster called Sidekiq. In addition,
+the following other supporting services are supported: NGINX, Toolbox, Migrations,
+Prometheus.
 
 Hybrid installations leverage the benefits of both cloud native and traditional
 compute deployments. With this, _stateless_ components can benefit from cloud native
@@ -956,7 +1069,7 @@ NOTE:
 The 2,000 reference architecture is not a highly-available setup. To achieve HA,
 you can follow a modified [3K reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
 
-NOTE:
+WARNING:
 **Gitaly Cluster is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
 

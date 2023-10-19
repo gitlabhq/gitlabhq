@@ -10,8 +10,8 @@ GitLab has its own [issue tracker](../user/project/issues/index.md),
 but you can also configure an external issue tracker per GitLab project.
 You can then use:
 
-- The external issue tracker only
 - The external issue tracker with the GitLab issue tracker
+- The external issue tracker only
 
 With an external tracker, you can use the format `CODE-123` to mention
 external issues in GitLab merge requests, commits, and comments where:
@@ -44,4 +44,3 @@ You can configure any of the following external issue trackers:
 - [Jira](../integration/jira/index.md)
 - [Redmine](../user/project/integrations/redmine.md)
 - [YouTrack](../user/project/integrations/youtrack.md)
-- [ZenTao](../user/project/integrations/zentao.md)

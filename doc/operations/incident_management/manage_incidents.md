@@ -201,30 +201,17 @@ In GitLab 15.1 and earlier, the escalation policy for [incidents created from al
 reflects the alert's escalation policy and cannot be changed. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the incident escalation policy is independent and can be changed.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-## Embed metrics (removed)
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
-
-<!--- end_remove -->
-
 ## Close an incident
 
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To close an incident, in the upper-right corner, select **Close incident**.
+To close an incident, in the upper-right corner, select **Incident actions** (**{ellipsis_v}**) and then **Close incident**.
 
 When you close an incident that is linked to an [alert](alerts.md),
 the linked alert's status changes to **Resolved**.
 You are then credited with the alert's status change.
-
-<!-- Delete when the `move_close_into_dropdown` feature flag is removed -->
-If you don't see this action at the top of an incident, your project or instance might have
-enabled a feature flag to [moved it in the actions menu](../../user/project/issues/managing_issues.md#move-the-close-button-into-the-actions-menu).
 
 ### Automatically close incidents via recovery alerts
 

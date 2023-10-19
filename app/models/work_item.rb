@@ -148,6 +148,8 @@ class WorkItem < Issue
   end
 
   def linked_work_items(current_user = nil, authorize: true, preload: nil, link_type: nil)
+    return [] if new_record?
+
     linked_work_items = linked_work_items_query(link_type).preload(preload).reorder('issue_link_id')
     return linked_work_items unless authorize
 
@@ -157,6 +159,10 @@ class WorkItem < Issue
       current_user,
       filters: { read_cross_project: cross_project_filter }
     )
+  end
+
+  def linked_items_count
+    linked_work_items(authorize: false).size
   end
 
   private

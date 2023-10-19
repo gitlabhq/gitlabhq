@@ -1,6 +1,6 @@
 <script>
-import { GlLoadingIcon, GlLink } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { createAlert } from '~/alert';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import getLatestPipelineStatusQuery from '../graphql/queries/get_latest_pipeline_status.query.graphql';
@@ -9,9 +9,8 @@ import { COMMIT_BOX_POLL_INTERVAL, PIPELINE_STATUS_FETCH_ERROR } from '../consta
 export default {
   PIPELINE_STATUS_FETCH_ERROR,
   components: {
-    CiIcon,
+    CiBadgeLink,
     GlLoadingIcon,
-    GlLink,
   },
   inject: {
     fullPath: {
@@ -64,8 +63,12 @@ export default {
 <template>
   <div class="gl-display-inline-block gl-vertical-align-middle gl-mr-2">
     <gl-loading-icon v-if="loading" />
-    <gl-link v-else :href="pipelineStatus.detailsPath">
-      <ci-icon :status="pipelineStatus" :size="24" />
-    </gl-link>
+    <ci-badge-link
+      v-else
+      :status="pipelineStatus"
+      :details-path="pipelineStatus.detailsPath"
+      size="md"
+      :show-text="false"
+    />
   </div>
 </template>

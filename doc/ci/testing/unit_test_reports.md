@@ -76,7 +76,8 @@ test locally for verification.
 
 To copy the name of all failed tests, at the top of the **Test summary** panel,
 select **Copy failed tests**. The failed tests are listed as a string with the tests
-separated by spaces.
+separated by spaces. This option is only available if the JUnit report populates
+the `<file>` attributes for failed tests.
 
 To copy the name of a single failed test:
 

@@ -42,7 +42,6 @@ describe('Design description form', () => {
     showEditor = false,
     isSubmitting = false,
     designVariables = mockDesignVariables,
-    contentEditorOnIssues = false,
     designUpdateMutationHandler = mockDesignUpdateMutationHandler,
   } = {}) => {
     mockApollo = createMockApollo([[updateDesignDescriptionMutation, designUpdateMutationHandler]]);
@@ -51,11 +50,6 @@ describe('Design description form', () => {
         design,
         markdownPreviewPath: '/gitlab-org/gitlab-test/preview_markdown?target_type=Issue',
         designVariables,
-      },
-      provide: {
-        glFeatures: {
-          contentEditorOnIssues,
-        },
       },
       apolloProvider: mockApollo,
       data() {
@@ -131,7 +125,7 @@ describe('Design description form', () => {
       expect(findMarkdownEditor().props()).toMatchObject({
         value: 'Test description',
         renderMarkdownPath: '/gitlab-org/gitlab-test/preview_markdown?target_type=Issue',
-        enableContentEditor: false,
+        enableContentEditor: true,
         formFieldProps,
         autofocus: true,
         enableAutocomplete: true,

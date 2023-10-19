@@ -7,7 +7,7 @@ RSpec.describe 'Issue boards sidebar labels select', :js, feature_category: :tea
 
   include_context 'labels from nested groups and projects'
 
-  let(:card) { find('.board:nth-child(1)').first('[data-testid="board_card"]') }
+  let(:card) { find('.board:nth-child(1)').first('[data-testid="board-card"]') }
 
   context 'group boards' do
     context 'in the top-level group board' do

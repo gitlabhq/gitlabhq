@@ -1,7 +1,7 @@
 %header.navbar.navbar-gitlab.super-sidebar-logged-out{ data: { testid: 'navbar' } }
   %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
   .container-fluid
-    .header-content.gl-displax-flex
+    %nav.header-content.gl-displax-flex{ 'aria-label': s_('LoggedOutMarketingHeader|Explore GitLab') }
       .title-container.gl-display-flex.gl-align-items-stretch.gl-pt-0.gl-mr-3
         = render 'layouts/header/title'
 

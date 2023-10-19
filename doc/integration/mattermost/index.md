@@ -139,7 +139,7 @@ Save the changes and then run `sudo gitlab-ctl reconfigure`. If there are no err
 
 ## Specify numeric user and group identifiers
 
-The Linux pacakage creates a user and group `mattermost`. You can specify the
+The Linux package creates a user and group `mattermost`. You can specify the
 numeric identifiers for these users in `/etc/gitlab/gitlab.rb` as follows:
 
 ```ruby
@@ -338,6 +338,7 @@ Below is a list of Mattermost version changes for GitLab 14.0 and later:
 
 | GitLab version | Mattermost version | Notes                                                                                    |
 | :------------- | :----------------- | ---------------------------------------------------------------------------------------- |
+| 16.5           | 9.0                |                                                                                          |
 | 16.4           | 8.1                |                                                                                          |
 | 16.3           | 8.0                |                                                                                          |
 | 16.0           | 7.10               |                                                                                          |

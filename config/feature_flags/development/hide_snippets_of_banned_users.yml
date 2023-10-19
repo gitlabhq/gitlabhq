@@ -1,0 +1,8 @@
+---
+name: hide_snippets_of_banned_users
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134048
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425391
+milestone: '16.6'
+type: development
+group: group::anti-abuse
+default_enabled: false

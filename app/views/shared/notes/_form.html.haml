@@ -26,7 +26,7 @@
 
   .discussion-form-container.discussion-with-resolve-btn.flex-column.p-0
     = render layout: 'shared/md_preview', locals: { url: preview_url, referenced_users: true, supports_quick_actions: supports_quick_actions } do
-      = render 'shared/zen', f: f, qa_selector: 'note_field',
+      = render 'shared/zen', f: f, testid: 'note-field',
         attr: :note,
         classes: 'note-textarea js-note-text',
         placeholder: _("Write a comment or drag your files here…"),
@@ -38,5 +38,5 @@
     .note-form-actions.clearfix.gl-display-flex.gl-flex-wrap
       = render partial: 'shared/notes/comment_button'
 
-      %a.btn.gl-button.btn-cancel.js-close-discussion-note-form.hide{ role: "button", data: { cancel_text: _("Cancel") } }
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-close-discussion-note-form hide' }) do
         = _('Cancel')

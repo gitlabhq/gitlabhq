@@ -7,8 +7,8 @@ module QA
         module Component
           class OutboundRequests < Page::Base
             view 'app/views/admin/application_settings/_outbound.html.haml' do
-              element :allow_requests_from_services_checkbox
-              element :save_changes_button
+              element 'allow-requests-from-services-checkbox'
+              element 'save-changes-button'
             end
 
             def allow_requests_to_local_network_from_services
@@ -19,11 +19,11 @@ module QA
             private
 
             def check_allow_requests_to_local_network_from_services_checkbox
-              check_element(:allow_requests_from_services_checkbox)
+              check_element('allow-requests-from-services-checkbox')
             end
 
             def click_save_changes_button
-              click_element :save_changes_button
+              click_element 'save-changes-button'
             end
           end
         end

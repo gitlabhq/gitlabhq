@@ -200,6 +200,9 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     end
 
     context 'with authentication' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:project) { create(:project) }
+
       before do
         stub_application_setting(usage_ping_enabled: true)
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
@@ -207,11 +210,10 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
       context 'with correct params' do
         it 'returns status ok' do
-          expect(Gitlab::InternalEvents).to receive(:track_event).with(known_event, anything)
-          # allow other events to also get triggered
-          allow(Gitlab::InternalEvents).to receive(:track_event)
+          expect(Gitlab::InternalEvents).to receive(:track_event)
+            .with(known_event, send_snowplow_event: false, user: user, namespace: namespace, project: project)
 
-          post api(endpoint, user), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
+          post api(endpoint, user), params: { event: known_event, namespace_id: namespace.id, project_id: project.id }
 
           expect(response).to have_gitlab_http_status(:ok)
         end

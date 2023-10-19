@@ -28,13 +28,8 @@ a single-node Geo site or a multi-node Geo site.
 
 ### Single-node Geo sites
 
-If both Geo sites are based on the [1K reference architecture](../../reference_architectures/1k_users.md):
-
-1. Set up the database replication based on your choice of PostgreSQL instances (`primary (read-write) <-> secondary (read-only)` topology):
-   - [Using Linux package PostgreSQL instances](database.md) .
-   - [Using external PostgreSQL instances](external_database.md)
-1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** sites.
-1. Follow the [Using a Geo Site](../replication/usage.md) guide.
+If both Geo sites are based on the [1K reference architecture](../../reference_architectures/1k_users.md), follow
+[Set up Geo for two single-node sites](two_single_node_sites.md).
 
 Depending on your GitLab deployment, [additional configuration](#additional-configuration) for LDAP, object storage, and the Container Registry might be required.
 
@@ -42,6 +37,16 @@ Depending on your GitLab deployment, [additional configuration](#additional-conf
 
 If one or more of your sites is using the [2K reference architecture](../../reference_architectures/2k_users.md) or larger, see
 [Configure Geo for multiple nodes](../replication/multiple_servers.md).
+
+Depending on your GitLab deployment, [additional configuration](#additional-configuration) for LDAP, object storage, and the Container Registry might be required.
+
+### General steps for reference
+
+1. Set up the database replication based on your choice of PostgreSQL instances (`primary (read-write) <-> secondary (read-only)` topology):
+   - [Using Linux package PostgreSQL instances](database.md) .
+   - [Using external PostgreSQL instances](external_database.md)
+1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** sites.
+1. Follow the [Using a Geo Site](../replication/usage.md) guide.
 
 Depending on your GitLab deployment, [additional configuration](#additional-configuration) for LDAP, object storage, and the Container Registry might be required.
 

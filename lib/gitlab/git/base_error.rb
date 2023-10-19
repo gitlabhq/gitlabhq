@@ -5,7 +5,7 @@ module Gitlab
   module Git
     class BaseError < StandardError
       METADATA_KEY = :gitaly_error_metadata
-      DEBUG_ERROR_STRING_REGEX = /(.*?) debug_error_string:.*$/m.freeze
+      DEBUG_ERROR_STRING_REGEX = /(.*?) debug_error_string:.*$/m
       GRPC_CODES = {
         '0' => 'ok',
         '1' => 'cancelled',

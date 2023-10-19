@@ -388,4 +388,31 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
       )
     end
   end
+
+  describe '#attachment_color' do
+    context 'when success' do
+      before do
+        args[:object_attributes][:status] = 'success'
+      end
+
+      it { expect(subject.attachment_color).to eq('good') }
+    end
+
+    context 'when passed with warnings' do
+      before do
+        args[:object_attributes][:status] = 'success'
+        args[:object_attributes][:detailed_status] = 'passed with warnings'
+      end
+
+      it { expect(subject.attachment_color).to eq('warning') }
+    end
+
+    context 'when failed' do
+      before do
+        args[:object_attributes][:status] = 'failed'
+      end
+
+      it { expect(subject.attachment_color).to eq('danger') }
+    end
+  end
 end

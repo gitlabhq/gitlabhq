@@ -61,4 +61,32 @@ RSpec.describe API::Entities::BasicProjectDetails, feature_category: :api do
       end
     end
   end
+
+  describe '#repository_storage' do
+    let_it_be(:project) { build(:project, :public) }
+
+    context 'with anonymous user' do
+      let_it_be(:current_user) { nil }
+
+      it 'is not included' do
+        expect(output).not_to include(:repository_storage)
+      end
+    end
+
+    context 'with normal user' do
+      let_it_be(:current_user) { create(:user) }
+
+      it 'is not included' do
+        expect(output).not_to include(:repository_storage)
+      end
+    end
+
+    context 'with admin user' do
+      let_it_be(:current_user) { create(:user, :admin) }
+
+      it 'is included', :enable_admin_mode do
+        expect(output).to include repository_storage: project.repository_storage
+      end
+    end
+  end
 end

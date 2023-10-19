@@ -16,9 +16,9 @@ module Banzai
       CSS   = 'img'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 
-      ATTRIBUTES_PATTERN = %r{\A(?<matched>\{(?<attributes>.{1,100})\})}.freeze
-      WIDTH_HEIGHT_REGEX = %r{\A(?<name>height|width)="?(?<size>[\w%]{1,10})"?\z}.freeze
-      VALID_SIZE_REGEX   = %r{\A\d{1,4}(%|px)?\z}.freeze
+      ATTRIBUTES_PATTERN = %r{\A(?<matched>\{(?<attributes>.{1,100})\})}
+      WIDTH_HEIGHT_REGEX = %r{\A(?<name>height|width)="?(?<size>[\w%]{1,10})"?\z}
+      VALID_SIZE_REGEX   = %r{\A\d{1,4}(%|px)?\z}
 
       def call
         doc.xpath(XPATH).each do |img|

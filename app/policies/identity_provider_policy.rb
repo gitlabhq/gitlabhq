@@ -14,4 +14,6 @@ class IdentityProviderPolicy < BasePolicy
   rule { protected_provider }.prevent(:unlink)
 end
 
-IdentityProviderPolicy.prepend_mod_with('IdentityProviderPolicy')
+# Added for JiHu
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127672#note_1568398967
+IdentityProviderPolicy.prepend_mod

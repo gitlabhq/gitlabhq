@@ -47,13 +47,13 @@ export default {
       v-if="sshLink"
       :label="$options.labels.ssh"
       :link="sshLink"
-      qa-selector="copy_ssh_url_button"
+      test-id="copy-ssh-url-button"
     />
     <clone-dropdown-item
       v-if="httpLink"
       :label="httpLabel"
       :link="httpLink"
-      qa-selector="copy_http_url_button"
+      test-id="copy-http-url-button"
     />
   </gl-disclosure-dropdown>
 </template>

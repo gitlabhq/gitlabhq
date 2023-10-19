@@ -207,8 +207,8 @@ This:
 
 - Removes any internal Git references to old commits.
 - Runs `git gc --prune=30.minutes.ago` against the repository to remove unreferenced objects. Repacking your repository temporarily
-  causes the size of your repository to increase significantly, because the old pack files are not removed until the
-  new pack files have been created.
+  causes the size of your repository to increase significantly, because the old packfiles are not removed until the
+  new packfiles have been created.
 - Unlinks any unused LFS objects attached to your project, freeing up storage space.
 - Recalculates the size of your repository on disk.
 
@@ -324,3 +324,33 @@ are accurate.
 
 To expedite this process, see the
 ['Prune Unreachable Objects' housekeeping task](../../../administration/housekeeping.md).
+
+### Sidekiq process fails to export a project
+
+Occasionally the Sidekiq process can fail to export a project, for example if
+it is terminated during execution.
+
+To bypass the Sidekiq process, use the Rails console to manually trigger the project export:
+
+```ruby
+project = Project.find(1)
+current_user = User.find_by(username: 'my-user-name')
+RequestStore.begin!
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+params = {}
+
+::Projects::ImportExport::ExportService.new(project, current_user, params).execute(nil)
+```
+
+This makes the export available through the UI, but does not trigger an email to the user.
+To manually trigger the project export and send an email:
+
+```ruby
+project = Project.find(1)
+current_user = User.find_by(username: 'my-user-name')
+RequestStore.begin!
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+params = {}
+
+ProjectExportWorker.new.perform(current_user.id, project.id)
+```

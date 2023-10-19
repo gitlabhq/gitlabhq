@@ -23,6 +23,7 @@ module Types
       field :package_type, Types::Packages::PackageTypeEnum, null: false, description: 'Package type.'
       field :project, Types::ProjectType, null: false, description: 'Project where the package is stored.'
       field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
+      field :status_message, GraphQL::Types::String, null: true, description: 'Status message.'
       field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'
       field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
       field :version, GraphQL::Types::String, null: true, description: 'Version string.'

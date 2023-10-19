@@ -137,7 +137,6 @@ export default {
         'gl-align-items-flex-start! gl-justify-content-start! mr-compare-dropdown',
         toggleClass,
       ]"
-      data-testid="source-branch-dropdown"
       @shown="fetchData"
       @search="searchData"
       @select="selectItem"

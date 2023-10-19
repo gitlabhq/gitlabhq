@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class BadgesPipeline
         include Pipeline
+        include HexdigestCacheStrategy
 
         extractor BulkImports::Common::Extractors::RestExtractor,
           query: BulkImports::Common::Rest::GetBadgesQuery

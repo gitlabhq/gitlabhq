@@ -132,7 +132,12 @@ fi
 # Run Vale and Markdownlint only on changed files. Only works on merged results
 # pipelines, so first checks if a merged results CI variable is present. If not present,
 # runs test on all files.
-if [ -z "${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}" ]
+if [ -n "$1" ]
+then
+  MD_DOC_PATH="$@"
+  # shellcheck disable=2059
+  printf "${COLOR_GREEN}INFO: List of files specified on command line. Running Markdownlint and Vale for only those files...${COLOR_RESET}\n"
+elif [ -z "${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}" ]
 then
   MD_DOC_PATH=${MD_DOC_PATH:-doc}
   # shellcheck disable=2059
@@ -157,13 +162,14 @@ fi
 function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
+  local files=$3
   local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.16-vale-2.22.0-markdownlint-0.32.2-markdownlint2-0.6.0"
 
   if hash "${cmd}" 2>/dev/null
   then
     # shellcheck disable=2059
     printf "${COLOR_GREEN}INFO: Found locally-installed ${cmd}! Running...${COLOR_RESET}\n"
-    $cmd $args
+    $cmd $args $files
   # When using software like Rancher Desktop, both nerdctl and docker binaries are available
   # but only one is configured. To check which one to use, we need to probe each runtime
   elif (hash nerdctl 2>/dev/null) && (nerdctl info > /dev/null 2>&1)
@@ -207,7 +213,7 @@ fi
 
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Looking for Vale to lint prose, either installed locally or available in documentation linting image...${COLOR_RESET}\n"
-run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl ${MD_DOC_PATH}"
+run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl" "${MD_DOC_PATH}"
 
 if [ "$ERRORCODE" -ne 0 ]
 then

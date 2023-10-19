@@ -14,6 +14,8 @@ instrumentation_class: RedisMetric
 options:
   prefix: package_events
   event: i_package_pull_package_by_guest
+events:
+  - name: package_pulled_by_guest
 distribution:
 - ee
 - ce

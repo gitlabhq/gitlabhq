@@ -23,7 +23,6 @@ describe('Ci variable table', () => {
     environments: mapEnvironmentNames(mockEnvs),
     hideEnvironmentScope: false,
     isLoading: false,
-    hasEnvScopeQuery: false,
     maxVariableLimit: 5,
     pageInfo: { after: '' },
     variables: mockVariablesWithScopes(projectString),
@@ -70,7 +69,6 @@ describe('Ci variable table', () => {
         areEnvironmentsLoading: defaultProps.areEnvironmentsLoading,
         areScopedVariablesAvailable: defaultProps.areScopedVariablesAvailable,
         environments: defaultProps.environments,
-        hasEnvScopeQuery: defaultProps.hasEnvScopeQuery,
         hideEnvironmentScope: defaultProps.hideEnvironmentScope,
         variables: defaultProps.variables,
         mode: ADD_VARIABLE_ACTION,
@@ -142,7 +140,7 @@ describe('Ci variable table', () => {
     });
   });
 
-  describe('variable events', () => {
+  describe('variable events for modal', () => {
     beforeEach(() => {
       createComponent();
     });
@@ -156,6 +154,25 @@ describe('Ci variable table', () => {
       await findCiVariableTable().vm.$emit('set-selected-variable');
 
       await findCiVariableModal().vm.$emit(eventName, newVariable);
+
+      expect(wrapper.emitted(eventName)).toEqual([[newVariable]]);
+    });
+  });
+
+  describe('variable events for drawer', () => {
+    beforeEach(() => {
+      createComponent({ featureFlags: { ciVariableDrawer: true } });
+    });
+
+    it.each`
+      eventName
+      ${'add-variable'}
+      ${'update-variable'}
+      ${'delete-variable'}
+    `('bubbles up the $eventName event', async ({ eventName }) => {
+      await findCiVariableTable().vm.$emit('set-selected-variable');
+
+      await findCiVariableDrawer().vm.$emit(eventName, newVariable);
 
       expect(wrapper.emitted(eventName)).toEqual([[newVariable]]);
     });
@@ -178,7 +195,7 @@ describe('Ci variable table', () => {
     });
   });
 
-  describe('environment events', () => {
+  describe('environment events for modal', () => {
     beforeEach(() => {
       createComponent();
     });
@@ -187,6 +204,20 @@ describe('Ci variable table', () => {
       await findCiVariableTable().vm.$emit('set-selected-variable');
 
       await findCiVariableModal().vm.$emit('search-environment-scope', 'staging');
+
+      expect(wrapper.emitted('search-environment-scope')).toEqual([['staging']]);
+    });
+  });
+
+  describe('environment events for drawer', () => {
+    beforeEach(() => {
+      createComponent({ featureFlags: { ciVariableDrawer: true } });
+    });
+
+    it('bubbles up the search event', async () => {
+      await findCiVariableTable().vm.$emit('set-selected-variable');
+
+      await findCiVariableDrawer().vm.$emit('search-environment-scope', 'staging');
 
       expect(wrapper.emitted('search-environment-scope')).toEqual([['staging']]);
     });

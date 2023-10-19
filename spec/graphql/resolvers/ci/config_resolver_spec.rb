@@ -15,9 +15,11 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
     end
 
     subject(:response) do
-      resolve(described_class,
-              args: { project_path: project.full_path, content: content, sha: sha },
-              ctx: { current_user: user })
+      resolve(
+        described_class,
+        args: { project_path: project.full_path, content: content, sha: sha },
+        ctx: { current_user: user }
+      )
     end
 
     shared_examples 'a valid config file' do
@@ -36,7 +38,8 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
         expect(response[:merged_yaml]).to eq(content)
         expect(response[:includes]).to eq([])
         expect(response[:errors]).to be_empty
-        expect(::Gitlab::Ci::Lint).to have_received(:new).with(current_user: user, project: project, sha: sha)
+        expect(::Gitlab::Ci::Lint).to have_received(:new)
+          .with(current_user: user, project: project, sha: sha, verify_project_sha: true)
       end
     end
 

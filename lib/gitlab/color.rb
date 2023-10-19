@@ -2,7 +2,7 @@
 
 module Gitlab
   class Color
-    PATTERN = /\A\#(?:[0-9A-Fa-f]{3}){1,2}\Z/.freeze
+    PATTERN = /\A\#(?:[0-9A-Fa-f]{3}){1,2}\Z/
 
     def initialize(value)
       @value = value&.strip&.freeze

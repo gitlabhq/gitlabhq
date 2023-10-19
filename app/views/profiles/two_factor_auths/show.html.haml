@@ -18,24 +18,22 @@
           - register_2fa_token = _('We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device.')
           = register_2fa_token.html_safe
           = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication', anchor: 'enable-one-time-password'), target: '_blank', rel: 'noopener noreferrer'
-        .row.gl-mb-3
-          .col-md-4.gl-min-w-fit-content
-            .gl-p-2.gl-mb-3{ style: 'background: #fff' }
-              = raw @qr_code
-          .col-md-8
-            = render Pajamas::CardComponent.new do |c|
-              - c.with_body do
-                %p.gl-mt-0.gl-mb-3.gl-font-weight-bold
-                  = _("Can't scan the code?")
-                %p.gl-mt-0.gl-mb-3
-                  = _('To add the entry manually, provide the following details to the application on your phone.')
-                %p.gl-mt-0.gl-mb-0
-                  = _('Account: %{account}') % { account: @account_string }
-                %p.gl-mt-0.gl-mb-0{ data: { qa_selector: 'otp_secret_content' } }
-                  = _('Key:')
-                  %code.two-factor-secret= current_user.otp_secret.scan(/.{4}/).join(' ')
-                %p.gl-mb-0.two-factor-new-manual-content
-                  = _('Time based: Yes')
+        .gl-p-2.gl-mb-3{ style: 'background: #fff' }
+          = raw @qr_code
+        .gl-mb-5
+          = render Pajamas::CardComponent.new do |c|
+            - c.with_body do
+              %p.gl-mt-0.gl-mb-3.gl-font-weight-bold
+                = _("Can't scan the code?")
+              %p.gl-mt-0.gl-mb-3
+                = _("To add the entry manually, provide the following details to the application on your phone.")
+              %p.gl-mt-0.gl-mb-0
+                = _('Account: %{account}') % { account: @account_string }
+              %p.gl-mt-0.gl-mb-0{ data: { qa_selector: 'otp_secret_content' } }
+                = _('Key:')
+                %code.two-factor-secret= current_user.otp_secret.scan(/.{4}/).join(' ')
+              %p.gl-mb-0.two-factor-new-manual-content
+                = _('Time based: Yes')
         = form_tag profile_two_factor_auth_path, method: :post do |f|
           - if @error
             = render Pajamas::AlertComponent.new(title: @error[:message],

@@ -18,8 +18,7 @@ import {
   EXPANDED_LINE_TYPE,
 } from '../constants';
 import { prepareRawDiffFile } from '../utils/diff_file';
-
-const SHA1 = /\b([a-f0-9]{40})\b/;
+import { extractFileHash } from '../utils/merge_request';
 
 export const isAdded = (line) => ['new', 'new-nonewline'].includes(line.type);
 export const isRemoved = (line) => ['old', 'old-nonewline'].includes(line.type);
@@ -571,14 +570,16 @@ export function isUrlHashFileHeader(urlHash = '') {
 }
 
 export function parseUrlHashAsFileHash(urlHash = '', currentDiffFileId = '') {
-  const isNoteLink = isUrlHashNoteLink(urlHash);
-  let id = urlHash.replace(/^#/, '');
+  const hashless = urlHash.replace(/^#/, '');
+  const isNoteLink = isUrlHashNoteLink(hashless);
+  const extractedSha1 = extractFileHash({ input: hashless });
+  let id = extractedSha1;
 
   if (isNoteLink && currentDiffFileId) {
     id = currentDiffFileId;
-  } else if (isUrlHashFileHeader(urlHash)) {
-    id = id.replace('diff-content-', '');
-  } else if (!SHA1.test(id) || isNoteLink) {
+  } else if (isUrlHashFileHeader(hashless)) {
+    id = hashless.replace('diff-content-', '');
+  } else if (!extractedSha1 || isNoteLink) {
     id = null;
   }
 

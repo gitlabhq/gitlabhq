@@ -6,13 +6,13 @@ module QA
       let(:file_name) { "secret_file.md" }
       let(:project) { create(:project, :with_readme) }
       let(:commit) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.branch = "development"
-          commit.start_branch = project.default_branch
-          commit.commit_message = 'Add new file'
-          commit.add_files([{ file_path: file_name, content: 'pssst!' }])
-        end
+        create(:commit,
+          project: project,
+          branch: 'development',
+          start_branch: project.default_branch,
+          commit_message: 'Add new file', actions: [
+            { action: 'create', file_path: file_name, content: 'pssst!' }
+          ])
       end
 
       before do

@@ -1,4 +1,4 @@
-import { GlIcon, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -43,7 +43,7 @@ describe('Pipeline Status', () => {
         },
         projectFullPath: mockProjectFullPath,
       },
-      stubs: { GlLink, GlSprintf },
+      stubs: { GlSprintf },
     });
   };
 

@@ -66,31 +66,11 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     context "when auth state param is present in session" do
       let(:valid_auth_state) { "secret-state" }
 
-      context 'when remove_legacy_github_client feature is disabled' do
-        before do
-          stub_feature_flags(remove_legacy_github_client: false)
-          allow_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
-            allow(client).to receive(:get_token).and_return(token)
-          end
-          session[:github_auth_state_key] = valid_auth_state
+      before do
+        allow_next_instance_of(OAuth2::Client) do |client|
+          allow(client).to receive_message_chain(:auth_code, :get_token, :token).and_return(token)
         end
-
-        it "updates access token if state param is valid" do
-          token = "asdasd12345"
-
-          get :callback, params: { state: valid_auth_state }
-
-          expect(session[:github_access_token]).to eq(token)
-          expect(controller).to redirect_to(status_import_github_url)
-        end
-
-        it "includes namespace_id from query params if it is present" do
-          namespace_id = 1
-
-          get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
-
-          expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
-        end
+        session[:github_auth_state_key] = valid_auth_state
       end
 
       it "reports an error if state param is invalid" do
@@ -100,31 +80,21 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(flash[:alert]).to eq('Access denied to your GitHub account.')
       end
 
-      context 'when remove_legacy_github_client feature is enabled' do
-        before do
-          stub_feature_flags(remove_legacy_github_client: true)
-          allow_next_instance_of(OAuth2::Client) do |client|
-            allow(client).to receive_message_chain(:auth_code, :get_token, :token).and_return(token)
-          end
-          session[:github_auth_state_key] = valid_auth_state
-        end
+      it "updates access token if state param is valid" do
+        token = "asdasd12345"
 
-        it "updates access token if state param is valid" do
-          token = "asdasd12345"
+        get :callback, params: { state: valid_auth_state }
 
-          get :callback, params: { state: valid_auth_state }
+        expect(session[:github_access_token]).to eq(token)
+        expect(controller).to redirect_to(status_import_github_url)
+      end
 
-          expect(session[:github_access_token]).to eq(token)
-          expect(controller).to redirect_to(status_import_github_url)
-        end
+      it "includes namespace_id from query params if it is present" do
+        namespace_id = 1
 
-        it "includes namespace_id from query params if it is present" do
-          namespace_id = 1
+        get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
 
-          get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
-
-          expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
-        end
+        expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
       end
     end
   end
@@ -138,7 +108,6 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       it 'calls repos list from provider with expected args' do
         expect_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |client|
           expect(client).to receive(:repos)
-            .with(expected_filter, expected_options)
             .and_return({ repos: [], page_info: {}, count: 0 })
         end
 
@@ -160,10 +129,6 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     let(:pagination_params) { { before: nil, after: nil } }
     let(:relation_params) { { relation_type: nil, organization_login: '' } }
     let(:provider_repos) { [] }
-    let(:expected_filter) { '' }
-    let(:expected_options) do
-      pagination_params.merge(relation_params).merge(first: 25)
-    end
 
     before do
       allow_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |proxy|
@@ -287,21 +252,11 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       let(:organization_login) { 'test-login' }
       let(:params) { pagination_params.merge(relation_type: 'organization', organization_login: organization_login) }
       let(:pagination_defaults) { { first: 25 } }
-      let(:expected_options) do
-        pagination_defaults.merge(pagination_params).merge(
-          relation_type: 'organization', organization_login: organization_login
-        )
-      end
 
       it_behaves_like 'calls repos through Clients::Proxy with expected args'
 
       context 'when organization_login is too long and with ":"' do
         let(:organization_login) { ":#{Array.new(270) { ('a'..'z').to_a.sample }.join}" }
-        let(:expected_options) do
-          pagination_defaults.merge(pagination_params).merge(
-            relation_type: 'organization', organization_login: organization_login.slice(1, 254)
-          )
-        end
 
         it_behaves_like 'calls repos through Clients::Proxy with expected args'
       end
@@ -310,7 +265,6 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     context 'when filtering' do
       let(:filter_param) { FFaker::Lorem.word }
       let(:params) { { filter: filter_param } }
-      let(:expected_filter) { filter_param }
 
       it_behaves_like 'calls repos through Clients::Proxy with expected args'
 
@@ -332,7 +286,6 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
       context 'when user input contains colons and spaces' do
         let(:filter_param) { ' test1:test2 test3 : test4 ' }
-        let(:expected_filter) { 'test1test2test3test4' }
 
         it_behaves_like 'calls repos through Clients::Proxy with expected args'
       end

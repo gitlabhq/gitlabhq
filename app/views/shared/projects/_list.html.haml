@@ -1,3 +1,4 @@
+- add_page_specific_style 'page_bundles/projects'
 - projects_limit = 20 unless local_assigns[:projects_limit]
 - avatar = true unless local_assigns[:avatar] == false
 - use_creator_avatar = false unless local_assigns[:use_creator_avatar] == true
@@ -27,7 +28,7 @@
 - explore_groups_button_label = _('Explore groups')
 - explore_groups_button_link = explore_groups_path
 
-.js-projects-list-holder{ data: { qa_selector: 'projects_list' } }
+.js-projects-list-holder{ data: { testid: 'projects-list' } }
   - if any_projects?(projects)
     - load_pipeline_status(projects) if pipeline_status
     - load_max_project_member_accesses(projects) # Prime cache used in shared/projects/project view rendered below

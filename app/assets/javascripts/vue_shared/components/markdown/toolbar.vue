@@ -2,8 +2,6 @@
 <script>
 import { GlButton, GlLoadingIcon, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { updateText } from '~/lib/utils/text_markdown';
-import { __, sprintf } from '~/locale';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import EditorModeSwitcher from './editor_mode_switcher.vue';
 
 export default {
@@ -56,23 +54,6 @@ export default {
         });
       }
     },
-    handleEditorModeChanged(isFirstSwitch) {
-      if (isFirstSwitch) {
-        this.insertIntoTextarea(
-          __(`### Rich text editor`),
-          '',
-          sprintf(
-            __(
-              'Try out **styling** _your_ content right here or read the [direction](%{directionUrl}).',
-            ),
-            {
-              directionUrl: `${PROMO_URL}/direction/plan/knowledge/content_editor/`,
-            },
-          ),
-        );
-      }
-      this.$emit('enableContentEditor');
-    },
   },
 };
 </script>
@@ -91,7 +72,7 @@ export default {
       v-if="showEditorModeSwitcher"
       size="small"
       value="markdown"
-      @switch="handleEditorModeChanged"
+      @switch="$emit('enableContentEditor')"
     />
     <div class="gl-display-flex">
       <div v-if="canAttachFile" class="uploading-container gl-font-sm gl-line-height-32 gl-mr-3">
@@ -152,6 +133,7 @@ export default {
         category="tertiary"
         size="small"
         :title="__('Markdown is supported')"
+        :aria-label="__('Markdown is supported')"
         class="gl-px-3!"
       />
     </div>

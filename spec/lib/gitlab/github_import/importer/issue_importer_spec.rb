@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cache, feature_category: :importers do
   let_it_be(:work_item_type_id) { ::WorkItems::Type.default_issue_type.id }
 
   let(:project) { create(:project) }
@@ -76,6 +76,27 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
         .with(10)
 
       importer.execute
+    end
+
+    it 'caches the created issue ID even if importer later fails' do
+      error = StandardError.new('mocked error')
+
+      allow_next_instance_of(described_class) do |importer|
+        allow(importer)
+          .to receive(:create_issue)
+          .and_return(10)
+        allow(importer)
+          .to receive(:create_assignees)
+          .and_raise(error)
+      end
+
+      expect_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+        expect(finder)
+          .to receive(:cache_database_id)
+          .with(10)
+      end
+
+      expect { importer.execute }.to raise_error(error)
     end
   end
 
@@ -159,21 +180,6 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
           .and_call_original
 
         importer.create_issue
-      end
-    end
-
-    context 'when the import fails due to a foreign key error' do
-      it 'does not raise any errors' do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(issue)
-          .and_return([user.id, true])
-
-        expect(importer)
-          .to receive(:insert_and_return_id)
-          .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
-
-        expect { importer.create_issue }.not_to raise_error
       end
     end
 

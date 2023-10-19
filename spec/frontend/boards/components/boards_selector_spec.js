@@ -1,4 +1,4 @@
-import { GlDropdown, GlLoadingIcon, GlDropdownSectionHeader } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
@@ -13,7 +13,7 @@ import projectRecentBoardsQuery from '~/boards/graphql/project_recent_boards.que
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   mockBoard,
   mockGroupAllBoardsResponse,
@@ -47,17 +47,11 @@ describe('BoardsSelector', () => {
     });
   };
 
-  const fillSearchBox = (filterTerm) => {
-    const searchBox = wrapper.findComponent({ ref: 'searchBox' });
-    const searchBoxInput = searchBox.find('input');
-    searchBoxInput.setValue(filterTerm);
-    searchBoxInput.trigger('input');
-  };
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
 
-  const getDropdownItems = () => wrapper.findAllByTestId('dropdown-item');
-  const getDropdownHeaders = () => wrapper.findAllComponents(GlDropdownSectionHeader);
-  const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const fillSearchBox = async (filterTerm) => {
+    await findDropdown().vm.$emit('search', filterTerm);
+  };
 
   const projectBoardsQueryHandlerSuccess = jest
     .fn()
@@ -96,7 +90,7 @@ describe('BoardsSelector', () => {
       [groupRecentBoardsQuery, groupRecentBoardsQueryHandlerSuccess],
     ]);
 
-    wrapper = mountExtended(BoardsSelector, {
+    wrapper = shallowMountExtended(BoardsSelector, {
       store,
       apolloProvider: fakeApollo,
       propsData: {
@@ -142,13 +136,19 @@ describe('BoardsSelector', () => {
       });
 
       it('shows loading spinner', async () => {
+        createComponent({
+          provide: {
+            isApolloBoard: true,
+          },
+          props: {
+            isCurrentBoardLoading: true,
+          },
+        });
         // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
-        findDropdown().vm.$emit('show');
+        findDropdown().vm.$emit('shown');
         await nextTick();
 
-        expect(getLoadingIcon().exists()).toBe(true);
-        expect(getDropdownHeaders()).toHaveLength(0);
-        expect(getDropdownItems()).toHaveLength(0);
+        expect(findDropdown().props('loading')).toBe(true);
       });
     });
 
@@ -158,7 +158,7 @@ describe('BoardsSelector', () => {
         await nextTick();
 
         // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
-        findDropdown().vm.$emit('show');
+        findDropdown().vm.$emit('shown');
 
         await nextTick();
       });
@@ -167,9 +167,8 @@ describe('BoardsSelector', () => {
         expect(projectBoardsQueryHandlerSuccess).toHaveBeenCalled();
       });
 
-      it('hides loading spinner', async () => {
-        await nextTick();
-        expect(getLoadingIcon().exists()).toBe(false);
+      it('hides loading spinner', () => {
+        expect(findDropdown().props('loading')).toBe(false);
       });
 
       describe('filtering', () => {
@@ -178,25 +177,26 @@ describe('BoardsSelector', () => {
         });
 
         it('shows all boards without filtering', () => {
-          expect(getDropdownItems()).toHaveLength(boards.length + recentIssueBoards.length);
+          expect(findDropdown().props('items')[0].text).toBe('Recent');
+          expect(findDropdown().props('items')[0].options).toHaveLength(recentIssueBoards.length);
+          expect(findDropdown().props('items')[1].text).toBe('All');
+          expect(findDropdown().props('items')[1].options).toHaveLength(
+            boards.length - recentIssueBoards.length,
+          );
         });
 
         it('shows only matching boards when filtering', async () => {
           const filterTerm = 'board1';
           const expectedCount = boards.filter((board) => board.name.includes(filterTerm)).length;
 
-          fillSearchBox(filterTerm);
-
-          await nextTick();
-          expect(getDropdownItems()).toHaveLength(expectedCount);
+          await fillSearchBox(filterTerm);
+          expect(findDropdown().props('items')).toHaveLength(expectedCount);
         });
 
         it('shows message if there are no matching boards', async () => {
-          fillSearchBox('does not exist');
+          await fillSearchBox('does not exist');
 
-          await nextTick();
-          expect(getDropdownItems()).toHaveLength(0);
-          expect(wrapper.text().includes('No matching boards found')).toBe(true);
+          expect(findDropdown().props('noResultsText')).toBe('No matching boards found');
         });
       });
 
@@ -204,14 +204,18 @@ describe('BoardsSelector', () => {
         it('shows only when boards are greater than 10', async () => {
           await nextTick();
           expect(projectRecentBoardsQueryHandlerSuccess).toHaveBeenCalled();
-          expect(getDropdownHeaders()).toHaveLength(2);
+
+          expect(findDropdown().props('items')).toHaveLength(2);
+          expect(findDropdown().props('items')[0].text).toBe('Recent');
+          expect(findDropdown().props('items')[1].text).toBe('All');
         });
 
         it('does not show when boards are less than 10', async () => {
           createComponent({ projectBoardsQueryHandler: smallBoardsQueryHandlerSuccess });
 
           await nextTick();
-          expect(getDropdownHeaders()).toHaveLength(0);
+
+          expect(findDropdown().props('items')).toHaveLength(0);
         });
 
         it('does not show when recentIssueBoards api returns empty array', async () => {
@@ -220,14 +224,14 @@ describe('BoardsSelector', () => {
           });
 
           await nextTick();
-          expect(getDropdownHeaders()).toHaveLength(0);
+          expect(findDropdown().props('items')).toHaveLength(0);
         });
 
         it('does not show when search is active', async () => {
           fillSearchBox('Random string');
 
           await nextTick();
-          expect(getDropdownHeaders()).toHaveLength(0);
+          expect(findDropdown().props('items')).toHaveLength(0);
         });
       });
     });
@@ -248,7 +252,7 @@ describe('BoardsSelector', () => {
       await nextTick();
 
       // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
-      findDropdown().vm.$emit('show');
+      findDropdown().vm.$emit('shown');
 
       await nextTick();
 
@@ -272,7 +276,7 @@ describe('BoardsSelector', () => {
       await nextTick();
 
       // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
-      findDropdown().vm.$emit('show');
+      findDropdown().vm.$emit('shown');
 
       await waitForPromises();
 
@@ -286,6 +290,7 @@ describe('BoardsSelector', () => {
         createStore();
         createComponent({ provide: { multipleIssueBoardsAvailable: true } });
         expect(findDropdown().exists()).toBe(true);
+        expect(findDropdown().props('toggleText')).toBe('Select board');
       });
     });
 
@@ -296,6 +301,7 @@ describe('BoardsSelector', () => {
           provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: true },
         });
         expect(findDropdown().exists()).toBe(true);
+        expect(findDropdown().props('toggleText')).toBe('Select board');
       });
     });
 
@@ -317,6 +323,7 @@ describe('BoardsSelector', () => {
         provide: { isApolloBoard: true },
       });
       expect(findDropdown().props('loading')).toBe(true);
+      expect(findDropdown().props('toggleText')).toBe('Select board');
     });
   });
 });

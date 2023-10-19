@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_category: :importers do
-  describe '#run' do
+  describe '#run', :clean_gitlab_redis_cache do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
@@ -49,6 +49,11 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
       expect(imported_project.group).to eq(group)
       expect(imported_project.visibility).to eq(project_data['visibility'])
       expect(imported_project.created_at).to eq(project_data['created_at'])
+    end
+
+    it 'skips duplicate projects on pipeline re-run' do
+      expect { project_pipeline.run }.to change { Project.count }.by(1)
+      expect { project_pipeline.run }.not_to change { Project.count }
     end
   end
 

@@ -153,10 +153,6 @@ export default {
     },
   },
   mixins: [mergeRequestQueryVariablesMixin],
-  provide: {
-    expandDetailsTooltip: __('Expand merge details'),
-    collapseDetailsTooltip: __('Collapse merge details'),
-  },
   props: {
     mrData: {
       type: Object,
@@ -576,7 +572,7 @@ export default {
         </mr-widget-alert-message>
       </div>
 
-      <div class="mr-widget-section" data-qa-selector="mr_widget_content">
+      <div class="mr-widget-section" data-testid="mr-widget-content">
         <component :is="componentName" :mr="mr" :service="service" />
         <ready-to-merge
           v-if="mr.commitsCount"

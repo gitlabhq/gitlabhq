@@ -50,6 +50,7 @@
               access_levels: GroupMember.access_level_roles,
               default_access_level: Gitlab::Access::GUEST,
               prefix: :resource_access_token,
+              description_prefix: :group_access_token,
               help_path: help_page_path('user/group/settings/group_access_tokens', anchor: 'scopes-for-a-group-access-token')
 
   #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true } }

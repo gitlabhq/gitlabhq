@@ -143,8 +143,10 @@ module Gitlab
             # rubocop:disable Rails/SquishedSQLHeredocs
             sql = <<~SQL
               SELECT indexname, indexdef
-              FROM pg_indexes
-              WHERE indexname NOT LIKE '%_pkey' AND schemaname IN ($1, $2);
+              FROM pg_indexes i
+              LEFT JOIN pg_constraint AS c ON i.indexname = c.conname
+              WHERE i.indexname NOT LIKE '%_pkey' AND schemaname IN ($1, $2)
+              AND c.conname IS NULL;
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 

@@ -15,16 +15,13 @@ module RuboCop
         --format RuboCop::Formatter::GracefulFormatter
       ]
 
-      available_cops = RuboCop::Cop::Registry.global.to_h
-
-      cop_names, paths = args.partition { available_cops.key?(_1) }
+      # Convert from Rake::TaskArguments into an Array to make `any?` work as expected.
+      cop_names = args.to_a
 
       if cop_names.any?
         list = cop_names.sort.join(',')
         options.concat ['--only', list]
       end
-
-      options.concat(paths)
 
       puts <<~MSG
         Running RuboCop in graceful mode:

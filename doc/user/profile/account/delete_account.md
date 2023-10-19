@@ -1,7 +1,7 @@
 ---
 type: howto
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -61,13 +61,18 @@ When deleting users, you can either:
 - Delete the user and their contributions, including:
   - Abuse reports.
   - Emoji reactions.
-  - Epics.
   - Groups of which the user is the only user with the Owner role.
+  - Personal access tokens.
+  - Epics.
   - Issues.
   - Merge requests.
-  - Notes and comments.
-  - Personal access tokens.
   - Snippets.
+  - [Notes and comments](../../../api/notes.md)
+    on other users' [commits](../../project/repository/index.md#commit-changes-to-a-repository),
+    [epics](../../group/epics/index.md),
+    [issues](../../project/issues/index.md),
+    [merge requests](../../project/merge_requests/index.md)
+    and [snippets](../../snippets.md).
 
 An alternative to deleting is [blocking a user](../../../administration/moderate_users.md#block-a-user).
 

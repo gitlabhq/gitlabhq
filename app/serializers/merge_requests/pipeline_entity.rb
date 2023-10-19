@@ -12,7 +12,8 @@ class MergeRequests::PipelineEntity < Grape::Entity
   end
 
   expose :flags do
-    expose :merged_result_pipeline?, as: :merge_request_pipeline
+    expose :merged_result_pipeline?, as: :merge_request_pipeline # deprecated, use merged_result_pipeline going forward
+    expose :merged_result_pipeline?, as: :merged_result_pipeline
   end
 
   expose :commit, using: CommitEntity

@@ -168,7 +168,7 @@ class TodoService
   def mark_todo(target, current_user)
     project = target.project
     attributes = attributes_for_todo(project, target, current_user, Todo::MARKED)
-    create_todos(current_user, attributes, project&.namespace, project)
+    create_todos(current_user, attributes, target_namespace(target), project)
   end
 
   def todo_exist?(issuable, current_user)
@@ -338,7 +338,7 @@ class TodoService
       project = target.project
       assignees = target.assignees - old_assignees
       attributes = attributes_for_todo(project, target, author, Todo::ASSIGNED)
-      create_todos(assignees, attributes, project.namespace, project)
+      create_todos(assignees, attributes, target_namespace(target), project)
     end
   end
 
@@ -386,6 +386,7 @@ class TodoService
       attributes.merge!(target_id: nil, commit_id: target.id)
     when Issue
       attributes[:issue_type] = target.issue_type
+      attributes[:group] = target.namespace if target.project.blank?
     when Discussion
       attributes.merge!(target_type: nil, target_id: nil, discussion: target)
     end
@@ -468,6 +469,11 @@ class TodoService
     end
 
     attributes
+  end
+
+  def target_namespace(target)
+    project = target.project
+    project&.namespace || target.try(:namespace)
   end
 end
 

@@ -14,7 +14,7 @@ function retry_times_sleep() {
 
   for i in $(seq "${number_of_retries}" -1 1); do
     sleep "$sleep_seconds"s
-    echo "[$(date '+%H:%M:%S')] Retrying $i..."
+    echo "[$(date '+%H:%M:%S')] Retry attempts left: $i..."
     if eval "$@"; then
       return 0
     fi
@@ -54,6 +54,7 @@ function test_url() {
   status=$(eval "${cmd}")
 
   if [[ $status == "200" ]]; then
+    echo -e "\n[$(date '+%H:%M:%S')] Curl to $url successful with 200 response"
     return 0
   else
     # We display the error in the job to allow for better debugging

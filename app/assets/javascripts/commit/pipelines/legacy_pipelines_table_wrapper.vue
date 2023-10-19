@@ -2,8 +2,8 @@
 import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
-import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
-import { PipelineKeyOptions } from '~/ci/constants';
+import PipelinesTable from '~/ci/common/pipelines_table.vue';
+import { PIPELINE_ID_KEY } from '~/ci/constants';
 import eventHub from '~/ci/event_hub';
 import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';
 import PipelinesService from '~/ci/pipelines_page/services/pipelines_service';
@@ -13,7 +13,6 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
 
 export default {
-  PipelineKeyOptions,
   components: {
     GlButton,
     GlEmptyState,
@@ -21,7 +20,7 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlSprintf,
-    PipelinesTableComponent,
+    PipelinesTable,
     TablePagination,
   },
   mixins: [PipelinesMixin, glFeatureFlagMixin()],
@@ -180,6 +179,7 @@ export default {
       }
     },
   },
+  pipelineIdKey: PIPELINE_ID_KEY,
   modal: {
     actionPrimary: {
       text: s__('Pipeline|Run pipeline'),
@@ -225,6 +225,7 @@ export default {
     <gl-empty-state
       v-else-if="shouldRenderErrorState"
       :svg-path="errorStateSvgPath"
+      :svg-height="null"
       :title="
         s__(`Pipelines|There was an error fetching the pipelines.
         Try again in a few moments or contact your support team.`)
@@ -279,11 +280,14 @@ export default {
         {{ $options.i18n.runPipelineText }}
       </gl-button>
 
-      <pipelines-table-component
+      <pipelines-table
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
         :view-type="viewType"
-        :pipeline-key-option="$options.PipelineKeyOptions[0]"
+        :pipeline-id-type="$options.pipelineIdKey"
+        @cancel-pipeline="onCancelPipeline"
+        @refresh-pipelines-table="onRefreshPipelinesTable"
+        @retry-pipeline="onRetryPipeline"
       >
         <template #table-header-actions>
           <div v-if="canRenderPipelineButton" class="gl-text-right">
@@ -296,7 +300,7 @@ export default {
             </gl-button>
           </div>
         </template>
-      </pipelines-table-component>
+      </pipelines-table>
     </div>
 
     <gl-modal

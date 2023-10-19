@@ -152,8 +152,6 @@ module Gitlab
       message.delete_prefix(BOM_UTF8)
     end
 
-    private
-
     def force_encode_utf8(message)
       raise ArgumentError unless message.respond_to?(:force_encoding)
       return message if message.encoding == Encoding::UTF_8 && message.valid_encoding?
@@ -162,6 +160,8 @@ module Gitlab
 
       message.force_encoding("UTF-8")
     end
+
+    private
 
     # Escapes \x80 - \xFF characters not supported by UTF-8
     def escape_chars(char)

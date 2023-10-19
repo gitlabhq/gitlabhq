@@ -48,4 +48,61 @@ RSpec.describe MergeWorker, feature_category: :source_code_management do
       end
     end
   end
+
+  describe 'delegation to MergeRequests::MergeService' do
+    # Some ids that should be nonexistentn
+    let(:user_id) { -1 }
+    let(:merge_request_id) { -1 }
+    let(:params) { {} }
+
+    subject { described_class.new.perform(merge_request_id, user_id, params) }
+
+    context 'when user exists' do
+      let!(:user) { create(:user) }
+      let(:user_id) { user.id }
+
+      context 'and merge request exists' do
+        let!(:merge_request) { create(:merge_request, source_project: create(:project, :empty_repo)) }
+        let(:merge_request_id) { merge_request.id }
+        let(:user) { merge_request.author }
+        let(:merge_service_double) { instance_double(MergeRequests::MergeService) }
+
+        it 'delegates to MergeRequests::MergeService' do
+          expect(MergeRequests::MergeService).to receive(:new).with(
+            project: merge_request.target_project,
+            current_user: user,
+            params: { check_mergeability_retry_lease: true }
+          ).and_return(merge_service_double)
+
+          expect(merge_service_double).to receive(:execute)
+          subject
+        end
+
+        context 'and check_mergeability_retry_lease is specified' do
+          let(:params) { { check_mergeability_retry_lease: false } }
+
+          it 'does not change the check_mergeability_retry_lease parameter' do
+            expect(MergeRequests::MergeService).to receive(:new).with(
+              project: merge_request.target_project,
+              current_user: user,
+              params: params
+            ).and_return(merge_service_double)
+
+            expect(merge_service_double).to receive(:execute)
+            subject
+          end
+        end
+      end
+
+      it 'does not call MergeRequests::MergeService' do
+        expect(MergeRequests::MergeService).not_to receive(:new)
+        subject
+      end
+    end
+
+    it 'does not call MergeRequests::MergeService' do
+      expect(MergeRequests::MergeService).not_to receive(:new)
+      subject
+    end
+  end
 end

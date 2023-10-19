@@ -1,12 +1,15 @@
 <script>
-import { GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlLoadingIcon, GlTable, GlButton } from '@gitlab/ui';
 import Papa from 'papaparse';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import PapaParseAlert from '~/vue_shared/components/papa_parse_alert.vue';
+import { MAX_ROWS_TO_RENDER } from './constants';
 
 export default {
   components: {
     PapaParseAlert,
     GlTable,
+    GlButton,
     GlLoadingIcon,
   },
   props: {
@@ -25,7 +28,13 @@ export default {
       items: [],
       papaParseErrors: [],
       loading: true,
+      isTooLarge: false,
     };
+  },
+  computed: {
+    pathToRawFile() {
+      return setUrlParams({ plain: 1 });
+    },
   },
   mounted() {
     if (!this.remoteFile) {
@@ -43,7 +52,11 @@ export default {
   },
   methods: {
     handleParsedData(parsed) {
-      this.items = parsed.data;
+      if (parsed.data.length > MAX_ROWS_TO_RENDER) {
+        this.isTooLarge = true;
+      }
+
+      this.items = parsed.data.slice(0, MAX_ROWS_TO_RENDER);
 
       if (parsed.errors.length) {
         this.papaParseErrors = parsed.errors;
@@ -63,12 +76,28 @@ export default {
     <div v-else>
       <papa-parse-alert v-if="papaParseErrors.length" :papa-parse-errors="papaParseErrors" />
       <gl-table
-        :empty-text="__('No CSV data to display.')"
+        :empty-text="s__('CsvViewer|No CSV data to display.')"
         :items="items"
         :fields="$options.fields"
         show-empty
         thead-class="gl-display-none"
       />
+      <div
+        v-if="isTooLarge"
+        class="gl-display-flex gl-flex-direction-column gl-align-items-center gl-p-5"
+      >
+        <p data-testid="large-csv-text">
+          {{
+            s__(
+              'CsvViewer|The file is too large to render all the rows. To see the entire file, switch to the raw view.',
+            )
+          }}
+        </p>
+
+        <gl-button category="secondary" variant="confirm" :href="pathToRawFile">{{
+          s__('CsvViewer|View raw data')
+        }}</gl-button>
+      </div>
     </div>
   </div>
 </template>

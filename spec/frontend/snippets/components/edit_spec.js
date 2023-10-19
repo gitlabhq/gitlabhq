@@ -117,7 +117,8 @@ describe('Snippet Edit app', () => {
       .map((path) => `<input name="files[]" value="${path}">`)
       .join('');
   };
-  const setTitle = (val) => wrapper.findByTestId('snippet-title-input').vm.$emit('input', val);
+  const setTitle = (val) =>
+    wrapper.findByTestId('snippet-title-input-field').vm.$emit('input', val);
   const setDescription = (val) =>
     wrapper.findComponent(SnippetDescriptionEdit).vm.$emit('input', val);
 

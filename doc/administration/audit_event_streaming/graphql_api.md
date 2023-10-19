@@ -112,8 +112,19 @@ mutation above.
 
 ```graphql
 mutation {
-  auditEventsStreamingHeadersCreate(input: { destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/24601", key: "foo", value: "bar" }) {
+  auditEventsStreamingHeadersCreate(input: {
+    destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
+     key: "foo",
+     value: "bar",
+     active: false
+  }) {
     errors
+    header {
+      id
+      key
+      value
+      active
+    }
   }
 }
 ```
@@ -146,6 +157,7 @@ query {
             key
             value
             id
+            active
           }
         }
         eventTypeFilters
@@ -326,13 +338,14 @@ To enable streaming and add a configuration, use the
 
 ```graphql
 mutation {
-  googleCloudLoggingConfigurationCreate(input: { groupPath: "my-group", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events" } ) {
+  googleCloudLoggingConfigurationCreate(input: { groupPath: "my-group", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events", name: "destination-name" } ) {
     errors
     googleCloudLoggingConfiguration {
       id
       googleProjectIdName
       logIdName
       clientEmail
+      name
     }
     errors
   }
@@ -365,6 +378,7 @@ query {
         logIdName
         googleProjectIdName
         clientEmail
+        name
       }
     }
   }
@@ -385,12 +399,12 @@ Prerequisite:
 
 To update streaming configuration for a top-level group, use the
 `googleCloudLoggingConfigurationUpdate` mutation type. You can retrieve the configuration ID
-by [listing all the external destinations](#list-streaming-destinations).
+by [listing all the external destinations](#list-google-cloud-logging-configurations).
 
 ```graphql
 mutation {
   googleCloudLoggingConfigurationUpdate(
-    input: {id: "gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events"}
+    input: {id: "gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events", name: "updated-destination-name" }
   ) {
     errors
     googleCloudLoggingConfiguration {
@@ -398,6 +412,7 @@ mutation {
       logIdName
       googleProjectIdName
       clientEmail
+      name
     }
   }
 }
@@ -420,7 +435,7 @@ Prerequisite:
 
 Users with the Owner role for a group can delete streaming configurations using the
 `googleCloudLoggingConfigurationDestroy` mutation type. You can retrieve the configurations ID
-by [listing all the streaming destinations](#list-streaming-destinations) for the group.
+by [listing all the streaming destinations](#list-google-cloud-logging-configurations) for the group.
 
 ```graphql
 mutation {
@@ -441,9 +456,13 @@ Streaming configuration is deleted if:
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 > - Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
 
+Manage streaming destinations for an entire instance.
+
+### HTTP destinations
+
 Manage HTTP streaming destinations for an entire instance.
 
-### Add a new HTTP destination
+#### Add a new HTTP destination
 
 Add a new HTTP streaming destination to an instance.
 
@@ -500,13 +519,15 @@ mutation {
     {
       destinationId: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/42",
       key: "foo",
-      value: "bar"
+      value: "bar",
+      active: true
     }) {
     errors
     header {
       id
       key
       value
+      active
     }
   }
 }
@@ -514,7 +535,7 @@ mutation {
 
 The header is created if the returned `errors` object is empty.
 
-### List streaming destinations
+#### List streaming destinations
 
 List all HTTP streaming destinations for an instance.
 
@@ -538,6 +559,7 @@ query {
           id
           key
           value
+          active
         }
       }
       eventTypeFilters
@@ -550,7 +572,7 @@ If the resulting list is empty, then audit streaming is not enabled for the inst
 
 You need the ID values returned by this query for the update and delete mutations.
 
-### Update streaming destinations
+#### Update streaming destinations
 
 Update a HTTP streaming destination for an instance.
 
@@ -590,12 +612,13 @@ by [listing all the custom HTTP headers](#list-streaming-destinations-1) for the
 
 ```graphql
 mutation {
-  auditEventsStreamingInstanceHeadersUpdate(input: { headerId: "gid://gitlab/AuditEvents::Streaming::InstanceHeader/2", key: "new-key", value: "new-value" }) {
+  auditEventsStreamingInstanceHeadersUpdate(input: { headerId: "gid://gitlab/AuditEvents::Streaming::InstanceHeader/2", key: "new-key", value: "new-value", active: false }) {
     errors
     header {
       id
       key
       value
+      active
     }
   }
 }
@@ -603,7 +626,7 @@ mutation {
 
 The header is updated if the returned `errors` object is empty.
 
-### Delete streaming destinations
+#### Delete streaming destinations
 
 Delete streaming destinations for an entire instance.
 
@@ -644,7 +667,7 @@ mutation {
 
 The header is deleted if the returned `errors` object is empty.
 
-### Event type filters
+#### Event type filters
 
 > Event type filters API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10868) in GitLab 16.2.
 
@@ -653,7 +676,7 @@ If the feature is enabled with no filters, the destination receives all audit ev
 
 A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
 
-#### Use the API to add an event type filter
+##### Use the API to add an event type filter
 
 Prerequisites:
 
@@ -677,7 +700,7 @@ Event type filters are added if:
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
 
-#### Use the API to remove an event type filter
+##### Use the API to remove an event type filter
 
 Prerequisites:
 
@@ -697,6 +720,137 @@ mutation {
 ```
 
 Event type filters are removed if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+### Google Cloud Logging destinations
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11303) in GitLab 16.5.
+
+Manage Google Cloud Logging destinations for an entire instance.
+
+Before setting up Google Cloud Logging streaming audit events, you must satisfy [the prerequisites](index.md#prerequisites).
+
+#### Add a new Google Cloud Logging destination
+
+Add a new Google Cloud Logging configuration destination to an instance.
+
+Prerequisites:
+
+- You have administrator access to the instance.
+- You have a Google Cloud project with the necessary permissions to create service accounts and enable Google Cloud Logging.
+
+To enable streaming and add a configuration, use the
+`instanceGoogleCloudLoggingConfigurationCreate` mutation in the GraphQL API.
+
+```graphql
+mutation {
+  instanceGoogleCloudLoggingConfigurationCreate(input: { googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events", name: "destination-name" } ) {
+    errors
+    googleCloudLoggingConfiguration {
+      id
+      googleProjectIdName
+      logIdName
+      clientEmail
+      name
+    }
+    errors
+  }
+}
+```
+
+Event streaming is enabled if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+#### List Google Cloud Logging configurations
+
+List all Google Cloud Logging configuration destinations for an instance.
+
+Prerequisite:
+
+- You have administrator access to the instance.
+
+You can view a list of streaming configurations for an instance using the `instanceGoogleCloudLoggingConfigurations` query
+type.
+
+```graphql
+query {
+  instanceGoogleCloudLoggingConfigurations {
+    nodes {
+      id
+      logIdName
+      googleProjectIdName
+      clientEmail
+      name
+    }
+  }
+}
+```
+
+If the resulting list is empty, audit streaming is not enabled for the instance.
+
+You need the ID values returned by this query for the update and delete mutations.
+
+#### Update Google Cloud Logging configurations
+
+Update the Google Cloud Logging configuration destinations for an instance.
+
+Prerequisite:
+
+- You have administrator access to the instance.
+
+To update streaming configuration for an instance, use the
+`instanceGoogleCloudLoggingConfigurationUpdate` mutation type. You can retrieve the configuration ID
+by [listing all the external destinations](#list-google-cloud-logging-configurations-1).
+
+```graphql
+mutation {
+  instanceGoogleCloudLoggingConfigurationUpdate(
+    input: {id: "gid://gitlab/AuditEvents::Instance::GoogleCloudLoggingConfiguration/1", googleProjectIdName: "updated-google-id", clientEmail: "updated@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events", name: "updated name"}
+  ) {
+    errors
+    instanceGoogleCloudLoggingConfiguration {
+      id
+      logIdName
+      googleProjectIdName
+      clientEmail
+      name
+    }
+  }
+}
+```
+
+Streaming configuration is updated if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+#### Delete Google Cloud Logging configurations
+
+Delete streaming destinations for an instance.
+
+When the last destination is successfully deleted, streaming is disabled for the instance.
+
+Prerequisite:
+
+- You have administrator access to the instance.
+
+To delete streaming configurations, use the
+`instanceGoogleCloudLoggingConfigurationDestroy` mutation type. You can retrieve the configurations ID
+by [listing all the streaming destinations](#list-google-cloud-logging-configurations-1) for the instance.
+
+```graphql
+mutation {
+  instanceGoogleCloudLoggingConfigurationDestroy(input: { id: "gid://gitlab/AuditEvents::Instance::GoogleCloudLoggingConfiguration/1" }) {
+    errors
+  }
+}
+```
+
+Streaming configuration is deleted if:
 
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.

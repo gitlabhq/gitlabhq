@@ -85,13 +85,29 @@ To enable the agent server on multiple nodes:
    gitlab_kas['private_api_listen_address'] = '0.0.0.0:8155'
    gitlab_kas['env'] = {
      'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
-     'OWN_PRIVATE_API_URL' => 'grpc://<ip_or_hostname_of_this_host>:8155'
+     'OWN_PRIVATE_API_URL' => 'grpc://<ip_or_hostname_of_this_host>:8155' # use grpcs:// when using TLS on the private API endpoint
+
+     # 'OWN_PRIVATE_API_CIDR' => '10.0.0.0/8', # IPv4 example
+     # 'OWN_PRIVATE_API_CIDR' => '2001:db8:8a2e:370::7334/64', # IPv6 example
+     # 'OWN_PRIVATE_API_PORT' => '8155',
+     # 'OWN_PRIVATE_API_SCHEME' => 'grpc',
    }
 
    gitlab_rails['gitlab_kas_external_url'] = 'wss://gitlab.example.com/-/kubernetes-agent/'
    gitlab_rails['gitlab_kas_internal_url'] = 'grpc://kas.internal.gitlab.example.com'
    gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://gitlab.example.com/-/kubernetes-agent/k8s-proxy/'
    ```
+
+   You might not be able to specify an exact IP address or host name in the `OWN_PRIVATE_API_URL` variable.
+   For example, if the kas host is assigned an IP dynamically.
+
+   In this situation, you can configure `OWN_PRIVATE_API_CIDR` instead to set up kas to dynamically construct `OWN_PRIVATE_API_URL`:
+
+   - Comment out `OWN_PRIVATE_API_URL` to disable this variable.
+   - Configure `OWN_PRIVATE_API_CIDR` to specify what network kas listens on. When you start kas, kas looks at
+     the IP addresses the host is assigned, and uses the address that matches the specified CIDR as its own private IP address.
+   - By default, kas uses the port from the `private_api_listen_address` parameter. Configure `OWN_PRIVATE_API_PORT` to use a different port.
+   - Optional. By default, kas uses the `grpc` scheme. If you use TLS on the private API endpoint, configure `OWN_PRIVATE_API_SCHEME=grpcs`.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 

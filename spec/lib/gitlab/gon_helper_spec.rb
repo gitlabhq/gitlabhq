@@ -206,6 +206,7 @@ RSpec.describe Gitlab::GonHelper do
       context 'when feature flag is false' do
         before do
           stub_feature_flags(browsersdk_tracking: false)
+          stub_feature_flags(gl_analytics_tracking: false)
         end
 
         it "doesn't set the analytics_url and analytics_id" do

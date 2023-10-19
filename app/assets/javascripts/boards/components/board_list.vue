@@ -653,7 +653,7 @@ export default {
   <div
     v-show="!list.collapsed"
     class="board-list-component gl-relative gl-h-full gl-display-flex gl-flex-direction-column gl-min-h-0"
-    data-qa-selector="board_list_cards_area"
+    data-testid="board-list-cards-area"
   >
     <div
       v-if="loading"

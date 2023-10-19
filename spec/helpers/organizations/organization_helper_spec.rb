@@ -6,12 +6,19 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:organization) { build_stubbed(:organization) }
   let_it_be(:new_group_path) { '/groups/new' }
   let_it_be(:new_project_path) { '/projects/new' }
+  let_it_be(:organizations_empty_state_svg_path) { 'illustrations/empty-state/empty-organizations-md.svg' }
+  let_it_be(:organizations_path) { '/-/organizations/' }
+  let_it_be(:root_url) { 'http://127.0.0.1:3000/' }
   let_it_be(:groups_empty_state_svg_path) { 'illustrations/empty-state/empty-groups-md.svg' }
   let_it_be(:projects_empty_state_svg_path) { 'illustrations/empty-state/empty-projects-md.svg' }
 
   before do
     allow(helper).to receive(:new_group_path).and_return(new_group_path)
     allow(helper).to receive(:new_project_path).and_return(new_project_path)
+    allow(helper).to receive(:image_path).with(organizations_empty_state_svg_path)
+      .and_return(organizations_empty_state_svg_path)
+    allow(helper).to receive(:organizations_path).and_return(organizations_path)
+    allow(helper).to receive(:root_url).and_return(root_url)
     allow(helper).to receive(:image_path).with(groups_empty_state_svg_path).and_return(groups_empty_state_svg_path)
     allow(helper).to receive(:image_path).with(projects_empty_state_svg_path).and_return(projects_empty_state_svg_path)
   end
@@ -58,6 +65,28 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
           'projects_empty_state_svg_path' => projects_empty_state_svg_path
+        }
+      )
+    end
+  end
+
+  describe '#organization_index_app_data' do
+    it 'returns expected data object' do
+      expect(helper.organization_index_app_data).to eq(
+        {
+          new_organization_url: new_organization_path,
+          organizations_empty_state_svg_path: organizations_empty_state_svg_path
+        }
+      )
+    end
+  end
+
+  describe '#organization_new_app_data' do
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.organization_new_app_data)).to eq(
+        {
+          'organizations_path' => organizations_path,
+          'root_url' => root_url
         }
       )
     end

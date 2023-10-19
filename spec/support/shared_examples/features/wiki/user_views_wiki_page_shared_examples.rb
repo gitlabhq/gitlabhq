@@ -6,7 +6,6 @@
 
 RSpec.shared_examples 'User views a wiki page' do
   include WikiHelpers
-  include ContentEditorHelpers
 
   let(:path) { 'image.png' }
   let(:wiki_page) do
@@ -58,7 +57,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
       first(:link, text: 'three').click
 
-      expect(find('[data-testid="wiki_page_title"]')).to have_content('three')
+      expect(find('[data-testid="wiki-page-title"]')).to have_content('three')
 
       click_on('Edit')
 
@@ -123,7 +122,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'shows the page history' do
       visit(wiki_page_path(wiki, wiki_page))
 
-      expect(page).to have_selector('[data-testid="wiki_edit_button"]')
+      expect(page).to have_selector('[data-testid="wiki-edit-button"]')
 
       click_on('Page history')
 
@@ -135,7 +134,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'does not show the "Edit" button' do
       visit(wiki_page_path(wiki, wiki_page, version_id: wiki_page.versions.last.id))
 
-      expect(page).not_to have_selector('[data-testid="wiki_edit_button"]')
+      expect(page).not_to have_selector('[data-testid="wiki-edit-button"]')
     end
 
     context 'show the diff' do
@@ -210,7 +209,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'preserves the special characters' do
       visit(wiki_page_path(wiki, wiki_page))
 
-      expect(page).to have_css('[data-testid="wiki_page_title"]', text: title)
+      expect(page).to have_css('[data-testid="wiki-page-title"]', text: title)
       expect(page).to have_css('.wiki-pages li', text: title)
     end
   end
@@ -225,7 +224,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'safely displays the page' do
       visit(wiki_page_path(wiki, wiki_page))
 
-      expect(page).to have_selector('[data-testid="wiki_page_title"]', text: title)
+      expect(page).to have_selector('[data-testid="wiki-page-title"]', text: title)
       expect(page).to have_content('foo bar')
     end
   end
@@ -252,7 +251,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
 
     it 'does not show "Edit" button' do
-      expect(page).not_to have_selector('[data-testid="wiki_edit_button"]')
+      expect(page).not_to have_selector('[data-testid="wiki-edit-button"]')
     end
 
     it 'shows error' do
@@ -270,7 +269,6 @@ RSpec.shared_examples 'User views a wiki page' do
     wait_for_svg_to_be_loaded
 
     click_link "Create your first page"
-    close_rich_text_promo_popover_if_present
 
     expect(page).to have_content('Create New Page')
   end

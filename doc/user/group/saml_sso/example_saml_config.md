@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication and Authorization
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
@@ -50,7 +50,7 @@ Provisioning:
 
 ![Azure AD SCIM Provisioning](img/AzureAD-scim_provisioning.png)
 
-Attribute mapping:
+### Attribute mapping
 
 ![Azure AD SCIM Attribute Mapping](img/AzureAD-scim_attribute_mapping.png)
 
@@ -70,15 +70,15 @@ If available, you can add user-friendly group names instead. When setting up Azu
 
 ## Google Workspace
 
-Basic SAML app configuration:
+### Basic SAML app configuration
 
 ![Google Workspace basic SAML](img/GoogleWorkspace-basic-SAML_v14_10.png)
 
-User claims and attributes:
+### User claims and attributes
 
 ![Google Workspace user claims](img/GoogleWorkspace-claims_v14_10.png)
 
-IdP links and certificate:
+### IdP links and certificate
 
 NOTE:
 Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint required by GitLab for configuring SAML, download the certificate and calculate the SHA1 certificate
@@ -88,33 +88,35 @@ fingerprint.
 
 ## Okta
 
-Basic SAML app configuration for GitLab.com groups:
+### Basic SAML app configuration for GitLab.com groups
 
 ![Okta basic SAML](img/Okta-GroupSAML.png)
 
-Basic SAML app configuration for GitLab self-managed:
+### Basic SAML app configuration for GitLab self-managed
 
 ![Okta admin panel view](img/Okta-SM.png)
 
-User claims and attributes:
+### User claims and attributes
 
 ![Okta Attributes](img/Okta-attributes.png)
 
-Groups attribute:
+### Group Sync
 
 ![Okta Group attribute](img/Okta-GroupAttribute.png)
 
-Advanced SAML app settings (defaults):
+### Advanced SAML app settings (defaults)
 
 ![Okta Advanced Settings](img/Okta-advancedsettings.png)
 
-IdP Links and Certificate:
+### IdP links and certificate
 
 ![Okta Links and Certificate](img/Okta-linkscert.png)
 
-Sign on settings:
+### SAML sign on settings
 
 ![Okta SAML settings](img/okta_saml_settings.png)
+
+### SCIM settings
 
 Setting the username for the newly provisioned users when assigning them the SCIM app:
 
@@ -122,19 +124,19 @@ Setting the username for the newly provisioned users when assigning them the SCI
 
 ## OneLogin
 
-Application details:
+### Basic SAML app configuration
 
 ![OneLogin application details](img/OneLogin-app_details.png)
 
-Parameters:
+### Parameters
 
 ![OneLogin application details](img/OneLogin-parameters.png)
 
-Adding a user:
+### Adding a user
 
 ![OneLogin user add](img/OneLogin-userAdd.png)
 
-SSO settings:
+### SSO settings
 
 ![OneLogin SSO settings](img/OneLogin-SSOsettings.png)
 

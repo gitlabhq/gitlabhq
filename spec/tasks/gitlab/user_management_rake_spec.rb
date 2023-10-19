@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:user_management tasks', :silence_stdout, feature_category: :groups_and_projects do
   before do

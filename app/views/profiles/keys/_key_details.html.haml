@@ -46,7 +46,7 @@
       .gl-display-flex
         %pre.well-pre.gl-pl-5.gl-mb-0.gl-border-0
           = @key.key
-        = deprecated_clipboard_button(title: s_('Profiles|Copy SSH key'), text: @key.key, class: 'gl-bg-gray-10 gl-px-3! gl-border-none! gl-rounded-top-left-none! gl-rounded-bottom-left-none!')
+        = clipboard_button(title: s_('Profiles|Copy SSH key'), text: @key.key, category: :tertiary, size: :medium)
 
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0'}) do |c|
     - c.with_header do

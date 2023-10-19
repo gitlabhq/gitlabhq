@@ -324,6 +324,22 @@ describe('DiffFile', () => {
   });
 
   describe('collapsing', () => {
+    describe('forced open', () => {
+      it('should have content even when it is automatically collapsed', () => {
+        makeFileAutomaticallyCollapsed(store);
+
+        expect(findDiffContentArea(wrapper).element.children.length).toBe(1);
+        expect(wrapper.classes('has-body')).toBe(true);
+      });
+
+      it('should have content even when it is manually collapsed', () => {
+        makeFileManuallyCollapsed(store);
+
+        expect(findDiffContentArea(wrapper).element.children.length).toBe(1);
+        expect(wrapper.classes('has-body')).toBe(true);
+      });
+    });
+
     describe(`\`${EVT_EXPAND_ALL_FILES}\` event`, () => {
       beforeEach(() => {
         jest.spyOn(wrapper.vm, 'handleToggle').mockImplementation(() => {});

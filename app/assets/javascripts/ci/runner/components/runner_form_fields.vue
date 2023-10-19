@@ -92,9 +92,7 @@ export default {
       <gl-form-group :label="__('Tags')" label-for="runner-tags">
         <template #description>
           <gl-sprintf
-            :message="
-              s__('Runners|Multiple tags must be separated by a comma. For example, %{example}.')
-            "
+            :message="s__('Runners|Separate multiple tags with a comma. For example, %{example}.')"
           >
             <template #example>
               <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
@@ -106,7 +104,7 @@ export default {
           <gl-sprintf
             :message="
               s__(
-                'Runners|Add tags for the types of jobs the runner processes to ensure that the runner only runs jobs that you intend it to. %{helpLinkStart}Learn more.%{helpLinkEnd}',
+                'Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more.%{helpLinkEnd}',
               )
             "
           >
@@ -191,7 +189,9 @@ export default {
           )
         "
         label-for="runner-max-timeout"
-        :description="s__('Runners|Enter the number of seconds.')"
+        :description="
+          s__('Runners|Enter the job timeout in seconds. Must be a minimum of 600 seconds.')
+        "
       >
         <gl-form-input
           id="runner-max-timeout"

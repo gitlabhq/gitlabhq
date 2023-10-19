@@ -22,6 +22,20 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
   subject(:service) { described_class.new(project, build) }
 
+  RSpec.shared_examples 'old deployments' do
+    it 'deactivates old deployments from the same project with the same path prefix', :freeze_time do
+      other_project = create(:pages_deployment)
+      same_project_other_path_prefix = create(:pages_deployment, project: project, path_prefix: 'other')
+      same_project = create(:pages_deployment, project: project)
+
+      expect { expect(service.execute[:status]).to eq(:success) }
+        .to not_change { other_project.reload.deleted_at }
+        .and not_change { same_project_other_path_prefix.reload.deleted_at }
+        .and change { same_project.reload.deleted_at }
+        .from(nil).to(described_class::OLD_DEPLOYMENTS_DESTRUCTION_DELAY.from_now)
+    end
+  end
+
   RSpec.shared_examples 'pages size limit is' do |size_limit|
     context "when size is below the limit" do
       before do
@@ -36,6 +50,8 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         expect(deploy_status.description).not_to be_present
         expect(project.pages_metadatum).to be_deployed
       end
+
+      it_behaves_like 'old deployments'
     end
 
     context "when size is above the limit" do
@@ -95,6 +111,8 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         build.reload
       end
 
+      it_behaves_like 'old deployments'
+
       it "doesn't delete artifacts after deploying" do
         expect(service.execute[:status]).to eq(:success)
 
@@ -144,31 +162,6 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         end.to change { project.pages_deployments.count }.by(1)
 
         expect(project.pages_metadatum.reload.pages_deployment).to eq(project.pages_deployments.last)
-      end
-
-      context 'when there is an old pages deployment' do
-        let!(:old_deployment_from_another_project) { create(:pages_deployment) }
-        let!(:old_deployment) { create(:pages_deployment, project: project) }
-
-        it 'schedules a destruction of older deployments' do
-          expect(DestroyPagesDeploymentsWorker).to(
-            receive(:perform_in).with(
-              described_class::OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
-              project.id,
-              instance_of(Integer)
-            )
-          )
-
-          service.execute
-        end
-
-        it 'removes older deployments', :sidekiq_inline do
-          expect do
-            service.execute
-          end.not_to change { PagesDeployment.count } # it creates one and deletes one
-
-          expect(PagesDeployment.find_by_id(old_deployment.id)).to be_nil
-        end
       end
 
       context 'when archive does not have pages directory' do
@@ -291,20 +284,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           expect(deployment.ci_build_id).to eq(build.id)
         end
 
-        context 'when old deployment present' do
-          let!(:old_build) { create(:ci_build, name: 'pages', pipeline: old_pipeline, ref: 'HEAD') }
-          let!(:old_deployment) { create(:pages_deployment, ci_build: old_build, project: project) }
-
-          before do
-            project.update_pages_deployment!(old_deployment)
-          end
-
-          it 'deactivates old deployments' do
-            expect(service.execute[:status]).to eq(:success)
-
-            expect(old_deployment.reload.deleted_at).not_to be_nil
-          end
-        end
+        it_behaves_like 'old deployments'
 
         context 'when newer deployment present' do
           before do

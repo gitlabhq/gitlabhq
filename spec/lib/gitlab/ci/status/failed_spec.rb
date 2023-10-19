@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Failed do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'failed' }
+    it { expect(subject.text).to eq 'Failed' }
   end
 
   describe '#label' do

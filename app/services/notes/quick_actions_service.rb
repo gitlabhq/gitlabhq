@@ -61,7 +61,7 @@ module Notes
       service_errors = if service_response.respond_to?(:errors)
                          service_response.errors.full_messages
                        elsif service_response.respond_to?(:[]) && service_response[:status] == :error
-                         service_response[:message]
+                         Array.wrap(service_response[:message])
                        end
 
       service_errors.blank? ? ServiceResponse.success : ServiceResponse.error(message: service_errors)

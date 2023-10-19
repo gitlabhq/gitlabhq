@@ -32,6 +32,17 @@ module Gitlab
       RUNNER_JOB_TOKEN_PARAM = :token
       PATH_DEPENDENT_FEED_TOKEN_REGEX = /\A#{User::FEED_TOKEN_PREFIX}(\h{64})-(\d+)\z/
 
+      PARAM_TOKEN_KEYS = [
+        PRIVATE_TOKEN_PARAM,
+        JOB_TOKEN_PARAM,
+        RUNNER_JOB_TOKEN_PARAM
+      ].map(&:to_s).freeze
+      HEADER_TOKEN_KEYS = [
+        PRIVATE_TOKEN_HEADER,
+        JOB_TOKEN_HEADER,
+        DEPLOY_TOKEN_HEADER
+      ].freeze
+
       # Check the Rails session for valid authentication details
       def find_user_from_warden
         current_request.env['warden']&.authenticate if verified_request?
@@ -202,6 +213,12 @@ module Gitlab
         when AccessTokenValidationService::IMPERSONATION_DISABLED
           raise ImpersonationDisabled
         end
+      end
+
+      def authentication_token_present?
+        PARAM_TOKEN_KEYS.intersection(current_request.params.keys).any? ||
+          HEADER_TOKEN_KEYS.intersection(current_request.env.keys).any? ||
+          parsed_oauth_token.present?
       end
 
       private

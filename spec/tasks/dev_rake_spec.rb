@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'dev rake tasks' do
-  before do
+  before(:all) do
     Rake.application.rake_require 'tasks/gitlab/setup'
     Rake.application.rake_require 'tasks/gitlab/shell'
     Rake.application.rake_require 'tasks/dev'

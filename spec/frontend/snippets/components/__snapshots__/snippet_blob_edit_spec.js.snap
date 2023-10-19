@@ -3,11 +3,11 @@
 exports[`Snippet Blob Edit component with loaded blob matches snapshot 1`] = `
 <div
   class="file-holder snippet"
-  data-qa-selector="file_holder_container"
+  data-testid="file-holder-container"
 >
   <blob-header-edit-stub
     candelete="true"
-    data-qa-selector="file_name_field"
+    data-testid="file-name-field"
     id="reference-0"
     showdelete="true"
     value="foo/bar/test.md"

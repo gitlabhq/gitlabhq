@@ -31,14 +31,14 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['setCurrentFileHash']),
+    ...mapActions('diffs', ['goToFile']),
     ...mapActions('batchComments', ['scrollToDraft']),
     isOnLatestDiff(draft) {
       return draft.position?.head_sha === this.getNoteableData.diff_head_sha;
     },
     async onClickDraft(draft) {
-      if (this.viewDiffsFileByFile && draft.file_hash) {
-        await this.setCurrentFileHash(draft.file_hash);
+      if (this.viewDiffsFileByFile) {
+        await this.goToFile({ path: draft.file_path });
       }
 
       if (draft.position && !this.isOnLatestDiff(draft)) {
@@ -54,7 +54,7 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown :items="listItems" dropup data-qa-selector="review_preview_dropdown">
+  <gl-disclosure-dropdown :items="listItems" dropup data-testid="review-preview-dropdown">
     <template #toggle>
       <gl-button>
         {{ __('Pending comments') }}

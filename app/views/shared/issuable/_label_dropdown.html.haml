@@ -1,3 +1,4 @@
+- add_page_specific_style 'page_bundles/labels'
 - project = @target_project || @project
 - edit_context = local_assigns.fetch(:edit_context, nil) || project
 - show_create = local_assigns.fetch(:show_create, true)
@@ -11,7 +12,7 @@
 - dropdown_title = local_assigns.fetch(:dropdown_title, _('Filter by label'))
 - dropdown_data = label_dropdown_data(edit_context, labels: labels_filter_path_with_defaults(only_group_labels: edit_context.is_a?(Group)), default_label: _('Labels'))
 
-- dropdown_data.merge!(data_options, qa_selector: "issuable_label_dropdown")
+- dropdown_data.merge!(data_options, testid: "issuable-label-dropdown")
 - label_name = local_assigns.fetch(:label_name, _('Labels'))
 - no_default_styles = local_assigns.fetch(:no_default_styles, false)
 - classes << 'js-extra-options' if extra_options

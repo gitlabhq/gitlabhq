@@ -6,24 +6,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Testing Rake tasks
 
-To make testing Rake tasks a little easier, there is a helper that can be included
-in lieu of the standard Spec helper. Instead of `require 'spec_helper'`, use
-`require 'rake_helper'`. The helper includes `spec_helper` for you, and configures
-a few other things to make testing Rake tasks easier.
+To make testing Rake tasks a little easier:
 
-At a minimum, requiring the Rake helper includes the runtime task helpers, and
-includes the `RakeHelpers` Spec support module.
+- Use RSpec's metadata tag `type: :task` or
+- Place your spec in `spec/tasks` or `ee/spec/tasks`
 
-The `RakeHelpers` module exposes a `run_rake_task(<task>)` method to make
-executing tasks simple. See `spec/support/helpers/rake_helpers.rb` for all available
-methods.
+By doing so, `RakeHelpers` is included which exposes a `run_rake_task(<task>)`
+method to make executing tasks possible.
+
+See `spec/support/helpers/rake_helpers.rb` for all available methods.
 
 `$stdout` can be redirected by adding `:silence_stdout`.
 
 Example:
 
 ```ruby
-require 'rake_helper'
+require 'spec_helper'
 
 describe 'gitlab:shell rake tasks', :silence_stdout do
   before do

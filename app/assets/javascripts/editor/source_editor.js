@@ -1,5 +1,4 @@
 import { editor as monacoEditor, Uri } from 'monaco-editor';
-import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import languages from '~/ide/lib/languages';
 import { registerLanguages } from '~/ide/utils';
@@ -128,9 +127,7 @@ export default class SourceEditor {
       this.extensionsStore,
     );
 
-    waitForCSSLoaded(() => {
-      instance.layout();
-    });
+    instance.layout();
 
     let model;
     const language = instanceOptions.language || getBlobLanguage(blobPath);

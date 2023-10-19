@@ -108,7 +108,7 @@ export default {
           text: this.dropdownStartThreadButtonTitle,
           description: this.startDiscussionDescription,
           value: constants.DISCUSSION,
-          qaSelector: 'discussion_menu_item',
+          testid: 'discussion-menu-item',
         },
       ];
     },
@@ -132,7 +132,6 @@ export default {
     :data-track-label="trackingLabel"
     data-track-action="click_button"
     data-testid="comment-button"
-    data-qa-selector="comment_button"
   >
     <gl-button variant="confirm" :disabled="disabled" @click="handleClick">
       {{ commentButtonTitle }}
@@ -149,7 +148,7 @@ export default {
       @select="setNoteType"
     >
       <template #list-item="{ item }">
-        <div :data-qa-selector="item.qaSelector">
+        <div :data-testid="item.testid">
           <strong>{{ item.text }}</strong>
           <p class="gl-m-0">{{ item.description }}</p>
         </div>

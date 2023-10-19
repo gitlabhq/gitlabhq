@@ -1,0 +1,22 @@
+---
+key_path: container_registry_server.db_enabled
+description: Is the Container Registry metadata database enabled
+product_section: ops
+product_stage: package
+product_group: container_registry
+value_type: boolean
+status: active
+milestone: "16.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132550
+time_frame: none
+data_source: database
+data_category: operational
+instrumentation_class: ContainerRegistryDbEnabledMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

@@ -109,8 +109,10 @@ RSpec.describe 'Query.project.mergeRequests.pipelines', feature_category: :conti
   end
 
   def run_query(first = nil)
-    run_with_clean_state(query,
-                         context: { current_user: author },
-                         variables: { path: project.full_path, first: first })
+    run_with_clean_state(
+      query,
+      context: { current_user: author },
+      variables: { path: project.full_path, first: first }
+    )
   end
 end

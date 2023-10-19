@@ -7,7 +7,6 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include IssuesCalendar
   include RecordUserLastActivity
-  include ::Observability::ContentSecurityPolicy
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
   SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
@@ -46,13 +45,12 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:preserve_unchanged_markdown, project)
-    push_frontend_feature_flag(:content_editor_on_issues, project&.group)
-    push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
     push_frontend_feature_flag(:service_desk_new_note_email_native_attachments, project)
     push_frontend_feature_flag(:saved_replies, current_user)
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:issues_list_drawer, project)
+    push_frontend_feature_flag(:linked_work_items, project)
   end
 
   before_action only: [:index, :show] do
@@ -71,8 +69,8 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
-    push_frontend_feature_flag(:move_close_into_dropdown, project)
     push_force_frontend_feature_flag(:linked_work_items, project.linked_work_items_feature_flag_enabled?)
+    push_frontend_feature_flag(:notifications_todos_buttons, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -277,6 +275,12 @@ class Projects::IssuesController < Projects::ApplicationController
     @issues = @issuables
   end
 
+  def discussions
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/425834')
+
+    super
+  end
+
   protected
 
   def index_html_request?
@@ -450,7 +454,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def redirect_if_work_item
     return unless use_work_items_path?(issue)
 
-    redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters)
+    redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
   end
 
   def require_incident_for_incident_routes

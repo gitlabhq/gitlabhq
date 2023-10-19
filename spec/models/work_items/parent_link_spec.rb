@@ -109,11 +109,29 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
         end
       end
 
-      it 'is not valid if parent is in other project' do
-        link = build(:parent_link, work_item_parent: task1, work_item: build(:work_item))
+      context 'when assigning parent from different project' do
+        let_it_be(:cross_project_issue) { create(:work_item, project: create(:project)) }
 
-        expect(link).not_to be_valid
-        expect(link.errors[:work_item_parent]).to include('parent must be in the same project as child.')
+        let(:restriction) do
+          WorkItems::HierarchyRestriction
+            .find_by_parent_type_id_and_child_type_id(cross_project_issue.work_item_type_id, task1.work_item_type_id)
+        end
+
+        it 'is valid when cross-hierarchy is enabled' do
+          restriction.update!(cross_hierarchy_enabled: true)
+          link = build(:parent_link, work_item_parent: cross_project_issue, work_item: task1)
+
+          expect(link).to be_valid
+          expect(link.errors).to be_empty
+        end
+
+        it 'is not valid when cross-hierarchy is not enabled' do
+          restriction.update!(cross_hierarchy_enabled: false)
+          link = build(:parent_link, work_item_parent: cross_project_issue, work_item: task1)
+
+          expect(link).not_to be_valid
+          expect(link.errors[:work_item_parent]).to include('parent must be in the same project or group as child.')
+        end
       end
 
       context 'when parent already has maximum number of links' do

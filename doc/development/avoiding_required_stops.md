@@ -120,7 +120,7 @@ manual actions on the part of GitLab administrators.
 
 These are generally accepted as a required stop around a major release, either
 stopping at the latest `major.minor` release immediately proceeding
-a new `major` release, and potentially the lastest `major.0` patch release, and
+a new `major` release, and potentially the latest `major.0` patch release, and
 to date, discovered required stops related to deprecations have been limited to
 these releases.
 

@@ -88,7 +88,7 @@ export default {
           id="comment-line-start"
           :value="commentLineStart"
           :options="commentLineOptions"
-          size="sm"
+          width="sm"
           class="gl-w-auto gl-vertical-align-baseline"
           @change="updateCommentLineStart"
         />

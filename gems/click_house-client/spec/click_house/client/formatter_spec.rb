@@ -8,7 +8,8 @@ RSpec.describe ClickHouse::Client::Formatter do
     _query = <<~SQL.squish
       SELECT toUInt64(1) as uint64,
              toDateTime64('2016-06-15 23:00:00', 6, 'UTC') as datetime64_6,
-             INTERVAL 1 second as interval_second
+             INTERVAL 1 second as interval_second,
+             INTERVAL 1 millisecond as interval_millisecond
     SQL
 
     response_json = <<~JSON
@@ -26,6 +27,10 @@ RSpec.describe ClickHouse::Client::Formatter do
 		{
 			"name": "interval_second",
 			"type": "IntervalSecond"
+		},
+		{
+		   "name": "interval_millisecond",
+		   "type": "IntervalMillisecond"
 		}
 	],
 
@@ -34,7 +39,8 @@ RSpec.describe ClickHouse::Client::Formatter do
 		{
 			"uint64": "1",
 			"datetime64_6": "2016-06-15 23:00:00.000000",
-			"interval_second": "1"
+			"interval_second": "1",
+			"interval_millisecond": "1"
 		}
 	],
 
@@ -56,7 +62,8 @@ RSpec.describe ClickHouse::Client::Formatter do
       eq(
         [{ "uint64" => 1,
            "datetime64_6" => ActiveSupport::TimeZone["UTC"].parse("2016-06-15 23:00:00"),
-           "interval_second" => 1.second }]
+           "interval_second" => 1.second,
+           "interval_millisecond" => 0.001.seconds }]
       )
     )
   end

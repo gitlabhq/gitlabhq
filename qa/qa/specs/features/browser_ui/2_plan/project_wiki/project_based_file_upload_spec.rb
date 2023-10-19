@@ -8,7 +8,7 @@ module QA
       type: :bug
     } do
     describe 'Testing project wiki file upload' do
-      let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
+      let(:initial_wiki) { create(:project_wiki_page) }
       let(:page_title) { 'Content Editor Page' }
       let(:heading_text) { 'My New Heading' }
       let(:image_file_name) { 'testfile.png' }

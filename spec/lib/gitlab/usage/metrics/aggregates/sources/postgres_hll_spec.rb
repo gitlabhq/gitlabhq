@@ -88,10 +88,12 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
 
   describe '.save_aggregated_metrics' do
     subject(:save_aggregated_metrics) do
-      described_class.save_aggregated_metrics(metric_name: metric_1,
-                                              time_period: time_period,
-                                              recorded_at_timestamp: recorded_at,
-                                              data: data)
+      described_class.save_aggregated_metrics(
+        metric_name: metric_1,
+        time_period: time_period,
+        recorded_at_timestamp: recorded_at,
+        data: data
+      )
     end
 
     context 'with compatible data argument' do

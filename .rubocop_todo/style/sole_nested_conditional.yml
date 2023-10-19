@@ -20,7 +20,6 @@ Style/SoleNestedConditional:
     - 'app/services/projects/container_repository/delete_tags_service.rb'
     - 'app/services/projects/create_service.rb'
     - 'app/services/projects/hashed_storage/migration_service.rb'
-    - 'app/services/projects/hashed_storage/rollback_service.rb'
     - 'ee/app/finders/ee/snippets_finder.rb'
     - 'ee/app/services/ee/issue_links/create_service.rb'
     - 'ee/app/services/ee/lfs/unlock_file_service.rb'

@@ -16,7 +16,7 @@ module API
 
         Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_relation, options[:current_user]).execute if options[:current_user]
 
-        options[:current_user].preloaded_member_roles_for_projects(projects_relation) if options[:current_user]
+        preload_member_roles(projects_relation, options[:current_user]) if options[:current_user]
         Preloaders::SingleHierarchyProjectGroupPlansPreloader.new(projects_relation).execute if options[:single_hierarchy]
         preload_groups(projects_relation) if options[:with] == Entities::Project
 
@@ -62,6 +62,12 @@ module API
       def projects_for_group_preload(projects_relation)
         projects_relation.select { |project| project.namespace.type == Group.sti_name }
       end
+
+      def preload_member_roles(projects, user)
+        # overridden in EE
+      end
     end
   end
 end
+
+API::ProjectsRelationBuilder.prepend_mod

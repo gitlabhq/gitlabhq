@@ -1,4 +1,3 @@
-export const SET_JOB_ENDPOINT = 'SET_JOB_ENDPOINT';
 export const SET_JOB_LOG_OPTIONS = 'SET_JOB_LOG_OPTIONS';
 
 export const HIDE_SIDEBAR = 'HIDE_SIDEBAR';

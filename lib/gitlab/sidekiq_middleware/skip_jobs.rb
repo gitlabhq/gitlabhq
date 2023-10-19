@@ -67,6 +67,7 @@ module Gitlab
         # always returns true by default for all workers unless the FF is specifically disabled, e.g. during an incident
         Feature.enabled?(
           :"#{RUN_FEATURE_FLAG_PREFIX}_#{worker_class.name}",
+          Feature.current_request,
           type: :worker,
           default_enabled_if_undefined: true
         )
@@ -94,6 +95,7 @@ module Gitlab
       def drop_job?(worker_class)
         Feature.enabled?(
           :"#{DROP_FEATURE_FLAG_PREFIX}_#{worker_class.name}",
+          Feature.current_request,
           type: :worker,
           default_enabled_if_undefined: false
         )

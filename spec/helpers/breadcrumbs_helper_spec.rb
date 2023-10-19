@@ -54,8 +54,8 @@ RSpec.describe BreadcrumbsHelper do
   describe '#schema_breadcrumb_json' do
     let(:elements) do
       [
-        %w(element1 http://test.host/link1),
-        %w(element2 http://test.host/link2)
+        %w[element1 http://test.host/link1],
+        %w[element2 http://test.host/link2]
       ]
     end
 
@@ -89,8 +89,8 @@ RSpec.describe BreadcrumbsHelper do
     context 'when extra breadcrumb element is added' do
       let(:extra_elements) do
         [
-          %w(extra_element1 http://test.host/extra_link1),
-          %w(extra_element2 http://test.host/extra_link2)
+          %w[extra_element1 http://test.host/extra_link1],
+          %w[extra_element2 http://test.host/extra_link2]
         ]
       end
 

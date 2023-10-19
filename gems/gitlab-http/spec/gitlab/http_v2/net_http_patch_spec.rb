@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'net/http'
 
-RSpec.describe 'Net::HTTP patch proxy user and password encoding' do
+RSpec.describe 'Net::HTTP patch proxy user and password encoding', feature_category: :shared do
   let(:net_http) { Net::HTTP.new('hostname.example') }
 
   before do

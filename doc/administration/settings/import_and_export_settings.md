@@ -36,13 +36,19 @@ To enable the export of
 1. Select the **Enabled** checkbox.
 1. Select **Save changes**.
 
-## Enable migration of groups and projects by direct transfer
+## Enable migration of groups and projects by direct transfer **(BETA)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
 
-You can enable migration of groups by direct transfer using the UI.
+WARNING:
+In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan-execution-policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
-To enable migration of groups by direct transfer:
+WARNING:
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+The feature is not ready for production use.
+
+Migration of groups and projects by direct transfer is disabled by default.
+To enable migration of groups and projects by direct transfer:
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the left sidebar, select **Search or go to**.
@@ -70,7 +76,7 @@ To modify the maximum file size for exports in GitLab:
 
 ## Max import size
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MiB to unlimited in GitLab 13.8.
 
 To modify the maximum file size for imports in GitLab:
 
@@ -93,9 +99,9 @@ For GitLab.com repository size limits, read [accounts and limit settings](../../
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
 
-You can modify the maximum remote file size for imports from external object storages (for example, AWS) in GitLab.
+By default, the maximum remote file size for imports from external object storages (for example, AWS) is 10 GiB.
 
-To modify the maximum import remote file size:
+To modify this setting:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
@@ -107,9 +113,9 @@ To modify the maximum import remote file size:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
 
-You can modify the maximum download file size for imports by direct transfer in GitLab.
+By default, the maximum download file size for imports by direct transfer is 5 GiB.
 
-To modify the maximum download file size for imports by direct transfer:
+To modify this setting:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
@@ -122,15 +128,18 @@ To modify the maximum download file size for imports by direct transfer:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.3.
 > - **Maximum decompressed file size for archives from imports** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130081) from **Maximum decompressed size** in GitLab 16.4.
 
-When you import a project using [file exports](../../user/project/settings/import_export.md) or [direct transfer](../../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended), you can specify the maximum decompressed file size for imported archives. The default value is 25 GB.
+When you import a project using [file exports](../../user/project/settings/import_export.md) or
+[direct transfer](../../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended), you can specify the
+maximum decompressed file size for imported archives. The default value is 25 GiB.
 
-When you import a compressed file, the decompressed size cannot exceed the maximum decompressed file size limit. If the decompressed size exceeds the configured limit, the following error is returned:
+When you import a compressed file, the decompressed size cannot exceed the maximum decompressed file size limit. If the
+decompressed size exceeds the configured limit, the following error is returned:
 
 ```plaintext
 Decompressed archive size validation failed.
 ```
 
-To modify the maximum decompressed file size for imports in GitLab:
+To modify this setting:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.

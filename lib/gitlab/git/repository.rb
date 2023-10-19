@@ -163,12 +163,6 @@ module Gitlab
         branch_names.count
       end
 
-      def rename(new_relative_path)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.rename(new_relative_path)
-        end
-      end
-
       def remove
         wrapped_gitaly_errors do
           gitaly_repository_client.remove
@@ -261,12 +255,8 @@ module Gitlab
       def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:, path: nil)
         ref ||= root_ref
 
-        if Feature.enabled?(:resolve_ambiguous_archives, container)
-          commit_id = extract_commit_id_from_ref(ref)
-          return {} if commit_id.nil?
-        else
-          commit_id = ref
-        end
+        commit_id = extract_commit_id_from_ref(ref)
+        return {} if commit_id.nil?
 
         commit = Gitlab::Git::Commit.find(self, commit_id)
         return {} if commit.nil?
@@ -1217,6 +1207,14 @@ module Gitlab
       def object_pool
         wrapped_gitaly_errors do
           gitaly_repository_client.object_pool.object_pool
+        end
+      end
+
+      def get_file_attributes(revision, file_paths, attributes)
+        wrapped_gitaly_errors do
+          gitaly_repository_client
+            .get_file_attributes(revision, file_paths, attributes)
+            .attribute_infos
         end
       end
 

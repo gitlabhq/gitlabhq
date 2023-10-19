@@ -24,7 +24,7 @@ module MergeRequests
             ci_check_failure_reason
           end
         else
-          check_results.failure_reason
+          check_results.payload[:failure_reason]
         end
       end
 
@@ -46,7 +46,11 @@ module MergeRequests
 
       def check_results
         strong_memoize(:check_results) do
-          merge_request.execute_merge_checks(params: { skip_ci_check: true })
+          merge_request
+            .execute_merge_checks(
+              MergeRequest.mergeable_state_checks,
+              params: { skip_ci_check: true }
+            )
         end
       end
 

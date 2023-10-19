@@ -343,10 +343,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
 
-        get 'work_items/*work_items_path' => 'work_items#index', as: :work_items
-        get 'work_items/*work_items_path' => 'work_items#index', as: :work_item
-
-        resources :work_items, only: [] do
+        resources :work_items, only: [:show], param: :iid do
           collection do
             post :import_csv
             post 'import_csv/authorize', to: 'work_items#authorize'
@@ -464,7 +461,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :ml do
           resources :experiments, only: [:index, :show, :destroy], controller: 'experiments', param: :iid
           resources :candidates, only: [:show, :destroy], controller: 'candidates', param: :iid
-          resources :models, only: [:index], controller: 'models'
+          resources :models, only: [:index, :show], controller: 'models', param: :model_id
         end
 
         namespace :service_desk do

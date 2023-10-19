@@ -10,8 +10,13 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
     let(:args) { {} }
 
     subject(:resolve_scope) do
-      resolve(described_class, obj: obj, ctx: { current_user: user }, args: args,
-                               arg_style: :internal)
+      resolve(
+        described_class,
+        obj: obj,
+        ctx: { current_user: user },
+        args: args,
+        arg_style: :internal
+      )
     end
 
     include_context 'runners resolver setup'

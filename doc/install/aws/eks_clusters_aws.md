@@ -31,12 +31,7 @@ Using `eksctl` enables the following when building an EKS Cluster:
 - 2 or 3 Availability Zones (AZ) spread for balance between High Availability (HA) and cost control.
 - Ability to specify spot compute.
 
-Read more about Amazon EKS architecture quick start guide:
-
-- [Landing page](https://aws.amazon.com/solutions/implementations/amazon-eks/)
-- [Reference guide](https://aws-quickstart.github.io/quickstart-amazon-eks/)
-- [Reference guide deployment steps](https://aws-quickstart.github.io/quickstart-amazon-eks/#_deployment_steps)
-- [Reference guide parameter reference](https://aws-quickstart.github.io/quickstart-amazon-eks/#_parameter_reference)
+Read more about configuring Amazon EKS in the [`eksctl` guide](https://eksctl.io/getting-started/) and the [Amazon EKS User Guide](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html).
 
 ## Inject GitLab configuration for integrating clusters
 

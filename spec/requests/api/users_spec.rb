@@ -260,46 +260,16 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           end
         end
 
-        context 'when api_keyset_pagination_multi_order FF is enabled' do
-          before do
-            stub_feature_flags(api_keyset_pagination_multi_order: true)
-          end
-
-          it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil do
-            let(:first_record) { user }
-            let(:second_record) { admin }
-            let(:api_call) { api(path, user) }
-          end
-
-          it 'still supports offset pagination when keyset pagination params are not provided' do
-            get api(path, user)
-
-            expect(response).to include_pagination_headers
-          end
+        it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil do
+          let(:first_record) { user }
+          let(:second_record) { admin }
+          let(:api_call) { api(path, user) }
         end
 
-        context 'when api_keyset_pagination_multi_order FF is disabled' do
-          before do
-            stub_feature_flags(api_keyset_pagination_multi_order: false)
-          end
+        it 'still supports offset pagination when keyset pagination params are not provided' do
+          get api(path, user)
 
-          it 'paginates the records correctly using offset pagination' do
-            get api(path, user), params: { pagination: 'keyset', per_page: 1 }
-
-            params_for_next_page = pagination_params_from_next_url(response)
-            expect(response).to include_pagination_headers
-            expect(params_for_next_page).not_to include('cursor')
-          end
-
-          context 'on making requests with unsupported ordering structure' do
-            it 'does not return error' do
-              get api(path, user),
-                params: { pagination: 'keyset', per_page: 1, order_by: 'created_at', sort: 'asc' }
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-            end
-          end
+          expect(response).to include_pagination_headers
         end
       end
     end
@@ -4619,6 +4589,143 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     end
   end
 
+  describe 'POST /user/personal_access_tokens' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:name) { 'new pat' }
+    let(:scopes) { %w[k8s_proxy] }
+    let(:path) { "/user/personal_access_tokens" }
+    let(:params) { { name: name, scopes: scopes } }
+
+    let(:all_scopes) do
+      ::Gitlab::Auth::API_SCOPES + ::Gitlab::Auth::AI_FEATURES_SCOPES + ::Gitlab::Auth::OPENID_SCOPES +
+        ::Gitlab::Auth::PROFILE_SCOPES + ::Gitlab::Auth::REPOSITORY_SCOPES + ::Gitlab::Auth::REGISTRY_SCOPES +
+        ::Gitlab::Auth::OBSERVABILITY_SCOPES + ::Gitlab::Auth::ADMIN_SCOPES
+    end
+
+    it 'returns error if required attributes are missing' do
+      post api(path, user)
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq('name is missing, scopes is missing')
+    end
+
+    context 'when scope is not allowed' do
+      where(:disallowed_scopes) do
+        all_scopes - [::Gitlab::Auth::K8S_PROXY_SCOPE]
+      end
+
+      with_them do
+        it 'returns error' do
+          post api(path, user), params: params.merge({ scopes: [disallowed_scopes] })
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('scopes does not have a valid value')
+        end
+      end
+    end
+
+    it 'returns error if one of the scopes is not allowed' do
+      post api(path, user), params: params.merge({ scopes: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::API_SCOPE] })
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq('scopes does not have a valid value')
+    end
+
+    it 'returns a 401 error when not authenticated' do
+      post api(path), params: params
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+      expect(json_response['message']).to eq('401 Unauthorized')
+    end
+
+    it 'returns a 403 error when called with a read_api-scoped PAT' do
+      read_only_pat = create(:personal_access_token, scopes: ['read_api'], user: user)
+      post api(path, personal_access_token: read_only_pat), params: params
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    context 'when scopes are empty' do
+      let(:scopes) { [] }
+
+      it 'returns an error when no scopes are given' do
+        post api(path, user), params: params
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Scopes can't be blank")
+      end
+    end
+
+    it 'creates a personal access token' do
+      post api(path, user), params: params
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['name']).to eq(name)
+      expect(json_response['scopes']).to eq(scopes)
+      expect(json_response['expires_at']).to eq(1.day.from_now.to_date.to_s)
+      expect(json_response['id']).to be_present
+      expect(json_response['created_at']).to be_present
+      expect(json_response['active']).to be_truthy
+      expect(json_response['revoked']).to be_falsey
+      expect(json_response['token']).to be_present
+    end
+
+    context 'when expires_at at is given' do
+      let(:params) { { name: name, scopes: scopes, expires_at: expires_at } }
+
+      context 'when expires_at is in the past' do
+        let(:expires_at) { 1.day.ago }
+
+        it 'creates an inactive personal access token' do
+          post api(path, user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['active']).to be_falsey
+        end
+      end
+
+      context 'when expires_at is in the future' do
+        let(:expires_at) { 1.month.from_now.to_date }
+
+        it 'creates a personal access token' do
+          post api(path, user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['name']).to eq(name)
+          expect(json_response['scopes']).to eq(scopes)
+          expect(json_response['expires_at']).to eq(1.month.from_now.to_date.to_s)
+          expect(json_response['id']).to be_present
+          expect(json_response['created_at']).to be_present
+          expect(json_response['active']).to be_truthy
+          expect(json_response['revoked']).to be_falsey
+          expect(json_response['token']).to be_present
+        end
+      end
+    end
+
+    context 'when an error is thrown by the model' do
+      let!(:admin_personal_access_token) { create(:personal_access_token, :admin_mode, user: admin) }
+      let(:error_message) { 'error message' }
+
+      before do
+        allow_next_instance_of(PersonalAccessToken) do |personal_access_token|
+          allow(personal_access_token).to receive_message_chain(:errors, :full_messages)
+                                            .and_return([error_message])
+
+          allow(personal_access_token).to receive(:save).and_return(false)
+        end
+      end
+
+      it 'returns the error' do
+        post api(path, personal_access_token: admin_personal_access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq(error_message)
+      end
+    end
+  end
+
   describe 'GET /users/:user_id/impersonation_tokens' do
     let_it_be(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let_it_be(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
@@ -4675,7 +4782,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
   describe 'POST /users/:user_id/impersonation_tokens' do
     let(:name) { 'my new pat' }
     let(:expires_at) { '2016-12-28' }
-    let(:scopes) { %w(api read_user) }
+    let(:scopes) { %w[api read_user] }
     let(:impersonation) { true }
     let(:path) { "/users/#{user.id}/impersonation_tokens" }
     let(:params) { { name: name, expires_at: expires_at, scopes: scopes, impersonation: impersonation } }

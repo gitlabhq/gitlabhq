@@ -78,7 +78,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
           end
         end
 
-        context 'when the project in which the arfifact belongs to is undergoing stats refresh' do
+        context 'when the project in which the artifact belongs to is undergoing stats refresh' do
           before do
             create(:project_build_artifacts_size_refresh, :pending, project: artifact.project)
           end

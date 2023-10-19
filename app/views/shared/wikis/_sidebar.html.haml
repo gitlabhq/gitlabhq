@@ -8,7 +8,7 @@
 
       .gl-display-flex.gl-flex-wrap
         - git_access_url = wiki_path(@wiki, action: :git_access)
-        = link_to git_access_url, class: 'gl-mr-5' + (active_nav_link?(path: 'wikis#git_access') ? ' active' : ''), data: { qa_selector: 'clone_repository_link' } do
+        = link_to git_access_url, class: 'gl-mr-5' + (active_nav_link?(path: 'wikis#git_access') ? ' active' : ''), data: { testid: 'clone-repository-link' } do
           = sprite_icon('download', css_class: 'gl-mr-2')
           %span= _("Clone repository")
 
@@ -32,5 +32,5 @@
               = render partial: entry.to_partial_path, object: entry, locals: { context: 'sidebar' }
       .block.w-100
         - if @sidebar_limited
-          = link_button_to wiki_path(@wiki, action: :pages), data: { qa_selector: 'view_all_pages_button' }, block: true do
+          = link_button_to wiki_path(@wiki, action: :pages), data: { testid: 'view-all-pages-button' }, block: true do
             = s_("Wiki|View All Pages")

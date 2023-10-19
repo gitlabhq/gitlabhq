@@ -106,9 +106,9 @@ RSpec.describe ProfilesHelper do
     using RSpec::Parameterized::TableSyntax
 
     where(:stacking, :breakpoint, :expected) do
-      nil  | nil | %w(gl-mb-3 gl-display-inline-block middle-dot-divider)
-      true | nil | %w(gl-mb-3 middle-dot-divider-sm gl-display-block gl-sm-display-inline-block)
-      nil  | :sm | %w(gl-mb-3 gl-display-inline-block middle-dot-divider-sm)
+      nil  | nil | %w[gl-mb-3 gl-display-inline-block middle-dot-divider]
+      true | nil | %w[gl-mb-3 middle-dot-divider-sm gl-display-block gl-sm-display-inline-block]
+      nil  | :sm | %w[gl-mb-3 gl-display-inline-block middle-dot-divider-sm]
     end
 
     with_them do

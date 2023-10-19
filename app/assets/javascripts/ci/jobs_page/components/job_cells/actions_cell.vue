@@ -7,7 +7,7 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { reportMessageToSentry } from '~/ci/utils';
+import { reportToSentry } from '~/ci/utils';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import {
@@ -133,7 +133,7 @@ export default {
           variables: { id: this.job.id },
         });
         if (errors.length > 0) {
-          reportMessageToSentry(this.$options.name, errors.join(', '), {});
+          reportToSentry(this.$options.name, new Error(errors.join(', ')));
           this.showToastMessage();
         } else if (redirect) {
           // Retry and Play actions redirect to job detail view
@@ -143,7 +143,7 @@ export default {
           eventHub.$emit('jobActionPerformed');
         }
       } catch (failure) {
-        reportMessageToSentry(this.$options.name, failure, {});
+        reportToSentry(this.$options.name, failure);
         this.showToastMessage();
       }
     },

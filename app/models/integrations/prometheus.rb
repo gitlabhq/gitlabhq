@@ -185,7 +185,7 @@ module Integrations
     # Remove in next required stop after %16.4
     # https://gitlab.com/gitlab-org/gitlab/-/issues/338838
     def sync_http_integration!
-      return unless manual_configuration_changed?
+      return unless manual_configuration_changed? && !manual_configuration_was.nil?
 
       project.alert_management_http_integrations
         .for_endpoint_identifier('legacy-prometheus')

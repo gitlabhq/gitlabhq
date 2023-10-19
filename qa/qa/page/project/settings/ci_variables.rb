@@ -7,7 +7,14 @@ module QA
         class CiVariables < Page::Base
           include QA::Page::Settings::Common
 
+          # TODO: remove this when the ci_variable_drawer feature flag is enabled by default
           view 'app/assets/javascripts/ci/ci_variable_list/components/ci_variable_modal.vue' do
+            element :ci_variable_key_field
+            element :ci_variable_value_field
+            element :ci_variable_save_button
+          end
+
+          view 'app/assets/javascripts/ci/ci_variable_list/components/ci_variable_drawer.vue' do
             element :ci_variable_key_field
             element :ci_variable_value_field
             element :ci_variable_save_button

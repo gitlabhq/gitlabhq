@@ -40,6 +40,8 @@ module API
       requires :bitbucket_server_repo, type: String, desc: 'BitBucket Server Repository Name'
       optional :new_name, type: String, desc: 'New repo name'
       optional :new_namespace, type: String, desc: 'Namespace to import repo into'
+      optional :timeout_strategy, type: String, values: ::ProjectImportData::TIMEOUT_STRATEGIES,
+        desc: 'Strategy for behavior on timeouts'
     end
 
     post 'import/bitbucket_server' do

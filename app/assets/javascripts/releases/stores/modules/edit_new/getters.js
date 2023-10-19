@@ -190,3 +190,7 @@ export const isCreating = ({ step }) => step === CREATE;
 
 export const isExistingTag = ({ tagStep }) => tagStep === EXISTING_TAG;
 export const isNewTag = ({ tagStep }) => tagStep === NEW_TAG;
+
+export const localStorageKey = ({ projectPath }) => `${projectPath}/release/new`;
+export const localStorageCreateFromKey = ({ projectPath }) =>
+  `${projectPath}/release/new/createFrom`;

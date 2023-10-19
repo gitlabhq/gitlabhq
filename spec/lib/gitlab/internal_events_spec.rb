@@ -9,6 +9,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   before do
     allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
     allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+    allow(redis).to receive(:incr)
+    allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)
     allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_property).and_return(:user)
     allow(fake_snowplow).to receive(:event)
@@ -17,6 +19,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   def expect_redis_hll_tracking(event_name)
     expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event)
       .with(event_name, values: unique_value)
+  end
+
+  def expect_redis_tracking(event_name)
+    expect(redis).to have_received(:incr) do |redis_key|
+      expect(redis_key).to end_with(event_name)
+    end
   end
 
   def expect_snowplow_tracking(event_name)
@@ -39,14 +47,16 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   let_it_be(:project) { build(:project, id: 2) }
   let_it_be(:namespace) { project.namespace }
 
+  let(:redis) { instance_double('Redis') }
   let(:fake_snowplow) { instance_double(Gitlab::Tracking::Destinations::Snowplow) }
   let(:event_name) { 'g_edit_by_web_ide' }
   let(:unique_value) { user.id }
 
-  it 'updates both RedisHLL and Snowplow', :aggregate_failures do
+  it 'updates Redis, RedisHLL and Snowplow', :aggregate_failures do
     params = { user: user, project: project, namespace: namespace }
     described_class.track_event(event_name, **params)
 
+    expect_redis_tracking(event_name)
     expect_redis_hll_tracking(event_name)
     expect_snowplow_tracking(event_name) # Add test for arguments
   end
@@ -73,9 +83,10 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     expect { described_class.track_event('unknown_event') }.not_to raise_error
   end
 
-  it 'logs error on missing property' do
+  it 'logs error on missing property', :aggregate_failures do
     expect { described_class.track_event(event_name, merge_request_id: 1) }.not_to raise_error
 
+    expect_redis_tracking(event_name)
     expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
       .with(described_class::InvalidPropertyError, event_name: event_name, kwargs: { merge_request_id: 1 })
   end
@@ -86,9 +97,10 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         .and_raise(Gitlab::InternalEvents::EventDefinitions::InvalidMetricConfiguration)
     end
 
-    it 'fails on missing unique property' do
+    it 'logs error on missing unique property', :aggregate_failures do
       expect { described_class.track_event(event_name, merge_request_id: 1) }.not_to raise_error
 
+      expect_redis_tracking(event_name)
       expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
     end
   end
@@ -107,6 +119,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     it 'is used when logging to RedisHLL', :aggregate_failures do
       described_class.track_event(event_name, user: user, project: project)
 
+      expect_redis_tracking(event_name)
       expect_redis_hll_tracking(event_name)
       expect_snowplow_tracking(event_name)
     end
@@ -120,13 +133,42 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       end
     end
 
-    context 'when method does not exist on property' do
+    context 'when method does not exist on property', :aggregate_failures do
       it 'logs error on missing method' do
         expect { described_class.track_event(event_name, project: "a_string") }.not_to raise_error
 
+        expect_redis_tracking(event_name)
         expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
           .with(described_class::InvalidMethodError, event_name: event_name, kwargs: { project: 'a_string' })
       end
+    end
+
+    context 'when send_snowplow_event is false' do
+      it 'logs to Redis and RedisHLL but not Snowplow' do
+        described_class.track_event(event_name, send_snowplow_event: false, user: user, project: project)
+
+        expect_redis_tracking(event_name)
+        expect_redis_hll_tracking(event_name)
+        expect(fake_snowplow).not_to have_received(:event)
+      end
+    end
+  end
+
+  context 'when unique key is not defined' do
+    let(:event_name) { 'p_ci_templates_terraform_base_latest' }
+
+    before do
+      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_property)
+        .with(event_name)
+        .and_return(nil)
+    end
+
+    it 'logs to Redis and Snowplow but not RedisHLL', :aggregate_failures do
+      described_class.track_event(event_name, user: user, project: project)
+
+      expect_redis_tracking(event_name)
+      expect_snowplow_tracking(event_name)
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
     end
   end
 end

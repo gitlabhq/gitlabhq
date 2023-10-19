@@ -8,7 +8,7 @@
 module Gitlab
   module Middleware
     class SidekiqWebStatic
-      SIDEKIQ_REGEX = %r{\A/admin/sidekiq/}.freeze
+      SIDEKIQ_REGEX = %r{\A/admin/sidekiq/}
 
       def initialize(app)
         @app = app

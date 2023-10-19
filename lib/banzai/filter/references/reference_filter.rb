@@ -153,6 +153,7 @@ module Banzai
           @ignore_ancestor_query ||= begin
             parents = %w[pre code a style]
             parents << 'blockquote' if context[:ignore_blockquotes]
+            parents << 'span[contains(concat(" ", @class, " "), " idiff ")]'
 
             parents.map { |n| "ancestor::#{n}" }.join(' or ')
           end

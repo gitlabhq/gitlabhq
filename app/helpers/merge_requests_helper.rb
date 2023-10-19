@@ -78,10 +78,6 @@ module MergeRequestsHelper
       .execute(include_routes: true)
   end
 
-  def merge_request_button_visibility(merge_request, closed)
-    return 'hidden' if merge_request_button_hidden?(merge_request, closed)
-  end
-
   def merge_request_button_hidden?(merge_request, closed)
     merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_or_merged_without_fork?
   end
@@ -150,12 +146,6 @@ module MergeRequestsHelper
     end
   end
 
-  def toggle_draft_merge_request_path(issuable)
-    wip_event = issuable.draft? ? 'ready' : 'draft'
-
-    issuable_path(issuable, { merge_request: { wip_event: wip_event } })
-  end
-
   def user_merge_requests_counts
     @user_merge_requests_counts ||= begin
       assigned_count = assigned_issuables_count(:merge_requests)
@@ -185,6 +175,10 @@ module MergeRequestsHelper
     Feature.enabled?(:moved_mr_sidebar, @project)
   end
 
+  def notifications_todos_buttons_enabled?
+    Feature.enabled?(:notifications_todos_buttons, @project)
+  end
+
   def diffs_tab_pane_data(project, merge_request, params)
     {
       "is-locked": merge_request.discussion_locked?,
@@ -207,7 +201,8 @@ module MergeRequestsHelper
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       source_project_full_path: merge_request.source_project&.full_path,
       is_forked: project.forked?.to_s,
-      new_comment_template_path: profile_comment_templates_path
+      new_comment_template_path: profile_comment_templates_path,
+      iid: merge_request.iid
     }
   end
 
@@ -273,14 +268,14 @@ module MergeRequestsHelper
                     ''
                   end
 
-    link_to branch, branch_path, title: branch_title, class: 'gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
+    link_to branch, branch_path, title: branch_title, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
   end
 
   def merge_request_header(project, merge_request)
     link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold gl-mr-2', avatar: false)
     copy_button = clipboard_button(text: merge_request.source_branch, title: _('Copy branch name'), class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
 
-    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
+    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
 
     _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-display-inline-block').html_safe }
   end

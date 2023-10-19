@@ -990,6 +990,31 @@ You can configure this limit for self-managed installations when you
 [enable Elasticsearch](../integration/advanced_search/elasticsearch.md#enable-advanced-search).
 Set the limit to `0` to disable it.
 
+## Math rendering limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132939) in GitLab 16.5.
+
+GitLab imposes default limits when rendering math in Markdown fields. These limits provide better security and performance.
+
+The limits for issues, merge requests, wikis, and repositories:
+
+- Maximum number of nodes rendered: `50`.
+- Maximum number of macro expansions: `1000`.
+- Maximum user-specified size in em: `20`.
+
+The limits for issues and merge requests:
+
+- Maximum number of characters in a math block: `1000`.
+- Maximum rendering time: `2000 ms`.
+
+You can disable these limits when running in a self-managed instance and you trust the user input.
+
+Use the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+ApplicationSetting.update(math_rendering_limits_enabled: false)
+```
+
 ## Wiki limits
 
 - [Wiki page content size limit](wikis/index.md#wiki-page-content-size-limit).
@@ -1014,10 +1039,10 @@ The maximum allowed [push size](../administration/settings/account_and_limit_set
 Total number of changes (branches or tags) in a single push. If changes are more
 than the specified limit, hooks are not executed.
 
-More information can be found in these documentations:
+For more information, see:
 
-- [Webhooks push events](../user/project/integrations/webhook_events.md#push-events)
-- [Project services push hooks limit](../user/project/integrations/index.md#push-hooks-limit)
+- [Webhook push events](../user/project/integrations/webhook_events.md#push-events)
+- [Push hook limit for project integrations](../user/project/integrations/index.md#push-hook-limit)
 
 ### Activities
 

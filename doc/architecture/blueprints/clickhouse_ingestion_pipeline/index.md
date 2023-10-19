@@ -45,7 +45,7 @@ ClickHouse is an online, analytical processing (OLAP) database that powers use-c
 
 At GitLab, [our current and future ClickHouse uses/capabilities](https://gitlab.com/groups/gitlab-com/-/epics/2075) reference & describe multiple use-cases that could be facilitated by using ClickHouse as a backing datastore. A majority of these talk about the following two major areas of concern:
 
-1. Being able to leverage [ClickHouse's OLAP capabilities](https://clickhouse.com/docs/en/faq/general/olap/) enabling underlying systems to perform an aggregated analysis of data, both over short and long periods of time.
+1. Being able to leverage [ClickHouse's OLAP capabilities](https://clickhouse.com/docs/en/faq/general/olap) enabling underlying systems to perform an aggregated analysis of data, both over short and long periods of time.
 1. The fact that executing these operations with our currently existing datasets primarily in Postgres, is starting to become challenging and non-performant.
 
 Looking forward, assuming a larger volume of data being produced by our application(s) and the rate at which it gets produced, the ability to ingest it into a *more* capable system, both effectively and efficiently helps us scale our applications and prepare for business growth.

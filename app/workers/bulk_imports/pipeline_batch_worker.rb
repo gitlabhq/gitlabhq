@@ -14,15 +14,16 @@ module BulkImports
     def perform(batch_id)
       @batch = ::BulkImports::BatchTracker.find(batch_id)
       @tracker = @batch.tracker
+      @pending_retry = false
 
       try_obtain_lease { run }
     ensure
-      ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id)
+      ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id) unless pending_retry
     end
 
     private
 
-    attr_reader :batch, :tracker
+    attr_reader :batch, :tracker, :pending_retry
 
     def run
       return batch.skip! if tracker.failed? || tracker.finished?
@@ -31,6 +32,7 @@ module BulkImports
       tracker.pipeline_class.new(context).run
       batch.finish!
     rescue BulkImports::RetryPipelineError => e
+      @pending_retry = true
       retry_batch(e)
     rescue StandardError => e
       fail_batch(e)

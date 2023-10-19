@@ -22,6 +22,14 @@ module API
         authorize! :"read_#{source_type}_member", source
       end
 
+      def authorize_admin_source_member!(source_type, source)
+        authorize! :"admin_#{source_type}_member", source
+      end
+
+      def authorize_update_source_member!(source_type, member)
+        authorize! :"update_#{source_type}_member", member
+      end
+
       def authorize_admin_source!(source_type, source)
         authorize! :"admin_#{source_type}", source
       end

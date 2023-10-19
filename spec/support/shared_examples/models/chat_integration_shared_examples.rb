@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "chat integration" do |integration_name|
+RSpec.shared_examples "chat integration" do |integration_name, supports_deployments: false|
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -26,8 +26,14 @@ RSpec.shared_examples "chat integration" do |integration_name|
   end
 
   describe '.supported_events' do
-    it 'does not support deployment_events' do
-      expect(described_class.supported_events).not_to include('deployment')
+    if supports_deployments
+      it 'supports deployment_events' do
+        expect(described_class.supported_events).to include('deployment')
+      end
+    else
+      it 'does not support deployment_events' do
+        expect(described_class.supported_events).not_to include('deployment')
+      end
     end
   end
 
@@ -375,7 +381,47 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       let(:sample_data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.now) }
 
-      it_behaves_like "untriggered #{integration_name} integration"
+      if supports_deployments
+        it_behaves_like "triggered #{integration_name} integration"
+      else
+        it_behaves_like "untriggered #{integration_name} integration"
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'supports group mentions' do |integration_factory|
+  it 'supports group mentions' do
+    allow(subject).to receive(:webhook).and_return('http://example.com')
+    allow(subject).to receive(:group_id).and_return(1)
+    expect(subject).to receive(:notify).with(an_instance_of(Integrations::ChatMessage::GroupMentionMessage), {})
+
+    subject.execute(
+      object_kind: 'group_mention',
+      object_attributes: { action: 'new', object_kind: 'issue' },
+      mentioned: { name: 'John Doe', url: 'http://example.com' }
+    )
+  end
+
+  describe '#supported_events' do
+    context 'when used in a project' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:integration) { build(integration_factory, project: project) }
+
+      it 'does not support group mentions', :aggregate_failures do
+        expect(integration.supported_events).not_to include('group_mention')
+        expect(integration.supported_events).not_to include('group_confidential_mention')
+      end
+    end
+
+    context 'when used in a group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:integration) { build(integration_factory, group: group) }
+
+      it 'supports group mentions', :aggregate_failures do
+        expect(integration.supported_events).to include('group_mention')
+        expect(integration.supported_events).to include('group_confidential_mention')
+      end
     end
   end
 end

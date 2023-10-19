@@ -15,10 +15,6 @@ If this list seems long and you're not sure where to start, then this tutorial i
 Follow along to learn how to set up an example website project, collaborate with other GitLab users,
 and use project-level analytics reports to evaluate the development of your project.
 
-Prerequisite:
-
-- You must have the Owner role for the group in which you create the project.
-
 Here's an overview of what we're going to do:
 
 1. Create a project from a template.
@@ -27,6 +23,10 @@ Here's an overview of what we're going to do:
 1. Create a value stream with a custom stage.
 1. Create an Insights report.
 1. View merge request and issue analytics.
+
+## Before you begin
+
+- You must have the Owner role for the group in which you create the project.
 
 ## Create a project from a template
 

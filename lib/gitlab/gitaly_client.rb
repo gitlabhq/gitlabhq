@@ -56,13 +56,6 @@ module Gitlab
         # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
         'grpc.keepalive_time_ms': 20000,
         'grpc.keepalive_permit_without_calls': 1,
-        # Enable client-side automatic retry. After enabled, gRPC requests will be retried when there are connectivity
-        # problems with the target host. Only transparent failures, which mean requests fail before leaving clients, are
-        # eligible. Other cases are configurable via retry policy in service config (below). In theory, we can auto-retry
-        # read-only RPCs. Gitaly defines a custom field in service proto. Unfortunately, gRPC ruby doesn't support
-        # descriptor reflection.
-        # For more information please visit https://github.com/grpc/proposal/blob/master/A6-client-retries.md
-        'grpc.enable_retries': 1,
         # Service config is a mechanism for grpc to control the behavior of gRPC client. It defines the client-side
         # balancing strategy and retry policy. The config receives a raw JSON string. The format is defined here:
         # https://github.com/grpc/grpc-proto/blob/master/grpc/service_config/service_config.proto
@@ -72,7 +65,119 @@ module Gitlab
           # grpc creates multiple subchannels to all targets retrurned by the resolver. Requests are distributed to
           # those subchannels in a round-robin fashion.
           # More about client-side load-balancing: https://gitlab.com/groups/gitlab-org/-/epics/8971#note_1207008162
-          "loadBalancingConfig": [{ "round_robin": {} }]
+          "loadBalancingConfig": [{ "round_robin": {} }],
+          # Enable retries for read-only RPCs. With this setting the client to will resend requests that fail with
+          # the following conditions:
+          #   1. An `UNAVAILABLE` status code was received.
+          #   2. No response-headers were received from the server.
+          # This allows the client to handle momentary service interruptions without user-facing errors. gRPC's
+          # automatic 'transparent retries' may also be sent.
+          # For more information please visit https://github.com/grpc/proposal/blob/master/A6-client-retries.md
+          'methodConfig': [
+            {
+              # Gitaly sets an `op_type` `MethodOption` on RPCs to note if it mutates a repository. We cannot
+              # programatically detect read-only RPCs, i.e. those safe to retry, because Ruby's protobuf
+              # implementation does not provide access to `MethodOptions`. That feature is being tracked under
+              # https://github.com/protocolbuffers/protobuf/issues/1198. When that is complete we can replace this
+              # table.
+              'name': [
+                { 'service': 'gitaly.BlobService', 'method':   'GetBlob' },
+                { 'service': 'gitaly.BlobService', 'method':   'GetBlobs' },
+                { 'service': 'gitaly.BlobService', 'method':   'GetLFSPointers' },
+                { 'service': 'gitaly.BlobService', 'method':   'GetAllLFSPointers' },
+                { 'service': 'gitaly.BlobService', 'method':   'ListAllBlobs' },
+                { 'service': 'gitaly.BlobService', 'method':   'ListAllLFSPointers' },
+                { 'service': 'gitaly.BlobService', 'method':   'ListBlobs' },
+                { 'service': 'gitaly.BlobService', 'method':   'ListLFSPointers' },
+                { 'service': 'gitaly.CommitService', 'method': 'CheckObjectsExist' },
+                { 'service': 'gitaly.CommitService', 'method': 'CommitIsAncestor' },
+                { 'service': 'gitaly.CommitService', 'method': 'CommitLanguages' },
+                { 'service': 'gitaly.CommitService', 'method': 'CommitStats' },
+                { 'service': 'gitaly.CommitService', 'method': 'CommitsByMessage' },
+                { 'service': 'gitaly.CommitService', 'method': 'CountCommits' },
+                { 'service': 'gitaly.CommitService', 'method': 'CountDivergingCommits' },
+                { 'service': 'gitaly.CommitService', 'method': 'FilterShasWithSignatures' },
+                { 'service': 'gitaly.CommitService', 'method': 'FindAllCommits' },
+                { 'service': 'gitaly.CommitService', 'method': 'FindCommit' },
+                { 'service': 'gitaly.CommitService', 'method': 'FindCommits' },
+                { 'service': 'gitaly.CommitService', 'method': 'GetCommitMessages' },
+                { 'service': 'gitaly.CommitService', 'method': 'GetCommitSignatures' },
+                { 'service': 'gitaly.CommitService', 'method': 'GetTreeEntries' },
+                { 'service': 'gitaly.CommitService', 'method': 'LastCommitForPath' },
+                { 'service': 'gitaly.CommitService', 'method': 'ListAllCommits' },
+                { 'service': 'gitaly.CommitService', 'method': 'ListCommits' },
+                { 'service': 'gitaly.CommitService', 'method': 'ListCommitsByOid' },
+                { 'service': 'gitaly.CommitService', 'method': 'ListCommitsByRefName' },
+                { 'service': 'gitaly.CommitService', 'method': 'ListFiles' },
+                { 'service': 'gitaly.CommitService', 'method': 'ListLastCommitsForTree' },
+                { 'service': 'gitaly.CommitService', 'method': 'RawBlame' },
+                { 'service': 'gitaly.CommitService', 'method': 'TreeEntry' },
+                { 'service': 'gitaly.ConflictsService', 'method': 'ListConflictFiles' },
+                { 'service': 'gitaly.DiffService', 'method': 'CommitDelta' },
+                { 'service': 'gitaly.DiffService', 'method': 'CommitDiff' },
+                { 'service': 'gitaly.DiffService', 'method': 'DiffStats' },
+                { 'service': 'gitaly.DiffService', 'method': 'FindChangedPaths' },
+                { 'service': 'gitaly.DiffService', 'method': 'GetPatchID' },
+                { 'service': 'gitaly.DiffService', 'method': 'RawDiff' },
+                { 'service': 'gitaly.DiffService', 'method': 'RawPatch' },
+                { 'service': 'gitaly.ObjectPoolService', 'method': 'GetObjectPool' },
+                { 'service': 'gitaly.RefService', 'method': 'FindAllBranches' },
+                { 'service': 'gitaly.RefService', 'method': 'FindAllRemoteBranches' },
+                { 'service': 'gitaly.RefService', 'method': 'FindAllTags' },
+                { 'service': 'gitaly.RefService', 'method': 'FindBranch' },
+                { 'service': 'gitaly.RefService', 'method': 'FindDefaultBranchName' },
+                { 'service': 'gitaly.RefService', 'method': 'FindLocalBranches' },
+                { 'service': 'gitaly.RefService', 'method': 'FindRefsByOID' },
+                { 'service': 'gitaly.RefService', 'method': 'FindTag' },
+                { 'service': 'gitaly.RefService', 'method': 'GetTagMessages' },
+                { 'service': 'gitaly.RefService', 'method': 'GetTagSignatures' },
+                { 'service': 'gitaly.RefService', 'method': 'ListBranchNamesContainingCommit' },
+                { 'service': 'gitaly.RefService', 'method': 'ListRefs' },
+                { 'service': 'gitaly.RefService', 'method': 'ListTagNamesContainingCommit' },
+                { 'service': 'gitaly.RefService', 'method': 'RefExists' },
+                { 'service': 'gitaly.RemoteService', 'method': 'FindRemoteRepository' },
+                { 'service': 'gitaly.RemoteService', 'method': 'FindRemoteRootRef' },
+                { 'service': 'gitaly.RemoteService', 'method': 'UpdateRemoteMirror' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'BackupCustomHooks' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'BackupRepository' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'CalculateChecksum' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'CreateBundle' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'Fsck' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'FindLicense' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'FindMergeBase' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'FullPath' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'HasLocalBranches' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetArchive' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetConfig' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetCustomHooks' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetFileAttributes' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetInfoAttributes' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetObject' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetObjectDirectorySize' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetRawChanges' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'GetSnapshot' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'ObjectSize' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'ObjectFormat' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'RepositoryExists' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'RepositoryInfo' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'RepositorySize' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'SearchFilesByContent' },
+                { 'service': 'gitaly.RepositoryService', 'method': 'SearchFilesByName' },
+                { 'service': 'gitaly.ServerService', 'method': 'ClockSynced' },
+                { 'service': 'gitaly.ServerService', 'method': 'DiskStatistics' },
+                { 'service': 'gitaly.ServerService', 'method': 'ReadinessCheck' },
+                { 'service': 'gitaly.ServerService', 'method': 'ServerInfo' },
+                { 'service': 'grpc.health.v1.Health', 'method': 'Check' }
+              ],
+              'retryPolicy': {
+                'maxAttempts': 3, # Initial request, plus up to two retries.
+                'initialBackoff': '0.25s',
+                'maxBackoff': '1s',
+                'backoffMultiplier': 2, # Minimum retry duration is 750ms.
+                'retryableStatusCodes': ['UNAVAILABLE']
+              }
+            }
+          ]
         }.to_json
       }
     end

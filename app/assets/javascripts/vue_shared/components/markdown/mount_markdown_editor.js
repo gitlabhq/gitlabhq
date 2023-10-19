@@ -105,7 +105,6 @@ export function mountMarkdownEditor(options = {}) {
       return h(MarkdownEditor, {
         props: {
           setFacade,
-          enableContentEditor: Boolean(gon.features?.contentEditorOnIssues),
           value: formFieldValue,
           renderMarkdownPath,
           markdownDocsPath,

@@ -623,6 +623,11 @@ To configure multiple **parallel** stop actions on an environment, specify the
 
 When an environment is stopped, the matching `on_stop` actions from only successful deployment jobs are run in parallel, in no particular order.
 
+NOTE:
+All `on_stop` actions for an environment must belong to the same pipeline. To use multiple `on_stop` actions in
+[downstream pipelines](../pipelines/downstream_pipelines.md), you must configure the environment actions in
+the parent pipeline. For more information, see [downstream pipelines for deployments](../pipelines/downstream_pipelines.md#advanced-example).
+
 In the following example, for the `test` environment there are two deployment jobs:
 
 - `deploy-to-cloud-a`
@@ -779,15 +784,6 @@ GitLab Auto Rollback is turned off by default. To turn it on:
 1. Select the checkbox for **Enable automatic rollbacks**.
 1. Select **Save changes**.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-09-22' -->
-
-### Monitor environments (removed)
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/10107) in GitLab 14.7
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
-
-<!--- end_remove -->
-
 ### Web terminals (deprecated)
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -885,6 +881,10 @@ any job can have this variable, regardless of whether an environment is defined.
 
 If the environment scope is `review/*`, then jobs with environment names starting
 with `review/` would have that variable available.
+Using environment-scoped variables with [`rules` and `include`](../yaml/includes.md#use-rules-with-include)
+might not work as expected in a pipeline.
+Because the environment-scoped variable is set only in a matching job,
+the variable might not be defined when GitLab validates the pipeline configuration at pipeline creation.
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping in each environment group.

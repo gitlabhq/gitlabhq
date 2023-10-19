@@ -29,7 +29,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
             create(issuable, project_relation => project)
 
             visit path
-            expect(page).not_to have_selector('.empty-state')
+            expect(page).not_to have_selector('[data-testid="issuable-empty-state"]')
           end
 
           it "displays link to create new #{issuable} when no open #{issuable} is found", :js do
@@ -40,7 +40,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
 
             wait_for_all_requests
 
-            page.within(find('.empty-state')) do
+            within_testid('issuable-empty-state') do
               expect(page).to have_content(/There are no open #{issuable.to_s.humanize.downcase}/)
               new_issuable_path = issuable == :issue ? 'new_project_issue_path' : 'project_new_merge_request_path'
 
@@ -59,7 +59,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
 
             wait_for_all_requests
 
-            page.within(find('.empty-state')) do
+            within_testid('issuable-empty-state') do
               expect(page).to have_content(/Sorry, your filter produced no results/)
               new_issuable_path = issuable == :issue ? 'new_project_issue_path' : 'project_new_merge_request_path'
 
@@ -78,7 +78,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
 
             wait_for_all_requests
 
-            page.within(find('.empty-state')) do
+            within_testid('issuable-empty-state') do
               expect(page).to have_content(/There are no closed #{issuable.to_s.humanize.downcase}/)
             end
           end
@@ -90,7 +90,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
           end
 
           it 'displays an empty state' do
-            expect(page).to have_selector('.empty-state')
+            expect(page).to have_selector('[data-testid="issuable-empty-state"]')
           end
 
           it "shows a new #{issuable_name} button" do
@@ -107,11 +107,11 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
 
       shared_examples "no projects" do
         it 'displays an empty state', :js do
-          expect(page).to have_selector('.empty-state')
+          expect(page).to have_selector('[data-testid="issuable-empty-state"]')
         end
 
         it "does not show a new #{issuable_name} button", :js do
-          within '.empty-state' do
+          within_testid('issuable-empty-state') do
             expect(page).not_to have_link("create #{issuable_name}")
           end
         end
@@ -130,7 +130,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
             end
 
             it 'does not display an empty state' do
-              expect(page).not_to have_selector('.empty-state')
+              expect(page).not_to have_selector('[data-testid="issuable-empty-state"]')
             end
           end
 
@@ -140,7 +140,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
             end
 
             it 'displays an empty state', :js do
-              expect(page).to have_selector('.empty-state')
+              expect(page).to have_selector('[data-testid="issuable-empty-state"]')
             end
           end
         end

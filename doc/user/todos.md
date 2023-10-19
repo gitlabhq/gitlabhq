@@ -66,11 +66,12 @@ To-do items aren't affected by [GitLab notification email settings](profile/noti
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags.md) named `multiple_todos`. Disabled by default.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82470) in GitLab 14.9: only mentions create multiple to-do items.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user,
 an administrator can [enable the feature flag](../administration/feature_flags.md) named `multiple_todos`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 The feature is not ready for production use.
 
 When you enable this feature:

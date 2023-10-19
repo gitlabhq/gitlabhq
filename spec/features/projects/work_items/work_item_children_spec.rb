@@ -124,7 +124,9 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
           expect(page).to have_button('Add task', disabled: false)
 
-          click_button 'Add task'
+          send_keys :escape
+
+          click_button('Add task')
 
           wait_for_all_requests
 
@@ -162,7 +164,9 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
           wait_for_all_requests
           click_button task.title
 
-          click_button 'Add task'
+          send_keys :escape
+
+          click_button('Add task')
 
           wait_for_all_requests
         end

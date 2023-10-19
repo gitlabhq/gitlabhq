@@ -57,7 +57,7 @@ export default {
             <gl-icon :size="16" :name="option.icon" />
             <span
               class="font-weight-bold ml-1 js-visibility-option"
-              data-qa-selector="visibility_content"
+              data-testid="visibility-content"
               :data-qa-visibility="option.label"
               >{{ option.label }}</span
             >

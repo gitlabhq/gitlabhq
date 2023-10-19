@@ -321,6 +321,7 @@ export const discussionMock = {
   individual_note: false,
   resolvable: true,
   active: true,
+  confidential: false,
 };
 
 export const loggedOutnoteableData = {

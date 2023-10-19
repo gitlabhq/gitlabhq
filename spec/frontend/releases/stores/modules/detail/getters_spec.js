@@ -470,4 +470,20 @@ describe('Release edit/new getters', () => {
       expect(getters.releasedAtChanged({ originalReleasedAt, release: { releasedAt } })).toBe(true);
     });
   });
+
+  describe('localStorageKey', () => {
+    it('returns a string key with the project path for local storage', () => {
+      const projectPath = 'test/project';
+      expect(getters.localStorageKey({ projectPath })).toBe('test/project/release/new');
+    });
+  });
+
+  describe('localStorageCreateFromKey', () => {
+    it('returns a string key with the project path for local storage', () => {
+      const projectPath = 'test/project';
+      expect(getters.localStorageCreateFromKey({ projectPath })).toBe(
+        'test/project/release/new/createFrom',
+      );
+    });
+  });
 });

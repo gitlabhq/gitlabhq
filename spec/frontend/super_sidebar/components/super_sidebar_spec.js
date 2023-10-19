@@ -45,6 +45,7 @@ const peekHintClass = 'super-sidebar-peek-hint';
 describe('SuperSidebar component', () => {
   let wrapper;
 
+  const findSkipToLink = () => wrapper.findByTestId('super-sidebar-skip-to');
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
   const findUserBar = () => wrapper.findComponent(UserBar);
   const findNavContainer = () => wrapper.findByTestId('nav-container');
@@ -89,6 +90,24 @@ describe('SuperSidebar component', () => {
   });
 
   describe('default', () => {
+    it('renders skip to main content link when logged in', () => {
+      createWrapper();
+      expect(findSkipToLink().attributes('href')).toBe('#content-body');
+    });
+
+    it('does not render skip to main content link when logged out', () => {
+      createWrapper({ sidebarData: { is_logged_in: false } });
+      expect(findSkipToLink().exists()).toBe(false);
+    });
+
+    it('has accessible role and name', () => {
+      createWrapper();
+      const nav = wrapper.findByRole('navigation');
+      const heading = wrapper.findByText('Primary navigation');
+      expect(nav.attributes('aria-labelledby')).toBe('super-sidebar-heading');
+      expect(heading.attributes('id')).toBe('super-sidebar-heading');
+    });
+
     it('adds inert attribute when collapsed', () => {
       createWrapper({ sidebarState: { isCollapsed: true } });
       expect(findSidebar().attributes('inert')).toBe('inert');
@@ -293,13 +312,6 @@ describe('SuperSidebar component', () => {
     it('renders trial status widget', () => {
       expect(findTrialStatusWidget().exists()).toBe(true);
       expect(findTrialStatusPopover().exists()).toBe(true);
-    });
-  });
-
-  describe('ARIA attributes', () => {
-    it('adds aria-label attribute to nav element', () => {
-      createWrapper();
-      expect(wrapper.find('nav').attributes('aria-label')).toBe('Primary');
     });
   });
 });

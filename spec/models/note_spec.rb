@@ -81,6 +81,14 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
 
+    context 'when noteable is an abuse report' do
+      subject { build(:note, noteable: build_stubbed(:abuse_report), project: nil, namespace: nil) }
+
+      it 'is valid without project or namespace' do
+        is_expected.to be_valid
+      end
+    end
+
     describe 'max notes limit' do
       let_it_be(:noteable) { create(:issue) }
       let_it_be(:existing_note) { create(:note, project: noteable.project, noteable: noteable) }
@@ -314,34 +322,59 @@ RSpec.describe Note, feature_category: :team_planning do
     end
 
     describe '#ensure_namespace_id' do
-      context 'for a project noteable' do
-        let_it_be(:issue) { create(:issue) }
+      context 'for issues' do
+        let!(:issue) { create(:issue) }
 
-        it 'copies the project_namespace_id of the project' do
-          note = build(:note, noteable: issue, project: issue.project)
+        it 'copies the namespace_id of the issue' do
+          note = build(:note, noteable: issue)
 
           note.valid?
 
-          expect(note.namespace_id).to eq(issue.project.project_namespace_id)
+          expect(note.namespace_id).to eq(issue.namespace_id)
+        end
+      end
+
+      context 'for group-level work items' do
+        let!(:group) { create(:group) }
+        let!(:work_item) { create(:work_item, namespace: group) }
+
+        it 'copies the namespace_id of the work item' do
+          note = build(:note, noteable: work_item)
+
+          note.valid?
+
+          expect(note.namespace_id).to eq(group.id)
+        end
+      end
+
+      context 'for a project noteable' do
+        let_it_be(:merge_request) { create(:merge_request) }
+
+        it 'copies the project_namespace_id of the project' do
+          note = build(:note, noteable: merge_request, project: merge_request.project)
+
+          note.valid?
+
+          expect(note.namespace_id).to eq(merge_request.project.project_namespace_id)
         end
 
         context 'when noteable is changed' do
-          let_it_be(:another_issue) { create(:issue) }
+          let_it_be(:another_mr) { create(:merge_request) }
 
           it 'updates the namespace_id' do
-            note = create(:note, noteable: issue, project: issue.project)
+            note = create(:note, noteable: merge_request, project: merge_request.project)
 
-            note.noteable = another_issue
-            note.project = another_issue.project
+            note.noteable = another_mr
+            note.project = another_mr.project
             note.valid?
 
-            expect(note.namespace_id).to eq(another_issue.project.project_namespace_id)
+            expect(note.namespace_id).to eq(another_mr.project.project_namespace_id)
           end
         end
 
         context 'when project is missing' do
           it 'does not raise an exception' do
-            note = build(:note, noteable: issue, project: nil)
+            note = build(:note, noteable: merge_request, project: nil)
 
             expect { note.valid? }.not_to raise_error
           end
@@ -1322,6 +1355,20 @@ RSpec.describe Note, feature_category: :team_planning do
       note = build(:note, noteable: build(:design))
 
       expect(note).to be_for_design
+    end
+  end
+
+  describe '#for_abuse_report' do
+    it 'is true when the noteable is an abuse report' do
+      note = build(:note, noteable: build(:abuse_report))
+
+      expect(note).to be_for_abuse_report
+    end
+
+    it 'is not true when the noteable is not an abuse report' do
+      note = build(:note, noteable: build(:design))
+
+      expect(note).not_to be_for_abuse_report
     end
   end
 

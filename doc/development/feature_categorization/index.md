@@ -32,6 +32,24 @@ The [Scalability team](https://about.gitlab.com/handbook/engineering/infrastruct
 currently maintains the `feature_categories.yml` file. They will automatically be
 notified on Slack when the file becomes outdated.
 
+## Gemfile
+
+For each Ruby gem dependency we should specify which feature category requires
+this dependency. This should clarify ownership and we can delegate upgrading
+to the respective group owning the feature.
+
+### Tooling feature category
+
+For Engineering Productivity internal tooling we use `feature_category: :tooling`.
+For example, `knapsack` and `crystalball` are both used to run RSpec test
+suites in CI and they don't belong to any product groups.
+
+### Shared feature category
+
+For gems that are used across different product groups we use
+`feature_category: :shared`. For example, `rails` is used through out the
+application and it's shared with multiple groups.
+
 ## Sidekiq workers
 
 The declaration uses the `feature_category` class method, as shown below.
@@ -214,7 +232,7 @@ To disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` when runn
 RSPEC_WARN_MISSING_FEATURE_CATEGORY=false bin/rspec spec/<test_file>
 ```
 
-Additionally, we flag the offenses via `RSpec/MissingFeatureCategory` RuboCop rule.
+Additionally, we flag the offenses via `RSpec/FeatureCategory` RuboCop rule.
 
 ### Tooling feature category
 

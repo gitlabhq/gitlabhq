@@ -8,7 +8,7 @@ module Gitlab
     class Receiver
       include Gitlab::Utils::StrongMemoize
 
-      RECEIVED_HEADER_REGEX = /for\s+\<([^<]+)\>/.freeze
+      RECEIVED_HEADER_REGEX = /for\s+\<([^<]+)\>/
 
       # Errors that are purely from users and not anything we can control
       USER_ERRORS = [
@@ -50,6 +50,7 @@ module Gitlab
           delivered_to: delivered_to.map(&:value),
           envelope_to: envelope_to.map(&:value),
           x_envelope_to: x_envelope_to.map(&:value),
+          cc_address: cc,
           # reduced down to what looks like an email in the received headers
           received_recipients: recipients_from_received_headers,
           meta: {
@@ -84,23 +85,27 @@ module Gitlab
 
       def mail_key
         strong_memoize(:mail_key) do
-          key_from_to_header || key_from_additional_headers
+          find_first_key_from(to) || key_from_additional_headers
         end
       end
 
-      def key_from_to_header
-        to.find do |address|
-          key = email_class.key_from_address(address)
-          break key if key
+      def find_first_key_from(items)
+        items.each do |item|
+          email = item.is_a?(Mail::Field) ? item.value : item
+
+          key = email_class.key_from_address(email)
+          return key if key
         end
+        nil
       end
 
       def key_from_additional_headers
         find_key_from_references ||
-          find_key_from_delivered_to_header ||
-          find_key_from_envelope_to_header ||
-          find_key_from_x_envelope_to_header ||
-          find_first_key_from_received_headers
+          find_first_key_from(delivered_to) ||
+          find_first_key_from(envelope_to) ||
+          find_first_key_from(x_envelope_to) ||
+          find_first_key_from(recipients_from_received_headers) ||
+          find_first_key_from(cc)
       end
 
       def ensure_references_array(references)
@@ -131,6 +136,10 @@ module Gitlab
         Array(mail.to)
       end
 
+      def cc
+        Array(mail.cc)
+      end
+
       def delivered_to
         Array(mail[:delivered_to])
       end
@@ -145,34 +154,6 @@ module Gitlab
 
       def received
         Array(mail[:received])
-      end
-
-      def find_key_from_delivered_to_header
-        delivered_to.find do |header|
-          key = email_class.key_from_address(header.value)
-          break key if key
-        end
-      end
-
-      def find_key_from_envelope_to_header
-        envelope_to.find do |header|
-          key = email_class.key_from_address(header.value)
-          break key if key
-        end
-      end
-
-      def find_key_from_x_envelope_to_header
-        x_envelope_to.find do |header|
-          key = email_class.key_from_address(header.value)
-          break key if key
-        end
-      end
-
-      def find_first_key_from_received_headers
-        recipients_from_received_headers.find do |email|
-          key = email_class.key_from_address(email)
-          break key if key
-        end
       end
 
       def recipients_from_received_headers

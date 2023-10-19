@@ -44,7 +44,7 @@ module Gitlab
 
           pname = project.path_with_namespace
 
-          Gitlab::Import::Logger.info(
+          Logger.info(
             message: 'GitHub importer finished updating repository',
             project_name: pname
           )

@@ -2,6 +2,9 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import Tracking from '~/tracking';
+import setSelectedBoardItemsMutation from '~/boards/graphql/client/set_selected_board_items.mutation.graphql';
+import unsetSelectedBoardItemsMutation from '~/boards/graphql/client/unset_selected_board_items.mutation.graphql';
+import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import BoardCardInner from './board_card_inner.vue';
@@ -52,9 +55,12 @@ export default {
         return !this.isApolloBoard;
       },
     },
+    selectedBoardItems: {
+      query: selectedBoardItemsQuery,
+    },
   },
   computed: {
-    ...mapState(['selectedBoardItems', 'activeId']),
+    ...mapState(['activeId']),
     activeItemId() {
       return this.isApolloBoard ? this.activeBoardItem?.id : this.activeId;
     },
@@ -62,10 +68,7 @@ export default {
       return this.item.id === this.activeItemId;
     },
     multiSelectVisible() {
-      return (
-        !this.activeItemId &&
-        this.selectedBoardItems.findIndex((boardItem) => boardItem.id === this.item.id) > -1
-      );
+      return !this.activeItemId && this.selectedBoardItems?.includes(this.item.id);
     },
     isDisabled() {
       return this.disabled || !this.item.id || this.item.isLoading || !this.canAdmin;
@@ -93,7 +96,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleBoardItemMultiSelection', 'toggleBoardItem']),
+    ...mapActions(['toggleBoardItem']),
     toggleIssue(e) {
       // Don't do anything if this happened on a no trigger element
       if (e.target.closest('.js-no-trigger')) return;
@@ -110,12 +113,35 @@ export default {
         this.track('click_card', { label: 'right_sidebar' });
       }
     },
-    toggleItem() {
+    async toggleItem() {
+      await this.$apollo.mutate({
+        mutation: unsetSelectedBoardItemsMutation,
+      });
       this.$apollo.mutate({
         mutation: setActiveBoardItemMutation,
         variables: {
           boardItem: this.isActive ? null : this.item,
           isIssue: this.isActive ? undefined : this.isIssueBoard,
+        },
+      });
+    },
+    async toggleBoardItemMultiSelection(item) {
+      if (this.activeItemId) {
+        await this.$apollo.mutate({
+          mutation: setSelectedBoardItemsMutation,
+          variables: {
+            itemId: this.activeItemId,
+          },
+        });
+        await this.$apollo.mutate({
+          mutation: setActiveBoardItemMutation,
+          variables: { boardItem: null },
+        });
+      }
+      this.$apollo.mutate({
+        mutation: setSelectedBoardItemsMutation,
+        variables: {
+          itemId: item.id,
         },
       });
     },
@@ -125,7 +151,6 @@ export default {
 
 <template>
   <li
-    data-qa-selector="board_card"
     :class="[
       {
         'multi-select gl-bg-blue-50 gl-border-blue-200': multiSelectVisible,
@@ -141,7 +166,7 @@ export default {
     :data-item-iid="item.iid"
     :data-item-path="item.referencePath"
     :style="cardStyle"
-    data-testid="board_card"
+    data-testid="board-card"
     class="board-card gl-p-5 gl-rounded-base gl-line-height-normal gl-relative gl-mb-3"
     @click="toggleIssue($event)"
   >

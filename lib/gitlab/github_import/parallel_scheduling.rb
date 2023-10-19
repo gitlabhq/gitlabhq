@@ -211,6 +211,12 @@ module Gitlab
 
       private
 
+      # Returns the set used to track "already imported" objects.
+      # Items are the values returned by `#id_for_already_imported_cache`.
+      def already_imported_ids
+        Gitlab::Cache::Import::Caching.values_from_set(already_imported_cache_key)
+      end
+
       def additional_object_data
         {}
       end

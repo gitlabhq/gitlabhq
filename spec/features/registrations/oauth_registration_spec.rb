@@ -50,11 +50,11 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
         stub_omniauth_setting(block_auto_created_users: false)
       end
 
-      it 'redirects to the initial welcome path' do
+      it 'redirects to the dashboard projects path' do
         register_via(provider, uid, email, additional_info: additional_info)
 
-        expect(page).to have_current_path users_sign_up_welcome_path
-        expect(page).to have_content('Welcome to GitLab, mockuser!')
+        expect(page).to have_current_path dashboard_projects_path
+        expect(page).to have_content('Welcome to GitLab')
       end
 
       context 'when terms are enforced' do
@@ -62,11 +62,11 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
           enforce_terms
         end
 
-        it 'auto accepts terms and redirects to the initial welcome path' do
+        it 'auto accepts terms and redirects to the dashboard projects path' do
           register_via(provider, uid, email, additional_info: additional_info)
 
-          expect(page).to have_current_path users_sign_up_welcome_path
-          expect(page).to have_content('Welcome to GitLab, mockuser!')
+          expect(page).to have_current_path dashboard_projects_path
+          expect(page).to have_content('Welcome to GitLab')
         end
       end
 
@@ -108,17 +108,11 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
         it 'redirects to the activity page with all the projects/groups invitations accepted' do
           visit invite_path(group_invite.raw_invite_token, extra_params)
           click_link_or_button "oauth-login-#{provider}"
-          fill_in_welcome_form
 
           expect(page).to have_content('You have been granted Owner access to group Owned.')
           expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
         end
       end
     end
-  end
-
-  def fill_in_welcome_form
-    select 'Software Developer', from: 'user_role'
-    click_button 'Get started!'
   end
 end

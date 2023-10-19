@@ -21,7 +21,6 @@ import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_coun
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -384,7 +383,8 @@ export default {
           dataType: 'user',
           defaultUsers: [],
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
-          fetchUsers: this.fetchUsers,
+          fullPath: this.fullPath,
+          isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
           preloadedUsers,
         },
@@ -395,7 +395,8 @@ export default {
           token: UserToken,
           dataType: 'user',
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
-          fetchUsers: this.fetchUsers,
+          fullPath: this.fullPath,
+          isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
         },
@@ -633,14 +634,6 @@ export default {
     },
     fetchLatestLabels(search) {
       return this.fetchLabelsWithFetchPolicy(search, fetchPolicies.NETWORK_ONLY);
-    },
-    fetchUsers(search) {
-      return this.$apollo
-        .query({
-          query: usersAutocompleteQuery,
-          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
-        })
-        .then(({ data }) => data[this.namespace]?.autocompleteUsers);
     },
     getExportCsvPathWithQuery() {
       return `${this.exportCsvPath}${window.location.search}`;

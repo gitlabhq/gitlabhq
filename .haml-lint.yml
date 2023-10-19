@@ -153,6 +153,9 @@ linters:
 
       # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/207950
       - Cop/UserAdmin
+      # See https://gitlab.com/groups/gitlab-org/-/epics/7374.
+      # This should eventually be enabled
+      - Gitlab/AvoidGitlabInstanceChecks
 
   RubyComments:
     enabled: true

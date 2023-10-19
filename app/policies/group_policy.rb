@@ -72,10 +72,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
   end
 
-  condition(:observability_enabled, scope: :subject) do
-    Feature.enabled?(:observability_group_tab, @subject)
-  end
-
   desc "Deploy token with read_package_registry scope"
   condition(:read_package_registry_deploy_token) do
     @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.read_package_registry
@@ -174,7 +170,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :read_design_activity
   end
 
-  rule { has_access }.enable :read_namespace
+  rule { has_access }.enable :read_namespace_via_membership
+
+  rule { can?(:read_namespace_via_membership) }.enable :read_namespace
 
   rule { developer }.policy do
     enable :admin_metrics_dashboard_annotation
@@ -362,14 +360,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { migration_bot }.policy do
     enable :read_resource_access_tokens
     enable :destroy_resource_access_tokens
-  end
-
-  rule { can?(:developer_access) & observability_enabled }.policy do
-    enable :read_observability
-  end
-
-  rule { can?(:maintainer_access) & observability_enabled }.policy do
-    enable :admin_observability
   end
 
   # Should be matched with ProjectPolicy#read_internal_note

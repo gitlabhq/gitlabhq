@@ -1,13 +1,13 @@
 <script>
-import { GlDropdown } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlAvatarLabeled } from '@gitlab/ui';
 import { __ } from '~/locale';
-
-import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
+import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 export default {
   components: {
-    GlDropdown,
-    ProjectListItem,
+    GlCollapsibleListbox,
+    GlAvatarLabeled,
   },
   props: {
     projectDropdownText: {
@@ -26,30 +26,61 @@ export default {
       default: null,
     },
   },
+  data() {
+    return {
+      selected: this.selectedProject,
+    };
+  },
   computed: {
     dropdownText() {
       return this.selectedProject
         ? this.selectedProject.name_with_namespace
         : this.projectDropdownText;
     },
+    items() {
+      const items = this.projects.map((project) => {
+        return {
+          value: project.id,
+          ...project,
+        };
+      });
+
+      return convertObjectPropsToCamelCase(items, { deep: true });
+    },
   },
   methods: {
-    onClick(project) {
-      this.$emit('project-selected', project);
-      this.$refs.dropdown.hide(true);
+    getEntityId(project) {
+      return isGid(project.id) ? getIdFromGraphQLId(project.id) : project.id;
+    },
+    selectProject(projectId) {
+      this.$emit(
+        'project-selected',
+        this.projects.find((project) => project.id === projectId),
+      );
     },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown ref="dropdown" block :text="dropdownText" menu-class="gl-w-full!">
-    <project-list-item
-      v-for="project in projects"
-      :key="project.id"
-      :project="project"
-      :selected="false"
-      @click="onClick(project)"
-    />
-  </gl-dropdown>
+  <gl-collapsible-listbox
+    v-model="selected"
+    block
+    fluid-width
+    is-check-centered
+    :toggle-text="dropdownText"
+    :items="items"
+    @select="selectProject"
+  >
+    <template #list-item="{ item }">
+      <gl-avatar-labeled
+        :label="item.nameWithNamespace"
+        :entity-name="item.nameWithNamespace"
+        :entity-id="getEntityId(item)"
+        shape="rect"
+        :size="32"
+        :src="item.avatarUrl"
+      />
+    </template>
+  </gl-collapsible-listbox>
 </template>

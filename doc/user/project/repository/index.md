@@ -100,7 +100,7 @@ from the GitLab user interface.
 
 Prerequisites:
 
-- The [Jetbrains Toolbox App](https://www.jetbrains.com/toolbox-app/) must be also be installed.
+- The [JetBrains Toolbox App](https://www.jetbrains.com/toolbox-app/) must be also be installed.
 
 To do this:
 

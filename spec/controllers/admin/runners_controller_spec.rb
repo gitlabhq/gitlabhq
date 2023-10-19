@@ -106,13 +106,11 @@ RSpec.describe Admin::RunnersController, feature_category: :runner_fleet do
     subject(:request) { post :update, params: runner_params }
 
     context 'with update succeeding' do
-      before do
+      it 'updates the runner and ticks the queue' do
         expect_next_instance_of(Ci::Runners::UpdateRunnerService, runner) do |service|
           expect(service).to receive(:execute).with(anything).and_call_original
         end
-      end
 
-      it 'updates the runner and ticks the queue' do
         expect { request }.to change { runner.ensure_runner_queue_value }
 
         runner.reload
@@ -123,13 +121,11 @@ RSpec.describe Admin::RunnersController, feature_category: :runner_fleet do
     end
 
     context 'with update failing' do
-      before do
+      it 'does not update runner or tick the queue' do
         expect_next_instance_of(Ci::Runners::UpdateRunnerService, runner) do |service|
           expect(service).to receive(:execute).with(anything).and_return(ServiceResponse.error(message: 'failure'))
         end
-      end
 
-      it 'does not update runner or tick the queue' do
         expect { request }.not_to change { runner.ensure_runner_queue_value }
         expect { request }.not_to change { runner.reload.description }
 

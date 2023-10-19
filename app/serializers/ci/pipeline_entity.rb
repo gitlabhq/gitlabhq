@@ -33,7 +33,8 @@ class Ci::PipelineEntity < Grape::Entity
     expose :can_cancel?, as: :cancelable
     expose :failure_reason?, as: :failure_reason
     expose :detached_merge_request_pipeline?, as: :detached_merge_request_pipeline
-    expose :merged_result_pipeline?, as: :merge_request_pipeline
+    expose :merged_result_pipeline?, as: :merge_request_pipeline # deprecated, use merged_result_pipeline going forward
+    expose :merged_result_pipeline?, as: :merged_result_pipeline
   end
 
   expose :details do
@@ -83,10 +84,16 @@ class Ci::PipelineEntity < Grape::Entity
     project_pipeline_path(pipeline.project, pipeline)
   end
 
-  expose :failed_builds, if: -> (*) { can_retry? }, using: Ci::JobEntity do |pipeline|
+  expose :failed_builds,
+    if: -> (_, options) { !options[:disable_failed_builds] && can_retry? },
+    using: Ci::JobEntity do |pipeline|
     pipeline.failed_builds.each do |build|
       build.project = pipeline.project
     end
+  end
+
+  expose :failed_builds_count do |pipeline|
+    pipeline.failed_builds.size
   end
 
   private

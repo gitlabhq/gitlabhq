@@ -83,8 +83,10 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
   end
 
   describe 'scopes' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, namespace: user.namespace) }
+
     describe '.non_guests' do
-      let_it_be(:project) { create(:project) }
       let_it_be(:project_original_owner_authorization) { project.owner.project_authorizations.first }
       let_it_be(:project_authorization_guest) { create(:project_authorization, :guest, project: project) }
       let_it_be(:project_authorization_reporter) { create(:project_authorization, :reporter, project: project) }
@@ -97,6 +99,28 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
           project_authorization_reporter, project_authorization_developer,
           project_authorization_maintainer, project_authorization_owner,
           project_original_owner_authorization
+        ].map(&:attributes))
+      end
+    end
+
+    describe '.for_project' do
+      let_it_be(:project_2) { create(:project, namespace: user.namespace) }
+      let_it_be(:project_3) { create(:project, namespace: user.namespace) }
+
+      let_it_be(:project_authorization_3) { project_3.project_authorizations.first }
+      let_it_be(:project_authorization_2) { project_2.project_authorizations.first }
+      let_it_be(:project_authorization) { project.project_authorizations.first }
+
+      it 'returns all records for the project' do
+        expect(described_class.for_project(project).map(&:attributes)).to match_array([
+          project_authorization
+        ].map(&:attributes))
+      end
+
+      it 'returns all records for multiple projects' do
+        expect(described_class.for_project([project, project_3]).map(&:attributes)).to match_array([
+          project_authorization,
+          project_authorization_3
         ].map(&:attributes))
       end
     end

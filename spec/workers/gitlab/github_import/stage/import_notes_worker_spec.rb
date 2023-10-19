@@ -13,6 +13,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportNotesWorker, feature_category:
     settings.write({ optional_stages: { single_endpoint_notes_import: single_endpoint_optional_stage } })
   end
 
+  it_behaves_like Gitlab::GithubImport::StageMethods
+
   describe '#import' do
     it 'imports all the notes' do
       client = double(:client)

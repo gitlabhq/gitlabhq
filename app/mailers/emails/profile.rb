@@ -65,11 +65,13 @@ module Emails
       @token_names = token_names
       @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
       @resource = resource
-      @target_url = if resource.is_a?(Group)
-                      group_settings_access_tokens_url(resource)
-                    else
-                      project_settings_access_tokens_url(resource)
-                    end
+      if resource.is_a?(Group)
+        @target_url = group_settings_access_tokens_url(resource)
+        @reason_text = _('You are receiving this email because you are an Owner of the Group.')
+      else
+        @target_url = project_settings_access_tokens_url(resource)
+        @reason_text = _('You are receiving this email because you are a Maintainer of the Project.')
+      end
 
       mail_with_locale(
         to: recipient.notification_email_or_default,
@@ -100,7 +102,7 @@ module Emails
       @target_url = profile_personal_access_tokens_url
       @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("Your personal access tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your personal access tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
     end
 
     def access_token_expired_email(user, token_names = [])
@@ -121,7 +123,7 @@ module Emails
       @target_url = profile_personal_access_tokens_url
       @source = source
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("A personal access token has been revoked")))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your personal access token has been revoked")))
     end
 
     def ssh_key_expired_email(user, fingerprints)
@@ -170,7 +172,7 @@ module Emails
 
       @user = user
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("Two-factor authentication disabled")))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Two-factor authentication disabled")))
     end
 
     def new_email_address_added_email(user, email)

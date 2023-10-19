@@ -145,12 +145,6 @@ RSpec.configure do |config|
       metadata[:schema] = :latest if metadata[:level] == :background_migration
     end
 
-    # Do not overwrite type if it's already set
-    unless metadata.key?(:type)
-      match = location.match(%r{/spec/([^/]+)/})
-      metadata[:type] = match[1].singularize.to_sym if match
-    end
-
     # Admin controller specs get auto admin mode enabled since they are
     # protected by the 'EnforcesAdminAuthentication' concern
     metadata[:enable_admin_mode] = true if %r{(ee)?/spec/controllers/admin/}.match?(location)
@@ -214,10 +208,12 @@ RSpec.configure do |config|
   config.include Capybara::RSpecMatchers, type: :request
   config.include PendingDirectUploadHelpers, :direct_uploads
   config.include LabelsHelper, type: :feature
+  config.include UnlockPipelinesHelpers, :unlock_pipelines
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
   include StubFeatureFlags
+  include StubSaasFeatures
   include StubSnowplow
   include StubMember
 
@@ -328,10 +324,6 @@ RSpec.configure do |config|
       # These are ops feature flags that are disabled by default
       stub_feature_flags(disable_anonymous_project_search: false)
       stub_feature_flags(disable_cancel_redundant_pipelines_service: false)
-
-      # Specs should not get a CAPTCHA challenge by default, this makes the sign-in flow simpler in
-      # most cases. We do test the CAPTCHA flow in the appropriate specs.
-      stub_feature_flags(arkose_labs_login_challenge: false)
 
       # Specs should not require email verification by default, this makes the sign-in flow simpler in
       # most cases. We do test the email verification flow in the appropriate specs.

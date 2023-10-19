@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake_helper'
+require 'spec_helper'
 
 RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablished_active_record_base,
                :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
@@ -14,9 +14,6 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db/validate_config'
     Rake.application.rake_require 'tasks/gitlab/db/truncate_legacy_tables'
-
-    # empty task as env is already loaded
-    Rake::Task.define_task :environment
   end
 
   before do

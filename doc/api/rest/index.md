@@ -376,7 +376,8 @@ This resource has been moved permanently to https://gitlab.example.com/api/v4/pr
 
 GitLab supports the following pagination methods:
 
-- Offset-based pagination. The default method and available on all endpoints.
+- Offset-based pagination. The default method and available on all endpoints except,
+  in GitLab 16.5 and later, the `\users` endpoint.
 - Keyset-based pagination. Added to selected endpoints but being
   [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
 
@@ -384,6 +385,8 @@ For large collections, you should use keyset pagination
 (when available) instead of offset pagination, for performance reasons.
 
 ### Offset-based pagination
+
+> The `\users` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/426547) for offset-based pagination in GitLab 16.5 and is planned for removal in 17.0. This change is a breaking change. Use keyset-based pagination for this endpoint instead.
 
 Sometimes, the returned result spans many pages. When listing resources, you can
 pass the following parameters:
@@ -540,7 +543,7 @@ options:
 | [Project jobs](../jobs.md#list-project-jobs)                                   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Project audit events](../audit_events.md#retrieve-all-project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Projects](../projects.md)                                                     | `order_by=id` only               | Authenticated and unauthenticated users. |
-| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`               | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 15.4 [with a flag](../../user/feature_flags.md)) named `api_keyset_pagination_multi_order`. Disabled by default. |
+| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`               | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5. |
 
 ### Pagination response headers
 
@@ -808,7 +811,7 @@ For questions about these integrations, use the [GitLab community forum](https:/
 
 ### Haskell
 
-- [`gitlab-haskell`](http://hackage.haskell.org/package/gitlab-haskell)
+- [`gitlab-haskell`](https://hackage.haskell.org/package/gitlab-haskell)
 
 ### Java
 

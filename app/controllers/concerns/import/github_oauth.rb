@@ -54,23 +54,15 @@ module Import
       state = SecureRandom.base64(64)
       session[auth_state_key] = state
       session[:auth_on_failure_path] = "#{new_project_path}#import_project"
-      if Feature.enabled?(:remove_legacy_github_client)
-        oauth_client.auth_code.authorize_url(
-          redirect_uri: callback_import_url,
-          scope: 'repo, user, user:email',
-          state: state
-        )
-      else
-        client.authorize_url(callback_import_url, state)
-      end
+      oauth_client.auth_code.authorize_url(
+        redirect_uri: callback_import_url,
+        scope: 'repo, user, user:email',
+        state: state
+      )
     end
 
     def get_token(code)
-      if Feature.enabled?(:remove_legacy_github_client)
-        oauth_client.auth_code.get_token(code).token
-      else
-        client.get_token(code)
-      end
+      oauth_client.auth_code.get_token(code).token
     end
 
     def missing_oauth_config

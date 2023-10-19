@@ -404,6 +404,15 @@ let(:issue) { create(:issue, project: project) }
 # create a private project via the API with a specific name
 let(:project) { create(:project, :private, name: 'my-project-name', add_name_uuid: false) }
 
+# create one commit in a project that performs three actions
+let(:commit) do
+  create(:commit, commit_message: 'my message', project: project, actions: [
+    { action: 'create', file_path: 'README.md', content: '# Welcome!' },
+    { action: 'update', file_path: 'README.md', content: '# Updated' },
+    { action: 'delete', file_path: 'README.md' }
+  ])
+end
+
 ###
 
 # instantiate an Issue but don't create it via API yet

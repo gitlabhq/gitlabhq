@@ -40,8 +40,9 @@ issue list with a search query, including labels or the test case's title.
 
 Prerequisites:
 
-- In a public project: You don't have to be a member of the project.
-- In a private project: You must have at least the Guest role for the project.
+- Non-confidential test case in a public project: You don't have to be a member of the project.
+- Non-confidential test case in a private project: You must have at least the Guest role for the project.
+- Confidential test case (regardless of project visibility): You must have at least the Reporter role for the project.
 
 To view a test case:
 
@@ -67,6 +68,24 @@ To edit a test case:
 1. Select **Edit title and description** (**{pencil}**).
 1. Edit the test case's title or description.
 1. Select **Save changes**.
+
+## Make a test case confidential
+
+> Introduced for [new](https://gitlab.com/gitlab-org/gitlab/-/issues/422121) and [existing](https://gitlab.com/gitlab-org/gitlab/-/issues/422120) test cases in GitLab 16.5.
+
+If you're working on a test case that contains private information, you can make it confidential.
+
+Prerequisites:
+
+- You must have at least the Reporter role.
+
+To make a test case confidential:
+
+- When you [create a test case](#create-a-test-case): under **Confidentiality**, select the **This test case is confidential...** checkbox.
+- When you [edit a test case](#edit-a-test-case): on the right sidebar, next to **Confidentiality**, select **Edit**, then select **Turn on**.
+
+You can also use the `/confidential` [quick action](../../user/project/quick_actions.md) when both creating a new test case
+or editing an existing one.
 
 ## Archive a test case
 

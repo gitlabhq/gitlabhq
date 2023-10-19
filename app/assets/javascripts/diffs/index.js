@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
 import notesStore from '~/mr_notes/stores';
@@ -31,6 +32,8 @@ export default function initDiffsApp(store = notesStore) {
     },
     data() {
       return {
+        projectPath: dataset.projectPath || '',
+        iid: dataset.iid || '',
         endpointCoverage: dataset.endpointCoverage || '',
         endpointCodequality: dataset.endpointCodequality || '',
         endpointSast: dataset.endpointSast || '',
@@ -79,6 +82,8 @@ export default function initDiffsApp(store = notesStore) {
     render(createElement) {
       return createElement('diffs-app', {
         props: {
+          projectPath: cleanLeadingSeparator(this.projectPath),
+          iid: this.iid,
           endpointCoverage: this.endpointCoverage,
           endpointCodequality: this.endpointCodequality,
           endpointSast: this.endpointSast,

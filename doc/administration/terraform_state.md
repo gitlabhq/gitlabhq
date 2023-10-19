@@ -234,3 +234,29 @@ See [the available connection settings for different providers](object_storage.m
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
 
 ::EndTabs
+
+### Find a Terraform state file path
+
+Terraform state files are stored in the hashed directory path of the relevant project.
+
+The format of the path is `/var/opt/gitlab/gitlab-rails/shared/terraform_state/<path>/<to>/<projectHashDirectory>/<UUID>/0.tfstate`, where [UUID](https://gitlab.com/gitlab-org/gitlab/-/blob/dcc47a95c7e1664cb15bef9a70f2a4eefa9bd99a/app/models/terraform/state.rb#L33) is randomly defined.
+
+To find a state file path:
+
+1. Add `get-terraform-path` to your shell:
+
+   ```shell
+   get-terraform-path() {
+       PROJECT_HASH=$(echo -n $1 | openssl dgst -sha256 | sed 's/^.* //')
+       echo "${PROJECT_HASH:0:2}/${PROJECT_HASH:2:2}/${PROJECT_HASH}"
+   }
+   ```
+
+1. Run `get-terraform-path <project_id>`.
+
+   ```shell
+   $ get-terraform-path 650
+   20/99/2099a9b5f777e242d1f9e19d27e232cc71e2fa7964fc988a319fce5671ca7f73
+   ```
+
+The relative path is displayed.

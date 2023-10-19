@@ -248,6 +248,13 @@ export default {
         });
       }
     },
+    onKeydown(event) {
+      const isModifierKey = event.ctrlKey || event.metaKey;
+      if (isModifierKey && event.key === 'k') {
+        event.preventDefault();
+      }
+      this.$emit('keydown', event);
+    },
   },
   EDITING_MODE_KEY,
 };
@@ -292,7 +299,7 @@ export default {
           class="note-textarea js-gfm-input markdown-area"
           dir="auto"
           :data-supports-quick-actions="supportsQuickActions"
-          :data-qa-selector="formFieldProps['data-qa-selector'] || 'markdown_editor_form_field'"
+          :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
           :disabled="disabled"
           @input="updateMarkdownFromMarkdownField"
           @keydown="$emit('keydown', $event)"
@@ -317,13 +324,13 @@ export default {
         :code-suggestions-config="codeSuggestionsConfig"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
-        @keydown="$emit('keydown', $event)"
+        @keydown="onKeydown"
         @enableMarkdownEditor="onEditingModeChange('markdownField')"
       />
       <input
         v-bind="formFieldProps"
         :value="markdown"
-        data-qa-selector="markdown_editor_form_field"
+        data-testid="markdown-editor-form-field"
         type="hidden"
       />
     </div>

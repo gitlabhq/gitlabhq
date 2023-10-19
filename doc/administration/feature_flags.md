@@ -97,10 +97,10 @@ To enable a feature, run:
 Feature.enable(:<feature flag>)
 ```
 
-Example, to enable a fictional feature flag named `my_awesome_feature`:
+Example, to enable a fictional feature flag named `example_feature`:
 
 ```ruby
-Feature.enable(:my_awesome_feature)
+Feature.enable(:example_feature)
 ```
 
 To disable a feature, run:
@@ -109,10 +109,10 @@ To disable a feature, run:
 Feature.disable(:<feature flag>)
 ```
 
-Example, to disable a fictional feature flag named `my_awesome_feature`:
+Example, to disable a fictional feature flag named `example_feature`:
 
 ```ruby
-Feature.disable(:my_awesome_feature)
+Feature.disable(:example_feature)
 ```
 
 Some feature flags can be enabled or disabled on a per project basis:
@@ -121,16 +121,16 @@ Some feature flags can be enabled or disabled on a per project basis:
 Feature.enable(:<feature flag>, Project.find(<project id>))
 ```
 
-For example, to enable the `:my_awesome_feature` feature flag for project `1234`:
+For example, to enable the `:example_feature` feature flag for project `1234`:
 
 ```ruby
-Feature.enable(:my_awesome_feature, Project.find(1234))
+Feature.enable(:example_feature, Project.find(1234))
 ```
 
 `Feature.enable` and `Feature.disable` always return `true`, even if the application doesn't use the flag:
 
 ```ruby
-irb(main):001:0> Feature.enable(:my_awesome_feature)
+irb(main):001:0> Feature.enable(:example_feature)
 => true
 ```
 
@@ -140,12 +140,12 @@ enabling and disabling it no longer exists. The feature becomes available in all
 ### Check if a feature flag is enabled
 
 To check if a flag is enabled or disabled, use `Feature.enabled?` or `Feature.disabled?`.
-For example, for a feature flag named `my_awesome_feature` that is already enabled:
+For example, for a feature flag named `example_feature` that is already enabled:
 
 ```ruby
-Feature.enabled?(:my_awesome_feature)
+Feature.enabled?(:example_feature)
 => true
-Feature.disabled?(:my_awesome_feature)
+Feature.disabled?(:example_feature)
 => false
 ```
 
@@ -158,7 +158,7 @@ You can view all GitLab administrator set feature flags:
 
 ```ruby
 Feature.all
-=> [#<Flipper::Feature:198220 name="my_awesome_feature", state=:on, enabled_gate_names=[:boolean], adapter=:memoizable>]
+=> [#<Flipper::Feature:198220 name="example_feature", state=:on, enabled_gate_names=[:boolean], adapter=:memoizable>]
 
 # Nice output
 Feature.all.map {|f| [f.name, f.state]}
@@ -169,6 +169,6 @@ Feature.all.map {|f| [f.name, f.state]}
 You can unset a feature flag so that GitLab falls back to the current defaults for that flag:
 
 ```ruby
-Feature.remove(:my_awesome_feature)
+Feature.remove(:example_feature)
 => true
 ```

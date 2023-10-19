@@ -111,11 +111,11 @@ describe('GlobalSearch IssuesFilters', () => {
     });
 
     it("doesn't render ArchivedFilter", () => {
-      expect(findArchivedFilter().exists()).toBe(false);
+      expect(findArchivedFilter().exists()).toBe(true);
     });
 
     it('renders 1 divider', () => {
-      expect(findDividers()).toHaveLength(1);
+      expect(findDividers()).toHaveLength(2);
     });
   });
 

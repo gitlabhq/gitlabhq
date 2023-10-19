@@ -1149,4 +1149,75 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       end
     end
   end
+
+  describe '#authentication_token_present?' do
+    subject { authentication_token_present? }
+
+    context 'no auth header/param/oauth' do
+      before do
+        request.headers['Random'] = 'Something'
+        set_param(:random, 'something')
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'with auth header' do
+      before do
+        request.headers[header] = 'invalid'
+      end
+
+      context 'with private-token' do
+        let(:header) { 'Private-Token' }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'with job-token' do
+        let(:header) { 'Job-Token' }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'with deploy-token' do
+        let(:header) { 'Deploy-Token' }
+
+        it { is_expected.to be(true) }
+      end
+    end
+
+    context 'with authorization bearer (oauth token)' do
+      before do
+        request.headers['Authorization'] = 'Bearer invalid'
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'with auth param' do
+      context 'with private_token' do
+        it 'returns true' do
+          set_param(:private_token, 'invalid')
+
+          expect(subject).to be(true)
+        end
+      end
+
+      context 'with job_token' do
+        it 'returns true' do
+          set_param(:job_token, 'invalid')
+
+          expect(subject).to be(true)
+        end
+      end
+
+      context 'with token' do
+        it 'returns true' do
+          set_param(:token, 'invalid')
+
+          expect(subject).to be(true)
+        end
+      end
+    end
+  end
 end

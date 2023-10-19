@@ -337,15 +337,19 @@ class MergeRequest < ApplicationRecord
   scope :by_squash_commit_sha, -> (sha) do
     where(squash_commit_sha: sha)
   end
-  scope :by_merge_or_squash_commit_sha, -> (sha) do
-    from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha)])
+  scope :by_merged_commit_sha, -> (sha) do
+    where(merged_commit_sha: sha)
+  end
+  scope :by_merged_or_merge_or_squash_commit_sha, -> (sha) do
+    from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha), by_merged_commit_sha(sha)])
   end
   scope :by_related_commit_sha, -> (sha) do
     from_union(
       [
         by_commit_sha(sha),
         by_squash_commit_sha(sha),
-        by_merge_commit_sha(sha)
+        by_merge_commit_sha(sha),
+        by_merged_commit_sha(sha)
       ]
     )
   end
@@ -1231,19 +1235,23 @@ class MergeRequest < ApplicationRecord
     }
   end
 
-  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false, skip_rebase_check: false)
+  def mergeable?(
+    skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false,
+    skip_draft_check: false, skip_rebase_check: false, skip_blocked_check: false)
+
     return false unless mergeable_state?(
       skip_ci_check: skip_ci_check,
       skip_discussions_check: skip_discussions_check,
-      skip_approved_check: skip_approved_check
+      skip_draft_check: skip_draft_check,
+      skip_approved_check: skip_approved_check,
+      skip_blocked_check: skip_blocked_check
     )
 
     check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
-
-    can_be_merged? && (!should_be_rebased? || skip_rebase_check)
+    mergeable_git_state?(skip_rebase_check: skip_rebase_check)
   end
 
-  def mergeability_checks
+  def self.mergeable_state_checks
     # We want to have the cheapest checks first in the list, that way we can
     #   fail fast before running the more expensive ones.
     #
@@ -1256,15 +1264,50 @@ class MergeRequest < ApplicationRecord
     ]
   end
 
-  def mergeable_state?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false)
+  def self.mergeable_git_state_checks
+    [
+      ::MergeRequests::Mergeability::CheckConflictStatusService,
+      ::MergeRequests::Mergeability::CheckRebaseStatusService
+    ]
+  end
+
+  def self.all_mergeability_checks
+    mergeable_state_checks + mergeable_git_state_checks
+  end
+
+  def mergeable_state?(
+    skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false,
+    skip_draft_check: false, skip_blocked_check: false)
     additional_checks = execute_merge_checks(
+      self.class.mergeable_state_checks,
       params: {
         skip_ci_check: skip_ci_check,
         skip_discussions_check: skip_discussions_check,
-        skip_approved_check: skip_approved_check
+        skip_approved_check: skip_approved_check,
+        skip_draft_check: skip_draft_check,
+        skip_blocked_check: skip_blocked_check
       }
     )
     additional_checks.success?
+  end
+
+  def mergeable_git_state?(skip_rebase_check: false)
+    checks = execute_merge_checks(
+      self.class.mergeable_git_state_checks,
+      params: {
+        skip_rebase_check: skip_rebase_check
+      }
+    )
+
+    checks.success?
+  end
+
+  def all_mergeability_checks_results
+    execute_merge_checks(
+      self.class.all_mergeability_checks,
+      params: {},
+      execute_all: true
+    ).payload[:results]
   end
 
   def ff_merge_possible?
@@ -1689,7 +1732,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_terraform_reports?
-    actual_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:terraform))
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
   end
 
   def compare_accessibility_reports
@@ -1957,15 +2000,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def base_pipeline
-    @base_pipeline ||= project.ci_pipelines
-      .order(id: :desc)
-      .find_by(sha: diff_base_sha, ref: target_branch)
+    @base_pipeline ||= base_pipelines.last
   end
 
   def merge_base_pipeline
-    @merge_base_pipeline ||= project.ci_pipelines
-      .order(id: :desc)
-      .find_by(sha: actual_head_pipeline.target_sha, ref: target_branch)
+    @merge_base_pipeline ||= merge_base_pipelines.last
   end
 
   def discussions_rendered_on_frontend?
@@ -2081,9 +2120,11 @@ class MergeRequest < ApplicationRecord
     false # Overridden in EE
   end
 
-  def execute_merge_checks(params: {})
+  def execute_merge_checks(checks, params: {}, execute_all: false)
     # rubocop: disable CodeReuse/ServiceClass
-    MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: params).execute
+    MergeRequests::Mergeability::RunChecksService
+      .new(merge_request: self, params: params)
+      .execute(checks, execute_all: execute_all)
     # rubocop: enable CodeReuse/ServiceClass
   end
 
@@ -2115,9 +2156,34 @@ class MergeRequest < ApplicationRecord
     !squash && target_project.squash_always?
   end
 
+  def current_patch_id_sha
+    return merge_request_diff.patch_id_sha if merge_request_diff.patch_id_sha.present?
+
+    base_sha = diff_refs&.base_sha
+    head_sha = diff_refs&.head_sha
+
+    return unless base_sha && head_sha
+    return if base_sha == head_sha
+
+    project.repository.get_patch_id(base_sha, head_sha)
+  end
+
   private
 
   attr_accessor :skip_fetch_ref
+
+  def merge_base_pipelines
+    target_branch_pipelines_for(sha: actual_head_pipeline.target_sha)
+  end
+
+  def base_pipelines
+    target_branch_pipelines_for(sha: diff_base_sha)
+  end
+
+  def target_branch_pipelines_for(sha:)
+    project.ci_pipelines
+           .where(sha: sha, ref: target_branch)
+  end
 
   def set_draft_status
     self.draft = draft?

@@ -1,6 +1,4 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
 import VuexModuleProvider from '~/vue_shared/components/vuex_module_provider.vue';
 
 const TestComponent = {
@@ -36,14 +34,6 @@ describe('~/vue_shared/components/vuex_module_provider', () => {
     createComponent({
       propsData: { 'vuex-module': TEST_VUEX_MODULE },
     });
-    expect(findProvidedVuexModule()).toBe(TEST_VUEX_MODULE);
-  });
-
-  it('does not blow up when used with vue-apollo', () => {
-    // See https://github.com/vuejs/vue-apollo/pull/1153 for details
-    Vue.use(VueApollo);
-
-    createComponent();
     expect(findProvidedVuexModule()).toBe(TEST_VUEX_MODULE);
   });
 });

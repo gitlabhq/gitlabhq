@@ -9,10 +9,12 @@ module API
         params :path_and_file_name do
           requires :path,
             type: String,
+            file_path: true,
             desc: 'Package path',
             documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
           requires :file_name,
             type: String,
+            file_path: true,
             desc: 'Package file name',
             documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
         end
@@ -38,7 +40,7 @@ module API
             project || group,
             path: params[:path],
             order_by_package_file: order_by_package_file
-          ).execute
+          ).execute&.last
         end
 
         def project

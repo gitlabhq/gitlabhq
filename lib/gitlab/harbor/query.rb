@@ -8,7 +8,7 @@ module Gitlab
       attr_reader :client, :repository_id, :artifact_id, :search, :limit, :sort, :page
 
       DEFAULT_LIMIT = 10
-      SORT_REGEX = %r{\A(creation_time|update_time|name) (asc|desc)\z}.freeze
+      SORT_REGEX = %r{\A(creation_time|update_time|name) (asc|desc)\z}
 
       validates :page, numericality: { greater_than: 0, integer: true }, allow_blank: true
       validates :limit, numericality: { greater_than: 0, less_than_or_equal_to: 25, integer: true }, allow_blank: true

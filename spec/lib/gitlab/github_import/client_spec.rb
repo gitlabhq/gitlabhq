@@ -316,7 +316,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
           allow_retry
 
           expect(client).to receive(:requests_remaining?).twice.and_return(true)
-          expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
+          expect(Gitlab::GithubImport::Logger).to receive(:info).with(hash_including(info_params)).once
 
           expect(client.with_rate_limit(&block_to_rate_limit)).to eq({})
         end
@@ -337,7 +337,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         it 'retries on error and succeeds' do
           allow_retry
 
-          expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
+          expect(Gitlab::GithubImport::Logger).to receive(:info).with(hash_including(info_params)).once
 
           expect(client.with_rate_limit(&block_to_rate_limit)).to eq({})
         end
@@ -723,7 +723,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         it 'retries on error and succeeds' do
           allow_retry(:post)
 
-          expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
+          expect(Gitlab::GithubImport::Logger).to receive(:info).with(hash_including(info_params)).once
 
           expect(client.search_repos_by_name_graphql('test')).to eq({})
         end

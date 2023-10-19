@@ -33,6 +33,24 @@ RSpec.describe BulkImports::Common::Pipelines::BadgesPipeline do
       expect(badge.image_url).to eq(badge_data['image_url'])
     end
 
+    it 'skips already imported records' do
+      expect { pipeline.run }.to change(Badge, :count).by(2)
+
+      expect { pipeline.run }.to not_change(Badge, :count)
+    end
+
+    context 'with FF bulk_import_idempotent_workers disabled' do
+      before do
+        stub_feature_flags(bulk_import_idempotent_workers: false)
+      end
+
+      it 'creates duplicated badges' do
+        expect { pipeline.run }.to change(Badge, :count).by(2)
+
+        expect { pipeline.run }.to change(Badge, :count)
+      end
+    end
+
     context 'when project entity' do
       let(:first_page) { extracted_data(has_next_page: true) }
       let(:last_page) { extracted_data(name: 'badge2', kind: 'project') }

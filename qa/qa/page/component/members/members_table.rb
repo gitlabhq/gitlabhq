@@ -27,11 +27,11 @@ module QA
             end
 
             base.view 'app/assets/javascripts/members/components/action_dropdowns/user_action_dropdown.vue' do
-              element :user_action_dropdown
+              element 'user-action-dropdown'
             end
 
             base.view 'app/assets/javascripts/members/components/action_dropdowns/remove_member_dropdown_item.vue' do
-              element :delete_member_dropdown_item
+              element 'delete-member-dropdown-item'
             end
 
             base.view 'app/assets/javascripts/members/components/action_buttons/approve_access_request_button.vue' do
@@ -39,7 +39,7 @@ module QA
             end
 
             base.view 'app/assets/javascripts/members/components/members_tabs.vue' do
-              element :groups_list_tab
+              element 'groups-list-tab'
             end
 
             base.view 'app/assets/javascripts/members/components/action_buttons/remove_group_link_button.vue' do
@@ -60,8 +60,8 @@ module QA
 
           def remove_member(username)
             within_element(:member_row, text: username) do
-              click_element :user_action_dropdown
-              click_element :delete_member_dropdown_item
+              click_element 'user-action-dropdown'
+              click_element 'delete-member-dropdown-item'
             end
 
             confirm_remove_member
@@ -82,7 +82,7 @@ module QA
           end
 
           def remove_group(group_name)
-            click_element :groups_list_tab
+            click_element 'groups-list-tab'
 
             within_element(:member_row, text: group_name) do
               click_element :remove_group_link_button
@@ -92,7 +92,7 @@ module QA
           end
 
           def has_group?(group_name)
-            click_element :groups_list_tab
+            click_element 'groups-list-tab'
             has_element?(:member_row, text: group_name)
           end
         end

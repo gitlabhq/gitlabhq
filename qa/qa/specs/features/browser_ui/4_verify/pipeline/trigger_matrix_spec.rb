@@ -17,7 +17,7 @@ module QA
         Flow::Login.sign_in
         add_ci_files
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'passed')
+        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
       end
 
       after do
@@ -53,20 +53,12 @@ module QA
       private
 
       def add_ci_files
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add parent and child pipelines CI files.'
-          commit.add_files(
-            [
-              child_ci_file,
-              parent_ci_file
-            ]
-          )
-        end
+        create(:commit, project: project, commit_message: 'todo', actions: [child_ci_file, parent_ci_file])
       end
 
       def parent_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             test:
@@ -89,6 +81,7 @@ module QA
 
       def child_ci_file
         {
+          action: 'create',
           file_path: 'child.yml',
           content: <<~YAML
             test_vars:

@@ -31,7 +31,7 @@ We use the following terminology to describe the Service Ping components:
 - **Service Ping**: the process that collects and generates a JSON payload.
 - **Service Data**: the contents of the Service Ping JSON payload. This includes metrics.
 - **Metrics**: primarily made up of row counts for different tables in an instance's database. Each
-  metric has a corresponding [metric definition](metrics_dictionary.md#metrics-definition-and-validation)
+  metric has a corresponding [metric definition](../metrics/metrics_dictionary.md#metrics-definition-and-validation)
   in a YAML file.
 - **MAU**: monthly active users.
 - **WAU**: weekly active users.
@@ -148,20 +148,12 @@ We also collect metrics specific to [Geo](../../../administration/geo/index.md) 
    ```json
    [
      {
-       "repository_verification_enabled"=>true,
-       "repositories_replication_enabled"=>true,
-       "repositories_synced_count"=>24,
-       "repositories_failed_count"=>0,
        "git_fetch_event_count_weekly"=>nil,
        "git_push_event_count_weekly"=>nil,
        ... other geo node status fields
      }
    ]
    ```
-
-## Implementing Service Ping
-
-See the [implement Service Ping](implement.md) guide.
 
 ## Example Service Ping payload
 
@@ -237,7 +229,8 @@ The following is example content of the Service Ping payload.
   },
   "container_registry_server": {
     "vendor": "gitlab",
-    "version": "2.9.1-gitlab"
+    "version": "2.9.1-gitlab",
+    "db_enabled": false
   },
   "database": {
     "adapter": "postgresql",
@@ -495,15 +488,24 @@ skip_db_write:
 GitlabServicePingWorker.new.perform('triggered_from_cron' => false, 'skip_db_write' => true)
 ```
 
+### Fallback values for Service Ping
+
+We return fallback values in these cases:
+
+| Case                        | Value |
+|-----------------------------|-------|
+| Deprecated Metric ([Removed with version 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/335894)) | -1000 |
+| Timeouts, general failures  | -1    |
+| Standard errors in counters | -2    |
+| Histogram metrics failure   | { '-1' => -1 } |
+
 ## Monitoring
 
 Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
 
 ## Related topics
 
-- [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Snowplow Guide](../snowplow/index.md)
-- [Product Intelligence Direction](https://about.gitlab.com/direction/analytics/product-intelligence/)
+- [Analytics Instrumentation Direction](https://about.gitlab.com/direction/analytics/analytics-instrumentation/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
 - [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
 - [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

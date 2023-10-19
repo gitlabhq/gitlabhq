@@ -20,11 +20,11 @@ module Undercover
 end
 
 compare_base = ARGV[0]
-compare_base ||= IO.popen(%w(git merge-base origin/master HEAD)) { |p| p.read.chomp }
+compare_base ||= IO.popen(%w[git merge-base origin/master HEAD]) { |p| p.read.chomp }
 coverage_file_path = 'coverage/lcov/gitlab.lcov'
 
 result = if File.exist?(coverage_file_path)
-           Undercover::CLI.run(%W(-c #{compare_base}))
+           Undercover::CLI.run(%W[-c #{compare_base}])
          else
            warn "#{coverage_file_path} doesn't exist"
            0

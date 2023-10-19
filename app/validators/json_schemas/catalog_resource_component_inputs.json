@@ -15,6 +15,9 @@
             "boolean"
           ]
         },
+        "regex": {
+          "type": "string"
+        },
         "^type$": {
           "type": "string"
         }

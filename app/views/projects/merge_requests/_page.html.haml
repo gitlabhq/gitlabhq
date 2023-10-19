@@ -50,7 +50,11 @@
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if moved_mr_sidebar_enabled?
             - if !!@issuable_sidebar.dig(:current_user, :id)
-              .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
+              .gl-display-flex.gl-gap-3
+                .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
+                - if notifications_todos_buttons_enabled?
+                  .js-sidebar-subscriptions-widget-root{ data: { full_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid] } }
+
             .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.gl-ml-3.js-expand-sidebar.gl-absolute.gl-right-5{ class: "gl-lg-display-none!" }
               = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left',
                 button_options: { class: 'js-sidebar-toggle' }) do
@@ -83,7 +87,8 @@
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
                 report_abuse_path: add_category_abuse_reports_path,
-                new_comment_template_path: profile_comment_templates_path } }
+                new_comment_template_path: profile_comment_templates_path,
+                new_custom_emoji_path: new_custom_emoji_path(@project.group) } }
           - if moved_mr_sidebar_enabled?
             = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 

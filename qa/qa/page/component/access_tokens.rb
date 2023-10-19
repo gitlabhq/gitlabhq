@@ -24,7 +24,7 @@ module QA
           end
 
           base.view 'app/views/shared/tokens/_scopes_form.html.haml' do
-            element :api_label, '#{scope}_label' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
+            element 'api-label', '#{scope}-label' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/new_access_token_app.vue' do
@@ -66,7 +66,7 @@ module QA
         end
 
         def check_api
-          click_element(:api_label)
+          click_element('api-label')
         end
 
         def click_create_token_button

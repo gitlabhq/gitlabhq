@@ -34,17 +34,29 @@ class MyDummyWorker
 end
 ```
 
-Additional to the regular worker, a cron worker must be defined as well to
-backfill the queue with jobs. the arguments passed to `perform_with_capacity`
-are passed to the `perform_work` method.
+To queue this worker, use
+`MyDummyWorker.perform_with_capacity(*args)`. The `*args` passed to this worker
+are passed to the `perform_work` method. Due to the way this job throttles
+and requeues itself, it is expected that you always provide the same
+`*args` in every usage. In practice, this type of worker is often not
+used with arguments and must instead consume a workload stored
+elsewhere (like in PostgreSQL). This design also means it is unsuitable to
+take a normal Sidekiq workload with arguments and make it a
+`LimitedCapacity::Worker`. Instead, to use this, you might need to
+re-architect your queue to be stored elsewhere.
+
+A common use case for this kind of worker is one that runs periodically
+consuming a separate queue of work to be done (like from PostgreSQL). In that case,
+you need an additional cron worker to start the worker periodically. For
+example, in the following scheduler:
 
 ```ruby
 class ScheduleMyDummyCronWorker
   include ApplicationWorker
   include CronjobQueue
 
-  def perform(*args)
-    MyDummyWorker.perform_with_capacity(*args)
+  def perform
+    MyDummyWorker.perform_with_capacity
   end
 end
 ```

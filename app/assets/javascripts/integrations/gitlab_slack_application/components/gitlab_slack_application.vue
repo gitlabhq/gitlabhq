@@ -101,7 +101,7 @@ export default {
             @project-selected="selectProject"
           />
 
-          <div class="gl-display-flex gl-justify-content-end">
+          <div class="gl-display-flex gl-justify-content-end gl-mt-3">
             <gl-button
               category="primary"
               variant="confirm"

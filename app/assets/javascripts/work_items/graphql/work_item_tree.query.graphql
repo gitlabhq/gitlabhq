@@ -37,6 +37,7 @@ query workItemTreeQuery($id: WorkItemID!) {
             state
             createdAt
             closedAt
+            webUrl
             widgets {
               ... on WorkItemWidgetHierarchy {
                 type

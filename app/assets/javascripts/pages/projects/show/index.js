@@ -7,6 +7,7 @@ import initTerraformNotification from '~/projects/terraform_notification';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 import initForksButton from '~/forks/init_forks_button';
+import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 
 // Project show page loads different overview content based on user preferences
 if (document.getElementById('js-tree-list')) {
@@ -45,6 +46,7 @@ initTerraformNotification();
 
 initReadMore();
 initStarButton();
+initAmbiguousRefModal();
 
 if (document.querySelector('.js-autodevops-banner')) {
   import(/* webpackChunkName: 'userCallOut' */ '~/user_callout')

@@ -28,8 +28,9 @@ Users on self-managed GitLab can disable this rate limit.
 
 `Git operations using SSH` is enabled by default. Defaults to 600 per user per minute.
 
-1. On the left sidebar, select **Your work > Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Git SSH operations rate limit**.
 1. Enter a value for **Maximum number of Git operations per minute**.
 1. Select **Save changes**.

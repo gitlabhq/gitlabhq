@@ -31,8 +31,6 @@ describe('Job App', () => {
   const initSettings = {
     endpoint: `${TEST_HOST}jobs/123.json`,
     pagePath: `${TEST_HOST}jobs/123`,
-    logState:
-      'eyJvZmZzZXQiOjE3NDUxLCJuX29wZW5fdGFncyI6MCwiZmdfY29sb3IiOm51bGwsImJnX2NvbG9yIjpudWxsLCJzdHlsZV9tYXNrIjowfQ%3D%3D',
   };
 
   const props = {

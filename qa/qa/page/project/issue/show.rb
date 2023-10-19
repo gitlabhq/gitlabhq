@@ -9,13 +9,12 @@ module QA
           include Page::Component::DesignManagement
           include Page::Component::Issuable::Sidebar
           include Page::Component::Issuable::Common
-          include Page::Component::RichTextPopover
           # We need to check phone_layout? instead of mobile_layout? here
           # since tablets have the regular top navigation bar
           prepend Mobile::Page::Project::Issue::Show if Runtime::Env.phone_layout?
 
           view 'app/assets/javascripts/issuable/components/related_issuable_item.vue' do
-            element :remove_related_issue_button
+            element 'remove-related-issue-button'
           end
 
           view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
@@ -24,41 +23,33 @@ module QA
             element 'delete-issue-button'
           end
 
-          view 'app/assets/javascripts/related_issues/components/add_issuable_form.vue' do
-            element :add_issue_button
-          end
-
-          view 'app/assets/javascripts/related_issues/components/related_issuable_input.vue' do
-            element :add_issue_field
-          end
-
           view 'app/assets/javascripts/related_issues/components/related_issues_block.vue' do
             element 'related-issues-plus-button'
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_list.vue' do
-            element :related_issuable_content
-            element :related_issues_loading_placeholder
+            element 'related-issuable-content'
+            element 'related-issues-loading-placeholder'
           end
 
           def relate_issue(issue)
             click_element('related-issues-plus-button')
-            fill_element(:add_issue_field, issue.web_url)
-            send_keys_to_element(:add_issue_field, :enter)
+            fill_element('add-issue-field', issue.web_url)
+            send_keys_to_element('add-issue-field', :enter)
           end
 
           def related_issuable_item
-            find_element(:related_issuable_content)
+            find_element('related-issuable-content')
           end
 
           def wait_for_related_issues_to_load
-            has_no_element?(:related_issues_loading_placeholder, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+            has_no_element?('related-issues-loading-placeholder', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           end
 
           def click_remove_related_issue_button
             retry_until(sleep_interval: 5) do
-              click_element(:remove_related_issue_button)
-              has_no_element?(:remove_related_issue_button, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+              click_element('remove-related-issue-button')
+              has_no_element?('remove-related-issue-button', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
             end
           end
 

@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class SnippetsRepositoryPipeline
         include Pipeline
+        include HexdigestCacheStrategy
 
         extractor Common::Extractors::GraphqlExtractor, query: Graphql::GetSnippetRepositoryQuery
 

@@ -12,10 +12,12 @@ RSpec.describe Mutations::Issues::SetAssignees do
 
     describe '#resolve' do
       subject do
-        mutation.resolve(project_path: issue.project.full_path,
-                         iid: issue.iid,
-                         operation_mode: Types::MutationOperationModeEnum.default_mode,
-                         assignee_usernames: [assignee.username])
+        mutation.resolve(
+          project_path: issue.project.full_path,
+          iid: issue.iid,
+          operation_mode: Types::MutationOperationModeEnum.default_mode,
+          assignee_usernames: [assignee.username]
+        )
       end
 
       it_behaves_like 'permission level for issue mutation is correctly verified'

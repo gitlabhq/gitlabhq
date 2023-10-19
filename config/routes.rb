@@ -62,9 +62,8 @@ InitializerConnections.raise_if_new_database_connection do
 
     # Sign up
     scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
-      resource :welcome, only: [:show, :update], controller: 'welcome'
-
       Gitlab.ee do
+        resource :welcome, only: [:show, :update], controller: 'welcome'
         resource :company, only: [:new, :create], controller: 'company'
         resources :groups, only: [:new, :create]
       end
@@ -282,6 +281,7 @@ InitializerConnections.raise_if_new_database_connection do
     draw :explore
     draw :admin
     draw :dashboard
+    draw :identity_verification
     draw :user
     draw :project
     draw :unmatched_project

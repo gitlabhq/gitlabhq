@@ -2,7 +2,7 @@
 
 - namespace = @group || @project&.namespace || @namespace
 = webpack_bundle_tag 'tracker'
-- if Gitlab.com? && Feature.enabled?(:browsersdk_tracking)
+- if Gitlab.com? && Feature.enabled?(:browsersdk_tracking) && Feature.enabled?(:gl_analytics_tracking, Feature.current_request)
   = webpack_bundle_tag 'analytics'
 = javascript_tag do
   :plain

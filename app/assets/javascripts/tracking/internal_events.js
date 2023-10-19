@@ -1,12 +1,10 @@
 import API from '~/api';
-import getStandardContext from './get_standard_context';
 
 import Tracking from './tracking';
 import {
   GITLAB_INTERNAL_EVENT_CATEGORY,
   LOAD_INTERNAL_EVENTS_SELECTOR,
   SERVICE_PING_SCHEMA,
-  USER_CONTEXT_SCHEMA,
 } from './constants';
 import { Tracker } from './tracker';
 import { InternalEventHandler, createInternalEventPayload } from './utils';
@@ -17,7 +15,7 @@ const InternalEvents = {
    * @param {string} event
    * @param {object} data
    */
-  track_event(event, data = {}) {
+  trackEvent(event, data = {}) {
     const { context, ...rest } = data;
 
     const defaultContext = {
@@ -34,6 +32,7 @@ const InternalEvents = {
       context: mergedContext,
       ...rest,
     });
+    this.trackBrowserSDK(event);
   },
   /**
    * Returns an implementation of this class in the form of
@@ -42,8 +41,8 @@ const InternalEvents = {
   mixin() {
     return {
       methods: {
-        track_event(event, data = {}) {
-          InternalEvents.track_event(event, data);
+        trackEvent(event, data = {}) {
+          InternalEvents.trackEvent(event, data);
         },
       },
     };
@@ -62,7 +61,10 @@ const InternalEvents = {
     // eslint-disable-next-line no-param-reassign
     parent.internalEventsTrackingBound = true;
 
-    const handler = { name: 'click', func: (e) => InternalEventHandler(e, this.track_event) };
+    const handler = {
+      name: 'click',
+      func: (e) => InternalEventHandler(e, this.trackEvent.bind(this)),
+    };
     parent.addEventListener(handler.name, handler.func);
     return handler;
   },
@@ -81,7 +83,7 @@ const InternalEvents = {
     loadEvents.forEach((element) => {
       const action = createInternalEventPayload(element);
       if (action) {
-        this.track_event(action);
+        this.trackEvent(action);
       }
     });
 
@@ -91,20 +93,23 @@ const InternalEvents = {
    * Initialize browser sdk for product analytics
    */
   initBrowserSDK() {
-    const standardContext = getStandardContext();
-
     if (window.glClient) {
       window.glClient.setDocumentTitle('GitLab');
       window.glClient.page({
         title: 'GitLab',
-        context: [
-          {
-            schema: USER_CONTEXT_SCHEMA,
-            data: standardContext?.data || {},
-          },
-        ],
       });
     }
+  },
+  /**
+   * track events for Product Analytics
+   * @param {string} event
+   */
+  trackBrowserSDK(event) {
+    if (!Tracker.enabled()) {
+      return;
+    }
+
+    window.glClient?.track(event);
   },
 };
 

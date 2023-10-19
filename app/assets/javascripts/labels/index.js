@@ -120,10 +120,10 @@ export function initAdminLabels() {
   const emptyState = document.querySelector('.js-admin-labels-empty-state');
 
   function removeLabelSuccessCallback() {
-    this.closest('li.label-list-item').classList.add('gl-display-none!');
+    this.closest('.js-label-list-item').classList.add('gl-display-none!');
 
     const labelsCount = document.querySelectorAll(
-      'ul.manage-labels-list li.label-list-item:not(.gl-display-none\\!)',
+      'ul.manage-labels-list .js-label-list-item:not(.gl-display-none\\!)',
     ).length;
 
     // update labels count in UI

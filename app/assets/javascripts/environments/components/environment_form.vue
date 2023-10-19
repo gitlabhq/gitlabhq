@@ -190,13 +190,12 @@ export default {
       }
       return {
         basePath: this.kasTunnelUrl,
-        baseOptions: {
-          headers: {
-            'GitLab-Agent-Id': getIdFromGraphQLId(this.selectedAgentId),
-            ...csrf.headers,
-          },
-          withCredentials: true,
+        headers: {
+          'GitLab-Agent-Id': getIdFromGraphQLId(this.selectedAgentId),
+          'Content-Type': 'application/json',
+          ...csrf.headers,
         },
+        credentials: 'include',
       };
     },
   },

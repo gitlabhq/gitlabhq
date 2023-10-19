@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::Widgets::StartAndDueDateService::UpdateService, feature_category: :portfolio_management do
-  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user).tap { |user| project.add_reporter(user) } }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
 
   let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::StartAndDueDate) } }
@@ -25,6 +25,14 @@ RSpec.describe WorkItems::Widgets::StartAndDueDateService::UpdateService, featur
         end.to change(work_item, :start_date).from(nil).to(start_date).and(
           change(work_item, :due_date).from(nil).to(due_date)
         )
+      end
+
+      context "and user doesn't have permissions to update start and due date" do
+        let_it_be(:user) { create(:user) }
+
+        it 'removes start and due date params params' do
+          expect(update_params).to be_nil
+        end
       end
     end
 

@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import Vue from 'vue';
-import { GlAlert } from '@gitlab/ui';
+import isEmpty from 'lodash/isEmpty';
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export const VARIANT_SUCCESS = 'success';
@@ -32,6 +33,14 @@ export const VARIANT_TIP = 'tip';
  * // Respond to the alert being dismissed
  * createAlert({ message: 'Message', onDismiss: () => {} });
  *
+ * @example
+ * // Add inline link in the message
+ * createAlert({ message: 'Read more at %{exampleLinkStart}example page%{exampleLinkEnd}.', messageLinks: { exampleLink: 'https://example.com' } });
+ *
+ * @example
+ * // Add inline links in the message with custom GlLink props
+ * createAlert({ message: 'Read more at %{exampleLinkStart}example page%{exampleLinkEnd}.', messageLinks: { exampleLink: { href: 'https://example.com', target: '_blank', isUnsafeLink: true }} });
+ *
  * @param {object} options - Options to control the flash message
  * @param {string} options.message - Alert message text
  * @param {string} [options.title] - Alert title
@@ -48,6 +57,7 @@ export const VARIANT_TIP = 'tip';
  * @param {string} [options.secondaryButton.link] - Href of secondary button
  * @param {string} [options.secondaryButton.text] - Text of secondary button
  * @param {Function} [options.secondaryButton.clickHandler] - Handler to call when secondary button is clicked on. The click event is sent as an argument.
+ * @param {object} [options.messageLinks] - Object containing mapping of sprintf tokens to URLs, used to format links within the message. If needed, you can pass a full props object for GlLink instead of a URL string
  * @param {boolean} [options.captureError] - Whether to send error to Sentry
  * @param {object} [options.error] - Error to be captured in Sentry
  */
@@ -63,6 +73,7 @@ export const createAlert = ({
   onDismiss = null,
   captureError = false,
   error = null,
+  messageLinks = null,
 }) => {
   if (captureError && error) Sentry.captureException(error);
 
@@ -75,6 +86,45 @@ export const createAlert = ({
   } else {
     alertContainer.replaceChildren(el);
   }
+
+  const createMessageNodes = (h) => {
+    if (isEmpty(messageLinks)) {
+      return message;
+    }
+
+    const normalizeLinkProps = (hrefOrProps) => {
+      const { href, ...otherLinkProps } =
+        typeof hrefOrProps === 'string' ? { href: hrefOrProps } : hrefOrProps;
+
+      return { href, linkProps: otherLinkProps };
+    };
+
+    return [
+      h(GlSprintf, {
+        props: {
+          message,
+        },
+        scopedSlots: Object.assign(
+          {},
+          ...Object.entries(messageLinks).map(([slotName, hrefOrProps]) => {
+            const { href, linkProps } = normalizeLinkProps(hrefOrProps);
+
+            return {
+              [slotName]: (props) =>
+                h(
+                  GlLink,
+                  {
+                    props: linkProps,
+                    attrs: { href },
+                  },
+                  props.content,
+                ),
+            };
+          }),
+        ),
+      }),
+    ];
+  };
 
   return new Vue({
     el,
@@ -130,7 +180,7 @@ export const createAlert = ({
           },
           on,
         },
-        message,
+        createMessageNodes(h),
       );
     },
   });

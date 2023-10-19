@@ -93,6 +93,29 @@ $work-item-sticky-header-height: 52px;
     }
   }
 
+  // need to override the listbox styles to match with dropdown
+  // till the dropdown are converted to listbox
+  .gl-new-dropdown-toggle {
+    &:hover,
+    &:focus {
+      background: none !important;
+      box-shadow: $work-item-field-inset-shadow;
+      background-color: $input-bg;
+    }
+
+    .is-not-focused {
+      &.gl-new-dropdown-button-text {
+        margin: 0 0.25rem;
+      }
+    }
+  }
+
+  .gl-new-dropdown-toggle.is-not-focused {
+    .gl-new-dropdown-button-text {
+      margin: 0 0.25rem;
+    }
+  }
+
   > .col {
     min-width: 0;
   }
@@ -164,6 +187,12 @@ $work-item-sticky-header-height: 52px;
     &:focus {
       box-shadow: $work-item-field-inset-shadow;
     }
+  }
+}
+
+.work-item-parent-field-value {
+  .work-item-overview & {
+    max-width: 75%;
   }
 }
 

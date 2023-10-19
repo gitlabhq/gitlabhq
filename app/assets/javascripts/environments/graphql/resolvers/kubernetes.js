@@ -44,30 +44,41 @@ const mapWorkloadItems = (items, kind) => {
   });
 };
 
-const handleClusterError = (err) => {
-  const error = err?.response?.data?.message ? new Error(err.response.data.message) : err;
-  throw error;
+const handleClusterError = async (err) => {
+  if (!err.response) {
+    throw err;
+  }
+
+  const errorData = await err.response.json();
+  throw errorData;
 };
 
 export default {
   k8sPods(_, { configuration, namespace }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));
     const podsApi = namespace
-      ? coreV1Api.listCoreV1NamespacedPod(namespace)
+      ? coreV1Api.listCoreV1NamespacedPod({ namespace })
       : coreV1Api.listCoreV1PodForAllNamespaces();
 
     return podsApi
-      .then((res) => res?.data?.items || [])
-      .catch((err) => {
-        handleClusterError(err);
+      .then((res) => res?.items || [])
+      .catch(async (err) => {
+        try {
+          await handleClusterError(err);
+        } catch (error) {
+          throw new Error(error.message);
+        }
       });
   },
-  k8sServices(_, { configuration }) {
+  k8sServices(_, { configuration, namespace }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));
-    return coreV1Api
-      .listCoreV1ServiceForAllNamespaces()
+    const servicesApi = namespace
+      ? coreV1Api.listCoreV1NamespacedService({ namespace })
+      : coreV1Api.listCoreV1ServiceForAllNamespaces();
+
+    return servicesApi
       .then((res) => {
-        const items = res?.data?.items || [];
+        const items = res?.items || [];
         return items.map((item) => {
           const { type, clusterIP, externalIP, ports } = item.spec;
           return {
@@ -81,24 +92,28 @@ export default {
           };
         });
       })
-      .catch((err) => {
-        handleClusterError(err);
+      .catch(async (err) => {
+        try {
+          await handleClusterError(err);
+        } catch (error) {
+          throw new Error(error.message);
+        }
       });
   },
   k8sWorkloads(_, { configuration, namespace }) {
-    const appsV1api = new AppsV1Api(configuration);
-    const batchV1api = new BatchV1Api(configuration);
+    const appsV1api = new AppsV1Api(new Configuration(configuration));
+    const batchV1api = new BatchV1Api(new Configuration(configuration));
 
     let promises;
 
     if (namespace) {
       promises = [
-        appsV1api.listAppsV1NamespacedDeployment(namespace),
-        appsV1api.listAppsV1NamespacedDaemonSet(namespace),
-        appsV1api.listAppsV1NamespacedStatefulSet(namespace),
-        appsV1api.listAppsV1NamespacedReplicaSet(namespace),
-        batchV1api.listBatchV1NamespacedJob(namespace),
-        batchV1api.listBatchV1NamespacedCronJob(namespace),
+        appsV1api.listAppsV1NamespacedDeployment({ namespace }),
+        appsV1api.listAppsV1NamespacedDaemonSet({ namespace }),
+        appsV1api.listAppsV1NamespacedStatefulSet({ namespace }),
+        appsV1api.listAppsV1NamespacedReplicaSet({ namespace }),
+        batchV1api.listBatchV1NamespacedJob({ namespace }),
+        batchV1api.listBatchV1NamespacedCronJob({ namespace }),
       ];
     } else {
       promises = [
@@ -120,15 +135,18 @@ export default {
       CronJobList: [],
     };
 
-    return Promise.allSettled(promises).then((results) => {
+    return Promise.allSettled(promises).then(async (results) => {
       if (results.every((res) => res.status === 'rejected')) {
         const error = results[0].reason;
-        const errorMessage = error?.response?.data?.message ?? error;
-        throw new Error(errorMessage);
+        try {
+          await handleClusterError(error);
+        } catch (err) {
+          throw new Error(err.message);
+        }
       }
       for (const promiseResult of results) {
-        if (promiseResult.status === 'fulfilled' && promiseResult?.value?.data) {
-          const { kind, items } = promiseResult.value.data;
+        if (promiseResult.status === 'fulfilled' && promiseResult?.value) {
+          const { kind, items } = promiseResult.value;
 
           if (items?.length > 0) {
             summaryList[kind] = mapWorkloadItems(items, kind);
@@ -145,11 +163,14 @@ export default {
 
     return namespacesApi
       .then((res) => {
-        return res?.data?.items || [];
+        return res?.items || [];
       })
-      .catch((err) => {
-        const error = err?.response?.data?.reason || err;
-        throw new Error(humanizeClusterErrors(error));
+      .catch(async (error) => {
+        try {
+          await handleClusterError(error);
+        } catch (err) {
+          throw new Error(humanizeClusterErrors(err.reason));
+        }
       });
   },
 };

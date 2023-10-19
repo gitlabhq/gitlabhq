@@ -100,7 +100,6 @@ When you disable a feature, the following additional features are also disabled:
 
   - **Merge requests**
   - **CI/CD**
-  - **Container Registry**
   - **Git Large File Storage**
   - **Packages**
 
@@ -253,6 +252,10 @@ You can also [delete projects using the Rails console](../working_with_projects.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
+Prerequisite:
+
+- You must have the Owner role for the project.
+
 Projects in a group (not a personal namespace) can be deleted after a delay period.
 
 On self-managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
@@ -267,15 +270,15 @@ and use the Rails console to
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
 > - Option to delete projects immediately from the Admin Area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be [marked for deletion](#delete-a-project).
+
 If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
 
 In the first cycle of deleting a project, the project is moved to the delayed deletion queue and automatically deleted after the retention period has passed.
 If during this delayed deletion time you run a second deletion cycle, the project is deleted immediately.
-
-Prerequisites:
-
-- You must have the Owner role for a project.
-- You have [marked the project for deletion](#delete-a-project).
 
 To immediately delete a project marked for deletion:
 
@@ -287,7 +290,10 @@ To immediately delete a project marked for deletion:
 
 ## Restore a project **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be [marked for deletion](#delete-a-project).
 
 To restore a project marked for deletion:
 

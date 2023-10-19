@@ -11,8 +11,12 @@ module Integrations
     PROJECTS_PER_PAGE = 50
     JIRA_CLOUD_HOST = '.atlassian.net'
 
-    ATLASSIAN_REFERRER_GITLAB_COM = { atlOrigin: 'eyJpIjoiY2QyZTJiZDRkNGZhNGZlMWI3NzRkNTBmZmVlNzNiZTkiLCJwIjoianN3LWdpdGxhYi1pbnQifQ' }.freeze
-    ATLASSIAN_REFERRER_SELF_MANAGED = { atlOrigin: 'eyJpIjoiYjM0MTA4MzUyYTYxNDVkY2IwMzVjOGQ3ZWQ3NzMwM2QiLCJwIjoianN3LWdpdGxhYlNNLWludCJ9' }.freeze
+    ATLASSIAN_REFERRER_GITLAB_COM = {
+      atlOrigin: 'eyJpIjoiY2QyZTJiZDRkNGZhNGZlMWI3NzRkNTBmZmVlNzNiZTkiLCJwIjoianN3LWdpdGxhYi1pbnQifQ'
+    }.freeze
+    ATLASSIAN_REFERRER_SELF_MANAGED = {
+      atlOrigin: 'eyJpIjoiYjM0MTA4MzUyYTYxNDVkY2IwMzVjOGQ3ZWQ3NzMwM2QiLCJwIjoianN3LWdpdGxhYlNNLWludCJ9'
+    }.freeze
 
     API_ENDPOINTS = {
       find_issue: "/rest/api/2/issue/%s",
@@ -28,11 +32,13 @@ module Integrations
     AUTH_TYPE_BASIC = 0
     AUTH_TYPE_PAT = 1
 
-    SNOWPLOW_EVENT_CATEGORY = self.name
+    SNOWPLOW_EVENT_CATEGORY = name
 
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
-    validates :username, presence: true, if: ->(object) { object.activated? && !object.personal_access_token_authorization? }
+    validates :username, presence: true, if: ->(object) {
+                                               object.activated? && !object.personal_access_token_authorization?
+                                             }
     validates :password, presence: true, if: :activated?
     validates :jira_auth_type, presence: true, inclusion: { in: [AUTH_TYPE_BASIC, AUTH_TYPE_PAT] }, if: :activated?
     validates :jira_issue_prefix, untrusted_regexp: true, length: { maximum: 255 }, if: :activated?
@@ -130,7 +136,7 @@ module Integrations
     end
 
     # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
-    def reference_pattern(only_long: true)
+    def reference_pattern(*)
       @reference_pattern ||= jira_issue_match_regex
     end
 
@@ -144,7 +150,7 @@ module Integrations
     end
 
     def data_fields
-      jira_tracker_data || self.build_jira_tracker_data
+      jira_tracker_data || build_jira_tracker_data
     end
 
     def set_default_data
@@ -186,8 +192,13 @@ module Integrations
     end
 
     def help
-      jira_doc_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('integration/jira/index') }
-      s_("JiraService|You must configure Jira before enabling this integration. %{jira_doc_link_start}Learn more.%{link_end}") % { jira_doc_link_start: jira_doc_link_start, link_end: '</a>'.html_safe }
+      jira_doc_link_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe,
+        url: help_page_path('integration/jira/index'))
+      format(
+        s_("JiraService|You must configure Jira before enabling this integration. " \
+           "%{jira_doc_link_start}Learn more.%{link_end}"),
+        jira_doc_link_start: jira_doc_link_start,
+        link_end: '</a>'.html_safe)
     end
 
     def title
@@ -212,7 +223,8 @@ module Integrations
         {
           type: SECTION_TYPE_JIRA_TRIGGER,
           title: _('Trigger'),
-          description: s_('JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created.')
+          description: s_('JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link ' \
+                          'and comment (if enabled) will be created.')
         },
         {
           type: SECTION_TYPE_CONFIGURATION,
@@ -313,7 +325,8 @@ module Integrations
     override :create_cross_reference_note
     def create_cross_reference_note(external_issue, mentioned_in, author)
       unless can_cross_reference?(mentioned_in)
-        return s_("JiraService|Events for %{noteable_model_name} are disabled.") % { noteable_model_name: mentioned_in.model_name.plural.humanize(capitalize: false) }
+        return format(s_("JiraService|Events for %{noteable_model_name} are disabled."),
+          noteable_model_name: mentioned_in.model_name.plural.humanize(capitalize: false))
       end
 
       jira_issue = find_issue(external_issue.id)
@@ -381,6 +394,10 @@ module Integrations
       jira_auth_type == AUTH_TYPE_PAT
     end
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/jira.svg')
+    end
+
     private
 
     def jira_issue_match_regex
@@ -398,10 +415,9 @@ module Integrations
     end
 
     def server_info
-      strong_memoize(:server_info) do
-        client_url.present? ? jira_request(API_ENDPOINTS[:server_info]) { client.ServerInfo.all.attrs } : nil
-      end
+      client_url.present? ? jira_request(API_ENDPOINTS[:server_info]) { client.ServerInfo.all.attrs } : nil
     end
+    strong_memoize_attr :server_info
 
     def can_cross_reference?(mentioned_in)
       case mentioned_in
@@ -430,7 +446,8 @@ module Integrations
       true
     rescue StandardError => e
       path = API_ENDPOINTS[:transition_issue] % issue.id
-      log_exception(e, message: 'Issue transition failed', client_url: client_url, client_path: path, client_status: '400')
+      log_exception(e, message: 'Issue transition failed', client_url: client_url, client_path: path,
+        client_status: '400')
       false
     end
 
@@ -488,9 +505,9 @@ module Integrations
       link_title   = "#{entity_name.capitalize} - #{entity_title}"
       link_props   = build_remote_link_props(url: entity_url, title: link_title)
 
-      unless comment_exists?(issue, message)
-        send_message(issue, message, link_props)
-      end
+      return if comment_exists?(issue, message)
+
+      send_message(issue, message, link_props)
     end
 
     def comment_message(data)
@@ -503,21 +520,22 @@ module Integrations
       project_link = build_jira_link(project.full_name, Gitlab::Routing.url_helpers.project_url(project))
       branch =
         if entity[:branch].present?
-          s_('JiraService| on branch %{branch_link}') % {
-            branch_link: build_jira_link(entity[:branch], project_tree_url(project, entity[:branch]))
-          }
+          format(s_('JiraService| on branch %{branch_link}'),
+            branch_link: build_jira_link(entity[:branch], project_tree_url(project, entity[:branch])))
         end
 
       entity_message = entity[:description].presence if all_details?
       entity_message ||= entity[:title].chomp
 
-      s_('JiraService|%{user_link} mentioned this issue in %{entity_link} of %{project_link}%{branch}:{quote}%{entity_message}{quote}') % {
+      format(
+        s_('JiraService|%{user_link} mentioned this issue in %{entity_link} of ' \
+           '%{project_link}%{branch}:{quote}%{entity_message}{quote}'),
         user_link: user_link,
         entity_link: entity_link,
         project_link: project_link,
         branch: branch,
         entity_message: entity_message
-      }
+      )
     end
 
     def build_jira_link(title, url)
@@ -586,13 +604,13 @@ module Integrations
     end
 
     def resource_url(resource)
-      "#{Settings.gitlab.base_url.chomp("/")}#{resource}"
+      "#{Settings.gitlab.base_url.chomp('/')}#{resource}"
     end
 
     def build_entity_url(entity_type, entity_id)
       polymorphic_url(
         [
-          self.project,
+          project,
           entity_type.to_sym
         ],
         id: entity_id,
@@ -631,7 +649,8 @@ module Integrations
       yield
     rescue StandardError => e
       @error = e
-      log_exception(e, message: 'Error sending message', client_url: client_url, client_path: path, client_status: e.try(:code))
+      log_exception(e, message: 'Error sending message', client_url: client_url, client_path: path,
+        client_status: e.try(:code))
       nil
     end
 
@@ -648,7 +667,8 @@ module Integrations
       results = server_info
 
       unless results.present?
-        Gitlab::AppLogger.warn(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: results, url: client_url)
+        Gitlab::AppLogger.warn(message: "Jira API returned no ServerInfo, setting deployment_type from URL",
+          server_info: results, url: client_url)
 
         return set_deployment_type_from_url
       end
@@ -681,13 +701,25 @@ module Integrations
     end
 
     def jira_issues_section_description
-      jira_issues_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('integration/jira/issues') }
-      description = s_('JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues. %{jira_issues_link_start}Learn more.%{link_end}') % { jira_issues_link_start: jira_issues_link_start, link_end: '</a>'.html_safe }
+      jira_issues_link_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe,
+        url: help_page_path('integration/jira/issues'))
+      description = format(
+        s_('JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of ' \
+           'your Jira issues. %{jira_issues_link_start}Learn more.%{link_end}'),
+        jira_issues_link_start: jira_issues_link_start,
+        link_end: '</a>'.html_safe
+      )
 
       if project&.issues_enabled?
-        gitlab_issues_link_start = '<a href="%{url}">'.html_safe % { url: edit_project_path(project, anchor: 'js-shared-permissions') }
+        gitlab_issues_link_start = format('<a href="%{url}">'.html_safe, url: edit_project_path(project,
+          anchor: 'js-shared-permissions'))
         description += '<br><br>'.html_safe
-        description += s_("JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. Consider %{gitlab_issues_link_start}disabling GitLab issues%{link_end} if they won't otherwise be used.") % { gitlab_issues_link_start: gitlab_issues_link_start, link_end: '</a>'.html_safe }
+        description += format(
+          s_("JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. " \
+             "Consider %{gitlab_issues_link_start}disabling GitLab issues%{link_end} if they won't otherwise be used."),
+          gitlab_issues_link_start: gitlab_issues_link_start,
+          link_end: '</a>'.html_safe
+        )
       end
 
       description

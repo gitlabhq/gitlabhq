@@ -39,7 +39,7 @@ Working with our frontend assets requires Node (v12.22.1 or greater) and Yarn
 
 ## Vision
 
-As Frontend engineers, we strive to give users **delightful experiences**. We should always think of how this applies at GitLab specifically: a great GitLab experience means helping our userbase ship **their own projects faster and with more confidence** when shipping their own software. This means that whenever confronted with a choice for the future of our department, we should remember to try to put this first.
+As Frontend engineers, we strive to give users **delightful experiences**. We should always think of how this applies at GitLab specifically: a great GitLab experience means helping our user base ship **their own projects faster and with more confidence** when shipping their own software. This means that whenever confronted with a choice for the future of our department, we should remember to try to put this first.
 
 ### Values
 
@@ -59,7 +59,7 @@ Additionally, we want our speed to be felt and appreciated by our developers. Th
 
 #### Maintainability
 
-GitLab is now a large, enterprise-grade software and it often requires complex code to give the best possible experience. Although complexity is a necessity, we must remain vigilent to not let it grow more than it should. To minimize this, we want to focus on making our codebase maintainable by **encapsulating complexity**. This is done by:
+GitLab is now a large, enterprise-grade software and it often requires complex code to give the best possible experience. Although complexity is a necessity, we must remain vigilant to not let it grow more than it should. To minimize this, we want to focus on making our codebase maintainable by **encapsulating complexity**. This is done by:
 
 - Building tools that solve commonly-faced problems and making them easily discoverable.
 - Writing better documentation on how we solve our problems.
@@ -113,7 +113,7 @@ Reusable components with technical and usage guidelines can be found in our
 
 #### Frontend FAQ
 
-Read the [frontend's FAQ](frontend_faq.md) for common small pieces of helpful information.
+Read the [frontend FAQ](frontend_faq.md) for common small pieces of helpful information.
 
 #### [Internationalization (i18n) and Translations](../i18n/externalization.md)
 

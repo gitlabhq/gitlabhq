@@ -240,7 +240,7 @@ Example response:
 
 ## Delete an environment
 
-It returns `204` if the environment was successfully deleted, and `404` if the environment does not exist.
+It returns `204` if the environment was successfully deleted, and `404` if the environment does not exist. The environment must be stopped first, otherwise the request returns `403`.
 
 ```plaintext
 DELETE /projects/:id/environments/:environment_id

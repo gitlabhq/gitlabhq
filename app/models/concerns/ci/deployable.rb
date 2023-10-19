@@ -4,6 +4,7 @@
 module Ci
   module Deployable
     extend ActiveSupport::Concern
+    include Gitlab::Utils::StrongMemoize
 
     included do
       prepend_mod_with('Ci::Deployable') # rubocop: disable Cop/InjectEnterpriseEditionModule
@@ -17,8 +18,16 @@ module Ci
           end
         end
 
+        after_transition any => [:failed] do |job|
+          next unless job.stops_environment?
+
+          job.run_after_commit do
+            Environments::StopJobFailedWorker.perform_async(id)
+          end
+        end
+
         # Synchronize Deployment Status
-        # Please note that the data integirty is not assured because we can't use
+        # Please note that the data integrity is not assured because we can't use
         # a database transaction due to DB decomposition.
         after_transition do |job, transition|
           next if transition.loopback?
@@ -32,13 +41,12 @@ module Ci
     end
 
     def outdated_deployment?
-      strong_memoize(:outdated_deployment) do
-        deployment_job? &&
-          project.ci_forward_deployment_enabled? &&
-          (!project.ci_forward_deployment_rollback_allowed? || incomplete?) &&
-          deployment&.older_than_last_successful_deployment?
-      end
+      deployment_job? &&
+        project.ci_forward_deployment_enabled? &&
+        (!project.ci_forward_deployment_rollback_allowed? || incomplete?) &&
+        deployment&.older_than_last_successful_deployment?
     end
+    strong_memoize_attr :outdated_deployment?
 
     # Virtual deployment status depending on the environment status.
     def deployment_status
@@ -106,10 +114,10 @@ module Ci
 
       namespace = options.dig(:environment, :kubernetes, :namespace)
 
-      if namespace.present? # rubocop:disable Style/GuardClause
-        strong_memoize(:expanded_kubernetes_namespace) do
-          ExpandVariables.expand(namespace, -> { simple_variables })
-        end
+      return unless namespace.present?
+
+      strong_memoize(:expanded_kubernetes_namespace) do
+        ExpandVariables.expand(namespace, -> { simple_variables })
       end
     end
 
@@ -146,12 +154,11 @@ module Ci
     end
 
     def environment_status
-      strong_memoize(:environment_status) do
-        if has_environment_keyword? && merge_request
-          EnvironmentStatus.new(project, persisted_environment, merge_request, pipeline.sha)
-        end
-      end
+      return unless has_environment_keyword? && merge_request
+
+      EnvironmentStatus.new(project, persisted_environment, merge_request, pipeline.sha)
     end
+    strong_memoize_attr :environment_status
 
     def on_stop
       options&.dig(:environment, :on_stop)

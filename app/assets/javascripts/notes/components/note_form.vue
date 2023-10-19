@@ -5,7 +5,6 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
@@ -24,7 +23,7 @@ export default {
     GlLink,
     GlFormCheckbox,
   },
-  mixins: [issuableStateMixin, resolvable, glFeaturesFlagMixin()],
+  mixins: [issuableStateMixin, resolvable],
   props: {
     noteBody: {
       type: String,
@@ -117,7 +116,7 @@ export default {
         'aria-label': __('Reply to comment'),
         placeholder: this.$options.i18n.bodyPlaceholder,
         class: 'note-textarea js-gfm-input js-note-text markdown-area js-vue-issue-note-form',
-        'data-qa-selector': 'reply_field',
+        'data-testid': 'reply-field',
       },
     };
   },
@@ -202,6 +201,9 @@ export default {
     isDisabled() {
       return !this.updatedNoteBody.length || this.isSubmitting;
     },
+    isInternalNote() {
+      return this.discussionNote.internal || this.discussion.confidential;
+    },
     discussionNote() {
       const discussionNote = this.discussion.id
         ? this.getDiscussionLastNote(this.discussion)
@@ -220,9 +222,6 @@ export default {
         ),
         placeholder: { link: ['startTag', 'endTag'] },
       };
-    },
-    enableContentEditor() {
-      return Boolean(this.glFeatures.contentEditorOnIssues);
     },
     codeSuggestionsConfig() {
       return {
@@ -355,13 +354,9 @@ export default {
     </div>
     <div class="flash-container timeline-content"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
-      <comment-field-layout
-        :noteable-data="getNoteableData"
-        :is-internal-note="discussionNote.internal"
-      >
+      <comment-field-layout :noteable-data="getNoteableData" :is-internal-note="isInternalNote">
         <markdown-editor
           ref="markdownEditor"
-          :enable-content-editor="enableContentEditor"
           :value="updatedNoteBody"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="markdownDocsPath"
@@ -406,7 +401,7 @@ export default {
               category="primary"
               variant="confirm"
               class="gl-sm-mr-3 gl-mb-3"
-              data-qa-selector="start_review_button"
+              data-testid="start-review-button"
               @click="handleAddToReview"
             >
               <template v-if="hasDrafts">{{ __('Add to review') }}</template>
@@ -416,7 +411,7 @@ export default {
               :disabled="isDisabled"
               category="secondary"
               variant="confirm"
-              data-qa-selector="comment_now_button"
+              data-testid="comment-now-button"
               class="gl-sm-mr-3 gl-mb-3 js-comment-button"
               @click="handleUpdate()"
             >
@@ -439,7 +434,7 @@ export default {
               :disabled="isDisabled"
               category="primary"
               variant="confirm"
-              data-qa-selector="reply_comment_button"
+              data-testid="reply-comment-button"
               class="gl-sm-mr-3 gl-xs-mb-3 js-vue-issue-save js-comment-button"
               @click="handleUpdate()"
             >

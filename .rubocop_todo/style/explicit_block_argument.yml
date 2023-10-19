@@ -85,7 +85,6 @@ Style/ExplicitBlockArgument:
     - 'spec/lib/gitlab/pagination/offset_pagination_spec.rb'
     - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/models/repository_spec.rb'
-    - 'spec/services/pages/zip_directory_service_spec.rb'
     - 'spec/services/todo_service_spec.rb'
     - 'spec/support/database/gitlab_schemas_validate_connection.rb'
     - 'spec/support/helpers/feature_flag_helpers.rb'

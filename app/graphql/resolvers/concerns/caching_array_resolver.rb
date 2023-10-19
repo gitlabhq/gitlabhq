@@ -22,7 +22,7 @@
 #
 # **important**: If the cardinality of your collection is likely to be greater than 100,
 # then you will want to pass `max_page_size:` as part of the field definition
-# or (ideally) as part of the resolver `field_options`.
+# or (ideally) set `max_page_size` in the resolver.
 #
 # How to implement:
 # --------------------

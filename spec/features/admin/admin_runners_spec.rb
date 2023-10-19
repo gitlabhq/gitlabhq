@@ -116,7 +116,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
         expect(current_url).to match(admin_runner_path(runner))
 
-        expect(find("[data-testid='td-status']")).to have_content "running"
+        expect(find("[data-testid='td-status']")).to have_content "Running"
         expect(find("[data-testid='td-job']")).to have_content "##{job.id}"
       end
 
@@ -510,7 +510,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         :ci_runner,
         description: 'runner-foo',
         version: '14.0',
-        ip_address: '127.0.0.1',
         tag_list: ['tag1']
       )
     end
@@ -535,8 +534,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       aggregate_failures do
         expect(page).to have_content 'Description runner-foo'
         expect(page).to have_content 'Last contact Never contacted'
-        expect(page).to have_content 'Version 14.0'
-        expect(page).to have_content 'IP Address 127.0.0.1'
         expect(page).to have_content 'Configuration Runs untagged jobs'
         expect(page).to have_content 'Maximum job timeout None'
         expect(page).to have_content 'Tags tag1'

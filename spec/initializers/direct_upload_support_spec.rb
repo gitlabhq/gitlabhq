@@ -8,7 +8,7 @@ RSpec.describe 'Direct upload support' do
   end
 
   where(:config_name) do
-    %w(artifacts lfs uploads)
+    %w[artifacts lfs uploads]
   end
 
   with_them do

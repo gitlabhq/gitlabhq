@@ -40,7 +40,7 @@ module Clusters
         cluster.kubeclient&.delete_namespace(kubernetes_namespace.namespace)
       rescue Kubeclient::ResourceNotFoundError
         # The resources have already been deleted, possibly on a previous attempt that timed out
-      rescue Gitlab::UrlBlocker::BlockedUrlError
+      rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError
         # User gave an invalid cluster from the start, or deleted the endpoint before this job ran
       end
     end

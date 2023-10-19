@@ -2,12 +2,11 @@
 - no_errors = @errors.blank?
 
 %h1.page-title.gl-font-size-h-display= page_title
-.bs-callout.clearfix
-  .float-left
-    %p
-  #{ s_('HealthCheck|Access token is') }
-  %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
-  .gl-mt-3
+= render Pajamas::AlertComponent.new(variant: :tip, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
+  - c.with_body do
+    #{ s_('HealthCheck|Access token is') }
+    %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
+  - c.with_actions do
     = render Pajamas::ButtonComponent.new(href: reset_health_check_token_admin_application_settings_path, method: :put, button_options: { data: { confirm: _('Are you sure you want to reset the health check token?') } }) do
       = _("Reset health check access token")
 %p.light

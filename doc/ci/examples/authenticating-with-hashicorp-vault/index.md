@@ -90,7 +90,10 @@ Example JWT payload:
 
 The JWT is encoded by using RS256 and signed with a dedicated private key. The expire time for the token is set to job's timeout, if specified, or 5 minutes if it is not. The key used to sign this token may change without any notice. In such case retrying the job generates new JWT using the current signing key.
 
-You can use this JWT and your instance's JWKS endpoint (`https://gitlab.example.com/-/jwks`) to authenticate with a Vault server that is configured to allow the JWT Authentication method for authentication.
+You can use this JWT for authentication with a Vault server that is configured to allow
+the JWT authentication method. Provide your GitLab instance's base URL
+(for example `https://gitlab.example.com`) to your Vault server as the `oidc_discovery_url`.
+The server can then retrieve the keys for validating the token from your instance.
 
 When configuring roles in Vault, you can use [bound claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims) to match against the JWT claims and restrict which secrets each CI/CD job has access to.
 
@@ -248,11 +251,11 @@ Now, configure the JWT Authentication method:
 
 ```shell
 $ vault write auth/jwt/config \
-    jwks_url="https://gitlab.example.com/-/jwks" \
+    oidc_discovery_url="https://gitlab.example.com" \
     bound_issuer="https://gitlab.example.com"
 ```
 
-[`bound_issuer`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer) specifies that only a JWT with the issuer (that is, the `iss` claim) set to `gitlab.example.com` can use this method to authenticate, and that the JWKS endpoint (`https://gitlab.example.com/-/jwks`) should be used to validate the token.
+[`bound_issuer`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer) specifies that only a JWT with the issuer (that is, the `iss` claim) set to `gitlab.example.com` can use this method to authenticate, and that the `oidc_discovery_url` (`https://gitlab.example.com`) should be used to validate the token.
 
 For the full list of available configuration options, see Vault's [API documentation](https://developer.hashicorp.com/vault/api-docs/auth/jwt#configure).
 

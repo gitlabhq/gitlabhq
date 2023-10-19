@@ -39,16 +39,6 @@ RSpec.describe ProjectImportEntity, feature_category: :importers do
       it 'includes relation_type' do
         expect(subject[:relation_type]).to eq('owned')
       end
-
-      context 'with remove_legacy_github_client FF is disabled' do
-        before do
-          stub_feature_flags(remove_legacy_github_client: false)
-        end
-
-        it "doesn't include relation_type" do
-          expect(subject[:relation_type]).to eq(nil)
-        end
-      end
     end
 
     context 'when import is failed' do

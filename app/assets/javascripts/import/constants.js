@@ -8,7 +8,7 @@ const STATISTIC_ITEMS = {
   issue_event: __('Issue events'),
   label: __('Labels'),
   lfs_object: __('LFS objects'),
-  merge_request_attachment: s__('GithubImporter|Merge request links'),
+  merge_request_attachment: s__('GithubImporter|PR attachments'),
   milestone: __('Milestones'),
   note: __('Notes'),
   note_attachment: s__('GithubImporter|Note links'),
@@ -17,7 +17,7 @@ const STATISTIC_ITEMS = {
   pull_request: s__('GithubImporter|Pull requests'),
   pull_request_merged_by: s__('GithubImporter|PR mergers'),
   pull_request_review: s__('GithubImporter|PR reviews'),
-  pull_request_review_request: s__('GithubImporter|PR reviews'),
+  pull_request_review_request: s__('GithubImporter|PR reviewers'),
   release: __('Releases'),
   release_attachment: s__('GithubImporter|Release links'),
 };

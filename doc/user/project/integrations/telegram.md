@@ -32,7 +32,7 @@ To configure the bot in Telegram:
 1. Assign the bot `Post Messages` rights to receive events.
 1. Create an identifier for the channel.
    - For public channels, enter a public link and copy the channel identifier (for example, `https:/t.me/MY_IDENTIFIER`).
-   - For private channels, use the [`getUpdates`](https://telegram-bot-sdk.readme.io/reference/getupdates) method with your API token and copy the channel identifier.
+   - For private channels, use the [`getUpdates`](https://telegram-bot-sdk.readme.io/reference/getupdates) method with your API token and copy the channel identifier (for example, `-2241293890657`).
 
 ## Set up the Telegram integration in GitLab
 

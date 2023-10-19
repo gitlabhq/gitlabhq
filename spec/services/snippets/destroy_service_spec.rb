@@ -70,7 +70,6 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
         it 'does not schedule anything and return success' do
           allow(snippet).to receive(:repository).and_return(nil)
 
-          expect(GitlabShellWorker).not_to receive(:perform_in)
           expect_next_instance_of(Repositories::DestroyService) do |instance|
             expect(instance).to receive(:execute).and_call_original
           end
@@ -151,7 +150,6 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
         expect(snippet.repository).not_to be_nil
         expect(snippet.repository.exists?).to be_falsey
 
-        expect(GitlabShellWorker).not_to receive(:perform_in)
         expect_next_instance_of(Repositories::DestroyService) do |instance|
           expect(instance).to receive(:execute).and_call_original
         end

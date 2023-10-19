@@ -166,3 +166,5 @@ class Ability
     end
   end
 end
+
+Ability.prepend_mod_with('AbilityPrepend')

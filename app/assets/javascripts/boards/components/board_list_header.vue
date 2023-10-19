@@ -201,8 +201,8 @@ export default {
         })
       );
     },
-    totalWeight() {
-      return this.boardList?.totalWeight;
+    totalIssueWeight() {
+      return this.boardList?.totalIssueWeight;
     },
     canShowTotalWeight() {
       return this.weightFeatureAvailable && !this.isLoading;
@@ -365,7 +365,6 @@ export default {
     }"
     :style="headerStyle"
     class="board-header gl-relative"
-    data-qa-selector="board_list_header"
     data-testid="board-list-header"
   >
     <h3
@@ -473,8 +472,8 @@ export default {
         <div v-else>• {{ itemsTooltipLabel }}</div>
         <div v-if="weightFeatureAvailable && !isLoading">
           •
-          <gl-sprintf :message="__('%{totalWeight} total weight')">
-            <template #totalWeight>{{ totalWeight }}</template>
+          <gl-sprintf :message="__('%{totalIssueWeight} total weight')">
+            <template #totalIssueWeight>{{ totalIssueWeight }}</template>
           </gl-sprintf>
         </div>
       </gl-tooltip>
@@ -507,7 +506,7 @@ export default {
             <gl-tooltip :target="() => $refs.weightTooltip" :title="weightCountToolTip" />
             <span ref="weightTooltip" class="gl-display-inline-flex gl-ml-3" data-testid="weight">
               <gl-icon class="gl-mr-2" name="weight" :size="14" />
-              {{ totalWeight }}
+              {{ totalIssueWeight }}
             </span>
           </template>
           <!-- EE end -->

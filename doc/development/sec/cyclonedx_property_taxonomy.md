@@ -23,6 +23,7 @@ The `Property of` column describes what object a property may be attached to.
 | --------------------- | ----------- |
 | `meta`                | Namespace for data about the property schema. |
 | `dependency_scanning` | Namespace for data related to dependency scanning. |
+| `container_scanning`  | Namespace for data related to container scanning. |
 
 ## `gitlab:meta` namespace taxonomy
 
@@ -70,3 +71,26 @@ The `Property of` column describes what object a property may be attached to.
 | Property                                   | Description | Example values | Property of |
 | ------------------------------------------ | ----------- | -------------- | ----------- |
 | `gitlab:dependency_scanning:language:name` | The name of the programming language associated with the dependency | `JavaScript`, `Ruby`, `Go` | `metadata`, `component` |
+
+## `gitlab:container_scanning` namespace taxonomy
+
+### Namespaces
+
+| Namespace                                    | Description |
+| -------------------------------------------- | ----------- |
+| `gitlab:container_scanning:image`            | Namespace for information about the scanned image. |
+| `gitlab:container_scanning:operating_system` | Namespace for information about the operating system associated with the scanned image. |
+
+## `gitlab:container_scanning:image` namespace taxonomy
+
+| Property                               | Description | Example values | Property of |
+| ---------------------------------------| ----------- | -------------- | ----------- |
+| `gitlab:container_scanning:image:name` | The name of the scanned image. | `registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium/tmp/main` | `metadata`, `component` |
+| `gitlab:container_scanning:image:tag` | The tag of the scanned image.  | `91d61f07e0a4b3dd34b39d77f47f6f9bf48cde0a` | `metadata`, `component` |
+
+## `gitlab:container_scanning:operating_system` namespace taxonomy
+
+| Property                               | Description | Example values | Property of |
+| ---------------------------------------| ----------- | -------------- | ----------- |
+| `gitlab:container_scanning:operating_system:name`    | The name of the operation system.    | `alpine` | `metadata`, `component` |
+| `gitlab:container_scanning:operating_system:version` | The version of the operation system. | `3.1.8` | `metadata`, `component` |

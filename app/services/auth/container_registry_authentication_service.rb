@@ -39,32 +39,45 @@ module Auth
     end
 
     def self.full_access_token(*names)
-      access_token(%w[*], names)
+      names_and_actions = names.index_with { %w[*] }
+      access_token(names_and_actions)
     end
 
     def self.import_access_token
-      access_token(%w[*], ['import'], 'registry')
+      access_token({ 'import' => %w[*] }, 'registry')
     end
 
     def self.pull_access_token(*names)
-      access_token(['pull'], names)
+      names_and_actions = names.index_with { %w[pull] }
+      access_token(names_and_actions)
     end
 
     def self.pull_nested_repositories_access_token(name)
-      name = name.chomp('/') if name.end_with?('/')
-      paths = [name, "#{name}/*"]
-      access_token(['pull'], paths)
+      name = name.chomp('/')
+
+      access_token({
+        name => %w[pull],
+        "#{name}/*" => %w[pull]
+      })
     end
 
-    def self.access_token(actions, names, type = 'repository')
-      names = names.flatten
+    def self.push_pull_nested_repositories_access_token(name)
+      name = name.chomp('/')
+
+      access_token({
+        name => %w[pull push],
+        "#{name}/*" => %w[pull]
+      })
+    end
+
+    def self.access_token(names_and_actions, type = 'repository')
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
       token.audience = AUDIENCE
       token.expire_time = token_expire_at
 
-      token[:access] = names.map do |name|
+      token[:access] = names_and_actions.map do |name, actions|
         {
           type: type,
           name: name,
@@ -219,7 +232,6 @@ module Auth
     # Overridden in EE
     def can_access?(requested_project, requested_action)
       return false unless requested_project.container_registry_enabled?
-      return false if requested_project.repository_access_level == ::ProjectFeature::DISABLED
 
       case requested_action
       when 'pull'

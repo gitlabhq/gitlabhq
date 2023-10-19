@@ -5,6 +5,8 @@ module Types
     class NoteType < BaseObject
       graphql_name 'Note'
 
+      connection_type_class Types::CountableConnectionType
+
       authorize :read_note
 
       expose_permissions Types::PermissionTypes::Note

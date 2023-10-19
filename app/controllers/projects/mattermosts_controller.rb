@@ -19,10 +19,10 @@ class Projects::MattermostsController < Projects::ApplicationController
     result, message = integration.configure(current_user, configure_params)
 
     if result
-      flash[:notice] = 'This service is now configured'
+      flash[:notice] = 'This integration is now configured'
       redirect_to edit_project_settings_integration_path(@project, integration)
     else
-      flash[:alert] = message || 'Failed to configure service'
+      flash[:alert] = message || 'Failed to configure integration'
       redirect_to new_project_mattermost_path(@project)
     end
   end
@@ -31,7 +31,7 @@ class Projects::MattermostsController < Projects::ApplicationController
 
   def configure_params
     params.require(:mattermost).permit(:trigger, :team_id).merge(
-      url: service_trigger_url(integration),
+      url: integration_trigger_url(integration),
       icon_url: asset_url('slash-command-logo.png', skip_pipeline: true))
   end
 

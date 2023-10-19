@@ -377,6 +377,20 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
   end
 
+  shared_examples 'rejecting request with invalid params' do
+    context 'with invalid maven path' do
+      subject { download_file(file_name: package_file.file_name, path: 'foo/bar/%0d%0ahttp:/%2fexample.com') }
+
+      it_behaves_like 'returning response status with error', status: :bad_request, error: 'path should be a valid file path'
+    end
+
+    context 'with invalid file name' do
+      subject { download_file(file_name: '%0d%0ahttp:/%2fexample.com') }
+
+      it_behaves_like 'returning response status with error', status: :bad_request, error: 'file_name should be a valid file path'
+    end
+  end
+
   describe 'GET /api/v4/packages/maven/*path/:file_name' do
     context 'a public project' do
       let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
@@ -402,6 +416,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
           it_behaves_like 'returning response status', :forbidden
         end
+
+        it_behaves_like 'rejecting request with invalid params'
 
         it 'returns not found when a package is not found' do
           finder = double('finder', execute: nil)
@@ -443,6 +459,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           it_behaves_like 'returning response status', :forbidden
         end
       end
+
+      it_behaves_like 'rejecting request with invalid params'
 
       it_behaves_like 'handling groups, subgroups and user namespaces for', 'getting a file', visibilities: { public: :redirect, internal: :not_found }
     end
@@ -500,6 +518,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           it_behaves_like 'returning response status', :forbidden
         end
       end
+
+      it_behaves_like 'rejecting request with invalid params'
 
       it_behaves_like 'handling groups, subgroups and user namespaces for', 'getting a file', visibilities: { public: :redirect, internal: :not_found, private: :not_found }
     end
@@ -566,6 +586,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
       end
 
+      it_behaves_like 'rejecting request with invalid params'
+
       it_behaves_like 'handling groups and subgroups for', 'getting a file for a group'
     end
 
@@ -596,6 +618,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           it_behaves_like 'returning response status', :redirect
         end
       end
+
+      it_behaves_like 'rejecting request with invalid params'
 
       it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { internal: :unauthorized, public: :redirect }
     end
@@ -633,6 +657,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
           it_behaves_like 'returning response status', :redirect
         end
+
+        it_behaves_like 'rejecting request with invalid params'
 
         context 'with group deploy token' do
           subject { download_file_with_token(file_name: package_file.file_name, request_headers: group_deploy_token_headers) }
@@ -786,6 +812,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
         it_behaves_like 'returning response status', :redirect
       end
+
+      it_behaves_like 'rejecting request with invalid params'
     end
 
     context 'private project' do
@@ -830,6 +858,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
         it_behaves_like 'returning response status', :redirect
       end
+
+      it_behaves_like 'rejecting request with invalid params'
     end
 
     it_behaves_like 'forwarding package requests'

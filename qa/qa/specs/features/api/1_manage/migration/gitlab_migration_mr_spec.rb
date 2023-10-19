@@ -17,11 +17,10 @@ module QA
       end
 
       let!(:source_mr) do
-        Resource::MergeRequest.fabricate_via_api! do |mr|
-          mr.project = source_project
-          mr.api_client = source_admin_api_client
-          mr.reviewer_ids = [source_mr_reviewer.id]
-        end
+        create(:merge_request,
+          project: source_project,
+          api_client: source_admin_api_client,
+          reviewer_ids: [source_mr_reviewer.id])
       end
 
       let!(:mr_reviewer) do

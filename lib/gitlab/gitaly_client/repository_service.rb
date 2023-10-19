@@ -319,12 +319,6 @@ module Gitlab
         gitaly_client_call(@storage, :object_pool_service, :disconnect_git_alternates, request, timeout: GitalyClient.long_timeout)
       end
 
-      def rename(relative_path)
-        request = Gitaly::RenameRepositoryRequest.new(repository: @gitaly_repo, relative_path: relative_path)
-
-        gitaly_client_call(@storage, :repository_service, :rename_repository, request, timeout: GitalyClient.fast_timeout)
-      end
-
       def remove
         request = Gitaly::RemoveRepositoryRequest.new(repository: @gitaly_repo)
 
@@ -357,6 +351,13 @@ module Gitlab
           request,
           timeout: GitalyClient.medium_timeout
         )
+      end
+
+      def get_file_attributes(revision, paths, attributes)
+        request = Gitaly::GetFileAttributesRequest
+          .new(repository: @gitaly_repo, revision: revision, paths: paths, attributes: attributes)
+
+        gitaly_client_call(@repository.storage, :repository_service, :get_file_attributes, request, timeout: GitalyClient.fast_timeout)
       end
 
       private

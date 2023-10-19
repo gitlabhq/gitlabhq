@@ -15,6 +15,7 @@ class Projects::BlameController < Projects::ApplicationController
   urgency :low, [:show]
 
   def show
+    @ref_type = ref_type
     load_environment
     load_blame
   end

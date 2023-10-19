@@ -8,6 +8,7 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import { SET_CHART_DATA, SET_LOADING_STATE } from '~/contributors/stores/mutation_types';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
@@ -66,14 +67,14 @@ describe('Contributors charts', () => {
   });
 
   it('should display loader whiled loading data', async () => {
-    wrapper.vm.$store.state.loading = true;
+    store.commit(SET_LOADING_STATE, true);
     await nextTick();
     expect(findLoadingIcon().exists()).toBe(true);
   });
 
   it('should render charts and a RefSelector when loading completed and there is chart data', async () => {
-    wrapper.vm.$store.state.loading = false;
-    wrapper.vm.$store.state.chartData = chartData;
+    store.commit(SET_LOADING_STATE, false);
+    store.commit(SET_CHART_DATA, chartData);
     await nextTick();
 
     expect(findLoadingIcon().exists()).toBe(false);
@@ -92,8 +93,8 @@ describe('Contributors charts', () => {
   });
 
   it('should have a history button with a set href attribute', async () => {
-    wrapper.vm.$store.state.loading = false;
-    wrapper.vm.$store.state.chartData = chartData;
+    store.commit(SET_LOADING_STATE, false);
+    store.commit(SET_CHART_DATA, chartData);
     await nextTick();
 
     const historyButton = findHistoryButton();
@@ -102,8 +103,8 @@ describe('Contributors charts', () => {
   });
 
   it('visits a URL when clicking on a branch/tag', async () => {
-    wrapper.vm.$store.state.loading = false;
-    wrapper.vm.$store.state.chartData = chartData;
+    store.commit(SET_LOADING_STATE, false);
+    store.commit(SET_CHART_DATA, chartData);
     await nextTick();
 
     findRefSelector().vm.$emit('input', branch);

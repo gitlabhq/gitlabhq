@@ -27,7 +27,7 @@ To rewrite any number of commit messages:
 1. [Update the commit messages](#update-the-commit-messages).
 1. [Push the changes up to GitLab](#push-the-changes-up-to-gitlab).
 
-## Prerequisites
+## Before you begin
 
 You must have:
 
