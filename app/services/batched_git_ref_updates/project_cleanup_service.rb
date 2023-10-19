@@ -28,7 +28,7 @@ module BatchedGitRefUpdates
           refs = batch.map(&:ref)
 
           refs.each_slice(GITALY_BATCH_SIZE) do |refs_to_delete|
-            project.repository.delete_refs(*refs_to_delete)
+            project.repository.delete_refs(*refs_to_delete.uniq)
           end
 
           total_deletes += refs.count

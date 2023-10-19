@@ -53,6 +53,15 @@ RSpec.describe BatchedGitRefUpdates::ProjectCleanupService, feature_category: :g
       expect(test_refs(project2)).to include('refs/test/project2-ref1')
     end
 
+    it 'handles duplicates' do
+      BatchedGitRefUpdates::Deletion.create!(project_id: project1.id, ref: 'refs/test/some-duplicate')
+      BatchedGitRefUpdates::Deletion.create!(project_id: project1.id, ref: 'refs/test/some-duplicate')
+
+      service.execute
+
+      expect(test_refs(project1)).not_to include('refs/test/some-duplicate')
+    end
+
     it 'marks the processed BatchedGitRefUpdates::Deletion as processed' do
       service.execute
 
