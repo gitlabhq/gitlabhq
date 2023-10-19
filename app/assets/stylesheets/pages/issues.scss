@@ -81,17 +81,6 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
-.related-merge-requests {
-  .ci-status-link {
-    display: block;
-    margin-right: 5px;
-  }
-
-  svg {
-    display: block;
-  }
-}
-
 @include media-breakpoint-down(xs) {
   .detail-page-header {
     .issuable-meta {

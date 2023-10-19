@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Gitlab::FeatureAvailableUsage do
     end
 
     it 'does not flag the use of Gitlab::Saas.feature_available?' do
-      expect_no_offenses('Gitlab::Saas.feature_available?("some/feature")')
+      expect_no_offenses('Gitlab::Saas.feature_available?(:some_feature)')
     end
 
     it 'flags the use with a dynamic feature as nil' do

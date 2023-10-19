@@ -2,6 +2,8 @@
 import { isEmpty } from 'lodash';
 import * as translations from '~/ml/model_registry/routes/models/index/translations';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
+import { BASE_SORT_FIELDS } from '../constants';
+import SearchBar from './search_bar.vue';
 import ModelRow from './model_row.vue';
 
 export default {
@@ -9,6 +11,7 @@ export default {
   components: {
     Pagination,
     ModelRow,
+    SearchBar,
   },
   props: {
     models: {
@@ -26,6 +29,7 @@ export default {
     },
   },
   i18n: translations,
+  sortableFields: BASE_SORT_FIELDS,
 };
 </script>
 
@@ -40,6 +44,7 @@ export default {
     </div>
 
     <template v-if="hasModels">
+      <search-bar :sortable-fields="$options.sortableFields" />
       <model-row v-for="model in models" :key="model.name" :model="model" />
       <pagination v-bind="pageInfo" />
     </template>

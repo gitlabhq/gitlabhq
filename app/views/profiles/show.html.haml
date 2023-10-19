@@ -122,6 +122,10 @@
           allow_empty: true}
         %small.form-text.text-gl-muted
           = external_accounts_docs_link
+      - if Feature.enabled?(:mastodon_social_ui, @user)
+        .form-group.gl-form-group
+          = f.label :mastodon
+          = f.text_field :mastodon, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "@robin@example.com"
 
       .form-group.gl-form-group
         = f.label :website_url, s_('Profiles|Website url')

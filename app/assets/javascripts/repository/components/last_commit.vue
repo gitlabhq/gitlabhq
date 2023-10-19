@@ -115,7 +115,7 @@ export default {
       class="commit-actions gl-display-flex gl-flex-align gl-align-items-center gl-flex-direction-row"
     >
       <signature-badge v-if="commit.signature" :signature="commit.signature" />
-      <div v-if="commit.pipeline" class="ci-status-link">
+      <div v-if="commit.pipeline" class="gl-ml-5">
         <ci-badge-link
           :status="commit.pipeline.detailedStatus"
           :details-path="commit.pipeline.detailedStatus.detailsPath"

@@ -1161,6 +1161,10 @@ Example response:
 ]
 ```
 
+NOTE:
+This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
+Merge requests that exceed the diff limits return limited results.
+
 ## List merge request pipelines
 
 Get a list of merge request pipelines. The pagination parameters `page` and

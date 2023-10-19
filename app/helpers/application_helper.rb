@@ -371,6 +371,14 @@ module ApplicationHelper
     "https://discord.com/users/#{user.discord}"
   end
 
+  def mastodon_url(user)
+    return '' if user.mastodon.blank?
+
+    url = user.mastodon.match UserDetail::MASTODON_VALIDATION_REGEX
+
+    "https://#{url[2]}/@#{url[1]}"
+  end
+
   def collapsed_sidebar?
     cookies["sidebar_collapsed"] == "true"
   end

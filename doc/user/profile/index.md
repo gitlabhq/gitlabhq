@@ -128,6 +128,8 @@ to match your username.
 
 ## Add external accounts to your user profile page
 
+> Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) as a beta feature in 16.5 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default.
+
 You can add links to certain other external accounts you might have, like Skype and Twitter.
 They can help other users connect with you on other platforms.
 
@@ -138,6 +140,7 @@ To add links to other accounts:
 1. In the **Main settings** section, add your:
    - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
    - LinkedIn profile name.
+   - Mastodon username.
    - Skype username.
    - Twitter @username.
 

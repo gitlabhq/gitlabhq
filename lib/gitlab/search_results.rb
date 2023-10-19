@@ -216,9 +216,7 @@ module Gitlab
       unless default_project_filter
         project_ids = project_ids_relation
 
-        if Feature.enabled?(:search_merge_requests_hide_archived_projects, current_user) && !filters[:include_archived]
-          project_ids = project_ids.non_archived
-        end
+        project_ids = project_ids.non_archived unless filters[:include_archived]
 
         merge_requests = merge_requests.of_projects(project_ids)
       end

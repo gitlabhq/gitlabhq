@@ -30,6 +30,10 @@ your own external PostgreSQL server.
 
 Read how to [set up an external PostgreSQL instance](external.md).
 
+When setting up an external database there are some metrics that are useful for monitoring and troubleshooting.
+When setting up an external database there are monitoring and logging settings required for troubleshooting various database related issues.
+Read more about [monitoring and logging setup for external Databases](external_metrics.md).
+
 ### PostgreSQL replication and failover for Linux package installations **(PREMIUM SELF)**
 
 This setup is for when you have installed GitLab using the

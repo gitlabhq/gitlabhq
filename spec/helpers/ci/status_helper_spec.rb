@@ -37,7 +37,7 @@ RSpec.describe Ci::StatusHelper do
     subject { helper.render_status_with_link("success") }
 
     it "renders a passed status icon" do
-      is_expected.to include("<span class=\"ci-status-link ci-status-icon-success d-inline-flex")
+      is_expected.to include("<span class=\"js-ci-status-badge-legacy ci-status-icon-success d-inline-flex")
     end
 
     it "has 'Pipeline' as the status type in the title" do
@@ -84,7 +84,7 @@ RSpec.describe Ci::StatusHelper do
       subject { helper.render_status_with_link("success", cssclass: "extra-class") }
 
       it "has appended extra class to icon classes" do
-        is_expected.to include('class="ci-status-link ci-status-icon-success d-inline-flex ' \
+        is_expected.to include('class="js-ci-status-badge-legacy ci-status-icon-success d-inline-flex ' \
                                'gl-line-height-1 extra-class"')
       end
     end

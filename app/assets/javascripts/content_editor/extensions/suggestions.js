@@ -20,6 +20,7 @@ function createSuggestionPlugin({
   limit = 15,
   nodeType,
   nodeProps = {},
+  insertionMap = {},
 }) {
   const fetchData = memoize(
     isFunction(dataSource) ? dataSource : async () => (await axios.get(dataSource)).data,
@@ -36,7 +37,7 @@ function createSuggestionPlugin({
         .focus()
         .insertContentAt(range, [
           { type: nodeType, attrs: props },
-          { type: 'text', text: ' ' },
+          { type: 'text', text: ` ${insertionMap[props.text] || ''}` },
         ])
         .run();
     },
@@ -217,6 +218,19 @@ export default Node.create({
           referenceType: 'command',
         },
         search: (query) => ({ name }) => find(name, query),
+        insertionMap: {
+          '/label': '~',
+          '/unlabel': '~',
+          '/relabel': '~',
+          '/assign': '@',
+          '/unassign': '@',
+          '/reassign': '@',
+          '/cc': '@',
+          '/assign_reviewer': '@',
+          '/unassign_reviewer': '@',
+          '/reassign_reviewer': '@',
+          '/milestone': '%',
+        },
       }),
       createSuggestionPlugin({
         editor: this.editor,

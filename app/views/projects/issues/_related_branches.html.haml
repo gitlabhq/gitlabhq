@@ -16,10 +16,10 @@
               %li.list-item{ class: "gl-py-0! gl-border-0!" }
                 .item-body.gl-display-flex.align-items-center.gl-px-3.gl-pr-2.gl-mx-n2
                   .item-contents.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-flex-grow-1.gl-min-h-7
-                    .item-title.gl-display-flex.mb-xl-0.gl-min-w-0
+                    .item-title.gl-display-flex.mb-xl-0.gl-min-w-0.gl-align-items-center
                       - if branch[:pipeline_status].present?
                         %span.related-branch-ci-status
-                          = render 'ci/status/icon', status: branch[:pipeline_status]
+                          = render 'ci/status/icon', status: branch[:pipeline_status], option_css_classes: 'gl-display-block gl-mr-3'
                       %span.related-branch-info
                         %strong
                           = link_to branch[:name], branch[:link], class: "ref-name"

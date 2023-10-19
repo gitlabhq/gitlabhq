@@ -33,7 +33,7 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
     end
 
     it 'fetches the models using the finder' do
-      expect(::Projects::Ml::ModelFinder).to receive(:new).with(project).and_call_original
+      expect(::Projects::Ml::ModelFinder).to receive(:new).with(project, {}).and_call_original
 
       index_request
     end
@@ -58,6 +58,22 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
 
       it 'renders 404' do
         is_expected.to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with search params' do
+      let(:params) { { name: 'some_name', order_by: 'name', sort: 'asc' } }
+
+      it 'passes down params to the finder' do
+        expect(Projects::Ml::ModelFinder).to receive(:new).and_call_original do |_exp, params|
+          expect(params.to_h).to include({
+            name: 'some_name',
+            order_by: 'name',
+            sort: 'asc'
+          })
+        end
+
+        index_request
       end
     end
 

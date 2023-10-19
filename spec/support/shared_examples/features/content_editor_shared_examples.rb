@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'edits content using the content editor' do |params = { with_expanded_references: true }|
+RSpec.shared_examples 'edits content using the content editor' do |params = {
+  with_expanded_references: true,
+  with_quick_actions: true
+}|
   include ContentEditorHelpers
 
   let(:content_editor_testid) { '[data-testid="content-editor"] [contenteditable].ProseMirror' }
@@ -543,6 +546,39 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
 
           expect(page).to have_text('Brand New')
         end
+      end
+    end
+
+    if params[:with_quick_actions]
+      it 'shows suggestions for quick actions' do
+        type_in_content_editor '/a'
+
+        expect(find(suggestions_dropdown)).to have_text('/assign')
+        expect(find(suggestions_dropdown)).to have_text('/label')
+      end
+
+      it 'adds the correct prefix for /assign' do
+        type_in_content_editor '/assign'
+
+        send_keys [:arrow_down, :enter]
+
+        expect(page).to have_text('/assign @')
+      end
+
+      it 'adds the correct prefix for /label' do
+        type_in_content_editor '/label'
+
+        send_keys [:arrow_down, :enter]
+
+        expect(page).to have_text('/label ~')
+      end
+
+      it 'adds the correct prefix for /milestone' do
+        type_in_content_editor '/milestone'
+
+        send_keys [:arrow_down, :enter]
+
+        expect(page).to have_text('/milestone %')
       end
     end
 

@@ -637,6 +637,21 @@ RSpec.describe ApplicationHelper do
         expect(discord).to eq('https://discord.com/users/1234567890123456789')
       end
     end
+
+    context 'when mastodon is set' do
+      let_it_be(:user) { build(:user) }
+      let(:mastodon) { mastodon_url(user) }
+
+      it 'returns an empty string if mastodon username is not set' do
+        expect(mastodon).to eq('')
+      end
+
+      it 'returns mastodon url when mastodon username is set' do
+        user.mastodon = '@robin@example.com'
+
+        expect(mastodon).to eq('https://example.com/@robin')
+      end
+    end
   end
 
   describe '#gitlab_ui_form_for' do

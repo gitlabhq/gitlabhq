@@ -3,6 +3,7 @@
 module Ml
   class Model < ApplicationRecord
     include Presentable
+    include Sortable
 
     validates :project, :default_experiment, presence: true
     validates :name,
@@ -24,6 +25,7 @@ module Ml
         .select("ml_models.*, count(ml_model_versions.id) as version_count")
         .group(:id)
     }
+    scope :by_name, ->(name) { where("ml_models.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
     scope :by_project, ->(project) { where(project_id: project.id) }
 
     def valid_default_experiment?

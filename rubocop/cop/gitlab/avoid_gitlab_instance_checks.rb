@@ -17,7 +17,7 @@ module RuboCop
       #   end
       #
       #   # good
-      #   if Gitlab::Saas.feature_available?('purchases/additional_minutes')
+      #   if Gitlab::Saas.feature_available?(:purchases_additional_minutes)
       #     Ci::Runner::FORM_EDITABLE + Ci::Runner::MINUTES_COST_FACTOR_FIELDS
       #   else
       #     Ci::Runner::FORM_EDITABLE

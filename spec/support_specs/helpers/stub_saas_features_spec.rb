@@ -6,7 +6,7 @@ RSpec.describe StubSaasFeatures, feature_category: :shared do
   describe '#stub_saas_features' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:feature_name) { '_some_saas_feature_' }
+    let(:feature_name) { :some_saas_feature }
 
     context 'when checking global state' do
       where(:feature_value) do
@@ -41,10 +41,10 @@ RSpec.describe StubSaasFeatures, feature_category: :shared do
     end
 
     it 'handles multiple features' do
-      stub_saas_features(feature_name => false, '_some_new_feature_' => true)
+      stub_saas_features(feature_name => false, some_new_feature: true)
 
       expect(::Gitlab::Saas.feature_available?(feature_name)).to eq(false)
-      expect(::Gitlab::Saas.feature_available?('_some_new_feature_')).to eq(true)
+      expect(::Gitlab::Saas.feature_available?(:some_new_feature)).to eq(true)
     end
   end
 end

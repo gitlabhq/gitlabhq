@@ -8,7 +8,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
     class="commit-actions gl-align-items-center gl-display-flex gl-flex-align gl-flex-direction-row"
   >
     <div
-      class="ci-status-link"
+      class="gl-ml-5"
     >
       <ci-badge-link-stub
         aria-label="Pipeline: failed"

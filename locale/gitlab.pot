@@ -21159,9 +21159,6 @@ msgstr ""
 msgid "Geo|Filter by name"
 msgstr ""
 
-msgid "Geo|Filter by status"
-msgstr ""
-
 msgid "Geo|Geo Settings"
 msgstr ""
 
@@ -57155,6 +57152,9 @@ msgid "must belong to same project of the work item."
 msgstr ""
 
 msgid "must contain only a discord user ID."
+msgstr ""
+
+msgid "must contain only a mastodon username."
 msgstr ""
 
 msgid "must have a repository"

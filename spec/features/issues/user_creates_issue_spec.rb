@@ -139,8 +139,6 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
     end
 
-    it_behaves_like 'edits content using the content editor'
-
     context 'dropzone upload file', :js do
       before do
         visit new_project_issue_path(project)
@@ -306,6 +304,21 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         expect(page).to have_text('A modified issue to guide the resolution of incidents.')
       end
     end
+  end
+
+  context 'when signed in as a maintainer', :js do
+    let_it_be(:project) { create(:project) }
+
+    before_all do
+      project.add_maintainer(user)
+    end
+
+    before do
+      sign_in(user)
+      visit(new_project_issue_path(project))
+    end
+
+    it_behaves_like 'edits content using the content editor'
   end
 
   context "when signed in as user with special characters in their name" do

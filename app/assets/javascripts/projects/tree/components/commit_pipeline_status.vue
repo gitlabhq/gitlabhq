@@ -91,7 +91,7 @@ export default {
 };
 </script>
 <template>
-  <div class="ci-status-link">
+  <div class="gl-ml-5">
     <gl-loading-icon v-if="isLoading" size="lg" label="Loading pipeline status" />
     <a v-else :href="ciStatus.details_path">
       <ci-icon

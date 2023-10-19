@@ -59,6 +59,27 @@ RSpec.describe UserDetail do
       end
     end
 
+    describe '#mastodon' do
+      it { is_expected.to validate_length_of(:mastodon).is_at_most(500) }
+
+      context 'when mastodon is set' do
+        let_it_be(:user_detail) { create(:user_detail) }
+
+        it 'accepts a valid mastodon username' do
+          user_detail.mastodon = '@robin@example.com'
+
+          expect(user_detail).to be_valid
+        end
+
+        it 'throws an error when mastodon username format is wrong' do
+          user_detail.mastodon = '@robin'
+
+          expect(user_detail).not_to be_valid
+          expect(user_detail.errors.full_messages).to match_array([_('Mastodon must contain only a mastodon username.')])
+        end
+      end
+    end
+
     describe '#location' do
       it { is_expected.to validate_length_of(:location).is_at_most(500) }
     end
@@ -97,6 +118,7 @@ RSpec.describe UserDetail do
         discord: '1234567890123456789',
         linkedin: 'linkedin',
         location: 'location',
+        mastodon: '@robin@example.com',
         organization: 'organization',
         skype: 'skype',
         twitter: 'twitter',
@@ -117,6 +139,7 @@ RSpec.describe UserDetail do
     it_behaves_like 'prevents `nil` value', :discord
     it_behaves_like 'prevents `nil` value', :linkedin
     it_behaves_like 'prevents `nil` value', :location
+    it_behaves_like 'prevents `nil` value', :mastodon
     it_behaves_like 'prevents `nil` value', :organization
     it_behaves_like 'prevents `nil` value', :skype
     it_behaves_like 'prevents `nil` value', :twitter
