@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
         expect(instance.valid?).to be(valid_result)
 
         unless valid_result
-          expect(instance.errors.messages_for(:config)).to include /please use only one of the following keys: foo, bar/
+          expect(instance.errors.messages_for(:config)).to include(/these keys cannot be used together: foo, bar/)
         end
       end
     end

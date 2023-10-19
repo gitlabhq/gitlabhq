@@ -32,7 +32,7 @@ Product analytics uses several tools:
 
 - [**Snowplow**](https://docs.snowplow.io/docs) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
 - [**ClickHouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
-- [**Cube**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
+- [**Cube**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in ClickHouse.
 
 The following diagram illustrates the product analytics flow:
 
@@ -46,7 +46,7 @@ flowchart TB
         B --Pass data through--> C[Snowplow Enricher]
     end
     subgraph Data warehouse
-        C --Transform and enrich data--> D([Clickhouse])
+        C --Transform and enrich data--> D([ClickHouse])
     end
     subgraph Data visualization with dashboards
         E([Dashboards]) --Generated from the YAML definition--> F[Panels/Visualizations]

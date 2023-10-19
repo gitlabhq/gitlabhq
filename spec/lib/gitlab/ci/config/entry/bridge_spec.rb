@@ -283,8 +283,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
               ignore: false,
               stage: 'test',
               only: { refs: %w[branches tags] },
-              parallel: { matrix: [{ 'PROVIDER' => ['aws'], 'STACK' => %w(monitoring app1) },
-                                   { 'PROVIDER' => ['gcp'], 'STACK' => %w(data) }] },
+              parallel: { matrix: [{ 'PROVIDER' => ['aws'], 'STACK' => %w[monitoring app1] },
+                                   { 'PROVIDER' => ['gcp'], 'STACK' => %w[data] }] },
               job_variables: {},
               root_variables_inheritance: true,
               scheduling_type: :stage

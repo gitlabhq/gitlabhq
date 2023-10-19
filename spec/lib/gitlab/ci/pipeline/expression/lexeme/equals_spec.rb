@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Equals do
 
     context 'when left and right are equal' do
       where(:left_value, :right_value) do
-        [%w(string string)]
+        [%w[string string]]
       end
 
       with_them do

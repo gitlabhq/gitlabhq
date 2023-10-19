@@ -9,7 +9,9 @@ class IndexProjectsOnNamespaceIdAndRepositorySizeLimit < Gitlab::Database::Migra
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index :projects, [:namespace_id, :repository_size_limit], name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

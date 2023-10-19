@@ -6,10 +6,12 @@ class AddUniqueIndexOnProjectsOnRunnersTokenEncrypted < Gitlab::Database::Migrat
   INDEX_NAME = 'index_uniq_projects_on_runners_token_encrypted'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index :projects,
                          :runners_token_encrypted,
                          name: INDEX_NAME,
                          unique: true
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

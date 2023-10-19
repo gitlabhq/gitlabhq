@@ -70,7 +70,7 @@ RSpec.shared_examples 'work item supports labels widget updates via quick action
   let(:add_label_ids) { [] }
   let(:remove_label_ids) { [] }
 
-  before_all do
+  before do
     noteable.update!(labels: [existing_label])
   end
 

@@ -21,16 +21,16 @@ RSpec.describe Gitlab::Config::Entry::Factory do
     context 'when setting a concrete value' do
       it 'creates entry with valid value' do
         entry = factory
-          .value(%w(ls pwd))
+          .value(%w[ls pwd])
           .create!
 
-        expect(entry.value).to eq %w(ls pwd)
+        expect(entry.value).to eq %w[ls pwd]
       end
 
       context 'when setting description' do
         before do
           factory
-            .value(%w(ls pwd))
+            .value(%w[ls pwd])
             .with(description: 'test description')
         end
 
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Config::Entry::Factory do
         it 'creates entry with description' do
           entry = factory.create!
 
-          expect(entry.value).to eq %w(ls pwd)
+          expect(entry.value).to eq %w[ls pwd]
           expect(entry.description).to eq 'test description'
         end
       end
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Config::Entry::Factory do
       context 'when setting inherit' do
         before do
           factory
-            .value(%w(ls pwd))
+            .value(%w[ls pwd])
             .with(inherit: true)
         end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Config::Entry::Factory do
       context 'when setting key' do
         it 'creates entry with custom key' do
           entry = factory
-            .value(%w(ls pwd))
+            .value(%w[ls pwd])
             .with(key: 'test key')
             .create!
 

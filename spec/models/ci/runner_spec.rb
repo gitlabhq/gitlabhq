@@ -524,6 +524,19 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
+  describe '.with_creator_id' do
+    subject { described_class.with_creator_id('1') }
+
+    let_it_be(:runner1) { create(:ci_runner, creator_id: 2) }
+    let_it_be(:runner2) { create(:ci_runner, creator_id: 1) }
+    let_it_be(:runner3) { create(:ci_runner, creator_id: 1) }
+    let_it_be(:runner4) { create(:ci_runner, creator_id: nil) }
+
+    it 'returns runners with creator_id \'1\'' do
+      is_expected.to contain_exactly(runner2, runner3)
+    end
+  end
+
   describe '.stale', :freeze_time do
     subject { described_class.stale }
 

@@ -46,8 +46,8 @@ RSpec.describe Gitlab::DependencyLinker::BaseLinker do
       'target="_blank"'
     ]
 
-    attrs.unshift(%{href="#{url}"}) if url
+    attrs.unshift(%(href="#{url}")) if url
 
-    %{<a #{attrs.join(' ')}>#{text}</a>}
+    %(<a #{attrs.join(' ')}>#{text}</a>)
   end
 end

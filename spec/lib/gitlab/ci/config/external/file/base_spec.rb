@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
     end
 
     context 'when location is not a string' do
-      let(:location) { %w(some/file.txt other/file.txt) }
+      let(:location) { %w[some/file.txt other/file.txt] }
 
       it { is_expected.to be_falsy }
     end

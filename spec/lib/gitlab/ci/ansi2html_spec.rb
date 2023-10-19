@@ -227,7 +227,7 @@ RSpec.describe Gitlab::Ci::Ansi2html do
         text = "#{section_start}Some text#{section_end}"
         class_name_start = section_start.gsub("\033[0K", '').gsub('<', '&lt;')
         class_name_end = section_end.gsub("\033[0K", '').gsub('<', '&lt;')
-        html = %{<span>#{class_name_start}Some text#{class_name_end}</span>}
+        html = %(<span>#{class_name_start}Some text#{class_name_end}</span>)
 
         expect(convert_html(text)).to eq(html)
       end
@@ -238,9 +238,9 @@ RSpec.describe Gitlab::Ci::Ansi2html do
 
       it 'prints light red' do
         text = "#{section_start}\e[91mHello\e[0m\nLine 1\nLine 2\nLine 3\n#{section_end}"
-        header = %{<span class="term-fg-l-red section section-header js-s-#{class_name(section_name)}">Hello</span>}
-        line_break = %{<span class="section section-header js-s-#{class_name(section_name)}"><br/></span>}
-        output_line = %{<span class="section line js-s-#{class_name(section_name)}">Line 1<br/>Line 2<br/>Line 3<br/></span>}
+        header = %(<span class="term-fg-l-red section section-header js-s-#{class_name(section_name)}">Hello</span>)
+        line_break = %(<span class="section section-header js-s-#{class_name(section_name)}"><br/></span>)
+        output_line = %(<span class="section line js-s-#{class_name(section_name)}">Line 1<br/>Line 2<br/>Line 3<br/></span>)
         html = "#{section_start_html}#{header}#{line_break}#{output_line}#{section_end_html}"
 
         expect(convert_html(text)).to eq(html)

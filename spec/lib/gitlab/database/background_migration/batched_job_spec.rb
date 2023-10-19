@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
   describe 'state machine' do
     let_it_be(:job) { create(:batched_background_migration_job, :failed) }
 
-    it { expect(described_class.state_machine.states.map(&:name)).to eql(%i(pending running failed succeeded)) }
+    it { expect(described_class.state_machine.states.map(&:name)).to eql(%i[pending running failed succeeded]) }
 
     context 'when a job is running' do
       it 'logs the transition' do

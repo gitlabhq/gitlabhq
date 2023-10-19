@@ -17,7 +17,7 @@ RSpec.describe Gitlab::AssetProxy do
 
   context 'when asset proxy is enabled' do
     before do
-      stub_asset_proxy_setting(allowlist: %w(gitlab.com *.mydomain.com))
+      stub_asset_proxy_setting(allowlist: %w[gitlab.com *.mydomain.com])
       stub_asset_proxy_setting(
         enabled: true,
         url: 'https://assets.example.com',

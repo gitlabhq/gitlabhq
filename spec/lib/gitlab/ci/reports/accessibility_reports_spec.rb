@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Ci::Reports::AccessibilityReports do
         "type": "error",
         "typeCode": 1,
         "message": "Anchor element found with a valid href attribute, but no link content has been supplied.",
-        "context": %{<a href="/customers/worldline"><svg viewBox="0 0 509 89" xmln...</a>},
+        "context": %(<a href="/customers/worldline"><svg viewBox="0 0 509 89" xmln...</a>),
         "selector": "html > body > div:nth-child(9) > div:nth-child(2) > a:nth-child(17)",
         "runner": "htmlcs",
         "runnerExtras": {}
@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Ci::Reports::AccessibilityReports do
         "type": "error",
         "typeCode": 1,
         "message": "Anchor element found with a valid href attribute, but no link content has been supplied.",
-        "context": %{<a href="/customers/equinix"><svg xmlns="http://www.w3.org/...</a>},
+        "context": %(<a href="/customers/equinix"><svg xmlns="http://www.w3.org/...</a>),
         "selector": "html > body > div:nth-child(9) > div:nth-child(2) > a:nth-child(18)",
         "runner": "htmlcs",
         "runnerExtras": {}

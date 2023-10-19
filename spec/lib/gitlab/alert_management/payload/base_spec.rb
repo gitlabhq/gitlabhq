@@ -32,7 +32,7 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
     context 'with multiple paths provided' do
       let(:payload_class) do
         Class.new(described_class) do
-          attribute :test, paths: [['test'], %w(alt test)]
+          attribute :test, paths: [['test'], %w[alt test]]
         end
       end
 
@@ -204,8 +204,8 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
     end
 
     context 'with too-long hosts array' do
-      let(:hosts) { %w(abc def ghij) }
-      let(:shortened_hosts) { %w(abc def ghi) }
+      let(:hosts) { %w[abc def ghij] }
+      let(:shortened_hosts) { %w[abc def ghi] }
 
       before do
         stub_const('::AlertManagement::Alert::HOSTS_MAX_LENGTH', 9)
@@ -215,15 +215,15 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
       it { is_expected.to eq(hosts: shortened_hosts, project_id: project.id) }
 
       context 'with host cut off between elements' do
-        let(:hosts) { %w(abcde fghij) }
-        let(:shortened_hosts) { %w(abcde fghi) }
+        let(:hosts) { %w[abcde fghij] }
+        let(:shortened_hosts) { %w[abcde fghi] }
 
         it { is_expected.to eq({ hosts: shortened_hosts, project_id: project.id }) }
       end
 
       context 'with nested hosts' do
         let(:hosts) { ['abc', ['de', 'f'], 'g', 'hij'] } # rubocop:disable Style/WordArray
-        let(:shortened_hosts) { %w(abc de f g hi) }
+        let(:shortened_hosts) { %w[abc de f g hi] }
 
         it { is_expected.to eq({ hosts: shortened_hosts, project_id: project.id }) }
       end

@@ -810,8 +810,8 @@ GraphQL queries are recorded in the file. For example:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
 
-The `clickhouse.log` file logs information related to
-Clickhouse database client within GitLab.
+The `clickhouse.log` file logs information related to the
+ClickHouse database client in GitLab.
 
 ## `migrations.log`
 

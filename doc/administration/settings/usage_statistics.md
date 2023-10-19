@@ -63,6 +63,7 @@ In the following table, you can see:
 | [Issue analytics](../../user/group/issues_analytics/index.md) | GitLab 16.5 and later |
 | [Custom Text in Emails](../../administration/settings/email.md#custom-additional-text) | GitLab 16.5 and later |
 | [Contribution analytics](../../user/group/contribution_analytics/index.md) | GitLab 16.5 and later |
+| [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
 
 ### Enable registration features
 

@@ -1,0 +1,10 @@
+---
+table_name: activity_pub_releases_subscriptions
+classes:
+- ActivityPub::ReleasesSubscription
+feature_categories:
+- release_orchestration
+description: Stores subscriptions from external users through ActivityPub for project
+  releases
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132889
+gitlab_schema: gitlab_main

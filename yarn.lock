@@ -1274,10 +1274,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.66.0.tgz#5dbe98f9811001942d78395756b9d7c588300c01"
   integrity sha512-FdkoMAprxjJJnl90GJYoCMeIpvCaYPNAnRkrlsmo7NY3Ce8fpRb/XE/ZakqULeadj82S7R1IRuTHYfWB06vVtA==
 
-"@gitlab/ui@66.33.0":
-  version "66.33.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-66.33.0.tgz#d704a0c919a857f447788b12fede268b605db88d"
-  integrity sha512-beKlOILzrokwnFom7c15VMcmndlrmUuEyxywv7E0tgGzDSDy7VwCdbfNbS56CT+VRTxlwQtrvv94jNDivt4NFg==
+"@gitlab/ui@66.34.0":
+  version "66.34.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-66.34.0.tgz#5869589cd067f2b359ef369a6db963820bb9f128"
+  integrity sha512-zoEtq7guKo1OlJlGDJI5K8o3UIpsz8vvghNhX6w1OsVEQ7K2chn+Wgb9zPVGwyAoU48QZAtK8EGgm/FnbPkTlA==
   dependencies:
     "@floating-ui/dom" "1.2.9"
     bootstrap-vue "2.23.1"
@@ -4076,9 +4076,9 @@ camelcase@^6.2.0, camelcase@^6.3.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001449, caniuse-lite@^1.0.30001464:
-  version "1.0.30001478"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001478.tgz#0ef8a1cf8b16be47a0f9fc4ecfc952232724b32a"
-  integrity sha512-gMhDyXGItTHipJj2ApIvR+iVB5hd0KP3svMWWXDvZOmjzJJassGLMfxRkQCSYgGd2gtdL/ReeiyvMSFD1Ss6Mw==
+  version "1.0.30001549"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001549.tgz#7d1a3dce7ea78c06ed72c32c2743ea364b3615aa"
+  integrity sha512-qRp48dPYSCYaP+KurZLhDYdVE+yEyht/3NlmcJgVQ2VMGt6JL36ndQ/7rgspdZsJuxDPFIo/OzBT2+GmIJ53BA==
 
 canvas-confetti@^1.4.0:
   version "1.4.0"

@@ -148,6 +148,14 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
               described_class.new(current_user: admin, params: { tag_name: %w[tag1 tag2] }).execute
             end
           end
+
+          context 'by creator' do
+            it 'calls the corresponding scope on Ci::Runner' do
+              expect(Ci::Runner).to receive(:with_creator_id).with('1').and_call_original
+
+              described_class.new(current_user: admin, params: { creator_id: '1' }).execute
+            end
+          end
         end
 
         context 'sorting' do
@@ -606,6 +614,16 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
 
             it 'returns correct runners' do
               expect(subject).to match_array([runner_project_active, runner_project_inactive])
+            end
+          end
+
+          context 'by creator' do
+            let_it_be(:runner_creator_1) { create(:ci_runner, creator_id: '1') }
+
+            let(:extra_params) { { creator_id: '1' } }
+
+            it 'returns correct runners' do
+              is_expected.to contain_exactly(runner_creator_1)
             end
           end
         end

@@ -244,7 +244,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
         include_examples 'search results filtered by state'
         include_examples 'search results filtered by confidential'
-        include_examples 'search results filtered by archived', 'search_issues_hide_archived_projects'
+        include_examples 'search results filtered by archived'
       end
 
       context 'ordering' do

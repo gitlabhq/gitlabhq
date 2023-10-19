@@ -220,7 +220,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
         subject.execute
 
         expect(subject.errors.count).to eq(1)
-        expect(subject.errors.first.keys).to match_array(%i(type iid errors))
+        expect(subject.errors.first.keys).to match_array(%i[type iid errors])
       end
     end
 

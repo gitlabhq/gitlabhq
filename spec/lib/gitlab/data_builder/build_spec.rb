@@ -49,7 +49,7 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
 
     it { expect(data[:commit][:id]).to eq(ci_build.pipeline.id) }
     it { expect(data[:runner][:id]).to eq(ci_build.runner.id) }
-    it { expect(data[:runner][:tags]).to match_array(%w(tag1 tag2)) }
+    it { expect(data[:runner][:tags]).to match_array(%w[tag1 tag2]) }
     it { expect(data[:runner][:description]).to eq(ci_build.runner.description) }
     it { expect(data[:runner][:runner_type]).to eq(ci_build.runner.runner_type) }
     it { expect(data[:runner][:is_shared]).to eq(ci_build.runner.instance_type?) }

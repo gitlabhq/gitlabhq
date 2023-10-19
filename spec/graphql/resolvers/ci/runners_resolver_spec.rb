@@ -85,7 +85,8 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
             type: :instance_type,
             tag_list: ['active_runner'],
             search: 'abc',
-            sort: :contacted_asc
+            sort: :contacted_asc,
+            creator_id: 'gid://gitlab/User/1'
           }
         end
 
@@ -98,7 +99,8 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
             tag_name: ['active_runner'],
             preload: false,
             search: 'abc',
-            sort: 'contacted_asc'
+            sort: 'contacted_asc',
+            creator_id: '1'
           }
         end
 

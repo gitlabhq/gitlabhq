@@ -60,7 +60,7 @@ To create a project access token:
 1. Enter a name. The token name is visible to any user with permissions to view the project.
 1. Enter an expiry date for the token.
    - The token expires on that date at midnight UTC.
-   - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
+   - If you do not enter an expiry date, the expiry date is automatically set to 30 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date.
    - An instance-wide [maximum lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
 1. Select a role for the token.

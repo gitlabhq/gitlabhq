@@ -44,7 +44,7 @@ RSpec.describe 'Jobs/SAST-IaC.latest.gitlab-ci.yml', feature_category: :continuo
         it 'creates a pipeline with the expected jobs' do
           expect(pipeline).to be_merge_request_event
           expect(pipeline.errors.full_messages).to be_empty
-          expect(build_names).to match_array(%w(kics-iac-sast))
+          expect(build_names).to match_array(%w[kics-iac-sast])
         end
       end
     end

@@ -55,103 +55,53 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       it_behaves_like 'reports the user with an abuse category'
     end
 
-    describe 'when user_profile_overflow_menu FF turned on' do
-      context 'when reporting a user profile for abuse' do
-        let_it_be(:reporter2) { create(:user, :no_super_sidebar) }
+    context 'when reporting a user profile for abuse' do
+      let_it_be(:reporter2) { create(:user, :no_super_sidebar) }
 
-        before do
-          visit user_path(abusive_user)
-          find_by_testid('base-dropdown-toggle').click
-        end
-
-        it_behaves_like 'reports the user with an abuse category'
-
-        it 'allows the reporter to report the same user for different abuse categories' do
-          visit user_path(abusive_user)
-
-          find_by_testid('base-dropdown-toggle').click
-          fill_and_submit_abuse_category_form
-          fill_and_submit_report_abuse_form
-
-          expect(page).to have_content 'Thank you for your report'
-
-          visit user_path(abusive_user)
-
-          find_by_testid('base-dropdown-toggle').click
-          fill_and_submit_abuse_category_form("They're being offensive or abusive.")
-          fill_and_submit_report_abuse_form
-
-          expect(page).to have_content 'Thank you for your report'
-        end
-
-        it 'allows multiple users to report the same user' do
-          fill_and_submit_abuse_category_form
-          fill_and_submit_report_abuse_form
-
-          expect(page).to have_content 'Thank you for your report'
-
-          gitlab_sign_out
-          gitlab_sign_in(reporter2)
-
-          visit user_path(abusive_user)
-
-          find_by_testid('base-dropdown-toggle').click
-          fill_and_submit_abuse_category_form
-          fill_and_submit_report_abuse_form
-
-          expect(page).to have_content 'Thank you for your report'
-        end
-
-        it_behaves_like 'cancel report'
+      before do
+        visit user_path(abusive_user)
+        find_by_testid('base-dropdown-toggle').click
       end
-    end
 
-    describe 'when user_profile_overflow_menu FF turned off' do
-      context 'when reporting a user profile for abuse' do
-        let_it_be(:reporter2) { create(:user, :no_super_sidebar) }
+      it_behaves_like 'reports the user with an abuse category'
 
-        before do
-          stub_feature_flags(user_profile_overflow_menu_vue: false)
-          visit user_path(abusive_user)
-        end
+      it 'allows the reporter to report the same user for different abuse categories' do
+        visit user_path(abusive_user)
 
-        it_behaves_like 'reports the user with an abuse category'
+        find_by_testid('base-dropdown-toggle').click
+        fill_and_submit_abuse_category_form
+        fill_and_submit_report_abuse_form
 
-        it 'allows the reporter to report the same user for different abuse categories' do
-          visit user_path(abusive_user)
+        expect(page).to have_content 'Thank you for your report'
 
-          fill_and_submit_abuse_category_form
-          fill_and_submit_report_abuse_form
+        visit user_path(abusive_user)
 
-          expect(page).to have_content 'Thank you for your report'
+        find_by_testid('base-dropdown-toggle').click
+        fill_and_submit_abuse_category_form("They're being offensive or abusive.")
+        fill_and_submit_report_abuse_form
 
-          visit user_path(abusive_user)
-
-          fill_and_submit_abuse_category_form("They're being offensive or abusive.")
-          fill_and_submit_report_abuse_form
-
-          expect(page).to have_content 'Thank you for your report'
-        end
-
-        it 'allows multiple users to report the same user' do
-          fill_and_submit_abuse_category_form
-          fill_and_submit_report_abuse_form
-
-          expect(page).to have_content 'Thank you for your report'
-
-          gitlab_sign_out
-          gitlab_sign_in(reporter2)
-
-          visit user_path(abusive_user)
-
-          fill_and_submit_abuse_category_form
-          fill_and_submit_report_abuse_form
-
-          expect(page).to have_content 'Thank you for your report'
-        end
-
-        it_behaves_like 'cancel report'
+        expect(page).to have_content 'Thank you for your report'
       end
+
+      it 'allows multiple users to report the same user' do
+        fill_and_submit_abuse_category_form
+        fill_and_submit_report_abuse_form
+
+        expect(page).to have_content 'Thank you for your report'
+
+        gitlab_sign_out
+        gitlab_sign_in(reporter2)
+
+        visit user_path(abusive_user)
+
+        find_by_testid('base-dropdown-toggle').click
+        fill_and_submit_abuse_category_form
+        fill_and_submit_report_abuse_form
+
+        expect(page).to have_content 'Thank you for your report'
+      end
+
+      it_behaves_like 'cancel report'
     end
 
     context 'when reporting an merge request for abuse' do
@@ -179,10 +129,6 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       it_behaves_like 'reports the user with an abuse category'
     end
   end
-
-  # TODO: implement tests before the FF "user_profile_overflow_menu_vue" is turned on
-  # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122971
-  # Related Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/416983
 
   private
 

@@ -8,9 +8,11 @@ class RecreateUserTypeMigrationIndexes < Gitlab::Database::Migration[2.1]
 
   def up
     # Temporary index to migrate human user_type. See https://gitlab.com/gitlab-org/gitlab/-/issues/386474
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index :users, :id, name: BILLABLE_INDEX,
       where: "state = 'active' AND ((user_type IS NULL OR user_type = 0) OR (user_type = ANY (ARRAY[0, 6, 4, 13]))) " \
              "AND ((user_type IS NULL OR user_type = 0) OR (user_type = ANY (ARRAY[0, 4, 5])))"
+    # rubocop:enable Migration/PreventIndexCreation
 
     remove_concurrent_index_by_name :users, INCORRECT_BILLABLE_INDEX
   end

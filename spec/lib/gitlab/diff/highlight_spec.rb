@@ -44,13 +44,13 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
       end
 
       it 'highlights and marks removed lines' do
-        code = %{-<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="s2">"System commands must be given as an array of strings"</span></span>\n}
+        code = %(-<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="s2">"System commands must be given as an array of strings"</span></span>\n)
 
         expect(subject[4].rich_text).to eq(code)
       end
 
       it 'highlights and marks added lines' do
-        code = %{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left addition">RuntimeError</span></span><span class="p"><span class="idiff addition">,</span></span><span class="idiff right addition"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
+        code = %(+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left addition">RuntimeError</span></span><span class="p"><span class="idiff addition">,</span></span><span class="idiff right addition"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n)
 
         expect(subject[5].rich_text).to eq(code)
       end
@@ -86,14 +86,14 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
       end
 
       it 'marks removed lines' do
-        code = %q{-      raise "System commands must be given as an array of strings"}
+        code = %q(-      raise "System commands must be given as an array of strings")
 
         expect(subject[4].text).to eq(code)
         expect(subject[4].text).not_to be_html_safe
       end
 
       it 'marks added lines' do
-        code = %q{+      raise <span class="idiff left right addition">RuntimeError, </span>&quot;System commands must be given as an array of strings&quot;}
+        code = %q(+      raise <span class="idiff left right addition">RuntimeError, </span>&quot;System commands must be given as an array of strings&quot;)
 
         expect(subject[5].rich_text).to eq(code)
         expect(subject[5].rich_text).to be_html_safe
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
         it 'keeps the original rich line' do
           allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
-          code = %q{+      raise RuntimeError, "System commands must be given as an array of strings"}
+          code = %q(+      raise RuntimeError, "System commands must be given as an array of strings")
 
           expect(subject[5].text).to eq(code)
           expect(subject[5].text).not_to be_html_safe

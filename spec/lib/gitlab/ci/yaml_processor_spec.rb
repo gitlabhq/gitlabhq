@@ -1510,7 +1510,7 @@ module Gitlab
 
           it 'correctly extends rspec job' do
             expect(config_processor.builds).to be_one
-            expect(subject.dig(:options, :script)).to eq %w(test)
+            expect(subject.dig(:options, :script)).to eq %w[test]
             expect(subject.dig(:options, :image, :name)).to eq 'ruby:alpine'
           end
         end
@@ -1595,7 +1595,7 @@ module Gitlab
           it 'correctly extends rspec job' do
             expect(config_processor.builds).to be_one
             expect(subject.dig(:options, :before_script)).to eq ["bundle install"]
-            expect(subject.dig(:options, :script)).to eq %w(rspec)
+            expect(subject.dig(:options, :script)).to eq %w[rspec]
             expect(subject.dig(:options, :image, :name)).to eq 'image:test'
             expect(subject.dig(:when)).to eq 'always'
           end
@@ -2386,7 +2386,7 @@ module Gitlab
         end
 
         context 'dependencies to builds' do
-          let(:dependencies) { %w(build1 build2) }
+          let(:dependencies) { %w[build1 build2] }
 
           it { is_expected.to be_valid }
         end
@@ -2457,7 +2457,7 @@ module Gitlab
         end
 
         context 'needs a job from the same stage' do
-          let(:needs) { %w(test2) }
+          let(:needs) { %w[test2] }
 
           it 'creates jobs with valid specifications' do
             expect(subject.builds.size).to eq(7)
@@ -2494,7 +2494,7 @@ module Gitlab
         end
 
         context 'needs two builds' do
-          let(:needs) { %w(build1 build2) }
+          let(:needs) { %w[build1 build2] }
 
           it "does create jobs with valid specification" do
             expect(subject.builds.size).to eq(7)
@@ -2578,7 +2578,7 @@ module Gitlab
         end
 
         context 'needs parallel job' do
-          let(:needs) { %w(parallel) }
+          let(:needs) { %w[parallel] }
 
           it "does create jobs with valid specification" do
             expect(subject.builds.size).to eq(7)
@@ -2707,7 +2707,7 @@ module Gitlab
 
         context 'duplicate needs' do
           context 'when needs are specified in an array' do
-            let(:needs) { %w(build1 build1) }
+            let(:needs) { %w[build1 build1] }
 
             it_behaves_like 'returns errors', 'test1 has the following needs duplicated: build1.'
           end
@@ -2736,8 +2736,8 @@ module Gitlab
         end
 
         context 'needs and dependencies that are mismatching' do
-          let(:needs) { %w(build1) }
-          let(:dependencies) { %w(build2) }
+          let(:needs) { %w[build1] }
+          let(:dependencies) { %w[build2] }
 
           it_behaves_like 'returns errors', 'jobs:test1 dependencies the build2 should be part of needs'
         end
@@ -2750,13 +2750,13 @@ module Gitlab
             ]
           end
 
-          let(:dependencies) { %w(build3) }
+          let(:dependencies) { %w[build3] }
 
           it_behaves_like 'returns errors', 'jobs:test1 dependencies the build3 should be part of needs'
         end
 
         context 'needs with an array type and dependency with a string type' do
-          let(:needs) { %w(build1) }
+          let(:needs) { %w[build1] }
           let(:dependencies) { 'deploy' }
 
           it_behaves_like 'returns errors', 'jobs:test1 dependencies should be an array of strings'
@@ -2764,7 +2764,7 @@ module Gitlab
 
         context 'needs with a string type and dependency with an array type' do
           let(:needs) { 'build1' }
-          let(:dependencies) { %w(deploy) }
+          let(:dependencies) { %w[deploy] }
 
           it_behaves_like 'returns errors', 'jobs:test1:needs config can only be a hash or an array'
         end
@@ -3252,7 +3252,7 @@ module Gitlab
         end
 
         context 'returns errors if job stage is not a defined stage' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", stage: "acceptance" } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", stage: "acceptance" } }) }
 
           it_behaves_like 'returns errors', 'rspec job: chosen stage does not exist; available stages are .pre, build, test, .post'
         end
@@ -3288,37 +3288,37 @@ module Gitlab
         end
 
         context 'returns errors if job artifacts:name is not an a string' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", artifacts: { name: 1 } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", artifacts: { name: 1 } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:artifacts name should be a string'
         end
 
         context 'returns errors if job artifacts:when is not an a predefined value' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", artifacts: { when: 1 } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", artifacts: { when: 1 } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:artifacts when should be one of: on_success, on_failure, always'
         end
 
         context 'returns errors if job artifacts:expire_in is not an a string' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", artifacts: { expire_in: 1 } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", artifacts: { expire_in: 1 } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:artifacts expire in should be a duration'
         end
 
         context 'returns errors if job artifacts:expire_in is not an a valid duration' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", artifacts: { expire_in: "7 elephants" } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", artifacts: { expire_in: "7 elephants" } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:artifacts expire in should be a duration'
         end
 
         context 'returns errors if job artifacts:untracked is not an array of strings' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", artifacts: { untracked: "string" } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", artifacts: { untracked: "string" } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:artifacts untracked should be a boolean value'
         end
 
         context 'returns errors if job artifacts:paths is not an array of strings' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", artifacts: { paths: "string" } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", artifacts: { paths: "string" } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:artifacts paths should be an array of strings'
         end
@@ -3342,49 +3342,49 @@ module Gitlab
         end
 
         context 'returns errors if job cache:key is not an a string' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", cache: { key: 1 } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: 1 } } }) }
 
           it_behaves_like 'returns errors', "jobs:rspec:cache:key should be a hash, a string or a symbol"
         end
 
         context 'returns errors if job cache:key:files is not an array of strings' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", cache: { key: { files: [1] } } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: [1] } } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config should be an array of strings'
         end
 
         context 'returns errors if job cache:key:files is an empty array' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", cache: { key: { files: [] } } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: [] } } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config requires at least 1 item'
         end
 
         context 'returns errors if job defines only cache:key:prefix' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", cache: { key: { prefix: 'prefix-key' } } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { prefix: 'prefix-key' } } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:cache:key config missing required keys: files'
         end
 
         context 'returns errors if job cache:key:prefix is not an a string' do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", cache: { key: { prefix: 1, files: ['file'] } } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { prefix: 1, files: ['file'] } } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:cache:key:prefix config should be a string or symbol'
         end
 
         context "returns errors if job cache:untracked is not an array of strings" do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", cache: { untracked: "string" } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { untracked: "string" } } }) }
 
           it_behaves_like 'returns errors', "jobs:rspec:cache:untracked config should be a boolean value"
         end
 
         context "returns errors if job cache:paths is not an array of strings" do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", cache: { paths: "string" } } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { paths: "string" } } }) }
 
           it_behaves_like 'returns errors', "jobs:rspec:cache:paths config should be an array of strings"
         end
 
         context "returns errors if job dependencies is not an array of strings" do
-          let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", dependencies: "string" } }) }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", dependencies: "string" } }) }
 
           it_behaves_like 'returns errors', "jobs:rspec dependencies should be an array of strings"
         end

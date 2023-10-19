@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
 
   context 'when configuration is a hash' do
     let(:config) do
-      { name: 'postgresql:9.5', alias: 'db', command: %w(cmd run), entrypoint: %w(/bin/sh run) }
+      { name: 'postgresql:9.5', alias: 'db', command: %w[cmd run], entrypoint: %w[/bin/sh run] }
     end
 
     describe '#valid?' do
@@ -80,13 +80,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
 
     describe '#command' do
       it "returns service's command" do
-        expect(entry.command).to eq %w(cmd run)
+        expect(entry.command).to eq %w[cmd run]
       end
     end
 
     describe '#entrypoint' do
       it "returns service's entrypoint" do
-        expect(entry.entrypoint).to eq %w(/bin/sh run)
+        expect(entry.entrypoint).to eq %w[/bin/sh run]
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
     context 'when configuration has ports' do
       let(:ports) { [{ number: 80, protocol: 'http', name: 'foobar' }] }
       let(:config) do
-        { name: 'postgresql:9.5', alias: 'db', command: %w(cmd run), entrypoint: %w(/bin/sh run), ports: ports }
+        { name: 'postgresql:9.5', alias: 'db', command: %w[cmd run], entrypoint: %w[/bin/sh run], ports: ports }
       end
 
       let(:entry) { described_class.new(config, with_image_ports: image_ports) }
@@ -198,7 +198,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
   context 'when service has ports' do
     let(:ports) { [{ number: 80, protocol: 'http', name: 'foobar' }] }
     let(:config) do
-      { name: 'postgresql:9.5', command: %w(cmd run), entrypoint: %w(/bin/sh run), ports: ports }
+      { name: 'postgresql:9.5', command: %w[cmd run], entrypoint: %w[/bin/sh run], ports: ports }
     end
 
     it 'alias field is mandatory' do
@@ -209,7 +209,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
 
   context 'when service does not have ports' do
     let(:config) do
-      { name: 'postgresql:9.5', alias: 'db', command: %w(cmd run), entrypoint: %w(/bin/sh run) }
+      { name: 'postgresql:9.5', alias: 'db', command: %w[cmd run], entrypoint: %w[/bin/sh run] }
     end
 
     it 'alias field is optional' do

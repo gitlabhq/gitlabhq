@@ -1,5 +1,4 @@
 import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client/core';
-import { BatchHttpLink } from '@apollo/client/link/batch-http';
 import { createUploadLink } from 'apollo-upload-client';
 import { persistCache } from 'apollo3-cache-persist';
 import ActionCableLink from '~/actioncable_link';
@@ -116,17 +115,13 @@ Object.defineProperty(window, 'pendingApolloRequests', {
 function createApolloClient(resolvers = {}, config = {}) {
   const {
     baseUrl,
-    batchMax = 10,
     cacheConfig = { typePolicies: {}, possibleTypes: {} },
     fetchPolicy = fetchPolicies.CACHE_FIRST,
     typeDefs,
     httpHeaders = {},
     fetchCredentials = 'same-origin',
     path = '/api/graphql',
-    useGet = false,
   } = config;
-
-  const shouldUnbatch = gon.features?.unbatchGraphqlQueries;
 
   let ac = null;
   let uri = `${gon.relative_url_root || ''}${path}`;
@@ -146,7 +141,6 @@ function createApolloClient(resolvers = {}, config = {}) {
     // We set to `same-origin` which is default value in modern browsers.
     // See https://github.com/whatwg/fetch/pull/585 for more information.
     credentials: fetchCredentials,
-    batchMax,
   };
 
   /*
@@ -165,14 +159,10 @@ function createApolloClient(resolvers = {}, config = {}) {
     return fetch(stripWhitespaceFromQuery(url, uri), options);
   };
 
-  const requestLink = ApolloLink.split(
-    () => useGet || shouldUnbatch,
-    new HttpLink({ ...httpOptions, fetch: fetchIntervention }),
-    new BatchHttpLink(httpOptions),
-  );
+  const requestLink = new HttpLink({ ...httpOptions, fetch: fetchIntervention });
 
   const uploadsLink = ApolloLink.split(
-    (operation) => operation.getContext().hasUpload || operation.getContext().isSingleRequest,
+    (operation) => operation.getContext().hasUpload,
     createUploadLink(httpOptions),
   );
 

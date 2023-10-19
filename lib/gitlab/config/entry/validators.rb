@@ -56,8 +56,7 @@ module Gitlab
             mutually_exclusive_keys = value.try(:keys).to_a & options[:in]
 
             if mutually_exclusive_keys.length > 1
-              record.errors.add(attribute, "please use only one of the following keys: " +
-                mutually_exclusive_keys.join(', '))
+              record.errors.add(attribute, "these keys cannot be used together: #{mutually_exclusive_keys.join(', ')}")
             end
           end
         end

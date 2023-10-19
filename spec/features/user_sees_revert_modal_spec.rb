@@ -12,6 +12,8 @@ RSpec.describe 'Merge request > User sees revert modal', :js, :sidekiq_might_not
     it 'shows the revert modal' do
       click_button('Revert')
 
+      wait_for_requests
+
       page.within('[data-testid="modal-commit"]') do
         expect(page).to have_content 'Revert this merge request'
       end
@@ -19,13 +21,16 @@ RSpec.describe 'Merge request > User sees revert modal', :js, :sidekiq_might_not
   end
 
   before do
-    stub_feature_flags(unbatch_graphql_queries: false)
     sign_in(user)
     visit(project_merge_request_path(project, merge_request))
 
     page.within('.mr-state-widget') do
       click_button 'Merge'
     end
+
+    wait_for_all_requests
+
+    page.refresh
 
     wait_for_requests
   end

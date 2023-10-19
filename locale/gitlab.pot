@@ -51733,9 +51733,6 @@ msgstr ""
 msgid "UserProfile|Contributed projects"
 msgstr ""
 
-msgid "UserProfile|Copy user ID"
-msgstr ""
-
 msgid "UserProfile|Copy user ID: %{id}"
 msgstr ""
 
@@ -51836,9 +51833,6 @@ msgid "UserProfile|Unconfirmed user"
 msgstr ""
 
 msgid "UserProfile|User ID copied to clipboard"
-msgstr ""
-
-msgid "UserProfile|User ID: %{id}"
 msgstr ""
 
 msgid "UserProfile|User profile navigation"

@@ -10880,6 +10880,30 @@ CREATE SEQUENCE achievements_id_seq
 
 ALTER SEQUENCE achievements_id_seq OWNED BY achievements.id;
 
+CREATE TABLE activity_pub_releases_subscriptions (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 1 NOT NULL,
+    shared_inbox_url text,
+    subscriber_inbox_url text,
+    subscriber_url text NOT NULL,
+    payload jsonb,
+    CONSTRAINT check_0ebf38bcaa CHECK ((char_length(subscriber_inbox_url) <= 1024)),
+    CONSTRAINT check_2afd35ba17 CHECK ((char_length(subscriber_url) <= 1024)),
+    CONSTRAINT check_61b77ced49 CHECK ((char_length(shared_inbox_url) <= 1024))
+);
+
+CREATE SEQUENCE activity_pub_releases_subscriptions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE activity_pub_releases_subscriptions_id_seq OWNED BY activity_pub_releases_subscriptions.id;
+
 CREATE TABLE agent_activity_events (
     id bigint NOT NULL,
     agent_id bigint NOT NULL,
@@ -25864,6 +25888,8 @@ ALTER TABLE ONLY abuse_trust_scores ALTER COLUMN id SET DEFAULT nextval('abuse_t
 
 ALTER TABLE ONLY achievements ALTER COLUMN id SET DEFAULT nextval('achievements_id_seq'::regclass);
 
+ALTER TABLE ONLY activity_pub_releases_subscriptions ALTER COLUMN id SET DEFAULT nextval('activity_pub_releases_subscriptions_id_seq'::regclass);
+
 ALTER TABLE ONLY agent_activity_events ALTER COLUMN id SET DEFAULT nextval('agent_activity_events_id_seq'::regclass);
 
 ALTER TABLE ONLY agent_group_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_group_authorizations_id_seq'::regclass);
@@ -27631,6 +27657,9 @@ ALTER TABLE ONLY abuse_trust_scores
 
 ALTER TABLE ONLY achievements
     ADD CONSTRAINT achievements_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY activity_pub_releases_subscriptions
+    ADD CONSTRAINT activity_pub_releases_subscriptions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT agent_activity_events_pkey PRIMARY KEY (id);
@@ -31228,6 +31257,10 @@ CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_i
 CREATE INDEX index_abuse_trust_scores_on_user_id_and_source_and_created_at ON abuse_trust_scores USING btree (user_id, source, created_at);
 
 CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achievements USING btree (namespace_id, lower(name));
+
+CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_inbox_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_inbox_url));
+
+CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_sub_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_url));
 
 CREATE INDEX index_agent_activity_events_on_agent_id_and_recorded_at_and_id ON agent_activity_events USING btree (agent_id, recorded_at, id);
 
@@ -38268,6 +38301,9 @@ ALTER TABLE ONLY batched_background_migration_jobs
 
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_rails_43241e8d29 FOREIGN KEY (strategy_id) REFERENCES operations_strategies(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY activity_pub_releases_subscriptions
+    ADD CONSTRAINT fk_rails_4337598314 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_value_stream_settings
     ADD CONSTRAINT fk_rails_4360d37256 FOREIGN KEY (value_stream_id) REFERENCES analytics_cycle_analytics_group_value_streams(id) ON DELETE CASCADE;

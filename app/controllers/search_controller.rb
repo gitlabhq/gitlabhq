@@ -4,7 +4,6 @@ class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
   include ProductAnalyticsTracking
-  include ProductAnalyticsTracking
   include SearchRateLimitable
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
@@ -14,6 +13,12 @@ class SearchController < ApplicationController
     name: 'i_search_total',
     label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
     action: 'executed',
+    destinations: [:redis_hll, :snowplow]
+
+  track_event :autocomplete,
+    name: 'i_search_total',
+    label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
+    action: 'autocomplete',
     destinations: [:redis_hll, :snowplow]
 
   def self.search_rate_limited_endpoints
@@ -37,10 +42,6 @@ class SearchController < ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:search_notes_hide_archived_projects, current_user)
-  end
-
-  before_action only: :show do
-    push_frontend_feature_flag(:search_issues_hide_archived_projects, current_user)
   end
 
   before_action only: :show do

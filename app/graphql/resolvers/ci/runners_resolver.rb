@@ -41,6 +41,10 @@ module Resolvers
                required: false,
                description: 'Filter by upgrade status.'
 
+      argument :creator_id, ::Types::GlobalIDType[::User].as('UserID'),
+               required: false,
+               description: 'Filter runners by creator ID.'
+
       def resolve_with_lookahead(**args)
         apply_lookahead(
           ::Ci::RunnersFinder
@@ -68,6 +72,8 @@ module Resolvers
           upgrade_status: params[:upgrade_status],
           search: params[:search],
           sort: params[:sort]&.to_s,
+          creator_id:
+            params[:creator_id] ? ::GitlabSchema.parse_gid(params[:creator_id], expected_type: ::User).model_id : nil,
           preload: false # we'll handle preloading ourselves
         }.compact
          .merge(parent_param)

@@ -26,17 +26,12 @@ You can report a user through their:
 
 > - Report abuse from overflow menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `user_profile_overflow_menu_vue`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.4.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `user_profile_overflow_menu_vue`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.6. Feature flag `user_profile_overflow_menu_vue` removed.
 
 To report abuse from a user's profile page:
 
 1. Anywhere in GitLab, select the name of the user.
-1. In the upper-right corner of the user's profile, if the `user_profile_overflow_menu_vue` feature flag is:
-   - Enabled, select the vertical ellipsis (**{ellipsis_v}**), then **Report abuse to administrator**.
-   - Disabled, select **Report abuse to administrator** (**{information-o}**).
+1. In the upper-right corner of the user's profile select the vertical ellipsis (**{ellipsis_v}**), then **Report abuse to administrator**.
 1. Select a reason for reporting the user.
 1. Complete an abuse report.
 1. Select **Send report**.

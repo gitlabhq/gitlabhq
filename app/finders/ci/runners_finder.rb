@@ -20,6 +20,7 @@ module Ci
       filter_by_upgrade_status!
       filter_by_runner_type!
       filter_by_tag_list!
+      filter_by_creator_id!
       sort!
       request_tag_list!
 
@@ -111,6 +112,11 @@ module Ci
       if tag_list
         @runners = @runners.tagged_with(tag_list)
       end
+    end
+
+    def filter_by_creator_id!
+      creator_id = @params[:creator_id]
+      @runners = @runners.with_creator_id(creator_id) if creator_id.present?
     end
 
     def sort!

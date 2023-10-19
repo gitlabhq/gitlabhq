@@ -9,15 +9,15 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
     it 'defines generic instance with only some of the attributes set' do
       generic_instance = described_class.generic_instance(
         batch_table: 'projects', batch_column: 'id',
-        job_arguments: %w(x y), connection: connection
+        job_arguments: %w[x y], connection: connection
       )
 
       expect(generic_instance.send(:batch_table)).to eq('projects')
       expect(generic_instance.send(:batch_column)).to eq('id')
-      expect(generic_instance.instance_variable_get(:@job_arguments)).to eq(%w(x y))
+      expect(generic_instance.instance_variable_get(:@job_arguments)).to eq(%w[x y])
       expect(generic_instance.send(:connection)).to eq(connection)
 
-      %i(start_id end_id sub_batch_size pause_ms).each do |attr|
+      %i[start_id end_id sub_batch_size pause_ms].each do |attr|
         expect(generic_instance.send(attr)).to eq(0)
       end
     end
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
                     batch_column: 'id',
                     sub_batch_size: 2,
                     pause_ms: 1000,
-                    job_arguments: %w(a b),
+                    job_arguments: %w[a b],
                     connection: connection)
     end
 
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
                     batch_column: 'id',
                     sub_batch_size: 2,
                     pause_ms: 1000,
-                    job_arguments: %w(a b),
+                    job_arguments: %w[a b],
                     connection: connection)
     end
 
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
                     batch_column: 'id',
                     sub_batch_size: 2,
                     pause_ms: 1000,
-                    job_arguments: %w(a b),
+                    job_arguments: %w[a b],
                     connection: connection)
     end
 

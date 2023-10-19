@@ -26,7 +26,7 @@ RSpec.describe Gitlab::DataBuilder::Push do
 
       it 'returns commit hook data' do
         expect(subject[:project]).to eq(project.hook_attrs)
-        expect(subject[:commits].first.keys).to include(*%i(added removed modified))
+        expect(subject[:commits].first.keys).to include(*%i[added removed modified])
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::DataBuilder::Push do
 
       it 'returns commit hook data without include deltas' do
         expect(subject[:project]).to eq(project.hook_attrs)
-        expect(subject[:commits].first.keys).not_to include(*%i(added removed modified))
+        expect(subject[:commits].first.keys).not_to include(*%i[added removed modified])
       end
     end
   end

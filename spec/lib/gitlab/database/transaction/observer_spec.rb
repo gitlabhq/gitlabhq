@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Database::Transaction::Observer, feature_category: :datab
           User.first
 
           expect(transaction_context).to be_a(::Gitlab::Database::Transaction::Context)
-          expect(context.keys).to match_array(%i(start_time depth savepoints queries backtraces external_http_count_start external_http_duration_start))
+          expect(context.keys).to match_array(%i[start_time depth savepoints queries backtraces external_http_count_start external_http_duration_start])
           expect(context[:depth]).to eq(2)
           expect(context[:savepoints]).to eq(1)
           expect(context[:queries].length).to eq(1)

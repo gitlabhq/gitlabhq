@@ -13,32 +13,12 @@ RSpec.describe 'User page', feature_category: :user_profile do
 
   subject(:visit_profile) { visit(user_path(user)) }
 
-  context 'with "user_profile_overflow_menu_vue" feature flag enabled', :js do
-    it 'does not show the user id in the profile info' do
-      subject
+  it 'shows copy user id action in the dropdown', :js do
+    subject
 
-      expect(page).not_to have_content("User ID: #{user.id}")
-    end
+    find('[data-testid="base-dropdown-toggle"').click
 
-    it 'shows copy user id action in the dropdown' do
-      subject
-
-      find('[data-testid="base-dropdown-toggle"').click
-
-      expect(page).to have_content("Copy user ID: #{user.id}")
-    end
-  end
-
-  context 'with "user_profile_overflow_menu_vue" feature flag disabled', :js do
-    before do
-      stub_feature_flags(user_profile_overflow_menu_vue: false)
-    end
-
-    it 'shows user id' do
-      subject
-
-      expect(page).to have_content("User ID: #{user.id}")
-    end
+    expect(page).to have_content("Copy user ID: #{user.id}")
   end
 
   it 'shows name on breadcrumbs' do

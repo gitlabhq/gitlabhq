@@ -537,6 +537,34 @@ RSpec.describe SearchController, feature_category: :global_search do
         expect(response.headers['Cache-Control']).to eq('max-age=60, private')
         expect(response.headers['Pragma']).to be_nil
       end
+
+      context 'unique users tracking' do
+        before do
+          allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+        end
+
+        it_behaves_like 'tracking unique hll events' do
+          subject(:request) { get :autocomplete, params: { term: 'term' } }
+
+          let(:target_event) { 'i_search_total' }
+          let(:expected_value) { instance_of(String) }
+        end
+      end
+
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        subject { get :autocomplete, params: { group_id: namespace.id, term: 'term' } }
+
+        let(:project) { nil }
+        let(:category) { described_class.to_s }
+        let(:action) { 'autocomplete' }
+        let(:label) { 'redis_hll_counters.search.search_total_unique_counts_monthly' }
+        let(:property) { 'i_search_total' }
+        let(:context) do
+          [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: property).to_context]
+        end
+
+        let(:namespace) { create(:group) }
+      end
     end
 
     describe '#append_info_to_payload' do

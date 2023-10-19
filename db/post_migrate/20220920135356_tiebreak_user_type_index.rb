@@ -7,7 +7,9 @@ class TiebreakUserTypeIndex < Gitlab::Database::Migration[2.0]
   OLD_INDEX_NAME = 'index_users_on_user_type'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index :users, [:user_type, :id], name: NEW_INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
     remove_concurrent_index_by_name :users, OLD_INDEX_NAME
   end
 

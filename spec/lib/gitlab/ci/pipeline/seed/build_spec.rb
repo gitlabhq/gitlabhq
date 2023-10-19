@@ -395,7 +395,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         end
 
         context 'when root_variables_inheritance is an array' do
-          let(:root_variables_inheritance) { %w(VAR1 VAR2 VAR3) }
+          let(:root_variables_inheritance) { %w[VAR1 VAR2 VAR3] }
 
           it 'returns calculated yaml variables' do
             expect(subject[:yaml_variables]).to match_array(

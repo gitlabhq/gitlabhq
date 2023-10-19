@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Auth::Ldap::AuthHash do
 
     let(:attributes) do
       {
-        'username' => %w(mail email),
+        'username' => %w[mail email],
         'name' => 'fullName'
       }
     end

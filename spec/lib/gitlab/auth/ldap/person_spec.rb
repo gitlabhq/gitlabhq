@@ -13,13 +13,13 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
         'uid' => 'uid',
         'attributes' => {
           'name' => 'cn',
-          'email' => %w(mail email userPrincipalName),
+          'email' => %w[mail email userPrincipalName],
           'username' => username_attribute
         }
       }
     )
   end
-  let(:username_attribute) { %w(uid sAMAccountName userid) }
+  let(:username_attribute) { %w[uid sAMAccountName userid] }
 
   describe '.normalize_dn' do
     subject { described_class.normalize_dn(given) }
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
           'attributes' => {
             'name' => 'cn',
             'email' => 'mail',
-            'username' => %w(uid mail),
+            'username' => %w[uid mail],
             'first_name' => ''
           }
         }

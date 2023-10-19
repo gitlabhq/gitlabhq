@@ -383,7 +383,11 @@ class Note < ApplicationRecord
   end
 
   def for_project_noteable?
-    !(for_personal_snippet? || for_abuse_report?)
+    !(for_personal_snippet? || for_abuse_report? || group_level_issue?)
+  end
+
+  def group_level_issue?
+    (for_issue? || for_work_item?) && noteable&.project_id.blank?
   end
 
   def for_design?

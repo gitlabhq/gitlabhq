@@ -6,6 +6,7 @@ class AddTempIndexForUserDetailsFields < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation
     add_concurrent_index :users, :id, name: INDEX_NAME, where: <<~QUERY
       (COALESCE(linkedin, '') IS DISTINCT FROM '')
       OR (COALESCE(twitter, '') IS DISTINCT FROM '')
@@ -14,6 +15,7 @@ class AddTempIndexForUserDetailsFields < Gitlab::Database::Migration[2.0]
       OR (COALESCE(location, '') IS DISTINCT FROM '')
       OR (COALESCE(organization, '') IS DISTINCT FROM '')
     QUERY
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

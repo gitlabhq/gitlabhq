@@ -178,7 +178,7 @@ RSpec.describe Gitlab::Ci::Config::Extendable::Entry do
         {
           first: { script: 'my value', image: 'ubuntu' },
           second: { image: 'alpine' },
-          test: { extends: %w(first second) }
+          test: { extends: %w[first second] }
         }
       end
 
@@ -186,7 +186,7 @@ RSpec.describe Gitlab::Ci::Config::Extendable::Entry do
         {
           first: { script: 'my value', image: 'ubuntu' },
           second: { image: 'alpine' },
-          test: { extends: %w(first second), script: 'my value', image: 'alpine' }
+          test: { extends: %w[first second], script: 'my value', image: 'alpine' }
         }
       end
 
