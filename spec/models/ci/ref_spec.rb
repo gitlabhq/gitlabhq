@@ -10,11 +10,9 @@ RSpec.describe Ci::Ref, feature_category: :continuous_integration do
   describe 'state machine transitions' do
     context 'unlock artifacts transition' do
       let(:ci_ref) { create(:ci_ref) }
-      let(:pipeline_success_unlock_artifacts_worker_spy) { class_spy(::Ci::PipelineSuccessUnlockArtifactsWorker) }
       let(:unlock_previous_pipelines_worker_spy) { class_spy(::Ci::Refs::UnlockPreviousPipelinesWorker) }
 
       before do
-        stub_const('Ci::PipelineSuccessUnlockArtifactsWorker', pipeline_success_unlock_artifacts_worker_spy)
         stub_const('Ci::Refs::UnlockPreviousPipelinesWorker', unlock_previous_pipelines_worker_spy)
       end
 
@@ -47,20 +45,6 @@ RSpec.describe Ci::Ref, feature_category: :continuous_integration do
               ci_ref.send(action)
 
               expect(unlock_previous_pipelines_worker_spy).to have_received(:perform_async).exactly(count).times
-              expect(pipeline_success_unlock_artifacts_worker_spy).not_to have_received(:perform_async)
-            end
-
-            context 'when ci_unlock_pipelines_queue flag is disabled' do
-              before do
-                stub_feature_flags(ci_unlock_pipelines_queue: false)
-              end
-
-              it 'calls pipeline success unlock artifacts service' do
-                ci_ref.send(action)
-
-                expect(pipeline_success_unlock_artifacts_worker_spy).to have_received(:perform_async).exactly(count).times
-                expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
-              end
             end
           end
         end
@@ -73,20 +57,6 @@ RSpec.describe Ci::Ref, feature_category: :continuous_integration do
           ci_ref.succeed!
 
           expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
-          expect(pipeline_success_unlock_artifacts_worker_spy).not_to have_received(:perform_async)
-        end
-
-        context 'when ci_unlock_pipelines_queue flag is disabled' do
-          before do
-            stub_feature_flags(ci_unlock_pipelines_queue: false)
-          end
-
-          it 'does not unlock pipelines' do
-            ci_ref.succeed!
-
-            expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
-            expect(pipeline_success_unlock_artifacts_worker_spy).not_to have_received(:perform_async)
-          end
         end
       end
     end

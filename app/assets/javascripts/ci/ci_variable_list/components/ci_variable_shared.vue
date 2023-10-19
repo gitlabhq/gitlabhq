@@ -2,7 +2,7 @@
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { reportMessageToSentry } from '~/ci/utils';
+import { reportToSentry } from '~/ci/utils';
 import { mapEnvironmentNames } from '../utils';
 import {
   ADD_MUTATION_ACTION,
@@ -140,7 +140,7 @@ export default {
             this.loadingCounter += 1;
           } else {
             createAlert({ message: this.$options.tooManyCallsError });
-            reportMessageToSentry(this.componentName, this.$options.tooManyCallsError);
+            reportToSentry(this.componentName, new Error(this.$options.tooManyCallsError));
           }
         }
       },

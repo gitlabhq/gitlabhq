@@ -8,7 +8,6 @@ import {
 
   // exports
   captureException,
-  captureMessage,
   SDK_VERSION,
 } from 'sentrybrowser';
 
@@ -82,7 +81,6 @@ const initSentry = () => {
   // eslint-disable-next-line no-underscore-dangle
   window._Sentry = {
     captureException,
-    captureMessage,
     SDK_VERSION, // used to verify compatibility with the Sentry instance
   };
 };

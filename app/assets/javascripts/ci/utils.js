@@ -7,11 +7,3 @@ export const reportToSentry = (component, failureType) => {
     },
   });
 };
-
-export const reportMessageToSentry = (component, message) => {
-  Sentry.captureMessage(message, {
-    tags: {
-      component,
-    },
-  });
-};

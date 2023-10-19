@@ -36,11 +36,7 @@ module Ci
         next unless ci_ref.artifacts_locked?
 
         ci_ref.run_after_commit do
-          if Feature.enabled?(:ci_unlock_pipelines_queue, ci_ref.project)
-            Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(ci_ref.id)
-          else
-            Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(ci_ref.last_finished_pipeline_id)
-          end
+          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(ci_ref.id)
         end
       end
     end

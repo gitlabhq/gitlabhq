@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { reportMessageToSentry } from '~/ci/utils';
+import { reportToSentry } from '~/ci/utils';
 import CiVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
 import getInheritedCiVariables from '../graphql/queries/inherited_ci_variables.query.graphql';
 
@@ -51,7 +51,7 @@ export default {
           this.loadingCounter += 1;
         } else {
           createAlert({ message: this.$options.i18n.tooManyCallsError });
-          reportMessageToSentry(this.$options.name, this.$options.i18n.tooManyCallsError);
+          reportToSentry(this.$options.name, new Error(this.$options.i18n.tooManyCallsError));
         }
       },
       error() {

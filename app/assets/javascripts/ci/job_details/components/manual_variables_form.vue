@@ -18,7 +18,7 @@ import { JOB_GRAPHQL_ERRORS } from '~/ci/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__ } from '~/locale';
-import { reportMessageToSentry } from '~/ci/utils';
+import { reportToSentry } from '~/ci/utils';
 import GetJob from '../graphql/queries/get_job.query.graphql';
 import playJobWithVariablesMutation from '../graphql/mutations/job_play_with_variables.mutation.graphql';
 import retryJobWithVariablesMutation from '../graphql/mutations/job_retry_with_variables.mutation.graphql';
@@ -57,7 +57,7 @@ export default {
       },
       error(error) {
         createAlert({ message: JOB_GRAPHQL_ERRORS.jobQueryErrorText });
-        reportMessageToSentry(this.$options.name, error);
+        reportToSentry(this.$options.name, error);
       },
     },
   },
@@ -141,7 +141,7 @@ export default {
         }
       } catch (error) {
         createAlert({ message: JOB_GRAPHQL_ERRORS.jobMutationErrorText });
-        reportMessageToSentry(this.$options.name, error);
+        reportToSentry(this.$options.name, error);
       }
     },
     async retryJob() {
@@ -157,7 +157,7 @@ export default {
         }
       } catch (error) {
         createAlert({ message: JOB_GRAPHQL_ERRORS.jobMutationErrorText });
-        reportMessageToSentry(this.$options.name, error);
+        reportToSentry(this.$options.name, error);
       }
     },
     addEmptyVariable() {

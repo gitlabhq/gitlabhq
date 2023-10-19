@@ -33173,8 +33173,6 @@ CREATE INDEX index_namespaces_on_file_template_project_id ON namespaces USING bt
 
 CREATE INDEX index_namespaces_on_ldap_sync_last_successful_update_at ON namespaces USING btree (ldap_sync_last_successful_update_at);
 
-CREATE INDEX index_namespaces_on_ldap_sync_last_update_at ON namespaces USING btree (ldap_sync_last_update_at);
-
 CREATE INDEX index_namespaces_on_name_trigram ON namespaces USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_namespaces_on_organization_id ON namespaces USING btree (organization_id);

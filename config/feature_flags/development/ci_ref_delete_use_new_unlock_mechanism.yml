@@ -1,8 +1,0 @@
----
-name: ci_ref_delete_use_new_unlock_mechanism
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126757
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426676
-milestone: '16.5'
-type: development
-group: group::pipeline security
-default_enabled: false

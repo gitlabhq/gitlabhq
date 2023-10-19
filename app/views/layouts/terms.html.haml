@@ -20,14 +20,11 @@
             = render Pajamas::CardComponent.new do |c|
               - c.with_header do
                 = brand_header_logo({add_gitlab_black_text: true})
+                - if current_user
+                  .gl-display-flex.gl-gap-2.gl-align-items-center
+                    .gl-text-right.gl-line-height-normal
+                      .gl-font-weight-bold= current_user.name
+                      .gl-text-gray-700 @#{current_user.username}
+                    = render Pajamas::AvatarComponent.new(current_user, size: 32, avatar_options: { data: { qa_selector: 'user_avatar_content' } })
               - c.with_body do
-                - if header_link?(:user_dropdown)
-                  .navbar-collapse
-                    %ul.nav.navbar-nav
-                      %li.header-user.dropdown
-                        = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
-                          = render Pajamas::AvatarComponent.new(current_user, size: 24, class: 'gl-mr-3', avatar_options: { data: { qa_selector: 'user_avatar_content' } })
-                          = sprite_icon('chevron-down')
-                        .dropdown-menu.dropdown-menu-right
-                          = render 'layouts/header/current_user_dropdown'
                 = yield

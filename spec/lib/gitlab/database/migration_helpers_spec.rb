@@ -2355,6 +2355,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#revert_initialize_conversion_of_integer_to_bigint' do
+    let(:setup_table) { true }
     let(:table) { :_test_table }
 
     before do
@@ -2363,7 +2364,18 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
         t.integer :other_id
       end
 
-      model.initialize_conversion_of_integer_to_bigint(table, columns)
+      model.initialize_conversion_of_integer_to_bigint(table, columns) if setup_table
+    end
+
+    context 'when column and trigger do not exist' do
+      let(:setup_table) { false }
+      let(:columns) { :id }
+
+      it 'does not raise an error' do
+        expect do
+          model.revert_initialize_conversion_of_integer_to_bigint(table, columns)
+        end.not_to raise_error
+      end
     end
 
     context 'when single column is given' do

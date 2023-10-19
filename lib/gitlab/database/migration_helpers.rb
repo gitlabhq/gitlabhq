@@ -751,7 +751,7 @@ module Gitlab
         trigger_name = rename_trigger_name(table, columns, temporary_columns)
         remove_rename_triggers(table, trigger_name)
 
-        temporary_columns.each { |column| remove_column(table, column) }
+        temporary_columns.each { |column| remove_column(table, column, if_exists: true) }
       end
       alias_method :cleanup_conversion_of_integer_to_bigint, :revert_initialize_conversion_of_integer_to_bigint
 

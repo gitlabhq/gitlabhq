@@ -45,6 +45,7 @@ module Ci
       elsif ::Feature.enabled?(:ci_unlock_pipelines_medium, type: :ops)
         MAX_RUNNING_MEDIUM
       elsif ::Feature.enabled?(:ci_unlock_pipelines, type: :ops)
+        # This is the default enabled flag
         MAX_RUNNING_LOW
       else
         0

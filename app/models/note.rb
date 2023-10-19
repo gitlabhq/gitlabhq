@@ -26,7 +26,7 @@ class Note < ApplicationRecord
   include IgnorableColumns
   include Spammable
 
-  ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
+  ignore_column :id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/
 

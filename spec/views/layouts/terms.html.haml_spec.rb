@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/terms' do
+RSpec.describe 'layouts/terms', feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
   before do

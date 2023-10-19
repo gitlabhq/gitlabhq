@@ -13,11 +13,3 @@ export const captureException = (...args) => {
 
   Sentry?.captureException(...args);
 };
-
-/** @type {import('@sentry/core').captureMessage} */
-export const captureMessage = (...args) => {
-  // eslint-disable-next-line no-underscore-dangle
-  const Sentry = window._Sentry;
-
-  Sentry?.captureMessage(...args);
-};
