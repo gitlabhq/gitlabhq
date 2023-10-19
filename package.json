@@ -5,7 +5,7 @@
     "block-dependencies": "node scripts/frontend/block_dependencies.js",
     "check:startup_css": "scripts/frontend/startup_css/startup_css_changed.sh",
     "clean": "rm -rf public/assets tmp/cache/*-loader",
-    "dev-server": "NODE_OPTIONS=\"--max-old-space-size=5120\" node scripts/frontend/webpack_dev_server.js",
+    "dev-server": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" node scripts/frontend/webpack_dev_server.js",
     "file-coverage": "scripts/frontend/file_test_coverage.js",
     "lint-docs": "scripts/lint-doc.sh",
     "internal:eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives --ext .js,.vue,.graphql",
@@ -44,9 +44,9 @@
     "storybook:build": "yarn --cwd ./storybook build --quiet",
     "storybook:start": "./scripts/frontend/start_storybook.sh",
     "swagger:validate": "swagger-cli validate",
-    "webpack": "NODE_OPTIONS=\"--max-old-space-size=5120\" webpack --config config/webpack.config.js",
-    "webpack-vendor": "NODE_OPTIONS=\"--max-old-space-size=5120\" webpack --config config/webpack.vendor.config.js",
-    "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=5120\" NODE_ENV=production webpack --config config/webpack.config.js"
+    "webpack": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" webpack --config config/webpack.config.js",
+    "webpack-vendor": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" webpack --config config/webpack.vendor.config.js",
+    "webpack-prod": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",

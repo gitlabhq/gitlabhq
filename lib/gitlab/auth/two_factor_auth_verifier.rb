@@ -36,7 +36,7 @@ module Gitlab
 
         return false unless time
 
-        two_factor_grace_period.hours.since(time) < Time.current
+        two_factor_grace_period.hours.since(time).past?
       end
 
       def allow_2fa_bypass_for_provider

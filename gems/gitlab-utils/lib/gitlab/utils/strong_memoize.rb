@@ -44,7 +44,7 @@ module Gitlab
 
         if instance_variable_defined?(expiration_key)
           expire_at = instance_variable_get(expiration_key)
-          clear_memoization(name) if Time.current > expire_at
+          clear_memoization(name) if expire_at.past?
         end
 
         if instance_variable_defined?(key)

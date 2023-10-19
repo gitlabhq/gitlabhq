@@ -25736,6 +25736,9 @@ msgstr ""
 msgid "InviteMembersModal|Add unlimited members with your trial"
 msgstr ""
 
+msgid "InviteMembersModal|Administrators can %{linkStart}add new users by email manually%{linkEnd}. After they've been added, you can invite them to this group with their username."
+msgstr ""
+
 msgid "InviteMembersModal|Cancel"
 msgstr ""
 
@@ -25769,6 +25772,9 @@ msgstr ""
 msgid "InviteMembersModal|Inviting a group %{linkStart}adds its members to your project%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit."
 msgstr ""
 
+msgid "InviteMembersModal|Inviting users by email is disabled"
+msgstr ""
+
 msgid "InviteMembersModal|Manage members"
 msgstr ""
 
@@ -25788,6 +25794,9 @@ msgid "InviteMembersModal|Select a group to invite"
 msgstr ""
 
 msgid "InviteMembersModal|Select a role"
+msgstr ""
+
+msgid "InviteMembersModal|Select members"
 msgstr ""
 
 msgid "InviteMembersModal|Select members or type email addresses"
@@ -25814,6 +25823,9 @@ msgid "InviteMembersModal|To get more members an owner of the group can %{trialL
 msgstr ""
 
 msgid "InviteMembersModal|To invite new users to this top-level group, you must remove existing users. You can still add existing users from the top-level group, including any subgroups and projects."
+msgstr ""
+
+msgid "InviteMembersModal|Username"
 msgstr ""
 
 msgid "InviteMembersModal|Username or email address"
@@ -56911,6 +56923,9 @@ msgid "mrWidget|Assign yourself to these issues"
 msgstr ""
 
 msgid "mrWidget|Assign yourself to this issue"
+msgstr ""
+
+msgid "mrWidget|Auto-merge enabled"
 msgstr ""
 
 msgid "mrWidget|Cancel auto-merge"

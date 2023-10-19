@@ -2053,29 +2053,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#project_users_with_descendants' do
-    let(:user_a) { create(:user) }
-    let(:user_b) { create(:user) }
-    let(:user_c) { create(:user) }
-
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-    let(:deep_nested_group) { create(:group, parent: nested_group) }
-    let(:project_a) { create(:project, namespace: group) }
-    let(:project_b) { create(:project, namespace: nested_group) }
-    let(:project_c) { create(:project, namespace: deep_nested_group) }
-
-    it 'returns members of all projects in group and subgroups' do
-      project_a.add_developer(user_a)
-      project_b.add_developer(user_b)
-      project_c.add_developer(user_c)
-
-      expect(group.project_users_with_descendants).to contain_exactly(user_a, user_b, user_c)
-      expect(nested_group.project_users_with_descendants).to contain_exactly(user_b, user_c)
-      expect(deep_nested_group.project_users_with_descendants).to contain_exactly(user_c)
-    end
-  end
-
   describe '#refresh_members_authorized_projects' do
     let_it_be(:group) { create(:group, :nested) }
     let_it_be(:parent_group_user) { create(:user) }

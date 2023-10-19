@@ -50,9 +50,53 @@ such as the value of a setting or the count of rows in a database table.
 - To instrument an event-based metric, see the [internal event tracking quick start guide](internal_event_instrumentation/quick_start.md).
 - To instrument a metric that observes the GitLab instances state, see [the metrics instrumentation](metrics/metrics_instrumentation.md).
 
-## Data flow
+## Data availability
 
 For GitLab there is an essential difference in analytics setup between SaaS and self-managed or GitLab Dedicated instances.
+On our SaaS instance both individual events and pre-computed metrics are available for analysis.
+Additionally for SaaS page views are automatically instrumented.
+For self-managed only the metrics instrumenented on the version installed on the instance are available.
+
+## Data discovery
+
+The data visualization tools [Sisense](https://about.gitlab.com/handbook/business-technology/data-team/platform/sisensecdt/) and [Tableau](https://about.gitlab.com/handbook/business-technology/data-team/platform/tableau/),
+which have access to our Data Warehouse, can be used to query the internal analytics data.
+
+### Querying metrics
+
+The following example query returns all values reported for `count_distinct_user_id_from_feature_used_7d` within the last six months and the according `instance_id`:
+
+```sql
+SELECT
+  date_trunc('week', ping_created_at),
+  dim_instance_id,
+  metric_value
+FROM common.fct_ping_instance_metric_rolling_6_months --model limited to last 6 months for performance
+WHERE metrics_path = 'counts.users_visiting_dashboard_weekly' --set to metric of interest
+ORDER BY ping_created_at DESC
+```
+
+For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://about.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
+
+### Querying events
+
+The following example query returns the number of daily event occurences for the `feature_used` event.
+
+```sql
+SELECT
+  behavior_date,
+  COUNT(*) as event_occurences
+FROM common_mart.mart_behavior_structured_event
+WHERE event_action = 'feature_used'
+AND event_category = 'InternalEventTracking'
+AND behavior_date > '2023-08-01' --restricted minimum date for performance
+GROUP BY 1 ORDER BY 1 desc
+```
+
+For a list of other event tables refer to the [Data Models Cheat Sheet](https://about.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models-2).
+
+## Data flow
+
 On SaaS event records are directly sent to a collection system, called Snowplow, and imported into our data warehouse.
 Self-managed and GitLab Dedicated instances record event counts locally. Every week, a process called Service Ping sends the current
 values for all pre-defined and active metrics to our data warehouse. For GitLab.com, metrics are calculated directly in the data warehouse.

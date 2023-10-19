@@ -70,14 +70,16 @@ export default {
     return {
       isMouseIn: false,
       canClickPinButton: false,
-      pillCount: this.item.pill_count,
     };
   },
   computed: {
+    pillData() {
+      return this.item.pill_count;
+    },
     hasPill() {
       return (
-        Number.isFinite(this.pillCount) ||
-        (typeof this.pillCount === 'string' && this.pillCount !== '')
+        Number.isFinite(this.pillData) ||
+        (typeof this.pillData === 'string' && this.pillData !== '')
       );
     },
     isPinnable() {
@@ -193,7 +195,11 @@ export default {
     },
     updatePillValue({ value, itemId }) {
       if (this.item.id === itemId) {
-        this.pillCount = value;
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/428246
+        // fixing this linting issue is causing the pills not to async update
+        //
+        // eslint-disable-next-line vue/no-mutating-props
+        this.item.pill_count = value;
       }
     },
   },
@@ -258,7 +264,7 @@ export default {
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
           }"
         >
-          {{ pillCount }}
+          {{ pillData }}
         </gl-badge>
       </span>
     </component>

@@ -25,7 +25,7 @@ module Gitlab
           end
 
           def calculate_by_closest_date_to_average(date)
-            return date unless closest_date_to_average && closest_date_to_average < Time.current
+            return date unless closest_date_to_average && closest_date_to_average.past?
 
             date + (Time.current - closest_date_to_average).seconds
           end

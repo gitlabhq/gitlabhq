@@ -63,36 +63,6 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     expect(pipeline_tracker.jid).to eq('jid')
   end
 
-  context 'when job version is nil' do
-    before do
-      allow(subject).to receive(:job_version).and_return(nil)
-    end
-
-    it 'runs the given pipeline successfully and enqueues entity worker' do
-      expect(BulkImports::EntityWorker).to receive(:perform_async).with(entity.id)
-
-      subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-      pipeline_tracker.reload
-
-      expect(pipeline_tracker.status_name).to eq(:finished)
-    end
-
-    context 'when an error occurs' do
-      it 'enqueues entity worker' do
-        expect_next_instance_of(pipeline_class) do |pipeline|
-          expect(pipeline)
-            .to receive(:run)
-            .and_raise(StandardError, 'Error!')
-        end
-
-        expect(BulkImports::EntityWorker).to receive(:perform_async).with(entity.id)
-
-        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-      end
-    end
-  end
-
   context 'when exclusive lease cannot be obtained' do
     it 'does not run the pipeline' do
       expect(subject).to receive(:try_obtain_lease).and_return(false)

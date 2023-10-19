@@ -671,15 +671,6 @@ class Group < Namespace
     members.count
   end
 
-  # Returns all users that are members of projects
-  # belonging to the current group or sub-groups
-  def project_users_with_descendants
-    User
-      .joins(projects: :group)
-      .where(namespaces: { id: self_and_descendants.select(:id) })
-      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455")
-  end
-
   # Return the highest access level for a user
   #
   # A special case is handled here when the user is a GitLab admin

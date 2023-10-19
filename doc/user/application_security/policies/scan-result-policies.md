@@ -257,25 +257,26 @@ You can use this example in the YAML mode of the [Scan Result Policy editor](#sc
 It corresponds to a single object from the previous example:
 
 ```yaml
-- name: critical vulnerability CS approvals
-  description: critical severity level only for container scanning
-  enabled: true
-  rules:
-  - type: scan_finding
-    branches:
-    - main
-    scanners:
-    - container_scanning
-    vulnerabilities_allowed: 1
-    severity_levels:
-    - critical
-    vulnerability_states:
-    - newly_detected
-  actions:
-  - type: require_approval
-    approvals_required: 1
-    user_approvers:
-    - adalberto.dare
+type: scan_result_policy
+name: critical vulnerability CS approvals
+description: critical severity level only for container scanning
+enabled: true
+rules:
+- type: scan_finding
+  branches:
+  - main
+  scanners:
+  - container_scanning
+  vulnerabilities_allowed: 1
+  severity_levels:
+  - critical
+  vulnerability_states:
+  - newly_detected
+actions:
+- type: require_approval
+  approvals_required: 1
+  user_approvers:
+  - adalberto.dare
 ```
 
 ## Example situations where scan result policies require additional approval

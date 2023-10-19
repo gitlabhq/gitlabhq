@@ -34,10 +34,6 @@ module BulkImports
           fail_tracker(StandardError.new(message)) unless pipeline_tracker.finished? || pipeline_tracker.skipped?
         end
       end
-    ensure
-      # This is needed for in-flight migrations.
-      # It will be remove in https://gitlab.com/gitlab-org/gitlab/-/issues/426299
-      ::BulkImports::EntityWorker.perform_async(entity_id) if job_version.nil?
     end
 
     private

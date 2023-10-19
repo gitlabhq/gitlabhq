@@ -1,4 +1,4 @@
-import { GlModal, GlSprintf, GlFormGroup, GlCollapse, GlIcon } from '@gitlab/ui';
+import { GlLink, GlModal, GlSprintf, GlFormGroup, GlCollapse, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -60,6 +60,7 @@ describe('InviteMembersModal', () => {
   let mock;
   let trackingSpy;
   const showToast = jest.fn();
+  const newUsersUrl = '/new/users/url';
 
   const expectTracking = (action, label = undefined, property = undefined) =>
     expect(trackingSpy).toHaveBeenCalledWith(INVITE_MEMBER_MODAL_TRACKING_CATEGORY, action, {
@@ -68,11 +69,13 @@ describe('InviteMembersModal', () => {
       property,
     });
 
-  const createComponent = (props = {}, stubs = {}) => {
+  const createComponent = (props = {}, stubs = {}, provide = {}) => {
     wrapper = shallowMountExtended(InviteMembersModal, {
       provide: {
         newProjectPath,
         name: propsData.name,
+        newUsersUrl,
+        ...provide,
       },
       propsData: {
         usersLimitDataset: {},
@@ -129,6 +132,7 @@ describe('InviteMembersModal', () => {
   const findEmptyInvitesAlert = () => wrapper.findByTestId('empty-invites-alert');
   const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
   const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
+  const findEmailSignupDisabledAlert = () => wrapper.findByTestId('email-signup-disabled-alert');
   const findUserLimitAlert = () => wrapper.findComponent(UserLimitNotification);
   const findAccordion = () => wrapper.findComponent(GlCollapse);
   const findErrorsIcon = () => wrapper.findComponent(GlIcon);
@@ -757,6 +761,58 @@ describe('InviteMembersModal', () => {
           await removeMembersToken(user5);
 
           expect(findMemberErrorAlert().exists()).toBe(false);
+        });
+      });
+
+      describe('when email signup is not allowed', () => {
+        beforeEach(() => {
+          createComponent({}, {}, { isEmailSignupEnabled: false });
+        });
+
+        it('shows the correct form description', () => {
+          expect(membersFormGroupDescription()).toBe('Select members');
+        });
+
+        it('shows an alert', () => {
+          expect(findEmailSignupDisabledAlert().text()).toBe(
+            "Administrators can add new users by email manually. After they've been added, you can invite them to this group with their username.",
+          );
+        });
+
+        it('does not render a link', () => {
+          expect(findEmailSignupDisabledAlert().findComponent(GlLink).exists()).toBe(false);
+        });
+
+        describe('when the current user is an admin', () => {
+          beforeEach(() => {
+            createComponent({}, {}, { isCurrentUserAdmin: true, isEmailSignupEnabled: false });
+          });
+
+          it('shows an alert', () => {
+            expect(findEmailSignupDisabledAlert().text()).toBe(
+              "Administrators can add new users by email manually. After they've been added, you can invite them to this group with their username.",
+            );
+          });
+
+          it('renders a link', () => {
+            expect(findEmailSignupDisabledAlert().findComponent(GlLink).attributes('href')).toBe(
+              newUsersUrl,
+            );
+          });
+
+          describe('when no new users url is provided', () => {
+            beforeEach(() => {
+              createComponent(
+                {},
+                {},
+                { isCurrentUserAdmin: true, isEmailSignupEnabled: false, newUsersUrl: '' },
+              );
+            });
+
+            it('does not render a link', () => {
+              expect(findEmailSignupDisabledAlert().findComponent(GlLink).exists()).toBe(false);
+            });
+          });
         });
       });
     });

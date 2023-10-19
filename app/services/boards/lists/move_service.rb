@@ -22,8 +22,11 @@ module Boards
       attr_reader :board, :old_position, :new_position
 
       def valid_move?
-        new_position.present? && new_position != old_position &&
-          new_position >= 0 && new_position <= board.lists.movable.last.position
+        new_position.present? && new_position != old_position && new_position.between?(0, max_position)
+      end
+
+      def max_position
+        board.lists.movable.maximum(:position)
       end
 
       def reorder_intermediate_lists

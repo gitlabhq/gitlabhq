@@ -8,6 +8,7 @@ import BoldText from './bold_text.vue';
 
 const COMPONENTS = {
   conflicts: () => import('./checks/conflicts.vue'),
+  rebase: () => import('./checks/rebase.vue'),
   default: () => import('./checks/message.vue'),
 };
 
@@ -32,6 +33,10 @@ export default {
   mixins: [mergeRequestQueryVariablesMixin],
   props: {
     mr: {
+      type: Object,
+      required: true,
+    },
+    service: {
       type: Object,
       required: true,
     },
@@ -122,6 +127,7 @@ export default {
           }"
           :check="check"
           :mr="mr"
+          :service="service"
         />
       </div>
     </div>

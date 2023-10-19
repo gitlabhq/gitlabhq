@@ -730,6 +730,9 @@ export default {
                     class="mr-ready-merge-related-links gl-display-inline"
                   />
                 </li>
+                <li v-if="state.autoMergeEnabled" class="gl-line-height-normal">
+                  {{ s__('mrWidget|Auto-merge enabled') }}
+                </li>
               </ul>
             </div>
           </div>

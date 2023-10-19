@@ -729,7 +729,7 @@ module Ci
     end
 
     def artifacts_expired?
-      artifacts_expire_at && artifacts_expire_at < Time.current
+      artifacts_expire_at&.past?
     end
 
     def artifacts_expire_in
@@ -745,7 +745,7 @@ module Ci
 
     def has_expired_locked_archive_artifacts?
       locked_artifacts? &&
-        artifacts_expire_at.present? && artifacts_expire_at < Time.current
+        artifacts_expire_at&.past?
     end
 
     def has_expiring_archive_artifacts?

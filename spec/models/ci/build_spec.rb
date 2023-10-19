@@ -2230,7 +2230,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         context 'when artifacts do not expire' do
-          it { is_expected.to eq(false) }
+          it { is_expected.to be_falsey }
         end
 
         context 'when artifacts expire in the future' do

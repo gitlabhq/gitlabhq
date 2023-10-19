@@ -395,7 +395,7 @@ For example:
 ```yaml
 include:
   # include the component located in the current project from the current SHA
-  - component: gitlab.com/$CI_PROJECT_PATH@$CI_COMMIT_SHA
+  - component: gitlab.com/$CI_PROJECT_PATH/my-component@$CI_COMMIT_SHA
     inputs:
       stage: build
 

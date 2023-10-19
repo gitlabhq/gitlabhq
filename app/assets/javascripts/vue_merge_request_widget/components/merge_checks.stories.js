@@ -15,7 +15,7 @@ const defaultRender = (apolloProvider) => ({
   components: { MergeChecks },
   apolloProvider,
   data() {
-    return { mr: { conflictResolutionPath: 'https://gitlab.com' } };
+    return { service: {}, mr: { conflictResolutionPath: 'https://gitlab.com' } };
   },
   template: '<merge-checks :mr="mr" />',
 });

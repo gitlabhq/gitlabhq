@@ -65,7 +65,7 @@ module TokenAuthenticatableStrategies
       return false unless expirable? && token_expiration_enforced?
 
       exp = expires_at(instance)
-      !!exp && Time.current > exp
+      !!exp && exp.past?
     end
 
     def expirable?

@@ -1081,7 +1081,7 @@ class User < MainClusterwide::ApplicationRecord
   def otp_secret_expired?
     return true unless otp_secret_expires_at
 
-    otp_secret_expires_at < Time.current
+    otp_secret_expires_at.past?
   end
 
   def update_otp_secret!
@@ -1446,7 +1446,7 @@ class User < MainClusterwide::ApplicationRecord
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.current
+      !last_credential_check_at || (last_credential_check_at + ldap_sync_time).past?
     else
       false
     end
@@ -2087,7 +2087,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def password_expired?
-    !!(password_expires_at && password_expires_at < Time.current)
+    !!(password_expires_at && password_expires_at.past?)
   end
 
   def password_expired_if_applicable?

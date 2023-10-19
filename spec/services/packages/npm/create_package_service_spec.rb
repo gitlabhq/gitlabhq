@@ -332,6 +332,84 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
     end
 
+    context 'when feature flag :packages_package_protection is disabled' do
+      before do
+        stub_feature_flags(packages_protected_packages: false)
+      end
+
+      context 'with matching package protection rule for all roles' do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
+
+        where(:package_name_pattern, :push_protected_up_to_access_level) do
+          ref(:package_name)                  | :developer
+          ref(:package_name)                  | :owner
+          ref(:package_name_pattern_no_match) | :developer
+          ref(:package_name_pattern_no_match) | :owner
+        end
+
+        with_them do
+          let!(:package_protection_rule) do
+            create(
+              :package_protection_rule,
+              package_name_pattern: package_name_pattern,
+              package_type: :npm,
+              project: project,
+              push_protected_up_to_access_level: push_protected_up_to_access_level
+            )
+          end
+
+          it_behaves_like 'valid package'
+        end
+      end
+    end
+
+    context 'with package protection rule for different roles and package_name_patterns' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:project_developer) { create(:user).tap { |u| project.add_developer(u) } }
+      let(:project_maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:project_owner) { project.owner }
+
+      let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
+
+      shared_examples 'protected package' do
+        it { is_expected.to include http_status: 403, message: 'Package protected.' }
+
+        it 'does not create any npm-related package records' do
+          expect { subject }
+            .to not_change { Packages::Package.count }
+            .and not_change { Packages::Package.npm.count }
+            .and not_change { Packages::Tag.count }
+            .and not_change { Packages::Npm::Metadatum.count }
+        end
+      end
+
+      where(:package_name_pattern, :push_protected_up_to_access_level, :user, :shared_examples_name) do
+        ref(:package_name)                  | :developer  | ref(:project_developer)  | 'protected package'
+        ref(:package_name)                  | :developer  | ref(:project_owner)      | 'valid package'
+        ref(:package_name)                  | :maintainer | ref(:project_maintainer) | 'protected package'
+        ref(:package_name)                  | :owner      | ref(:project_owner)      | 'protected package'
+        ref(:package_name_pattern_no_match) | :developer  | ref(:project_owner)      | 'valid package'
+        ref(:package_name_pattern_no_match) | :owner      | ref(:project_owner)      | 'valid package'
+      end
+
+      with_them do
+        let!(:package_protection_rule) do
+          create(
+            :package_protection_rule,
+            package_name_pattern: package_name_pattern,
+            package_type: :npm,
+            project: project,
+            push_protected_up_to_access_level: push_protected_up_to_access_level
+          )
+        end
+
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+
     def create_packages(project, user, params)
       with_threads do
         described_class.new(project, user, params).execute

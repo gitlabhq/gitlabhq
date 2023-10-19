@@ -33,7 +33,7 @@ module Ci
       return false unless archival_attempts_available?
       return true unless last_archival_attempt_at
 
-      last_archival_attempt_at + backoff < Time.current
+      (last_archival_attempt_at + backoff).past?
     end
 
     def archival_attempts_available?

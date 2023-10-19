@@ -31,6 +31,7 @@ function factory({ canMerge = true, mergeChecks = [] } = {}) {
     apolloProvider,
     propsData: {
       mr: {},
+      service: {},
     },
   });
 }

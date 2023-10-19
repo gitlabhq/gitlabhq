@@ -103,7 +103,7 @@ PATH
   specs:
     devise-pbkdf2-encryptable (0.0.0)
       devise (~> 4.0)
-      devise-two-factor (~> 4.0)
+      devise-two-factor (~> 4.1.1)
 
 PATH
   remote: vendor/gems/mail-smtp_pool

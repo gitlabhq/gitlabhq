@@ -35,10 +35,13 @@ RSpec.describe 'viewing an issue', :js, feature_category: :service_desk do
   end
 
   context 'when issue is confidential' do
+    let!(:confidential_issue) { create(:issue, project: project, confidential: true) }
+    let!(:confidential_note) { create(:note_on_issue, project: project, noteable: confidential_issue) }
+    let!(:confidential_participants) { create_list(:issue_email_participant, 4, issue: confidential_issue) }
+
     before do
-      issue.update!(confidential: true)
       sign_in(user)
-      visit project_issue_path(project, issue)
+      visit project_issue_path(project, confidential_issue)
     end
 
     it_behaves_like 'email participants warning in all editors'

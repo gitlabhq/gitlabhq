@@ -27,11 +27,6 @@ module BulkImports
       else
         tracker.finish!
       end
-
-    ensure
-      # This is needed for in-flight migrations.
-      # It will be remove in https://gitlab.com/gitlab-org/gitlab/-/issues/426299
-      ::BulkImports::EntityWorker.perform_async(tracker.entity.id) if job_version.nil?
     end
 
     private

@@ -13,32 +13,13 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
   subject(:worker) { described_class.new }
 
   describe '#perform' do
-    context 'when job version is nil' do
-      before do
-        allow(subject).to receive(:job_version).and_return(nil)
-      end
-
-      it 'finishes pipeline and enqueues entity worker' do
-        expect(BulkImports::EntityWorker).to receive(:perform_async)
-          .with(entity.id)
-
-        subject.perform(pipeline_tracker.id)
-
-        expect(pipeline_tracker.reload.finished?).to eq(true)
-      end
-    end
-
-    context 'when job version is present' do
-      it 'finishes pipeline and does not enqueues entity worker' do
-        expect(BulkImports::EntityWorker).not_to receive(:perform_async)
-
-        subject.perform(pipeline_tracker.id)
-
-        expect(pipeline_tracker.reload.finished?).to eq(true)
-      end
-    end
-
     context 'when import is in progress' do
+      it 'marks the pipeline as finished' do
+        expect { subject.perform(pipeline_tracker.id) }
+          .to change { pipeline_tracker.reload.finished? }
+          .from(false).to(true)
+      end
+
       it 're-enqueues for any started batches' do
         create(:bulk_import_batch_tracker, :started, tracker: pipeline_tracker)
 

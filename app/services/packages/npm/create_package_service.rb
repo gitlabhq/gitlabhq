@@ -12,6 +12,7 @@ module Packages
         return error('Version is empty.', 400) if version.blank?
         return error('Attachment data is empty.', 400) if attachment['data'].blank?
         return error('Package already exists.', 403) if current_package_exists?
+        return error('Package protected.', 403) if current_package_protected?
         return error('File is too large.', 400) if file_size_exceeded?
 
         package = try_obtain_lease do
@@ -54,6 +55,13 @@ module Packages
                .with_version(version)
                .not_pending_destruction
                .exists?
+      end
+
+      def current_package_protected?
+        return false if Feature.disabled?(:packages_protected_packages, project)
+
+        user_project_authorization_access_level = current_user.max_member_access_for_project(project.id)
+        project.package_protection_rules.push_protected_from?(access_level: user_project_authorization_access_level, package_name: name, package_type: :npm)
       end
 
       def name

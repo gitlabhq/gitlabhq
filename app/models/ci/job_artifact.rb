@@ -306,7 +306,7 @@ module Ci
     end
 
     def expired?
-      expire_at.present? && expire_at < Time.current
+      expire_at.present? && expire_at.past?
     end
 
     def expiring?
