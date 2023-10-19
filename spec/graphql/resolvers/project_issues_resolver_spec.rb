@@ -351,9 +351,14 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
 
         context 'when filtering by negated author' do
           let_it_be(:issue_by_reporter) { create(:issue, author: reporter, project: project, state: :opened) }
+          let_it_be(:other_user) { build_stubbed(:user) }
 
           it 'returns issues without the specified author_username' do
-            expect(resolve_issues(not: { author_username: issue1.author.username })).to contain_exactly(issue_by_reporter)
+            expect(resolve_issues(not: { author_username: [issue1.author.username] })).to contain_exactly(issue_by_reporter)
+          end
+
+          it 'returns issues without the specified author_usernames' do
+            expect(resolve_issues(not: { author_username: [issue1.author.username, other_user.username] })).to contain_exactly(issue_by_reporter)
           end
         end
       end

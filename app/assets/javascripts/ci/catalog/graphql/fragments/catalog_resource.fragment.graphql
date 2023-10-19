@@ -1,0 +1,25 @@
+fragment CatalogResourceFields on CiCatalogResource {
+  id
+  icon
+  name
+  description
+  starCount
+  forksCount
+  latestVersion {
+    id
+    tagName
+    tagPath
+    releasedAt
+    author {
+      id
+      name
+      webUrl
+    }
+  }
+  rootNamespace {
+    id
+    fullPath
+    name
+  }
+  webPath
+}

@@ -9,8 +9,6 @@ module Todos
     # When issue_id is passed it deletes matching todos for one confidential issue.
     # When project_id is passed it deletes matching todos for all confidential issues of the project.
     class ConfidentialIssueService < ::Todos::Destroy::BaseService
-      extend ::Gitlab::Utils::Override
-
       attr_reader :issues
 
       def initialize(issue_id: nil, project_id: nil)

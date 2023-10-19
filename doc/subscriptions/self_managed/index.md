@@ -375,7 +375,7 @@ An invoice is generated for the renewal and available for viewing or download on
 
 When a subscription is set to auto-renew, it renews automatically on the
 expiration date (at midnight UTC) without a gap in available service. Subscriptions purchased through Customers Portal are set to auto-renew by default.
-The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal.
+The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal, if that number is higher than the current subscription quantity.
 Before auto-renewal you should [prepare for the renewal](#prepare-for-renewal-by-reviewing-your-account) at least 2 days before the renewal date, so that your changes synchronize to GitLab in time for your renewal. To auto-renew your subscription,
 you must have enabled the [synchronization of subscription data](#subscription-data-synchronization).
 
@@ -402,6 +402,14 @@ previous period), sign in to the [Customers Portal](https://customers.gitlab.com
 
 If you have difficulty during the renewal process, contact the
 [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
+
+#### Renew for fewer seats
+
+There are several options to renew a subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal:
+
+1. Turn off auto-renewal to avoid renewing at a higher seat quantity.
+1. [Manually renew](#renew-subscription-manually) within 15 days of subscription renewal date, and specify the desired seat quantity.
+1. Work with the Sales team to renew your subscription.
 
 ## Upgrade your subscription tier
 

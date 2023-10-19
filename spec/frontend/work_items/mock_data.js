@@ -1629,6 +1629,64 @@ export const availableWorkItemsResponse = {
   },
 };
 
+export const availableObjectivesResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/716',
+            iid: '122',
+            title: 'Objective 101',
+            state: 'OPEN',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/712',
+            iid: '118',
+            title: 'Objective 103',
+            state: 'OPEN',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/711',
+            iid: '117',
+            title: 'Objective 102',
+            state: 'OPEN',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const searchedObjectiveResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/716',
+            iid: '122',
+            title: 'Objective 101',
+            state: 'OPEN',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const searchedWorkItemsResponse = {
   data: {
     workspace: {
@@ -1963,6 +2021,21 @@ export const mockMilestoneWidgetResponse = {
   expired: false,
   id: 'gid://gitlab/Milestone/30',
   title: 'v4.0',
+};
+
+export const mockParentWidgetResponse = {
+  id: 'gid://gitlab/WorkItem/716',
+  iid: '122',
+  title: 'Objective 101',
+  confidential: false,
+  webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_items/122',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/6',
+    name: 'Objective',
+    iconName: 'issue-type-objective',
+    __typename: 'WorkItemType',
+  },
+  __typename: 'WorkItem',
 };
 
 export const projectMilestonesResponse = {
@@ -3556,6 +3629,18 @@ export const groupWorkItemsQueryResponse = {
       },
     },
   },
+};
+
+export const updateWorkItemMutationResponseFactory = (options) => {
+  const response = workItemResponseFactory(options);
+  return {
+    data: {
+      workItemUpdate: {
+        workItem: response.data.workItem,
+        errors: [],
+      },
+    },
+  };
 };
 
 export const updateWorkItemNotificationsMutationResponse = (subscribed) => ({

@@ -1,0 +1,59 @@
+<script>
+import { GlBanner, GlLink } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { CATALOG_FEEDBACK_DISMISSED_KEY } from '../../constants';
+
+export default {
+  components: {
+    GlBanner,
+    GlLink,
+  },
+  inject: ['pageTitle', 'pageDescription'],
+  data() {
+    return {
+      isFeedbackBannerDismissed: localStorage.getItem(CATALOG_FEEDBACK_DISMISSED_KEY) === 'true',
+    };
+  },
+  methods: {
+    handleDismissBanner() {
+      localStorage.setItem(CATALOG_FEEDBACK_DISMISSED_KEY, 'true');
+      this.isFeedbackBannerDismissed = true;
+    },
+  },
+  i18n: {
+    banner: {
+      title: __('Your feedback is important to us 👋'),
+      description: s__(
+        "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!",
+      ),
+      btnText: __('Give us some feedback'),
+    },
+    learnMore: __('Learn more'),
+  },
+  learnMorePath: helpPagePath('ci/components/index'),
+};
+</script>
+<template>
+  <div class="gl-border-b-1 gl-border-gray-100 gl-border-b-solid">
+    <gl-banner
+      v-if="!isFeedbackBannerDismissed"
+      class="gl-mt-5"
+      :title="$options.i18n.banner.title"
+      :button-text="$options.i18n.banner.btnText"
+      button-link="https://gitlab.com/gitlab-org/gitlab/-/issues/407556"
+      @close="handleDismissBanner"
+    >
+      <p>
+        {{ $options.i18n.banner.description }}
+      </p>
+    </gl-banner>
+    <h1 class="gl-font-size-h-display">{{ pageTitle }}</h1>
+    <p>
+      <span>{{ pageDescription }}</span>
+      <gl-link :href="$options.learnMorePath" target="_blank">{{
+        $options.i18n.learnMore
+      }}</gl-link>
+    </p>
+  </div>
+</template>

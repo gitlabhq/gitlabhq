@@ -11,7 +11,7 @@ module Types
       argument :assignee_usernames, [GraphQL::Types::String],
                 required: false,
                 description: 'Usernames of users not assigned to the issue.'
-      argument :author_username, GraphQL::Types::String,
+      argument :author_username, [GraphQL::Types::String],
                 required: false,
                 description: "Username of a user who didn't author the issue."
       argument :iids, [GraphQL::Types::String],
