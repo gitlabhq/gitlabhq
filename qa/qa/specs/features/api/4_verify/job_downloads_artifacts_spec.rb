@@ -9,39 +9,36 @@ module QA
       let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
 
       let!(:add_ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add CI file for job artifacts test'
-          commit.add_files(
-            [
-              file_path: '.gitlab-ci.yml',
-              content: <<~YAML
-                default:
-                  tags: ["#{executor}"]
+        create(:commit, project: project, commit_message: 'Add CI file for job artifacts test', actions: [
+          {
+            action: 'create',
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
+              default:
+                tags: ["#{executor}"]
 
-                stages:
-                  - build
-                  - test
+              stages:
+                - build
+                - test
 
-                job_creates_artifacts:
-                  stage: build
-                  script: mkdir tmp; echo #{random_test_string} > tmp/output.xml
-                  artifacts:
-                    paths:
-                      - tmp
+              job_creates_artifacts:
+                stage: build
+                script: mkdir tmp; echo #{random_test_string} > tmp/output.xml
+                artifacts:
+                  paths:
+                    - tmp
 
-                job_with_default_settings:
-                  stage: test
-                  script: cat $CI_PROJECT_DIR/tmp/output.xml
+              job_with_default_settings:
+                stage: test
+                script: cat $CI_PROJECT_DIR/tmp/output.xml
 
-                job_with_empty_dependencies:
-                  stage: test
-                  dependencies: []
-                  script: cat $CI_PROJECT_DIR/tmp/output.xml
-              YAML
-            ]
-          )
-        end
+              job_with_empty_dependencies:
+                stage: test
+                dependencies: []
+                script: cat $CI_PROJECT_DIR/tmp/output.xml
+            YAML
+          }
+        ])
       end
 
       let(:job_with_default_settings) do

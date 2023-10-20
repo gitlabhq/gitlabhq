@@ -139,8 +139,11 @@ export default {
       }
       return false;
     },
+    hasChildren() {
+      return this.totalIssuesCount + this.totalEpicsCount > 0;
+    },
     shouldRenderEpicCountables() {
-      return this.isEpicBoard && this.item.hasIssues;
+      return this.isEpicBoard && this.hasChildren;
     },
     shouldRenderEpicProgress() {
       return this.totalWeight > 0;

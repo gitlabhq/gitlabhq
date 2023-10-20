@@ -76,18 +76,13 @@ module QA
 
         it 'pushes and pulls a maven package via gradle', testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              gradle_publish_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle', 'gradle_upload_install_package.yaml.erb')).result(binding)
-              build_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build.gradle.erb')).result(binding)
+            gradle_publish_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle', 'gradle_upload_install_package.yaml.erb')).result(binding)
+            build_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build.gradle.erb')).result(binding)
 
-              commit.project = project
-              commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files(
-                [
-                  { file_path: '.gitlab-ci.yml', content: gradle_publish_install_yaml },
-                  { file_path: 'build.gradle', content: build_gradle }
-                ])
-            end
+            create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+              { action: 'create', file_path: '.gitlab-ci.yml', content: gradle_publish_install_yaml },
+              { action: 'create', file_path: 'build.gradle', content: build_gradle }
+            ])
           end
 
           project.visit!

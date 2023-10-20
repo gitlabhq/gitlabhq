@@ -95,9 +95,6 @@
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
-.if-merge-request-labels-record-queries: &if-merge-request-labels-record-queries
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:record-queries/'
-
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
@@ -2307,7 +2304,8 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request-labels-record-queries
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-default-branch-refs
       changes: *code-patterns
 

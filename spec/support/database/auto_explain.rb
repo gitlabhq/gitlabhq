@@ -120,8 +120,8 @@ module AutoExplain
       return false if connection.database_version.to_s[0..1].to_i < 14
       return false if connection.select_one('SHOW is_superuser')['is_superuser'] != 'on'
 
-      # This condition matches the pipeline rules for if-merge-request-labels-record-queries
-      return true if ENV['CI_MERGE_REQUEST_LABELS']&.include?('pipeline:record-queries')
+      # This condition matches the pipeline rules for if-merge-request
+      return true if %w[detached merged_result].include?(ENV['CI_MERGE_REQUEST_EVENT_TYPE'])
 
       # This condition matches the pipeline rules for if-default-branch-refs
       ENV['CI_COMMIT_REF_NAME'] == ENV['CI_DEFAULT_BRANCH'] && !ENV['CI_MERGE_REQUEST_IID']

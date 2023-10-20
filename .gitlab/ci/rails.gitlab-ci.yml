@@ -573,11 +573,8 @@ rspec:merge-auto-explain-logs:
     - .rails:rules:rspec-merge-auto-explain-logs
   stage: post-test
   needs: !reference ["rspec:coverage", "needs"]
-  before_script:
-    - source scripts/utils.sh
-    - source scripts/rspec_helpers.sh
   script:
-    - merge_auto_explain_logs
+    - scripts/merge-auto-explain-logs
   artifacts:
     name: auto-explain-logs
     expire_in: 31d

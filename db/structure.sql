@@ -33228,8 +33228,6 @@ CREATE INDEX index_namespaces_on_require_two_factor_authentication ON namespaces
 
 CREATE UNIQUE INDEX index_namespaces_on_runners_token_encrypted ON namespaces USING btree (runners_token_encrypted);
 
-CREATE INDEX index_namespaces_on_shared_and_extra_runners_minutes_limit ON namespaces USING btree (shared_runners_minutes_limit, extra_shared_runners_minutes_limit);
-
 CREATE INDEX index_namespaces_on_traversal_ids ON namespaces USING gin (traversal_ids);
 
 CREATE INDEX index_namespaces_on_traversal_ids_for_groups ON namespaces USING gin (traversal_ids) WHERE ((type)::text = 'Group'::text);

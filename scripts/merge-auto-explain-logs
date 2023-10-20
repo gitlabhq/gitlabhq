@@ -1,14 +1,41 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "set"
-require "json"
+require 'json'
+require 'set'
+require 'zlib'
+
+source = ENV['CI_MERGE_REQUEST_SOURCE_BRANCH_SHA']
+target = ENV['CI_MERGE_REQUEST_TARGET_BRANCH_SHA']
+log_path = ENV['RSPEC_AUTO_EXPLAIN_LOG_PATH']
+logs_path = File.dirname(log_path)
+
+exit(0) unless Dir.exist?(logs_path)
 
 fingerprints = Set.new
+jobs = Set.new
 
-ARGF.each_line do |line|
-  fingerprint = JSON.parse(line)['fingerprint']
-  $stdout.puts(line) && $stdout.flush if fingerprints.add?(fingerprint)
+JOB_NAME = %r{^(.*)\.\d+\.[^.]+\.ndjson\.gz$}
+
+Zlib::GzipWriter.open(log_path) do |log|
+  Dir[File.join(logs_path, '*.gz')].reject { |p| p == log_path }.each do |file|
+    job_name = File.basename(file)[JOB_NAME, 1]
+    Zlib::GzipReader.open(file) do |gz|
+      gz.each_line do |line|
+        json = JSON.parse(line)
+        fingerprint = json['fingerprint']
+
+        next unless fingerprints.add?(fingerprint)
+
+        jobs << job_name
+        json['job_name'] = job_name
+        log.puts(json.to_s)
+      end
+    end
+
+    File.delete(file)
+  end
 end
 
-warn("auto_explain log contains #{fingerprints.size} entries")
+warn("auto_explain log contains #{fingerprints.size} entries from: #{jobs.to_a.sort.join(', ')}")
+warn("auto_explain comparison of #{target} to #{source}") if source && target

@@ -13,20 +13,15 @@ module QA
         settings.set_default_number_of_approvals_required(1)
       end
 
-      Resource::Repository::Commit.fabricate_via_api! do |commit|
-        commit.project = project
-        commit.commit_message = 'Add CODEOWNERS'
-        commit.add_files(
-          [
-            {
-              file_path: 'CODEOWNERS',
-              content: <<~CONTENT
-                README.md @#{codeowner}
-              CONTENT
-            }
-          ]
-        )
-      end
+      create(:commit, project: project, commit_message: 'Add CODEOWNERS', actions: [
+        {
+          action: 'create',
+          file_path: 'CODEOWNERS',
+          content: <<~CONTENT
+            README.md @#{codeowner}
+          CONTENT
+        }
+      ])
 
       # Require approval from code owners on the default branch
       protected_branch = Resource::ProtectedBranch.fabricate_via_api! do |branch|

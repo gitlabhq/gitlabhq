@@ -10,16 +10,9 @@ module QA
         let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
 
         let!(:commit_ci_file) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files(
-              [
-                file_path: '.gitlab-ci.yml',
-                content: content
-              ]
-            )
-          end
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: content }
+          ])
         end
 
         let(:merge_request) do

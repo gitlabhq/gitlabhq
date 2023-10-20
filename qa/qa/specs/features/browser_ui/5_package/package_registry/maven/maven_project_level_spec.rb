@@ -89,24 +89,19 @@ module QA
         end
 
         it 'pushes and pulls a maven package via maven', testcase: params[:testcase] do
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/project', 'gitlab_ci.yaml.erb'))
-                                        .result(binding)
-              pom_xml = ERB.new(read_fixture('package_managers/maven/project', 'pom.xml.erb'))
-                                        .result(binding)
-              settings_xml = ERB.new(read_fixture('package_managers/maven/project', 'settings.xml.erb'))
-                                        .result(binding)
+          gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/project', 'gitlab_ci.yaml.erb'))
+                                    .result(binding)
+          pom_xml = ERB.new(read_fixture('package_managers/maven/project', 'pom.xml.erb'))
+                                    .result(binding)
+          settings_xml = ERB.new(read_fixture('package_managers/maven/project', 'settings.xml.erb'))
+                                    .result(binding)
 
-              commit.project = package_project
-              commit.commit_message = 'Add files'
-              commit.add_files(
-                [
-                  { file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml },
-                  { file_path: 'pom.xml', content: pom_xml },
-                  { file_path: 'settings.xml', content: settings_xml }
-                ])
-            end
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            create(:commit, project: package_project, actions: [
+              { action: 'create', file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml },
+              { action: 'create', file_path: 'pom.xml', content: pom_xml },
+              { action: 'create', file_path: 'settings.xml', content: settings_xml }
+            ])
           end
 
           package_project.visit!

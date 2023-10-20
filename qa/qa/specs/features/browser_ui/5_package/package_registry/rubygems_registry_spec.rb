@@ -39,36 +39,32 @@ module QA
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            rubygem_upload_yaml = ERB.new(read_fixture('package_managers/rubygems', 'rubygems_upload_package.yaml.erb')).result(binding)
-            rubygem_package_gemspec = ERB.new(read_fixture('package_managers/rubygems', 'package.gemspec.erb')).result(binding)
+          rubygem_upload_yaml = ERB.new(read_fixture('package_managers/rubygems', 'rubygems_upload_package.yaml.erb')).result(binding)
+          rubygem_package_gemspec = ERB.new(read_fixture('package_managers/rubygems', 'package.gemspec.erb')).result(binding)
 
-            commit.project = project
-            commit.commit_message = 'Add package files'
-            commit.add_files(
-              [
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: rubygem_upload_yaml
-                },
-                {
-                  file_path: 'lib/hello_gem.rb',
-                  content:
-                    <<~RUBY
-                      class HelloWorld
-                        def self.hi
-                          puts "Hello world!"
-                        end
-                      end
-                    RUBY
-                },
-                {
-                  file_path: "#{package.name}.gemspec",
-                  content: rubygem_package_gemspec
-                }
-              ]
-            )
-          end
+          create(:commit, project: project, commit_message: 'Add package files', actions: [
+            {
+              action: 'create',
+              file_path: '.gitlab-ci.yml',
+              content: rubygem_upload_yaml
+            },
+            {
+              action: 'create',
+              file_path: 'lib/hello_gem.rb',
+              content: <<~RUBY
+                class HelloWorld
+                  def self.hi
+                    puts "Hello world!"
+                  end
+                end
+              RUBY
+            },
+            {
+              action: 'create',
+              file_path: "#{package.name}.gemspec",
+              content: rubygem_package_gemspec
+            }
+          ])
         end
 
         project.visit!

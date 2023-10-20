@@ -75,25 +75,23 @@ module QA
         end
 
         it 'push and pull a npm package via CI', testcase: params[:testcase] do
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            npm_upload_yaml = ERB.new(read_fixture('package_managers/npm',
-              'npm_upload_package_group.yaml.erb')).result(binding)
-            package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
+          npm_upload_yaml = ERB.new(read_fixture('package_managers/npm',
+            'npm_upload_package_group.yaml.erb')).result(binding)
+          package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              commit.project = project
-              commit.commit_message = 'Add files'
-              commit.add_files([
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: npm_upload_yaml
-                },
-                {
-                  file_path: 'package.json',
-                  content: package_json
-                }
-              ])
-            end
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            create(:commit, project: project, actions: [
+              {
+                action: 'create',
+                file_path: '.gitlab-ci.yml',
+                content: npm_upload_yaml
+              },
+              {
+                action: 'create',
+                file_path: 'package.json',
+                content: package_json
+              }
+            ])
           end
 
           project.visit!
@@ -107,20 +105,17 @@ module QA
             expect(job).to be_successful(timeout: 800)
           end
 
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              npm_install_yaml = ERB.new(read_fixture('package_managers/npm',
-                'npm_install_package_group.yaml.erb')).result(binding)
+          npm_install_yaml = ERB.new(read_fixture('package_managers/npm',
+            'npm_install_package_group.yaml.erb')).result(binding)
 
-              commit.project = another_project
-              commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files([
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: npm_install_yaml
-                }
-              ])
-            end
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            create(:commit, project: another_project, commit_message: 'Add .gitlab-ci.yml', actions: [
+              {
+                action: 'create',
+                file_path: '.gitlab-ci.yml',
+                content: npm_install_yaml
+              }
+            ])
           end
 
           another_project.visit!

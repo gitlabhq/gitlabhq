@@ -71,23 +71,13 @@ module QA
         end
 
         it 'push and pull a npm package via CI', testcase: params[:testcase] do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            npm_upload_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_install_package_project.yaml.erb')).result(binding)
-            package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
+          npm_upload_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_install_package_project.yaml.erb')).result(binding)
+          package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files([
-                                {
-                                  file_path: '.gitlab-ci.yml',
-                                  content: npm_upload_install_yaml
-                                },
-                                {
-                                  file_path: 'package.json',
-                                  content: package_json
-                                }
-                              ])
-          end
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: npm_upload_install_yaml },
+            { action: 'create', file_path: 'package.json', content: package_json }
+          ])
 
           project.visit!
           Flow::Pipeline.visit_latest_pipeline

@@ -1,4 +1,4 @@
-import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
+import { GlLabel, GlLoadingIcon } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -47,13 +47,6 @@ describe('Board card component', () => {
 
   const findIssuableBlockedIcon = () => wrapper.findComponent(IssuableBlockedIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findEpicCountablesTotalTooltip = () => wrapper.findComponent(GlTooltip);
-  const findEpicCountables = () => wrapper.findByTestId('epic-countables');
-  const findEpicCountablesBadgeIssues = () => wrapper.findByTestId('epic-countables-counts-issues');
-  const findEpicCountablesBadgeWeight = () => wrapper.findByTestId('epic-countables-weight-issues');
-  const findEpicBadgeProgress = () => wrapper.findByTestId('epic-progress');
-  const findEpicCountablesTotalWeight = () => wrapper.findByTestId('epic-countables-total-weight');
-  const findEpicProgressTooltip = () => wrapper.findByTestId('epic-progress-tooltip-content');
   const findHiddenIssueIcon = () => wrapper.findByTestId('hidden-icon');
   const findWorkItemIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
@@ -70,7 +63,7 @@ describe('Board card component', () => {
 
   const mockApollo = createMockApollo();
 
-  const createWrapper = ({ props = {}, isEpicBoard = false, isGroupBoard = true } = {}) => {
+  const createWrapper = ({ props = {}, isGroupBoard = true } = {}) => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: isShowingLabelsQuery,
       data: {
@@ -97,8 +90,8 @@ describe('Board card component', () => {
       provide: {
         rootPath: '/',
         scopedLabelsAvailable: false,
-        isEpicBoard,
-        allowSubEpics: isEpicBoard,
+        isEpicBoard: false,
+        allowSubEpics: false,
         issuableType: TYPE_ISSUE,
         isGroupBoard,
         isApolloBoard: false,
@@ -507,119 +500,6 @@ describe('Board card component', () => {
       });
 
       expect(findLoadingIcon().exists()).toBe(true);
-    });
-  });
-
-  describe('is an epic board', () => {
-    const descendantCounts = {
-      closedEpics: 0,
-      closedIssues: 0,
-      openedEpics: 0,
-      openedIssues: 0,
-    };
-
-    const descendantWeightSum = {
-      closedIssues: 0,
-      openedIssues: 0,
-    };
-
-    beforeEach(() => {
-      createStore();
-    });
-
-    it('should render if the item has issues', () => {
-      createWrapper({
-        props: {
-          item: {
-            ...issue,
-            descendantCounts,
-            descendantWeightSum,
-            hasIssues: true,
-          },
-        },
-        isEpicBoard: true,
-      });
-
-      expect(findEpicCountables().exists()).toBe(true);
-    });
-
-    it('should not render if the item does not have issues', () => {
-      createWrapper({
-        item: {
-          ...issue,
-          descendantCounts,
-          descendantWeightSum,
-          hasIssues: false,
-        },
-      });
-
-      expect(findEpicCountablesBadgeIssues().exists()).toBe(false);
-    });
-
-    it('shows render item countBadge, weights, and progress correctly', () => {
-      createWrapper({
-        props: {
-          item: {
-            ...issue,
-            descendantCounts: {
-              ...descendantCounts,
-              openedIssues: 1,
-            },
-            descendantWeightSum: {
-              closedIssues: 10,
-              openedIssues: 5,
-            },
-            hasIssues: true,
-          },
-        },
-        isEpicBoard: true,
-      });
-
-      expect(findEpicCountablesBadgeIssues().text()).toBe('1');
-      expect(findEpicCountablesBadgeWeight().text()).toBe('15');
-      expect(findEpicBadgeProgress().text()).toBe('67%');
-    });
-
-    it('does not render progress when weight is zero', () => {
-      createWrapper({
-        props: {
-          item: {
-            ...issue,
-            descendantCounts: {
-              ...descendantCounts,
-              openedIssues: 1,
-            },
-            descendantWeightSum,
-            hasIssues: true,
-          },
-        },
-        isEpicBoard: true,
-      });
-
-      expect(findEpicBadgeProgress().exists()).toBe(false);
-    });
-
-    it('renders the tooltip with the correct data', () => {
-      createWrapper({
-        props: {
-          item: {
-            ...issue,
-            descendantCounts,
-            descendantWeightSum: {
-              closedIssues: 10,
-              openedIssues: 5,
-            },
-            hasIssues: true,
-          },
-        },
-        isEpicBoard: true,
-      });
-
-      const tooltip = findEpicCountablesTotalTooltip();
-      expect(tooltip).toBeDefined();
-
-      expect(findEpicCountablesTotalWeight().text()).toBe('15');
-      expect(findEpicProgressTooltip().text()).toBe('10 of 15 weight completed');
     });
   });
 });

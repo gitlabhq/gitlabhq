@@ -36,21 +36,21 @@ module QA
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            pypi_yaml = ERB.new(read_fixture('package_managers/pypi', 'pypi_upload_install_package.yaml.erb')).result(binding)
-            pypi_setup_file = ERB.new(read_fixture('package_managers/pypi', 'setup.py.erb')).result(binding)
+          pypi_yaml = ERB.new(read_fixture('package_managers/pypi', 'pypi_upload_install_package.yaml.erb')).result(binding)
+          pypi_setup_file = ERB.new(read_fixture('package_managers/pypi', 'setup.py.erb')).result(binding)
 
-            commit.project = project
-            commit.commit_message = 'Add files'
-            commit.add_files([{
-                                  file_path: '.gitlab-ci.yml',
-                                  content: pypi_yaml
-                              },
-                              {
-                                  file_path: 'setup.py',
-                                  content: pypi_setup_file
-                              }])
-          end
+          create(:commit, project: project, actions: [
+            {
+              action: 'create',
+              file_path: '.gitlab-ci.yml',
+              content: pypi_yaml
+            },
+            {
+              action: 'create',
+              file_path: 'setup.py',
+              content: pypi_setup_file
+            }
+          ])
         end
 
         project.visit!

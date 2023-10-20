@@ -88,60 +88,54 @@ module QA
           Flow::Login.sign_in
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              commit.project = project
-              commit.commit_message = 'Add files'
-              commit.update_files(
-                [
-                  {
-                      file_path: '.gitlab-ci.yml',
-                      content: <<~YAML
-                        stages:
-                          - deploy
-                          - install
+            create(:commit, project: project, actions: [
+              {
+                action: 'update',
+                file_path: '.gitlab-ci.yml',
+                content: <<~YAML
+                  stages:
+                    - deploy
+                    - install
 
-                        deploy:
-                          stage: deploy
-                          image: mcr.microsoft.com/dotnet/sdk:5.0
-                          script:
-                            - dotnet restore -p:Configuration=Release
-                            - dotnet build -c Release
-                            - dotnet pack -c Release -p:PackageID=#{package.name}
-                            - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
-                            - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
-                          rules:
-                            - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
-                          tags:
-                            - "runner-for-#{project.name}"
+                  deploy:
+                    stage: deploy
+                    image: mcr.microsoft.com/dotnet/sdk:5.0
+                    script:
+                      - dotnet restore -p:Configuration=Release
+                      - dotnet build -c Release
+                      - dotnet pack -c Release -p:PackageID=#{package.name}
+                      - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
+                      - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
+                    rules:
+                      - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
+                    tags:
+                      - "runner-for-#{project.name}"
 
-                        install:
-                          stage: install
-                          image: mcr.microsoft.com/dotnet/sdk:5.0
-                          script:
-                            - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
-                            - "dotnet add dotnetcore.csproj package #{package.name} --version 1.0.0"
-                          rules:
-                            - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
-                          tags:
-                            - "runner-for-#{project.name}"
-                      YAML
-                  },
-                  {
-                    file_path: 'dotnetcore.csproj',
-                    content: <<~EOF
-                          <Project Sdk="Microsoft.NET.Sdk">
-
-                            <PropertyGroup>
-                              <OutputType>Exe</OutputType>
-                              <TargetFramework>net5.0</TargetFramework>
-                            </PropertyGroup>
-
-                          </Project>
-                    EOF
-                }
-                ]
-              )
-            end
+                  install:
+                    stage: install
+                    image: mcr.microsoft.com/dotnet/sdk:5.0
+                    script:
+                      - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
+                      - "dotnet add dotnetcore.csproj package #{package.name} --version 1.0.0"
+                    rules:
+                      - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
+                    tags:
+                      - "runner-for-#{project.name}"
+                YAML
+              },
+              {
+                action: 'update',
+                file_path: 'dotnetcore.csproj',
+                content: <<~XML
+                  <Project Sdk="Microsoft.NET.Sdk">
+                    <PropertyGroup>
+                      <OutputType>Exe</OutputType>
+                      <TargetFramework>net5.0</TargetFramework>
+                    </PropertyGroup>
+                  </Project>
+                XML
+              }
+            ])
           end
 
           project.visit!
