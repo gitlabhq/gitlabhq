@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Style/SignalException
 
 SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags#feature-flag-definition-and-validation)."
 FEATURE_FLAG_LABEL = "feature flag"

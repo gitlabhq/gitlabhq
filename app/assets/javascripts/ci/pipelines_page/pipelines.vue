@@ -88,11 +88,6 @@ export default {
       type: Object,
       required: true,
     },
-    registrationToken: {
-      type: String,
-      required: false,
-      default: null,
-    },
     defaultVisibilityPipelineIdType: {
       type: String,
       required: false,
@@ -404,7 +399,6 @@ export default {
         v-else-if="stateToRender === $options.stateMap.emptyState"
         :empty-state-svg-path="$options.noPipelinesSvgPath"
         :can-set-ci="canCreatePipeline"
-        :registration-token="registrationToken"
       />
 
       <gl-empty-state

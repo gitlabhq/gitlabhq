@@ -153,6 +153,12 @@ Style/FrozenStringLiteralComment:
 Style/SpecialGlobalVars:
   EnforcedStyle: use_builtin_english_names
 
+Style/SignalException:
+  Exclude:
+    # Danger defines its own `fail` method
+    - '**/*/Dangerfile'
+    - 'tooling/danger/**/*.rb'
+
 RSpec/FilePath:
   Exclude:
     - 'qa/**/*'

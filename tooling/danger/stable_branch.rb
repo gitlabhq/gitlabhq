@@ -56,7 +56,6 @@ module Tooling
       Read the "QA e2e:package-and-test-ee" section for more details.
       MSG
 
-      # rubocop:disable Style/SignalException
       def check!
         return unless valid_stable_branch?
 
@@ -77,7 +76,6 @@ module Tooling
           warn WARN_PACKAGE_AND_TEST_MESSAGE
         end
       end
-      # rubocop:enable Style/SignalException
 
       def encourage_package_and_qa_execution?
         valid_stable_branch? &&

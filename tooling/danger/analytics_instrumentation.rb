@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/SignalException
-
 module Tooling
   module Danger
     module AnalyticsInstrumentation

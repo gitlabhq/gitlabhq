@@ -826,7 +826,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/controllers/projects/work_items_controller_spec.rb'
     - 'spec/controllers/projects_controller_spec.rb'
     - 'spec/controllers/repositories/lfs_storage_controller_spec.rb'
-    - 'spec/experiments/ios_specific_templates_experiment_spec.rb'
     - 'spec/features/admin/admin_projects_spec.rb'
     - 'spec/features/admin/users/user_spec.rb'
     - 'spec/features/admin/users/users_spec.rb'

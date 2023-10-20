@@ -74,7 +74,7 @@ return if helper.mr_labels.include?(DATABASE_APPROVED_LABEL)
 migration_testing_has_run = helper.mr_labels.include?(DATABASE_TESTING_RUN_LABEL)
 community_contribution = helper.mr_labels.include?(COMMUNITY_CONTRIBUTION_LABEL)
 if non_geo_migration_created && !migration_testing_has_run && !community_contribution
-  fail DB_MIGRATION_TESTING_REQUIRED_MESSAGE # rubocop:disable Style/SignalException
+  fail DB_MIGRATION_TESTING_REQUIRED_MESSAGE
 end
 
 if helper.mr_labels.include?('database') || database.changes.any?

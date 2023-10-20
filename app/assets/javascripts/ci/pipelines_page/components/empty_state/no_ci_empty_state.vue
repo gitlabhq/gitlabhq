@@ -1,9 +1,7 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import PipelinesCiTemplates from './pipelines_ci_templates.vue';
-import IosTemplates from './ios_templates.vue';
 
 export default {
   i18n: {
@@ -12,9 +10,7 @@ export default {
   name: 'PipelinesEmptyState',
   components: {
     GlEmptyState,
-    GitlabExperiment,
     PipelinesCiTemplates,
-    IosTemplates,
   },
   props: {
     emptyStateSvgPath: {
@@ -25,30 +21,15 @@ export default {
       type: Boolean,
       required: true,
     },
-    registrationToken: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
 };
 </script>
 <template>
-  <div>
-    <gitlab-experiment v-if="canSetCi" name="ios_specific_templates">
-      <template #control>
-        <pipelines-ci-templates />
-      </template>
-      <template #candidate>
-        <ios-templates :registration-token="registrationToken" />
-      </template>
-    </gitlab-experiment>
-    <gl-empty-state
-      v-else
-      title=""
-      :svg-path="emptyStateSvgPath"
-      :svg-height="null"
-      :description="$options.i18n.noCiDescription"
-    />
-  </div>
+  <pipelines-ci-templates v-if="canSetCi" />
+  <gl-empty-state
+    v-else
+    :svg-path="emptyStateSvgPath"
+    :svg-height="null"
+    :description="$options.i18n.noCiDescription"
+  />
 </template>

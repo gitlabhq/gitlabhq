@@ -1,11 +1,8 @@
 import '~/commons';
 import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState } from '@gitlab/ui';
-import { stubExperiments } from 'helpers/experimentation_helper';
 import EmptyState from '~/ci/pipelines_page/components/empty_state/no_ci_empty_state.vue';
-import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import PipelinesCiTemplates from '~/ci/pipelines_page/components/empty_state/pipelines_ci_templates.vue';
-import IosTemplates from '~/ci/pipelines_page/components/empty_state/ios_templates.vue';
 
 describe('Pipelines Empty State', () => {
   let wrapper;
@@ -13,7 +10,6 @@ describe('Pipelines Empty State', () => {
   const findIllustration = () => wrapper.find('img');
   const findButton = () => wrapper.find('a');
   const pipelinesCiTemplates = () => wrapper.findComponent(PipelinesCiTemplates);
-  const iosTemplates = () => wrapper.findComponent(IosTemplates);
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMount(EmptyState, {
@@ -30,40 +26,17 @@ describe('Pipelines Empty State', () => {
       },
       stubs: {
         GlEmptyState,
-        GitlabExperiment,
       },
     });
   };
 
   describe('when user can configure CI', () => {
-    describe('when the ios_specific_templates experiment is active', () => {
-      beforeEach(() => {
-        stubExperiments({ ios_specific_templates: 'candidate' });
-        createWrapper();
-      });
-
-      it('should render the iOS templates', () => {
-        expect(iosTemplates().exists()).toBe(true);
-      });
-
-      it('should not render the CI/CD templates', () => {
-        expect(pipelinesCiTemplates().exists()).toBe(false);
-      });
+    beforeEach(() => {
+      createWrapper();
     });
 
-    describe('when the ios_specific_templates experiment is inactive', () => {
-      beforeEach(() => {
-        stubExperiments({ ios_specific_templates: 'control' });
-        createWrapper();
-      });
-
-      it('should render the CI/CD templates', () => {
-        expect(pipelinesCiTemplates().exists()).toBe(true);
-      });
-
-      it('should not render the iOS templates', () => {
-        expect(iosTemplates().exists()).toBe(false);
-      });
+    it('should render the CI/CD templates', () => {
+      expect(pipelinesCiTemplates().exists()).toBe(true);
     });
   });
 
