@@ -687,7 +687,7 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
 
   module Types
     module Geo
-      # rubocop:disable Graphql/AuthorizeTypes because it is included
+      # rubocop:disable Graphql/AuthorizeTypes -- because it is included
       class CoolWidgetRegistryType < BaseObject
         graphql_name 'CoolWidgetRegistry'
 

@@ -8,16 +8,16 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   include ProjectHelpers
   include UserHelpers
 
-  let(:admin) { create(:user, :admin) }
-  let(:guest) { create(:user) }
-  let(:author) { create(:user) }
-  let(:assignee) { create(:user) }
-  let(:reporter) { create(:user) }
-  let(:maintainer) { create(:user) }
-  let(:owner) { create(:user) }
-  let(:group) { create(:group, :public) }
-  let(:reporter_from_group_link) { create(:user) }
-  let(:non_member) { create(:user) }
+  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:admin) { create(:user, :admin) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:author) { create(:user) }
+  let_it_be(:assignee) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:reporter_from_group_link) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
   let(:support_bot) { Users::Internal.support_bot }
   let(:alert_bot) { Users::Internal.alert_bot }
 
@@ -70,12 +70,12 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   end
 
   context 'a private project' do
-    let(:project) { create(:project, :private) }
-    let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
-    let(:issue_no_assignee) { create(:issue, project: project) }
+    let_it_be(:project) { create(:project, :private) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
+    let_it_be_with_reload(:issue_no_assignee) { create(:issue, project: project) }
     let(:new_issue) { build(:issue, project: project, assignees: [assignee], author: author) }
 
-    before do
+    before_all do
       project.add_guest(guest)
       project.add_guest(author)
       project.add_guest(assignee)
@@ -84,6 +84,10 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       group.add_reporter(reporter_from_group_link)
 
       create(:project_group_link, group: group, project: project)
+    end
+
+    it 'allows guests to award emoji' do
+      expect(permissions(guest, issue)).to be_allowed(:award_emoji)
     end
 
     it 'allows guests to read issues' do
@@ -191,13 +195,13 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   end
 
   context 'a public project' do
-    let(:project) { create(:project, :public) }
-    let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
-    let(:issue_no_assignee) { create(:issue, project: project) }
-    let(:issue_locked) { create(:issue, :locked, project: project, author: author, assignees: [assignee]) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
+    let_it_be_with_reload(:issue_no_assignee) { create(:issue, project: project) }
+    let_it_be_with_reload(:issue_locked) { create(:issue, :locked, project: project, author: author, assignees: [assignee]) }
     let(:new_issue) { build(:issue, project: project) }
 
-    before do
+    before_all do
       project.add_guest(guest)
       project.add_reporter(reporter)
       project.add_maintainer(maintainer)
@@ -206,6 +210,10 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       group.add_reporter(reporter_from_group_link)
 
       create(:project_group_link, group: group, project: project)
+    end
+
+    it 'allows guests to award emoji' do
+      expect(permissions(guest, issue)).to be_allowed(:award_emoji)
     end
 
     it 'does not allow anonymous user to create todos' do
@@ -304,12 +312,12 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     it_behaves_like 'support bot with service desk enabled'
 
     context 'when issues are private' do
-      before do
+      before_all do
         project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
       end
 
-      let(:issue) { create(:issue, project: project, author: author) }
-      let(:visitor) { create(:user) }
+      let_it_be_with_reload(:issue) { create(:issue, project: project, author: author) }
+      let_it_be(:visitor) { create(:user) }
 
       it 'forbids visitors from viewing issues' do
         expect(permissions(visitor, issue)).to be_disallowed(:read_issue)
@@ -423,10 +431,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'when accounting for notes widget' do
-      let(:policy) { described_class.new(reporter, note) }
-
       context 'and notes widget is disabled for issue' do
-        before do
+        before_all do
           WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
         end
 
@@ -447,6 +453,18 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
           expect(permissions(owner, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal, :set_note_created_at)
         end
       end
+    end
+  end
+
+  context 'when issue belongs to a group' do
+    let_it_be_with_reload(:issue) { create(:issue, :group_level, namespace: group) }
+
+    before_all do
+      group.add_guest(guest)
+    end
+
+    it 'allows guests to award emoji' do
+      expect(permissions(guest, issue)).to be_allowed(:award_emoji)
     end
   end
 

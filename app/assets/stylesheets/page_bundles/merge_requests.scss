@@ -994,24 +994,13 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.submit-review-dropdown {
-  &.show .dropdown-menu {
-    width: calc(100vw - 20px);
-    max-width: 680px;
-    max-height: calc(100vh - 50px);
+.submit-review-dropdown .gl-new-dropdown-panel {
+  max-width: none;
+}
 
-    .gl-dropdown-inner {
-      max-height: none !important;
-    }
-  }
-
-  .gl-dropdown-contents {
-    padding: $gl-spacing-scale-4 !important;
-  }
-
-  .md-preview-holder {
-    max-height: 182px;
-  }
+.submit-review-dropdown-form {
+  width: calc(100vw - 20px);
+  max-width: 680px;
 }
 
 .submit-review-dropdown-animated {
@@ -1128,7 +1117,7 @@ $tabs-holder-z-index: 250;
     padding-right: 0;
   }
 
-  .dropdown {
+  .submit-review-dropdown {
     margin-left: $grid-size;
   }
 }

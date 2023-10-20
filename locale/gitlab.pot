@@ -10184,6 +10184,9 @@ msgstr ""
 msgid "CiCatalog|CI/CD Catalog resource"
 msgstr ""
 
+msgid "CiCatalog|CI/CD catalog resource"
+msgstr ""
+
 msgid "CiCatalog|Component ID not found, or you do not have permission to access component."
 msgstr ""
 
@@ -41830,7 +41833,7 @@ msgstr ""
 msgid "ScanResultPolicy|Pre-existing"
 msgstr ""
 
-msgid "ScanResultPolicy|Prevent approval by anyone who added a commit"
+msgid "ScanResultPolicy|Prevent approval by commit author"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent approval by merge request's author"
@@ -41845,7 +41848,7 @@ msgstr ""
 msgid "ScanResultPolicy|Recommended setting"
 msgstr ""
 
-msgid "ScanResultPolicy|Remove all approvals when commit is added"
+msgid "ScanResultPolicy|Remove all approvals with new commit"
 msgstr ""
 
 msgid "ScanResultPolicy|Require the user's password to approve"

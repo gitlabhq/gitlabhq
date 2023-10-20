@@ -22,7 +22,7 @@ describe('content_editor/extensions/horizontal_rule', () => {
 
   it.each`
     input      | insertedNodes
-    ${'---'}   | ${() => [p(), horizontalRule()]}
+    ${'---'}   | ${() => [horizontalRule(), p()]}
     ${'--'}    | ${() => [p()]}
     ${'---x'}  | ${() => [p()]}
     ${' ---x'} | ${() => [p()]}

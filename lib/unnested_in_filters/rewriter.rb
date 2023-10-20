@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable CodeReuse/ActiveRecord (This module is generating ActiveRecord relations therefore using AR methods is necessary)
+# rubocop:disable CodeReuse/ActiveRecord -- This module is generating ActiveRecord relations therefore using AR methods is necessary
 module UnnestedInFilters
   class Rewriter
     include Gitlab::Utils::StrongMemoize
@@ -295,3 +295,4 @@ module UnnestedInFilters
     end
   end
 end
+# rubocop:enable CodeReuse/ActiveRecord

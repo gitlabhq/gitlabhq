@@ -6,7 +6,7 @@ module Gitlab
       class AnyOversizedBlobs
         def initialize(project:, changes:, file_size_limit_megabytes:)
           @project = project
-          @newrevs = changes.pluck(:newrev).compact # rubocop:disable CodeReuse/ActiveRecord just plucking from an array
+          @newrevs = changes.pluck(:newrev).compact # rubocop:disable CodeReuse/ActiveRecord -- Array#pluck
           @file_size_limit_megabytes = file_size_limit_megabytes
         end
 

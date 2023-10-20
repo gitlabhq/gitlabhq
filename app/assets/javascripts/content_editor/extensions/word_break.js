@@ -24,7 +24,7 @@ export default Node.create({
   },
 
   addInputRules() {
-    const inputRegex = /^<wbr>$/;
+    const inputRegex = /<wbr>$/;
 
     return [nodeInputRule({ find: inputRegex, type: this.type })];
   },

@@ -2,7 +2,7 @@
 
 module Resolvers
   module Namespaces
-    # rubocop:disable Graphql/ResolverType (inherited from Resolvers::WorkItemsResolver)
+    # rubocop:disable Graphql/ResolverType -- inherited from Resolvers::WorkItemsResolver
     class WorkItemsResolver < ::Resolvers::WorkItemsResolver
       def ready?(**args)
         return false if Feature.disabled?(:namespace_level_work_items, resource_parent)

@@ -537,6 +537,7 @@ lib/gitlab/checks/**
 /doc/administration/repository_storage_paths.md @eread
 /doc/administration/restart_gitlab.md @axil
 /doc/administration/review_abuse_reports.md @phillipwells
+/doc/administration/review_spam_logs.md @phillipwells
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @msedlakjakubowski
 /doc/administration/settings/continuous_integration.md @marcel.amirault
@@ -764,35 +765,34 @@ lib/gitlab/checks/**
 /doc/development/audit_event_guide/ @eread
 /doc/development/auto_devops.md @phillipwells
 /doc/development/avoiding_required_stops.md @axil
-/doc/development/backend/ @sselhorn
 /doc/development/backend/create_source_code_be/ @msedlakjakubowski
 /doc/development/build_test_package.md @axil
 /doc/development/bulk_import.md @eread @ashrafkhamis
 /doc/development/cached_queries.md @jglassman1
 /doc/development/cascading_settings.md @jglassman1
+/doc/development/cells/ @lciutacu
 /doc/development/chatops_on_gitlabcom.md @phillipwells
 /doc/development/cicd/ @marcel.amirault
 /doc/development/cloud_connector/ @jglassman1
 /doc/development/code_intelligence/ @aqualls
 /doc/development/code_owners/ @msedlakjakubowski
 /doc/development/code_suggestions/ @jglassman1
-/doc/development/contributing/ @sselhorn
+/doc/development/contributing/verify/ @marcel.amirault
 /doc/development/database/ @aqualls
 /doc/development/database/filtering_by_label.md @msedlakjakubowski
 /doc/development/database/multiple_databases.md @lciutacu
 /doc/development/database_review.md @aqualls
 /doc/development/developing_with_solargraph.md @msedlakjakubowski
-/doc/development/development_processes.md @sselhorn
 /doc/development/distribution/ @axil
 /doc/development/documentation/ @sselhorn
 /doc/development/export_csv.md @eread @ashrafkhamis
-/doc/development/fe_guide/ @sselhorn
 /doc/development/fe_guide/customizable_dashboards.md @lciutacu
 /doc/development/fe_guide/merge_request_widget_extensions.md @aqualls
+/doc/development/fe_guide/onboarding_course/ @sselhorn
 /doc/development/fe_guide/source_editor.md @msedlakjakubowski
+/doc/development/fe_guide/style/ @aqualls
+/doc/development/fe_guide/view_component.md @sselhorn
 /doc/development/feature_categorization/ @sselhorn
-/doc/development/feature_development.md @sselhorn
-/doc/development/feature_flags/ @sselhorn
 /doc/development/fips_compliance.md @msedlakjakubowski
 /doc/development/geo.md @axil
 /doc/development/geo/ @axil
@@ -806,17 +806,14 @@ lib/gitlab/checks/**
 /doc/development/identity_verification.md @phillipwells
 /doc/development/image_scaling.md @lciutacu
 /doc/development/import_export.md @eread @ashrafkhamis
-/doc/development/index.md @sselhorn
 /doc/development/integrations/ @eread @ashrafkhamis
 /doc/development/integrations/secure.md @rdickenson
 /doc/development/integrations/secure_partner_integration.md @rdickenson
 /doc/development/internal_analytics/ @lciutacu
 /doc/development/internal_api/ @msedlakjakubowski
-/doc/development/internal_users.md @sselhorn
 /doc/development/issuable-like-models.md @msedlakjakubowski
 /doc/development/issue_types.md @msedlakjakubowski
 /doc/development/kubernetes.md @phillipwells
-/doc/development/labels/ @sselhorn
 /doc/development/lfs.md @msedlakjakubowski
 /doc/development/maintenance_mode.md @axil
 /doc/development/merge_request_concepts/ @aqualls
@@ -828,19 +825,18 @@ lib/gitlab/checks/**
 /doc/development/packages/ @phillipwells
 /doc/development/packages/cleanup_policies.md @marcel.amirault
 /doc/development/packages/dependency_proxy.md @marcel.amirault
+/doc/development/packages/harbor_registry_development.md @marcel.amirault
 /doc/development/permissions.md @jglassman1
 /doc/development/permissions/ @jglassman1
 /doc/development/policies.md @jglassman1
 /doc/development/project_templates.md @msedlakjakubowski
+/doc/development/project_templates/ @msedlakjakubowski
 /doc/development/rails_endpoints/ @msedlakjakubowski
 /doc/development/real_time.md @jglassman1
-/doc/development/rubocop_development_guide.md @sselhorn
 /doc/development/search/ @ashrafkhamis
 /doc/development/sec/ @rdickenson
-/doc/development/secure_coding_guidelines.md @sselhorn
 /doc/development/spam_protection_and_captcha/ @phillipwells
 /doc/development/sql.md @aqualls
-/doc/development/testing_guide/ @sselhorn
 /doc/development/value_stream_analytics.md @lciutacu
 /doc/development/value_stream_analytics/ @lciutacu
 /doc/development/work_items.md @msedlakjakubowski
@@ -917,6 +913,7 @@ lib/gitlab/checks/**
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/feature_flags.md @sselhorn
+/doc/user/gitlab_duo_chat.md @sselhorn
 /doc/user/group/ @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
@@ -982,7 +979,7 @@ lib/gitlab/checks/**
 /doc/user/project/remote_development/ @ashrafkhamis
 /doc/user/project/repository/code_suggestions/ @jglassman1
 /doc/user/project/repository/file_finder.md @ashrafkhamis
-/doc/user/project/repository/managing_large_repositories.md @eread
+/doc/user/project/repository/monorepos/ @eread
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/settings/import_export.md @eread @ashrafkhamis
 /doc/user/project/settings/import_export_troubleshooting.md @eread @ashrafkhamis
@@ -995,7 +992,6 @@ lib/gitlab/checks/**
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
 /doc/user/search/command_palette.md @sselhorn
-/doc/user/shortcuts.md @ashrafkhamis
 /doc/user/snippets.md @msedlakjakubowski
 /doc/user/ssh.md @jglassman1
 /doc/user/storage_management_automation.md @fneill

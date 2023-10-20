@@ -161,6 +161,16 @@
   }
 }
 
+.right-sidebar.wiki-sidebar {
+  .active > .wiki-list {
+    a,
+    .wiki-list-expand-button,
+    .wiki-list-collapse-button {
+      color: $white;
+    }
+  }
+}
+
 ul.wiki-pages-list.content-list {
   a {
     color: var(--blue-600, $blue-600);

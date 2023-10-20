@@ -228,3 +228,7 @@ include:
   - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/templates/merge_request_pipelines.yml'
     rules:
       - <<: *if-not-security-canonical-sync
+  - local: .gitlab/ci/gitlab-com/*.gitlab-ci.yml
+    rules:
+      - if: '$CI_SERVER_HOST == "gitlab.com"'
+      - if: '$CI_SERVER_HOST == "jihulab.com"'

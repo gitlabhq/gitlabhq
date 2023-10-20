@@ -200,6 +200,10 @@ module ProjectsHelper
       .load_in_batch_for_projects(projects)
   end
 
+  def load_catalog_resources(projects)
+    ActiveRecord::Associations::Preloader.new(records: projects, associations: :catalog_resource).call
+  end
+
   def last_pipeline_from_status_cache(project)
     if Feature.enabled?(:last_pipeline_from_pipeline_status, project)
       pipeline_status = project.pipeline_status

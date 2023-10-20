@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Graphql/ResolverType (inherited from Issues::BaseParentResolver)
+# rubocop:disable Graphql/ResolverType -- inherited from Issues::BaseParentResolver
 module Resolvers
   class GroupIssuesResolver < Issues::BaseParentResolver
     def self.issuable_collection_name

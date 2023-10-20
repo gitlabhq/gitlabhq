@@ -1,4 +1,4 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -50,7 +50,7 @@ function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) 
 const findCommentTextarea = () => wrapper.findByTestId('comment-textarea');
 const findSubmitButton = () => wrapper.findByTestId('submit-review-button');
 const findForm = () => wrapper.findByTestId('submit-gl-form');
-const findSubmitDropdown = () => wrapper.findComponent(GlDropdown);
+const findSubmitDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
 describe('Batch comments submit dropdown', () => {
   afterEach(() => {

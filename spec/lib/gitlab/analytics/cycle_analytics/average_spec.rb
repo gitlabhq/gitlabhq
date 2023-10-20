@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Analytics::CycleAnalytics::Average, feature_category: :value_stream_management do
   let_it_be(:project) { create(:project) }
-
   let_it_be(:issue_1) do
     # Duration: 10 days
     create(:issue, project: project, created_at: 20.days.ago).tap do |issue|
@@ -30,8 +29,12 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Average, feature_category: :va
 
   let(:query) { Issue.joins(:metrics).in_projects(project.id) }
 
-  around do |example|
-    freeze_time { example.run }
+  before_all do
+    freeze_time
+  end
+
+  after :all do
+    unfreeze_time
   end
 
   subject(:average) { described_class.new(stage: stage, query: query) }
@@ -45,8 +48,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Average, feature_category: :va
       it { is_expected.to eq(nil) }
     end
 
-    context 'returns the average duration in seconds',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413223' do
+    context 'returns the average duration in seconds' do
       it { is_expected.to be_within(0.5).of(7.5.days.to_f) }
     end
   end
