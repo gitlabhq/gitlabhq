@@ -134,7 +134,7 @@ RSpec.describe Tooling::Danger::FeatureFlag do
       context 'when group is not nil' do
         it 'is true only if MR has the same group label' do
           expect(found.group_match_mr_label?(group)).to eq true
-          expect(found.group_match_mr_label?('group::authentication and authorization')).to eq false
+          expect(found.group_match_mr_label?('group::authentication')).to eq false
         end
       end
     end

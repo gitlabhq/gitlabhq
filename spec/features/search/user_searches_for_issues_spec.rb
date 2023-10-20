@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
 
   let!(:issue1) { create(:issue, title: 'issue Foo', project: project, created_at: 1.hour.ago) }

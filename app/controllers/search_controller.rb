@@ -40,10 +40,6 @@ class SearchController < ApplicationController
     update_scope_for_code_search
   end
 
-  before_action only: :show do
-    push_frontend_feature_flag(:search_notes_hide_archived_projects, current_user)
-  end
-
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
   layout 'search'

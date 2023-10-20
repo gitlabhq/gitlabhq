@@ -3,8 +3,9 @@
 module Projects
   module Ml
     class ModelsController < ::Projects::ApplicationController
-      before_action :check_feature_enabled
-      before_action :set_model, only: [:show]
+      before_action :authorize_read_model_registry!
+      before_action :authorize_write_model_registry!, only: [:destroy]
+      before_action :set_model, only: [:show, :destroy]
       feature_category :mlops
 
       MAX_MODELS_PER_PAGE = 20
@@ -21,10 +22,22 @@ module Projects
 
       def show; end
 
+      def destroy
+        @model.destroy!
+
+        redirect_to project_ml_models_path(@project),
+          status: :found,
+          notice: s_("MlExperimentTracking|Model removed")
+      end
+
       private
 
-      def check_feature_enabled
+      def authorize_read_model_registry!
         render_404 unless can?(current_user, :read_model_registry, @project)
+      end
+
+      def authorize_write_model_registry!
+        render_404 unless can?(current_user, :write_model_registry, @project)
       end
 
       def set_model

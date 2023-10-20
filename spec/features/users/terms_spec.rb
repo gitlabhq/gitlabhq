@@ -27,7 +27,7 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
   end
 
   context 'when user is a project bot' do
-    let(:project_bot) { create(:user, :no_super_sidebar, :project_bot) }
+    let(:project_bot) { create(:user, :project_bot) }
 
     before do
       enforce_terms
@@ -42,7 +42,7 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
   end
 
   context 'when user is a service account' do
-    let(:service_account) { create(:user, :no_super_sidebar, :service_account) }
+    let(:service_account) { create(:user, :service_account) }
 
     before do
       enforce_terms
@@ -57,7 +57,7 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
   end
 
   context 'when signed in' do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
 
     before do
       sign_in(user)
@@ -115,7 +115,7 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
 
         # Application settings are cached for a minute
         travel_to 2.minutes.from_now do
-          within('.nav-sidebar') do
+          within('.contextual-nav') do
             click_link 'Issues'
           end
 

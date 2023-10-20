@@ -156,6 +156,14 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
               described_class.new(current_user: admin, params: { creator_id: '1' }).execute
             end
           end
+
+          context 'by version' do
+            it 'calls the corresponding scope on Ci::Runner' do
+              expect(Ci::Runner).to receive(:with_version_prefix).with('15.').and_call_original
+
+              described_class.new(current_user: admin, params: { version_prefix: '15.' }).execute
+            end
+          end
         end
 
         context 'sorting' do
@@ -299,6 +307,9 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
     let_it_be(:runner_project_5) { create(:ci_runner, :project, contacted_at: 3.minutes.ago, tag_list: %w[runner_tag], projects: [project_4]) }
     let_it_be(:runner_project_6) { create(:ci_runner, :project, contacted_at: 2.minutes.ago, projects: [project_5]) }
     let_it_be(:runner_project_7) { create(:ci_runner, :project, contacted_at: 1.minute.ago, projects: [project_6]) }
+    let_it_be(:runner_manager_1) { create(:ci_runner_machine, runner: runner_sub_group_1, version: '15.11.0') }
+    let_it_be(:runner_manager_2) { create(:ci_runner_machine, runner: runner_sub_group_2, version: '15.11.1') }
+    let_it_be(:runner_manager_3) { create(:ci_runner_machine, runner: runner_sub_group_3, version: '15.10.1') }
 
     let(:target_group) { nil }
     let(:membership) { nil }
@@ -439,6 +450,32 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
                                         runner_project_3, runner_project_2, runner_project_1])
                 end
               end
+
+              context 'by version prefix' do
+                context 'search by major version' do
+                  let(:extra_params) { { version_prefix: '15.' } }
+
+                  it 'returns correct runner' do
+                    is_expected.to contain_exactly(runner_sub_group_1, runner_sub_group_2, runner_sub_group_3)
+                  end
+                end
+
+                context 'search by minor version' do
+                  let(:extra_params) { { version_prefix: '15.11.' } }
+
+                  it 'returns correct runner' do
+                    is_expected.to contain_exactly(runner_sub_group_1, runner_sub_group_2)
+                  end
+                end
+
+                context 'search by patch version' do
+                  let(:extra_params) { { version_prefix: '15.11.1' } }
+
+                  it 'returns correct runner' do
+                    is_expected.to contain_exactly(runner_sub_group_2)
+                  end
+                end
+              end
             end
           end
         end
@@ -568,6 +605,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
           let_it_be(:runner_project_active) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: true, projects: [project]) }
           let_it_be(:runner_project_inactive) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: false, projects: [project]) }
           let_it_be(:runner_other_project_inactive) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: false, projects: [other_project]) }
+          let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner_instance_inactive, version: '15.10.0') }
 
           context 'by search term' do
             let_it_be(:runner_project_1) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, description: 'runner_project_search', projects: [project]) }
@@ -624,6 +662,14 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
 
             it 'returns correct runners' do
               is_expected.to contain_exactly(runner_creator_1)
+            end
+          end
+
+          context 'by version prefix' do
+            let(:extra_params) { { version_prefix: '15.' } }
+
+            it 'returns correct runners' do
+              is_expected.to contain_exactly(runner_instance_inactive)
             end
           end
         end

@@ -44,24 +44,6 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   it { is_expected.not_to be_retried }
   it { expect(described_class.primary_key).to eq('id') }
 
-  describe '.switch_table_names' do
-    before do
-      stub_env('USE_CI_BUILDS_ROUTING_TABLE', flag_value)
-    end
-
-    context 'with the env flag disabled' do
-      let(:flag_value) { 'false' }
-
-      it { expect(described_class.switch_table_names).to eq(:ci_builds) }
-    end
-
-    context 'with the env flag enabled' do
-      let(:flag_value) { 'true' }
-
-      it { expect(described_class.switch_table_names).to eq(:p_ci_builds) }
-    end
-  end
-
   describe '#author' do
     subject { commit_status.author }
 

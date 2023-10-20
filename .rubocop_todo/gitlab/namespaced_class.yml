@@ -1079,7 +1079,6 @@ Gitlab/NamespacedClass:
     - 'lib/event_filter.rb'
     - 'lib/file_size_validator.rb'
     - 'lib/forever.rb'
-    - 'lib/generators/gitlab/snowplow_event_definition_generator.rb'
     - 'lib/generators/gitlab/usage_metric_definition_generator.rb'
     - 'lib/generators/gitlab/usage_metric_generator.rb'
     - 'lib/gitlab/anonymous_session.rb'

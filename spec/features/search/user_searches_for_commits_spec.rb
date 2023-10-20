@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for commits', :js, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
 
   let(:sha) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }

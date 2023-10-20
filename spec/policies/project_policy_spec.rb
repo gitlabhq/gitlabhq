@@ -3251,6 +3251,28 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'write_model_registry' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ff_model_registry_enabled, :current_user, :allowed) do
+      true  | ref(:reporter)   | true
+      true  | ref(:guest)      | false
+      false | ref(:owner)      | false
+    end
+    with_them do
+      before do
+        stub_feature_flags(model_registry: false)
+        stub_feature_flags(model_registry: project) if ff_model_registry_enabled
+      end
+
+      if params[:allowed]
+        it { expect_allowed(:write_model_registry) }
+      else
+        it { expect_disallowed(:write_model_registry) }
+      end
+    end
+  end
+
   describe ':read_model_experiments' do
     using RSpec::Parameterized::TableSyntax
 

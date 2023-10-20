@@ -413,4 +413,68 @@ RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model 
       end
     end
   end
+
+  describe '.with_version_prefix' do
+    subject { described_class.with_version_prefix(version_prefix) }
+
+    let_it_be(:runner_manager1) { create(:ci_runner_machine, version: '15.11.0') }
+    let_it_be(:runner_manager2) { create(:ci_runner_machine, version: '15.9.0') }
+    let_it_be(:runner_manager3) { create(:ci_runner_machine, version: '15.11.5') }
+
+    context 'with a prefix string of "15."' do
+      let(:version_prefix) { "15." }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager1, runner_manager2, runner_manager3)
+      end
+    end
+
+    context 'with a prefix string of "15"' do
+      let(:version_prefix) { "15" }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager1, runner_manager2, runner_manager3)
+      end
+    end
+
+    context 'with a prefix string of "15.11."' do
+      let(:version_prefix) { "15.11." }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager1, runner_manager3)
+      end
+    end
+
+    context 'with a prefix string of "15.11"' do
+      let(:version_prefix) { "15.11" }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager1, runner_manager3)
+      end
+    end
+
+    context 'with a prefix string of "15.9"' do
+      let(:version_prefix) { "15.9" }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager2)
+      end
+    end
+
+    context 'with a prefix string of "15.11.5"' do
+      let(:version_prefix) { "15.11.5" }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager3)
+      end
+    end
+
+    context 'with a malformed prefix of "V2"' do
+      let(:version_prefix) { "V2" }
+
+      it 'returns no runner managers' do
+        is_expected.to be_empty
+      end
+    end
+  end
 end

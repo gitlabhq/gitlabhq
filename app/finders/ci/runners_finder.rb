@@ -21,6 +21,7 @@ module Ci
       filter_by_runner_type!
       filter_by_tag_list!
       filter_by_creator_id!
+      filter_by_version_prefix!
       sort!
       request_tag_list!
 
@@ -117,6 +118,16 @@ module Ci
     def filter_by_creator_id!
       creator_id = @params[:creator_id]
       @runners = @runners.with_creator_id(creator_id) if creator_id.present?
+    end
+
+    def filter_by_version_prefix!
+      return @runners unless @params[:version_prefix]
+
+      sanitized_prefix = @params[:version_prefix][/^[\d+.]+/]
+
+      return @runners unless sanitized_prefix
+
+      @runners = @runners.with_version_prefix(sanitized_prefix)
     end
 
     def sort!

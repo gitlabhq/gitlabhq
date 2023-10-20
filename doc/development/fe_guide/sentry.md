@@ -53,6 +53,9 @@ about, or have no control over. For example, we shouldn't report validation erro
 out a form incorrectly. However, if that form submission fails because or a server error,
 this is an error we want Sentry to know about.
 
+By default your local development instance does not have Sentry configured. Calls to Sentry are
+stubbed and shown in the console with a `[Sentry stub]` prefix for debugging.
+
 ### Unhandled/unknown errors
 
 Additionally, we capture unhandled errors automatically in all of our pages.

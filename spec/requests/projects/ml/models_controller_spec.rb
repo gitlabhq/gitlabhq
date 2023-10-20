@@ -10,14 +10,19 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
   let_it_be(:model3) { create(:ml_models, project: project) }
   let_it_be(:model_in_different_project) { create(:ml_models) }
 
-  let(:model_registry_enabled) { true }
+  let(:read_model_registry) { true }
+  let(:write_model_registry) { true }
+
   let(:params) { {} }
 
   before do
     allow(Ability).to receive(:allowed?).and_call_original
     allow(Ability).to receive(:allowed?)
                         .with(user, :read_model_registry, project)
-                        .and_return(model_registry_enabled)
+                        .and_return(read_model_registry)
+    allow(Ability).to receive(:allowed?)
+                        .with(user, :write_model_registry, project)
+                        .and_return(write_model_registry)
 
     sign_in(user)
   end
@@ -54,7 +59,7 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
     end
 
     context 'when user does not have access' do
-      let(:model_registry_enabled) { false }
+      let(:read_model_registry) { false }
 
       it 'renders 404' do
         is_expected.to have_gitlab_http_status(:not_found)
@@ -132,7 +137,40 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
     end
 
     context 'when user does not have access' do
-      let(:model_registry_enabled) { false }
+      let(:read_model_registry) { false }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+  end
+
+  describe 'destroy' do
+    let(:model_for_deletion) do
+      create(:ml_models, project: project)
+    end
+
+    let(:model_id) { model_for_deletion.id }
+
+    subject(:delete_request) do
+      delete_model
+      response
+    end
+
+    it 'deletes the model', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:found)
+
+      expect(flash[:notice]).to eq('Model removed')
+      expect(response).to redirect_to("/#{project.full_path}/-/ml/models")
+      expect { Ml::Model.find(id: model_id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    context 'when model does not exist' do
+      let(:model_id) { non_existing_record_id }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    describe 'when user does not have write_model_registry rights' do
+      let(:write_model_registry) { false }
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
@@ -146,5 +184,9 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
 
   def show_model
     get project_ml_model_path(request_project, model_id)
+  end
+
+  def delete_model
+    delete project_ml_model_path(project, model_id)
   end
 end

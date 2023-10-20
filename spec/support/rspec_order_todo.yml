@@ -5430,7 +5430,6 @@
 - './spec/lib/feature_spec.rb'
 - './spec/lib/file_size_validator_spec.rb'
 - './spec/lib/forever_spec.rb'
-- './spec/lib/generators/gitlab/snowplow_event_definition_generator_spec.rb'
 - './spec/lib/generators/gitlab/usage_metric_definition_generator_spec.rb'
 - './spec/lib/generators/gitlab/usage_metric_definition/redis_hll_generator_spec.rb'
 - './spec/lib/generators/gitlab/usage_metric_generator_spec.rb'

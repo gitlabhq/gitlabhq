@@ -86,7 +86,8 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
             tag_list: ['active_runner'],
             search: 'abc',
             sort: :contacted_asc,
-            creator_id: 'gid://gitlab/User/1'
+            creator_id: 'gid://gitlab/User/1',
+            version_prefix: '15.'
           }
         end
 
@@ -100,7 +101,8 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
             preload: false,
             search: 'abc',
             sort: 'contacted_asc',
-            creator_id: '1'
+            creator_id: '1',
+            version_prefix: '15.'
           }
         end
 
@@ -165,6 +167,26 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
         end
 
         it 'calls RunnersFinder with expected arguments' do
+          expect(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
+          allow(finder).to receive(:execute).once.and_return([:execute_return_value])
+
+          expect(resolve_scope.items.to_a).to contain_exactly :execute_return_value
+        end
+      end
+
+      context 'with an invalid version filter parameter' do
+        let(:args) do
+          { version_prefix: 'a.b' }
+        end
+
+        let(:expected_params) do
+          {
+            preload: false,
+            version_prefix: 'a.b'
+          }
+        end
+
+        it 'ignores the parameter and returns runners' do
           expect(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
           allow(finder).to receive(:execute).once.and_return([:execute_return_value])
 

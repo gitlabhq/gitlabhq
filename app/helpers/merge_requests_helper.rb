@@ -176,7 +176,7 @@ module MergeRequestsHelper
   end
 
   def notifications_todos_buttons_enabled?
-    Feature.enabled?(:notifications_todos_buttons, @project)
+    Feature.enabled?(:notifications_todos_buttons, current_user)
   end
 
   def diffs_tab_pane_data(project, merge_request, params)

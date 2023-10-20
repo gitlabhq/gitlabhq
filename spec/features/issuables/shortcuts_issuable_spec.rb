@@ -58,14 +58,13 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
     it "opens assignee dropdown for editing" do
       find('body').native.send_key('a')
 
-      expect(find('.block.assignee')).to have_selector('.js-sidebar-assignee-data')
+      expect(find('.block.assignee')).to have_selector('.dropdown-menu-user')
     end
   end
 
   describe 'pressing "a"' do
     describe 'On an Issue' do
       before do
-        stub_feature_flags(issue_assignees_widget: false)
         visit project_issue_path(project, issue)
         wait_for_requests
       end
@@ -75,7 +74,6 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
 
     describe 'On a Merge Request' do
       before do
-        stub_feature_flags(issue_assignees_widget: false)
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
       end

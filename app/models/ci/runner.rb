@@ -219,6 +219,8 @@ module Ci
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
 
+    scope :with_version_prefix, ->(value) { joins(:runner_managers).merge(RunnerManager.with_version_prefix(value)) }
+
     acts_as_taggable
 
     after_destroy :cleanup_runner_queue

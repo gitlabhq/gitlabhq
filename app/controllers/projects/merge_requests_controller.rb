@@ -37,7 +37,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show, :diffs] do
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:sast_reports_in_inline_diff, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
@@ -45,7 +44,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
-    push_frontend_feature_flag(:notifications_todos_buttons, project)
+    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
 
   before_action only: [:edit] do

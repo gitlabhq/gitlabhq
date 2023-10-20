@@ -537,6 +537,26 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
+  describe '.with_version_prefix' do
+    subject { described_class.with_version_prefix('15.11.') }
+
+    let_it_be(:runner1) { create(:ci_runner) }
+    let_it_be(:runner2) { create(:ci_runner) }
+    let_it_be(:runner3) { create(:ci_runner) }
+
+    before_all do
+      create(:ci_runner_machine, runner: runner1, version: '15.11.0')
+      create(:ci_runner_machine, runner: runner2, version: '15.9.0')
+      create(:ci_runner_machine, runner: runner3, version: '15.9.0')
+      # Add another runner_machine to runner3 to ensure edge case is handled (searching multiple machines in a single runner)
+      create(:ci_runner_machine, runner: runner3, version: '15.11.5')
+    end
+
+    it 'returns runners containing runner managers with versions starting with 15.11.' do
+      is_expected.to contain_exactly(runner1, runner3)
+    end
+  end
+
   describe '.stale', :freeze_time do
     subject { described_class.stale }
 
