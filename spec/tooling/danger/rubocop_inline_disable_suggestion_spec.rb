@@ -73,6 +73,20 @@ RSpec.describe Tooling::Danger::RubocopInlineDisableSuggestion, feature_category
 
         show_out_of_pipeline_minutes_notification?(project, namespace)
       end
+
+      def show_my_new_dot?(project, namespace)
+        return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks -- Reason for disabling
+        return false if notification_dot_acknowledged?
+
+        show_out_of_pipeline_minutes_notification?(project, namespace)
+      end
+
+      def show_my_bad_dot?(project, namespace)
+        return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks --
+        return false if notification_dot_acknowledged?
+
+        show_out_of_pipeline_minutes_notification?(project, namespace)
+      end
     RUBY
   end
 
@@ -86,6 +100,8 @@ RSpec.describe Tooling::Danger::RubocopInlineDisableSuggestion, feature_category
       +  return false unless ::Gitlab.com? # rubocop: disable Gitlab/AvoidGitlabInstanceChecks
       +  return false unless ::Gitlab.com? # rubocop:todo Gitlab/AvoidGitlabInstanceChecks
       +  return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks
+      +  return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks -- Reason for disabling
+      +  return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks --
     DIFF
   end
 
@@ -102,7 +118,7 @@ RSpec.describe Tooling::Danger::RubocopInlineDisableSuggestion, feature_category
   end
 
   it 'adds comments at the correct lines', :aggregate_failures do
-    [3, 7, 13, 20, 27, 34, 41].each do |line_number|
+    [3, 7, 13, 20, 27, 34, 41, 55].each do |line_number|
       expect(rubocop).to receive(:markdown).with(template, file: filename, line: line_number)
     end
 

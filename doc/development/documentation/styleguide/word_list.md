@@ -1303,6 +1303,14 @@ For example, you might write something like:
 
 Use lowercase for **push rules**.
 
+## `README` file
+
+Use backticks and lowercase for **the `README` file**, or **the `README.md` file**.
+
+When possible, use the full phrase: **the `README` file**
+
+For plural, use **`README` files**.
+
 ## recommend, we recommend
 
 Instead of **we recommend**, use **you should**. We want to talk to the user the way

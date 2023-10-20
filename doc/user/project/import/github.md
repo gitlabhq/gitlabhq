@@ -123,9 +123,10 @@ The [GitHub integration method (above)](#use-the-github-integration) is recommen
 
 If you are not using the GitHub integration, you can still perform an authorization with GitHub to grant GitLab access your repositories:
 
-1. Go to <https://github.com/settings/tokens/new>
+1. Go to `https://github.com/settings/tokens/new`.
 1. Enter a token description.
-1. Select the repository scope.
+1. Select the `repo` scope.
+1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
 1. Select **Generate token**.
 1. Copy the token hash.
 1. Go back to GitLab and provide the token to the GitHub importer.

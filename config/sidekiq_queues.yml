@@ -349,8 +349,6 @@
   - 1
 - - groups_update_two_factor_requirement_for_members
   - 1
-- - hashed_storage
-  - 1
 - - import_issues_csv
   - 2
 - - incident_management

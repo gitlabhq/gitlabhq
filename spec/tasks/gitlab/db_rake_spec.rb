@@ -7,6 +7,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db'
+    Rake.application.rake_require 'tasks/gitlab/db/lock_writes'
   end
 
   before do
@@ -14,6 +15,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     allow(Rake::Task['db:migrate']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:schema:load']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
+    allow(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke).and_return(true)
     stub_feature_flags(disallow_database_ddl_feature_flags: false)
   end
 
@@ -142,6 +144,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
             expect(Rake::Task['db:migrate']).to receive(:invoke)
             expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
 
             run_rake_task('gitlab:db:configure')
@@ -153,6 +156,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(connection).to receive(:tables).and_return([])
 
             expect(Rake::Task['db:schema:load']).to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
             expect(Rake::Task['db:migrate']).not_to receive(:invoke)
 
@@ -165,6 +169,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(connection).to receive(:tables).and_return(['default'])
 
             expect(Rake::Task['db:schema:load']).to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
             expect(Rake::Task['db:migrate']).not_to receive(:invoke)
 
@@ -177,6 +182,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(connection).to receive(:tables).and_return([])
 
             expect(Rake::Task['db:schema:load']).to receive(:invoke).and_raise('error')
+            expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
             expect(Rake::Task['db:migrate']).not_to receive(:invoke)
 
@@ -201,6 +207,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
               expect(Gitlab::Database).to receive(:add_post_migrate_path_to_rails).and_call_original
               expect(Rake::Task['db:schema:load']).to receive(:invoke)
+              expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
               expect(Rake::Task['db:seed_fu']).to receive(:invoke)
               expect(Rake::Task['db:migrate']).not_to receive(:invoke)
 
@@ -217,6 +224,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
               expect(Rake::Task['db:migrate']).to receive(:invoke)
               expect(Gitlab::Database).not_to receive(:add_post_migrate_path_to_rails)
               expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+              expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
               expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
 
               run_rake_task('gitlab:db:configure')
@@ -280,6 +288,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['db:migrate:main']).not_to receive(:invoke)
             expect(Rake::Task['db:migrate:ci']).not_to receive(:invoke)
 
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
 
             run_rake_task('gitlab:db:configure')
@@ -299,6 +308,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['db:schema:load:main']).not_to receive(:invoke)
             expect(Rake::Task['db:schema:load:ci']).not_to receive(:invoke)
 
+            expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
 
             run_rake_task('gitlab:db:configure')

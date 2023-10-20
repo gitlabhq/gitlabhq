@@ -16,10 +16,7 @@ ActionCable::SubscriptionAdapter::Redis.redis_connector = lambda do |config|
   args = config.except(:adapter, :channel_prefix)
     .merge(instrumentation_class: ::Gitlab::Instrumentation::Redis::ActionCable)
 
-  primary_store = ::Redis.new(Gitlab::Redis::Pubsub.params)
-  secondary_store = ::Redis.new(args)
-
-  Gitlab::Redis::MultiStore.new(primary_store, secondary_store, "ActionCable")
+  ::Redis.new(args)
 end
 
 Gitlab::ActionCable::RequestStoreCallbacks.install

@@ -5,7 +5,7 @@ require_relative 'suggestion'
 module Tooling
   module Danger
     class RubocopInlineDisableSuggestion < Suggestion
-      MATCH = /^\+.*#\s*rubocop\s*:\s*(?:disable|todo)\s+/
+      MATCH = /^\+.*#\s*rubocop\s*:\s*(?:disable|todo)\s+(?!.*\s--\s\S)/
       REPLACEMENT = nil
 
       SUGGESTION = <<~MESSAGE_MARKDOWN

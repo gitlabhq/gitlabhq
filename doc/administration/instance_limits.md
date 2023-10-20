@@ -309,7 +309,7 @@ The number of seconds GitLab waits for an HTTP response after sending a webhook.
 
 To change the webhook timeout value:
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Edit `/etc/gitlab/gitlab.rb` on all GitLab nodes that are running Sidekiq:
 
    ```ruby
    gitlab_rails['webhook_timeout'] = 60

@@ -41,6 +41,7 @@ import {
   EVT_MR_PREPARED,
 } from '../constants';
 
+import { isCollapsed } from '../utils/diff_file';
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
@@ -436,11 +437,14 @@ export default {
         const idx = this.diffs.findIndex((diffFile) => diffFile.file_hash === sha1InHash);
         const file = this.diffs[idx];
 
+        if (!isCollapsed(file)) return;
+
         this.loadCollapsedDiff({ file })
           .then(() => {
             this.setDiscussions();
-            this.scrollVirtualScrollerToIndex(idx);
             this.setFileForcedOpen({ filePath: file.new_path });
+
+            this.$nextTick(() => this.scrollVirtualScrollerToIndex(idx));
           })
           .catch(() => {});
       }

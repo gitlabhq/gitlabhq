@@ -15,7 +15,7 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 | [Code Suggestions](project/repository/code_suggestions/index.md) | Helps you write code more efficiently by viewing code suggestions as you type. | [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion) and [`code-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-generation) <br><br> [Anthropic's Claude](https://www.anthropic.com/product) model | SaaS <br> Self-managed <br><br> All tiers | [Beta](../policy/experiment-beta-support.md#beta) |
 | [Vulnerability summary](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Helps you remediate vulnerabilities more efficiently, uplevel your skills, and write more secure code. | [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) <br><br> Anthropic's claude model if degraded performance | SaaS only <br><br> Ultimate tier | [Beta](../policy/experiment-beta-support.md#beta) |
 | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | Helps you understand code by explaining it in English language. | [`codechat-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-chat) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
-| [GitLab Duo Chat](#answer-questions-with-gitlab-duo-chat) | Process and generate text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | Anthropic's claude model <br><br> OpenAI Embeddings | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [GitLab Duo Chat](gitlab_duo_chat.md) | Process and generate text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | Anthropic's claude model <br><br> OpenAI Embeddings | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | Statistical forecasting | SaaS only <br> Self-managed <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page. | OpenAI's GPT-3 | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | Efficiently communicate the impact of your merge request changes. | [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
@@ -103,52 +103,6 @@ code in a merge request:
 ![How to use the Explain Code Experiment](img/explain_code_experiment.png)
 
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
-
-### Answer questions with GitLab Duo Chat **(ULTIMATE SAAS EXPERIMENT)**
-
-> Introduced in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
-
-To use this feature, at least one group you're a member of must:
-
-- Have the [third-party AI features setting](group/manage.md#enable-third-party-ai-features) enabled.
-- Have the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
-
-You can get AI generated support from GitLab Duo Chat about the following topics:
-
-- How to use GitLab.
-- Questions about an issue.
-- Summarizing an issue.
-
-Example questions you might ask:
-
-- `What is a fork?`
-- `How to reset my password`
-- `Summarize the issue <link to your issue>`
-- `Summarize the description of the current issue`
-
-The examples above all use data from either the issue or the GitLab documentation. However, you can also ask to generate code, CI/CD configurations, or to explain code. For example:
-
-- `Write a hello world function in Ruby`
-- `Write a tic tac toe game in JavaScript`
-- `Write a .gitlab-ci.yml file to test and build a rails application`
-- `Explain the following code: def sum(a, b) a + b end`
-
-You can also ask follow-up questions.
-
-This is an experimental feature and we're continuously extending the capabilities and reliability of the chat.
-
-1. In the lower-left corner, select the Help icon.
-   The [new left sidebar must be enabled](../tutorials/left_sidebar/index.md#enable-the-new-left-sidebar).
-1. Select **Ask in GitLab Duo Chat**. A drawer opens on the right side of your screen.
-1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
-1. You can ask a follow-up question.
-1. If you want to ask a new question unrelated to the previous conversation, you may receive better answers if you clear the context by typing `/reset` into the input box and selecting **Send**.
-
-To give feedback about a specific response, use the feedback buttons in the response message.
-Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/415591).
-
-NOTE:
-Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
 
 ### Summarize issue discussions with Discussion summary **(ULTIMATE SAAS EXPERIMENT)**
 
@@ -238,6 +192,10 @@ Provide feedback on this experimental feature in [issue 409844](https://gitlab.c
 
 **Data usage**: When you use this feature, the text you enter is sent to the large
 language model referenced above.
+
+### GitLab Duo Chat **(ULTIMATE SAAS EXPERIMENT)**
+
+For details about this Experimental feature, see [GitLab Duo Chat](gitlab_duo_chat.md).
 
 ## Data usage
 

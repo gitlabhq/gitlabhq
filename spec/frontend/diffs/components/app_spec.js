@@ -769,6 +769,15 @@ describe('diffs/components/app', () => {
 
     beforeEach(() => {
       createComponent();
+
+      store.state.diffs.diffFiles = [
+        {
+          file_hash: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a',
+          highlighted_diff_lines: [],
+          viewer: { manuallyCollapsed: true },
+        },
+      ];
+
       loadSpy = jest.spyOn(wrapper.vm, 'loadCollapsedDiff').mockResolvedValue('resolved');
     });
 
@@ -786,6 +795,15 @@ describe('diffs/components/app', () => {
       eventHub.$emit('doneLoadingBatches');
 
       expect(loadSpy).toHaveBeenCalledWith({ file: store.state.diffs.diffFiles[0] });
+    });
+
+    it('does nothing when file is not collapsed', () => {
+      store.state.diffs.diffFiles[0].viewer.manuallyCollapsed = false;
+      window.location.hash = '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_0_1';
+
+      eventHub.$emit('doneLoadingBatches');
+
+      expect(loadSpy).not.toHaveBeenCalledWith({ file: store.state.diffs.diffFiles[0] });
     });
   });
 });

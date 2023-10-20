@@ -208,11 +208,6 @@ export default {
         this.manageViewedEffects();
       },
     },
-    'file.viewer.forceOpen': {
-      handler: function fileForcedOpenHandler() {
-        this.handleToggle();
-      },
-    },
     'file.file_hash': {
       handler: function hashChangeWatch(newHash, oldHash) {
         if (

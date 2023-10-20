@@ -14,6 +14,10 @@ module ListboxHelpers
     find('.gl-new-dropdown-item', text: text, exact_text: exact_text).click
   end
 
+  def toggle_listbox
+    find('.gl-new-dropdown-toggle').click
+  end
+
   def expect_listbox_item(text)
     expect(page).to have_css('.gl-new-dropdown-item[role="option"]', text: text)
   end

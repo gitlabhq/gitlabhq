@@ -107,7 +107,10 @@ namespace :gitlab do
         end
       end
 
-      Rake::Task['db:seed_fu'].invoke if databases_loaded.present? && databases_loaded.all?
+      if databases_loaded.present? && databases_loaded.all?
+        Rake::Task["gitlab:db:lock_writes"].invoke
+        Rake::Task['db:seed_fu'].invoke
+      end
     end
 
     def configure_database(connection, database_name: nil)
