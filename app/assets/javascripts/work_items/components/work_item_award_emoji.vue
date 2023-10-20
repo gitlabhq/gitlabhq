@@ -1,6 +1,6 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import { produce } from 'immer';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import AwardsList from '~/vue_shared/components/awards_list.vue';

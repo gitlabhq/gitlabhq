@@ -1,7 +1,7 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import { GlAlert } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';

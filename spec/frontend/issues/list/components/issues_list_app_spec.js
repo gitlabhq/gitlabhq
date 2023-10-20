@@ -1,11 +1,11 @@
 import { GlButton, GlDisclosureDropdown, GlDrawer } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -87,7 +87,7 @@ import {
 import('~/issuable');
 import('~/users_select');
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/alert');
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 

@@ -1,12 +1,11 @@
-import * as Sentry from '@sentry/browser';
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
@@ -20,7 +19,7 @@ import {
   updateWorkItemMutationErrorResponse,
 } from '../mock_data';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('WorkItemParent component', () => {
   Vue.use(VueApollo);

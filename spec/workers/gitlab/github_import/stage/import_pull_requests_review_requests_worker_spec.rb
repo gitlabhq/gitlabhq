@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWork
   subject(:worker) { described_class.new }
 
   let(:project) { instance_double(Project, id: 1, import_state: import_state) }
-  let(:import_state) { instance_double(ProjectImportState, refresh_jid_expiration: true) }
+  let(:import_state) { instance_double(ProjectImportState) }
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:importer) { instance_double(Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImporter) }
   let(:waiter) { Gitlab::JobWaiter.new(2, '123') }
@@ -21,7 +21,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWork
         .and_return(importer)
 
       expect(importer).to receive(:execute).and_return(waiter)
-      expect(import_state).to receive(:refresh_jid_expiration)
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)

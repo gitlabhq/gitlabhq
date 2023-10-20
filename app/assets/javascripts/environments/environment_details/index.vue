@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
 import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';

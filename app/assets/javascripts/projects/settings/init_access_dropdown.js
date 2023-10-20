@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
 import Vue from 'vue';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import AccessDropdown from './components/access_dropdown.vue';
 
 export const initAccessDropdown = (el, options) => {

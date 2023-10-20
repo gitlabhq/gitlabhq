@@ -1,10 +1,10 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { dispatchSnowplowEvent } from '~/tracking/dispatch_snowplow_event';
 import getStandardContext from '~/tracking/get_standard_context';
 import { extraContext, servicePingContext } from './mock_data';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/tracking/get_standard_context');
 
 const category = 'Incident Management';

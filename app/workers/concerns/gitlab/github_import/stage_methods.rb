@@ -54,6 +54,8 @@ module Gitlab
       # client - An instance of Gitlab::GithubImport::Client.
       # project - An instance of Project.
       def try_import(client, project)
+        project.import_state.refresh_jid_expiration
+
         import(client, project)
       rescue RateLimitError
         self.class.perform_in(client.rate_limit_resets_in, project.id)

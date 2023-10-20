@@ -75,7 +75,7 @@ const initSentry = () => {
 
   // The _Sentry object is globally exported so it can be used by
   //   ./sentry_browser_wrapper.js
-  // This hack allows us to load a single version of `@sentry/browser`
+  // This hack allows us to load a single version of `~/sentry/sentry_browser_wrapper`
   // in the browser, see app/views/layouts/_head.html.haml to find how it is imported.
 
   // eslint-disable-next-line no-underscore-dangle

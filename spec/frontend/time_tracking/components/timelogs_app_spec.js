@@ -1,10 +1,10 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import * as Sentry from '@sentry/browser';
 import { GlDatepicker, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import getTimelogsEmptyResponse from 'test_fixtures/graphql/get_timelogs_empty_response.json';
 import getPaginatedTimelogsResponse from 'test_fixtures/graphql/get_paginated_timelogs_response.json';
 import getNonPaginatedTimelogsResponse from 'test_fixtures/graphql/get_non_paginated_timelogs_response.json';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -14,7 +14,7 @@ import TimelogsApp from '~/time_tracking/components/timelogs_app.vue';
 import TimelogsTable from '~/time_tracking/components/timelogs_table.vue';
 
 jest.mock('~/alert');
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('Timelogs app', () => {
   Vue.use(VueApollo);

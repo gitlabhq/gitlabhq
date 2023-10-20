@@ -1,7 +1,7 @@
-import * as Sentry from '@sentry/browser';
 import Vue from 'vue';
 import isEmpty from 'lodash/isEmpty';
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
 
 export const VARIANT_SUCCESS = 'success';

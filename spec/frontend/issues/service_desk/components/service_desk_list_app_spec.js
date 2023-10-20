@@ -3,8 +3,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { cloneDeep } from 'lodash';
 import VueRouter from 'vue-router';
-import * as Sentry from '@sentry/browser';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -55,7 +55,7 @@ import {
   locationSearch,
 } from '../mock_data';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/alert');
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 

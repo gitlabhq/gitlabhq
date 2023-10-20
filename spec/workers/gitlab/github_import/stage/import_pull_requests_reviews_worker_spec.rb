@@ -25,8 +25,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker, fea
         .to receive(:execute)
         .and_return(waiter)
 
-      expect(import_state).to receive(:refresh_jid_expiration)
-
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
         .with(project.id, { '123' => 2 }, :issues_and_diff_notes)

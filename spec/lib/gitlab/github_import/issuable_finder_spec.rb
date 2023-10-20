@@ -2,38 +2,78 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache do
-  let(:project) { double(:project, id: 4, import_data: import_data) }
+RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache, feature_category: :importers do
+  let(:project) { build(:project, id: 20, import_data_attributes: import_data_attributes) }
   let(:single_endpoint_optional_stage) { false }
-  let(:import_data) do
-    instance_double(
-      ProjectImportData,
+  let(:import_data_attributes) do
+    {
       data: {
         optional_stages: {
           single_endpoint_notes_import: single_endpoint_optional_stage
         }
-      }.deep_stringify_keys
-    )
+      }
+    }
   end
 
-  let(:issue) { double(:issue, issuable_type: MergeRequest, issuable_id: 1) }
+  let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:issue) { double(:issue, issuable_type: 'MergeRequest', issuable_id: merge_request.iid) }
   let(:finder) { described_class.new(project, issue) }
 
   describe '#database_id' do
-    it 'returns nil when no cache is in place' do
-      expect(finder.database_id).to be_nil
+    it 'returns nil if object does not exist' do
+      missing_issue = double(:issue, issuable_type: 'MergeRequest', issuable_id: 999)
+
+      expect(described_class.new(project, missing_issue).database_id).to be_nil
     end
 
-    it 'returns the ID of an issuable when the cache is in place' do
+    it 'fetches object id from database if not in cache' do
+      expect(finder.database_id).to eq(merge_request.id)
+    end
+
+    it 'fetches object id from cache if present' do
       finder.cache_database_id(10)
 
       expect(finder.database_id).to eq(10)
+    end
+
+    it 'returns nil and skips database read if cache has no record' do
+      finder.cache_database_id(-1)
+
+      expect(finder.database_id).to be_nil
     end
 
     it 'raises TypeError when the object is not supported' do
       finder = described_class.new(project, double(:issue))
 
       expect { finder.database_id }.to raise_error(TypeError)
+    end
+
+    context 'with FF import_fallback_to_db_empty_cache disabled' do
+      before do
+        stub_feature_flags(import_fallback_to_db_empty_cache: false)
+      end
+
+      it 'returns nil if object does not exist' do
+        missing_issue = double(:issue, issuable_type: 'MergeRequest', issuable_id: 999)
+
+        expect(described_class.new(project, missing_issue).database_id).to be_nil
+      end
+
+      it 'does not fetch object id from database if not in cache' do
+        expect(finder.database_id).to eq(nil)
+      end
+
+      it 'fetches object id from cache if present' do
+        finder.cache_database_id(10)
+
+        expect(finder.database_id).to eq(10)
+      end
+
+      it 'returns -1 if cache is -1' do
+        finder.cache_database_id(-1)
+
+        expect(finder.database_id).to eq(-1)
+      end
     end
 
     context 'when group is present' do
@@ -65,7 +105,7 @@ RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache d
     it 'caches the ID of a database row' do
       expect(Gitlab::Cache::Import::Caching)
         .to receive(:write)
-        .with('github-import/issuable-finder/4/MergeRequest/1', 10, timeout: 86400)
+        .with("github-import/issuable-finder/20/MergeRequest/#{merge_request.iid}", 10, timeout: 86400)
 
       finder.cache_database_id(10)
     end

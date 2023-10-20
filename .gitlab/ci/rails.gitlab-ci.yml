@@ -764,13 +764,24 @@ rspec system pg14-as-if-foss clusterwide-db:
     - .clusterwide-db
     - .rails:rules:clusterwide-db
 
-rspec-ee unit gitlab_duo_chat pg14:
+rspec-ee unit gitlab-duo-chat pg14:
+  variables:
+    REAL_AI_REQUEST: "true"
+    VERTEX_AI_EMBEDDINGS: "true"
+  extends:
+    - .rspec-ee-base-pg14
+    - .rails:rules:ee-gitlab-duo-chat-vertex-ai
+  script:
+    - !reference [.base-script, script]
+    - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag real_ai_request"
+
+rspec-ee unit gitlab-duo-chat-open-ai pg14:
   variables:
     REAL_AI_REQUEST: "true"
     OPENAI_EMBEDDINGS: "true"
   extends:
     - .rspec-ee-base-pg14
-    - .rails:rules:ee-gitlab-duo-chat
+    - .rails:rules:ee-gitlab-duo-chat-open-ai
   script:
     - !reference [.base-script, script]
     - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag real_ai_request"

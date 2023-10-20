@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { setError } from '~/boards/graphql/cache_updates';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import setErrorMutation from '~/boards/graphql/client/set_error.mutation.graphql';

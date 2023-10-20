@@ -1,6 +1,6 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import { GlCollapsibleListbox } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';

@@ -9,11 +9,11 @@ import {
   GlDrawer,
   GlLink,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 
 import produce from 'immer';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { isEmpty } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';

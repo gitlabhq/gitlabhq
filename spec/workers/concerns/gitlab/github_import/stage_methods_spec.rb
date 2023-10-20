@@ -145,11 +145,15 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
         .to receive(:import)
         .with(client, project)
 
+      expect(project.import_state).to receive(:refresh_jid_expiration)
+
       worker.try_import(client, project)
     end
 
     it 'reschedules the worker if RateLimitError was raised' do
       client = double(:client, rate_limit_resets_in: 10)
+
+      expect(project.import_state).to receive(:refresh_jid_expiration)
 
       expect(worker)
         .to receive(:import)

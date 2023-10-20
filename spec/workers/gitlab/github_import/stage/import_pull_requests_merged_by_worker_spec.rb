@@ -24,9 +24,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker, fe
         .to receive(:execute)
         .and_return(waiter)
 
-      expect(import_state)
-        .to receive(:refresh_jid_expiration)
-
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
         .with(project.id, { '123' => 2 }, :pull_request_review_requests)

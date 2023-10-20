@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
 import MockAdapter from 'axios-mock-adapter';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import testAction from 'helpers/vuex_action_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { MAX_REQUESTS } from '~/clusters_list/constants';

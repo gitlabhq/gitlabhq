@@ -1,9 +1,9 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
-import * as Sentry from '@sentry/browser';
 import produce from 'immer';
 import { sortBy } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { formatDateAsMonth } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';

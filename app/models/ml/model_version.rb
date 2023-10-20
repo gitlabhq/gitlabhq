@@ -2,6 +2,8 @@
 
 module Ml
   class ModelVersion < ApplicationRecord
+    include Presentable
+
     validates :project, :model, presence: true
 
     validates :version,
@@ -24,6 +26,10 @@ module Ml
     class << self
       def find_or_create!(model, version, package)
         create_with(package: package).find_or_create_by!(project: model.project, model: model, version: version)
+      end
+
+      def by_project_id_and_id(project_id, id)
+        find_by(project_id: project_id, id: id)
       end
     end
 

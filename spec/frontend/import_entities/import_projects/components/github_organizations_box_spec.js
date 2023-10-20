@@ -1,8 +1,8 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { mount } from '@vue/test-utils';
-import { captureException } from '@sentry/browser';
 import { nextTick } from 'vue';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -10,7 +10,7 @@ import { createAlert } from '~/alert';
 
 import GithubOrganizationsBox from '~/import_entities/import_projects/components/github_organizations_box.vue';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/alert');
 
 const MOCK_RESPONSE = {

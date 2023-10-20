@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
 import { sortBy } from 'lodash';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   ListType,
   inactiveId,

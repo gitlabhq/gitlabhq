@@ -1,6 +1,6 @@
 import { GlEmptyState } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import ensureData from '~/ensure_data';
 
 const mockData = { message: 'Hello there' };

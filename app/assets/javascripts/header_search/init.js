@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { HEADER_INIT_EVENTS } from './constants';
 
 async function eventHandler(callback = () => {}) {

@@ -1,8 +1,8 @@
 import { GlLoadingIcon, GlPagination, GlSkeletonLoader, GlTableLite } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Clusters from '~/clusters_list/components/clusters.vue';
 import ClustersEmptyState from '~/clusters_list/components/clusters_empty_state.vue';
 import ClusterStore from '~/clusters_list/store';
@@ -15,7 +15,7 @@ import {
 } from '~/clusters_list/store/mutation_types';
 import { apiData } from '../mock_data';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('Clusters', () => {
   let mock;

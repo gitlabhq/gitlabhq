@@ -51,3 +51,4 @@ Read how to [set up PostgreSQL replication and failover](replication_and_failove
 - [Moving GitLab databases to a different PostgreSQL instance](moving.md)
 - [Multiple databases](multiple_databases.md)
 - [Database guides for GitLab development](../../development/database/index.md)
+- [Upgrade external database](external_upgrade.md)

@@ -1,7 +1,7 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import { uniqueId } from 'lodash';
 import { GlButton, GlTooltipDirective, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import deleteCustomEmojiMutation from '../queries/delete_custom_emoji.mutation.graphql';

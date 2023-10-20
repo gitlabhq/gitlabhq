@@ -19,8 +19,6 @@ module Gitlab
             .new(project, client)
             .execute
 
-          project.import_state.refresh_jid_expiration
-
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },

@@ -99,6 +99,23 @@ REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_s
 When you need to update the test questions that require documentation embeddings,
 make sure a new fixture is generated and committed together with the change.
 
+## Running the rspecs tagged with `real_ai_request`
+
+The rspecs tagged with the metadata `real_ai_request` can be run in GitLab project's CI by triggering
+`rspec-ee unit gitlab-duo-chat` or `rspec-ee unit gitlab-duo-chat-open-ai`.
+The former runs with Vertex APIs enabled. The CI jobs are optional and allowed to fail to account for
+the non-deterministic nature of LLM responses.
+
+### Management of credentials and API keys for CI jobs
+
+All API keys required to run the rspecs should be [masked](../../ci/variables/index.md#mask-a-cicd-variable)
+
+The exception is GCP credentials as they contain characters that prevent them from being masked.
+Because `rspec-ee unit gitlab-duo-chat` needs to run on MR branches, GCP credentials cannot be added as a protected variable
+and must be added as a regular CI variable.
+For security, the GCP credentials and the associated project added to
+GitLab project's CI must not be able to access any production infrastructure and sandboxed.
+
 ## GraphQL Subscription
 
 The GraphQL Subscription for Chat behaves slightly different because it's user-centric. A user could have Chat open on multiple browser tabs, or also on their IDE.

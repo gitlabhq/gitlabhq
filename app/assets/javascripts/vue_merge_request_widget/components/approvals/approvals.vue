@@ -258,7 +258,7 @@ export default {
               :category="action.category"
               :loading="isApproving"
               class="gl-mr-3"
-              data-qa-selector="approve_button"
+              data-testid="approve-button"
               @click="action.action"
             >
               {{ action.text }}

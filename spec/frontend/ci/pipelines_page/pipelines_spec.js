@@ -7,7 +7,6 @@ import {
   GlPagination,
   GlCollapsibleListbox,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { chunk } from 'lodash';
@@ -19,6 +18,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
@@ -40,7 +40,7 @@ import {
 import { stageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
 import { users, mockSearch, branches } from '../pipeline_details/mock_data';
 
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/alert');
 
 const mockProjectPath = 'twitter/flight';

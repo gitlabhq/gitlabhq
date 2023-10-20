@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Translate from '~/vue_shared/translate';
 import HeaderSearchApp from './components/app.vue';
 import createStore from './store';

@@ -1,10 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { buildClient } from '~/observability/client';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/utils/axios_utils');
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('buildClient', () => {
   let client;

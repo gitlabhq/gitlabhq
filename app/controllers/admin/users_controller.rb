@@ -164,6 +164,26 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def trust
+    result = Users::TrustService.new(current_user).execute(user)
+
+    if result[:status] == :success
+      redirect_back_or_admin_user(notice: _("Successfully trusted"))
+    else
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not updated"))
+    end
+  end
+
+  def untrust
+    result = Users::UntrustService.new(current_user).execute(user)
+
+    if result[:status] == :success
+      redirect_back_or_admin_user(notice: _("Successfully untrusted"))
+    else
+      redirect_back_or_admin_user(alert: _("Error occurred. User was not updated"))
+    end
+  end
+
   def confirm
     if update_user(&:force_confirm)
       redirect_back_or_admin_user(notice: _("Successfully confirmed"))

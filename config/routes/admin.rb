@@ -22,6 +22,8 @@ namespace :admin do
       put :unlock
       put :confirm
       put :approve
+      put :trust
+      put :untrust
       delete :reject
       post :impersonate
       patch :disable_two_factor

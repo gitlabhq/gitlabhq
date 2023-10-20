@@ -19051,6 +19051,9 @@ msgstr ""
 msgid "Error occurred. User was not unlocked"
 msgstr ""
 
+msgid "Error occurred. User was not updated"
+msgstr ""
+
 msgid "Error parsing CSV file. Please make sure it has"
 msgstr ""
 
@@ -46288,6 +46291,9 @@ msgstr ""
 msgid "Successfully synced %{synced_timeago}."
 msgstr ""
 
+msgid "Successfully trusted"
+msgstr ""
+
 msgid "Successfully unbanned"
 msgstr ""
 
@@ -46298,6 +46304,9 @@ msgid "Successfully unlinked IDs: %{item_ids}."
 msgstr ""
 
 msgid "Successfully unlocked"
+msgstr ""
+
+msgid "Successfully untrusted"
 msgstr ""
 
 msgid "Successfully updated %{last_updated_timeago}."
@@ -50333,6 +50342,9 @@ msgstr ""
 msgid "Trigger|Trigger description"
 msgstr ""
 
+msgid "Trust user"
+msgstr ""
+
 msgid "Trusted"
 msgstr ""
 
@@ -50481,12 +50493,6 @@ msgid "URL of the external storage to serve the repository static objects."
 msgstr ""
 
 msgid "URL or request ID"
-msgstr ""
-
-msgid "USER %{user_name} WILL BE REMOVED! Are you sure?"
-msgstr ""
-
-msgid "USER WILL BE BLOCKED! Are you sure?"
 msgstr ""
 
 msgid "UTC"
@@ -50835,6 +50841,9 @@ msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"
 msgstr ""
 
 msgid "Untitled"
+msgstr ""
+
+msgid "Untrust user"
 msgstr ""
 
 msgid "Unused"
@@ -51508,6 +51517,9 @@ msgstr ""
 msgid "User %{current_user_username} has started impersonating %{username}"
 msgstr ""
 
+msgid "User %{user_name} will be removed! Are you sure?"
+msgstr ""
+
 msgid "User %{username} was successfully removed."
 msgstr ""
 
@@ -51614,6 +51626,15 @@ msgid "User was successfully unbanned."
 msgstr ""
 
 msgid "User was successfully updated."
+msgstr ""
+
+msgid "User will be allowed to create possible spam! Are you sure?"
+msgstr ""
+
+msgid "User will be blocked! Are you sure?"
+msgstr ""
+
+msgid "User will not be allowed to create possible spam! Are you sure?"
 msgstr ""
 
 msgid "User-based escalation rules must have a user with access to the project"

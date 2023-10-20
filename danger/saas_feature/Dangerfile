@@ -3,9 +3,6 @@
 # rubocop:disable Style/SignalException
 
 SEE_DOC = "see the [SaaS feature documentation](https://docs.gitlab.com/ee/development/ee_features.html#saas-only-feature)."
-LABEL = "saas_feature"
-EXISTS_LABEL = "#{LABEL}::exists".freeze
-SKIPPED_LABEL = "#{LABEL}::skipped".freeze
 
 SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT.freeze
   ```suggestion
@@ -14,12 +11,6 @@ SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT.freeze
 
   #{SEE_DOC.capitalize}
 SUGGEST_COMMENT
-
-ENFORCEMENT_WARNING = <<~WARNING_MESSAGE.freeze
-  There were no new or modified SaaS feature YAML files detected in this MR.
-
-  For guidance on when to use a SaaS feature, please #{SEE_DOC}
-WARNING_MESSAGE
 
 def check_yaml(saas_feature)
   mr_group_label = helper.group_label
@@ -63,42 +54,8 @@ def added_files
   saas_feature.files(change_type: :added)
 end
 
-def modified_files
-  saas_feature.files(change_type: :modified)
-end
-
-def file_added?
-  added_files.any?
-end
-
-def file_modified?
-  modified_files.any?
-end
-
-def file_added_or_modified?
-  file_added? || file_modified?
-end
-
-def mr_has_backend_or_frontend_changes?
-  changes = helper.changes_by_category
-  changes.has_key?(:backend) || changes.has_key?(:frontend)
-end
-
-def mr_missing_status_label?
-  helper.mr_labels.none? { |label| label.start_with?(LABEL) }
-end
-
 added_files.each do |saas_feature|
   check_yaml(saas_feature)
-end
-
-if !helper.security_mr? && mr_has_backend_or_frontend_changes?
-  if file_added_or_modified? && !helper.mr_has_labels?(EXISTS_LABEL)
-    # SaaS feature config file touched in this MR, so let's add the label to avoid the warning.
-    helper.labels_to_add << EXISTS_LABEL
-  end
-
-  warn ENFORCEMENT_WARNING if mr_missing_status_label?
 end
 
 # rubocop:enable Style/SignalException

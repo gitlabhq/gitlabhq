@@ -1,7 +1,7 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';

@@ -27,8 +27,6 @@ module Gitlab
             klass.new(project, client).execute
           end
 
-          project.import_state.refresh_jid_expiration
-
           ImportPullRequestsWorker.perform_async(project.id)
         end
       end

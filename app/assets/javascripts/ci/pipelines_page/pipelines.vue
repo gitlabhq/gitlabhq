@@ -4,7 +4,7 @@ import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/pipelines_failed.svg?url';
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';

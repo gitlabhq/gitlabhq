@@ -39,7 +39,7 @@ to our Sentry instance under the project
 The most common way to report errors to Sentry is to call `captureException(error)`, for example:
 
 ```javascript
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 try {
   // Code that may fail in runtime

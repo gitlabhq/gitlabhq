@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import * as Sentry from '@sentry/browser';
 import { GlModal } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -11,7 +11,7 @@ import deleteCustomEmojiMutation from '~/custom_emoji/queries/delete_custom_emoj
 import { CUSTOM_EMOJI } from '../mock_data';
 
 jest.mock('~/alert');
-jest.mock('@sentry/browser');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 let wrapper;
 let deleteMutationSpy;

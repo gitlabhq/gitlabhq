@@ -23,8 +23,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportBaseDataWorker, feature_catego
         expect(importer).to receive(:execute)
       end
 
-      expect(import_state).to receive(:refresh_jid_expiration)
-
       expect(Gitlab::GithubImport::Stage::ImportPullRequestsWorker)
         .to receive(:perform_async)
         .with(project.id)

@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__ } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';

@@ -1,6 +1,6 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import { GlFormInput } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   DurationParseError,
   outputChronicDuration,

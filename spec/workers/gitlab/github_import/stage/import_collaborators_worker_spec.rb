@@ -33,8 +33,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
           .and_return(importer)
         expect(importer).to receive(:execute).and_return(waiter)
 
-        expect(import_state).to receive(:refresh_jid_expiration)
-
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
           .with(project.id, { '123' => 2 }, :pull_requests_merged_by)

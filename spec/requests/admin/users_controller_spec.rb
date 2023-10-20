@@ -74,4 +74,54 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
       expect { request }.to change { user.reload.access_locked? }.from(true).to(false)
     end
   end
+
+  describe 'PUT #trust' do
+    subject(:request) { put trust_admin_user_path(user) }
+
+    it 'trusts the user' do
+      expect { request }.to change { user.reload.trusted? }.from(false).to(true)
+    end
+
+    context 'when setting trust fails' do
+      before do
+        allow_next_instance_of(Users::TrustService) do |instance|
+          allow(instance).to receive(:execute).and_return({ status: :failed })
+        end
+      end
+
+      it 'displays a flash alert' do
+        request
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:alert]).to eq(s_('Error occurred. User was not updated'))
+      end
+    end
+  end
+
+  describe 'PUT #untrust' do
+    before do
+      user.custom_attributes.create!(key: UserCustomAttribute::TRUSTED_BY, value: "placeholder")
+    end
+
+    subject(:request) { put untrust_admin_user_path(user) }
+
+    it 'trusts the user' do
+      expect { request }.to change { user.reload.trusted? }.from(true).to(false)
+    end
+
+    context 'when untrusting fails' do
+      before do
+        allow_next_instance_of(Users::UntrustService) do |instance|
+          allow(instance).to receive(:execute).and_return({ status: :failed })
+        end
+      end
+
+      it 'displays a flash alert' do
+        request
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:alert]).to eq(s_('Error occurred. User was not updated'))
+      end
+    end
+  end
 end

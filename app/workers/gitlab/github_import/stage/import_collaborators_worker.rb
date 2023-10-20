@@ -20,7 +20,6 @@ module Gitlab
           info(project.id, message: 'starting importer', importer: 'Importer::CollaboratorsImporter')
 
           waiter = Importer::CollaboratorsImporter.new(project, client).execute
-          project.import_state.refresh_jid_expiration
 
           move_to_next_stage(project, { waiter.key => waiter.jobs_remaining })
         end

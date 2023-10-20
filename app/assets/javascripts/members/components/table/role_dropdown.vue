@@ -3,7 +3,7 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';
 

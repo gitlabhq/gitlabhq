@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
 import produce from 'immer';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { listsDeferredQuery } from 'ee_else_ce/boards/constants';

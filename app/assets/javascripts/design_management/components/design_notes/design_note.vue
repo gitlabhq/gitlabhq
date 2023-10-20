@@ -7,8 +7,8 @@ import {
   GlLink,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { produce } from 'immer';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
