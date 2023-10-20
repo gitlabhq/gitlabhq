@@ -1,6 +1,6 @@
 ---
 stage: none
-group: Development
+group: unassigned
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 description: "View a list of all the flags available in the GitLab application."
 layout: 'feature_flags'

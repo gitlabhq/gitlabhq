@@ -1,10 +1,6 @@
 ---
 Migration/BackgroundMigrations:
   Exclude:
-    - 'db/post_migrate/20220315171129_cleanup_draft_data_from_faulty_regex.rb'
-    - 'db/post_migrate/20220316202640_populate_container_repositories_migration_plan.rb'
-    - 'db/post_migrate/20220324032250_migrate_shimo_confluence_service_category.rb'
-    - 'db/post_migrate/20220324081709_fix_and_backfill_project_namespaces_for_projects_with_duplicate_name.rb'
     - 'db/post_migrate/20220328100456_schedule20220328_reset_duplicate_ci_runners_token_encrypted_values_on_projects.rb'
     - 'db/post_migrate/20220328100457_schedule20220328_reset_duplicate_ci_runners_token_values_on_projects.rb'
     - 'db/post_migrate/20220331133802_schedule_backfill_topics_title.rb'

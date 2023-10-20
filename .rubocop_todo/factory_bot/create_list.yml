@@ -17,7 +17,6 @@ FactoryBot/CreateList:
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/security/vulnerability_reports_comparer_spec.rb'
     - 'ee/spec/lib/gitlab/license_scanning/sbom_scanner_spec.rb'
-    - 'ee/spec/lib/gitlab/vulnerabilities/findings_preloader_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/ci/build_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'

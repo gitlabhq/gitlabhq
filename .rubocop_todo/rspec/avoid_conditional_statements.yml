@@ -26,7 +26,6 @@ RSpec/AvoidConditionalStatements:
     - 'ee/spec/features/registrations/identity_verification_spec.rb'
     - 'ee/spec/features/search/elastic/snippet_search_spec.rb'
     - 'ee/spec/features/subscriptions/expiring_subscription_message_spec.rb'
-    - 'ee/spec/features/users/identity_verification_spec.rb'
     - 'spec/features/admin/dashboard_spec.rb'
     - 'spec/features/calendar_spec.rb'
     - 'spec/features/groups/dependency_proxy_for_containers_spec.rb'

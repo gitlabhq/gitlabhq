@@ -4,7 +4,6 @@ Graphql/ResourceNotAvailableError:
   Exclude:
     - 'app/graphql/mutations/achievements/create.rb'
     - 'app/graphql/mutations/admin/sidekiq_queues/delete_jobs.rb'
-    - 'app/graphql/mutations/ci/ci_cd_settings_update.rb'
     - 'app/graphql/mutations/ci/job_artifact/bulk_destroy.rb'
     - 'app/graphql/mutations/ci/runner/create.rb'
     - 'app/graphql/mutations/custom_emoji/create.rb'

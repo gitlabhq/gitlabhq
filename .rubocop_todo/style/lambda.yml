@@ -48,7 +48,6 @@ Style/Lambda:
     - 'lib/gitlab/database/load_balancing/action_cable_callbacks.rb'
     - 'lib/gitlab/middleware/rack_multipart_tempfile_factory.rb'
     - 'lib/gitlab/omniauth_initializer.rb'
-    - 'lib/gitlab/prometheus/queries/query_additional_metrics.rb'
     - 'lib/gitlab/rack_attack.rb'
     - 'lib/gitlab/sidekiq_config/worker_matcher.rb'
     - 'lib/gitlab/sidekiq_middleware.rb'

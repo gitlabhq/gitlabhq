@@ -33,7 +33,6 @@ Rails/NegateInclude:
     - 'qa/qa/tools/delete_test_users.rb'
     - 'spec/lib/container_registry/blob_spec.rb'
     - 'spec/lib/container_registry/client_spec.rb'
-    - 'spec/lib/gitlab/metrics/dashboard/stages/metric_endpoint_inserter_spec.rb'
     - 'spec/lib/gitlab/metrics/subscribers/active_record_spec.rb'
     - 'spec/support/matchers/pushed_frontend_feature_flags_matcher.rb'
     - 'spec/uploaders/object_storage_spec.rb'

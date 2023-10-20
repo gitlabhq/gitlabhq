@@ -11,7 +11,6 @@ Lint/NoReturnInBeginEndBlocks:
     - 'ee/lib/ee/gitlab/scim/filter_parser.rb'
     - 'lib/api/internal/base.rb'
     - 'lib/gitlab/git/repository.rb'
-    - 'lib/gitlab/metrics/dashboard/importer.rb'
     - 'lib/object_storage/config.rb'
     - 'qa/qa/support/formatters/test_metrics_formatter.rb'
     - 'qa/qa/support/influxdb_tools.rb'
