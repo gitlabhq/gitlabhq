@@ -37,7 +37,7 @@ PATH
   remote: gems/gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
-      activesupport (>= 6.1, < 7.1)
+      activesupport (>= 6.1, < 8)
       rspec (~> 3.0)
 
 PATH
