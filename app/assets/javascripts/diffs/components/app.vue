@@ -56,7 +56,7 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 import DiffsFileTree from './diffs_file_tree.vue';
-import getMRCodequalityReports from './graphql/get_mr_codequality_reports.query.graphql';
+import getMRCodequalityAndSecurityReports from './graphql/get_mr_codequality_and_security_reports.query.graphql';
 
 export default {
   name: 'DiffsApp',
@@ -101,10 +101,10 @@ export default {
       required: false,
       default: '',
     },
-    endpointSast: {
-      type: String,
+    sastReportAvailable: {
+      type: Boolean,
       required: false,
-      default: '',
+      default: false,
     },
     endpointCodequality: {
       type: String,
@@ -139,13 +139,15 @@ export default {
     };
   },
   apollo: {
-    getMRCodequalityReports: {
-      query: getMRCodequalityReports,
+    getMRCodequalityAndSecurityReports: {
+      query: getMRCodequalityAndSecurityReports,
       variables() {
         return { fullPath: this.projectPath, iid: this.iid };
       },
       skip() {
-        return !this.endpointCodequality || !this.sastReportsInInlineDiff;
+        const codeQualityBoolean = Boolean(this.endpointCodequality);
+
+        return !this.sastReportsInInlineDiff || (!codeQualityBoolean && !this.sastReportAvailable);
       },
       update(data) {
         if (data?.project?.mergeRequest?.codequalityReportsComparer?.report?.newErrors) {
@@ -156,10 +158,14 @@ export default {
             ),
           );
         }
+
+        if (data.project?.mergeRequest?.sastReport?.report) {
+          this.$store.commit('diffs/SET_SAST_DATA', data.project.mergeRequest.sastReport.report);
+        }
       },
       error() {
         createAlert({
-          message: __('Something went wrong fetching the CodeQuality Findings. Please try again!'),
+          message: __('Something went wrong fetching the Scanner Findings. Please try again!'),
         });
       },
     },
@@ -305,10 +311,6 @@ export default {
       this.setCodequalityEndpoint(this.endpointCodequality);
     }
 
-    if (this.endpointSast) {
-      this.setSastEndpoint(this.endpointSast);
-    }
-
     if (this.shouldShow) {
       this.fetchData();
     }
@@ -389,7 +391,6 @@ export default {
     ...mapActions('diffs', [
       'moveToNeighboringCommit',
       'setCodequalityEndpoint',
-      'setSastEndpoint',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
       'fetchFileByFile',
@@ -397,7 +398,6 @@ export default {
       'setFileForcedOpen',
       'fetchCoverageFiles',
       'fetchCodequality',
-      'fetchSast',
       'rereadNoteHash',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
@@ -514,10 +514,6 @@ export default {
 
       if (this.endpointCodequality && !this.sastReportsInInlineDiff) {
         this.fetchCodequality();
-      }
-
-      if (this.endpointSast) {
-        this.fetchSast();
       }
 
       if (!this.isNotesFetched) {

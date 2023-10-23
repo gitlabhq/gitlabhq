@@ -2,8 +2,11 @@ import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import getMRCodequalityAndSecurityReports from '~/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'spec/test_constants';
 
@@ -34,6 +37,7 @@ const COMMIT_URL = `${TEST_HOST}/COMMIT/OLD`;
 const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 
 Vue.use(Vuex);
+Vue.use(VueApollo);
 
 Vue.config.ignoredElements = ['copy-code'];
 
@@ -46,8 +50,15 @@ describe('diffs/components/app', () => {
   let store;
   let wrapper;
   let mock;
+  let fakeApollo;
+
+  const codeQualityAndSastQueryHandlerSuccess = jest.fn().mockResolvedValue({});
 
   function createComponent(props = {}, extendStore = () => {}, provisions = {}, baseConfig = {}) {
+    fakeApollo = createMockApollo([
+      [getMRCodequalityAndSecurityReports, codeQualityAndSastQueryHandlerSuccess],
+    ]);
+
     const provide = {
       ...provisions,
       glFeatures: {
@@ -74,10 +85,11 @@ describe('diffs/components/app', () => {
     });
 
     wrapper = shallowMount(App, {
+      apolloProvider: fakeApollo,
       propsData: {
         endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
         endpointCodequality: '',
-        endpointSast: '',
+        sastReportAvailable: false,
         projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
@@ -187,16 +199,14 @@ describe('diffs/components/app', () => {
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchCodequality).not.toHaveBeenCalled();
+      expect(codeQualityAndSastQueryHandlerSuccess).not.toHaveBeenCalled();
     });
   });
 
   describe('SAST diff', () => {
     it('does not fetch Sast data on FOSS', () => {
       createComponent();
-      jest.spyOn(wrapper.vm, 'fetchSast');
-      wrapper.vm.fetchData(false);
-
-      expect(wrapper.vm.fetchSast).not.toHaveBeenCalled();
+      expect(codeQualityAndSastQueryHandlerSuccess).not.toHaveBeenCalled();
     });
   });
 

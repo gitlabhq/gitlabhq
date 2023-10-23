@@ -3100,26 +3100,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe '#gitlab_ci_yml_for' do
-    let(:project) { create(:project, :repository) }
-
-    before do
-      repository.create_file(User.last, '.gitlab-ci.yml', 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master')
-    end
-
-    context 'when there is a .gitlab-ci.yml at the commit' do
-      it 'returns the content' do
-        expect(repository.gitlab_ci_yml_for(repository.commit.sha)).to eq('CONTENT')
-      end
-    end
-
-    context 'when there is no .gitlab-ci.yml at the commit' do
-      it 'returns nil' do
-        expect(repository.gitlab_ci_yml_for(repository.commit.parent.sha)).to be_nil
-      end
-    end
-  end
-
   describe '#changelog_config' do
     let(:project) { create(:project, :repository) }
     let(:changelog_config_path) { Gitlab::Changelog::Config::DEFAULT_FILE_PATH }

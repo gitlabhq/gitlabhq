@@ -89,15 +89,13 @@ module Security
 
       def gitlab_ci_yml_attributes
         @gitlab_ci_yml_attributes ||= begin
-          config_content = @project.repository.blob_data_at(@project.repository.root_ref_sha, ci_config_file)
+          config_content = @project.repository.blob_data_at(
+            @project.repository.root_ref_sha, @project.ci_config_path_or_default
+          )
           return {} unless config_content
 
           build_sast_attributes(config_content)
         end
-      end
-
-      def ci_config_file
-        '.gitlab-ci.yml'
       end
 
       def build_sast_attributes(content)

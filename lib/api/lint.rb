@@ -29,7 +29,7 @@ module API
 
         not_found! 'Commit' unless user_project.commit(sha).present?
 
-        content = user_project.repository.gitlab_ci_yml_for(sha, user_project.ci_config_path_or_default)
+        content = user_project.repository.blob_data_at(sha, user_project.ci_config_path_or_default)
         result = Gitlab::Ci::Lint
           .new(project: user_project, current_user: current_user, sha: sha)
           .validate(content, dry_run: params[:dry_run], ref: params[:ref] || user_project.default_branch)

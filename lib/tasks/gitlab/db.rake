@@ -457,7 +457,12 @@ namespace :gitlab do
 
         ActiveRecord::Base.establish_connection(config) # rubocop: disable Database/EstablishConnection
         Gitlab::Database.check_for_non_superuser
-        Rake::Task['db:migrate'].invoke
+
+        if Rake::Task.task_defined?("db:migrate:#{db_config.name}")
+          Rake::Task["db:migrate:#{db_config.name}"].invoke
+        else
+          Rake::Task["db:migrate"].invoke
+        end
       end
     end
 

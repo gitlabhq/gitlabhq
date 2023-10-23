@@ -36,7 +36,8 @@ export default function initDiffsApp(store = notesStore) {
         iid: dataset.iid || '',
         endpointCoverage: dataset.endpointCoverage || '',
         endpointCodequality: dataset.endpointCodequality || '',
-        endpointSast: dataset.endpointSast || '',
+        // This is a workaround which will be solved in: https://gitlab.com/gitlab-org/gitlab/-/issues/428758
+        sastReportAvailable: Boolean(dataset.endpointSast),
         helpPagePath: dataset.helpPagePath,
         currentUser: JSON.parse(dataset.currentUserData) || {},
         changesEmptyStateIllustration: dataset.changesEmptyStateIllustration,
@@ -86,7 +87,7 @@ export default function initDiffsApp(store = notesStore) {
           iid: this.iid,
           endpointCoverage: this.endpointCoverage,
           endpointCodequality: this.endpointCodequality,
-          endpointSast: this.endpointSast,
+          sastReportAvailable: this.sastReportAvailable,
           currentUser: this.currentUser,
           helpPagePath: this.helpPagePath,
           shouldShow: this.activeTab === 'diffs',

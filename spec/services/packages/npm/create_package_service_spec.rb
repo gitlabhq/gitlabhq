@@ -2,177 +2,179 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_registry do
-  include ExclusiveLeaseHelpers
-
-  let(:namespace) { create(:namespace) }
-  let(:project) { create(:project, namespace: namespace) }
-  let(:user) { project.owner }
-  let(:version) { '1.0.1' }
-
-  let(:params) do
-    Gitlab::Json.parse(fixture_file('packages/npm/payload.json')
-        .gsub('@root/npm-test', package_name)
-        .gsub('1.0.1', version)).with_indifferent_access
-  end
-
-  let(:package_name) { "@#{namespace.path}/my-app" }
-  let(:version_data) { params.dig('versions', version) }
-  let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{version}" }
   let(:service) { described_class.new(project, user, params) }
 
   subject { service.execute }
 
-  shared_examples 'valid package' do
-    it 'creates a package' do
-      expect { subject }
-        .to change { Packages::Package.count }.by(1)
-        .and change { Packages::Package.npm.count }.by(1)
-        .and change { Packages::Tag.count }.by(1)
-        .and change { Packages::Npm::Metadatum.count }.by(1)
+  describe '#execute' do
+    include ExclusiveLeaseHelpers
+
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be_with_reload(:project) { create(:project, namespace: namespace) }
+    let_it_be(:user) { project.owner }
+
+    let(:version) { '1.0.1' }
+
+    let(:params) do
+      Gitlab::Json.parse(fixture_file('packages/npm/payload.json')
+          .gsub('@root/npm-test', package_name)
+          .gsub('1.0.1', version)).with_indifferent_access
     end
 
-    it_behaves_like 'assigns the package creator' do
-      let(:package) { subject }
-    end
+    let(:package_name) { "@#{namespace.path}/my-app" }
+    let(:version_data) { params.dig('versions', version) }
+    let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{version}" }
 
-    it { is_expected.to be_valid }
-
-    it 'creates a package with name and version' do
-      package = subject
-
-      expect(package.name).to eq(package_name)
-      expect(package.version).to eq(version)
-    end
-
-    it { expect(subject.npm_metadatum.package_json).to eq(version_data) }
-
-    it { expect(subject.name).to eq(package_name) }
-    it { expect(subject.version).to eq(version) }
-
-    context 'with build info' do
-      let(:job) { create(:ci_build, user: user) }
-      let(:params) { super().merge(build: job) }
-
-      it_behaves_like 'assigns build to package'
-      it_behaves_like 'assigns status to package'
-
-      it 'creates a package file build info' do
-        expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+    shared_examples 'valid package' do
+      it 'creates a package' do
+        expect { subject }
+          .to change { Packages::Package.count }.by(1)
+          .and change { Packages::Package.npm.count }.by(1)
+          .and change { Packages::Tag.count }.by(1)
+          .and change { Packages::Npm::Metadatum.count }.by(1)
       end
-    end
 
-    context 'when the npm metadatum creation results in a size error' do
-      shared_examples 'a package json structure size too large error' do
-        it 'does not create the package' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-            instance_of(ActiveRecord::RecordInvalid),
-            field_sizes: expected_field_sizes
+      it_behaves_like 'assigns the package creator' do
+        let(:package) { subject }
+      end
+
+      it { is_expected.to be_valid }
+
+      it 'creates a package with name and version' do
+        package = subject
+
+        expect(package.name).to eq(package_name)
+        expect(package.version).to eq(version)
+      end
+
+      it { expect(subject.npm_metadatum.package_json).to eq(version_data) }
+
+      it { expect(subject.name).to eq(package_name) }
+      it { expect(subject.version).to eq(version) }
+
+      context 'with build info' do
+        let_it_be(:job) { create(:ci_build, user: user) }
+        let(:params) { super().merge(build: job) }
+
+        it_behaves_like 'assigns build to package'
+        it_behaves_like 'assigns status to package'
+
+        it 'creates a package file build info' do
+          expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+        end
+      end
+
+      context 'when the npm metadatum creation results in a size error' do
+        shared_examples 'a package json structure size too large error' do
+          it 'does not create the package' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              instance_of(ActiveRecord::RecordInvalid),
+              field_sizes: expected_field_sizes
+            )
+
+            expect { subject }.to raise_error(ActiveRecord::RecordInvalid, /structure is too large/)
+              .and not_change { Packages::Package.count }
+              .and not_change { Packages::Package.npm.count }
+              .and not_change { Packages::Tag.count }
+              .and not_change { Packages::Npm::Metadatum.count }
+          end
+        end
+
+        context 'when some of the field sizes are above the error tracking size' do
+          let(:package_json) do
+            params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
+          end
+
+          # Only the fields that exceed the field size limit should be passed to error tracking
+          let(:expected_field_sizes) do
+            {
+              'test' => ('test' * 10000).size,
+              'field2' => ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING + 1)).size
+            }
+          end
+
+          before do
+            params[:versions][version][:test] = 'test' * 10000
+            params[:versions][version][:field1] =
+              'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)
+            params[:versions][version][:field2] =
+              'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING + 1)
+          end
+
+          it_behaves_like 'a package json structure size too large error'
+        end
+
+        context 'when all of the field sizes are below the error tracking size' do
+          let(:package_json) do
+            params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
+          end
+
+          let(:expected_size) { ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)).size }
+          # Only the five largest fields should be passed to error tracking
+          let(:expected_field_sizes) do
+            {
+              'field1' => expected_size,
+              'field2' => expected_size,
+              'field3' => expected_size,
+              'field4' => expected_size,
+              'field5' => expected_size
+            }
+          end
+
+          before do
+            5.times do |i|
+              params[:versions][version]["field#{i + 1}"] =
+                'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)
+            end
+          end
+
+          it_behaves_like 'a package json structure size too large error'
+        end
+      end
+
+      context 'when the npm metadatum creation results in a different error' do
+        it 'does not track the error' do
+          error_message = 'boom'
+          invalid_npm_metadatum_error = ActiveRecord::RecordInvalid.new(
+            build(:npm_metadatum).tap do |metadatum|
+              metadatum.errors.add(:base, error_message)
+            end
           )
 
-          expect { subject }.to raise_error(ActiveRecord::RecordInvalid, /structure is too large/)
-            .and not_change { Packages::Package.count }
-            .and not_change { Packages::Package.npm.count }
-            .and not_change { Packages::Tag.count }
-            .and not_change { Packages::Npm::Metadatum.count }
+          allow_next_instance_of(::Packages::Package) do |package|
+            allow(package).to receive(:create_npm_metadatum!).and_raise(invalid_npm_metadatum_error)
+          end
+
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid, /#{error_message}/)
         end
       end
 
-      context 'when some of the field sizes are above the error tracking size' do
-        let(:package_json) do
-          params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
-        end
+      described_class::PACKAGE_JSON_NOT_ALLOWED_FIELDS.each do |field|
+        context "with not allowed #{field} field" do
+          before do
+            params[:versions][version][field] = 'test'
+          end
 
-        # Only the fields that exceed the field size limit should be passed to error tracking
-        let(:expected_field_sizes) do
-          {
-            'test' => ('test' * 10000).size,
-            'field2' => ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING + 1)).size
-          }
-        end
-
-        before do
-          params[:versions][version][:test] = 'test' * 10000
-          params[:versions][version][:field1] =
-            'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)
-          params[:versions][version][:field2] =
-            'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING + 1)
-        end
-
-        it_behaves_like 'a package json structure size too large error'
-      end
-
-      context 'when all of the field sizes are below the error tracking size' do
-        let(:package_json) do
-          params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
-        end
-
-        let(:expected_size) { ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)).size }
-        # Only the five largest fields should be passed to error tracking
-        let(:expected_field_sizes) do
-          {
-            'field1' => expected_size,
-            'field2' => expected_size,
-            'field3' => expected_size,
-            'field4' => expected_size,
-            'field5' => expected_size
-          }
-        end
-
-        before do
-          5.times do |i|
-            params[:versions][version]["field#{i + 1}"] =
-              'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)
+          it 'is persisted without the field' do
+            expect { subject }
+              .to change { Packages::Package.count }.by(1)
+              .and change { Packages::Package.npm.count }.by(1)
+              .and change { Packages::Tag.count }.by(1)
+              .and change { Packages::Npm::Metadatum.count }.by(1)
+            expect(subject.npm_metadatum.package_json[field]).to be_blank
           end
         end
-
-        it_behaves_like 'a package json structure size too large error'
       end
     end
 
-    context 'when the npm metadatum creation results in a different error' do
-      it 'does not track the error' do
-        error_message = 'boom'
-        invalid_npm_metadatum_error = ActiveRecord::RecordInvalid.new(
-          build(:npm_metadatum).tap do |metadatum|
-            metadatum.errors.add(:base, error_message)
-          end
-        )
-
-        allow_next_instance_of(::Packages::Package) do |package|
-          allow(package).to receive(:create_npm_metadatum!).and_raise(invalid_npm_metadatum_error)
-        end
-
-        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
-
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, /#{error_message}/)
-      end
-    end
-
-    described_class::PACKAGE_JSON_NOT_ALLOWED_FIELDS.each do |field|
-      context "with not allowed #{field} field" do
-        before do
-          params[:versions][version][field] = 'test'
-        end
-
-        it 'is persisted without the field' do
-          expect { subject }
-            .to change { Packages::Package.count }.by(1)
-            .and change { Packages::Package.npm.count }.by(1)
-            .and change { Packages::Tag.count }.by(1)
-            .and change { Packages::Npm::Metadatum.count }.by(1)
-          expect(subject.npm_metadatum.package_json[field]).to be_blank
-        end
-      end
-    end
-  end
-
-  describe '#execute' do
     context 'scoped package' do
       it_behaves_like 'valid package'
     end
 
     context 'when user is no project member' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       it_behaves_like 'valid package'
     end
@@ -320,19 +322,9 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       it { expect(subject[:message]).to eq 'Could not obtain package lease. Please try again.' }
     end
 
-    context 'when many of the same packages are created at the same time', :delete do
-      it 'only creates one package' do
-        expect { create_packages(project, user, params) }.to change { Packages::Package.count }.by(1)
-      end
-    end
-
-    context 'when many packages with different versions are created at the same time', :delete do
-      it 'creates all packages' do
-        expect { create_packages_with_versions(project, user, params) }.to change { Packages::Package.count }.by(5)
-      end
-    end
-
     context 'when feature flag :packages_package_protection is disabled' do
+      let_it_be_with_reload(:package_protection_rule) { create(:package_protection_rule, package_type: :npm, project: project) }
+
       before do
         stub_feature_flags(packages_protected_packages: false)
       end
@@ -350,14 +342,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         end
 
         with_them do
-          let!(:package_protection_rule) do
-            create(
-              :package_protection_rule,
-              package_name_pattern: package_name_pattern,
-              package_type: :npm,
-              project: project,
-              push_protected_up_to_access_level: push_protected_up_to_access_level
-            )
+          before do
+            package_protection_rule.update!(package_name_pattern: package_name_pattern, push_protected_up_to_access_level: push_protected_up_to_access_level)
           end
 
           it_behaves_like 'valid package'
@@ -368,11 +354,14 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     context 'with package protection rule for different roles and package_name_patterns' do
       using RSpec::Parameterized::TableSyntax
 
-      let(:project_developer) { create(:user).tap { |u| project.add_developer(u) } }
-      let(:project_maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
-      let(:project_owner) { project.owner }
+      let_it_be_with_reload(:package_protection_rule) { create(:package_protection_rule, package_type: :npm, project: project) }
+      let_it_be(:project_developer) { create(:user).tap { |u| project.add_developer(u) } }
+      let_it_be(:project_maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
 
+      let(:project_owner) { project.owner }
       let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
+
+      let(:service) { described_class.new(project, current_user, params) }
 
       shared_examples 'protected package' do
         it { is_expected.to include http_status: 403, message: 'Package protected.' }
@@ -386,7 +375,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         end
       end
 
-      where(:package_name_pattern, :push_protected_up_to_access_level, :user, :shared_examples_name) do
+      where(:package_name_pattern, :push_protected_up_to_access_level, :current_user, :shared_examples_name) do
         ref(:package_name)                  | :developer  | ref(:project_developer)  | 'protected package'
         ref(:package_name)                  | :developer  | ref(:project_owner)      | 'valid package'
         ref(:package_name)                  | :maintainer | ref(:project_maintainer) | 'protected package'
@@ -396,17 +385,50 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       with_them do
-        let!(:package_protection_rule) do
-          create(
-            :package_protection_rule,
-            package_name_pattern: package_name_pattern,
-            package_type: :npm,
-            project: project,
-            push_protected_up_to_access_level: push_protected_up_to_access_level
-          )
+        before do
+          package_protection_rule.update!(package_name_pattern: package_name_pattern, push_protected_up_to_access_level: push_protected_up_to_access_level)
         end
 
         it_behaves_like params[:shared_examples_name]
+      end
+    end
+
+    describe '#lease_key' do
+      subject { service.send(:lease_key) }
+
+      it 'returns an unique key' do
+        is_expected.to eq lease_key
+      end
+    end
+  end
+
+  context 'when many of the same packages are created at the same time', :delete do
+    let(:namespace) { create(:namespace) }
+    let(:project) { create(:project, namespace: namespace) }
+    let(:user) { project.owner }
+
+    let(:version) { '1.0.1' }
+
+    let(:params) do
+      Gitlab::Json.parse(
+        fixture_file('packages/npm/payload.json')
+          .gsub('@root/npm-test', package_name)
+          .gsub('1.0.1', version)
+      ).with_indifferent_access
+    end
+
+    let(:package_name) { "@#{namespace.path}/my-app" }
+    let(:service) { described_class.new(project, user, params) }
+
+    subject { service.execute }
+
+    it 'only creates one package' do
+      expect { create_packages(project, user, params) }.to change { Packages::Package.count }.by(1)
+    end
+
+    context 'with different versions' do
+      it 'creates all packages' do
+        expect { create_packages_with_versions(project, user, params) }.to change { Packages::Package.count }.by(5)
       end
     end
 
@@ -443,14 +465,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
       wait_for_it = false
       threads.each(&:join)
-    end
-  end
-
-  describe '#lease_key' do
-    subject { service.send(:lease_key) }
-
-    it 'returns an unique key' do
-      is_expected.to eq lease_key
     end
   end
 end

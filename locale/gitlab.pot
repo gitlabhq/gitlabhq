@@ -5386,9 +5386,6 @@ msgstr ""
 msgid "An unexpected error occurred while communicating with the Web Terminal."
 msgstr ""
 
-msgid "An unexpected error occurred while loading the Sast diff."
-msgstr ""
-
 msgid "An unexpected error occurred while loading the code quality diff."
 msgstr ""
 
@@ -5497,6 +5494,12 @@ msgstr ""
 msgid "Analytics|Custom events"
 msgstr ""
 
+msgid "Analytics|Dashboard description"
+msgstr ""
+
+msgid "Analytics|Dashboard description (optional)"
+msgstr ""
+
 msgid "Analytics|Dashboard not found"
 msgstr ""
 
@@ -5525,6 +5528,12 @@ msgid "Analytics|Edit"
 msgstr ""
 
 msgid "Analytics|Edit your dashboard"
+msgstr ""
+
+msgid "Analytics|Element ID"
+msgstr ""
+
+msgid "Analytics|Enter a dashboard description"
 msgstr ""
 
 msgid "Analytics|Enter a dashboard title"
@@ -5558,6 +5567,9 @@ msgid "Analytics|Language"
 msgstr ""
 
 msgid "Analytics|Line chart"
+msgstr ""
+
+msgid "Analytics|Link clicks"
 msgstr ""
 
 msgid "Analytics|New dashboard"
@@ -5633,6 +5645,9 @@ msgid "Analytics|Start by choosing a metric"
 msgstr ""
 
 msgid "Analytics|Tables"
+msgstr ""
+
+msgid "Analytics|Target URL"
 msgstr ""
 
 msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
@@ -35913,10 +35928,10 @@ msgstr ""
 msgid "ProductAnalytics|After your application has been instrumented and data is being collected, you can visualize and monitor behaviors in your %{linkStart}analytics dashboards%{linkEnd}."
 msgstr ""
 
-msgid "ProductAnalytics|All Clicks Compared"
+msgid "ProductAnalytics|All Events Compared"
 msgstr ""
 
-msgid "ProductAnalytics|All Events Compared"
+msgid "ProductAnalytics|All Link Clicks"
 msgstr ""
 
 msgid "ProductAnalytics|All Pages"
@@ -35929,9 +35944,6 @@ msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page 
 msgstr ""
 
 msgid "ProductAnalytics|Analyze your product with Product Analytics"
-msgstr ""
-
-msgid "ProductAnalytics|Any Click on elements"
 msgstr ""
 
 msgid "ProductAnalytics|Audience"
@@ -35949,16 +35961,13 @@ msgstr ""
 msgid "ProductAnalytics|Back to dashboards"
 msgstr ""
 
-msgid "ProductAnalytics|Click Events"
-msgstr ""
-
 msgid "ProductAnalytics|Compares all events against each other"
 msgstr ""
 
 msgid "ProductAnalytics|Compares all user sessions against each other"
 msgstr ""
 
-msgid "ProductAnalytics|Compares click events against each other"
+msgid "ProductAnalytics|Compares link click events against each other"
 msgstr ""
 
 msgid "ProductAnalytics|Compares page views of all pages against each other"
@@ -36003,10 +36012,16 @@ msgstr ""
 msgid "ProductAnalytics|Instrument your application"
 msgstr ""
 
+msgid "ProductAnalytics|Link Click Events"
+msgstr ""
+
 msgid "ProductAnalytics|Loading instance"
 msgstr ""
 
 msgid "ProductAnalytics|Measure All tracked Events"
+msgstr ""
+
+msgid "ProductAnalytics|Measure all link click events"
 msgstr ""
 
 msgid "ProductAnalytics|Measure all or specific Page Views"
@@ -45049,7 +45064,7 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-msgid "Something went wrong fetching the CodeQuality Findings. Please try again!"
+msgid "Something went wrong fetching the Scanner Findings. Please try again!"
 msgstr ""
 
 msgid "Something went wrong on our end"
@@ -51141,6 +51156,9 @@ msgid "UsageQuota|Pipelines"
 msgstr ""
 
 msgid "UsageQuota|Precise calculation of Container Registry storage size is delayed because it is too large for synchronous estimation. Precise evaluation will be scheduled within 24 hours."
+msgstr ""
+
+msgid "UsageQuota|Product analytics"
 msgstr ""
 
 msgid "UsageQuota|Projects under this namespace have %{planLimit} of storage. %{linkStart}How are limits applied?%{linkEnd}"

@@ -20,7 +20,9 @@ module Resolvers
           project = Project.find_by_full_path(project_path)
 
           apply_lookahead(
-            ::Ci::Catalog::Listing.new(project.root_namespace, context[:current_user]).resources(sort: sort)
+            ::Ci::Catalog::Listing
+              .new(context[:current_user])
+              .resources(namespace: project.root_namespace, sort: sort)
           )
         end
 

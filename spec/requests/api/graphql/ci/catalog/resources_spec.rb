@@ -99,8 +99,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
 
   context 'when the current user does not have permission to read the namespace catalog' do
     it 'returns no resources' do
-      namespace.add_guest(user)
-
       post_query
 
       expect(graphql_data_at(:ciCatalogResources, :nodes)).to be_empty

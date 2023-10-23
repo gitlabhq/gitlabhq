@@ -1102,10 +1102,6 @@ class Repository
     blob_data_at(sha, '.gitlab/route-map.yml')
   end
 
-  def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
-    blob_data_at(sha, path)
-  end
-
   def lfsconfig_for(sha)
     blob_data_at(sha, '.lfsconfig')
   end

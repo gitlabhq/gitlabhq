@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 # NOTE:
 #       This spec is intended to serve as documentation examples of idiomatic usage for the `Result` type.

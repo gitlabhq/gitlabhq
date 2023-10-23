@@ -505,7 +505,7 @@ mr.project.try(:ci_integration)
 
 ```ruby
 project = Project.find_by_full_path('<project_path>')
-content = p.repository.gitlab_ci_yml_for(project.repository.root_ref_sha)
+content = p.ci_config_for(project.repository.root_ref_sha)
 Gitlab::Ci::Lint.new(project: project,  current_user: User.first).validate(content)
 ```
 

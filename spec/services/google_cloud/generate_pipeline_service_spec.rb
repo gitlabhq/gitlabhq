@@ -32,7 +32,7 @@ RSpec.describe GoogleCloud::GeneratePipelineService, feature_category: :deployme
         response = service.execute
 
         ref = response[:commit][:result]
-        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(ref)
+        gitlab_ci_yml = project.ci_config_for(ref)
 
         expect(response[:status]).to eq(:success)
         expect(gitlab_ci_yml).to include('https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library/-/raw/main/gcp/cloud-run.gitlab-ci.yml')
@@ -97,7 +97,7 @@ EOF
         response = service.execute
 
         branch_name = response[:branch_name]
-        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(branch_name)
+        gitlab_ci_yml = project.ci_config_for(branch_name)
         pipeline = Gitlab::Config::Loader::Yaml.new(gitlab_ci_yml).load!
 
         expect(response[:status]).to eq(:success)
@@ -110,7 +110,7 @@ EOF
         response = service.execute
 
         branch_name = response[:branch_name]
-        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(branch_name)
+        gitlab_ci_yml = project.ci_config_for(branch_name)
 
         expect(YAML.safe_load(gitlab_ci_yml).keys).to eq(%w[stages build-java test-java include])
       end
@@ -153,7 +153,7 @@ EOF
         response = service.execute
 
         branch_name = response[:branch_name]
-        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(branch_name)
+        gitlab_ci_yml = project.ci_config_for(branch_name)
         pipeline = Gitlab::Config::Loader::Yaml.new(gitlab_ci_yml).load!
 
         expect(response[:status]).to eq(:success)
@@ -195,7 +195,7 @@ EOF
         response = service.execute
 
         branch_name = response[:branch_name]
-        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(branch_name)
+        gitlab_ci_yml = project.ci_config_for(branch_name)
         pipeline = Gitlab::Config::Loader::Yaml.new(gitlab_ci_yml).load!
 
         expect(response[:status]).to eq(:success)
@@ -235,7 +235,7 @@ EOF
         response = service.execute
 
         ref = response[:commit][:result]
-        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(ref)
+        gitlab_ci_yml = project.ci_config_for(ref)
 
         expect(response[:status]).to eq(:success)
         expect(gitlab_ci_yml).to include('https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library/-/raw/main/gcp/cloud-storage.gitlab-ci.yml')
@@ -272,7 +272,7 @@ EOF
         response = service.execute
 
         ref = response[:commit][:result]
-        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(ref)
+        gitlab_ci_yml = project.ci_config_for(ref)
 
         expect(response[:status]).to eq(:success)
         expect(gitlab_ci_yml).to include('https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library/-/raw/main/gcp/vision-ai.gitlab-ci.yml')
@@ -328,7 +328,7 @@ EOF
         response = service.execute
 
         branch_name = response[:branch_name]
-        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(branch_name)
+        gitlab_ci_yml = project.ci_config_for(branch_name)
         pipeline = Gitlab::Config::Loader::Yaml.new(gitlab_ci_yml).load!
 
         expect(response[:status]).to eq(:success)

@@ -20,10 +20,6 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
         namespace.add_owner(user)
       end
 
-      before do
-        stub_licensed_features(ci_namespace_catalog: true)
-      end
-
       it 'returns all CI Catalog resources visible to the current user in the namespace' do
         result = resolve(described_class, ctx: { current_user: user }, args: { project_path: project_1.full_path })
 
@@ -47,9 +43,6 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
 
     context 'when the current user cannot read the namespace catalog' do
       it 'raises ResourceNotAvailable' do
-        stub_licensed_features(ci_namespace_catalog: true)
-        namespace.add_guest(user)
-
         result = resolve(described_class, ctx: { current_user: user }, args: { project_path: project_1.full_path })
 
         expect(result).to be_empty

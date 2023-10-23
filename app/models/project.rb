@@ -2875,7 +2875,7 @@ class Project < ApplicationRecord
   end
 
   def uses_default_ci_config?
-    ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
+    ci_config_path.blank? || Gitlab::FileDetector.type_of(ci_config_path) == :gitlab_ci
   end
 
   def limited_protected_branches(limit)
@@ -3026,7 +3026,7 @@ class Project < ApplicationRecord
   end
 
   def ci_config_for(sha)
-    repository.gitlab_ci_yml_for(sha, ci_config_path_or_default)
+    repository.blob_data_at(sha, ci_config_path_or_default)
   end
 
   def enabled_group_deploy_keys

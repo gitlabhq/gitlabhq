@@ -1,9 +1,10 @@
-query getMRCodequalityReports($fullPath: ID!, $iid: String!) {
+query getMRCodequalityAndSecurityReports($fullPath: ID!, $iid: String!) {
   project(fullPath: $fullPath) {
     id
     mergeRequest(iid: $iid) {
       id
       title
+      hasSecurityReports
       codequalityReportsComparer {
         report {
           status
@@ -38,6 +39,29 @@ query getMRCodequalityReports($fullPath: ID!, $iid: String!) {
             errored
             resolved
             total
+          }
+        }
+      }
+      sastReport: findingReportsComparer(reportType: SAST) {
+        status
+        report {
+          added {
+            uuid
+            title
+            description
+            state
+            severity
+            foundByPipelineIid
+            location {
+              ... on VulnerabilityLocationSast {
+                file
+                startLine
+                endLine
+                vulnerableClass
+                vulnerableMethod
+                blobPath
+              }
+            }
           }
         }
       }

@@ -221,7 +221,7 @@ RSpec.describe BlobHelper do
 
       context 'when file is a pipeline config file' do
         let(:data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
-        let(:blob) { fake_blob(path: Gitlab::FileDetector::PATTERNS[:gitlab_ci], data: data) }
+        let(:blob) { fake_blob(path: project.ci_config_path_or_default, data: data) }
 
         it 'is true' do
           expect(helper.show_suggest_pipeline_creation_celebration?).to be_truthy

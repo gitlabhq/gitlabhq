@@ -507,15 +507,8 @@ Once the above MR has been merged, you should:
 
 When a feature gate has been removed from the codebase, the feature
 record still exists in the database that the flag was deployed too.
-The record can be deleted once the MR is deployed to each environment:
+The record can be deleted once the MR is deployed to all the environments:
 
 ```shell
-/chatops run feature delete some_feature --dev
-/chatops run feature delete some_feature --staging
-```
-
-Then, you can delete it from production after the MR is deployed to prod:
-
-```shell
-/chatops run feature delete some_feature
+/chatops run feature delete <feature-flag-name> --dev --ops --pre --staging --staging-ref --production
 ```

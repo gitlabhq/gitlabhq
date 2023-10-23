@@ -88,7 +88,7 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
       let(:role) { :developer }
 
       before do
-        project.repository.create_file(user, Gitlab::FileDetector::PATTERNS[:gitlab_ci], 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master')
+        project.repository.create_file(user, project.ci_config_path_or_default, 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master')
       end
 
       it 'no ci config path' do

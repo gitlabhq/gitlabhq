@@ -30,8 +30,9 @@ module Ci
     PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {
       project: [:project_feature, :route, { namespace: :route }]
     }.freeze
-    CONFIG_EXTENSION = '.gitlab-ci.yml'
-    DEFAULT_CONFIG_PATH = CONFIG_EXTENSION
+
+    DEFAULT_CONFIG_PATH = '.gitlab-ci.yml'
+
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
 
     paginates_per 15

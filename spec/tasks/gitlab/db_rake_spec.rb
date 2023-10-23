@@ -1200,6 +1200,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     let(:config_hash) { { username: 'foo' } }
 
     before do
+      skip_if_shared_database(:ci)
+
       allow(Rake::Task['db:drop']).to receive(:invoke)
       allow(Rake::Task['db:create']).to receive(:invoke)
       allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
@@ -1211,7 +1213,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     it 'migrate as nonsuperuser check with default username' do
       expect(config_hash).to receive(:merge).with({ username: 'gitlab' }).and_call_original
       expect(Gitlab::Database).to receive(:check_for_non_superuser)
-      expect(Rake::Task['db:migrate']).to receive(:invoke)
+      expect(Rake::Task['db:migrate:main']).to receive(:invoke)
 
       run_rake_task('gitlab:db:reset_as_non_superuser')
     end
@@ -1219,7 +1221,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     it 'migrate as nonsuperuser check with specified username' do
       expect(config_hash).to receive(:merge).with({ username: 'foo' }).and_call_original
       expect(Gitlab::Database).to receive(:check_for_non_superuser)
-      expect(Rake::Task['db:migrate']).to receive(:invoke)
+      expect(Rake::Task['db:migrate:main']).to receive(:invoke)
 
       run_rake_task('gitlab:db:reset_as_non_superuser', '[foo]')
     end

@@ -132,7 +132,7 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
       If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post: `/chatops run release check <merge-request-url> <milestone>`
 - [ ] Close [the feature issue][main-issue] to indicate the feature will be released in the current milestone.
-- [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --staging --staging-ref --production`
+- [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --ops --pre --staging --staging-ref --production`
 - [ ] Close this rollout issue.
 
 ## Rollback Steps

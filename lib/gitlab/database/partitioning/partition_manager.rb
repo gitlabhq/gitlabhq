@@ -89,6 +89,8 @@ module Gitlab
                 Gitlab::AppLogger.info(message: "Created partition",
                                        partition_name: partition.partition_name,
                                        table_name: partition.table)
+
+                lock_partitions_for_writes(partition) if should_lock_for_writes?
               end
 
               model.partitioning_strategy.after_adding_partitions
@@ -204,6 +206,23 @@ module Gitlab
               yield
             end
           end
+        end
+
+        def should_lock_for_writes?
+          Feature.enabled?(:automatic_lock_writes_on_partition_tables, type: :ops) &&
+            Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES &&
+            connection != model.connection
+        end
+        strong_memoize_attr :should_lock_for_writes?
+
+        def lock_partitions_for_writes(partition)
+          table_name = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition.partition_name}"
+          Gitlab::Database::LockWritesManager.new(
+            table_name: table_name,
+            connection: connection,
+            database_name: @connection_name,
+            with_retries: !connection.transaction_open?
+          ).lock_writes
         end
       end
     end

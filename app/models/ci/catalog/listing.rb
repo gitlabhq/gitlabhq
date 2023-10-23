@@ -3,42 +3,53 @@
 module Ci
   module Catalog
     class Listing
-      # This class is the SSoT to displaying the list of resources in the
-      # CI/CD Catalog given a namespace as a scope.
+      # This class is the SSoT to displaying the list of resources in the CI/CD Catalog.
       # This model is not directly backed by a table and joins catalog resources
       # with projects to return relevant data.
-      def initialize(namespace, current_user)
-        raise ArgumentError, 'Namespace is not a root namespace' unless namespace.root?
 
-        @namespace = namespace
+      MIN_SEARCH_LENGTH = 3
+
+      def initialize(current_user)
         @current_user = current_user
       end
 
-      def resources(sort: nil)
+      def resources(namespace: nil, sort: nil, search: nil)
+        relation = all_resources(search)
+        relation = by_namespace(relation, namespace)
+
         case sort.to_s
-        when 'name_desc' then all_resources.order_by_name_desc
-        when 'name_asc' then all_resources.order_by_name_asc
-        when 'latest_released_at_desc' then all_resources.order_by_latest_released_at_desc
-        when 'latest_released_at_asc' then all_resources.order_by_latest_released_at_asc
+        when 'name_desc' then relation.order_by_name_desc
+        when 'name_asc' then relation.order_by_name_asc
+        when 'latest_released_at_desc' then relation.order_by_latest_released_at_desc
+        when 'latest_released_at_asc' then relation.order_by_latest_released_at_asc
         else
-          all_resources.order_by_created_at_desc
+          relation.order_by_created_at_desc
         end
       end
 
       private
 
-      attr_reader :namespace, :current_user
+      attr_reader :current_user
 
-      def all_resources
-        Ci::Catalog::Resource
-          .joins(:project).includes(:project)
-          .merge(projects_in_namespace_visible_to_user)
+      def all_resources(search)
+        Ci::Catalog::Resource.joins(:project).includes(:project)
+          .merge(find_projects(search))
       end
 
-      def projects_in_namespace_visible_to_user
-        Project
-          .in_namespace(namespace.self_and_descendant_ids)
-          .public_or_visible_to_user(current_user, ::Gitlab::Access::DEVELOPER)
+      def by_namespace(relation, namespace)
+        return relation unless namespace
+        raise ArgumentError, 'Namespace is not a root namespace' unless namespace.root?
+
+        relation.merge(Project.in_namespace(namespace.self_and_descendant_ids))
+      end
+
+      def find_projects(search)
+        finder_params = {
+          minimum_search_length: MIN_SEARCH_LENGTH,
+          search: search
+        }
+
+        ProjectsFinder.new(params: finder_params, current_user: current_user).execute
       end
     end
   end
