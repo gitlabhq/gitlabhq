@@ -8,6 +8,8 @@ module MergeRequests
       end
 
       def execute
+        return inactive unless merge_request.project.ff_merge_must_be_possible?
+
         if merge_request.should_be_rebased?
           failure(reason: failure_reason)
         else

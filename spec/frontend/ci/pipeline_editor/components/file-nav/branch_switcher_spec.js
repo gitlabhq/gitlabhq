@@ -1,12 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlInfiniteScroll,
-  GlLoadingIcon,
-  GlSearchBoxByType,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -76,17 +70,15 @@ describe('Pipeline editor branch switcher', () => {
         totalBranches: mockTotalBranches,
       },
       apolloProvider: mockApollo,
+      stubs: { GlCollapsibleListbox },
     });
 
     return waitForPromises();
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
-  const findInfiniteScroll = () => wrapper.findComponent(GlInfiniteScroll);
-  const defaultBranchInDropdown = () => findDropdownItems().at(0);
+  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findGlListboxItems = () => wrapper.findAllComponents(GlListboxItem);
+  const defaultBranchInDropdown = () => findGlListboxItems().at(0);
 
   const setAvailableBranchesMock = (availableBranches) => {
     mockAvailableBranchQuery.mockResolvedValue(availableBranches);
@@ -112,11 +104,7 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     it('disables the dropdown', () => {
-      expect(findDropdown().props('disabled')).toBe(true);
-    });
-
-    it('shows loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findGlCollapsibleListbox().props('disabled')).toBe(true);
     });
   });
 
@@ -126,29 +114,25 @@ describe('Pipeline editor branch switcher', () => {
       await createComponent();
     });
 
-    it('does not render the loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(false);
-    });
-
     it('renders search box', () => {
-      expect(findSearchBox().exists()).toBe(true);
+      expect(findGlCollapsibleListbox().props().searchable).toBe(true);
     });
 
     it('renders list of branches', () => {
-      expect(findDropdown().exists()).toBe(true);
-      expect(findDropdownItems()).toHaveLength(mockTotalBranchResults);
+      expect(findGlCollapsibleListbox().exists()).toBe(true);
+      expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults);
     });
 
     it('renders current branch with a check mark', () => {
       expect(defaultBranchInDropdown().text()).toBe(mockDefaultBranch);
-      expect(defaultBranchInDropdown().props('isChecked')).toBe(true);
+      expect(defaultBranchInDropdown().props('isSelected')).toBe(true);
     });
 
     it('does not render check mark for other branches', () => {
-      const nonDefaultBranch = findDropdownItems().at(1);
+      const nonDefaultBranch = findGlListboxItems().at(1);
 
       expect(nonDefaultBranch.text()).not.toBe(mockDefaultBranch);
-      expect(nonDefaultBranch.props('isChecked')).toBe(false);
+      expect(nonDefaultBranch.props('isSelected')).toBe(false);
     });
   });
 
@@ -159,7 +143,7 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     it('does not render dropdown', () => {
-      expect(findDropdown().props('disabled')).toBe(true);
+      expect(findGlCollapsibleListbox().props('disabled')).toBe(true);
     });
 
     it('shows an error message', () => {
@@ -175,8 +159,8 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     it('updates session history when selecting a different branch', async () => {
-      const branch = findDropdownItems().at(1);
-      branch.vm.$emit('click');
+      const branch = findGlListboxItems().at(1);
+      findGlCollapsibleListbox().vm.$emit('select', branch.text());
       await waitForPromises();
 
       expect(window.history.pushState).toHaveBeenCalled();
@@ -184,7 +168,7 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     it('does not update session history when selecting current branch', async () => {
-      const branch = findDropdownItems().at(0);
+      const branch = findGlListboxItems().at(0);
       branch.vm.$emit('click');
       await waitForPromises();
 
@@ -192,21 +176,21 @@ describe('Pipeline editor branch switcher', () => {
       expect(window.history.pushState).not.toHaveBeenCalled();
     });
 
-    it('emits the refetchContent event when selecting a different branch', async () => {
-      const branch = findDropdownItems().at(1);
+    it('emits the `refetchContent` event when selecting a different branch', async () => {
+      const branch = findGlListboxItems().at(1);
 
       expect(branch.text()).not.toBe(mockDefaultBranch);
       expect(wrapper.emitted('refetchContent')).toBeUndefined();
 
-      branch.vm.$emit('click');
+      findGlCollapsibleListbox().vm.$emit('select', branch.text());
       await waitForPromises();
 
       expect(wrapper.emitted('refetchContent')).toBeDefined();
       expect(wrapper.emitted('refetchContent')).toHaveLength(1);
     });
 
-    it('does not emit the refetchContent event when selecting the current branch', async () => {
-      const branch = findDropdownItems().at(0);
+    it('does not emit the `refetchContent` event when selecting the current branch', async () => {
+      const branch = findGlListboxItems().at(0);
 
       expect(branch.text()).toBe(mockDefaultBranch);
       expect(wrapper.emitted('refetchContent')).toBeUndefined();
@@ -223,11 +207,11 @@ describe('Pipeline editor branch switcher', () => {
         await waitForPromises();
       });
 
-      it('emits `select-branch` event and does not switch branch', async () => {
+      it('emits `select-branch` event and does not switch branch', () => {
         expect(wrapper.emitted('select-branch')).toBeUndefined();
 
-        const branch = findDropdownItems().at(1);
-        await branch.vm.$emit('click');
+        const branch = findGlListboxItems().at(1);
+        findGlCollapsibleListbox().vm.$emit('select', branch.text());
 
         expect(wrapper.emitted('select-branch')).toEqual([[branch.text()]]);
         expect(wrapper.emitted('refetchContent')).toBeUndefined();
@@ -248,7 +232,7 @@ describe('Pipeline editor branch switcher', () => {
     it('shows error message on fetch error', async () => {
       mockAvailableBranchQuery.mockResolvedValue(new Error());
 
-      findSearchBox().vm.$emit('input', 'te');
+      findGlCollapsibleListbox().vm.$emit('search', 'te');
       await waitForPromises();
 
       testErrorHandling();
@@ -260,7 +244,8 @@ describe('Pipeline editor branch switcher', () => {
       });
 
       it('calls query with correct variables', async () => {
-        findSearchBox().vm.$emit('input', 'te');
+        findGlCollapsibleListbox().vm.$emit('search', 'te');
+
         await waitForPromises();
 
         expect(mockAvailableBranchQuery).toHaveBeenCalledWith({
@@ -272,35 +257,35 @@ describe('Pipeline editor branch switcher', () => {
       });
 
       it('fetches new list of branches', async () => {
-        expect(findDropdownItems()).toHaveLength(mockTotalBranchResults);
+        expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults);
 
-        findSearchBox().vm.$emit('input', 'te');
+        findGlCollapsibleListbox().vm.$emit('search', 'te');
         await waitForPromises();
 
-        expect(findDropdownItems()).toHaveLength(mockTotalSearchResults);
+        expect(findGlListboxItems()).toHaveLength(mockTotalSearchResults);
       });
 
       it('does not hide dropdown when search result is empty', async () => {
         mockAvailableBranchQuery.mockResolvedValue(mockEmptySearchBranches);
-        findSearchBox().vm.$emit('input', 'aaaaa');
+        findGlCollapsibleListbox().vm.$emit('search', 'aaaa');
         await waitForPromises();
 
-        expect(findDropdown().exists()).toBe(true);
-        expect(findDropdownItems()).toHaveLength(0);
+        expect(findGlCollapsibleListbox().exists()).toBe(true);
+        expect(findGlListboxItems()).toHaveLength(0);
       });
     });
 
     describe('without a search term', () => {
       beforeEach(async () => {
         mockAvailableBranchQuery.mockResolvedValue(mockSearchBranches);
-        findSearchBox().vm.$emit('input', 'te');
+        findGlCollapsibleListbox().vm.$emit('search', 'te');
         await waitForPromises();
 
         mockAvailableBranchQuery.mockResolvedValue(generateMockProjectBranches());
       });
 
       it('calls query with correct variables', async () => {
-        findSearchBox().vm.$emit('input', '');
+        findGlCollapsibleListbox().vm.$emit('search', '');
         await waitForPromises();
 
         expect(mockAvailableBranchQuery).toHaveBeenCalledWith({
@@ -312,70 +297,33 @@ describe('Pipeline editor branch switcher', () => {
       });
 
       it('fetches new list of branches', async () => {
-        expect(findDropdownItems()).toHaveLength(mockTotalSearchResults);
+        expect(findGlListboxItems()).toHaveLength(mockTotalSearchResults);
 
-        findSearchBox().vm.$emit('input', '');
+        findGlCollapsibleListbox().vm.$emit('search', '');
         await waitForPromises();
 
-        expect(findDropdownItems()).toHaveLength(mockTotalBranchResults);
+        expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults);
       });
     });
   });
 
   describe('when scrolling to the bottom of the list', () => {
     beforeEach(async () => {
-      setAvailableBranchesMock(generateMockProjectBranches());
-      await createComponent();
+      createComponent();
+      await waitForPromises();
     });
 
     afterEach(() => {
       mockAvailableBranchQuery.mockClear();
     });
 
-    describe('when search term is empty', () => {
-      it('fetches more branches', async () => {
-        expect(mockAvailableBranchQuery).toHaveBeenCalledTimes(1);
-
-        setAvailableBranchesMock(generateMockProjectBranches('new-'));
-        findInfiniteScroll().vm.$emit('bottomReached');
-        await waitForPromises();
-
-        expect(mockAvailableBranchQuery).toHaveBeenCalledTimes(2);
-      });
-
-      it('calls the query with the correct variables', async () => {
-        setAvailableBranchesMock(generateMockProjectBranches('new-'));
-        findInfiniteScroll().vm.$emit('bottomReached');
-        await waitForPromises();
-
-        expect(mockAvailableBranchQuery).toHaveBeenCalledWith({
-          limit: mockBranchPaginationLimit,
-          offset: mockBranchPaginationLimit, // offset changed
-          projectFullPath: mockProjectFullPath,
-          searchPattern: '*',
-        });
-      });
-
-      it('shows error message on fetch error', async () => {
-        mockAvailableBranchQuery.mockResolvedValue(new Error());
-
-        findInfiniteScroll().vm.$emit('bottomReached');
-        await waitForPromises();
-
-        testErrorHandling();
-      });
-    });
-
     describe('when search term exists', () => {
       it('does not fetch more branches', async () => {
-        findSearchBox().vm.$emit('input', 'te');
+        findGlCollapsibleListbox().vm.$emit('search', 'new');
         await waitForPromises();
 
         expect(mockAvailableBranchQuery).toHaveBeenCalledTimes(2);
         mockAvailableBranchQuery.mockClear();
-
-        findInfiniteScroll().vm.$emit('bottomReached');
-        await waitForPromises();
 
         expect(mockAvailableBranchQuery).not.toHaveBeenCalled();
       });

@@ -9,7 +9,7 @@ stages:
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
 
-.review-build-cng-env:
+.build-cng-env:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
   stage: prepare
   needs:
@@ -34,7 +34,7 @@ include:
     expire_in: 7 days
     when: always
 
-.review-build-cng:
+.build-cng:
   stage: prepare
   inherit:
     variables: false

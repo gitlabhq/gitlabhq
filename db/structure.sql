@@ -34467,6 +34467,8 @@ CREATE INDEX index_user_namespace_callouts_on_namespace_id ON user_namespace_cal
 
 CREATE INDEX index_user_permission_export_uploads_on_user_id_and_status ON user_permission_export_uploads USING btree (user_id, status);
 
+CREATE INDEX index_user_phone_number_validations_on_telesign_reference_xid ON user_phone_number_validations USING btree (telesign_reference_xid);
+
 CREATE INDEX index_user_phone_validations_on_dial_code_phone_number ON user_phone_number_validations USING btree (international_dial_code, phone_number);
 
 CREATE INDEX index_user_preferences_on_gitpod_enabled ON user_preferences USING btree (gitpod_enabled);

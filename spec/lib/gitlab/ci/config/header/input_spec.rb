@@ -103,4 +103,21 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
 
     it_behaves_like 'an invalid input'
   end
+
+  context 'when the limit for allowed number of options is reached' do
+    let(:limit) { described_class::ALLOWED_OPTIONS_LIMIT }
+    let(:input_hash) { { default: 'value1', options: options  } }
+    let(:options) { Array.new(limit.next) { |i| "value#{i}" } }
+
+    describe '#valid?' do
+      it { is_expected.not_to be_valid }
+    end
+
+    describe '#errors' do
+      it 'returns error about incorrect type' do
+        expect(config.errors).to contain_exactly(
+          "foo config cannot define more than #{limit} options")
+      end
+    end
+  end
 end

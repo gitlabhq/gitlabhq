@@ -37,4 +37,5 @@ export const TRACKING_CATEGORIES = {
   search: 'pipelines_filtered_search',
   failed: 'pipeline_failed_jobs_tab',
   tests: 'pipeline_tests_tab',
+  listbox: 'pipeline_id_iid_listbox',
 };

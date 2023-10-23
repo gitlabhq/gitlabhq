@@ -6,6 +6,8 @@ module Gitlab
       module Interpolation
         class Inputs
           class StringInput < BaseInput
+            extend ::Gitlab::Utils::Override
+
             def self.matches?(spec)
               # The input spec can be `nil` when using a minimal specification
               # and also when `type` is not specified.
@@ -22,24 +24,32 @@ module Gitlab
               'string'
             end
 
-            def valid_value?(value)
-              value.nil? || value.is_a?(String)
+            override :validate_type
+            def validate_type(value, default)
+              return if value.is_a?(String)
+
+              error("#{default ? 'default' : 'provided'} value is not a string")
+            end
+
+            override :validate_options
+            def validate_options(value)
+              return unless options && value
+              return if options.include?(value)
+
+              error("`#{value}` cannot be used because it is not in the list of allowed options")
             end
 
             private
 
-            def validate_regex!
+            override :validate_regex
+            def validate_regex(value, default)
               return unless spec.key?(:regex)
 
               safe_regex = ::Gitlab::UntrustedRegexp.new(spec[:regex])
 
-              return if safe_regex.match?(actual_value)
+              return if safe_regex.match?(value)
 
-              if value.nil?
-                error('default value does not match required RegEx pattern')
-              else
-                error('provided value does not match required RegEx pattern')
-              end
+              error("#{default ? 'default' : 'provided'} value does not match required RegEx pattern")
             rescue RegexpError
               error('invalid regular expression')
             end

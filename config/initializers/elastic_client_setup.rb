@@ -19,6 +19,9 @@ Gitlab.ee do
   Elasticsearch::Model::ClassMethods.prepend GemExtensions::Elasticsearch::Model::Client
   Elasticsearch::Model.singleton_class.prepend GemExtensions::Elasticsearch::Model::Client
 
+  require 'elasticsearch/api'
+  Elasticsearch::API::Utils.prepend GemExtensions::Elasticsearch::API::Utils
+
   ### Modified from elasticsearch-model/lib/elasticsearch/model/searching.rb
 
   module Elasticsearch

@@ -5,7 +5,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import labelSearchQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
+import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
+import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -37,7 +38,8 @@ describe('WorkItemLabels component', () => {
   const groupWorkItemQuerySuccess = jest
     .fn()
     .mockResolvedValue(groupWorkItemByIidResponseFactory({ labels: null }));
-  const successSearchQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
+  const projectLabelsQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
+  const groupLabelsQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
   const successUpdateWorkItemMutationHandler = jest
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponse);
@@ -47,7 +49,7 @@ describe('WorkItemLabels component', () => {
     canUpdate = true,
     isGroup = false,
     workItemQueryHandler = workItemQuerySuccess,
-    searchQueryHandler = successSearchQueryHandler,
+    searchQueryHandler = projectLabelsQueryHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
     workItemIid = '1',
   } = {}) => {
@@ -55,7 +57,8 @@ describe('WorkItemLabels component', () => {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
         [groupWorkItemByIidQuery, groupWorkItemQuerySuccess],
-        [labelSearchQuery, searchQueryHandler],
+        [projectLabelsQuery, searchQueryHandler],
+        [groupLabelsQuery, groupLabelsQueryHandler],
         [updateWorkItemMutation, updateWorkItemMutationHandler],
       ]),
       provide: {
@@ -179,7 +182,7 @@ describe('WorkItemLabels component', () => {
     findTokenSelector().vm.$emit('text-input', searchKey);
     await waitForPromises();
 
-    expect(successSearchQueryHandler).toHaveBeenCalledWith(
+    expect(projectLabelsQueryHandler).toHaveBeenCalledWith(
       expect.objectContaining({ searchTerm: searchKey }),
     );
   });
@@ -273,6 +276,16 @@ describe('WorkItemLabels component', () => {
 
       expect(workItemQuerySuccess).not.toHaveBeenCalled();
     });
+
+    it('calls the project labels query on search', async () => {
+      createComponent();
+
+      findTokenSelector().vm.$emit('focus');
+      findTokenSelector().vm.$emit('text-input', 'hello');
+      await waitForPromises();
+
+      expect(projectLabelsQueryHandler).toHaveBeenCalled();
+    });
   });
 
   describe('when group context', () => {
@@ -295,6 +308,16 @@ describe('WorkItemLabels component', () => {
       await waitForPromises();
 
       expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
+    });
+
+    it('calls the group labels query on search', async () => {
+      createComponent({ isGroup: true });
+
+      findTokenSelector().vm.$emit('focus');
+      findTokenSelector().vm.$emit('text-input', 'hello');
+      await waitForPromises();
+
+      expect(groupLabelsQueryHandler).toHaveBeenCalled();
     });
   });
 });

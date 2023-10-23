@@ -7,6 +7,8 @@ module MergeRequests
       end
 
       def execute
+        return inactive unless merge_request.only_allow_merge_if_all_discussions_are_resolved?
+
         if merge_request.mergeable_discussions_state?
           success
         else

@@ -6,5 +6,6 @@ FactoryBot.define do
     country { 'US' }
     international_dial_code { 1 }
     phone_number { '555' }
+    telesign_reference_xid { FFaker::Guid.guid }
   end
 end

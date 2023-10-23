@@ -1,4 +1,5 @@
 import { GlFilteredSearch, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { assertProps } from 'helpers/assert_props';
 import RunnerFilteredSearchBar from '~/ci/runner/components/runner_filtered_search_bar.vue';
@@ -35,8 +36,8 @@ describe('RunnerList', () => {
 
   const mockOtherSort = CONTACTED_DESC;
   const mockFilters = [
-    { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
-    { type: FILTERED_SEARCH_TERM, value: { data: '' } },
+    { id: 1, type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
+    { id: 2, type: FILTERED_SEARCH_TERM, value: { data: '' } },
   ];
 
   const expectToHaveLastEmittedInput = (value) => {
@@ -148,9 +149,11 @@ describe('RunnerList', () => {
       ).toEqual('Last contact');
     });
 
-    it('when the user sets a filter, the "search" preserves the other filters', () => {
+    it('when the user sets a filter, the "search" preserves the other filters', async () => {
       findGlFilteredSearch().vm.$emit('input', mockFilters);
       findGlFilteredSearch().vm.$emit('submit');
+
+      await nextTick();
 
       expectToHaveLastEmittedInput({
         runnerType: INSTANCE_TYPE,
@@ -162,9 +165,11 @@ describe('RunnerList', () => {
     });
   });
 
-  it('when the user sets a filter, the "search" is emitted with filters', () => {
+  it('when the user sets a filter, the "search" is emitted with filters', async () => {
     findGlFilteredSearch().vm.$emit('input', mockFilters);
     findGlFilteredSearch().vm.$emit('submit');
+
+    await nextTick();
 
     expectToHaveLastEmittedInput({
       runnerType: null,

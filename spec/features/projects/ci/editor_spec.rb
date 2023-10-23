@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition do
   include Features::SourceEditorSpecHelpers
+  include ListboxHelpers
 
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
@@ -216,12 +217,13 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     def switch_to_branch(branch)
       # close button for the popover
       find('[data-testid="close-button"]').click
-      find('[data-testid="branch-selector"]').click
 
       page.within '[data-testid="branch-selector"]' do
-        click_button branch
-        wait_for_requests
+        toggle_listbox
+        select_listbox_item(branch, exact_text: true)
       end
+
+      wait_for_requests
     end
 
     before do

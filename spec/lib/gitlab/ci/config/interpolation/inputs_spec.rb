@@ -7,6 +7,90 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
   let(:specs) { { foo: { default: 'bar' } } }
   let(:args) { {} }
 
+  context 'when inputs are valid strings and have options' do
+    let(:specs) { { foo: { default: 'one', options: %w[one two three] } } }
+
+    context 'and the value is selected' do
+      let(:args) { { foo: 'two' } }
+
+      it 'assigns the selected value' do
+        expect(inputs).to be_valid
+        expect(inputs.to_hash).to eq({ foo: 'two' })
+      end
+    end
+
+    context 'and the value is not selected' do
+      it 'assigns the default value' do
+        expect(inputs).to be_valid
+        expect(inputs.to_hash).to eq({ foo: 'one' })
+      end
+    end
+  end
+
+  context 'when inputs options are valid integers' do
+    let(:specs) { { foo: { default: 1, options: [1, 2, 3, 4, 5], type: 'number' } } }
+
+    context 'and a value of the wrong type is given' do
+      let(:args) { { foo: 'word' } }
+
+      it 'returns an error' do
+        expect(inputs).not_to be_valid
+        expect(inputs.errors).to contain_exactly(
+          "`foo` input: `word` cannot be used because it is not in the list of the allowed options",
+          "`foo` input: provided value is not a number"
+        )
+      end
+    end
+
+    context 'and the value is selected' do
+      let(:args) { { foo: 2 } }
+
+      it 'assigns the selected value' do
+        expect(inputs).to be_valid
+        expect(inputs.to_hash).to eq({ foo: 2 })
+      end
+    end
+
+    context 'and the value is not selected' do
+      it 'assigns the default value' do
+        expect(inputs).to be_valid
+        expect(inputs.to_hash).to eq({ foo: 1 })
+      end
+    end
+  end
+
+  context 'when inputs have invalid type options' do
+    let(:specs) { { foo: { default: true, options: [true, false], type: 'boolean' } } }
+
+    it 'returns an error' do
+      expect(inputs).not_to be_valid
+      expect(inputs.errors).to contain_exactly("`foo` input: Options can only be used with string and number inputs")
+    end
+  end
+
+  context 'when inputs are valid with options but the default value is not in the options' do
+    let(:specs) { { foo: { default: 'coop', options: %w[one two three] } } }
+
+    it 'returns an error' do
+      expect(inputs).not_to be_valid
+      expect(inputs.errors).to contain_exactly(
+        '`foo` input: `coop` cannot be used because it is not in the list of allowed options'
+      )
+    end
+  end
+
+  context 'when inputs are valid with options but the value is not in the options' do
+    let(:specs) { { foo: { default: 'one', options: %w[one two three] } } }
+    let(:args) { { foo: 'niet' } }
+
+    it 'returns an error' do
+      expect(inputs).not_to be_valid
+      expect(inputs.errors).to contain_exactly(
+        '`foo` input: `niet` cannot be used because it is not in the list of allowed options'
+      )
+    end
+  end
+
   context 'when given unrecognized inputs' do
     let(:specs) { { foo: nil } }
     let(:args) { { foo: 'bar', test: 'bar' } }
@@ -164,7 +248,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
 
       context 'when the value is not a number' do
         let(:specs) { { number_input: { type: 'number' } } }
-        let(:args) { { number_input: 'NaN' } }
+        let(:args) { { number_input: false } }
 
         it 'is invalid' do
           expect(inputs).not_to be_valid

@@ -3324,6 +3324,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'with skip_ci_check option' do
       before do
+        allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?).and_return(true)
         allow(subject).to receive_messages(check_mergeability: nil, can_be_merged?: true, broken?: false)
       end
 
@@ -3345,6 +3346,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'with skip_discussions_check option' do
       before do
+        allow(subject.project).to receive(:only_allow_merge_if_all_discussions_are_resolved?).and_return(true)
+
         allow(subject).to receive_messages(
           mergeable_ci_state?: true,
           check_mergeability: nil,
@@ -3380,6 +3383,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'with skip_rebase_check option' do
       before do
+        allow(subject.project).to receive(:ff_merge_must_be_possible?).and_return(true)
+
         allow(subject).to receive_messages(
           mergeable_state?: true,
           check_mergeability: nil,
@@ -3525,6 +3530,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when failed' do
       context 'when #mergeable_ci_state? is false' do
         before do
+          allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?) { true }
           allow(subject).to receive(:mergeable_ci_state?) { false }
         end
 
@@ -3539,6 +3545,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when #mergeable_discussions_state? is false' do
         before do
+          allow(subject.project).to receive(:only_allow_merge_if_all_discussions_are_resolved?) { true }
           allow(subject).to receive(:mergeable_discussions_state?) { false }
         end
 
@@ -6063,6 +6070,56 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       expect(merge_request.all_mergeability_checks_results).to eq(result.payload[:results])
+    end
+  end
+
+  describe '#only_allow_merge_if_pipeline_succeeds?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:result) { merge_request.only_allow_merge_if_pipeline_succeeds? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:only_allow_merge_if_pipeline_succeeds?)
+        .with(inherit_group_setting: true)
+        .and_return(only_allow_merge_if_pipeline_succeeds?)
+    end
+
+    context 'when associated project only_allow_merge_if_pipeline_succeeds? returns true' do
+      let(:only_allow_merge_if_pipeline_succeeds?) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when associated project only_allow_merge_if_pipeline_succeeds? returns false' do
+      let(:only_allow_merge_if_pipeline_succeeds?) { false }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#only_allow_merge_if_all_discussions_are_resolved?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:result) { merge_request.only_allow_merge_if_all_discussions_are_resolved? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:only_allow_merge_if_all_discussions_are_resolved?)
+        .with(inherit_group_setting: true)
+        .and_return(only_allow_merge_if_all_discussions_are_resolved?)
+    end
+
+    context 'when associated project only_allow_merge_if_all_discussions_are_resolved? returns true' do
+      let(:only_allow_merge_if_all_discussions_are_resolved?) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when associated project only_allow_merge_if_all_discussions_are_resolved? returns false' do
+      let(:only_allow_merge_if_all_discussions_are_resolved?) { false }
+
+      it { is_expected.to eq(false) }
     end
   end
 end

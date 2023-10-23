@@ -88,6 +88,7 @@ function createComponent({
   slots = defaultSlots,
   scopedSlots = defaultScopedSlots,
   mountFn = mount,
+  groupMultiSelectTokens = false,
 } = {}) {
   return mountFn(BaseToken, {
     propsData: {
@@ -95,6 +96,9 @@ function createComponent({
       ...props,
     },
     provide: {
+      glFeatures: {
+        groupMultiSelectTokens,
+      },
       portalName: 'fake target',
       alignSuggestions: jest.fn(),
       suggestionsListClass: () => 'custom-class',
@@ -147,6 +151,24 @@ describe('BaseToken', () => {
           mockLabels,
           `"${mockRegularLabel.title}"`,
         );
+      });
+
+      it('uses last item in list when value is an array', () => {
+        const mockGetActiveTokenValue = jest.fn();
+
+        wrapper = createComponent({
+          props: {
+            value: { data: mockLabels.map((l) => l.title) },
+            suggestions: mockLabels,
+            getActiveTokenValue: mockGetActiveTokenValue,
+          },
+          groupMultiSelectTokens: true,
+        });
+
+        const lastTitle = mockLabels[mockLabels.length - 1].title;
+
+        expect(mockGetActiveTokenValue).toHaveBeenCalledTimes(1);
+        expect(mockGetActiveTokenValue).toHaveBeenCalledWith(mockLabels, lastTitle);
       });
     });
   });
@@ -385,6 +407,28 @@ describe('BaseToken', () => {
 
         expect(setTokenValueToRecentlyUsed).not.toHaveBeenCalled();
       });
+
+      it('emits token-selected event when groupMultiSelectTokens: true', () => {
+        wrapper = createComponent({
+          props: { suggestions: mockLabels },
+          groupMultiSelectTokens: true,
+        });
+
+        findGlFilteredSearchToken().vm.$emit('select', mockTokenValue.title);
+
+        expect(wrapper.emitted('token-selected')).toEqual([[mockTokenValue.title]]);
+      });
+
+      it('does not emit token-selected event when groupMultiSelectTokens: true', () => {
+        wrapper = createComponent({
+          props: { suggestions: mockLabels },
+          groupMultiSelectTokens: false,
+        });
+
+        findGlFilteredSearchToken().vm.$emit('select', mockTokenValue.title);
+
+        expect(wrapper.emitted('token-selected')).toBeUndefined();
+      });
     });
   });
 
@@ -475,6 +519,14 @@ describe('BaseToken', () => {
 
             expect(wrapper.emitted('fetch-suggestions')[2]).toEqual(['foo']);
           });
+        });
+
+        it('does not emit `fetch-suggestions` when value is array', () => {
+          expect(wrapper.emitted('fetch-suggestions')).toEqual([[''], ['']]);
+
+          findGlFilteredSearchToken().vm.$emit('input', { data: ['first item'] });
+
+          expect(wrapper.emitted('fetch-suggestions')).toEqual([[''], ['']]);
         });
       });
     });

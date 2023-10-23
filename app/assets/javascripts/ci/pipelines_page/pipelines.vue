@@ -306,6 +306,12 @@ export default {
     },
     changeVisibilityPipelineIDType(idType) {
       this.visibilityPipelineIdType = idType;
+      if (idType === PIPELINE_IID_KEY) {
+        this.track('pipelines_display_options', {
+          label: TRACKING_CATEGORIES.listbox,
+          property: idType,
+        });
+      }
 
       if (isLoggedIn()) {
         this.saveVisibilityPipelineIDType(idType);

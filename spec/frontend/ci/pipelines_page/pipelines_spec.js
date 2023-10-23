@@ -29,7 +29,12 @@ import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue'
 import PipelinesComponent from '~/ci/pipelines_page/pipelines.vue';
 import PipelinesCiTemplates from '~/ci/pipelines_page/components/empty_state/pipelines_ci_templates.vue';
 import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
-import { PIPELINE_IID_KEY, RAW_TEXT_WARNING, TRACKING_CATEGORIES } from '~/ci/constants';
+import {
+  PIPELINE_ID_KEY,
+  PIPELINE_IID_KEY,
+  RAW_TEXT_WARNING,
+  TRACKING_CATEGORIES,
+} from '~/ci/constants';
 import Store from '~/ci/pipeline_details/stores/pipelines_store';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
@@ -374,6 +379,8 @@ describe('Pipelines', () => {
 
         beforeEach(() => {
           gon.current_user_id = 1;
+
+          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
         });
 
         it('should change the text to Show Pipeline IID', async () => {
@@ -384,6 +391,25 @@ describe('Pipelines', () => {
           await waitForPromises();
 
           expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockFilteredPipeline.iid}`);
+        });
+
+        it('tracks the iid usage of the ID/IID dropdown', async () => {
+          findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
+
+          await waitForPromises();
+
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'pipelines_display_options', {
+            label: TRACKING_CATEGORIES.listbox,
+            property: 'iid',
+          });
+        });
+
+        it('does not track the id usage of the ID/IID dropdown', async () => {
+          findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_ID_KEY);
+
+          await waitForPromises();
+
+          expect(trackingSpy).not.toHaveBeenCalled();
         });
 
         it('calls mutation to save idType preference', () => {

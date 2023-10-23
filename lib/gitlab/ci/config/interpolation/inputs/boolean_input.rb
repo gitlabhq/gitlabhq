@@ -6,6 +6,8 @@ module Gitlab
       module Interpolation
         class Inputs
           class BooleanInput < BaseInput
+            extend ::Gitlab::Utils::Override
+
             def self.matches?(spec)
               spec.is_a?(Hash) && spec[:type] == type_name
             end
@@ -14,8 +16,11 @@ module Gitlab
               'boolean'
             end
 
-            def valid_value?(value)
-              [true, false].include?(value)
+            override :validate_type
+            def validate_type(value, default)
+              return if [true, false].include?(value)
+
+              error("#{default ? 'default' : 'provided'} value is not a boolean")
             end
           end
         end

@@ -30,7 +30,7 @@ dont-interrupt-me:
 
 review-build-cng-env:
   extends:
-    - .review-build-cng-env
+    - .build-cng-env
     - .default-retry
     - .review:rules:review-build-cng
     - .fast-no-clone-job
@@ -47,12 +47,12 @@ review-build-cng-env:
   before_script:
     - apk add --no-cache --update curl # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
-    - !reference [".review-build-cng-env", before_script]
+    - !reference [".build-cng-env", before_script]
     - mv VERSION GITLAB_WORKHORSE_VERSION # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
 
 review-build-cng:
   extends:
-    - .review-build-cng
+    - .build-cng
     - .review:rules:review-build-cng
   needs: ["review-build-cng-env"]
 
