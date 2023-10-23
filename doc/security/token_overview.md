@@ -222,6 +222,39 @@ This table shows available scopes per token. Scopes can be limited further on to
 1. Runner registration and authentication token don't provide direct access to repositories, but can be used to register and authenticate a new runner that may execute jobs which do have access to the repository
 1. Limited to certain [endpoints](../ci/jobs/ci_job_token.md).
 
+## Token prefixes
+
+The following tables show the prefixes for each type of token where applicable.
+
+### GitLab tokens
+
+|            Token name             |      Prefix        |
+|-----------------------------------|--------------------|
+| Personal access token             | `glpat-`           |
+| OAuth Application Secret          | `gloas-`           |
+| Impersonation token               | Not applicable.    |
+| Project access token              | Not applicable.    |
+| Group access token                | Not applicable.    |
+| Deploy token                      | Not applicable.    |
+| Deploy key                        | Not applicable.    |
+| Runner registration token         | Not applicable.    |
+| Runner authentication token       | `glrt-`            |
+| Job token                         | Not applicable.    |
+| Trigger token                     | `glptt-`           |
+| Legacy runner registration token  | GR1348941          |
+| Feed token                        | `glft-`            |
+| Incoming mail token               | `glimt-`           |
+| GitLab Agent for Kubernetes token | `glagent-`         |
+| GitLab session cookies            | `_gitlab_session=` |
+
+### External system tokens
+
+|   Token name    |     Prefix      |
+|-----------------|-----------------|
+| Omamori tokens  | `omamori_pat_`  |
+| AWS credentials | `AKIA`          |
+| GCP credentials | Not applicable. |
+
 ## Security considerations
 
 1. Treat access tokens like passwords and keep them secure.

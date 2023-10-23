@@ -3,20 +3,45 @@
 require 'spec_helper'
 
 RSpec.describe 'User explores projects', feature_category: :user_profile do
-  before do
-    stub_feature_flags(super_sidebar_logged_out: false)
+  shared_examples 'an "Explore > Projects" page with sidebar and breadcrumbs' do |page_path|
+    before do
+      visit send(page_path)
+    end
+
+    describe "sidebar", :js do
+      it 'shows the "Explore" sidebar' do
+        has_testid?('super-sidebar')
+        within_testid('super-sidebar') do
+          expect(page).to have_css('#super-sidebar-context-header', text: 'Explore')
+        end
+      end
+
+      it 'shows the "Projects" menu item as active' do
+        within_testid('super-sidebar') do
+          expect(page).to have_css("[aria-current='page']", text: "Projects")
+        end
+      end
+    end
+
+    describe 'breadcrumbs' do
+      it 'has "Explore" as its root breadcrumb' do
+        within '.breadcrumbs-list li:first' do
+          expect(page).to have_link('Explore', href: explore_root_path)
+        end
+      end
+    end
   end
 
   describe '"All" tab' do
-    it_behaves_like 'an "Explore" page with sidebar and breadcrumbs', :explore_projects_path, :projects
+    it_behaves_like 'an "Explore > Projects" page with sidebar and breadcrumbs', :explore_projects_path
   end
 
   describe '"Most starred" tab' do
-    it_behaves_like 'an "Explore" page with sidebar and breadcrumbs', :starred_explore_projects_path, :projects
+    it_behaves_like 'an "Explore > Projects" page with sidebar and breadcrumbs', :starred_explore_projects_path
   end
 
   describe '"Trending" tab' do
-    it_behaves_like 'an "Explore" page with sidebar and breadcrumbs', :trending_explore_projects_path, :projects
+    it_behaves_like 'an "Explore > Projects" page with sidebar and breadcrumbs', :trending_explore_projects_path
   end
 
   context 'when some projects exist' do

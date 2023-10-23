@@ -50,7 +50,6 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
 
   context 'logged out' do
     before do
-      stub_feature_flags(super_sidebar_logged_out: false)
       visit explore_root_path
     end
 

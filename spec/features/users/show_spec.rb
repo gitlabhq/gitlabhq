@@ -7,16 +7,14 @@ RSpec.describe 'User page', feature_category: :user_profile do
 
   let_it_be(:user) { create(:user, bio: '<b>Lorem</b> <i>ipsum</i> dolor sit <a href="https://example.com">amet</a>') }
 
-  before do
-    stub_feature_flags(super_sidebar_logged_out: false)
-  end
-
   subject(:visit_profile) { visit(user_path(user)) }
 
   it 'shows copy user id action in the dropdown', :js do
     subject
 
-    find('[data-testid="base-dropdown-toggle"').click
+    page.within('.user-cover-block') do
+      find_by_testid('base-dropdown-toggle').click
+    end
 
     expect(page).to have_content("Copy user ID: #{user.id}")
   end
@@ -173,33 +171,37 @@ RSpec.describe 'User page', feature_category: :user_profile do
         expect(page).not_to have_button(text: 'Follow', class: 'gl-button')
       end
 
-      shared_examples 'follower tabs with count badges' do
-        it 'shows 0 followers and 0 following' do
+      shared_examples 'follower links with count badges' do
+        it 'shows no count if no followers / following' do
           subject
 
-          expect(page).to have_content('Followers 0')
-          expect(page).to have_content('Following 0')
+          within_testid('super-sidebar') do
+            expect(page).to have_link(text: 'Followers')
+            expect(page).to have_link(text: 'Following')
+          end
         end
 
-        it 'shows 1 followers and 1 following' do
+        it 'shows count if followers / following' do
           follower.follow(user)
           user.follow(followee)
 
           subject
 
-          expect(page).to have_content('Followers 1')
-          expect(page).to have_content('Following 1')
+          within_testid('super-sidebar') do
+            expect(page).to have_link(text: 'Followers 1')
+            expect(page).to have_link(text: 'Following 1')
+          end
         end
       end
 
-      it_behaves_like 'follower tabs with count badges'
+      it_behaves_like 'follower links with count badges'
 
       context 'with profile_tabs_vue feature flag disabled' do
         before_all do
           stub_feature_flags(profile_tabs_vue: false)
         end
 
-        it_behaves_like 'follower tabs with count badges'
+        it_behaves_like 'follower links with count badges'
       end
 
       it 'does show button to follow' do

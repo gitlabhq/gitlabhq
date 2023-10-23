@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User RSS', feature_category: :user_profile do
-  let(:user) { create(:user, :no_super_sidebar) }
-  let(:path) { user_path(create(:user, :no_super_sidebar)) }
+  let(:user) { create(:user) }
+  let(:path) { user_path(create(:user)) }
 
   context 'when signed in' do
     before do
@@ -13,7 +13,9 @@ RSpec.describe 'User RSS', feature_category: :user_profile do
     end
 
     it 'shows the RSS link with overflow menu', :js do
-      find('[data-testid="base-dropdown-toggle"').click
+      page.within('.user-cover-block') do
+        find_by_testid('base-dropdown-toggle').click
+      end
 
       expect(page).to have_link 'Subscribe', href: /feed_token=glft-.*-#{user.id}/
     end
@@ -21,12 +23,13 @@ RSpec.describe 'User RSS', feature_category: :user_profile do
 
   context 'when signed out' do
     before do
-      stub_feature_flags(super_sidebar_logged_out: false)
       visit path
     end
 
     it 'has an RSS without a feed token', :js do
-      find('[data-testid="base-dropdown-toggle"').click
+      page.within('.user-cover-block') do
+        find_by_testid('base-dropdown-toggle').click
+      end
 
       expect(page).not_to have_link 'Subscribe', href: /feed_token=glft-.*-#{user.id}/
     end
