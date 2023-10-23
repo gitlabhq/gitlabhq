@@ -9,6 +9,101 @@
 #     follow_redirect: true
 #     keep_host: true
 
+# - request:
+#     method: "POST"
+#     headers:
+#       Host: "api.github.com"
+#   proxy:
+#     host: "https://api.github.com"
+#     follow_redirect: true
+#     keep_host: true
+
+# Mocked response definition
+#
+- request:
+    path: /graphql
+    method: POST
+    headers:
+      Host: api.github.com
+  response:
+    status: 200
+    headers:
+      Content-Type: application/json; charset=utf-8
+      X-Ratelimit-Limit: '5000'
+      X-Ratelimit-Remaining: '5000'
+    body: |
+      {
+        "data": {
+          "search": {
+            "nodes": [
+              {
+                "__typename": "Repository",
+                "full_name": "gitlab-qa-github/import-test",
+                "id": 466994992,
+                "name": "import-test",
+                "owner": {
+                  "login": "gitlab-qa-github"
+                }
+              }
+            ],
+            "pageInfo": {
+              "endCursor": "Y3Vyc29yOjQ=",
+              "hasNextPage": false,
+              "hasPreviousPage": false,
+              "startCursor": "Y3Vyc29yOjE="
+            },
+            "repositoryCount": 1
+          }
+        }
+      }
+
+- request:
+    path: /user
+    method: GET
+    headers:
+      Host: api.github.com
+  response:
+    status: 200
+    headers:
+      Content-Type: application/json; charset=utf-8
+      X-Ratelimit-Limit: '5000'
+      X-Ratelimit-Remaining: '5000'
+    body: |
+      {
+        "avatar_url": "https://avatars.githubusercontent.com/u/59606922?v=4",
+        "bio": null,
+        "blog": "",
+        "company": null,
+        "created_at": "2020-01-07T11:47:11Z",
+        "email": null,
+        "events_url": "https://api.github.com/users/gitlab-qa-github/events{/privacy}",
+        "followers": 0,
+        "followers_url": "https://api.github.com/users/gitlab-qa-github/followers",
+        "following": 0,
+        "following_url": "https://api.github.com/users/gitlab-qa-github/following{/other_user}",
+        "gists_url": "https://api.github.com/users/gitlab-qa-github/gists{/gist_id}",
+        "gravatar_id": "",
+        "hireable": null,
+        "html_url": "https://github.com/gitlab-qa-github",
+        "id": 59606922,
+        "location": null,
+        "login": "gitlab-qa-github",
+        "name": null,
+        "node_id": "MDQ6VXNlcjU5NjA2OTIy",
+        "organizations_url": "https://api.github.com/users/gitlab-qa-github/orgs",
+        "public_gists": 0,
+        "public_repos": 4,
+        "received_events_url": "https://api.github.com/users/gitlab-qa-github/received_events",
+        "repos_url": "https://api.github.com/users/gitlab-qa-github/repos",
+        "site_admin": false,
+        "starred_url": "https://api.github.com/users/gitlab-qa-github/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/gitlab-qa-github/subscriptions",
+        "twitter_username": null,
+        "type": "User",
+        "updated_at": "2023-05-11T09:17:43Z",
+        "url": "https://api.github.com/users/gitlab-qa-github"
+      }
+
 - request:
     path: /rate_limit
     method: GET
@@ -217,9 +312,6 @@
 - request:
     path: /user/orgs
     method: GET
-    query_params:
-      page: '1'
-      per_page: '25'
     headers:
       Host: api.github.com
   response:
