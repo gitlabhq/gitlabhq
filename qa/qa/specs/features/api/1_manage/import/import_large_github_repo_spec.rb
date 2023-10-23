@@ -253,7 +253,6 @@ module QA
             }
           },
           target: {
-            project_name: imported_project.path_with_namespace,
             data: {
               branches: gl_branches.length,
               commits: gl_commits.length,
@@ -333,7 +332,8 @@ module QA
           },
           target: {
             name: "GitLab",
-            address: gitlab_address
+            address: gitlab_address,
+            project_name: imported_project.full_path
           }
         }.deep_merge(additional_data)
       end

@@ -599,6 +599,10 @@ To enable dependency scanning:
 
 Pipelines now include a dependency scanning job.
 
+### Running jobs in merge request pipelines
+
+See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines)
+
 ### Customizing analyzer behavior
 
 You can use CI/CD variables to customize dependency scanning behavior.

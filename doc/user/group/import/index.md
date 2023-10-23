@@ -337,7 +337,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Projects                                | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267945)        |
 | Auto DevOps                             | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339410)        |
 | Badges                                  | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75029) |
-| Branches (including protected branches) | [GitLab 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/339414)        |
+| Branches (including protected branches) <sup>1</sup> | [GitLab 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/339414) |
 | CI Pipelines                            | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339407)        |
 | Commit comments                         | [GitLab 15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/391601)       |
 | Designs                                 | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/339421)        |
@@ -360,6 +360,14 @@ Project items that are migrated to the destination GitLab instance include:
 | Settings                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339416)        |
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
+
+<html>
+<small>Footnotes:
+  <ol>
+    <li>Imported branches respect the [default branch protection settings](../../project/protected_branches.md) of the destination group, which can cause an unprotected branch to be imported as protected.</li>
+  </ol>
+</small>
+</html>
 
 #### Issue-related items
 

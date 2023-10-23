@@ -1,0 +1,60 @@
+- name: Compliance standards adherence report
+  description: | # Do not modify this line, instead modify the lines below.
+    The Compliance Center now includes a new tab for the standards adherence report.
+    This report initially includes a GitLab best practices standard, showing when the
+    projects in your group are not meeting the requirements for the checks included in the standard. The
+    three checks shown initially are:
+
+    - Approval rule exists to require at least 2 approvers on MRs
+    - Approval rule exists to disallow the MR author to merge
+    - Approval rule exists to disallow committers to the MR to merge
+
+    The report contains details on the status of each check on a per project basis. It will
+    also show you when the check was last run, which standard the check applies to,
+    and how to fix any failures or problems that might be shown on the report. Future iterations
+    will add more checks and expand the scope to include more regulations and standards.
+    Additionally, we will be adding improvements to group and filter the report, so you
+    can focus on the projects or standards that matter most to your organization.
+  stage: govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/compliance/compliance_center/#standards-adherence-dashboard'
+  image_url: 'https://about.gitlab.com/images/16_5/govern-compliance-standards-adherence-report.png'
+  published_at: 2023-10-22
+  release: 16.5
+- name: Create rules to set target branches for merge requests
+  description: | # Do not modify this line, instead modify the lines below.
+    Some projects use multiple long-term branches for development, like `develop` and `qa`. In these projects, you might want to keep `main` as the default branch since it represents the production state of the project. However, development work expects merge requests to target `develop` or `qa`. Target branch rules help ensure merge requests target the appropriate branch for your project and development workflow.
+
+    When you create a merge request, the rule checks the name of the branch. If the branch name matches the rule, the merge request pre-selects the branch you specified in the rule as the target. If the branch name does not match, the merge request targets the default branch of the project.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/repository/branches/#configure-rules-for-target-branches'
+  image_url: 'https://about.gitlab.com/images/16_5/create-target-branch-rules.png'
+  published_at: 2023-10-22
+  release: 16.5
+- name: Resolve an issue thread
+  description: | # Do not modify this line, instead modify the lines below.
+    Long-running issues with many threads can be challenging to read and track. You can now resolve a thread on an issue when the topic of discussion has concluded.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/discussions/#resolve-a-thread'
+  image_url: 'https://about.gitlab.com/images/16_5/resolve_functionality_for_issues.png'
+  published_at: 2023-10-22
+  release: 16.5
+- name: Fast-forward merge trains with semi-linear history
+  description: | # Do not modify this line, instead modify the lines below.
+    In 16.4, we released [Fast-forward merge trains](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#fast-forward-merge-support-for-merge-trains), and as a continuation, we want to ensure we support all [merge methods](https://docs.gitlab.com/ee/user/project/merge_requests/methods/). Now, if you want to ensure your semi-linear commit history is maintained you can use Semi-linear fast-forward merge trains.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/pipelines/merge_trains.html'
+  image_url: 'https://about.gitlab.com/images/16_5/ff-merge.png'
+  published_at: 2023-10-22
+  release: 16.5

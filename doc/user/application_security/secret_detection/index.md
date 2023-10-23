@@ -111,26 +111,13 @@ Secret Detection can detect if a secret was added in one commit and removed in a
 - Merge request
 
   In a merge request, Secret Detection scans every commit made on the source branch. To use this
-  feature, you must use the [`latest` Secret Detection template](#templates), as it supports
+  feature, you must use the [`latest` Secret Detection template](../index.md#use-security-scanning-tools-with-merge-request-pipelines), as it supports
   [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md). Secret Detection's
   results are only available after the pipeline is completed.
 
-## Templates
+## Running jobs in merge request pipelines
 
-Secret Detection default configuration is defined in CI/CD templates. Updates to the template are
-provided with GitLab upgrades, allowing you to benefit from any improvements and additions.
-
-Available templates:
-
-- [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml): Stable, default version of the Secret Detection CI/CD template.
-- [`Secret-Detection.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml): Latest version of the Secret Detection template.
-
-WARNING:
-The latest version of the template may include breaking changes. Use the stable template unless you
-need a feature provided only in the latest template.
-
-For more information about template versioning, see the
-[CI/CD documentation](../../../development/cicd/templates.md#latest-version).
+See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines)
 
 ## Enable Secret Detection
 

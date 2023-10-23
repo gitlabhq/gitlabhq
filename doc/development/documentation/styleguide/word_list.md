@@ -26,6 +26,15 @@ For guidance not on this page, we defer to these style guides:
 <!-- Disable trailing punctuation in heading rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md026---trailing-punctuation-in-heading -->
 <!-- markdownlint-disable MD026 -->
 
+## `.gitlab-ci.yml` file
+
+Use backticks and lowercase for **the `.gitlab-ci.yml` file**.
+
+When possible, use the full phrase: **the `.gitlab-ci.yml` file**
+
+Although users can specify another name for their CI/CD configuration file,
+in most cases, use **the `.gitlab-ci.yml` file** instead.
+
 ## `&`
 
 Do not use Latin abbreviations. Use **and** instead, unless you are documenting a UI element that uses an `&`.
