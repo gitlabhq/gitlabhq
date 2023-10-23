@@ -4,7 +4,6 @@ fragment CatalogResourceFields on CiCatalogResource {
   name
   description
   starCount
-  forksCount
   latestVersion {
     id
     tagName

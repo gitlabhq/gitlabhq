@@ -3,13 +3,11 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ADD_VARIABLE_ACTION, EDIT_VARIABLE_ACTION, VARIABLE_ACTIONS } from '../constants';
 import CiVariableDrawer from './ci_variable_drawer.vue';
 import CiVariableTable from './ci_variable_table.vue';
-import CiVariableModal from './ci_variable_modal.vue';
 
 export default {
   components: {
     CiVariableDrawer,
     CiVariableTable,
-    CiVariableModal,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -65,15 +63,6 @@ export default {
     showForm() {
       return VARIABLE_ACTIONS.includes(this.mode);
     },
-    useDrawerForm() {
-      return this.glFeatures?.ciVariableDrawer;
-    },
-    showDrawer() {
-      return this.showForm && this.useDrawerForm;
-    },
-    showModal() {
-      return this.showForm && !this.useDrawerForm;
-    },
   },
   methods: {
     addVariable(variable) {
@@ -116,23 +105,8 @@ export default {
         @delete-variable="deleteVariable"
         @sort-changed="(val) => $emit('sort-changed', val)"
       />
-      <ci-variable-modal
-        v-if="showModal"
-        :are-environments-loading="areEnvironmentsLoading"
-        :are-scoped-variables-available="areScopedVariablesAvailable"
-        :environments="environments"
-        :hide-environment-scope="hideEnvironmentScope"
-        :variables="variables"
-        :mode="mode"
-        :selected-variable="selectedVariable"
-        @add-variable="addVariable"
-        @delete-variable="deleteVariable"
-        @close-form="closeForm"
-        @update-variable="updateVariable"
-        @search-environment-scope="$emit('search-environment-scope', $event)"
-      />
       <ci-variable-drawer
-        v-if="showDrawer"
+        v-if="showForm"
         :are-environments-loading="areEnvironmentsLoading"
         :are-scoped-variables-available="areScopedVariablesAvailable"
         :environments="environments"

@@ -80,6 +80,7 @@ class WikiPage
   alias_method :to_param, :slug
 
   def human_title
+    return front_matter_title if Feature.enabled?(:wiki_front_matter_title, container) && front_matter_title.present?
     return 'Home' if title == Wiki::HOMEPAGE
 
     title
@@ -93,6 +94,10 @@ class WikiPage
   # Sets the title of this page.
   def title=(new_title)
     attributes[:title] = new_title
+  end
+
+  def front_matter_title
+    front_matter[:title]
   end
 
   def raw_content
@@ -320,7 +325,7 @@ class WikiPage
   def serialize_front_matter(hash)
     return '' unless hash.present?
 
-    YAML.dump(hash.transform_keys(&:to_s)) + "---\n"
+    YAML.dump(hash.to_h.transform_keys(&:to_s)) + "---\n"
   end
 
   def update_front_matter(attrs)

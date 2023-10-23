@@ -48,9 +48,6 @@ export default {
     starCount() {
       return this.resource?.starCount || 0;
     },
-    forksCount() {
-      return this.resource?.forksCount || 0;
-    },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.releasedAt);
     },
@@ -110,10 +107,6 @@ export default {
             <span class="gl--flex-center" data-testid="stats-favorites">
               <gl-icon name="star" :size="14" class="gl-mr-1" />
               <span class="gl-mr-3">{{ starCount }}</span>
-            </span>
-            <span class="gl--flex-center" data-testid="stats-forks">
-              <gl-icon name="fork" :size="14" class="gl-mr-1" />
-              <span>{{ forksCount }}</span>
             </span>
           </span>
         </div>

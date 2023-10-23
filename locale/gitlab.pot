@@ -3051,9 +3051,6 @@ msgstr ""
 msgid "Add topics to projects to help users find them."
 msgstr ""
 
-msgid "Add variable"
-msgstr ""
-
 msgid "Add vulnerability finding"
 msgstr ""
 
@@ -9122,6 +9119,9 @@ msgstr ""
 msgid "CI/CD Analytics"
 msgstr ""
 
+msgid "CI/CD Catalog"
+msgstr ""
+
 msgid "CI/CD Settings"
 msgstr ""
 
@@ -10191,9 +10191,6 @@ msgid "CiCatalogComponent|There was an error fetching this resource's components
 msgstr ""
 
 msgid "CiCatalog|Back to the CI/CD Catalog"
-msgstr ""
-
-msgid "CiCatalog|CI/CD Catalog"
 msgstr ""
 
 msgid "CiCatalog|CI/CD Catalog resource"
@@ -16005,9 +16002,6 @@ msgstr ""
 msgid "Delete user list"
 msgstr ""
 
-msgid "Delete variable"
-msgstr ""
-
 msgid "Delete video"
 msgstr ""
 
@@ -19623,9 +19617,6 @@ msgstr ""
 msgid "Expand sidebar"
 msgstr ""
 
-msgid "Expand variable reference"
-msgstr ""
-
 msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
@@ -19741,9 +19732,6 @@ msgid "Export this group with all related data."
 msgstr ""
 
 msgid "Export this project with all its related data in order to move it to a new GitLab instance. When the exported file is ready, you can download it from this page or from the download link in the email notification you will receive. You can then import it when creating a new project. %{link_start}Learn more.%{link_end}"
-msgstr ""
-
-msgid "Export variable to pipelines running on protected branches and tags only."
 msgstr ""
 
 msgid "Exported requirements"
@@ -28810,12 +28798,6 @@ msgid "Marks this issue as related to %{issue_ref}."
 msgstr ""
 
 msgid "Marks to do as done."
-msgstr ""
-
-msgid "Mask this variable in job logs if it meets %{linkStart}regular expression requirements%{linkEnd}."
-msgstr ""
-
-msgid "Mask variable"
 msgstr ""
 
 msgid "Match not found; try refining your search query."
@@ -38191,9 +38173,6 @@ msgid "Protect"
 msgstr ""
 
 msgid "Protect a tag"
-msgstr ""
-
-msgid "Protect variable"
 msgstr ""
 
 msgid "Protected"
@@ -49003,9 +48982,6 @@ msgstr ""
 msgid "This user is the author of this %{workItemType}."
 msgstr ""
 
-msgid "This variable value does not meet the masking requirements."
-msgstr ""
-
 msgid "This vulnerability was automatically resolved because its vulnerability type was disabled in this project or removed from GitLab's default ruleset. For details about SAST rule changes, see https://docs.gitlab.com/ee/user/application_security/sast/rules#important-rule-changes."
 msgstr ""
 
@@ -50888,9 +50864,6 @@ msgstr ""
 msgid "Update username"
 msgstr ""
 
-msgid "Update variable"
-msgstr ""
-
 msgid "Update your bookmarked URLs as filtered/sorted branches URL has been changed."
 msgstr ""
 
@@ -52063,12 +52036,6 @@ msgstr ""
 msgid "Value Streams Dashboard | DORA"
 msgstr ""
 
-msgid "Value might contain a variable reference"
-msgstr ""
-
-msgid "Value must meet regular expression requirements to be masked."
-msgstr ""
-
 msgid "Value stream"
 msgstr ""
 
@@ -52211,9 +52178,6 @@ msgid "Variable (default)"
 msgstr ""
 
 msgid "Variable name '%{variable}' must not start with '%{prefix}'"
-msgstr ""
-
-msgid "Variable value will be evaluated as raw string."
 msgstr ""
 
 msgid "Variables"

@@ -61,7 +61,7 @@ RSpec.describe JwtController, feature_category: :system_access do
     end
   end
 
-  shared_examples 'container registry authenticator' do
+  context 'authenticating against container registry' do
     context 'existing service' do
       subject! { get '/jwt/auth', params: parameters }
 
@@ -185,6 +185,21 @@ RSpec.describe JwtController, feature_category: :system_access do
           it_behaves_like 'user logging'
         end
 
+        context 'when passing a space-delimited list of scopes' do
+          let(:parameters) do
+            {
+              service: service_name,
+              scope: 'scope1 scope2'
+            }
+          end
+
+          let(:service_parameters) do
+            ActionController::Parameters.new({ service: service_name, scopes: %w(scope1 scope2) }).permit!
+          end
+
+          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }
+        end
+
         context 'when user has 2FA enabled' do
           let(:user) { create(:user, :two_factor) }
 
@@ -251,40 +266,6 @@ RSpec.describe JwtController, feature_category: :system_access do
 
     def credentials(login, password)
       ActionController::HttpAuthentication::Basic.encode_credentials(login, password)
-    end
-  end
-
-  shared_examples 'parses a space-delimited list of scopes' do |output|
-    let(:user) { create(:user) }
-    let(:headers) { { authorization: credentials(user.username, user.password) } }
-
-    subject! { get '/jwt/auth', params: parameters, headers: headers }
-
-    let(:parameters) do
-      {
-        service: service_name,
-        scope: 'scope1 scope2'
-      }
-    end
-
-    let(:service_parameters) do
-      ActionController::Parameters.new({ service: service_name, scopes: output }).permit!
-    end
-
-    it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }
-  end
-
-  context 'authenticating against container registry' do
-    it_behaves_like 'container registry authenticator'
-    it_behaves_like 'parses a space-delimited list of scopes', %w(scope1 scope2)
-
-    context 'when jwt_auth_space_delimited_scopes feature flag is disabled' do
-      before do
-        stub_feature_flags(jwt_auth_space_delimited_scopes: false)
-      end
-
-      it_behaves_like 'container registry authenticator'
-      it_behaves_like 'parses a space-delimited list of scopes', ['scope1 scope2']
     end
   end
 

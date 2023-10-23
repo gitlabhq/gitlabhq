@@ -11,6 +11,7 @@ namespace :explore do
   end
 
   resources :groups, only: [:index]
+  resources :catalog, only: [:index, :show], constraints: { id: /\d+/ }
   resources :snippets, only: [:index]
   root to: 'projects#index'
 end

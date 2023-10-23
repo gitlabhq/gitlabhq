@@ -10817,6 +10817,29 @@ The edge type for [`MemberInterface`](#memberinterface).
 | <a id="memberinterfaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="memberinterfaceedgenode"></a>`node` | [`MemberInterface`](#memberinterface) | The item at the end of the edge. |
 
+#### `MemberRoleConnection`
+
+The connection type for [`MemberRole`](#memberrole).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="memberroleconnectionedges"></a>`edges` | [`[MemberRoleEdge]`](#memberroleedge) | A list of edges. |
+| <a id="memberroleconnectionnodes"></a>`nodes` | [`[MemberRole]`](#memberrole) | A list of nodes. |
+| <a id="memberroleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MemberRoleEdge`
+
+The edge type for [`MemberRole`](#memberrole).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="memberroleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="memberroleedgenode"></a>`node` | [`MemberRole`](#memberrole) | The item at the end of the edge. |
+
 #### `MergeAccessLevelConnection`
 
 The connection type for [`MergeAccessLevel`](#mergeaccesslevel).
@@ -17845,6 +17868,7 @@ GPG signature for a signed commit.
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
+| <a id="groupmemberroles"></a>`memberRoles` **{warning-solid}** | [`MemberRoleConnection`](#memberroleconnection) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Member roles available for the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -22485,6 +22509,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectlanguages"></a>`languages` | [`[RepositoryLanguage!]`](#repositorylanguage) | Programming languages used in the project. |
 | <a id="projectlastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
 | <a id="projectlfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if the project has Large File Storage (LFS) enabled. |
+| <a id="projectmemberroles"></a>`memberRoles` **{warning-solid}** | [`MemberRoleConnection`](#memberroleconnection) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Member roles available for the group. |
 | <a id="projectmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
 | <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge Requests are enabled for the current user. |

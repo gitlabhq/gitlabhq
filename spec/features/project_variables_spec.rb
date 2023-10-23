@@ -13,13 +13,12 @@ RSpec.describe 'Project variables', :js, feature_category: :secrets_management d
     project.add_maintainer(user)
     project.variables << variable
 
-    stub_feature_flags(ci_variable_drawer: false)
     visit page_path
     wait_for_requests
   end
 
   context 'when ci_variables_pages FF is enabled' do
-    it_behaves_like 'variable list'
+    it_behaves_like 'variable list drawer'
     it_behaves_like 'variable list pagination', :ci_variable
   end
 
@@ -28,15 +27,17 @@ RSpec.describe 'Project variables', :js, feature_category: :secrets_management d
       stub_feature_flags(ci_variables_pages: false)
     end
 
-    it_behaves_like 'variable list'
+    it_behaves_like 'variable list drawer'
   end
 
   it 'adds a new variable with an environment scope' do
-    click_button('Add variable')
+    page.within('[data-testid="ci-variable-table"]') do
+      click_button('Add variable')
+    end
 
-    page.within('#add-ci-variable') do
+    page.within('[data-testid="ci-variable-drawer"]') do
       fill_in 'Key', with: 'akey'
-      find('#ci-variable-value').set('akey_value')
+      fill_in 'Value', with: 'akey_value'
 
       click_button('All (default)')
       fill_in 'Search', with: 'review/*'
@@ -50,15 +51,5 @@ RSpec.describe 'Project variables', :js, feature_category: :secrets_management d
     page.within('[data-testid="ci-variable-table"]') do
       expect(find('.js-ci-variable-row:first-child [data-label="Environments"]').text).to eq('review/*')
     end
-  end
-
-  context 'when ci_variable_drawer FF is enabled' do
-    before do
-      stub_feature_flags(ci_variable_drawer: true)
-      visit page_path
-      wait_for_requests
-    end
-
-    it_behaves_like 'variable list drawer'
   end
 end

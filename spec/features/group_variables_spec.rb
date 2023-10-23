@@ -12,29 +12,18 @@ RSpec.describe 'Group variables', :js, feature_category: :secrets_management do
     group.add_owner(user)
     gitlab_sign_in(user)
 
-    stub_feature_flags(ci_variable_drawer: false)
     visit page_path
     wait_for_requests
   end
 
   context 'when ci_variables_pages FF is enabled' do
-    it_behaves_like 'variable list'
+    it_behaves_like 'variable list drawer'
     it_behaves_like 'variable list pagination', :ci_group_variable
   end
 
   context 'when ci_variables_pages FF is disabled' do
     before do
       stub_feature_flags(ci_variables_pages: false)
-    end
-
-    it_behaves_like 'variable list'
-  end
-
-  context 'when ci_variable_drawer FF is enabled' do
-    before do
-      stub_feature_flags(ci_variable_drawer: true)
-      visit page_path
-      wait_for_requests
     end
 
     it_behaves_like 'variable list drawer'

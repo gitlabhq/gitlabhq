@@ -69,18 +69,32 @@ export const isIntegerGreaterThan = (value, greaterThan) =>
   isParseableAsInteger(value) && parseInt(value, 10) > greaterThan;
 
 /**
- * Regexp that matches email structure.
+ * Regexp that matches service desk setting email structure.
  * Taken from app/models/service_desk_setting.rb custom_email
  */
-export const EMAIL_REGEXP = /^[\w\-._]+@[\w\-.]+\.[a-zA-Z]{2,}$/;
+const SERVICE_DESK_SETTING_EMAIL_REGEXP = /^[\w\-._]+@[\w\-.]+\.[a-zA-Z]{2,}$/;
 
 /**
- * Checks if the input is a valid email address
+ * Checks if the input is a valid service desk setting email address
  *
  * @param {String} - value
  * @returns {Boolean}
  */
-export const isEmail = (value) => EMAIL_REGEXP.test(value);
+export const isServiceDeskSettingEmail = (value) => SERVICE_DESK_SETTING_EMAIL_REGEXP.test(value);
+
+/**
+ * Regexp that matches user email structure.
+ * Taken from DeviseEmailValidator
+ */
+const USER_EMAIL_REGEXP = /^[^@\s]+@[^@\s]+$/;
+
+/**
+ * Checks if the input is a valid user email address
+ *
+ * @param {String} - value
+ * @returns {Boolean}
+ */
+export const isUserEmail = (value) => USER_EMAIL_REGEXP.test(value);
 
 /**
  * A form object serializer

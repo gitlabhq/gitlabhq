@@ -24,7 +24,7 @@ RSpec.describe API::Entities::WikiPage do
 
   context "with front matter content" do
     let(:wiki_page) { create(:wiki_page) }
-    let(:content_with_front_matter) { "---\nxxx: abc\n---\nHome Page" }
+    let(:content_with_front_matter) { "---\ntitle: abc\n---\nHome Page" }
 
     before do
       wiki_page.update(content: content_with_front_matter) # rubocop:disable Rails/SaveBang
@@ -32,6 +32,10 @@ RSpec.describe API::Entities::WikiPage do
 
     it 'returns the raw wiki page content' do
       expect(subject[:content]).to eq content_with_front_matter
+    end
+
+    it 'return the front matter title' do
+      expect(subject[:front_matter]).to eq({ title: "abc" })
     end
   end
 

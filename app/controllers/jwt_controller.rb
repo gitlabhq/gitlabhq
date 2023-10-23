@@ -98,11 +98,7 @@ class JwtController < ApplicationController
     return unless params[:scope].present?
 
     scopes = Array(Rack::Utils.parse_query(request.query_string)['scope'])
-    if Feature.enabled?(:jwt_auth_space_delimited_scopes, Feature.current_request)
-      scopes.flat_map(&:split)
-    else
-      scopes
-    end
+    scopes.flat_map(&:split)
   end
 
   def auth_user

@@ -58,6 +58,7 @@ RSpec.describe WikiPage, feature_category: :wiki do
       let(:front_matter) { { title: 'Foo', slugs: %w[slug_a slug_b] } }
 
       it { expect(wiki_page.front_matter).to eq(front_matter) }
+      it { expect(wiki_page.front_matter_title).to eq(front_matter[:title]) }
     end
 
     context 'the wiki page has front matter' do
@@ -1052,6 +1053,30 @@ RSpec.describe WikiPage, feature_category: :wiki do
         paths: [subject.path],
         foo: 'bar'
       )
+    end
+  end
+
+  describe "#human_title" do
+    context "with front matter title" do
+      let(:front_matter_title) { "abc" }
+      let(:content_with_front_matter_title) { "---\ntitle: #{front_matter_title}\n---\nHome Page" }
+      let(:wiki_page) { create(:wiki_page, container: container, content: content_with_front_matter_title) }
+
+      context "when wiki_front_matter_title enabled" do
+        it 'returns the front matter title' do
+          expect(wiki_page.human_title).to eq front_matter_title
+        end
+      end
+
+      context "when wiki_front_matter_title disabled" do
+        before do
+          stub_feature_flags(wiki_front_matter_title: false)
+        end
+
+        it 'returns the page title' do
+          expect(wiki_page.human_title).to eq wiki_page.title
+        end
+      end
     end
   end
 end

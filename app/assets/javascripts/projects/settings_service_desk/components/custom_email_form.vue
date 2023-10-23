@@ -9,7 +9,12 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { isEmptyValue, hasMinimumLength, isIntegerGreaterThan, isEmail } from '~/lib/utils/forms';
+import {
+  isEmptyValue,
+  hasMinimumLength,
+  isIntegerGreaterThan,
+  isServiceDeskSettingEmail,
+} from '~/lib/utils/forms';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import {
   I18N_FORM_INTRODUCTION_PARAGRAPH,
@@ -124,7 +129,7 @@ export default {
       }
     },
     validateCustomEmail() {
-      this.validationState.customEmail = isEmail(this.customEmail);
+      this.validationState.customEmail = isServiceDeskSettingEmail(this.customEmail);
     },
     validateSmtpAddress() {
       this.validationState.smtpAddress = !isEmptyValue(this.smtpAddress);

@@ -65,9 +65,14 @@ For software leaders, Lead time for changes reflects the efficiency of CI/CD pip
 Over time, the lead time for changes should decrease, while your team's performance should increase. Low lead time for changes means more efficient CI/CD pipelines.
 In GitLab, Lead time for changes is measure by the `Median time it takes for a merge request to get merged into production (from master)`.
 
+By default, Lead time for changes measures only one-branch operations with multiple deployment jobs (for example, jobs moving from development to staging to production jobs on the main branch).
+When a merge request gets merged in staging and then merge to production, GitLab processes them as two deployed merge requests, not one.
+
 ### How lead time for changes is calculated
 
-GitLab calculates Lead time for changes base on the number of seconds to successfully deliver a commit into production - **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
+GitLab calculates Lead time for changes based on the number of seconds to successfully deliver a commit into production - **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
+
+By default, Lead time for changes supports measuring only one branch operation with multiple deployment jobs (for example, from development to staging to production on the default branch). When a merge request gets merged on staging, and then on production, GitLab interprets them as two deployed merge requests, not one.
 
 ### How to improve lead time for changes
 
@@ -144,23 +149,36 @@ The table below provides an overview of the DORA metrics' data aggregation in di
 | Time to restore service | Number of seconds an incident was open for           | daily median per month | daily median | `day` (default) or `month` |
 | Change failure rate | percentage of deployments that cause an incident in production | daily median per month | percentage of failed deployments | `day` (default) or `month` |
 
-## Configure DORA metrics calculation **(ULTIMATE ALL BETA)**
+## DORA custom calculation rules **(ULTIMATE ALL EXPERIMENT)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is in [Beta](../../policy/experiment-beta-support.md).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_configuration`.
 On GitLab.com, this feature is not available.
-This feature is not ready for production use.
 
-You can configure the behavior of DORA metrics calculations.
+This feature is an [Experiment](../../policy/experiment-beta-support.md). 
+To join the list of users testing this feature, [here is a suggested test flow](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561#steps-to-check-on-localhost).
+If you find a bug, [open an issue here](https://gitlab.com/groups/gitlab-org/-/epics/11490).
+To share your use cases and feedback, comment in [epic 11490](https://gitlab.com/groups/gitlab-org/-/epics/11490).
+
+### DORA Lead Time For Changes - multi-branch rule
+
+Unlike the default [calculation of Lead time for changes](#how-lead-time-for-changes-is-calculated), this calculation rule allows measuring multi-branch operations with a single deployment job for each operation.
+For example, from development job on development branch, to staging job on staging branch, to production job on production branch.
+
+This calculation rule has been implemented by updating the `dora_configurations` table with the target branches that are part of the development flow.
+This way, GitLab can recognize the branches as one, and filter out other merge requests.
+
+This configuration changes how daily DORA metrics are calculated for the selected project, but doesn't affect other projects, groups, or users.
+
+This feature supports only project-level propagation.
+
 To do this, in the Rails console run the following command:
 
 ```ruby
 Dora::Configuration.create!(project: my_project, ltfc_target_branches: \['master', 'main'\])
 ```
-
-This feature is in [Beta](../../policy/experiment-beta-support.md).
 
 ## Retrieve DORA metrics data
 

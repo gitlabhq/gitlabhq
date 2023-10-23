@@ -16,7 +16,6 @@ import {
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  ADD_CI_VARIABLE_MODAL_ID,
   DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT,
   EXCEEDS_VARIABLE_LIMIT_TEXT,
   MAXIMUM_VARIABLE_LIMIT_REACHED,
@@ -25,7 +24,6 @@ import {
 import { convertEnvironmentScope } from '../utils';
 
 export default {
-  modalId: ADD_CI_VARIABLE_MODAL_ID,
   defaultFields: [
     {
       key: 'key',
@@ -243,7 +241,6 @@ export default {
             >{{ valuesButtonText }}</gl-button
           >
           <gl-button
-            v-gl-modal-directive="$options.modalId"
             size="small"
             :disabled="exceedsVariableLimit"
             data-qa-selector="add_ci_variable_button"
@@ -375,7 +372,6 @@ export default {
         <template v-if="!isInheritedGroupVars" #cell(actions)="{ item }">
           <div class="gl-display-flex gl-justify-content-end gl-mt-n2 gl-mb-n2">
             <gl-button
-              v-gl-modal-directive="$options.modalId"
               icon="pencil"
               size="small"
               class="gl-mr-3"

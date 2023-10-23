@@ -14,7 +14,6 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
-        push_frontend_feature_flag(:ci_variable_drawer, current_user)
       end
 
       helper_method :highlight_badge

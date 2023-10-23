@@ -1,6 +1,5 @@
 import { __, s__, sprintf } from '~/locale';
 
-export const ADD_CI_VARIABLE_MODAL_ID = 'add-ci-variable';
 export const ENVIRONMENT_QUERY_LIMIT = 30;
 
 export const SORT_DIRECTIONS = {
@@ -45,7 +44,6 @@ export const AWS_TIP_MESSAGE = s__(
   'CiVariable|GitLab CI/CD supports OpenID Connect (OIDC) to give your build and deployment jobs access to cloud credentials and services. %{linkStart}How do I configure OIDC for my cloud provider?%{linkEnd}',
 );
 
-export const EVENT_LABEL = 'ci_variable_modal';
 export const DRAWER_EVENT_LABEL = 'ci_variable_drawer';
 export const EVENT_ACTION = 'validation_error';
 
