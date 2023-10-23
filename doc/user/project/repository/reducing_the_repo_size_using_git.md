@@ -325,12 +325,15 @@ are accurate.
 To expedite this process, see the
 ['Prune Unreachable Objects' housekeeping task](../../../administration/housekeeping.md).
 
-### Sidekiq process fails to export a project
+### Sidekiq process fails to export a project **(FREE SELF)**
 
 Occasionally the Sidekiq process can fail to export a project, for example if
 it is terminated during execution.
 
-To bypass the Sidekiq process, use the Rails console to manually trigger the project export:
+GitLab.com users should [contact Support](https://about.gitlab.com/support/#contact-support) to resolve this issue.
+
+Self-managed users can use the Rails console to bypass the Sidekiq process and
+manually trigger the project export:
 
 ```ruby
 project = Project.find(1)

@@ -54,10 +54,9 @@ Using the **Delete user and contributions** option may result in removing more d
 
 When deleting users, you can either:
 
-- Delete just the user. Not all associated records are deleted with the user. Instead of being deleted, these records
-  are moved to a system-wide user with the username Ghost User. The Ghost User's purpose is to act as a container for
-  such records. Any commits made by a deleted user still display the username of the original user.
-  The user's personal projects are deleted, not moved to the Ghost User.
+- Delete just the user, but move contributions to a system-wide "Ghost User":
+  - The `@ghost` acts as a container for all deleted users' contributions.
+  - The user's profile and personal projects are deleted, instead of moved to the Ghost User.
 - Delete the user and their contributions, including:
   - Abuse reports.
   - Emoji reactions.
@@ -73,6 +72,9 @@ When deleting users, you can either:
     [issues](../../project/issues/index.md),
     [merge requests](../../project/merge_requests/index.md)
     and [snippets](../../snippets.md).
+
+In both cases, commits retain [user information](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects#_git_commit_objects)
+and therefore data integrity within a [Git repository](../../project/repository/index.md).
 
 An alternative to deleting is [blocking a user](../../../administration/moderate_users.md#block-a-user).
 

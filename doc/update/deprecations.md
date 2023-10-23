@@ -409,6 +409,24 @@ major release, GitLab 17.0. This gem sees very little use and is better suited f
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### File type variable expansion fixed in downstream pipelines
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/419445).
+</div>
+
+Previously, if you tried to reference a [file type CI/CD variable](https://docs.gitlab.com/ee/ci/variables/#use-file-type-cicd-variables) in another CI/CD variable, the CI/CD variable would expand to contain the contents of the file. This behavior was incorrect because it did not comply with typical shell variable expansion rules. The CI/CD variable reference should expand to only contain the path to the file, not the contents of the file itself. This was [fixed for most use cases in GitLab 15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/29407). Unfortunately, passing CI/CD variables to downstream pipelines was an edge case not yet fixed, but which will now be fixed in GitLab 17.0.
+
+With this change, a variable configured in the `.gitlab-ci.yml` file can reference a file variable and be passed to a downstream pipeline, and the file variable will be passed to the downstream pipeline as well. The downstream pipeline will expand the variable reference to the file path, not the file contents.
+
+This breaking change could disrupt user workflows that depend on expanding a file variable in a downstream pipeline.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Filepath field in Releases and Release Links APIs
 
 <div class="deprecation-notes">

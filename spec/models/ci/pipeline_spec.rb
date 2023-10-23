@@ -5578,25 +5578,4 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
   end
-
-  describe '#reduced_build_attributes_list_for_rules?' do
-    subject { pipeline.reduced_build_attributes_list_for_rules? }
-
-    let(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }
-
-    it { is_expected.to be_truthy }
-
-    it 'memoizes the result' do
-      expect { subject }
-        .to change { pipeline.strong_memoized?(:reduced_build_attributes_list_for_rules?) }
-    end
-
-    context 'with the FF disabled' do
-      before do
-        stub_feature_flags(reduced_build_attributes_list_for_rules: false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-  end
 end

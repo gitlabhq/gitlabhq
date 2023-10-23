@@ -32,6 +32,10 @@ module Ci
       def latest_version
         project.releases.latest
       end
+
+      def unpublish!
+        update!(state: :draft)
+      end
     end
   end
 end

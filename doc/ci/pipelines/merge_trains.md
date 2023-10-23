@@ -90,6 +90,8 @@ are cancelled.
 
 ## Enable merge trains
 
+> `disable_merge_trains` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/282477) in GitLab 16.5.
+
 Prerequisites:
 
 - You must have the Maintainer role.
@@ -97,17 +99,15 @@ Prerequisites:
 - Your pipeline must be [configured to use merge request pipelines](merge_request_pipelines.md#prerequisites).
   Otherwise your merge requests may become stuck in an unresolved state or your pipelines
   might be dropped.
+- You must have [merged results pipelines enabled](merged_results_pipelines.md#enable-merged-results-pipelines).
 
 To enable merge trains:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. In the **Merge method** section, verify that **Merge commit** is selected.
-1. In the **Merge options** section:
-   - In GitLab 13.6 and later, select **Enable merged results pipelines** and **Enable merge trains**.
-   - In GitLab 13.5 and earlier, select **Enable merge trains and pipelines for merged results**.
-     Additionally, [a feature flag](#disable-merge-trains-in-gitlab-135-and-earlier)
-     must be set correctly.
+1. In the **Merge options** section, ensure **Enable merged results pipelines** is enabled
+   and select **Enable merge trains**.
 1. Select **Save changes**.
 
 ## Start a merge train
@@ -173,31 +173,6 @@ When you merge a merge request immediately:
 WARNING:
 Merging immediately can use a lot of CI/CD resources. Use this option
 only in critical situations.
-
-## Disable merge trains in GitLab 13.5 and earlier **(PREMIUM SELF)**
-
-In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/244831),
-you can [enable or disable merge trains in the project settings](#enable-merge-trains).
-
-In GitLab 13.5 and earlier, merge trains are automatically enabled when
-[merged results pipelines](merged_results_pipelines.md) are enabled.
-To use merged results pipelines but not merge trains, enable the `disable_merge_trains`
-[feature flag](../../user/feature_flags.md).
-
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable the feature flag to disable merge trains:
-
-```ruby
-Feature.enable(:disable_merge_trains)
-```
-
-After you enable this feature flag, GitLab cancels existing merge trains.
-
-To disable the feature flag, which enables merge trains again:
-
-```ruby
-Feature.disable(:disable_merge_trains)
-```
 
 ## Troubleshooting
 

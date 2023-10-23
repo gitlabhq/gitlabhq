@@ -31,6 +31,10 @@ module Bitbucket
         raw.key?('parent')
       end
 
+      def deleted?
+        raw.fetch('deleted', false)
+      end
+
       private
 
       def inline

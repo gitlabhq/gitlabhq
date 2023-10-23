@@ -206,7 +206,7 @@ To view epics in a group:
 Whether you can view an epic depends on the [group visibility level](../../public_access.md) and
 the epic's [confidentiality status](#make-an-epic-confidential):
 
-- Public group and a non-confidential epic: You don't have to be a member of the group.
+- Public group and a non-confidential epic: Anyone can view the epic.
 - Private group and non-confidential epic: You must have at least the Guest role for the group.
 - Confidential epic (regardless of group visibility): You must have at least the Reporter
   role for the group.

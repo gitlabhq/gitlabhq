@@ -1366,11 +1366,6 @@ module Ci
       merge_request.merge_request_diff_for(merge_request_diff_sha)
     end
 
-    def reduced_build_attributes_list_for_rules?
-      ::Feature.enabled?(:reduced_build_attributes_list_for_rules, project)
-    end
-    strong_memoize_attr :reduced_build_attributes_list_for_rules?
-
     private
 
     def add_message(severity, content)

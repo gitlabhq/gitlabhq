@@ -13,7 +13,7 @@ GitLab Duo Suggested Reviewers is the first user-facing GitLab machine learning 
 
 ### Enabling the feature
 
-When a Project Maintainer or Owner enables Suggested Reviewers in project settings GitLab kicks off a data extraction job for the project which leverages the Merge Request API to understand pattern of review including recency, domain experience, and frequency to suggest an appropriate reviewer.
+When a Project Maintainer or Owner enables Suggested Reviewers in project settings, GitLab kicks off a data extraction job for the project which leverages the Merge Request API to understand pattern of review including recency, domain experience, and frequency to suggest an appropriate reviewer. If projects do not use the [merge request approval process](../approvals/index.md) or do not have any historical merge request data, Suggested Reviewers cannot suggest reviewers.
 
 This data extraction job can take a few hours to complete (possibly up to a day), which is largely dependent on the size of the project. The process is automated and no action is needed during this process. Once data extraction is complete, you start getting suggestions in merge requests.
 

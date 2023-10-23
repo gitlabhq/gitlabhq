@@ -10,7 +10,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, name: 'A') }
   let_it_be(:project_2) { build(:project, name: 'Z') }
   let_it_be(:project_3) { build(:project, name: 'L') }
-  let_it_be(:resource) { create(:ci_catalog_resource, project: project, latest_released_at: tomorrow) }
+  let_it_be_with_reload(:resource) { create(:ci_catalog_resource, project: project, latest_released_at: tomorrow) }
   let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2, latest_released_at: today) }
   let_it_be(:resource_3) { create(:ci_catalog_resource, project: project_3, latest_released_at: nil) }
 
@@ -93,6 +93,29 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   describe '#state' do
     it 'defaults to draft' do
       expect(resource.state).to eq('draft')
+    end
+  end
+
+  describe '#unpublish!' do
+    context 'when the catalog resource is in published state' do
+      it 'updates the state to draft' do
+        resource.update!(state: :published)
+        expect(resource.state).to eq('published')
+
+        resource.unpublish!
+
+        expect(resource.reload.state).to eq('draft')
+      end
+    end
+
+    context 'when the catalog resource is already in draft state' do
+      it 'leaves the state as draft' do
+        expect(resource.state).to eq('draft')
+
+        resource.unpublish!
+
+        expect(resource.reload.state).to eq('draft')
+      end
     end
   end
 end

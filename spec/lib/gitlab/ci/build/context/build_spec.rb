@@ -41,16 +41,6 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     it { expect(context.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
 
     it_behaves_like 'variables collection'
-
-    context 'with FF disabled' do
-      before do
-        stub_feature_flags(reduced_build_attributes_list_for_rules: false)
-      end
-
-      it { expect(context.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
-
-      it_behaves_like 'variables collection'
-    end
   end
 
   describe '#variables_hash' do
@@ -59,15 +49,5 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     it { expect(context.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
 
     it_behaves_like 'variables collection'
-
-    context 'with FF disabled' do
-      before do
-        stub_feature_flags(reduced_build_attributes_list_for_rules: false)
-      end
-
-      it { expect(context.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
-
-      it_behaves_like 'variables collection'
-    end
   end
 end

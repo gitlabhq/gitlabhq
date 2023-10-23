@@ -33,13 +33,9 @@ module Gitlab
           # Assigning tags and needs is slow and they are not needed for rules
           # evaluation since we don't use them to compute the variables at this point.
           def build_attributes
-            if pipeline.reduced_build_attributes_list_for_rules?
-              attributes
-                .except(:tag_list, :needs_attributes)
-                .merge!(pipeline_attributes, ci_stage_attributes)
-            else
-              attributes.merge(pipeline_attributes, ci_stage_attributes)
-            end
+            attributes
+              .except(:tag_list, :needs_attributes)
+              .merge!(pipeline_attributes, ci_stage_attributes)
           end
 
           def ci_stage_attributes

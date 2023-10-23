@@ -4,8 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Importers::IssuesNotesImporter, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started) }
-  # let_it_be(:merge_request_1) { create(:merge_request, source_project: project) }
-  # let_it_be(:merge_request_2) { create(:merge_request, source_project: project, source_branch: 'other-branch') }
   let_it_be(:issue_1) { create(:issue, project: project) }
   let_it_be(:issue_2) { create(:issue, project: project) }
 
