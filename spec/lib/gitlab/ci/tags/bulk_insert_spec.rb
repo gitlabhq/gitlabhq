@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert do
   subject(:service) { described_class.new(statuses) }
 
   describe 'gem version' do
-    let(:acceptable_version) { '9.0.1' }
+    let(:acceptable_version) { '10.0.0' }
 
     let(:error_message) do
       <<~MESSAGE

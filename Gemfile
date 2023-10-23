@@ -241,7 +241,7 @@ end
 gem 'state_machines-activerecord', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # CI domain tags
-gem 'acts-as-taggable-on', '~> 9.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'acts-as-taggable-on', '~> 10.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Background jobs
 gem 'sidekiq', '~> 6.5.7' # rubocop:todo Gemfile/MissingFeatureCategory
