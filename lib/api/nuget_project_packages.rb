@@ -102,7 +102,7 @@ module API
       end
 
       def check_duplicate(file_params, symbol_package)
-        return if symbol_package || Feature.disabled?(:nuget_duplicates_option, project_or_group.namespace)
+        return if symbol_package
 
         service_params = file_params.merge(remote_url: params['package.remote_url'])
         response = ::Packages::Nuget::CheckDuplicatesService.new(project_or_group, current_user, service_params).execute

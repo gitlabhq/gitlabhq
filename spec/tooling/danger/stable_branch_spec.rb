@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'gitlab-dangerfiles'
-require 'gitlab/dangerfiles/spec_helper'
 require 'rspec-parameterized'
+require 'fast_spec_helper'
+require 'gitlab/dangerfiles/spec_helper'
 require 'httparty'
 
 require_relative '../../../tooling/danger/stable_branch'

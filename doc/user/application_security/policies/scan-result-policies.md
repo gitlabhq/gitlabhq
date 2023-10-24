@@ -84,10 +84,10 @@ the following sections and tables provide an alternative.
 
 ## Scan result policy schema
 
-> The `approval_settings` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`. Disabled by default.
+> The `approval_settings` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`.
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`.
 On GitLab.com, this feature is not available.
 
 | Field | Type | Required |Possible values | Description |

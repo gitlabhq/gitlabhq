@@ -38,7 +38,7 @@ module Gitlab
           create_issue_or_note
 
           if from_address
-            add_email_participant
+            add_email_participants
             send_thank_you_email unless reply_email?
           end
         end
@@ -215,6 +215,10 @@ module Gitlab
         end
         strong_memoize_attr :to_address
 
+        def cc_addresses
+          mail.cc || []
+        end
+
         def can_handle_legacy_format?
           project_path && project_path.include?('/') && !mail_key.include?('+')
         end
@@ -223,11 +227,33 @@ module Gitlab
           Users::Internal.support_bot
         end
 
-        def add_email_participant
+        def add_email_participants
           return if reply_email? && !Feature.enabled?(:issue_email_participants, @issue.project)
 
           @issue.issue_email_participants.create(email: from_address)
+
+          add_external_participants_from_cc
         end
+
+        def add_external_participants_from_cc
+          return if project.service_desk_setting.nil?
+          return unless project.service_desk_setting.add_external_participants_from_cc?
+
+          cc_addresses.each do |email|
+            next if service_desk_addresses.include?(email)
+
+            @issue.issue_email_participants.create!(email: email)
+          end
+        end
+
+        def service_desk_addresses
+          [
+            project.service_desk_incoming_address,
+            project.service_desk_alias_address,
+            project.service_desk_custom_address
+          ].compact
+        end
+        strong_memoize_attr :service_desk_addresses
       end
     end
   end

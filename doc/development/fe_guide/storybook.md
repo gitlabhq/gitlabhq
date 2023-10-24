@@ -135,3 +135,37 @@ export const Default = Template.bind({});
 
 Default.args = {};
 ```
+
+## Using a Vuex store
+
+To write a story for a component that requires access to a Vuex store, use the `createVuexStore` method provided in
+the Story context.
+
+```javascript
+import Vue from 'vue';
+import { withVuexStore } from 'storybook_addons/vuex_store';
+import DurationChart from './duration-chart.vue';
+
+const Template = (_, { argTypes, createVuexStore }) => {
+  return {
+    components: { DurationChart },
+    store: createVuexStore({
+      state: {},
+      getters: {},
+      modules: {},
+    }),
+    props: Object.keys(argTypes),
+    template: '<duration-chart />',
+  };
+};
+
+export default {
+  component: DurationChart,
+  title: 'ee/analytics/cycle_analytics/components/duration_chart',
+  decorators: [withVuexStore],
+};
+
+export const Default = Template.bind({});
+
+Default.args = {};
+```

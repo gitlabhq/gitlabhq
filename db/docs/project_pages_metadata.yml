@@ -7,4 +7,4 @@ feature_categories:
 description: Store GitLab Pages metadata for projects.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17197
 milestone: '12.4'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell

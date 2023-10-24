@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
+require 'fast_spec_helper'
 require 'rspec-parameterized'
-require 'gitlab-dangerfiles'
 require 'danger'
 require 'danger/plugins/internal/helper'
 require 'gitlab/dangerfiles/spec_helper'
-require 'gitlab/rspec/all'
 
 require_relative '../../../danger/plugins/project_helper'
 

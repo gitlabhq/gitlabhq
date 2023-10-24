@@ -8,6 +8,12 @@ module Ml
       model.latest_version&.version
     end
 
+    def version_count
+      return model.version_count if model.respond_to?(:version_count)
+
+      model.versions.size
+    end
+
     def latest_package_path
       return unless model.latest_version&.package_id.present?
 

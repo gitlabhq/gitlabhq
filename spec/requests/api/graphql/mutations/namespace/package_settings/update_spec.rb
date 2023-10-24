@@ -129,26 +129,6 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
 
     it_behaves_like 'returning a success'
     it_behaves_like 'rejecting invalid regex'
-
-    context 'when nuget_duplicates_option FF is disabled' do
-      let(:params) do
-        {
-          namespace_path: namespace.full_path,
-          'nugetDuplicatesAllowed' => false
-        }
-      end
-
-      before do
-        stub_feature_flags(nuget_duplicates_option: false)
-      end
-
-      it 'raises an error', :aggregate_failures do
-        subject
-
-        expect(graphql_errors.size).to eq(1)
-        expect(graphql_errors.first['message']).to include('feature flag is disabled')
-      end
-    end
   end
 
   RSpec.shared_examples 'accepting the mutation request creating the package settings' do

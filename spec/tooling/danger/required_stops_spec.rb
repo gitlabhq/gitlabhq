@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'gitlab-dangerfiles'
-require 'danger'
-require 'danger/plugins/internal/helper'
+require 'fast_spec_helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/required_stops'

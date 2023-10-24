@@ -24,6 +24,10 @@ module QA
         false
       end
 
+      attribute :issue_type do
+        'issue'
+      end
+
       def initialize
         @assignee_ids = []
         @labels = []
@@ -62,7 +66,8 @@ module QA
           assignee_ids: assignee_ids,
           labels: labels,
           title: title,
-          confidential: confidential
+          confidential: confidential,
+          issue_type: issue_type
         }.tap do |hash|
           hash[:milestone_id] = @milestone.id if @milestone
           hash[:weight] = @weight if @weight

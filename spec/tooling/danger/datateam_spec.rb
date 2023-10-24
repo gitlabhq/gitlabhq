@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
+require 'fast_spec_helper'
 require 'rspec-parameterized'
-require 'gitlab-dangerfiles'
 require 'gitlab/dangerfiles/spec_helper'
-require 'pry'
 require_relative '../../../tooling/danger/datateam'
 
 RSpec.describe Tooling::Danger::Datateam do

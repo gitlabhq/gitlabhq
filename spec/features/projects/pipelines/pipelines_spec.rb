@@ -183,7 +183,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             within '.pipeline-tags' do
               expect(page).to have_content(expected_detached_mr_tag)
 
-              expect(page).to have_link(merge_request.iid, href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(merge_request.iid.to_s, href: project_merge_request_path(project, merge_request))
 
               expect(page).not_to have_link(pipeline.ref)
             end
@@ -223,7 +223,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             within '.pipeline-tags' do
               expect(page).not_to have_content(expected_detached_mr_tag)
 
-              expect(page).to have_link(merge_request.iid, href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(merge_request.iid.to_s, href: project_merge_request_path(project, merge_request))
 
               expect(page).not_to have_link(pipeline.ref)
             end

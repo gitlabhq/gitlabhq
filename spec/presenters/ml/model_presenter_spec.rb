@@ -6,6 +6,7 @@ RSpec.describe Ml::ModelPresenter, feature_category: :mlops do
   let_it_be(:project) { build_stubbed(:project) }
   let_it_be(:model1) { build_stubbed(:ml_models, project: project) }
   let_it_be(:model2) { build_stubbed(:ml_models, :with_latest_version_and_package, project: project) }
+  let_it_be(:model3) { build_stubbed(:ml_models, :with_versions, project: project) }
 
   describe '#latest_version_name' do
     subject { model.present.latest_version_name }
@@ -22,6 +23,22 @@ RSpec.describe Ml::ModelPresenter, feature_category: :mlops do
       let(:model) { model1 }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#version_count' do
+    subject { model3.present.version_count }
+
+    it { is_expected.to eq(2) }
+
+    context 'when model has precomputed version count' do
+      before do
+        allow(model3).to receive(:version_count).and_return(1)
+      end
+
+      it 'returns the value of model version count' do
+        is_expected.to eq(1)
+      end
     end
   end
 

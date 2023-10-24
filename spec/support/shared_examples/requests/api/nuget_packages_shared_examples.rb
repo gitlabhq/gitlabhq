@@ -722,14 +722,6 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
 
       it_behaves_like 'returning response status', :created
     end
-
-    context 'when nuget_duplicates_option feature flag is disabled' do
-      before do
-        stub_feature_flags(nuget_duplicates_option: false)
-      end
-
-      it_behaves_like 'returning response status', :created
-    end
   end
 end
 

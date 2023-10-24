@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'fast_spec_helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/specs'

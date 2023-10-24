@@ -73,18 +73,6 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           )
         end
       end
-
-      context 'when nuget_duplicates_option FF is disabled' do
-        let_it_be(:params) { { namespace_path: namespace.full_path, nuget_duplicates_allowed: false } }
-
-        before do
-          stub_feature_flags(nuget_duplicates_option: false)
-        end
-
-        it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, /feature flag is disabled/)
-        end
-      end
     end
 
     RSpec.shared_examples 'denying access to namespace package setting' do

@@ -13944,7 +13944,7 @@ CREATE TABLE ci_pipelines (
     duration integer,
     user_id integer,
     lock_version integer DEFAULT 0,
-    auto_canceled_by_id integer,
+    auto_canceled_by_id_convert_to_bigint integer,
     pipeline_schedule_id integer,
     source integer,
     config_source integer,
@@ -13959,7 +13959,7 @@ CREATE TABLE ci_pipelines (
     locked smallint DEFAULT 1 NOT NULL,
     partition_id bigint NOT NULL,
     id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
-    auto_canceled_by_id_convert_to_bigint bigint,
+    auto_canceled_by_id bigint,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 

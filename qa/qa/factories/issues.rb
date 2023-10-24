@@ -12,6 +12,12 @@ module QA
       trait :confidential do
         confidential { true }
       end
+
+      trait :incident do
+        issue_type { 'incident' }
+      end
+
+      factory :incident, traits: [:incident]
     end
   end
 end

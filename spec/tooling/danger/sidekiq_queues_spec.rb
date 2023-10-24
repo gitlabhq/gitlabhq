@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require 'fast_spec_helper'
 require 'rspec-parameterized'
-require 'gitlab-dangerfiles'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../tooling/danger/sidekiq_queues'
