@@ -5,7 +5,7 @@
 
 # Update below commented lines with appropriate values.
 
-class QueueMyBatchedMigration < Gitlab::Database::Migration[2.1]
+class QueueMyBatchedMigration < Gitlab::Database::Migration[2.2]
   MIGRATION = "MyBatchedMigration"
   # DELAY_INTERVAL = 2.minutes
   # BATCH_SIZE = 1000

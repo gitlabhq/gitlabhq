@@ -685,8 +685,6 @@
   - 1
 - - system_hook_push
   - 1
-- - tasks_to_be_done_create
-  - 1
 - - terraform
   - 1
 - - todos_destroyer

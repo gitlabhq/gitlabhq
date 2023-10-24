@@ -32329,6 +32329,8 @@ CREATE INDEX index_environments_on_state_and_auto_delete_at ON environments USIN
 
 CREATE INDEX index_environments_on_state_and_auto_stop_at ON environments USING btree (state, auto_stop_at) WHERE ((auto_stop_at IS NOT NULL) AND ((state)::text = 'available'::text));
 
+CREATE INDEX index_environments_on_updated_at_for_stopping_state ON environments USING btree (updated_at) WHERE ((state)::text = 'stopping'::text);
+
 CREATE UNIQUE INDEX index_epic_board_list_preferences_on_user_and_list ON boards_epic_list_user_preferences USING btree (user_id, epic_list_id);
 
 CREATE UNIQUE INDEX index_epic_board_recent_visits_on_user_group_and_board ON boards_epic_board_recent_visits USING btree (user_id, group_id, epic_board_id);

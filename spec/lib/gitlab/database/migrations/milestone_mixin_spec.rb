@@ -12,14 +12,11 @@ RSpec.describe Gitlab::Database::Migrations::MilestoneMixin, feature_category: :
   end
 
   let(:migration_mixin) do
-    Class.new(Gitlab::Database::Migration[2.1]) do
-      include Gitlab::Database::Migrations::MilestoneMixin
-    end
+    Class.new(Gitlab::Database::Migration[2.2])
   end
 
   let(:migration_mixin_version) do
-    Class.new(Gitlab::Database::Migration[2.1]) do
-      include Gitlab::Database::Migrations::MilestoneMixin
+    Class.new(Gitlab::Database::Migration[2.2]) do
       milestone '16.4'
     end
   end

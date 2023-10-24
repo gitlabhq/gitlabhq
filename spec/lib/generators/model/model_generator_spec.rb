@@ -17,6 +17,10 @@ RSpec.describe Model::ModelGenerator do
       FileUtils.rm_rf(temp_dir)
     end
 
+    before do
+      allow(Gitlab).to receive(:current_milestone).and_return('16.5')
+    end
+
     it 'creates the model file with the right content' do
       subject.invoke_all
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Database::Migration.current_version %>]
+  milestone '<%= Gitlab.current_milestone %>'
+
   disable_ddl_transaction!
 
   TABLE_NAME = :<%= source_table_name %>

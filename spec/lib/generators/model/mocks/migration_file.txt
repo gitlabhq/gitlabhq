@@ -3,7 +3,7 @@
 # See https://docs.gitlab.com/ee/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class CreateModelGeneratorTestFoos < Gitlab::Database::Migration[2.1]
+class CreateModelGeneratorTestFoos < Gitlab::Database::Migration[2.2]
   # When using the methods "add_concurrent_index" or "remove_concurrent_index"
   # you must disable the use of transactions
   # as these methods can not run in an existing transaction.
@@ -16,6 +16,7 @@ class CreateModelGeneratorTestFoos < Gitlab::Database::Migration[2.1]
   # To disable transactions uncomment the following line and remove these
   # comments:
   # disable_ddl_transaction!
+  milestone '16.5'
 
   # Add dependent 'batched_background_migrations.queued_migration_version' values.
   # DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = []
