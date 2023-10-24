@@ -12,6 +12,9 @@ module Ml
       presence: true,
       length: { maximum: 255 }
 
+    validates :description,
+      length: { maximum: 500 }
+
     validate :valid_model?, :valid_package?
 
     belongs_to :model, class_name: 'Ml::Model'
@@ -24,8 +27,9 @@ module Ml
     scope :latest_by_model, -> { order_by_model_id_id_desc.select('DISTINCT ON (model_id) *') }
 
     class << self
-      def find_or_create!(model, version, package)
-        create_with(package: package).find_or_create_by!(project: model.project, model: model, version: version)
+      def find_or_create!(model, version, package, description)
+        create_with(package: package, description: description)
+          .find_or_create_by!(project: model.project, model: model, version: version)
       end
 
       def by_project_id_and_id(project_id, id)

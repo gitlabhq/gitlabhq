@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Search::AbuseDetection, feature_category: :global_search 
   end
 
   describe 'abusive character matching' do
-    refs = %w(
+    refs = %w[
       main
       тест
       maiñ
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Search::AbuseDetection, feature_category: :global_search 
       feature/it_works
       really_important!
       测试
-    )
+    ]
 
     refs.each do |ref|
       it "does match refs permitted by git refname: #{ref}" do

@@ -78,13 +78,13 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
           context 'label referenced by id' do
             let(:text) { '#1 and ~123' }
 
-            it { is_expected.to eq %{#{old_project_ref}#1 and #{old_project_ref}~123} }
+            it { is_expected.to eq %(#{old_project_ref}#1 and #{old_project_ref}~123) }
           end
 
           context 'label referenced by text' do
             let(:text) { '#1 and ~"test"' }
 
-            it { is_expected.to eq %{#{old_project_ref}#1 and #{old_project_ref}~123} }
+            it { is_expected.to eq %(#{old_project_ref}#1 and #{old_project_ref}~123) }
           end
         end
 
@@ -99,13 +99,13 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
           context 'label referenced by id' do
             let(:text) { '#1 and ~321' }
 
-            it { is_expected.to eq %{#{old_project_ref}#1 and #{old_project_ref}~321} }
+            it { is_expected.to eq %(#{old_project_ref}#1 and #{old_project_ref}~321) }
           end
 
           context 'label referenced by text' do
             let(:text) { '#1 and ~"group label"' }
 
-            it { is_expected.to eq %{#{old_project_ref}#1 and #{old_project_ref}~321} }
+            it { is_expected.to eq %(#{old_project_ref}#1 and #{old_project_ref}~321) }
           end
         end
       end
@@ -149,7 +149,7 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
 
       let(:text) { 'milestone: %"9.0"' }
 
-      it { is_expected.to eq %[milestone: #{old_project_ref}%"9.0"] }
+      it { is_expected.to eq %(milestone: #{old_project_ref}%"9.0") }
     end
 
     context 'when referring to group milestone' do

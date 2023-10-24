@@ -171,7 +171,7 @@ RSpec.describe Gitlab::OmniauthInitializer do
     end
 
     it 'allows "args" array for app_id and app_secret' do
-      legacy_config = { 'name' => 'legacy', 'args' => %w(123 abc) }
+      legacy_config = { 'name' => 'legacy', 'args' => %w[123 abc] }
 
       expect(devise_config).to receive(:omniauth).with(:legacy, '123', 'abc')
 

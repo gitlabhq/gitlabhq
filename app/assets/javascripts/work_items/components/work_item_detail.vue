@@ -146,9 +146,9 @@ export default {
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
         }
-        if (!this.isModal && this.workItem.project) {
-          const path = this.workItem.project?.fullPath
-            ? ` · ${this.workItem.project.fullPath}`
+        if (!this.isModal && this.workItem.namespace) {
+          const path = this.workItem.namespace.fullPath
+            ? ` · ${this.workItem.namespace.fullPath}`
             : '';
 
           document.title = `${this.workItem.title} · ${this.workItem?.workItemType?.name}${path}`;
@@ -181,19 +181,19 @@ export default {
       return this.workItemType ? `#${this.workItem.iid}` : '';
     },
     canUpdate() {
-      return this.workItem?.userPermissions?.updateWorkItem;
+      return this.workItem.userPermissions?.updateWorkItem;
     },
     canDelete() {
-      return this.workItem?.userPermissions?.deleteWorkItem;
+      return this.workItem.userPermissions?.deleteWorkItem;
     },
     canSetWorkItemMetadata() {
-      return this.workItem?.userPermissions?.setWorkItemMetadata;
+      return this.workItem.userPermissions?.setWorkItemMetadata;
     },
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
     },
     projectFullPath() {
-      return this.workItem?.project?.fullPath;
+      return this.workItem.namespace?.fullPath;
     },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
@@ -222,7 +222,7 @@ export default {
       return this.parentWorkItem?.webUrl;
     },
     workItemIconName() {
-      return this.workItem?.workItemType?.iconName;
+      return this.workItem.workItemType?.iconName;
     },
     noAccessSvgPath() {
       return `data:image/svg+xml;utf8,${encodeURIComponent(noAccessSvg)}`;
@@ -285,7 +285,7 @@ export default {
   },
   methods: {
     isWidgetPresent(type) {
-      return this.workItem?.widgets?.find((widget) => widget.type === type);
+      return this.workItem.widgets?.find((widget) => widget.type === type);
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;

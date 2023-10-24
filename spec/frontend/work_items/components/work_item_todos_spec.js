@@ -34,7 +34,7 @@ describe('WorkItemTodo component', () => {
   const workItemQueryResponse = workItemResponseFactory({ canUpdate: true });
   const mockWorkItemId = workItemQueryResponse.data.workItem.id;
   const mockWorkItemIid = workItemQueryResponse.data.workItem.iid;
-  const mockWorkItemFullpath = workItemQueryResponse.data.workItem.project.fullPath;
+  const mockWorkItemFullpath = workItemQueryResponse.data.workItem.namespace.fullPath;
 
   const createTodoSuccessHandler = jest
     .fn()

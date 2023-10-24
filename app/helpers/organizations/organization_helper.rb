@@ -23,6 +23,14 @@ module Organizations
       }.to_json
     end
 
+    def organization_settings_general_app_data(organization)
+      {
+        organization: organization.slice(:id, :name, :path),
+        organizations_path: organizations_path,
+        root_url: root_url
+      }.to_json
+    end
+
     def organization_groups_and_projects_app_data
       shared_groups_and_projects_app_data.to_json
     end

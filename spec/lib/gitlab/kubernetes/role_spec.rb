@@ -9,9 +9,9 @@ RSpec.describe Gitlab::Kubernetes::Role do
 
   let(:rules) do
     [{
-      apiGroups: %w(hello.world),
-      resources: %w(oil diamonds coffee),
-      verbs: %w(say do walk run)
+      apiGroups: %w[hello.world],
+      resources: %w[oil diamonds coffee],
+      verbs: %w[say do walk run]
     }]
   end
 

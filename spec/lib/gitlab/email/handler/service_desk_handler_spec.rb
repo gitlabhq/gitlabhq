@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         shared_examples 'does not add CC address' do
           it 'creates a new issue and adds issue_email_participant from From header' do
             expect { receiver.execute }.to change { Issue.count }.by(1)
-            expect(Issue.last.issue_email_participants.map(&:email)).to match_array(%w(from@example.com))
+            expect(Issue.last.issue_email_participants.map(&:email)).to match_array(%w[from@example.com])
           end
         end
 
@@ -215,7 +215,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             # 1 from issue creation
             # 1 from new note reply
             expect(Issue.last.issue_email_participants.map(&:email))
-              .to match_array(%w(alan@adventuretime.ooo jake@adventuretime.ooo))
+              .to match_array(%w[alan@adventuretime.ooo jake@adventuretime.ooo])
           end
 
           context 'when issue_email_participants FF is disabled' do
@@ -228,7 +228,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
               subject
 
               expect(Issue.last.issue_email_participants.map(&:email))
-                .to match_array(%w(jake@adventuretime.ooo))
+                .to match_array(%w[jake@adventuretime.ooo])
             end
           end
         end
@@ -256,7 +256,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             subject
 
             expect(Issue.last.issue_email_participants.map(&:email))
-              .to match_array(%w(alan@adventuretime.ooo))
+              .to match_array(%w[alan@adventuretime.ooo])
           end
         end
       end

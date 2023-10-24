@@ -27,7 +27,7 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
 
   describe 'validations' do
     it 'only POST and PUT method allowed' do
-      %w(POST post PUT put).each do |method|
+      %w[POST post PUT put].each do |method|
         expect(subject.new(url: example_url, http_method: method)).to be_valid
       end
 

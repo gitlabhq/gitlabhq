@@ -1,6 +1,6 @@
 #import "./crm_organization_fields.fragment.graphql"
 
-mutation updateOrganization($input: CustomerRelationsOrganizationUpdateInput!) {
+mutation updateCustomerRelationsOrganization($input: CustomerRelationsOrganizationUpdateInput!) {
   customerRelationsOrganizationUpdate(input: $input) {
     organization {
       ...OrganizationFragment

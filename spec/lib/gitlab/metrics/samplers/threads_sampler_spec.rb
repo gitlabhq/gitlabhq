@@ -40,11 +40,11 @@ RSpec.describe Gitlab::Metrics::Samplers::ThreadsSampler do
       context 'thread names', :aggregate_failures do
         where(:thread_names, :expected_names) do
           [
-            [[nil], %w(unnamed)],
+            [[nil], %w[unnamed]],
             [['puma threadpool 1', 'puma threadpool 001', 'puma threadpool 002'], ['puma threadpool']],
-            [%w(sidekiq_worker_thread), %w(sidekiq_worker_thread)],
-            [%w(some_sampler some_exporter), %w(some_sampler some_exporter)],
-            [%w(unknown thing), %w(unrecognized)]
+            [%w[sidekiq_worker_thread], %w[sidekiq_worker_thread]],
+            [%w[some_sampler some_exporter], %w[some_sampler some_exporter]],
+            [%w[unknown thing], %w[unrecognized]]
           ]
         end
 

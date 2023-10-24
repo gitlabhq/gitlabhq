@@ -99,7 +99,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
       end
 
       context 'when the note have invalid chars' do
-        let(:note_body) { %{There were an invalid char "\u0000" <= right here} }
+        let(:note_body) { %(There were an invalid char "\u0000" <= right here) }
 
         it 'removes invalid chars' do
           expect(importer.user_finder)

@@ -87,28 +87,28 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true, fips_mode: false do
   describe '.supported_algorithms' do
     it 'returns all supported algorithms' do
       expect(described_class.supported_algorithms).to eq(
-        %w(
+        %w[
           ssh-rsa
           ssh-dss
           ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521
           ssh-ed25519
           sk-ecdsa-sha2-nistp256@openssh.com
           sk-ssh-ed25519@openssh.com
-        )
+        ]
       )
     end
 
     context 'FIPS mode', :fips_mode do
       it 'returns all supported algorithms' do
         expect(described_class.supported_algorithms).to eq(
-          %w(
+          %w[
             ssh-rsa
             ssh-dss
             ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521
             ssh-ed25519
             sk-ecdsa-sha2-nistp256@openssh.com
             sk-ssh-ed25519@openssh.com
-          )
+          ]
         )
       end
     end
@@ -117,12 +117,12 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true, fips_mode: false do
   describe '.supported_algorithms_for_name' do
     where(:name, :algorithms) do
       [
-        [:rsa, %w(ssh-rsa)],
-        [:dsa, %w(ssh-dss)],
-        [:ecdsa, %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)],
-        [:ed25519, %w(ssh-ed25519)],
-        [:ecdsa_sk, %w(sk-ecdsa-sha2-nistp256@openssh.com)],
-        [:ed25519_sk, %w(sk-ssh-ed25519@openssh.com)]
+        [:rsa, %w[ssh-rsa]],
+        [:dsa, %w[ssh-dss]],
+        [:ecdsa, %w[ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521]],
+        [:ed25519, %w[ssh-ed25519]],
+        [:ecdsa_sk, %w[sk-ecdsa-sha2-nistp256@openssh.com]],
+        [:ed25519_sk, %w[sk-ssh-ed25519@openssh.com]]
       ]
     end
 
@@ -136,12 +136,12 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true, fips_mode: false do
     context 'FIPS mode', :fips_mode do
       where(:name, :algorithms) do
         [
-          [:rsa, %w(ssh-rsa)],
-          [:dsa, %w(ssh-dss)],
-          [:ecdsa, %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)],
-          [:ed25519, %w(ssh-ed25519)],
-          [:ecdsa_sk, %w(sk-ecdsa-sha2-nistp256@openssh.com)],
-          [:ed25519_sk, %w(sk-ssh-ed25519@openssh.com)]
+          [:rsa, %w[ssh-rsa]],
+          [:dsa, %w[ssh-dss]],
+          [:ecdsa, %w[ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521]],
+          [:ed25519, %w[ssh-ed25519]],
+          [:ecdsa_sk, %w[sk-ecdsa-sha2-nistp256@openssh.com]],
+          [:ed25519_sk, %w[sk-ssh-ed25519@openssh.com]]
         ]
       end
 
@@ -194,7 +194,7 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true, fips_mode: false do
 
     context 'with a valid SSH key' do
       where(:factory) do
-        %i(rsa_key_2048
+        %i[rsa_key_2048
            rsa_key_4096
            rsa_key_5120
            rsa_key_8192
@@ -202,7 +202,7 @@ RSpec.describe Gitlab::SSHPublicKey, lib: true, fips_mode: false do
            ecdsa_key_256
            ed25519_key_256
            ecdsa_sk_key_256
-           ed25519_sk_key_256)
+           ed25519_sk_key_256]
       end
 
       with_them do

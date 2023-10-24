@@ -24,7 +24,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
   describe '.values' do
     it 'returns an array' do
       expected =
-        %w(
+        %w[
           github
           bitbucket
           bitbucket_server
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
           gitlab_project
           gitea
           manifest
-        )
+        ]
 
       expect(described_class.values).to eq(expected)
     end
@@ -42,14 +42,14 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
   describe '.importer_names' do
     it 'returns an array of importer names' do
       expected =
-        %w(
+        %w[
           github
           bitbucket
           bitbucket_server
           fogbugz
           gitlab_project
           gitea
-        )
+        ]
 
       expect(described_class.importer_names).to eq(expected)
     end

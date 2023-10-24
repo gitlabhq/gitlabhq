@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Middleware::Multipart do
         let(:params) { upload_parameters_for(key: 'file', mode: mode, filename: filename, remote_id: remote_id).merge('file.path' => '/should/not/be/read') }
 
         it 'builds an UploadedFile' do
-          expect_uploaded_files(original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(file))
+          expect_uploaded_files(original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w[file])
 
           subject
         end
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Middleware::Multipart do
           let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file', mode: mode, filename: filename) }
 
           it 'builds an UploadedFile' do
-            expect_uploaded_files(filepath: uploaded_filepath, original_filename: filename, size: uploaded_file.size, params_path: %w(file))
+            expect_uploaded_files(filepath: uploaded_filepath, original_filename: filename, size: uploaded_file.size, params_path: %w[file])
 
             subject
           end

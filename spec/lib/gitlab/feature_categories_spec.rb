@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::FeatureCategories do
-  let(:fake_categories) { %w(foo bar) }
+  let(:fake_categories) { %w[foo bar] }
 
   subject(:feature_categories) { described_class.new(fake_categories) }
 

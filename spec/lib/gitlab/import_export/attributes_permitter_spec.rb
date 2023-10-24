@@ -33,7 +33,7 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter, feature_category: :imp
     EOF
   end
 
-  let(:file) { Tempfile.new(%w(import_export .yml)) }
+  let(:file) { Tempfile.new(%w[import_export .yml]) }
   let(:config_hash) { Gitlab::ImportExport::Config.new(config: file.path).to_h }
 
   before do

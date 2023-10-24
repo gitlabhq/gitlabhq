@@ -228,6 +228,24 @@ async function fetchOperations(operationsUrl, serviceName) {
   }
 }
 
+async function fetchMetrics() {
+  // TODO replace mocks with API calls https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2469
+  /* eslint-disable @gitlab/require-i18n-strings */
+  return {
+    metrics: [
+      { name: 'metric A', description: 'a counter metric called A', type: 'COUNTER' },
+      { name: 'metric B', description: 'a gauge metric called B', type: 'GAUGE' },
+      { name: 'metric C', description: 'a histogram metric called C', type: 'HISTOGRAM' },
+      {
+        name: 'metric D',
+        description: 'a exp histogram metric called D',
+        type: 'EXPONENTIAL HISTOGRAM',
+      },
+    ],
+  };
+  /* eslint-enable @gitlab/require-i18n-strings */
+}
+
 export function buildClient({ provisioningUrl, tracingUrl, servicesUrl, operationsUrl } = {}) {
   if (!provisioningUrl || !tracingUrl || !servicesUrl || !operationsUrl) {
     throw new Error(
@@ -241,5 +259,6 @@ export function buildClient({ provisioningUrl, tracingUrl, servicesUrl, operatio
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
+    fetchMetrics: () => fetchMetrics(),
   };
 }

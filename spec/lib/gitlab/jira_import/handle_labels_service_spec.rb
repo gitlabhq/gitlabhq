@@ -11,7 +11,7 @@ RSpec.describe Gitlab::JiraImport::HandleLabelsService do
     let_it_be(:other_project_label) { create(:label, title: 'feature') }
     let_it_be(:group_label)         { create(:group_label, group: group, title: 'dev') }
 
-    let(:jira_labels)               { %w(bug feature dev group::new) }
+    let(:jira_labels)               { %w[bug feature dev group::new] }
 
     subject { described_class.new(project, jira_labels).execute }
 
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::JiraImport::HandleLabelsService do
       it 'creates the missing labels on the project level' do
         expect { subject }.to change { Label.count }.from(3).to(5)
 
-        expect(created_labels.map(&:title)).to match_array(%w(feature group::new))
+        expect(created_labels.map(&:title)).to match_array(%w[feature group::new])
       end
 
       it 'returns the id of all labels matching the title' do
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::JiraImport::HandleLabelsService do
     end
 
     context 'when no provided jira labels are missing' do
-      let(:jira_labels) { %w(bug dev) }
+      let(:jira_labels) { %w[bug dev] }
 
       it 'does not create any new labels' do
         expect { subject }.not_to change { Label.count }.from(3)

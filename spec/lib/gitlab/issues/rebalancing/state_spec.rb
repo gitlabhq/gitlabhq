@@ -67,11 +67,11 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
         end
 
         it 'returns array of issue ids' do
-          expect(rebalance_caching.get_cached_issue_ids(0, 100)).to eq(%w(1 2 3))
+          expect(rebalance_caching.get_cached_issue_ids(0, 100)).to eq(%w[1 2 3])
         end
 
         it 'limits returned values' do
-          expect(rebalance_caching.get_cached_issue_ids(0, 2)).to eq(%w(1 2))
+          expect(rebalance_caching.get_cached_issue_ids(0, 2)).to eq(%w[1 2])
         end
 
         context 'when caching duplicate issue_ids' do
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
           end
 
           it 'returns cached issues with latest scores' do
-            expect(rebalance_caching.get_cached_issue_ids(0, 100)).to eq(%w(3 2 1))
+            expect(rebalance_caching.get_cached_issue_ids(0, 100)).to eq(%w[3 2 1])
           end
         end
       end

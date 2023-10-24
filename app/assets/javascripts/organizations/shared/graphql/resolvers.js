@@ -3,6 +3,7 @@ import {
   organizationProjects,
   organizationGroups,
   createOrganizationResponse,
+  updateOrganizationResponse,
 } from '../../mock_data';
 
 const simulateLoading = () => {
@@ -39,6 +40,12 @@ export default {
       await simulateLoading();
 
       return createOrganizationResponse;
+    },
+    updateOrganization: async () => {
+      // Simulate API loading
+      await simulateLoading();
+
+      return updateOrganizationResponse;
     },
   },
 };

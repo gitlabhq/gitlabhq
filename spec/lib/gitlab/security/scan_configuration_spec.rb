@@ -15,7 +15,7 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
     let(:configured) { true }
 
     context 'with a core scanner' do
-      where(type: %i(sast sast_iac secret_detection container_scanning))
+      where(type: %i[sast sast_iac secret_detection container_scanning])
 
       with_them do
         it { is_expected.to be_truthy }
@@ -73,7 +73,7 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
     let(:configured) { true }
 
     context 'with a core scanner' do
-      where(type: %i(sast sast_iac secret_detection))
+      where(type: %i[sast sast_iac secret_detection])
 
       with_them do
         it { is_expected.to be_truthy }

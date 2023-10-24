@@ -206,7 +206,7 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
 
             expect(response[0]).to eq(404)
             expect(response[1]['Content-Type']).to eq('text/html')
-            expected_body = %{<html><body>go get #{Gitlab.config.gitlab.url}/#{project.full_path}</body></html>}
+            expected_body = %(<html><body>go get #{Gitlab.config.gitlab.url}/#{project.full_path}</body></html>)
             expect(response[2]).to eq([expected_body])
           end
         end
@@ -278,7 +278,7 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
       project_url = "http://#{Gitlab.config.gitlab.host}/#{path}"
       expect(response[0]).to eq(200)
       expect(response[1]['Content-Type']).to eq('text/html')
-      expected_body = %{<html><head><meta name="go-import" content="#{Gitlab.config.gitlab.host}/#{path} git #{repository_url}"><meta name="go-source" content="#{Gitlab.config.gitlab.host}/#{path} #{project_url} #{project_url}/-/tree/#{branch}{/dir} #{project_url}/-/blob/#{branch}{/dir}/{file}#L{line}"></head><body>go get #{Gitlab.config.gitlab.url}/#{path}</body></html>}
+      expected_body = %(<html><head><meta name="go-import" content="#{Gitlab.config.gitlab.host}/#{path} git #{repository_url}"><meta name="go-source" content="#{Gitlab.config.gitlab.host}/#{path} #{project_url} #{project_url}/-/tree/#{branch}{/dir} #{project_url}/-/blob/#{branch}{/dir}/{file}#L{line}"></head><body>go get #{Gitlab.config.gitlab.url}/#{path}</body></html>)
       expect(response[2]).to eq([expected_body])
     end
   end

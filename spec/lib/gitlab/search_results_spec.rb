@@ -99,7 +99,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
     describe '#aggregations' do
       where(:scope) do
-        %w(projects issues merge_requests blobs commits wiki_blobs epics milestones users unknown)
+        %w[projects issues merge_requests blobs commits wiki_blobs epics milestones users unknown]
       end
 
       with_them do

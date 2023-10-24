@@ -7,12 +7,14 @@ RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops d
   let_it_be(:another_project) { create(:project) }
 
   let(:package) { nil }
+  let(:description) { nil }
 
   let(:params) do
     {
       model_name: name,
       version: version,
-      package: package
+      package: package,
+      description: description
     }
   end
 
@@ -34,6 +36,7 @@ RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops d
       let(:project) { existing_version.project }
       let(:name) { 'a_new_model' }
       let(:version) { '2.0.0' }
+      let(:description) { 'A model version' }
 
       let(:package) { create(:ml_model_package, project: project, name: name, version: version) }
 
@@ -43,6 +46,7 @@ RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops d
         expect(model_version.name).to eq(name)
         expect(model_version.version).to eq(version)
         expect(model_version.package).to eq(package)
+        expect(model_version.description).to eq(description)
       end
     end
   end

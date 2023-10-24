@@ -105,7 +105,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItems.nodes[0];
+        return data.workspace.workItems.nodes[0] ?? {};
       },
       skip() {
         return !this.workItemIid;
@@ -150,13 +150,13 @@ export default {
       };
     },
     isProjectArchived() {
-      return this.workItem?.project?.archived;
+      return this.workItem.archived;
     },
     canCreateNote() {
-      return this.workItem?.userPermissions?.createNote;
+      return this.workItem.userPermissions?.createNote;
     },
     workItemState() {
-      return this.workItem?.state;
+      return this.workItem.state;
     },
     commentButtonText() {
       return this.isNewDiscussion ? __('Comment') : __('Reply');

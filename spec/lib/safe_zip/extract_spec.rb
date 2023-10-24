@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe SafeZip::Extract do
   let(:target_path) { Dir.mktmpdir('safe-zip') }
-  let(:directories) { %w(public) }
-  let(:files) { %w(public/index.html) }
+  let(:directories) { %w[public] }
+  let(:files) { %w[public/index.html] }
   let(:object) { described_class.new(archive) }
   let(:archive) { Rails.root.join('spec', 'fixtures', 'safe_zip', archive_name) }
 
@@ -47,7 +47,7 @@ RSpec.describe SafeZip::Extract do
       end
     end
 
-    %w(valid-simple.zip valid-symlinks-first.zip valid-non-writeable.zip).each do |name|
+    %w[valid-simple.zip valid-symlinks-first.zip valid-non-writeable.zip].each do |name|
       context "when using #{name} archive" do
         let(:archive_name) { name }
 
@@ -74,7 +74,7 @@ RSpec.describe SafeZip::Extract do
 
     context 'when no matching directories are found' do
       let(:archive_name) { 'valid-simple.zip' }
-      let(:directories) { %w(non/existing) }
+      let(:directories) { %w[non/existing] }
       let(:error_message) { 'No entries extracted' }
 
       subject { object.extract(directories: directories, to: target_path) }
@@ -84,7 +84,7 @@ RSpec.describe SafeZip::Extract do
 
     context 'when no matching files are found' do
       let(:archive_name) { 'valid-simple.zip' }
-      let(:files) { %w(non/existing) }
+      let(:files) { %w[non/existing] }
       let(:error_message) { 'No entries extracted' }
 
       subject { object.extract(files: files, to: target_path) }

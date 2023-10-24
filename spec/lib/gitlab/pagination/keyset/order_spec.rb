@@ -726,7 +726,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
   end
 
   describe '#attribute_names' do
-    let(:expected_attribute_names) { %w(id name) }
+    let(:expected_attribute_names) { %w[id name] }
     let(:order) do
       described_class.build(
         [

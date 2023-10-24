@@ -66,6 +66,18 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         it { is_expected.to eq([internal_project]) }
       end
 
+      describe 'with full_paths' do
+        let_it_be(:second_public_project) do
+          create(:project, :public, :merge_requests_enabled, :issues_disabled, group: group, name: 'second-public', path: 'second-public')
+        end
+
+        context 'only returns projects matching the provided full paths' do
+          let(:params) { { full_paths: [public_project.full_path, second_public_project.full_path] } }
+
+          it { is_expected.to match_array([public_project, second_public_project]) }
+        end
+      end
+
       describe 'with id_after' do
         context 'only returns projects with a project id greater than given' do
           let(:params) { { id_after: internal_project.id } }

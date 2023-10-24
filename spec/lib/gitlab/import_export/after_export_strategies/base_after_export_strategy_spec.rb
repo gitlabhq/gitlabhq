@@ -100,7 +100,7 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrat
 
   describe '#log_validation_errors' do
     it 'add the message to the shared context' do
-      errors = %w(test_message test_message2)
+      errors = %w[test_message test_message2]
 
       allow(service).to receive(:invalid?).and_return(true)
       allow(service.errors).to receive(:full_messages).and_return(errors)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UsersHelper do
+RSpec.describe UsersHelper, feature_category: :user_management do
   include TermsHelper
 
   let_it_be(:user) { create(:user, timezone: ActiveSupport::TimeZone::MAPPING['UTC']) }

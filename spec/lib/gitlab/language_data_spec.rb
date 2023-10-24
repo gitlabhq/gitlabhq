@@ -15,7 +15,7 @@ RSpec.describe Gitlab::LanguageData do
         expect(described_class.extensions).to be_a(Set)
         expect(described_class.extensions.count).to be > 0
         # Sanity check for known extensions
-        expect(described_class.extensions).to include(*%w(.rb .yml .json))
+        expect(described_class.extensions).to include(*%w[.rb .yml .json])
       end
     end
   end

@@ -288,3 +288,11 @@ export const createOrganizationResponse = {
   },
   errors: [],
 };
+
+export const updateOrganizationResponse = {
+  organization: {
+    id: 'gid://gitlab/Organizations/1',
+    name: 'Default updated',
+  },
+  errors: [],
+};

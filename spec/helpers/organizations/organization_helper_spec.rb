@@ -91,4 +91,20 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       )
     end
   end
+
+  describe '#organization_settings_general_app_data' do
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.organization_settings_general_app_data(organization))).to eq(
+        {
+          'organization' => {
+            'id' => organization.id,
+            'name' => organization.name,
+            'path' => organization.path
+          },
+          'organizations_path' => organizations_path,
+          'root_url' => root_url
+        }
+      )
+    end
+  end
 end

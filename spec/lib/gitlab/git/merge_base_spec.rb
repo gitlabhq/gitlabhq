@@ -11,13 +11,13 @@ RSpec.describe Gitlab::Git::MergeBase do
 
   shared_context 'existing refs with a merge base', :existing_refs do
     let(:refs) do
-      %w(304d257dcb821665ab5110318fc58a007bd104ed 0031876facac3f2b2702a0e53a26e89939a42209)
+      %w[304d257dcb821665ab5110318fc58a007bd104ed 0031876facac3f2b2702a0e53a26e89939a42209]
     end
   end
 
   shared_context 'when passing a missing ref', :missing_ref do
     let(:refs) do
-      %w(304d257dcb821665ab5110318fc58a007bd104ed aaaa)
+      %w[304d257dcb821665ab5110318fc58a007bd104ed aaaa]
     end
   end
 
@@ -51,13 +51,13 @@ RSpec.describe Gitlab::Git::MergeBase do
     end
 
     it 'returns a merge base when passing 2 branch names' do
-      merge_base = described_class.new(repository, %w(master feature))
+      merge_base = described_class.new(repository, %w[master feature])
 
       expect(merge_base.sha).to be_present
     end
 
     it 'returns a merge base when passing a tag name' do
-      merge_base = described_class.new(repository, %w(master v1.0.0))
+      merge_base = described_class.new(repository, %w[master v1.0.0])
 
       expect(merge_base.sha).to be_present
     end

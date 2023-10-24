@@ -7,15 +7,16 @@ module Ml
       @name = params[:model_name]
       @version = params[:version]
       @package = params[:package]
+      @description = params[:description]
     end
 
     def execute
       model = Ml::FindOrCreateModelService.new(project, name).execute
-      Ml::ModelVersion.find_or_create!(model, version, package)
+      Ml::ModelVersion.find_or_create!(model, version, package, description)
     end
 
     private
 
-    attr_reader :version, :name, :project, :package
+    attr_reader :version, :name, :project, :package, :description
   end
 end

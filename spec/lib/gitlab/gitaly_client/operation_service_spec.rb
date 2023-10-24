@@ -1184,7 +1184,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       patch_names.map { |name| File.read(File.join(patches_folder, name)) }.join("\n")
     end
 
-    let(:patch_names) { %w(0001-This-does-not-apply-to-the-feature-branch.patch) }
+    let(:patch_names) { %w[0001-This-does-not-apply-to-the-feature-branch.patch] }
     let(:branch_name) { 'branch-with-patches' }
 
     subject(:commit_patches) do
@@ -1203,7 +1203,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     end
 
     context 'when the patch could not be applied' do
-      let(:patch_names) { %w(0001-This-does-not-apply-to-the-feature-branch.patch) }
+      let(:patch_names) { %w[0001-This-does-not-apply-to-the-feature-branch.patch] }
       let(:branch_name) { 'feature' }
 
       it 'raises the correct error' do

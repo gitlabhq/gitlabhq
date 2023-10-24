@@ -6,8 +6,8 @@ RSpec.describe SafeZip::ExtractParams do
   let(:target_path) { Dir.mktmpdir("safe-zip") }
   let(:real_target_path) { File.realpath(target_path) }
   let(:params) { described_class.new(directories: directories, files: files, to: target_path) }
-  let(:directories) { %w(public folder/with/subfolder) }
-  let(:files) { %w(public/index.html public/assets/image.png) }
+  let(:directories) { %w[public folder/with/subfolder] }
+  let(:files) { %w[public/index.html public/assets/image.png] }
 
   after do
     FileUtils.remove_entry_secure(target_path)

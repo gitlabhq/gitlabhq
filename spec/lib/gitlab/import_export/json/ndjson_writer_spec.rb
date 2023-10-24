@@ -54,7 +54,7 @@ RSpec.describe Gitlab::ImportExport::Json::NdjsonWriter, feature_category: :impo
   describe "#write_relation_array" do
     it "writes json in correct files" do
       values =  [{ "key" => "value_1", "key_1" => "value_1" }, { "key" => "value_2", "key_1" => "value_2" }]
-      relations = %w(relation1 relation2)
+      relations = %w[relation1 relation2]
       relations.each do |relation|
         subject.write_relation_array(exportable_path, relation, values.to_enum)
       end

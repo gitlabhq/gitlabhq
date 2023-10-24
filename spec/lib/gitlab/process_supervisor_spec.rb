@@ -152,13 +152,13 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :application_perform
       end
 
       context 'termination signals' do
-        let(:term_signals) { %i(INT TERM) }
+        let(:term_signals) { %i[INT TERM] }
 
         context 'when TERM results in timely shutdown of processes' do
           it 'forwards them to observed processes without waiting for grace period to expire' do
             allow(Gitlab::ProcessManagement).to receive(:any_alive?).and_return(false)
 
-            expect(Gitlab::ProcessManagement).to receive(:trap_signals).ordered.with(%i(INT TERM)).and_yield(:TERM)
+            expect(Gitlab::ProcessManagement).to receive(:trap_signals).ordered.with(%i[INT TERM]).and_yield(:TERM)
             expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, :TERM)
             expect(supervisor).not_to receive(:sleep).with(check_terminate_interval_seconds)
 
@@ -168,7 +168,7 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :application_perform
 
         context 'when TERM does not result in timely shutdown of processes' do
           it 'issues a KILL signal after the grace period expires' do
-            expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i(INT TERM)).and_yield(:TERM)
+            expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i[INT TERM]).and_yield(:TERM)
             expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, :TERM)
             expect(supervisor).to receive(:sleep).ordered.with(check_terminate_interval_seconds).at_least(:once)
             expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, '-KILL')
@@ -179,10 +179,10 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :application_perform
       end
 
       context 'forwarded signals' do
-        let(:forwarded_signals) { %i(USR1) }
+        let(:forwarded_signals) { %i[USR1] }
 
         it 'forwards given signals to the observed processes' do
-          expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i(USR1)).and_yield(:USR1)
+          expect(Gitlab::ProcessManagement).to receive(:trap_signals).with(%i[USR1]).and_yield(:USR1)
           expect(Gitlab::ProcessManagement).to receive(:signal_processes).ordered.with(process_ids, :USR1)
 
           supervisor.supervise(process_ids) { [] }

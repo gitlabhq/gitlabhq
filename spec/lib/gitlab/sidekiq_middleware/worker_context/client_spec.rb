@@ -73,7 +73,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
                        'job2' => build_stubbed(:user, username: 'user-2') }
 
       TestWithContextWorker.bulk_perform_async_with_contexts(
-        %w(job1 job2),
+        %w[job1 job2],
         arguments_proc: -> (name) { [name, 1, 2, 3] },
         context_proc: -> (name) { { user: user_per_job[name] } }
       )
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
     context 'when the feature category is set in the context_proc' do
       it 'takes the feature category from the worker, not the caller' do
         TestWithContextWorker.bulk_perform_async_with_contexts(
-          %w(job1 job2),
+          %w[job1 job2],
           arguments_proc: -> (name) { [name, 1, 2, 3] },
           context_proc: -> (_) { { feature_category: 'code_review' } }
         )
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
 
       it 'takes the feature category from the caller if the worker is not owned' do
         TestNotOwnedWithContextWorker.bulk_perform_async_with_contexts(
-          %w(job1 job2),
+          %w[job1 job2],
           arguments_proc: -> (name) { [name, 1, 2, 3] },
           context_proc: -> (_) { { feature_category: 'code_review' } }
         )
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
       it 'takes the feature category from the worker, not the caller' do
         Gitlab::ApplicationContext.with_context(feature_category: 'system_access') do
           TestWithContextWorker.bulk_perform_async_with_contexts(
-            %w(job1 job2),
+            %w[job1 job2],
             arguments_proc: -> (name) { [name, 1, 2, 3] },
             context_proc: -> (_) { {} }
           )
@@ -141,7 +141,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
       it 'takes the feature category from the caller if the worker is not owned' do
         Gitlab::ApplicationContext.with_context(feature_category: 'system_access') do
           TestNotOwnedWithContextWorker.bulk_perform_async_with_contexts(
-            %w(job1 job2),
+            %w[job1 job2],
             arguments_proc: -> (name) { [name, 1, 2, 3] },
             context_proc: -> (_) { {} }
           )

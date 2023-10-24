@@ -34,7 +34,7 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
 
         context 'template includes are an array' do
           let(:gitlab_ci_content) do
-            { "stages" => %w(test security),
+            { "stages" => %w[test security],
               "variables" => { "RANDOM" => "make sure this persists" },
               "include" => [{ "template" => "existing.yml" }] }
           end
@@ -47,7 +47,7 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
 
         context 'template include is not an array' do
           let(:gitlab_ci_content) do
-            { "stages" => %w(test security),
+            { "stages" => %w[test security],
               "variables" => { "RANDOM" => "make sure this persists" },
               "include" => { "template" => "existing.yml" } }
           end
@@ -80,7 +80,7 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
 
         context 'secret_detection template include are an array' do
           let(:gitlab_ci_content) do
-            { "stages" => %w(test),
+            { "stages" => %w[test],
               "variables" => { "RANDOM" => "make sure this persists" },
               "include" => [{ "template" => "Security/SAST-IaC.latest.gitlab-ci.yml" }] }
           end
@@ -93,7 +93,7 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
 
         context 'secret_detection template include is not an array' do
           let(:gitlab_ci_content) do
-            { "stages" => %w(test),
+            { "stages" => %w[test],
               "variables" => { "RANDOM" => "make sure this persists" },
               "include" => { "template" => "Security/SAST-IaC.latest.gitlab-ci.yml" } }
           end

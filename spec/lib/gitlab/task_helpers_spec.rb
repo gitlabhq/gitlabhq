@@ -84,17 +84,17 @@ RSpec.describe Gitlab::TaskHelpers do
 
   describe '#run_command' do
     it 'runs command and return the output' do
-      expect(subject.run_command(%w(echo it works!))).to eq("it works!\n")
+      expect(subject.run_command(%w[echo it works!])).to eq("it works!\n")
     end
 
     it 'returns empty string when command doesnt exist' do
-      expect(subject.run_command(%w(nonexistentcommand with arguments))).to eq('')
+      expect(subject.run_command(%w[nonexistentcommand with arguments])).to eq('')
     end
   end
 
   describe '#run_command!' do
     it 'runs command and return the output' do
-      expect(subject.run_command!(%w(echo it works!))).to eq("it works!\n")
+      expect(subject.run_command!(%w[echo it works!])).to eq("it works!\n")
     end
 
     it 'returns and exception when command exit with non zero code' do

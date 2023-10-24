@@ -16,8 +16,8 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       product_group: 'product_analytics',
       time_frame: 'none',
       data_source: 'database',
-      distribution: %w(ee ce),
-      tier: %w(free starter premium ultimate bronze silver gold),
+      distribution: %w[ee ce],
+      tier: %w[free starter premium ultimate bronze silver gold],
       data_category: 'standard',
       removed_by_url: 'http://gdk.test'
     }
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     it 'includes metrics that are not removed' do
       expect(described_class.not_removed.count).to eq(3)
 
-      expect(described_class.not_removed.keys).to match_array(%w(metric1 metric2 metric3))
+      expect(described_class.not_removed.keys).to match_array(%w[metric1 metric2 metric3])
     end
   end
 
@@ -162,7 +162,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       :data_source        | nil
       :distribution       | nil
       :distribution       | 'test'
-      :tier               | %w(test ee)
+      :tier               | %w[test ee]
       :repair_issue_url   | nil
       :removed_by_url     | 1
 
@@ -309,8 +309,8 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         product_group: 'product_analytics',
         time_frame: 'none',
         data_source: 'database',
-        distribution: %w(ee ce),
-        tier: %w(free starter premium ultimate bronze silver gold),
+        distribution: %w[ee ce],
+        tier: %w[free starter premium ultimate bronze silver gold],
         data_category: 'optional'
       }
     end

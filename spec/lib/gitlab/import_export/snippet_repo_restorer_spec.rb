@@ -31,7 +31,7 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
           expect(restorer.restore).to be_truthy
         end.to change { SnippetRepository.count }.by(1)
 
-        snippet.repository.expire_method_caches(%i(exists?))
+        snippet.repository.expire_method_caches(%i[exists?])
         expect(snippet.repository_exists?).to be_truthy
 
         blob = snippet.repository.blob_at(snippet.default_branch, snippet.file_name)

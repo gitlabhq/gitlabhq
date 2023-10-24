@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Favicon, :request_store do
     subject { described_class.available_status_names }
 
     it 'returns the available status names' do
-      expect(subject).to eq %w(
+      expect(subject).to eq %w[
         favicon_status_canceled
         favicon_status_created
         favicon_status_failed
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Favicon, :request_store do
         favicon_status_skipped
         favicon_status_success
         favicon_status_warning
-      )
+      ]
     end
   end
 end

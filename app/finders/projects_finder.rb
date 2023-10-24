@@ -28,6 +28,7 @@
 #     last_activity_before: datetime
 #     repository_storage: string
 #     not_aimed_for_deletion: boolean
+#     full_paths: string[]
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
@@ -78,6 +79,7 @@ class ProjectsFinder < UnionFinder
   def filter_projects(collection)
     collection = collection.without_deleted
     collection = by_ids(collection)
+    collection = by_full_paths(collection)
     collection = by_personal(collection)
     collection = by_starred(collection)
     collection = by_trending(collection)
@@ -161,6 +163,10 @@ class ProjectsFinder < UnionFinder
     items
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_full_paths(items)
+    params[:full_paths].present? ? items.where_full_path_in(params[:full_paths], use_includes: false) : items
+  end
 
   def union(items)
     find_union(items, Project).with_route

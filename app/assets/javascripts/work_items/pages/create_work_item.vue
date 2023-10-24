@@ -103,7 +103,7 @@ export default {
               data: {
                 workspace: {
                   __typename: TYPENAME_PROJECT,
-                  id: workItem.project.id,
+                  id: workItem.namespace.id,
                   workItems: {
                     __typename: 'WorkItemConnection',
                     nodes: [workItem],

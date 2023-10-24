@@ -15,14 +15,14 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
       let(:options) { { tag: lang, ellipsis_indexes: [0], ellipsis_svg: "svg_icon" } }
 
       it 'returns highlighted ruby code with svg' do
-        code = %q{<span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span><span class="gl-px-2 gl-rounded-base gl-mx-2 gl-bg-gray-100 gl-cursor-help has-tooltip" title="Content has been trimmed">svg_icon</span></span>}
+        code = %q(<span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span><span class="gl-px-2 gl-rounded-base gl-mx-2 gl-bg-gray-100 gl-cursor-help has-tooltip" title="Content has been trimmed">svg_icon</span></span>)
 
         is_expected.to eq(code)
       end
     end
 
     it 'returns highlighted ruby code' do
-      code = %q{<span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>}
+      code = %q(<span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>)
 
       is_expected.to eq(code)
     end
@@ -31,7 +31,7 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
       let(:options) { {} }
 
       it 'returns highlighted code without language' do
-        code = %q{<span id="LC1" class="line" lang=""><span class="k">def</span> <span class="nf">hello</span></span>}
+        code = %q(<span id="LC1" class="line" lang=""><span class="k">def</span> <span class="nf">hello</span></span>)
 
         is_expected.to eq(code)
       end
@@ -41,7 +41,7 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
       let(:options) { { tag: lang, line_number: 10 } }
 
       it 'returns highlighted ruby code with correct line number' do
-        code = %q{<span id="LC10" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>}
+        code = %q(<span id="LC10" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>)
 
         is_expected.to eq(code)
       end
@@ -64,7 +64,7 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
       it 'highlights the control characters' do
         message = "Potentially unwanted character detected: Unicode BiDi Control"
 
-        is_expected.to include(%{<span class="unicode-bidi has-tooltip" data-toggle="tooltip" title="#{message}">}).exactly(4).times
+        is_expected.to include(%(<span class="unicode-bidi has-tooltip" data-toggle="tooltip" title="#{message}">)).exactly(4).times
       end
     end
 

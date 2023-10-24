@@ -181,7 +181,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
 
       it 'logs without created_at and enqueued_at fields' do
         travel_to(timestamp) do
-          excluded_fields = %w(created_at enqueued_at args scheduling_latency_s)
+          excluded_fields = %w[created_at enqueued_at args scheduling_latency_s]
 
           expect(logger).to receive(:info).with(start_payload.except(*excluded_fields)).ordered
           expect(logger).to receive(:info).with(end_payload.except(*excluded_fields)).ordered

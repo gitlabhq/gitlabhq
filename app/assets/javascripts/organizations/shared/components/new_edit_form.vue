@@ -12,6 +12,7 @@ import { formValidators } from '@gitlab/ui/dist/utils';
 import { s__, __ } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_PATH } from '../constants';
 
 export default {
   name: 'NewEditForm',
@@ -25,43 +26,47 @@ export default {
     GlTruncate,
   },
   i18n: {
-    createOrganization: s__('Organization|Create organization'),
     cancel: __('Cancel'),
     pathPlaceholder: s__('Organization|my-organization'),
   },
   formId: 'new-organization-form',
-  fields: {
-    name: {
-      label: s__('Organization|Organization name'),
-      validators: [formValidators.required(s__('Organization|Organization name is required.'))],
-      groupAttrs: {
-        description: s__(
-          'Organization|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
-        ),
-      },
-      inputAttrs: {
-        class: 'gl-md-form-input-lg',
-        placeholder: s__('Organization|My organization'),
-      },
-    },
-    path: {
-      label: s__('Organization|Organization URL'),
-      validators: [formValidators.required(s__('Organization|Organization URL is required.'))],
-    },
-  },
   inject: ['organizationsPath', 'rootUrl'],
   props: {
     loading: {
       type: Boolean,
       required: true,
     },
+    initialFormValues: {
+      type: Object,
+      required: false,
+      default() {
+        return {
+          [FORM_FIELD_NAME]: '',
+          [FORM_FIELD_PATH]: '',
+        };
+      },
+    },
+    fieldsToRender: {
+      type: Array,
+      required: false,
+      default() {
+        return [FORM_FIELD_NAME, FORM_FIELD_PATH];
+      },
+    },
+    submitButtonText: {
+      type: String,
+      required: false,
+      default: s__('Organization|Create organization'),
+    },
+    showCancelButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
-      formValues: {
-        name: '',
-        path: '',
-      },
+      formValues: this.initialFormValues,
       hasPathBeenManuallySet: false,
     };
   },
@@ -69,10 +74,57 @@ export default {
     baseUrl() {
       return joinPaths(this.rootUrl, this.organizationsPath, '/');
     },
+    fields() {
+      const fields = {
+        [FORM_FIELD_NAME]: {
+          label: s__('Organization|Organization name'),
+          validators: [formValidators.required(s__('Organization|Organization name is required.'))],
+          groupAttrs: {
+            class: this.fieldsToRender.includes(FORM_FIELD_ID)
+              ? 'gl-flex-grow-1 gl-md-form-input-lg'
+              : 'gl-flex-grow-1',
+            description: s__(
+              'Organization|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
+            ),
+          },
+          inputAttrs: {
+            class: !this.fieldsToRender.includes(FORM_FIELD_ID) ? 'gl-md-form-input-lg' : null,
+            placeholder: s__('Organization|My organization'),
+          },
+        },
+        [FORM_FIELD_ID]: {
+          label: s__('Organization|Organization ID'),
+          groupAttrs: {
+            class: 'gl-md-form-input-lg gl-flex-grow-1',
+          },
+          inputAttrs: {
+            disabled: true,
+          },
+        },
+        [FORM_FIELD_PATH]: {
+          label: s__('Organization|Organization URL'),
+          validators: [formValidators.required(s__('Organization|Organization URL is required.'))],
+          groupAttrs: {
+            class: 'gl-w-full',
+          },
+        },
+      };
+
+      return Object.entries(fields).reduce((accumulator, [fieldKey, fieldDefinition]) => {
+        if (!this.fieldsToRender.includes(fieldKey)) {
+          return accumulator;
+        }
+
+        return {
+          ...accumulator,
+          [fieldKey]: fieldDefinition,
+        };
+      }, {});
+    },
   },
   watch: {
     'formValues.name': function watchName(value) {
-      if (this.hasPathBeenManuallySet) {
+      if (this.hasPathBeenManuallySet || !this.fieldsToRender.includes(FORM_FIELD_PATH)) {
         return;
       }
 
@@ -93,7 +145,8 @@ export default {
     <gl-form-fields
       v-model="formValues"
       :form-id="$options.formId"
-      :fields="$options.fields"
+      :fields="fields"
+      class="gl-display-flex gl-column-gap-5 gl-flex-wrap"
       @submit="$emit('submit', formValues)"
     >
       <template #input(path)="{ id, value, validation, input, blur }">
@@ -117,9 +170,11 @@ export default {
     </gl-form-fields>
     <div class="gl-display-flex gl-gap-3">
       <gl-button type="submit" variant="confirm" class="js-no-auto-disable" :loading="loading">{{
-        $options.i18n.createOrganization
+        submitButtonText
       }}</gl-button>
-      <gl-button :href="organizationsPath">{{ $options.i18n.cancel }}</gl-button>
+      <gl-button v-if="showCancelButton" :href="organizationsPath">{{
+        $options.i18n.cancel
+      }}</gl-button>
     </div>
   </gl-form>
 </template>

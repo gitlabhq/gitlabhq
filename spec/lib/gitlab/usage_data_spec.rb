@@ -42,7 +42,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     end
 
     it 'ensures recorded_at is set before any other usage data calculation' do
-      %i(alt_usage_data redis_usage_data distinct_count count).each do |method|
+      %i[alt_usage_data redis_usage_data distinct_count count].each do |method|
         expect(described_class).not_to receive(method)
       end
       expect(described_class).to receive(:recorded_at).and_raise(Exception.new('Stopped calculating recorded_at'))
@@ -191,7 +191,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         omniauth:
           { providers: omniauth_providers }
       )
-      allow(Devise).to receive(:omniauth_providers).and_return(%w(ldapmain ldapsecondary group_saml))
+      allow(Devise).to receive(:omniauth_providers).and_return(%w[ldapmain ldapsecondary group_saml])
 
       for_defined_days_back do
         user = create(:user)
@@ -268,7 +268,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       for_defined_days_back do
         user = create(:user)
 
-        %w(gitlab_project github bitbucket bitbucket_server gitea git manifest fogbugz).each do |type|
+        %w[gitlab_project github bitbucket bitbucket_server gitea git manifest fogbugz].each do |type|
           create(:project, import_type: type, creator_id: user.id)
         end
 
@@ -734,7 +734,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       subject { described_class.object_store_usage_data }
 
       it 'fetches object store config of five components' do
-        %w(artifacts external_diffs lfs uploads packages).each do |component|
+        %w[artifacts external_diffs lfs uploads packages].each do |component|
           expect(described_class).to receive(:object_store_config).with(component).and_return("#{component}_object_store_config")
         end
 

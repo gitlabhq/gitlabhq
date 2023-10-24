@@ -18905,7 +18905,9 @@ CREATE TABLE ml_model_versions (
     model_id bigint NOT NULL,
     package_id bigint,
     version text NOT NULL,
-    CONSTRAINT check_28b2d892c8 CHECK ((char_length(version) <= 255))
+    description text,
+    CONSTRAINT check_28b2d892c8 CHECK ((char_length(version) <= 255)),
+    CONSTRAINT check_caff7d000b CHECK ((char_length(description) <= 500))
 );
 
 CREATE SEQUENCE ml_model_versions_id_seq

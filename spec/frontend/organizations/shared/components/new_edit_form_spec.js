@@ -1,6 +1,7 @@
 import { GlButton, GlInputGroupText, GlTruncate } from '@gitlab/ui';
 
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
+import { FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_PATH } from '~/organizations/shared/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('NewEditForm', () => {
@@ -27,6 +28,7 @@ describe('NewEditForm', () => {
   };
 
   const findNameField = () => wrapper.findByLabelText('Organization name');
+  const findIdField = () => wrapper.findByLabelText('Organization ID');
   const findUrlField = () => wrapper.findByLabelText('Organization URL');
   const submitForm = async () => {
     await wrapper.findByRole('button', { name: 'Create organization' }).trigger('click');
@@ -45,6 +47,45 @@ describe('NewEditForm', () => {
       'http://127.0.0.1:3000/-/organizations/',
     );
     expect(findUrlField().exists()).toBe(true);
+  });
+
+  describe('when `fieldsToRender` prop is set', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { fieldsToRender: [FORM_FIELD_ID] } });
+    });
+
+    it('only renders provided fields', () => {
+      expect(findNameField().exists()).toBe(false);
+      expect(findIdField().exists()).toBe(true);
+      expect(findUrlField().exists()).toBe(false);
+    });
+  });
+
+  describe('when `initialFormValues` prop is set', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_PATH],
+          initialFormValues: {
+            [FORM_FIELD_NAME]: 'Foo bar',
+            [FORM_FIELD_ID]: 1,
+            [FORM_FIELD_PATH]: 'foo-bar',
+          },
+        },
+      });
+    });
+
+    it('sets initial values for fields', () => {
+      expect(findNameField().element.value).toBe('Foo bar');
+      expect(findIdField().element.value).toBe('1');
+      expect(findUrlField().element.value).toBe('foo-bar');
+    });
+  });
+
+  it('renders `Organization ID` field as disabled', () => {
+    createComponent({ propsData: { fieldsToRender: [FORM_FIELD_ID] } });
+
+    expect(findIdField().attributes('disabled')).toBe('disabled');
   });
 
   describe('when form is submitted without filling in required fields', () => {
@@ -100,6 +141,30 @@ describe('NewEditForm', () => {
     });
   });
 
+  describe('when `Organization URL` field is not rendered', () => {
+    beforeEach(async () => {
+      createComponent({
+        propsData: {
+          fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID],
+          initialFormValues: {
+            [FORM_FIELD_NAME]: 'Foo bar',
+            [FORM_FIELD_ID]: 1,
+            [FORM_FIELD_PATH]: 'foo-bar',
+          },
+        },
+      });
+
+      await findNameField().setValue('Foo bar baz');
+      await submitForm();
+    });
+
+    it('does not modify `Organization URL` when typing in `Organization name`', () => {
+      expect(wrapper.emitted('submit')).toEqual([
+        [{ name: 'Foo bar baz', id: 1, path: 'foo-bar' }],
+      ]);
+    });
+  });
+
   describe('when `loading` prop is `true`', () => {
     beforeEach(() => {
       createComponent({ propsData: { loading: true } });
@@ -107,6 +172,48 @@ describe('NewEditForm', () => {
 
     it('shows button with loading icon', () => {
       expect(wrapper.findComponent(GlButton).props('loading')).toBe(true);
+    });
+  });
+
+  describe('when `showCancelButton` prop is `false`', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { showCancelButton: false } });
+    });
+
+    it('does not show cancel button', () => {
+      expect(wrapper.findByRole('link', { name: 'Cancel' }).exists()).toBe(false);
+    });
+  });
+
+  describe('when `showCancelButton` prop is `true`', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('shows cancel button', () => {
+      expect(wrapper.findByRole('link', { name: 'Cancel' }).attributes('href')).toBe(
+        defaultProvide.organizationsPath,
+      );
+    });
+  });
+
+  describe('when `submitButtonText` prop is not set', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('defaults to `Create organization`', () => {
+      expect(wrapper.findByRole('button', { name: 'Create organization' }).exists()).toBe(true);
+    });
+  });
+
+  describe('when `submitButtonText` prop is set', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { submitButtonText: 'Save changes' } });
+    });
+
+    it('uses it for submit button', () => {
+      expect(wrapper.findByRole('button', { name: 'Save changes' }).exists()).toBe(true);
     });
   });
 });

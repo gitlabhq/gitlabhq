@@ -33,7 +33,7 @@ RSpec.describe Gitlab::ImportExport::Saver do
     subject.save # rubocop:disable Rails/SaveBang
 
     expect(ImportExportUpload.find_by(project: project).export_file.url)
-      .to match(%r[/uploads/-/system/import_export_upload/export_file.*])
+      .to match(%r{/uploads/-/system/import_export_upload/export_file.*})
   end
 
   it 'logs metrics after saving' do

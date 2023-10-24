@@ -96,6 +96,7 @@ export default {
   data() {
     return {
       isEditing: false,
+      workItem: {},
     };
   },
   computed: {
@@ -163,13 +164,13 @@ export default {
       return this.authorId === this.currentUserId;
     },
     isWorkItemAuthor() {
-      return getIdFromGraphQLId(this.workItem?.author?.id) === this.authorId;
+      return getIdFromGraphQLId(this.workItem.author?.id) === this.authorId;
     },
     projectName() {
-      return this.workItem?.project?.name;
+      return this.workItem.namespace?.name;
     },
     isWorkItemConfidential() {
-      return this.workItem?.confidential;
+      return this.workItem.confidential;
     },
   },
   apollo: {
@@ -184,7 +185,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItems?.nodes[0];
+        return data.workspace?.workItems?.nodes[0] ?? {};
       },
       skip() {
         return !this.workItemIid;

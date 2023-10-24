@@ -27,7 +27,7 @@ RSpec.describe Gitlab::ImportExport::LfsRestorer do
 
       # Use the LfsSaver to save data to be restored
       def save_lfs_data
-        %w(project wiki).each do |repository_type|
+        %w[project wiki].each do |repository_type|
           create(
             :lfs_objects_project,
             project: project,

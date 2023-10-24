@@ -957,7 +957,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
       }
     }
 
-    [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
+    [%w[feature exact], ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
         let(:who_can_action) { :maintainers_can_push }
         let(:protected_branch) { create(:protected_branch, who_can_action, name: protected_branch_name, project: project) }

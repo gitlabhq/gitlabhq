@@ -90,7 +90,7 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_repository_cache,
     end
 
     context 'single key' do
-      let(:keys) { %w(foo) }
+      let(:keys) { %w[foo] }
 
       it { is_expected.to eq(1) }
 
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_repository_cache,
     end
 
     context 'multiple keys' do
-      let(:keys) { %w(foo bar) }
+      let(:keys) { %w[foo bar] }
 
       it { is_expected.to eq(2) }
 

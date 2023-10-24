@@ -3,7 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
   before do
-    allow(Gitlab::Graphql::KnownOperations).to receive(:default).and_return(Gitlab::Graphql::KnownOperations.new(%w(foo bar)))
+    allow(Gitlab::Graphql::KnownOperations).to receive(:default).and_return(Gitlab::Graphql::KnownOperations.new(%w[foo bar]))
   end
 
   describe '.initialize_request_slis!' do

@@ -112,6 +112,7 @@ export const workItemQueryResponse = {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
       iid: '1',
+      archived: false,
       title: 'Test',
       state: 'OPEN',
       description: 'description',
@@ -127,11 +128,10 @@ export const workItemQueryResponse = {
         webUrl: 'http://127.0.0.1:3000/root',
         __typename: 'UserCore',
       },
-      project: {
+      namespace: {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
-        archived: false,
         name: 'Project name',
       },
       workItemType: {
@@ -224,6 +224,7 @@ export const updateWorkItemMutationResponse = {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
         iid: '1',
+        archived: false,
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
@@ -234,11 +235,10 @@ export const updateWorkItemMutationResponse = {
         author: {
           ...mockAssignees[0],
         },
-        project: {
+        namespace: {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
-          archived: false,
           name: 'Project name',
         },
         workItemType: {
@@ -335,6 +335,7 @@ export const convertWorkItemMutationResponse = {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
         iid: '1',
+        archived: false,
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
@@ -345,11 +346,10 @@ export const convertWorkItemMutationResponse = {
         author: {
           ...mockAssignees[0],
         },
-        project: {
+        namespace: {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
-          archived: false,
           name: 'Project name',
         },
         workItemType: {
@@ -626,6 +626,7 @@ export const workItemResponseFactory = ({
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
       iid,
+      archived: false,
       title: 'Updated title',
       state,
       description: 'description',
@@ -634,11 +635,10 @@ export const workItemResponseFactory = ({
       updatedAt,
       closedAt: null,
       author,
-      project: {
+      namespace: {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
-        archived: false,
         name: 'Project name',
       },
       workItemType,
@@ -901,6 +901,7 @@ export const createWorkItemMutationResponse = {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
         iid: '1',
+        archived: false,
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
@@ -911,11 +912,10 @@ export const createWorkItemMutationResponse = {
         author: {
           ...mockAssignees[0],
         },
-        project: {
+        namespace: {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
-          archived: false,
           name: 'Project name',
         },
         workItemType: {
@@ -987,6 +987,7 @@ export const workItemHierarchyEmptyResponse = {
           {
             id: 'gid://gitlab/WorkItem/1',
             iid: '1',
+            archived: false,
             state: 'OPEN',
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/1',
@@ -1000,11 +1001,10 @@ export const workItemHierarchyEmptyResponse = {
             updatedAt: null,
             closedAt: null,
             author: mockAssignees[0],
-            project: {
+            namespace: {
               __typename: 'Project',
               id: '1',
               fullPath: 'test-project-path',
-              archived: false,
               name: 'Project name',
             },
             userPermissions: {
@@ -1045,6 +1045,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
       iid: '1',
+      archived: false,
       state: 'OPEN',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
@@ -1067,11 +1068,10 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         adminWorkItemLink: true,
         __typename: 'WorkItemPermissions',
       },
-      project: {
+      namespace: {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
-        archived: false,
         name: 'Project name',
       },
       confidential: false,
@@ -1207,6 +1207,7 @@ export const workItemHierarchyResponse = {
           {
             id: 'gid://gitlab/WorkItem/1',
             iid: '1',
+            archived: false,
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/1',
               name: 'Issue',
@@ -1227,11 +1228,10 @@ export const workItemHierarchyResponse = {
               ...mockAssignees[0],
             },
             confidential: false,
-            project: {
+            namespace: {
               __typename: 'Project',
               id: '1',
               fullPath: 'test-project-path',
-              archived: false,
               name: 'Project name',
             },
             description: 'Issue description',
@@ -1303,17 +1303,17 @@ export const workItemObjectiveMetadataWidgets = {
 export const workItemObjectiveWithChild = {
   id: 'gid://gitlab/WorkItem/12',
   iid: '12',
+  archived: false,
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/2411',
     name: 'Objective',
     iconName: 'issue-type-objective',
     __typename: 'WorkItemType',
   },
-  project: {
+  namespace: {
     __typename: 'Project',
     id: '1',
     fullPath: 'test-project-path',
-    archived: false,
     name: 'Project name',
   },
   userPermissions: {
@@ -1381,6 +1381,7 @@ export const workItemHierarchyTreeResponse = {
     workItem: {
       id: 'gid://gitlab/WorkItem/2',
       iid: '2',
+      archived: false,
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/2411',
         name: 'Objective',
@@ -1398,11 +1399,10 @@ export const workItemHierarchyTreeResponse = {
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
-      project: {
+      namespace: {
         __typename: 'Project',
         id: '1',
         fullPath: 'test-project-path',
-        archived: false,
         name: 'Project name',
       },
       widgets: [
@@ -1483,6 +1483,7 @@ export const changeIndirectWorkItemParentMutationResponse = {
         description: null,
         id: 'gid://gitlab/WorkItem/13',
         iid: '13',
+        archived: false,
         state: 'OPEN',
         title: 'Objective 2',
         confidential: false,
@@ -1492,11 +1493,10 @@ export const changeIndirectWorkItemParentMutationResponse = {
         author: {
           ...mockAssignees[0],
         },
-        project: {
+        namespace: {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
-          archived: false,
           name: 'Project name',
         },
         reference: 'test-project-path#13',
@@ -1552,6 +1552,7 @@ export const changeWorkItemParentMutationResponse = {
         description: null,
         id: 'gid://gitlab/WorkItem/2',
         iid: '2',
+        archived: false,
         state: 'OPEN',
         title: 'Foo',
         confidential: false,
@@ -1561,11 +1562,10 @@ export const changeWorkItemParentMutationResponse = {
         author: {
           ...mockAssignees[0],
         },
-        project: {
+        namespace: {
           __typename: 'Project',
           id: '1',
           fullPath: 'test-project-path',
-          archived: false,
           name: 'Project name',
         },
         reference: 'test-project-path#2',

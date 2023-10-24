@@ -36,8 +36,8 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter do
       let_it_be(:jira_import_with_label) { create(:jira_import_state, label: label, project: project) }
       let_it_be(:issue_label)            { create(:label, project: project, title: 'bug') }
 
-      let(:jira_labels_1) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "isLast" => false, "values" => %w(backend bug) } }
-      let(:jira_labels_2) { { "maxResults" => 2, "startAt" => 2, "total" => 3, "isLast" => true, "values" => %w(feature) } }
+      let(:jira_labels_1) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "isLast" => false, "values" => %w[backend bug] } }
+      let(:jira_labels_2) { { "maxResults" => 2, "startAt" => 2, "total" => 3, "isLast" => true, "values" => %w[feature] } }
 
       context 'when labels are returned from jira' do
         before do
@@ -55,8 +55,8 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter do
         end
 
         it 'calls Gitlab::JiraImport::HandleLabelsService' do
-          expect(Gitlab::JiraImport::HandleLabelsService).to receive(:new).with(project, %w(backend bug)).and_return(double(execute: [1, 2]))
-          expect(Gitlab::JiraImport::HandleLabelsService).to receive(:new).with(project, %w(feature)).and_return(double(execute: [3]))
+          expect(Gitlab::JiraImport::HandleLabelsService).to receive(:new).with(project, %w[backend bug]).and_return(double(execute: [1, 2]))
+          expect(Gitlab::JiraImport::HandleLabelsService).to receive(:new).with(project, %w[feature]).and_return(double(execute: [3]))
 
           subject
         end
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter do
         end
 
         context 'when the isLast argument is missing' do
-          let(:jira_labels) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "values" => %w(bug dev) } }
+          let(:jira_labels) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "values" => %w[bug dev] } }
 
           it_behaves_like 'no labels handling'
         end
