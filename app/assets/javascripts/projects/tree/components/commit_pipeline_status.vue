@@ -94,14 +94,7 @@ export default {
   <div class="gl-ml-5">
     <gl-loading-icon v-if="isLoading" size="lg" label="Loading pipeline status" />
     <a v-else :href="ciStatus.details_path">
-      <ci-icon
-        v-gl-tooltip
-        :title="statusTitle"
-        :aria-label="statusTitle"
-        :status="ciStatus"
-        :size="24"
-        data-container="body"
-      />
+      <ci-icon :status="ciStatus" :title="statusTitle" :aria-label="statusTitle" />
     </a>
   </div>
 </template>

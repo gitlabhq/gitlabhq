@@ -666,28 +666,47 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(find_field('Allow access to members of the following group').value).to be_nil
       end
 
-      it 'loads togglable usage ping payload on click', :js do
-        allow(Gitlab::Usage::ServicePingReport).to receive(:for).and_return({ uuid: '12345678', hostname: '127.0.0.1' })
+      context 'Service usage data', :with_license do
+        before do
+          stub_usage_data_connections
+          stub_database_flavor_check
+        end
 
-        stub_usage_data_connections
-        stub_database_flavor_check
+        context 'when service data cached' do
+          before_all do
+            create(:raw_usage_data)
+          end
 
-        page.within('#js-usage-settings') do
-          expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
+          it 'loads usage ping payload on click', :js do
+            expected_payload_content = /(?=.*"test")/m
 
-          expect(page).not_to have_content expected_payload_content
+            expect(page).not_to have_content expected_payload_content
 
-          click_button('Preview payload')
+            click_button('Preview payload')
 
-          wait_for_requests
+            wait_for_requests
 
-          expect(page).to have_selector '.js-service-ping-payload'
-          expect(page).to have_button 'Hide payload'
-          expect(page).to have_content expected_payload_content
+            expect(page).to have_button 'Hide payload'
+            expect(page).to have_content expected_payload_content
+          end
 
-          click_button('Hide payload')
+          it 'generates usage ping payload on button click', :js do
+            expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
+              expect(instance).to receive(:usage_data).and_call_original
+            end
 
-          expect(page).not_to have_content expected_payload_content
+            click_button('Download payload')
+
+            wait_for_requests
+          end
+        end
+
+        context 'when service data not cached' do
+          it 'renders missing cache information' do
+            visit metrics_and_profiling_admin_application_settings_path
+
+            expect(page).to have_text('Service Ping payload not found in the application cache')
+          end
         end
       end
     end
@@ -995,61 +1014,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         page.within '.header-help' do
           expect(page).to have_link(text: 'Support', href: new_support_url)
-        end
-      end
-    end
-
-    context 'Service usage data page', :with_license do
-      before do
-        stub_usage_data_connections
-        stub_database_flavor_check
-      end
-
-      context 'when service data cached', :use_clean_rails_memory_store_caching do
-        let(:usage_data) { { uuid: "1111", hostname: "localhost", counts: { issue: 0 } }.deep_stringify_keys }
-
-        before do
-          # We are mocking Gitlab::Usage::ServicePingReport because this dataset generation
-          # takes a very long time, and is not what we're testing in this context.
-          #
-          # See https://gitlab.com/gitlab-org/gitlab/-/issues/414929
-          allow(Gitlab::UsageData).to receive(:data).and_return(usage_data)
-          allow(Gitlab::Usage::ServicePingReport).to receive(:with_instrumentation_classes)
-            .with(usage_data, :with_value).and_return(usage_data)
-
-          visit usage_data_admin_application_settings_path
-          visit service_usage_data_admin_application_settings_path
-        end
-
-        it 'loads usage ping payload on click', :js do
-          expected_payload_content = /(?=.*"uuid")(?=.*"hostname")/m
-
-          expect(page).not_to have_content expected_payload_content
-
-          click_button('Preview payload')
-
-          wait_for_requests
-
-          expect(page).to have_button 'Hide payload'
-          expect(page).to have_content expected_payload_content
-        end
-
-        it 'generates usage ping payload on button click', :js do
-          expect_next_instance_of(Admin::ApplicationSettingsController) do |instance|
-            expect(instance).to receive(:usage_data).and_call_original
-          end
-
-          click_button('Download payload')
-
-          wait_for_requests
-        end
-      end
-
-      context 'when service data not cached' do
-        it 'renders missing cache information' do
-          visit service_usage_data_admin_application_settings_path
-
-          expect(page).to have_text('Service Ping payload not found in the application cache')
         end
       end
     end

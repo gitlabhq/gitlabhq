@@ -123,6 +123,7 @@ self-managed GitLab instances and the GitLab Secrets Manager.
 ## Decision Records
 
 - [001: Use envelope encryption](decisions/001_envelop_encryption.md)
+- [002: Use GCP Key Management Service](decisions/002_gcp_kms.md)
 
 ## Alternative Solutions
 

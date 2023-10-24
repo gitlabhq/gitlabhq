@@ -60,9 +60,6 @@ export default {
       update(data) {
         return data.workspace.workItems.nodes[0] ?? {};
       },
-      context: {
-        isSingleRequest: true,
-      },
       skip() {
         return !this.workItemIid;
       },

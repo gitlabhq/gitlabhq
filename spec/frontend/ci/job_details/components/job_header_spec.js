@@ -1,7 +1,7 @@
 import { GlButton, GlAvatarLink, GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import JobHeader from '~/ci/job_details/components/job_header.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -29,7 +29,7 @@ describe('Header CI Component', () => {
     shouldRenderTriggeredLabel: true,
   };
 
-  const findCiBadgeLink = () => wrapper.findComponent(CiBadgeLink);
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findTimeAgo = () => wrapper.findComponent(TimeagoTooltip);
   const findUserLink = () => wrapper.findComponent(GlAvatarLink);
   const findSidebarToggleBtn = () => wrapper.findComponent(GlButton);
@@ -57,7 +57,7 @@ describe('Header CI Component', () => {
     });
 
     it('should render status badge', () => {
-      expect(findCiBadgeLink().exists()).toBe(true);
+      expect(findCiIcon().exists()).toBe(true);
     });
 
     it('should render timeago date', () => {

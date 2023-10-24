@@ -741,9 +741,6 @@ msgstr ""
 msgid "%{emailPrefix}@company.com"
 msgstr ""
 
-msgid "%{enable_service_ping_link_start}Enable%{enable_service_ping_link_end} or %{generate_manually_link_start}generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
-msgstr ""
-
 msgid "%{extra} more downstream pipelines"
 msgstr ""
 
@@ -1227,6 +1224,9 @@ msgid "%{strong_start}%{errors}%{strong_end} %{prefix} finding"
 msgid_plural "%{strong_start}%{errors}%{strong_end} %{prefix} findings"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{strong_start}%{human_size}%{strong_end} Forked Project"
+msgstr ""
 
 msgid "%{strong_start}%{human_size}%{strong_end} Project Storage"
 msgstr ""
@@ -3414,6 +3414,9 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
+msgstr ""
+
 msgid "AdminSettings|%{setting_name} value used by both Rails and Browser JavaScript SDKs."
 msgstr ""
 
@@ -3490,6 +3493,9 @@ msgid "AdminSettings|Display a banner on merge requests in projects with no pipe
 msgstr ""
 
 msgid "AdminSettings|Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "AdminSettings|Download payload"
 msgstr ""
 
 msgid "AdminSettings|Elasticsearch indexing"
@@ -3688,6 +3694,9 @@ msgid "AdminSettings|Send email to maintainers after project is inactive for"
 msgstr ""
 
 msgid "AdminSettings|Send warning email"
+msgstr ""
+
+msgid "AdminSettings|Service Ping payload not found in the application cache"
 msgstr ""
 
 msgid "AdminSettings|Service ping is disabled in your configuration file, and cannot be enabled through this form. For more information, see the documentation on %{link_start}deactivating service ping%{link_end}."
@@ -13612,6 +13621,12 @@ msgstr ""
 msgid "Copy audio URL"
 msgstr ""
 
+msgid "Copy autocomplete description"
+msgstr ""
+
+msgid "Copy autocomplete usage hint"
+msgstr ""
+
 msgid "Copy branch name"
 msgstr ""
 
@@ -13628,6 +13643,12 @@ msgid "Copy commands"
 msgstr ""
 
 msgid "Copy commit SHA"
+msgstr ""
+
+msgid "Copy customize name"
+msgstr ""
+
+msgid "Copy descriptive label"
 msgstr ""
 
 msgid "Copy diagram URL"
@@ -17449,6 +17470,9 @@ msgstr ""
 msgid "Display as:"
 msgstr ""
 
+msgid "Display blame info"
+msgstr ""
+
 msgid "Display milestones"
 msgstr ""
 
@@ -17618,9 +17642,6 @@ msgid "Download export"
 msgstr ""
 
 msgid "Download image"
-msgstr ""
-
-msgid "Download payload"
 msgstr ""
 
 msgid "Download raw data (.csv)"
@@ -18959,6 +18980,9 @@ msgid "Error creating the snippet"
 msgstr ""
 
 msgid "Error creating vulnerability finding: %{errors}"
+msgstr ""
+
+msgid "Error deleting the value stream"
 msgstr ""
 
 msgid "Error fetching branches"
@@ -26652,7 +26676,7 @@ msgstr ""
 msgid "JiraConnect|Groups are the GitLab groups and subgroups you link to this Jira instance."
 msgstr ""
 
-msgid "JiraConnect|In order to complete the set up, you’ll need to complete a few steps in GitLab."
+msgid "JiraConnect|In order to complete the set up, you’ll need to complete a few steps in GitLab:"
 msgstr ""
 
 msgid "JiraConnect|Jira Connect Application ID"
@@ -26680,6 +26704,15 @@ msgid "JiraConnect|Not seeing your groups? Only groups you have access to appear
 msgstr ""
 
 msgid "JiraConnect|Not seeing your groups? Only groups you have at least the Maintainer role for appear here."
+msgstr ""
+
+msgid "JiraConnect|Prerequisites"
+msgstr ""
+
+msgid "JiraConnect|Set up OAuth authentication"
+msgstr ""
+
+msgid "JiraConnect|Set up your instance"
 msgstr ""
 
 msgid "JiraConnect|Setting up this integration is only possible if you're a GitLab administrator."
@@ -32475,6 +32508,24 @@ msgid "Object does not exist on the server or you don't have permissions to acce
 msgstr ""
 
 msgid "Objective"
+msgstr ""
+
+msgid "ObservabilityMetrics|Metrics"
+msgstr ""
+
+msgid "Observability|Enable"
+msgstr ""
+
+msgid "Observability|Failed to enable GitLab Observability."
+msgstr ""
+
+msgid "Observability|Failed to load page."
+msgstr ""
+
+msgid "Observability|Get started with GitLab Observability"
+msgstr ""
+
+msgid "Observability|Monitor your applications with GitLab Observability."
 msgstr ""
 
 msgid "Oct"
@@ -43751,9 +43802,6 @@ msgstr ""
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
 msgstr ""
 
-msgid "Service Ping payload not found in the application cache"
-msgstr ""
-
 msgid "Service account"
 msgstr ""
 
@@ -43761,9 +43809,6 @@ msgid "Service account generated successfully"
 msgstr ""
 
 msgid "Service accounts"
-msgstr ""
-
-msgid "Service usage data"
 msgstr ""
 
 msgid "ServiceAccount|No more seats are available to create Service Account User"
@@ -49985,15 +50030,6 @@ msgstr ""
 msgid "Tracing|Duration (ms)"
 msgstr ""
 
-msgid "Tracing|Enable"
-msgstr ""
-
-msgid "Tracing|Failed to enable tracing."
-msgstr ""
-
-msgid "Tracing|Failed to load page."
-msgstr ""
-
 msgid "Tracing|Failed to load trace details."
 msgstr ""
 
@@ -50001,9 +50037,6 @@ msgid "Tracing|Failed to load traces."
 msgstr ""
 
 msgid "Tracing|Filter Traces"
-msgstr ""
-
-msgid "Tracing|Get started with Tracing"
 msgstr ""
 
 msgid "Tracing|Last 1 hour"
@@ -50034,9 +50067,6 @@ msgid "Tracing|Last 5 minutes"
 msgstr ""
 
 msgid "Tracing|Last 7 days"
-msgstr ""
-
-msgid "Tracing|Monitor your applications with GitLab Distributed Tracing."
 msgstr ""
 
 msgid "Tracing|No traces to display."

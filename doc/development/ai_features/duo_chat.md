@@ -86,14 +86,25 @@ gdk start
 tail -f log/llm.log
 ```
 
-## Testing GitLab Duo Chat with predefined questions
+## Testing GitLab Duo Chat against real LLMs
 
-Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use the following rspecs to validate answers to some predefined questions:
+Because success of answers to user questions in GitLab Duo Chat heavily depends
+on toolchain and prompts of each tool, it's common that even a minor change in a
+prompt or a tool impacts processing of some questions.
+
+To make sure that a change in the toolchain doesn't break existing
+functionality, you can use the following RSpec tests to validate answers to some
+predefined questions when using real LLMs:
 
 ```ruby
-export OPENAI_API_KEY='<key>'
-export ANTHROPIC_API_KEY='<key>'
-REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
+export OPENAI_EMBEDDINGS='true' # if using OpenAI embeddings
+export VERTEX_AI_EMBEDDINGS='true' # if using Vertex embeddings
+export ANTHROPIC_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings.openai_api_key
+export OPENAI_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings.anthropic_api_key
+export VERTEX_AI_CREDENTIALS='<vertex-ai-credentials>' # can set as dev value of Gitlab::CurrentSettings.vertex_ai_credentials
+export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::CurrentSettings.vertex_ai_project
+
+REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb
 ```
 
 When you need to update the test questions that require documentation embeddings,

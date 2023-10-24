@@ -92,9 +92,6 @@ export default {
   apollo: {
     packageFiles: {
       query: getPackageFilesQuery,
-      context: {
-        isSingleRequest: true,
-      },
       variables() {
         return this.queryVariables;
       },

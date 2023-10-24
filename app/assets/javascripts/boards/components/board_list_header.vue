@@ -223,9 +223,6 @@ export default {
       variables() {
         return this.countQueryVariables;
       },
-      context: {
-        isSingleRequest: true,
-      },
       error(error) {
         setError({
           error,

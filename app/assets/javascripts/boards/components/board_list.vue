@@ -100,9 +100,6 @@ export default {
           filters: this.filterParams,
         };
       },
-      context: {
-        isSingleRequest: true,
-      },
       skip() {
         return this.isEpicBoard;
       },
@@ -122,9 +119,6 @@ export default {
       },
       update(data) {
         return data[this.boardType].board.lists.nodes[0];
-      },
-      context: {
-        isSingleRequest: true,
       },
       error(error) {
         setError({
@@ -148,9 +142,6 @@ export default {
       },
       update(data) {
         return data[this.boardType].board.lists.nodes[0];
-      },
-      context: {
-        isSingleRequest: true,
       },
       error(error) {
         setError({

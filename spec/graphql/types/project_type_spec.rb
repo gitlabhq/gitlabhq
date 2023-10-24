@@ -39,7 +39,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
-      ci_cd_settings
+      ci_cd_settings detailed_import_status
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -929,6 +929,95 @@ RSpec.describe GitlabSchema.types['Project'] do
         it 'does not return any forks' do
           expect(forks.count).to eq(0)
         end
+      end
+    end
+  end
+
+  describe 'detailed_import_status' do
+    let_it_be_with_reload(:project) { create(:project, :with_import_url) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            detailedImportStatus {
+              status
+              url
+              lastError
+            }
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let(:detailed_import_status) do
+      subject.dig('data', 'project', 'detailedImportStatus')
+    end
+
+    context 'when project is not imported' do
+      let(:current_user) { create(:user) }
+
+      before do
+        project.add_developer(current_user)
+        project.import_state.destroy!
+      end
+
+      it 'returns nil' do
+        expect(detailed_import_status).to be_nil
+      end
+    end
+
+    context 'when current_user is not set' do
+      let(:current_user) { nil }
+
+      it 'returns nil' do
+        expect(detailed_import_status).to be_nil
+      end
+    end
+
+    context 'when current_user has no permission' do
+      let(:current_user) { create(:user) }
+
+      it 'returns nil' do
+        expect(detailed_import_status).to be_nil
+      end
+    end
+
+    context 'when current_user has limited permission' do
+      let(:current_user) { create(:user) }
+
+      before do
+        project.add_developer(current_user)
+        project.import_state.last_error = 'Some error'
+        project.import_state.save!
+      end
+
+      it 'returns detailed information' do
+        expect(detailed_import_status).to include(
+          'status' => project.import_state.status,
+          'url' => project.safe_import_url,
+          'lastError' => nil
+        )
+      end
+    end
+
+    context 'when current_user has permission' do
+      let(:current_user) { create(:user) }
+
+      before do
+        project.add_maintainer(current_user)
+        project.import_state.last_error = 'Some error'
+        project.import_state.save!
+      end
+
+      it 'returns detailed information' do
+        expect(detailed_import_status).to include(
+          'status' => project.import_state.status,
+          'url' => project.safe_import_url,
+          'lastError' => 'Some error'
+        )
       end
     end
   end

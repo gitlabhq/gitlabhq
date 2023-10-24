@@ -11,6 +11,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
   include Gitlab::Experiment::Dsl
+  include SafeFormatHelper
 
   delegator_override_with GitlabRoutingHelper # TODO: Remove `GitlabRoutingHelper` inclusion as it's duplicate
   delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.
@@ -163,14 +164,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def storage_anchor_data
     can_show_quota = can?(current_user, :admin_project, project) && !empty_repo?
+
     AnchorData.new(
       true,
-      statistic_icon('disk') +
-      _('%{strong_start}%{human_size}%{strong_end} Project Storage').html_safe % {
-        human_size: storage_counter(statistics.storage_size),
-        strong_start: '<strong class="project-stat-value">'.html_safe,
-        strong_end: '</strong>'.html_safe
-      },
+      statistic_icon('disk') + storage_anchor_text,
       can_show_quota ? project_usage_quotas_path(project) : nil
     )
   end
@@ -527,6 +524,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def project_create_wiki_path
     "#{wiki_path(project.wiki)}?view=create"
+  end
+
+  def storage_anchor_text
+    safe_format(
+      _('%{strong_start}%{human_size}%{strong_end} Project Storage'), {
+        human_size: storage_counter(statistics.storage_size),
+        strong_start: '<strong class="project-stat-value">'.html_safe,
+        strong_end: '</strong>'.html_safe
+      }
+    )
   end
 end
 

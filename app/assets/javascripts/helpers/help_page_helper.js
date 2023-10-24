@@ -1,6 +1,6 @@
 import { joinPaths, setUrlFragment } from '~/lib/utils/url_utility';
 
-const HELP_PAGE_URL_ROOT = '/help/';
+const HELP_PAGE_URL_ROOT = '/help';
 
 /**
  * Generate link to a GitLab documentation page.

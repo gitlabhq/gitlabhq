@@ -44,7 +44,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         .to receive(:info)
         .with(
           hash_including(
-            'pipeline_name' => 'FakePipeline',
+            'pipeline_class' => 'FakePipeline',
             'bulk_import_id' => entity.bulk_import_id,
             'bulk_import_entity_id' => entity.id,
             'bulk_import_entity_type' => entity.source_type,
@@ -94,7 +94,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           .to receive(:error)
           .with(
             hash_including(
-              'pipeline_name' => 'FakePipeline',
+              'pipeline_class' => 'FakePipeline',
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
               'bulk_import_entity_type' => entity.source_type,
@@ -118,7 +118,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             'bulk_import_id' => entity.bulk_import.id,
             'bulk_import_entity_type' => entity.source_type,
             'source_full_path' => entity.source_full_path,
-            'pipeline_name' => pipeline_tracker.pipeline_name,
+            'pipeline_class' => pipeline_tracker.pipeline_name,
             'importer' => 'gitlab_migration',
             'source_version' => entity.bulk_import.source_version_info.to_s
           )
@@ -160,7 +160,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
                   'bulk_import_entity_type' => entity.source_type,
                   'pipeline_tracker_id' => pipeline_tracker.id,
                   'pipeline_tracker_state' => status,
-                  'pipeline_name' => pipeline_tracker.pipeline_name,
+                  'pipeline_class' => pipeline_tracker.pipeline_name,
                   'source_full_path' => entity.source_full_path,
                   'source_version' => entity.bulk_import.source_version_info.to_s,
                   'importer' => 'gitlab_migration',
@@ -233,7 +233,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             .to receive(:info)
             .with(
               hash_including(
-                'pipeline_name' => 'FakePipeline',
+                'pipeline_class' => 'FakePipeline',
                 'bulk_import_entity_id' => entity.id,
                 'bulk_import_id' => entity.bulk_import_id,
                 'bulk_import_entity_type' => entity.source_type,
@@ -283,7 +283,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             .to receive(:info)
             .with(
               hash_including(
-                'pipeline_name' => 'FakePipeline',
+                'pipeline_class' => 'FakePipeline',
                 'bulk_import_entity_id' => entity.id,
                 'bulk_import_id' => entity.bulk_import_id,
                 'bulk_import_entity_type' => entity.source_type,
@@ -421,7 +421,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
               .to receive(:error)
               .with(
                 hash_including(
-                  'pipeline_name' => 'NdjsonPipeline',
+                  'pipeline_class' => 'NdjsonPipeline',
                   'bulk_import_entity_id' => entity.id,
                   'bulk_import_id' => entity.bulk_import_id,
                   'bulk_import_entity_type' => entity.source_type,
@@ -476,7 +476,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             .to receive(:error)
             .with(
               hash_including(
-                'pipeline_name' => 'NdjsonPipeline',
+                'pipeline_class' => 'NdjsonPipeline',
                 'bulk_import_entity_id' => entity.id,
                 'bulk_import_id' => entity.bulk_import_id,
                 'bulk_import_entity_type' => entity.source_type,

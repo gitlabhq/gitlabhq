@@ -3,6 +3,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 describe('help page helper', () => {
   it.each`
     relative_url_root | path                         | anchor                  | expected
+    ${undefined}      | ${undefined}                 | ${undefined}            | ${'/help'}
     ${undefined}      | ${'administration/index'}    | ${undefined}            | ${'/help/administration/index'}
     ${''}             | ${'administration/index'}    | ${undefined}            | ${'/help/administration/index'}
     ${'/'}            | ${'administration/index'}    | ${undefined}            | ${'/help/administration/index'}

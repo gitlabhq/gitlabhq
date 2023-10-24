@@ -170,9 +170,6 @@ export default {
   apollo: {
     workItemNotes: {
       query: workItemNotesByIidQuery,
-      context: {
-        isSingleRequest: true,
-      },
       variables() {
         return {
           fullPath: this.fullPath,

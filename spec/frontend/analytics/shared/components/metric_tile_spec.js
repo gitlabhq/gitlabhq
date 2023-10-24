@@ -32,8 +32,7 @@ describe('MetricTile', () => {
         };
         wrapper = createComponent({ metric });
 
-        const singleStat = findSingleStat();
-        singleStat.vm.$emit('click');
+        findSingleStat().vm.$emit('click');
         expect(redirectTo).toHaveBeenCalledWith('foo/bar'); // eslint-disable-line import/no-deprecated
       });
 
@@ -41,27 +40,31 @@ describe('MetricTile', () => {
         const metric = { identifier: 'deploys', value: '10', label: 'Deploys' };
         wrapper = createComponent({ metric });
 
-        const singleStat = findSingleStat();
-        singleStat.vm.$emit('click');
+        findSingleStat().vm.$emit('click');
         expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
       });
     });
 
-    describe('decimal places', () => {
+    describe('number formatting', () => {
       it(`will render 0 decimal places for an integer value`, () => {
         const metric = { identifier: 'deploys', value: '10', label: 'Deploys' };
         wrapper = createComponent({ metric });
 
-        const singleStat = findSingleStat();
-        expect(singleStat.props('animationDecimalPlaces')).toBe(0);
+        expect(findSingleStat().props('animationDecimalPlaces')).toBe(0);
       });
 
       it(`will render 1 decimal place for a float value`, () => {
         const metric = { identifier: 'deploys', value: '10.5', label: 'Deploys' };
         wrapper = createComponent({ metric });
 
-        const singleStat = findSingleStat();
-        expect(singleStat.props('animationDecimalPlaces')).toBe(1);
+        expect(findSingleStat().props('animationDecimalPlaces')).toBe(1);
+      });
+
+      it('will render using delimiters', () => {
+        const metric = { identifier: 'deploys', value: '10000', label: 'Deploys' };
+        wrapper = createComponent({ metric });
+
+        expect(findSingleStat().props('useDelimiters')).toBe(true);
       });
     });
 

@@ -27,8 +27,13 @@ export default {
       }));
     },
   },
-  mounted() {
-    toggleBlameClasses(this.blameData, true);
+  watch: {
+    blameData: {
+      handler(blameData) {
+        toggleBlameClasses(blameData, true);
+      },
+      immediate: true,
+    },
   },
   destroyed() {
     toggleBlameClasses(this.blameData, false);

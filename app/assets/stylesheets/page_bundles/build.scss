@@ -48,14 +48,6 @@
     border: 1px solid var(--border-color, $border-color);
     padding: 8px $gl-padding 12px;
     border-radius: $border-radius-default;
-
-    svg {
-      position: relative;
-      top: 3px;
-      margin-right: 5px;
-      width: 22px;
-      height: 22px;
-    }
   }
 
   .build-loader-animation {

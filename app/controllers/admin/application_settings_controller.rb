@@ -12,6 +12,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   before_action :set_application_setting, except: :integrations
 
   before_action :disable_query_limiting, only: [:usage_data]
+  before_action :prerecorded_service_ping_data, only: [:metrics_and_profiling] # rubocop:disable Rails/LexicallyScopedActionFilter
 
   before_action do
     push_frontend_feature_flag(:ci_variables_pages, current_user)
@@ -29,7 +30,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   feature_category :source_code_management, [:repository, :clear_repository_check_states]
   feature_category :continuous_integration, [:ci_cd, :reset_registration_token]
   urgency :low, [:ci_cd, :reset_registration_token]
-  feature_category :service_ping, [:usage_data, :service_usage_data]
+  feature_category :service_ping, [:usage_data]
   feature_category :integrations, [:integrations, :slack_app_manifest_share, :slack_app_manifest_download]
   feature_category :pages, [:lets_encrypt_terms_of_service]
   feature_category :error_tracking, [:reset_error_tracking_access_token]
@@ -55,18 +56,16 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     @integrations = Integration.find_or_initialize_all_non_project_specific(Integration.for_instance).sort_by(&:title)
   end
 
-  def service_usage_data
-    @service_ping_data_present = prerecorded_service_ping_data.present?
-  end
-
   def update
     perform_update
   end
 
   def usage_data
+    return not_found unless prerecorded_service_ping_data.present?
+
     respond_to do |format|
       format.html do
-        usage_data_json = Gitlab::Json.pretty_generate(service_ping_data)
+        usage_data_json = Gitlab::Json.pretty_generate(prerecorded_service_ping_data)
 
         render html: Gitlab::Highlight.highlight('payload.json', usage_data_json, language: 'json')
       end
@@ -74,7 +73,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       format.json do
         Gitlab::UsageDataCounters::ServiceUsageDataCounter.count(:download_payload_click)
 
-        render json: Gitlab::Json.dump(service_ping_data)
+        render json: Gitlab::Json.dump(prerecorded_service_ping_data)
       end
     end
   end
@@ -242,12 +241,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     VALID_SETTING_PANELS
   end
 
-  def service_ping_data
-    prerecorded_service_ping_data || Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
-  end
-
   def prerecorded_service_ping_data
-    Rails.cache.fetch(Gitlab::Usage::ServicePingReport::CACHE_KEY) || ::RawUsageData.for_current_reporting_cycle.first&.payload
+    @service_ping_data ||= Rails.cache.fetch(Gitlab::Usage::ServicePingReport::CACHE_KEY) ||
+      ::RawUsageData.for_current_reporting_cycle.first&.payload
   end
 end
 

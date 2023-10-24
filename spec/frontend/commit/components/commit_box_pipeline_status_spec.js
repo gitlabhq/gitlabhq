@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitBoxPipelineStatus from '~/projects/commit_box/info/components/commit_box_pipeline_status.vue';
 import {
   COMMIT_BOX_POLL_INTERVAL,
@@ -32,7 +32,7 @@ describe('Commit box pipeline status', () => {
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findCiBadgeLink = () => wrapper.findComponent(CiBadgeLink);
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
 
   const advanceToNextFetch = () => {
     jest.advanceTimersByTime(COMMIT_BOX_POLL_INTERVAL);
@@ -50,7 +50,7 @@ describe('Commit box pipeline status', () => {
         ...mockProvide,
       },
       stubs: {
-        CiBadgeLink,
+        CiIcon,
       },
       apolloProvider: createMockApolloProvider(handler),
     });
@@ -61,7 +61,7 @@ describe('Commit box pipeline status', () => {
       createComponent();
 
       expect(findLoadingIcon().exists()).toBe(true);
-      expect(findCiBadgeLink().exists()).toBe(false);
+      expect(findCiIcon().exists()).toBe(false);
     });
   });
 
@@ -73,7 +73,7 @@ describe('Commit box pipeline status', () => {
     });
 
     it('should display pipeline status after the query is resolved successfully', () => {
-      expect(findCiBadgeLink().exists()).toBe(true);
+      expect(findCiIcon().exists()).toBe(true);
 
       expect(findLoadingIcon().exists()).toBe(false);
       expect(createAlert).toHaveBeenCalledTimes(0);
@@ -90,7 +90,7 @@ describe('Commit box pipeline status', () => {
         },
       } = mockPipelineStatusResponse;
 
-      expect(findCiBadgeLink().attributes('href')).toBe(detailsPath);
+      expect(findCiIcon().attributes('href')).toBe(detailsPath);
     });
   });
 

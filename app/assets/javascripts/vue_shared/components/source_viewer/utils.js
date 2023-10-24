@@ -8,8 +8,9 @@ const findLineContentElement = (lineNumber) => document.getElementById(`LC${line
 
 export const calculateBlameOffset = (lineNumber) => {
   if (lineNumber === 1) return '0px';
-  const lineContentOffset = findLineContentElement(lineNumber)?.offsetTop;
-  return `${lineContentOffset}px`;
+  const blobViewerOffset = document.querySelector('.blob-viewer')?.getBoundingClientRect().top;
+  const lineContentOffset = findLineContentElement(lineNumber).getBoundingClientRect().top;
+  return `${lineContentOffset - blobViewerOffset}px`;
 };
 
 export const toggleBlameClasses = (blameData, isVisible) => {

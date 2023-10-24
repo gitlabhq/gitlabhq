@@ -41,9 +41,6 @@ export default {
   apollo: {
     packageMetadata: {
       query: getPackageMetadataQuery,
-      context: {
-        isSingleRequest: true,
-      },
       variables() {
         return {
           id: this.packageId,

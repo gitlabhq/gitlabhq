@@ -4,9 +4,9 @@ module BulkImports
   class RelationBatchExportService
     include Gitlab::ImportExport::CommandLineUtil
 
-    def initialize(user_id, batch_id)
-      @user = User.find(user_id)
-      @batch = BulkImports::ExportBatch.find(batch_id)
+    def initialize(user, batch)
+      @user = user
+      @batch = batch
       @config = FileTransfer.config_for(portable)
     end
 

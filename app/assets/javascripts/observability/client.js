@@ -6,7 +6,7 @@ function reportErrorAndThrow(e) {
   throw e;
 }
 // Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L59
-async function enableTraces(provisioningUrl) {
+async function enableObservability(provisioningUrl) {
   try {
     // Note: axios.put(url, undefined, {withCredentials: true}) does not send cookies properly, so need to use the API below for the correct behaviour
     return await axios(provisioningUrl, {
@@ -19,7 +19,7 @@ async function enableTraces(provisioningUrl) {
 }
 
 // Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L37
-async function isTracingEnabled(provisioningUrl) {
+async function isObservabilityEnabled(provisioningUrl) {
   try {
     const { data } = await axios.get(provisioningUrl, { withCredentials: true });
     if (data && data.status) {
@@ -235,8 +235,8 @@ export function buildClient({ provisioningUrl, tracingUrl, servicesUrl, operatio
     );
   }
   return {
-    enableTraces: () => enableTraces(provisioningUrl),
-    isTracingEnabled: () => isTracingEnabled(provisioningUrl),
+    enableObservability: () => enableObservability(provisioningUrl),
+    isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
     fetchTraces: (filters) => fetchTraces(tracingUrl, filters),
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
     fetchServices: () => fetchServices(servicesUrl),

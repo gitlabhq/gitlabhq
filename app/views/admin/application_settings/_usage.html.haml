@@ -20,11 +20,23 @@
         help_text: can_be_configured ? usage_ping_help_text : disabled_help_text,
         checkbox_options: { disabled: !can_be_configured, data: { testid: 'enable-usage-data-checkbox' } }
       .form-text.gl-pl-6
-        - if can_be_configured
-          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger', data: { payload_selector: ".#{payload_class}" } }) do
-            = gl_loading_icon(css_class: 'js-spinner gl-display-none gl-mr-2')
-            .js-text.gl-display-inline= s_('AdminSettings|Preview payload')
-          %pre.service-data-payload-container.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
+        - if @service_ping_data.present?
+          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger gl-mr-2', data: { payload_selector: ".#{payload_class}" } }) do
+            = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
+            %span.js-text.gl-display-inline= s_('AdminSettings|Preview payload')
+          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-download-trigger gl-mr-2', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } }) do
+            = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
+            %span.js-text.gl-display-inline= s_('AdminSettings|Download payload')
+          %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
+        - else
+          = render Pajamas::AlertComponent.new(variant: :warning,
+            dismissible: false,
+            title: s_('AdminSettings|Service Ping payload not found in the application cache')) do |c|
+
+            - c.with_body do
+              - generate_manually_link = link_to('', help_page_path('development/internal_analytics/service_ping/troubleshooting', anchor: 'generate-service-ping'), target: '_blank', rel: 'noopener noreferrer')
+              = safe_format(s_('AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload.'), tag_pair(generate_manually_link, :generate_manually_link_start, :generate_manually_link_end))
+
     .form-group
       - usage_ping_enabled = @application_setting.usage_ping_enabled?
       - label = s_('AdminSettings|Enable Registration Features')

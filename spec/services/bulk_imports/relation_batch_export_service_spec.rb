@@ -10,7 +10,7 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
   let_it_be(:batch) { create(:bulk_import_export_batch, export: export) }
   let_it_be(:cache_key) { BulkImports::BatchedRelationExportService.cache_key(export.id, batch.id) }
 
-  subject(:service) { described_class.new(user.id, batch.id) }
+  subject(:service) { described_class.new(user, batch) }
 
   before_all do
     Gitlab::Cache::Import::Caching.set_add(cache_key, label.id)

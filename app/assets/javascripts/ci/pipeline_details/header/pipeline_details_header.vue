@@ -17,7 +17,7 @@ import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-
 import { __, s__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
@@ -38,7 +38,7 @@ export default {
   pipelineRetry: 'pipelineRetry',
   finishedStatuses: ['FAILED', 'SUCCESS', 'CANCELED'],
   components: {
-    CiBadgeLink,
+    CiIcon,
     ClipboardButton,
     GlAlert,
     GlBadge,
@@ -403,7 +403,12 @@ export default {
           {{ commitTitle }}
         </h3>
         <div>
-          <ci-badge-link :status="detailedStatus" class="gl-display-inline-block gl-mb-3" />
+          <ci-icon
+            :status="detailedStatus"
+            show-status-text
+            :show-link="false"
+            class="gl-display-inline-block gl-mb-3"
+          />
           <div class="gl-ml-2 gl-mb-3 gl-display-inline-block gl-h-6">
             <gl-link
               v-if="user"

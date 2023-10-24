@@ -21,9 +21,12 @@ RSpec.describe Sidebars::Projects::Menus::SecurityComplianceMenu do
 
     context 'when user is authenticated' do
       context 'when the Security and Compliance is disabled' do
+        let_it_be(:project) { create(:project, :security_and_compliance_disabled) }
+
         before do
           allow(Ability).to receive(:allowed?).with(user, :access_security_and_compliance, project).and_return(false)
           allow(Ability).to receive(:allowed?).with(user, :read_security_resource, project).and_return(false)
+          allow(project).to receive(:security_and_compliance_enabled?).and_return(false)
         end
 
         it { is_expected.to be_falsey }

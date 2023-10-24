@@ -19,6 +19,10 @@ module Gitlab
         logger.error(log_data(messages))
       end
 
+      def metrics
+        Gitlab::Import::Metrics.new(:bitbucket_importer, project)
+      end
+
       private
 
       def logger

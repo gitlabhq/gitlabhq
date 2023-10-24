@@ -115,7 +115,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         it 'indicates that pipeline can be canceled' do
           expect(page).to have_selector('.js-pipelines-cancel-button')
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
         end
 
         context 'when canceling' do
@@ -127,7 +127,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'indicated that pipelines was canceled', :sidekiq_might_not_need_inline do
             expect(page).not_to have_selector('.js-pipelines-cancel-button')
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Canceled')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
           end
         end
       end
@@ -144,7 +144,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         it 'indicates that pipeline can be retried' do
           expect(page).to have_selector('.js-pipelines-retry-button')
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Failed')
+          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Failed')
         end
 
         context 'when retrying' do
@@ -155,7 +155,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'shows running pipeline that is not retryable' do
             expect(page).not_to have_selector('.js-pipelines-retry-button')
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
         end
       end
@@ -396,7 +396,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'shows the pipeline as preparing' do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Preparing')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Preparing')
           end
         end
 
@@ -417,7 +417,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'has pipeline running' do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
 
           context 'when canceling' do
@@ -428,7 +428,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
             it 'indicates that pipeline was canceled', :sidekiq_might_not_need_inline do
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
-              expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Canceled')
+              expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
             end
           end
         end
@@ -450,7 +450,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'has failed pipeline', :sidekiq_might_not_need_inline do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Failed')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Failed')
           end
         end
       end

@@ -40,6 +40,8 @@ module Gitlab
 
           project.issues.create!(attributes)
 
+          metrics.issues_counter.increment
+
           log_info(import_stage: 'import_issue', message: 'finished', iid: object[:iid])
         rescue StandardError => e
           track_import_failure!(project, exception: e)

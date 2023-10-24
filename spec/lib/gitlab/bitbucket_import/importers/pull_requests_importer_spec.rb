@@ -28,7 +28,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, feature
       end
     end
 
-    it 'imports each pull request in parallel', :aggregate_failures do
+    it 'imports each pull request in parallel' do
       expect(Gitlab::BitbucketImport::ImportPullRequestWorker).to receive(:perform_in).exactly(3).times
 
       waiter = importer.execute
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, feature
         Gitlab::Cache::Import::Caching.set_add(importer.already_enqueued_cache_key, 1)
       end
 
-      it 'does not schedule job for enqueued pull requests', :aggregate_failures do
+      it 'does not schedule job for enqueued pull requests' do
         expect(Gitlab::BitbucketImport::ImportPullRequestWorker).to receive(:perform_in).twice
 
         waiter = importer.execute

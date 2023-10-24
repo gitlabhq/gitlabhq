@@ -25,46 +25,6 @@ describe('CI Icon component', () => {
     expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
   });
 
-  describe.each`
-    isActive
-    ${true}
-    ${false}
-  `('when isActive is $isActive', ({ isActive }) => {
-    it(`"active" class is ${isActive ? 'not ' : ''}added`, () => {
-      wrapper = shallowMount(CiIcon, {
-        propsData: {
-          status: {
-            group: 'success',
-            icon: 'status_success',
-          },
-          isActive,
-        },
-      });
-
-      expect(wrapper.classes('active')).toBe(isActive);
-    });
-  });
-
-  describe.each`
-    isInteractive
-    ${true}
-    ${false}
-  `('when isInteractive is $isInteractive', ({ isInteractive }) => {
-    it(`"interactive" class is ${isInteractive ? 'not ' : ''}added`, () => {
-      wrapper = shallowMount(CiIcon, {
-        propsData: {
-          status: {
-            group: 'success',
-            icon: 'status_success',
-          },
-          isInteractive,
-        },
-      });
-
-      expect(wrapper.classes('interactive')).toBe(isInteractive);
-    });
-  });
-
   describe('rendering a status', () => {
     it.each`
       icon                 | group         | cssClass
@@ -87,7 +47,7 @@ describe('CI Icon component', () => {
         },
       });
 
-      expect(wrapper.classes()).toContain(cssClass);
+      expect(wrapper.find('.ci-icon-wrapper').classes()).toContain(cssClass);
     });
   });
 });

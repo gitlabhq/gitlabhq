@@ -148,9 +148,6 @@ export default {
         query: listsQuery[issuableType].query,
         variables,
         ...(resetLists ? { fetchPolicy: fetchPolicies.NO_CACHE } : {}),
-        context: {
-          isSingleRequest: true,
-        },
       })
       .then(({ data }) => {
         const { lists, hideBacklogList } = data[boardType].board;
@@ -439,9 +436,6 @@ export default {
     return gqlClient
       .query({
         query: listsIssuesQuery,
-        context: {
-          isSingleRequest: true,
-        },
         variables,
         ...(!fetchNext ? { fetchPolicy: fetchPolicies.NO_CACHE } : {}),
       })

@@ -163,7 +163,6 @@ namespace :admin do
     get :lets_encrypt_terms_of_service
     get :slack_app_manifest_download, format: :json
     get :slack_app_manifest_share
-    get :service_usage_data
 
     resource :appearances, only: [:show, :create, :update], path: 'appearance', module: 'application_settings' do
       member do

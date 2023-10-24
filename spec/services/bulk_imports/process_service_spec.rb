@@ -229,7 +229,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
               bulk_import_entity_type: entity.source_type,
               source_full_path: entity.source_full_path,
               importer: 'gitlab_migration',
-              pipeline_name: 'PipelineClass4',
+              pipeline_class: 'PipelineClass4',
               minimum_source_version: '15.1.0',
               maximum_source_version: nil,
               source_version: '15.0.0'
@@ -242,7 +242,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
               bulk_import_entity_type: entity.source_type,
               source_full_path: entity.source_full_path,
               importer: 'gitlab_migration',
-              pipeline_name: 'PipelineClass5',
+              pipeline_class: 'PipelineClass5',
               minimum_source_version: '16.0.0',
               maximum_source_version: nil,
               source_version: '15.0.0'

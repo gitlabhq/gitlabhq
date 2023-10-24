@@ -7,7 +7,7 @@ import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.quer
 import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
@@ -25,7 +25,7 @@ export const i18n = {
 export default {
   i18n,
   components: {
-    CiBadgeLink,
+    CiIcon,
     GlButton,
     GlIcon,
     GlLink,
@@ -155,14 +155,7 @@ export default {
     </template>
     <template v-else>
       <div class="gl-text-truncate gl-md-max-w-50p gl-mr-1">
-        <a :href="status.detailsPath" class="gl-mr-auto">
-          <ci-badge-link
-            :status="status"
-            size="md"
-            :show-text="false"
-            data-testid="pipeline-status-icon"
-          />
-        </a>
+        <ci-icon :status="status" data-testid="pipeline-status-icon" />
         <span class="gl-font-weight-bold">
           <gl-sprintf :message="$options.i18n.pipelineInfo">
             <template #id="{ content }">

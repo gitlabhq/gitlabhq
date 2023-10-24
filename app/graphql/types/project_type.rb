@@ -641,6 +641,12 @@ module Types
       resolver: Resolvers::AutocompleteUsersResolver,
       description: 'Search users for autocompletion'
 
+    field :detailed_import_status,
+      ::Types::Projects::DetailedImportStatusType,
+      null: true,
+      description: 'Detailed import status of the project.',
+      method: :import_state
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end

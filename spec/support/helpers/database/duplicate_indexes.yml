@@ -213,9 +213,6 @@ sbom_occurrences:
   - index_sbom_occurrences_on_project_id
   index_sbom_occurrences_on_project_id_and_package_manager:
   - index_sbom_occurrences_on_project_id
-scan_result_policies:
-  index_scan_result_policies_on_position_in_configuration:
-  - index_scan_result_policies_on_policy_configuration_id
 search_namespace_index_assignments:
   index_search_namespace_index_assignments_uniqueness_index_type:
   - index_search_namespace_index_assignments_on_namespace_id

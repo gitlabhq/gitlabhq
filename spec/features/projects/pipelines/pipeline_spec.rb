@@ -224,7 +224,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
           expect(page).not_to have_content('Retry job')
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
         end
       end
@@ -278,7 +278,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
           expect(page).not_to have_content('Retry job')
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
         end
 
@@ -312,7 +312,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
           expect(page).not_to have_content('Play job')
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
         end
       end
@@ -537,7 +537,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows running status in pipeline header', :sidekiq_might_not_need_inline do
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
         end
       end
@@ -900,7 +900,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         subject
 
         within('[data-testid="pipeline-details-header"]') do
-          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Pending')
+          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Pending')
         end
 
         within('.js-pipeline-graph') do
@@ -925,7 +925,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           subject
 
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
 
           within('.js-pipeline-graph') do
@@ -954,7 +954,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           subject
 
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Waiting')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Waiting')
           end
 
           within('.js-pipeline-graph') do
@@ -974,7 +974,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
             subject
 
             within('[data-testid="pipeline-details-header"]') do
-              expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Running')
+              expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
             end
 
             within('.js-pipeline-graph') do
@@ -1002,7 +1002,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
             subject
 
             within('[data-testid="pipeline-details-header"]') do
-              expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'Waiting')
+              expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Waiting')
             end
 
             within('.js-pipeline-graph') do

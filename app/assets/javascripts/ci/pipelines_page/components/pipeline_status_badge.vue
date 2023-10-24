@@ -1,12 +1,12 @@
 <script>
 import { TRACKING_CATEGORIES } from '~/ci/constants';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Tracking from '~/tracking';
 import PipelinesTimeago from './time_ago.vue';
 
 export default {
   components: {
-    CiBadgeLink,
+    CiIcon,
     PipelinesTimeago,
   },
   mixins: [Tracking.mixin()],
@@ -31,7 +31,12 @@ export default {
 
 <template>
   <div>
-    <ci-badge-link class="gl-mb-3" :status="pipelineStatus" @ciStatusBadgeClick="trackClick" />
+    <ci-icon
+      class="gl-mb-3"
+      :status="pipelineStatus"
+      show-status-text
+      @ciStatusBadgeClick="trackClick"
+    />
     <pipelines-timeago :pipeline="pipeline" />
   </div>
 </template>

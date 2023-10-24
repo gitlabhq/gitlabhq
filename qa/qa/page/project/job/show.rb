@@ -5,7 +5,7 @@ module QA
     module Project
       module Job
         class Show < QA::Page::Base
-          include Component::CiBadgeLink
+          include Component::CiIcon
 
           view 'app/assets/javascripts/ci/job_details/components/log/log.vue' do
             element 'job-log-content'

@@ -8,18 +8,18 @@ module Ci
 
     ##
     # @cascade_to_children - if true cancels all related child pipelines for parent child pipelines
-    # @auto_canceled_by_pipeline_id - store the pipeline_id of the pipeline that triggered cancellation
+    # @auto_canceled_by_pipeline - store the pipeline_id of the pipeline that triggered cancellation
     # @execute_async - if true cancel the children asyncronously
     def initialize(
       pipeline:,
       current_user:,
       cascade_to_children: true,
-      auto_canceled_by_pipeline_id: nil,
+      auto_canceled_by_pipeline: nil,
       execute_async: true)
       @pipeline = pipeline
       @current_user = current_user
       @cascade_to_children = cascade_to_children
-      @auto_canceled_by_pipeline_id = auto_canceled_by_pipeline_id
+      @auto_canceled_by_pipeline = auto_canceled_by_pipeline
       @execute_async = execute_async
     end
 
@@ -45,7 +45,7 @@ module Ci
 
       log_pipeline_being_canceled
 
-      pipeline.update_column(:auto_canceled_by_id, @auto_canceled_by_pipeline_id) if @auto_canceled_by_pipeline_id
+      pipeline.update_column(:auto_canceled_by_id, @auto_canceled_by_pipeline.id) if @auto_canceled_by_pipeline
       cancel_jobs(pipeline.cancelable_statuses)
 
       return ServiceResponse.success unless cascade_to_children?
@@ -65,7 +65,7 @@ module Ci
       Gitlab::AppJsonLogger.info(
         event: 'pipeline_cancel_running',
         pipeline_id: pipeline.id,
-        auto_canceled_by_pipeline_id: @auto_canceled_by_pipeline_id,
+        auto_canceled_by_pipeline_id: @auto_canceled_by_pipeline&.id,
         cascade_to_children: cascade_to_children?,
         execute_async: execute_async?,
         **Gitlab::ApplicationContext.current
@@ -89,12 +89,18 @@ module Ci
           relation = CommitStatus.id_in(batch)
           Preloaders::CommitStatusPreloader.new(relation).execute(preloaded_relations)
 
-          relation.each do |job|
-            job.auto_canceled_by_id = @auto_canceled_by_pipeline_id if @auto_canceled_by_pipeline_id
-            job.cancel
-          end
+          relation.each { |job| cancel_job(job) }
         end
       end
+    end
+
+    def cancel_job(job)
+      if @auto_canceled_by_pipeline
+        job.auto_canceled_by_id = @auto_canceled_by_pipeline.id
+        job.auto_canceled_by_partition_id = @auto_canceled_by_pipeline.partition_id
+      end
+
+      job.cancel
     end
 
     # For parent child-pipelines only (not multi-project)
@@ -103,7 +109,7 @@ module Ci
         if execute_async?
           ::Ci::CancelPipelineWorker.perform_async(
             child_pipeline.id,
-            @auto_canceled_by_pipeline_id
+            @auto_canceled_by_pipeline&.id
           )
         else
           # cascade_to_children is false because we iterate through children
@@ -113,7 +119,7 @@ module Ci
             current_user: nil,
             cascade_to_children: false,
             execute_async: execute_async?,
-            auto_canceled_by_pipeline_id: @auto_canceled_by_pipeline_id
+            auto_canceled_by_pipeline: @auto_canceled_by_pipeline
           ).force_execute
         end
       end

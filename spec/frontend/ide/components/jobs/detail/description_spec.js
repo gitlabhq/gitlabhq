@@ -23,10 +23,6 @@ describe('IDE job description', () => {
     expect(wrapper.find('.ci-status-icon').findComponent(GlIcon).exists()).toBe(true);
   });
 
-  it('renders a borderless CI icon', () => {
-    expect(wrapper.find('.borderless').findComponent(GlIcon).exists()).toBe(true);
-  });
-
   it('renders bridge job details without the job link', () => {
     wrapper = mount(Description, {
       propsData: {

@@ -5,7 +5,7 @@ import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import Tracking from '~/tracking';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { TRACKING_CATEGORIES } from '~/ci/constants';
 import RetryFailedJobMutation from '../graphql/mutations/retry_failed_job.mutation.graphql';
 import { DEFAULT_FIELDS } from '../../constants';
@@ -14,7 +14,7 @@ export default {
   fields: DEFAULT_FIELDS,
   retry: __('Retry'),
   components: {
-    CiBadgeLink,
+    CiIcon,
     GlButton,
     GlLink,
     GlTableLite,
@@ -80,7 +80,7 @@ export default {
       <div
         class="gl-display-flex gl-align-items-center gl-lg-justify-content-start gl-justify-content-end"
       >
-        <ci-badge-link :status="item.detailedStatus" :show-text="false" class="gl-mr-3" />
+        <ci-icon :status="item.detailedStatus" class="gl-mr-3" />
         <div class="gl-text-truncate">
           <gl-link
             :href="item.detailedStatus.detailsPath"

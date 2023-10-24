@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { DEFAULT_FIELDS_ADMIN } from '~/ci/admin/jobs_table/constants';
 import ProjectCell from '~/ci/admin/jobs_table/components/cells/project_cell.vue';
 import RunnerCell from '~/ci/admin/jobs_table/components/cells/runner_cell.vue';
@@ -13,7 +13,7 @@ describe('Jobs Table', () => {
   let wrapper;
 
   const findTable = () => wrapper.findComponent(GlTable);
-  const findCiBadgeLink = () => wrapper.findComponent(CiBadgeLink);
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findTableRows = () => wrapper.findAllByTestId('jobs-table-row');
   const findJobStage = () => wrapper.findByTestId('job-stage-name');
   const findJobName = () => wrapper.findByTestId('job-name');
@@ -45,7 +45,7 @@ describe('Jobs Table', () => {
     });
 
     it('displays job status', () => {
-      expect(findCiBadgeLink().exists()).toBe(true);
+      expect(findCiIcon().exists()).toBe(true);
     });
 
     it('displays the job stage, id and name', () => {

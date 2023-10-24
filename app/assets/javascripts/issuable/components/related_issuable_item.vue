@@ -193,7 +193,7 @@ export default {
           >
             <span v-if="hasPipeline" class="mr-ci-status order-md-last">
               <a :href="pipelineStatus.details_path">
-                <ci-icon v-gl-tooltip :status="pipelineStatus" :title="pipelineStatusTooltip" />
+                <ci-icon :status="pipelineStatus" :title="pipelineStatusTooltip" />
               </a>
             </span>
 

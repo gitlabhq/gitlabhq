@@ -99,5 +99,13 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_
 
       importer.execute
     end
+
+    it 'increments the issue counter' do
+      expect_next_instance_of(Gitlab::Import::Metrics) do |metrics|
+        expect(metrics).to receive_message_chain(:issues_counter, :increment)
+      end
+
+      importer.execute
+    end
   end
 end

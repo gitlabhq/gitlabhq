@@ -15,7 +15,7 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
 
         expect(BulkImports::RelationBatchExportService)
           .to receive(:new)
-          .with(user.id, batch.id)
+          .with(user, batch)
           .twice.and_return(service)
         expect(service).to receive(:execute).twice
 

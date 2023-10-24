@@ -10,7 +10,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsNotesImporter, fe
   subject(:importer) { described_class.new(project) }
 
   describe '#execute', :clean_gitlab_redis_cache do
-    it 'imports the notes from each merge request in parallel', :aggregate_failures do
+    it 'imports the notes from each merge request in parallel' do
       expect(Gitlab::BitbucketImport::ImportPullRequestNotesWorker).to receive(:perform_in).twice
 
       waiter = importer.execute
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsNotesImporter, fe
         Gitlab::Cache::Import::Caching.set_add(importer.already_enqueued_cache_key, 2)
       end
 
-      it 'does not schedule job for enqueued merge requests', :aggregate_failures do
+      it 'does not schedule job for enqueued merge requests' do
         expect(Gitlab::BitbucketImport::ImportPullRequestNotesWorker).to receive(:perform_in).once
 
         waiter = importer.execute

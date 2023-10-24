@@ -70,6 +70,7 @@ export default {
             operationsUrl: this.operationsUrl,
           });
           this.$refs.observabilitySkeleton?.onContentLoaded();
+          this.$emit('observability-client-ready', this.observabilityClient);
         } else if (status === 'error') {
           // eslint-disable-next-line @gitlab/require-i18n-strings,no-console
           console.error('GOB auth failed with error:', message, statusCode);

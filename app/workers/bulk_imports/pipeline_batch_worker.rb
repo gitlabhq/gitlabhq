@@ -16,6 +16,8 @@ module BulkImports
       @tracker = @batch.tracker
       @pending_retry = false
 
+      log_extra_metadata_on_done(:pipeline_class, @tracker.pipeline_name)
+
       try_obtain_lease { run }
     ensure
       ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id) unless pending_retry
@@ -78,6 +80,8 @@ module BulkImports
     end
 
     def re_enqueue(delay = FILE_EXTRACTION_PIPELINE_PERFORM_DELAY)
+      log_extra_metadata_on_done(:re_enqueue, true)
+
       self.class.perform_in(delay, batch.id)
     end
   end

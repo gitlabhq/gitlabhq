@@ -2,8 +2,8 @@ import { GlAvatar, GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourceHeader from '~/ci/catalog/components/details/ci_resource_header.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import CiResourceAbout from '~/ci/catalog/components/details/ci_resource_about.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { catalogSharedDataMock, catalogAdditionalDetailsMock } from '../../mock';
 
 describe('CiResourceHeader', () => {
@@ -24,7 +24,7 @@ describe('CiResourceHeader', () => {
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findVersionBadge = () => wrapper.findComponent(GlBadge);
-  const findPipelineStatusBadge = () => wrapper.findComponent(CiBadgeLink);
+  const findPipelineStatusBadge = () => wrapper.findComponent(CiIcon);
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(CiResourceHeader, {
@@ -126,8 +126,7 @@ describe('CiResourceHeader', () => {
         expect(findPipelineStatusBadge().exists()).toBe(hasPipelineBadge);
         if (hasPipelineBadge) {
           expect(findPipelineStatusBadge().props()).toEqual({
-            showText: true,
-            size: 'sm',
+            showStatusText: true,
             status: pipelineStatus,
             showTooltip: true,
             useLink: true,

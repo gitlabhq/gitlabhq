@@ -277,9 +277,6 @@ export default {
       skip() {
         return !this.hasAnyIssues || isEmpty(this.pageParams);
       },
-      context: {
-        isSingleRequest: true,
-      },
     },
   },
   computed: {

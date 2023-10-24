@@ -5,7 +5,7 @@ import userInfoQuery from '../queries/user_info.query.graphql';
 import applicationInfoQuery from '../queries/application_info.query.graphql';
 import BlobFilepath from './blob_header_filepath.vue';
 import ViewerSwitcher from './blob_header_viewer_switcher.vue';
-import { SIMPLE_BLOB_VIEWER } from './constants';
+import { SIMPLE_BLOB_VIEWER, BLAME_VIEWER } from './constants';
 import TableOfContents from './table_contents.vue';
 
 export default {
@@ -85,6 +85,11 @@ export default {
       required: false,
       default: '',
     },
+    showBlameToggle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -93,9 +98,6 @@ export default {
     };
   },
   computed: {
-    showViewerSwitcher() {
-      return !this.hideViewerSwitcher && Boolean(this.blob.simpleViewer && this.blob.richViewer);
-    },
     showDefaultActions() {
       return !this.hideDefaultActions;
     },
@@ -114,7 +116,7 @@ export default {
   },
   watch: {
     viewer(newVal, oldVal) {
-      if (!this.hideViewerSwitcher && newVal !== oldVal) {
+      if (newVal !== BLAME_VIEWER && newVal !== oldVal) {
         this.$emit('viewer-changed', newVal);
       }
     },
@@ -138,7 +140,14 @@ export default {
     </div>
 
     <div class="gl-display-flex gl-flex-wrap file-actions">
-      <viewer-switcher v-if="showViewerSwitcher" v-model="viewer" :doc-icon="blobSwitcherDocIcon" />
+      <viewer-switcher
+        v-if="!hideViewerSwitcher"
+        v-model="viewer"
+        :doc-icon="blobSwitcherDocIcon"
+        :show-blame-toggle="showBlameToggle"
+        :show-viewer-toggles="Boolean(blob.simpleViewer && blob.richViewer)"
+        v-on="$listeners"
+      />
 
       <web-ide-link
         v-if="showWebIdeLink"

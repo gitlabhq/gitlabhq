@@ -165,9 +165,6 @@ export default {
       skip() {
         return !this.hasSearch;
       },
-      context: {
-        isSingleRequest: true,
-      },
     },
   },
   computed: {

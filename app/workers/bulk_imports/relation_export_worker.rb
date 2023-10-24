@@ -17,10 +17,13 @@ module BulkImports
       user = User.find(user_id)
       portable = portable(portable_id, portable_class)
       config = BulkImports::FileTransfer.config_for(portable)
+      log_extra_metadata_on_done(:relation, relation)
 
       if Gitlab::Utils.to_boolean(batched) && config.batchable_relation?(relation)
+        log_extra_metadata_on_done(:batched, true)
         BatchedRelationExportService.new(user, portable, relation, jid).execute
       else
+        log_extra_metadata_on_done(:batched, false)
         RelationExportService.new(user, portable, relation, jid).execute
       end
     end

@@ -88,7 +88,6 @@ export default {
           @click="openRightPane($options.rightSidebarViews.pipelines)"
         >
           <ci-icon
-            v-gl-tooltip
             :status="latestPipeline.details.status"
             :title="latestPipeline.details.status.text"
           />

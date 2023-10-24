@@ -1,7 +1,7 @@
 <script>
 import { GlLink } from '@gitlab/ui';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
-import { s__, n__ } from '~/locale';
+import { s__, n__, formatNumber } from '~/locale';
 
 const defaultPrecision = 2;
 
@@ -22,25 +22,25 @@ export default {
   },
   computed: {
     statistics() {
-      const formatter = getFormatter(SUPPORTED_FORMATS.percentHundred);
+      const formatPercent = getFormatter(SUPPORTED_FORMATS.percentHundred);
 
       return [
         {
           title: s__('PipelineCharts|Total:'),
-          value: n__('1 pipeline', '%d pipelines', this.counts.total),
+          value: n__('1 pipeline', '%d pipelines', formatNumber(this.counts.total)),
         },
         {
           title: s__('PipelineCharts|Successful:'),
-          value: n__('1 pipeline', '%d pipelines', this.counts.success),
+          value: n__('1 pipeline', '%d pipelines', formatNumber(this.counts.success)),
         },
         {
           title: s__('PipelineCharts|Failed:'),
-          value: n__('1 pipeline', '%d pipelines', this.counts.failed),
+          value: n__('1 pipeline', '%d pipelines', formatNumber(this.counts.failed)),
           link: this.failedPipelinesLink,
         },
         {
           title: s__('PipelineCharts|Success ratio:'),
-          value: formatter(this.counts.successRatio, defaultPrecision),
+          value: formatPercent(this.counts.successRatio, defaultPrecision),
         },
       ];
     },

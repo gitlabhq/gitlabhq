@@ -412,7 +412,7 @@ You can [cancel the subscription](#enable-or-disable-automatic-subscription-rene
 
 1. Sign in to GitLab SaaS.
 1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
-1. For each locked project, total by how much its **Usage** exceeds the free quota and purchased
+1. For each read-only project, total by how much its **Usage** exceeds the free quota and purchased
    storage. You must purchase the storage increment that exceeds this total.
 1. Select **Purchase more storage** and you are taken to the Customers Portal.
 1. Select **Add new subscription**.
@@ -425,8 +425,8 @@ You can [cancel the subscription](#enable-or-disable-automatic-subscription-rene
 1. Sign out of the Customers Portal.
 1. Switch back to the GitLab SaaS tab and refresh the page.
 
-The **Purchased storage available** total is incremented by the amount purchased. All locked
-projects are unlocked and their excess usage is deducted from the additional storage.
+The **Purchased storage available** total is incremented by the amount purchased. The read-only
+state for all projects is removed, and their excess usage is deducted from the additional storage.
 
 #### For your group namespace
 

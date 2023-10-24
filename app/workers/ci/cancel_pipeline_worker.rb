@@ -20,7 +20,7 @@ module Ci
           pipeline: pipeline,
           current_user: nil,
           cascade_to_children: false,
-          auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id
+          auto_canceled_by_pipeline: ::Ci::Pipeline.find_by_id(auto_canceled_by_pipeline_id)
         ).force_execute
       end
     end

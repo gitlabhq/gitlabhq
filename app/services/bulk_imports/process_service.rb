@@ -114,7 +114,7 @@ module BulkImports
         bulk_import_id: entity.bulk_import_id,
         bulk_import_entity_type: entity.source_type,
         source_full_path: entity.source_full_path,
-        pipeline_name: pipeline[:pipeline],
+        pipeline_class: pipeline[:pipeline],
         minimum_source_version: minimum_version,
         maximum_source_version: maximum_version,
         source_version: entity.source_version.to_s,

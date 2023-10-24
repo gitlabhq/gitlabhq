@@ -21,6 +21,8 @@ module BulkImports
       @entity = ::BulkImports::Entity.find(entity_id)
       @pipeline_tracker = ::BulkImports::Tracker.find(pipeline_tracker_id)
 
+      log_extra_metadata_on_done(:pipeline_class, @pipeline_tracker.pipeline_name)
+
       try_obtain_lease do
         if pipeline_tracker.enqueued?
           logger.info(log_attributes(message: 'Pipeline starting'))
@@ -49,12 +51,16 @@ module BulkImports
       return re_enqueue if export_empty? || export_started?
 
       if file_extraction_pipeline? && export_status.batched?
+        log_extra_metadata_on_done(:batched, true)
+
         pipeline_tracker.update!(status_event: 'start', jid: jid, batched: true)
 
         return pipeline_tracker.finish! if export_status.batches_count < 1
 
         enqueue_batches
       else
+        log_extra_metadata_on_done(:batched, false)
+
         pipeline_tracker.update!(status_event: 'start', jid: jid)
         pipeline_tracker.pipeline_class.new(context).run
         pipeline_tracker.finish!
@@ -91,6 +97,8 @@ module BulkImports
     end
 
     def re_enqueue(delay = FILE_EXTRACTION_PIPELINE_PERFORM_DELAY)
+      log_extra_metadata_on_done(:re_enqueue, true)
+
       self.class.perform_in(
         delay,
         pipeline_tracker.id,
@@ -155,7 +163,7 @@ module BulkImports
           bulk_import_entity_type: entity.source_type,
           source_full_path: entity.source_full_path,
           pipeline_tracker_id: pipeline_tracker.id,
-          pipeline_name: pipeline_tracker.pipeline_name,
+          pipeline_class: pipeline_tracker.pipeline_name,
           pipeline_tracker_state: pipeline_tracker.human_status_name,
           source_version: source_version,
           importer: 'gitlab_migration'

@@ -78,9 +78,6 @@ export default {
   apollo: {
     runners: {
       query: allRunnersQuery,
-      context: {
-        isSingleRequest: true,
-      },
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
       variables() {
         return this.variables;

@@ -1,5 +1,6 @@
 <script>
 import { GlDisclosureDropdownGroup } from '@gitlab/ui';
+import { kebabCase } from 'lodash';
 import { PLACES } from '~/vue_shared/global_search/constants';
 import { TRACKING_UNKNOWN_ID, TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
 import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
@@ -20,7 +21,7 @@ export default {
     group() {
       return {
         name: this.$options.i18n.PLACES,
-        items: this.contextSwitcherLinks.map(({ title, link }) => ({
+        items: this.contextSwitcherLinks.map(({ title, link, ...rest }) => ({
           text: title,
           href: link,
           extraAttrs: {
@@ -35,6 +36,12 @@ export default {
             // QA attributes
             'data-testid': 'places-item-link',
             'data-qa-places-item': title,
+
+            // Any other data- attributes (e.g., for @rails/ujs)
+            ...Object.entries(rest).reduce((acc, [name, value]) => {
+              if (name.startsWith('data')) acc[kebabCase(name)] = value;
+              return acc;
+            }, {}),
           },
         })),
       };

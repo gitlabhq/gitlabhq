@@ -3898,7 +3898,7 @@ Input type: `ExternalAuditEventDestinationUpdateInput`
 
 ### `Mutation.geoRegistriesBulkUpdate`
 
-Mutates multiple Geo registries for a given registry class. Does not mutate the registries if `geo_registries_update_mutation` feature flag is disabled.
+Mutates multiple Geo registries for a given registry class.
 
 WARNING:
 **Introduced** in 16.4.
@@ -3924,7 +3924,7 @@ Input type: `GeoRegistriesBulkUpdateInput`
 
 ### `Mutation.geoRegistriesUpdate`
 
-Mutates a Geo registry. Does not mutate the registry entry if `geo_registries_update_mutation` feature flag is disabled.
+Mutates a Geo registry.
 
 WARNING:
 **Introduced** in 16.1.
@@ -7508,6 +7508,31 @@ Input type: `ValueStreamCreateInput`
 | <a id="mutationvaluestreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvaluestreamcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvaluestreamcreatevaluestream"></a>`valueStream` | [`ValueStream`](#valuestream) | Created value stream. |
+
+### `Mutation.valueStreamDestroy`
+
+Destroy a value stream.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `ValueStreamDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamdestroyid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | Global ID of the value stream to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvaluestreamdestroyvaluestream"></a>`valueStream` | [`ValueStream`](#valuestream) | Value stream deleted after mutation. |
 
 ### `Mutation.vulnerabilitiesDismiss`
 
@@ -16485,6 +16510,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="designversiondesignsatversionfilenames"></a>`filenames` | [`[String!]`](#string) | Filters designs by their filename. |
 | <a id="designversiondesignsatversionids"></a>`ids` | [`[DesignManagementDesignID!]`](#designmanagementdesignid) | Filters designs by their ID. |
 
+### `DetailedImportStatus`
+
+Details of the import status of a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="detailedimportstatusid"></a>`id` | [`ProjectImportStateID`](#projectimportstateid) | ID of the import state. |
+| <a id="detailedimportstatuslasterror"></a>`lastError` | [`String`](#string) | Last error of the import. |
+| <a id="detailedimportstatuslastsuccessfulupdateat"></a>`lastSuccessfulUpdateAt` | [`Time`](#time) | Time of the last successful update. |
+| <a id="detailedimportstatuslastupdateat"></a>`lastUpdateAt` | [`Time`](#time) | Time of the last update. |
+| <a id="detailedimportstatuslastupdatestartedat"></a>`lastUpdateStartedAt` | [`Time`](#time) | Time of the start of the last update. |
+| <a id="detailedimportstatusstatus"></a>`status` | [`String`](#string) | Current status of the import. |
+| <a id="detailedimportstatusurl"></a>`url` | [`String`](#string) | Import url. |
+
 ### `DetailedStatus`
 
 #### Fields
@@ -22490,6 +22531,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectdependencyproxypackagessetting"></a>`dependencyProxyPackagesSetting` **{warning-solid}** | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Packages Dependency Proxy settings for the project. Requires the packages and dependency proxy to be enabled in the config. Requires the packages feature to be enabled at the project level. Returns `null` if `packages_dependency_proxy_maven` feature flag is disabled. |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
 | <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Flow metrics for value stream analytics. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
@@ -26217,6 +26259,7 @@ fields relate to interactions between the two entities.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="valuestreamid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | ID of the value stream. |
 | <a id="valuestreamname"></a>`name` | [`String!`](#string) | Name of the value stream. |
 | <a id="valuestreamnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace the value stream belongs to. |
 | <a id="valuestreamproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in 15.6. This feature is an Experiment. It can be changed or removed at any time. Project the value stream belongs to, returns empty if it belongs to a group. |
@@ -30058,6 +30101,12 @@ A `AlertManagementHttpIntegrationID` is a global ID. It is encoded as a string.
 
 An example `AlertManagementHttpIntegrationID` is: `"gid://gitlab/AlertManagement::HttpIntegration/1"`.
 
+### `AnalyticsCycleAnalyticsValueStreamID`
+
+A `AnalyticsCycleAnalyticsValueStreamID` is a global ID. It is encoded as a string.
+
+An example `AnalyticsCycleAnalyticsValueStreamID` is: `"gid://gitlab/Analytics::CycleAnalytics::ValueStream/1"`.
+
 ### `AnalyticsDevopsAdoptionEnabledNamespaceID`
 
 A `AnalyticsDevopsAdoptionEnabledNamespaceID` is a global ID. It is encoded as a string.
@@ -30664,6 +30713,12 @@ String or integer.
 A `ProjectID` is a global ID. It is encoded as a string.
 
 An example `ProjectID` is: `"gid://gitlab/Project/1"`.
+
+### `ProjectImportStateID`
+
+A `ProjectImportStateID` is a global ID. It is encoded as a string.
+
+An example `ProjectImportStateID` is: `"gid://gitlab/ProjectImportState/1"`.
 
 ### `ReleaseID`
 

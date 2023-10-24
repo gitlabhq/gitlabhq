@@ -1,13 +1,44 @@
 <script>
-import { GlButton, GlLink } from '@gitlab/ui';
-import { OAUTH_SELF_MANAGED_DOC_LINK } from '~/jira_connect/subscriptions/constants';
+import { GlButton, GlFormCheckbox, GlLink } from '@gitlab/ui';
+import { s__ } from '~/locale';
+import {
+  PREREQUISITES_DOC_LINK,
+  OAUTH_SELF_MANAGED_DOC_LINK,
+  SET_UP_INSTANCE_DOC_LINK,
+} from '~/jira_connect/subscriptions/constants';
 
 export default {
   components: {
     GlButton,
+    GlFormCheckbox,
     GlLink,
   },
-  OAUTH_SELF_MANAGED_DOC_LINK,
+  data() {
+    return {
+      requiredSteps: [
+        {
+          name: s__('JiraConnect|Prerequisites'),
+          link: PREREQUISITES_DOC_LINK,
+          checked: false,
+        },
+        {
+          name: s__('JiraConnect|Set up OAuth authentication'),
+          link: OAUTH_SELF_MANAGED_DOC_LINK,
+          checked: false,
+        },
+        {
+          name: s__('JiraConnect|Set up your instance'),
+          link: SET_UP_INSTANCE_DOC_LINK,
+          checked: false,
+        },
+      ],
+    };
+  },
+  computed: {
+    nextDisabled() {
+      return !this.requiredSteps.every((step) => step.checked);
+    },
+  },
 };
 </script>
 
@@ -17,20 +48,25 @@ export default {
     <p>
       {{
         s__(
-          'JiraConnect|In order to complete the set up, you’ll need to complete a few steps in GitLab.',
+          'JiraConnect|In order to complete the set up, you’ll need to complete a few steps in GitLab:',
         )
       }}
-      <gl-link
-        class="gl-reset-font-size!"
-        :href="$options.OAUTH_SELF_MANAGED_DOC_LINK"
-        target="_blank"
-        >{{ __('Learn more') }}</gl-link
-      >
     </p>
+    <div class="gl-mb-5">
+      <div v-for="step in requiredSteps" :key="step.name" class="gl-mb-2">
+        <gl-form-checkbox v-model="step.checked">
+          <gl-link :href="step.link" target="_blank">
+            {{ step.name }}
+          </gl-link>
+        </gl-form-checkbox>
+      </div>
+    </div>
 
     <div class="gl-display-flex gl-justify-content-space-between">
       <gl-button @click="$emit('back')">{{ __('Back') }}</gl-button>
-      <gl-button variant="confirm" @click="$emit('next')">{{ __('Next') }}</gl-button>
+      <gl-button variant="confirm" :disabled="nextDisabled" @click="$emit('next')"
+        >{{ __('Next') }}
+      </gl-button>
     </div>
   </div>
 </template>

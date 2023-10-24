@@ -166,9 +166,6 @@ export default {
       skip() {
         return this.shouldSkipQuery;
       },
-      context: {
-        isSingleRequest: true,
-      },
     },
   },
   computed: {

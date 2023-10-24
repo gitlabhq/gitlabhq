@@ -8,6 +8,11 @@ module Types
 
         authorize :read_cycle_analytics
 
+        field :id,
+          type: ::Types::GlobalIDType[::Analytics::CycleAnalytics::ValueStream],
+          null: false,
+          description: "ID of the value stream."
+
         field :name,
           GraphQL::Types::String,
           null: false,

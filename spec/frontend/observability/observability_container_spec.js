@@ -19,10 +19,12 @@ describe('ObservabilityContainer', () => {
   const SERVICES_URL = 'https://example.com/services';
   const OPERATIONS_URL = 'https://example.com/operations';
 
+  const mockClient = { mock: 'client' };
+
   beforeEach(() => {
     jest.spyOn(console, 'error').mockImplementation();
 
-    buildClient.mockReturnValue({});
+    buildClient.mockReturnValue(mockClient);
 
     wrapper = shallowMountExtended(ObservabilityContainer, {
       propsData: {
@@ -43,12 +45,6 @@ describe('ObservabilityContainer', () => {
             h(`<div>mockedComponent</div>`);
           },
           name: 'MockComponent',
-          props: {
-            observabilityClient: {
-              type: Object,
-              required: true,
-            },
-          },
         },
       },
     });
@@ -85,22 +81,38 @@ describe('ObservabilityContainer', () => {
     expect(findSlotComponent().exists()).toBe(false);
   });
 
-  it('renders the slot content and removes the iframe on oauth success message', async () => {
-    dispatchMessageEvent('success');
+  it('should not emit observability-client-ready', () => {
+    expect(wrapper.emitted('observability-client-ready')).toBeUndefined();
+  });
 
-    await nextTick();
+  describe('on oauth success message', () => {
+    beforeEach(async () => {
+      dispatchMessageEvent('success');
 
-    expect(mockSkeletonOnContentLoaded).toHaveBeenCalledTimes(1);
-
-    const slotComponent = findSlotComponent();
-    expect(slotComponent.exists()).toBe(true);
-    expect(buildClient).toHaveBeenCalledWith({
-      provisioningUrl: PROVISIONING_URL,
-      tracingUrl: TRACING_URL,
-      servicesUrl: SERVICES_URL,
-      operationsUrl: OPERATIONS_URL,
+      await nextTick();
     });
-    expect(findIframe().exists()).toBe(false);
+
+    it('renders invoke onContentLoaded on the skeleton', () => {
+      expect(mockSkeletonOnContentLoaded).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders the slot content', () => {
+      const slotComponent = findSlotComponent();
+      expect(slotComponent.exists()).toBe(true);
+    });
+
+    it('build the observability client', () => {
+      expect(buildClient).toHaveBeenCalledWith({
+        provisioningUrl: PROVISIONING_URL,
+        tracingUrl: TRACING_URL,
+        servicesUrl: SERVICES_URL,
+        operationsUrl: OPERATIONS_URL,
+      });
+    });
+
+    it('emits observability-client-ready', () => {
+      expect(wrapper.emitted('observability-client-ready')).toEqual([[mockClient]]);
+    });
   });
 
   it('does not render the slot content and removes the iframe on oauth error message', async () => {

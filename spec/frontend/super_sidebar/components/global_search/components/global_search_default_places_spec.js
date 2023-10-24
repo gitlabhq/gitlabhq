@@ -88,6 +88,19 @@ describe('GlobalSearchDefaultPlaces', () => {
             'data-qa-places-item': 'Admin area',
           },
         },
+        {
+          text: 'Leave admin mode',
+          href: '/admin/session/destroy',
+          extraAttrs: {
+            'data-track-action': 'click_command_palette_item',
+            'data-track-extra': '{"title":"Leave admin mode"}',
+            'data-track-label': 'item_without_id',
+            'data-track-property': 'nav_panel_unknown',
+            'data-testid': 'places-item-link',
+            'data-qa-places-item': 'Leave admin mode',
+            'data-method': 'post',
+          },
+        },
       ]);
     });
   });

@@ -53,13 +53,13 @@ describe('buildClient', () => {
     });
   });
 
-  describe('isTracingEnabled', () => {
+  describe('isObservabilityEnabled', () => {
     it('returns true if requests succeedes', async () => {
       axiosMock.onGet(provisioningUrl).reply(200, {
         status: 'ready',
       });
 
-      const enabled = await client.isTracingEnabled();
+      const enabled = await client.isObservabilityEnabled();
 
       expect(enabled).toBe(true);
     });
@@ -67,7 +67,7 @@ describe('buildClient', () => {
     it('returns false if response is 404', async () => {
       axiosMock.onGet(provisioningUrl).reply(404);
 
-      const enabled = await client.isTracingEnabled();
+      const enabled = await client.isObservabilityEnabled();
 
       expect(enabled).toBe(false);
     });
@@ -79,7 +79,7 @@ describe('buildClient', () => {
         status: 'not ready',
       });
 
-      const enabled = await client.isTracingEnabled();
+      const enabled = await client.isObservabilityEnabled();
 
       expect(enabled).toBe(true);
     });
@@ -88,7 +88,7 @@ describe('buildClient', () => {
       axiosMock.onGet(provisioningUrl).reply(500);
 
       const e = 'Request failed with status code 500';
-      await expect(client.isTracingEnabled()).rejects.toThrow(e);
+      await expect(client.isObservabilityEnabled()).rejects.toThrow(e);
       expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
     });
 
@@ -96,12 +96,12 @@ describe('buildClient', () => {
       axiosMock.onGet(provisioningUrl).reply(200, {});
 
       const e = 'Failed to check provisioning';
-      await expect(client.isTracingEnabled()).rejects.toThrow(e);
+      await expect(client.isObservabilityEnabled()).rejects.toThrow(e);
       expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
     });
   });
 
-  describe('enableTraces', () => {
+  describe('enableObservability', () => {
     it('makes a PUT request to the provisioning URL', async () => {
       let putConfig;
       axiosMock.onPut(provisioningUrl).reply((config) => {
@@ -109,7 +109,7 @@ describe('buildClient', () => {
         return [200];
       });
 
-      await client.enableTraces();
+      await client.enableObservability();
 
       expect(putConfig.withCredentials).toBe(true);
     });
@@ -119,7 +119,7 @@ describe('buildClient', () => {
 
       const e = 'Request failed with status code 401';
 
-      await expect(client.enableTraces()).rejects.toThrow(e);
+      await expect(client.enableObservability()).rejects.toThrow(e);
       expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
     });
   });

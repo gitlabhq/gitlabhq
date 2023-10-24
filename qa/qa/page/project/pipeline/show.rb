@@ -5,7 +5,7 @@ module QA
     module Project
       module Pipeline
         class Show < QA::Page::Base
-          include Component::CiBadgeLink
+          include Component::CiIcon
 
           view 'app/assets/javascripts/ci/pipeline_details/header/pipeline_details_header.vue' do
             element 'pipeline-details-header', required: true

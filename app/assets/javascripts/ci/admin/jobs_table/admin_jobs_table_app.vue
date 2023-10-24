@@ -84,9 +84,6 @@ export default {
       update(data) {
         return data?.jobs?.count || 0;
       },
-      context: {
-        isSingleRequest: true,
-      },
       error() {
         this.error = this.$options.i18n.jobsCountErrorMsg;
       },

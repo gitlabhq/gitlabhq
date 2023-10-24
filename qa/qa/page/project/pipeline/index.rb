@@ -5,7 +5,7 @@ module QA
     module Project
       module Pipeline
         class Index < QA::Page::Base
-          include Component::CiBadgeLink
+          include Component::CiIcon
 
           view 'app/assets/javascripts/ci/pipelines_page/components/pipeline_url.vue' do
             element 'pipeline-url-link'
@@ -25,7 +25,7 @@ module QA
 
           def latest_pipeline_status
             within(latest_pipeline) do
-              find_element('ci-badge-text')
+              find_element('ci-icon-text')
             end.text
           end
 
