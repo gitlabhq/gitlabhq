@@ -323,34 +323,4 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       it { is_expected.to eq(expected) }
     end
   end
-
-  describe '#visibility_level_options' do
-    let(:user) { build(:user) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    it 'returns the desired mapping' do
-      expected_options = [
-        {
-          level: 0,
-          label: 'Private',
-          description: 'The group and its projects can only be viewed by members.'
-        },
-        {
-          level: 10,
-          label: 'Internal',
-          description: 'The group and any internal projects can be viewed by any logged in user except external users.'
-        },
-        {
-          level: 20,
-          label: 'Public',
-          description: 'The group and any public projects can be viewed without any authentication.'
-        }
-      ]
-
-      expect(helper.visibility_level_options(group)).to eq expected_options
-    end
-  end
 end

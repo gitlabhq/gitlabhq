@@ -24,13 +24,11 @@
       "type": "object",
       "required": [
         "can_create_note",
-        "can_update",
-        "can_approve"
+        "can_update"
       ],
       "properties": {
         "can_create_note": { "type": "boolean" },
-        "can_update": { "type": "boolean" },
-        "can_approve": { "type": "boolean" }
+        "can_update": { "type": "boolean" }
       },
       "additionalProperties": false
     },

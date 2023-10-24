@@ -49,10 +49,6 @@ class MergeRequestNoteableEntity < IssuableEntity
     expose :can_update do |merge_request|
       can?(current_user, :update_merge_request, merge_request)
     end
-
-    expose :can_approve do |merge_request|
-      merge_request.eligible_for_approval_by?(current_user)
-    end
   end
 
   expose :locked_discussion_docs_path, if: -> (merge_request) { merge_request.discussion_locked? } do |merge_request|

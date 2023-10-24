@@ -10,11 +10,11 @@ module Integrations
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       placeholder: ''
 
-    def title
+    def self.title
       'Slack slash commands'
     end
 
-    def description
+    def self.description
       "Perform common operations in Slack."
     end
 

@@ -36,7 +36,7 @@ module Integrations
       true
     end
 
-    def help
+    def self.help
       # noop
     end
 

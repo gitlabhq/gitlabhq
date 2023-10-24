@@ -147,14 +147,14 @@ To do this, you can either remove the custom role from all group members with th
 ### Remove a custom role from a group member
 
 To remove a custom role from a group member, use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
-and pass an empty `member_role_id` value.
+and pass an empty `member_role_id` value:
 
 ```shell
 # to update a project membership
-curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": "", "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
 
 # to update a group membership
-curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": "", "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
 ```
 
 ### Remove a group member with a custom role from the group

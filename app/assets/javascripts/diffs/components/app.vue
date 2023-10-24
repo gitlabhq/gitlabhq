@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -16,7 +17,8 @@ import {
 import { createAlert } from '~/alert';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -39,6 +41,7 @@ import {
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
   EVT_MR_PREPARED,
+  EVT_DISCUSSIONS_ASSIGNED,
 } from '../constants';
 
 import { isCollapsed } from '../utils/diff_file';
@@ -136,6 +139,7 @@ export default {
       diffFilesLength: 0,
       virtualScrollCurrentIndex: -1,
       subscribedToVirtualScrollingEvents: false,
+      autoScrolled: false,
     };
   },
   apollo: {
@@ -358,6 +362,10 @@ export default {
     this.adjustView();
     this.subscribeToEvents();
 
+    this.slowHashHandler = debounce(() => {
+      handleLocationHash();
+      this.autoScrolled = true;
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     this.unwatchDiscussions = this.$watch(
       () => `${this.flatBlobsList.length}:${this.$store.state.notes.discussions.length}`,
       () => {
@@ -420,8 +428,10 @@ export default {
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
+      diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
     },
     unsubscribeFromEvents() {
+      diffsEventHub.$off(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
       diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$off('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$off('diffFilesModified', this.setDiscussions);
@@ -447,6 +457,15 @@ export default {
             this.$nextTick(() => this.scrollVirtualScrollerToIndex(idx));
           })
           .catch(() => {});
+      }
+    },
+    handleHash() {
+      if (this.viewDiffsFileByFile && !this.autoScrolled) {
+        const file = this.diffs[0];
+
+        if (file && !file.isLoadingFullFile) {
+          requestIdleCallback(() => this.slowHashHandler());
+        }
       }
     },
     navigateToDiffFileNumber(number) {

@@ -21,21 +21,21 @@ module Integrations
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
       choices: -> { branch_choices }
 
-    def title
+    def self.title
       s_("DiscordService|Discord Notifications")
     end
 
-    def description
+    def self.description
       s_("DiscordService|Send notifications about project events to a Discord channel.")
+    end
+
+    def self.help
+      docs_link = ActionController::Base.helpers.link_to _('How do I set up this service?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/discord_notifications'), target: '_blank', rel: 'noopener noreferrer'
+      s_('Send notifications about project events to a Discord channel. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
     def self.to_param
       "discord"
-    end
-
-    def help
-      docs_link = ActionController::Base.helpers.link_to _('How do I set up this service?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/discord_notifications'), target: '_blank', rel: 'noopener noreferrer'
-      s_('Send notifications about project events to a Discord channel. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
     def default_channel_placeholder

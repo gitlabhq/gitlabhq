@@ -1,13 +1,18 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import SubmitDropdown from '~/batch_comments/components/submit_dropdown.vue';
 import { mockTracking } from 'helpers/tracking_helper';
+import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
 
 jest.mock('~/autosave');
 
+Vue.use(VueApollo);
 Vue.use(Vuex);
 
 let wrapper;
@@ -17,6 +22,26 @@ let trackingSpy;
 function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) {
   publishReview = jest.fn();
   trackingSpy = mockTracking(undefined, null, jest.spyOn);
+  const requestHandlers = [
+    [
+      userCanApproveQuery,
+      () =>
+        Promise.resolve({
+          data: {
+            project: {
+              id: 1,
+              mergeRequest: {
+                id: 1,
+                userPermissions: {
+                  canApprove,
+                },
+              },
+            },
+          },
+        }),
+    ],
+  ];
+  const apolloProvider = createMockApollo(requestHandlers);
 
   const store = new Vuex.Store({
     getters: {
@@ -27,12 +52,17 @@ function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) 
       getNoteableData: () => ({
         id: 1,
         preview_note_path: '/preview',
-        current_user: { can_approve: canApprove },
       }),
       noteableType: () => 'merge_request',
       getCurrentUserLastNote: () => ({ id: 1 }),
     },
     modules: {
+      diffs: {
+        namespaced: true,
+        state: {
+          projectPath: 'gitlab-org/gitlab',
+        },
+      },
       batchComments: {
         namespaced: true,
         state: { shouldAnimateReviewButton },
@@ -44,6 +74,7 @@ function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) 
   });
   wrapper = mountExtended(SubmitDropdown, {
     store,
+    apolloProvider,
   });
 }
 
@@ -113,11 +144,18 @@ describe('Batch comments submit dropdown', () => {
     canApprove | exists   | existsText
     ${true}    | ${true}  | ${'shows'}
     ${false}   | ${false} | ${'hides'}
-  `('$existsText approve checkbox if can_approve is $canApprove', ({ canApprove, exists }) => {
-    factory({ canApprove });
+  `(
+    '$existsText approve checkbox if can_approve is $canApprove',
+    async ({ canApprove, exists }) => {
+      factory({ canApprove });
 
-    expect(wrapper.findByTestId('approve_merge_request').exists()).toBe(exists);
-  });
+      wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+
+      await waitForPromises();
+
+      expect(wrapper.findByTestId('approve_merge_request').exists()).toBe(exists);
+    },
+  );
 
   it.each`
     shouldAnimateReviewButton | animationClassApplied | classText

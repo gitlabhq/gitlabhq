@@ -37,15 +37,15 @@ module Integrations
       title: -> { s_('AppleAppStore|Protected branches and tags only') },
       checkbox_label: -> { s_('AppleAppStore|Only set variables on protected branches and tags') }
 
-    def title
+    def self.title
       'Apple App Store Connect'
     end
 
-    def description
+    def self.description
       s_('AppleAppStore|Use GitLab to build and release an app in the Apple App Store.')
     end
 
-    def help
+    def self.help
       variable_list = [
         '<code>APP_STORE_CONNECT_API_KEY_ISSUER_ID</code>',
         '<code>APP_STORE_CONNECT_API_KEY_KEY_ID</code>',

@@ -19,7 +19,7 @@ module QA
           fill_in_customer_info
           fill_in_payment_info
 
-          new_subscription.confirm_purchase
+          new_subscription.purchase
         end
       end
 
@@ -37,7 +37,7 @@ module QA
           fill_in_customer_info
           fill_in_payment_info
 
-          ci_minutes.confirm_purchase
+          ci_minutes.purchase
         end
       end
 
@@ -59,7 +59,7 @@ module QA
           fill_in_customer_info
           fill_in_payment_info
 
-          storage.confirm_purchase
+          storage.purchase
         end
       end
 

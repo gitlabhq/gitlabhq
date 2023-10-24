@@ -191,22 +191,22 @@ module Integrations
       end
     end
 
-    def help
+    def self.title
+      'Jira'
+    end
+
+    def self.description
+      s_("JiraService|Use Jira as this project's issue tracker.")
+    end
+
+    def self.help
       jira_doc_link_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe,
-        url: help_page_path('integration/jira/index'))
+        url: Gitlab::Routing.url_helpers.help_page_path('integration/jira/index'))
       format(
         s_("JiraService|You must configure Jira before enabling this integration. " \
            "%{jira_doc_link_start}Learn more.%{link_end}"),
         jira_doc_link_start: jira_doc_link_start,
         link_end: '</a>'.html_safe)
-    end
-
-    def title
-      'Jira'
-    end
-
-    def description
-      s_("JiraService|Use Jira as this project's issue tracker.")
     end
 
     def self.to_param

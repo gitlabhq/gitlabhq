@@ -22,15 +22,15 @@ module Integrations
       validates :token, length: { maximum: 255 }, allow_blank: true
     end
 
-    def title
+    def self.title
       'Squash TM'
     end
 
-    def description
+    def self.description
       s_("SquashTmIntegration|Update Squash TM requirements when GitLab issues are modified.")
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to(
         _('Learn more.'),
         Rails.application.routes.url_helpers.help_page_url('user/project/integrations/squash_tm'),

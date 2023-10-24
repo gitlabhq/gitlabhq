@@ -49,6 +49,7 @@ import {
   TRACKING_MULTIPLE_FILES_MODE,
   EVT_MR_PREPARED,
   FILE_DIFF_POSITION_TYPE,
+  EVT_DISCUSSIONS_ASSIGNED,
 } from '../constants';
 import {
   DISCUSSION_SINGLE_DIFF_FAILED,
@@ -413,7 +414,7 @@ export const assignDiscussionsToDiff = (
   }
 
   Vue.nextTick(() => {
-    notesEventHub.$emit('scrollToDiscussion');
+    eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
   });
 };
 

@@ -18,11 +18,8 @@ export default {
   computed: {
     ...mapGetters(['currentScope']),
     ...mapState(['useSidebarNavigation', 'searchType']),
-    showArchivedFilter() {
-      return this.glFeatures.searchBlobsHideArchivedProjects;
-    },
     showDivider() {
-      return !this.useSidebarNavigation && this.showArchivedFilter;
+      return !this.useSidebarNavigation;
     },
     hrClasses() {
       return [...HR_DEFAULT_CLASSES, 'gl-display-none', 'gl-md-display-block'];
@@ -35,6 +32,6 @@ export default {
   <filters-template>
     <language-filter class="gl-mb-5" />
     <hr v-if="showDivider" :class="hrClasses" />
-    <archived-filter v-if="showArchivedFilter" class="gl-mb-5" />
+    <archived-filter class="gl-mb-5" />
   </filters-template>
 </template>

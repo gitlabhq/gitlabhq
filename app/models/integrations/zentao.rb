@@ -57,18 +57,18 @@ module Integrations
       data_fields.api_url ||= issues_tracker['api_url']
     end
 
-    def title
+    def self.title
       'ZenTao'
     end
 
-    def description
+    def self.description
       s_("ZentaoIntegration|Use ZenTao as this project's issue tracker.")
     end
 
-    def help
+    def self.help
       s_("ZentaoIntegration|Before you enable this integration, you must configure ZenTao. For more details, read the %{link_start}ZenTao integration documentation%{link_end}.") % {
         link_start: '<a href="%{url}" target="_blank" rel="noopener noreferrer">'
-          .html_safe % { url: help_page_url('user/project/integrations/zentao') },
+          .html_safe % { url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/zentao') },
         link_end: '</a>'.html_safe
       }
     end

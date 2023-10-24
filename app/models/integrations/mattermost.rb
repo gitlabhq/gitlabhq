@@ -5,11 +5,11 @@ module Integrations
     include SlackMattermostNotifier
     include SlackMattermostFields
 
-    def title
+    def self.title
       _('Mattermost notifications')
     end
 
-    def description
+    def self.description
       s_('Send notifications about project events to Mattermost channels.')
     end
 
@@ -17,7 +17,7 @@ module Integrations
       'mattermost'
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/mattermost'), target: '_blank', rel: 'noopener noreferrer'
       s_('Send notifications about project events to Mattermost channels. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end

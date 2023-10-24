@@ -5004,6 +5004,39 @@ Input type: `MarkAsSpamSnippetInput`
 | <a id="mutationmarkasspamsnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmarkasspamsnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
+### `Mutation.memberRoleCreate`
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `MemberRoleCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberrolecreateadmingroupmember"></a>`adminGroupMember` | [`Boolean`](#boolean) | Permission to admin group members. |
+| <a id="mutationmemberrolecreateadminmergerequest"></a>`adminMergeRequest` | [`Boolean`](#boolean) | Permission to admin merge requests. |
+| <a id="mutationmemberrolecreateadminvulnerability"></a>`adminVulnerability` | [`Boolean`](#boolean) | Permission to admin vulnerability. |
+| <a id="mutationmemberrolecreatebaseaccesslevel"></a>`baseAccessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Base access level for the custom role. |
+| <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberrolecreatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
+| <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group the member role to mutate is in. |
+| <a id="mutationmemberrolecreatemanageprojectaccesstokens"></a>`manageProjectAccessTokens` | [`Boolean`](#boolean) | Permission to admin project access tokens. |
+| <a id="mutationmemberrolecreatename"></a>`name` | [`String`](#string) | Name of the member role. |
+| <a id="mutationmemberrolecreatereadcode"></a>`readCode` | [`Boolean`](#boolean) | Permission to read code. |
+| <a id="mutationmemberrolecreatereaddependency"></a>`readDependency` | [`Boolean`](#boolean) | Permission to read dependency. |
+| <a id="mutationmemberrolecreatereadvulnerability"></a>`readVulnerability` | [`Boolean`](#boolean) | Permission to read vulnerability. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberrolecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmemberrolecreatememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Updated member role. |
+
 ### `Mutation.memberRoleUpdate`
 
 Input type: `MemberRoleUpdateInput`
@@ -19911,9 +19944,18 @@ Represents a member role.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="memberroleadmingroupmember"></a>`adminGroupMember` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin group members. |
+| <a id="memberroleadminmergerequest"></a>`adminMergeRequest` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin merge requests. |
+| <a id="memberroleadminvulnerability"></a>`adminVulnerability` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin vulnerability. |
+| <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Base access level for the custom role. |
 | <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
+| <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`[MemberRolePermission!]`](#memberrolepermission) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Array of all permissions enabled for the custom role. |
 | <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
+| <a id="memberrolemanageprojectaccesstokens"></a>`manageProjectAccessTokens` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin project access tokens. |
 | <a id="memberrolename"></a>`name` | [`String!`](#string) | Name of the member role. |
+| <a id="memberrolereadcode"></a>`readCode` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read code. |
+| <a id="memberrolereaddependency"></a>`readDependency` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read dependency. |
+| <a id="memberrolereadvulnerability"></a>`readVulnerability` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read vulnerability. |
 
 ### `MergeAccessLevel`
 
@@ -28842,6 +28884,20 @@ Name of access levels of a group or project member.
 | <a id="memberaccesslevelnamemaintainer"></a>`MAINTAINER` | Maintainer access. |
 | <a id="memberaccesslevelnameowner"></a>`OWNER` | Owner access. |
 | <a id="memberaccesslevelnamereporter"></a>`REPORTER` | Reporter access. |
+
+### `MemberRolePermission`
+
+Member role permission.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Allows admin access to group members. |
+| <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows admin access to the merge requests. |
+| <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Allows admin access to the vulnerability reports. |
+| <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Allows manage access to the project access tokens. |
+| <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |
+| <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies. |
+| <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Allows read-only access to the vulnerability reports. |
 
 ### `MemberSort`
 

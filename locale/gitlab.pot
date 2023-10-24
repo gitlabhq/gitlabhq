@@ -14422,6 +14422,9 @@ msgstr ""
 msgid "Creating epic"
 msgstr ""
 
+msgid "Creation of member role is allowed only for root groups"
+msgstr ""
+
 msgid "Creator"
 msgstr ""
 
@@ -45903,6 +45906,9 @@ msgstr ""
 msgid "StatusCheck|Target branch"
 msgstr ""
 
+msgid "StatusCheck|URL parameters are hidden for security reasons. For details of URL parameters, see the configuration for the status check service."
+msgstr ""
+
 msgid "StatusCheck|Update status check"
 msgstr ""
 
@@ -47863,6 +47869,9 @@ msgid "The project was successfully forked."
 msgstr ""
 
 msgid "The project was successfully imported."
+msgstr ""
+
+msgid "The project-group link could not be removed."
 msgstr ""
 
 msgid "The related CI build failed."

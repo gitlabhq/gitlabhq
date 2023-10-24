@@ -68,7 +68,7 @@ export default {
       required: true,
     },
   },
-  jobClasses: [
+  legacyJobClasses: [
     'gl-p-3',
     'gl-border-gray-100',
     'gl-border-solid',
@@ -82,18 +82,43 @@ export default {
     'gl-hover-border-gray-200',
     'gl-focus-border-gray-200',
   ],
-  titleClasses: [
+  jobClasses: [
+    'gl-p-3',
+    'gl-border-0',
+    'gl-bg-transparent',
+    'gl-rounded-base',
+    'gl-hover-bg-gray-50',
+    'gl-focus-bg-gray-50',
+    'gl-hover-text-gray-900',
+    'gl-focus-text-gray-900',
+  ],
+  legacyTitleClasses: [
     'gl-font-weight-bold',
     'gl-pipeline-job-width',
     'gl-text-truncate',
     'gl-line-height-36',
     'gl-pl-3',
   ],
+  titleClasses: [
+    'gl-font-weight-bold',
+    'gl-pipeline-job-width',
+    'gl-text-truncate',
+    'gl-line-height-36',
+    'gl-pl-4',
+    'gl-mb-n2',
+  ],
   computed: {
     canUpdatePipeline() {
       return this.userPermissions.updatePipeline;
     },
     columnSpacingClass() {
+      if (this.isNewPipelineGraph) {
+        const baseClasses = 'stage-column gl-relative gl-flex-basis-full';
+        return this.isStageView
+          ? `${baseClasses} is-stage-view gl-m-5`
+          : `${baseClasses} gl-my-5 gl-mx-7`;
+      }
+
       return this.isStageView ? 'gl-px-6' : 'gl-px-9';
     },
     hasAction() {
@@ -101,6 +126,17 @@ export default {
     },
     showStageName() {
       return !this.isStageView;
+    },
+    isNewPipelineGraph() {
+      return this.glFeatures.newPipelineGraph;
+    },
+    jobClasses() {
+      return this.isNewPipelineGraph ? this.$options.jobClasses : this.$options.legacyJobClasses;
+    },
+    titleClasses() {
+      return this.isNewPipelineGraph
+        ? this.$options.titleClasses
+        : this.$options.legacyTitleClasses;
     },
   },
   errorCaptured(err, _vm, info) {
@@ -135,12 +171,16 @@ export default {
 };
 </script>
 <template>
-  <root-graph-layout :class="columnSpacingClass" data-testid="stage-column">
+  <root-graph-layout
+    :class="columnSpacingClass"
+    class="stage-column gl-relative gl-flex-basis-full"
+    data-testid="stage-column"
+  >
     <template #stages>
       <div
         data-testid="stage-column-title"
         class="gl-display-flex gl-justify-content-space-between gl-relative"
-        :class="$options.titleClasses"
+        :class="titleClasses"
       >
         <span :title="name" class="gl-text-truncate gl-pr-3 gl-w-85p">
           {{ name }}
@@ -161,7 +201,11 @@ export default {
         :id="groupId(group)"
         :key="getGroupId(group)"
         data-testid="stage-column-group"
-        class="gl-relative gl-mb-3 gl-white-space-normal gl-pipeline-job-width"
+        class="gl-relative gl-white-space-normal gl-pipeline-job-width"
+        :class="{
+          'gl-mb-3': !isNewPipelineGraph,
+          'gl-mb-2': isNewPipelineGraph,
+        }"
         @mouseenter="$emit('jobHover', group.name)"
         @mouseleave="$emit('jobHover', '')"
       >
@@ -174,7 +218,7 @@ export default {
           :pipeline-expanded="pipelineExpanded"
           :pipeline-id="pipelineId"
           :stage-name="showStageName ? group.stageName : ''"
-          :css-class-job-name="$options.jobClasses"
+          :css-class-job-name="jobClasses"
           :class="[
             { 'gl-opacity-3': isFadedOut(group.name) },
             'gl-transition-duration-slow gl-transition-timing-function-ease',
@@ -188,7 +232,7 @@ export default {
             :group="group"
             :stage-name="showStageName ? group.stageName : ''"
             :pipeline-id="pipelineId"
-            :css-class-job-name="$options.jobClasses"
+            :css-class-job-name="jobClasses"
           />
         </div>
       </div>

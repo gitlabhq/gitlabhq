@@ -18,10 +18,14 @@ By default, users are locked after 10 failed sign-in attempts. These users remai
 
 In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) to configure:
 
-- The number of failed sign-in attempts that locks a user.
-- The time period in minutes that the locked user is locked for, after the maximum number of failed sign-in attempts is reached.
+- The number of failed sign-in attempts that locks a user (`max_login_attempts`).
+- The time period in minutes that the locked user is locked for, after the maximum number of failed sign-in attempts is reached (`failed_login_attempts_unlock_period_in_minutes`).
 
-For example, an administrator can configure that five failed sign-in attempts locks a user, and that user will be locked for 60 minutes.
+For example, an administrator can configure that five failed sign-in attempts locks a user, and that user will be locked for 60 minutes, with the following API call:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?max_login_attempts=5&failed_login_attempts_unlock_period_in_minutes=60"
+```
 
 ## GitLab.com users
 

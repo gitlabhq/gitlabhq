@@ -87,20 +87,20 @@ module Integrations
         "gitlab/#{project.full_path}/redirect/commits/#{sha}?branch=#{Addressable::URI.encode_component(ref.to_s)}")
     end
 
-    def title
+    def self.title
       'Drone'
     end
 
-    def description
+    def self.description
+      s_('ProjectService|Run CI/CD pipelines with Drone.')
+    end
+
+    def self.help
       s_('ProjectService|Run CI/CD pipelines with Drone.')
     end
 
     def self.to_param
       'drone_ci'
-    end
-
-    def help
-      s_('ProjectService|Run CI/CD pipelines with Drone.')
     end
 
     override :hook_url

@@ -6,11 +6,29 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import { fetchPolicies } from '~/lib/graphql';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import userCanApproveQuery from '../queries/can_approve.query.graphql';
 
 export default {
+  apollo: {
+    userPermissions: {
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      query: userCanApproveQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath.replace(/^\//, ''),
+          iid: `${this.getNoteableData.iid}`,
+        };
+      },
+      update: (data) => data.project?.mergeRequest?.userPermissions,
+      skip() {
+        return !this.dropdownVisible;
+      },
+    },
+  },
   components: {
     GlDisclosureDropdown,
     GlButton,
@@ -28,6 +46,7 @@ export default {
   data() {
     return {
       isSubmitting: false,
+      dropdownVisible: false,
       noteData: {
         noteable_type: '',
         noteable_id: '',
@@ -42,11 +61,13 @@ export default {
         'aria-label': __('Comment'),
         'data-testid': 'comment-textarea',
       },
+      userPermissions: {},
     };
   },
   computed: {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
     ...mapState('batchComments', ['shouldAnimateReviewButton']),
+    ...mapState('diffs', ['projectPath']),
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
@@ -59,6 +80,17 @@ export default {
       setTimeout(() => {
         this.repositionDropdown();
       });
+    },
+    dropdownVisible(val) {
+      if (!val) {
+        this.userPermissions = {};
+      }
+    },
+    userPermissions: {
+      handler() {
+        this.repositionDropdown();
+      },
+      deep: true,
     },
   },
   mounted() {
@@ -112,6 +144,9 @@ export default {
         preventDefault();
       }
     },
+    setDropdownVisible(val) {
+      this.dropdownVisible = val;
+    },
   },
   restrictedToolbarItems: ['full-screen'],
 };
@@ -126,6 +161,8 @@ export default {
     data-testid="submit-review-dropdown"
     fluid-width
     @beforeClose="onBeforeClose"
+    @shown="setDropdownVisible(true)"
+    @hidden="setDropdownVisible(false)"
   >
     <template #toggle>
       <gl-button variant="info" category="primary">
@@ -171,7 +208,7 @@ export default {
             @keydown.ctrl.enter="submitReview"
           />
         </div>
-        <template v-if="getNoteableData.current_user.can_approve">
+        <template v-if="userPermissions.canApprove">
           <gl-form-checkbox
             v-model="noteData.approve"
             data-testid="approve_merge_request"

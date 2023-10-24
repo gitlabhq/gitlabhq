@@ -237,6 +237,18 @@ class Integration < ApplicationRecord
   end
   private_class_method :boolean_accessor
 
+  def self.title
+    raise NotImplementedError
+  end
+
+  def self.description
+    raise NotImplementedError
+  end
+
+  def self.help
+    # no-op
+  end
+
   def self.to_param
     raise NotImplementedError
   end
@@ -447,19 +459,18 @@ class Integration < ApplicationRecord
   end
 
   def title
-    # implement inside child
+    self.class.title
   end
 
   def description
-    # implement inside child
+    self.class.description
   end
 
   def help
-    # implement inside child
+    self.class.help
   end
 
   def to_param
-    # implement inside child
     self.class.to_param
   end
 

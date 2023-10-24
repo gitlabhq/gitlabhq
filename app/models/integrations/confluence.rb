@@ -22,11 +22,11 @@ module Integrations
       'confluence'
     end
 
-    def title
+    def self.title
       s_('ConfluenceService|Confluence Workspace')
     end
 
-    def description
+    def self.description
       s_('ConfluenceService|Link to a Confluence Workspace from the sidebar.')
     end
 

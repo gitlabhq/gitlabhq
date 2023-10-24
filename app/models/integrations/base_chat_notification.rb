@@ -136,10 +136,6 @@ module Integrations
       raise NotImplementedError
     end
 
-    def help
-      raise NotImplementedError
-    end
-
     # With some integrations the webhook is already tied to a specific channel,
     # for others the channels are configurable for each event.
     def configurable_channels?

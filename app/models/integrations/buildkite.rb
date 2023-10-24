@@ -75,20 +75,20 @@ module Integrations
       "#{project_url}/builds?commit=#{sha}"
     end
 
-    def title
+    def self.title
       'Buildkite'
     end
 
-    def description
+    def self.description
       'Run CI/CD pipelines with Buildkite.'
+    end
+
+    def self.help
+      s_('ProjectService|Run CI/CD pipelines with Buildkite.')
     end
 
     def self.to_param
       'buildkite'
-    end
-
-    def help
-      s_('ProjectService|Run CI/CD pipelines with Buildkite.')
     end
 
     def calculate_reactive_cache(sha, ref)

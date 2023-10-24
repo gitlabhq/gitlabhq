@@ -14,7 +14,7 @@ Internal events are using a tool called Snowplow under the hood. To develop and 
 | Snowplow Micro                               | Yes | Yes  | Yes            | No    | No    |
 
 For local development you will have to either [setup a local event collector](#setup-local-event-collector) or [configure a remote event collector](#configure-a-remote-event-collector).
-We recommend the local setup when actively developing new events.
+We recommend using the local setup together with the [internal events monitor](#internal-events-monitor) when actively developing new events.
 
 ## Setup local event collector
 
@@ -67,6 +67,57 @@ You can configure your self-managed GitLab instance to use a custom Snowplow col
    | Cookie domain      | `.your-gitlab-instance.com`   |
 
 1. Select **Save changes**.
+
+## Internal Events Monitor
+
+<div class="video-fallback">
+  Watch the demo video about the <a href="https://www.youtube.com/watch?v=R7vT-VEzZOI">Internal Events Tracking Monitor</a>
+</div>
+<figure class="video_container">
+  <iframe src="https://www.youtube-nocookie.com/embed/R7vT-VEzZOI" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
+To understand how events are triggered and metrics are updated while you use the Rails app locally or `rails console`,
+you can use the monitor.
+
+Start the monitor and list one or more events that you would like to monitor. In this example we would like to monitor `i_code_review_user_create_mr`.
+
+```shell
+rails runner scripts/internal_events/monitor.rb i_code_review_user_create_mr
+```
+
+The monitor shows two tables. The top table lists all the metrics that are defined on the `i_code_review_user_create_mr` event.
+The second right-most column shows the value of each metric when the monitor was started and the right most column shows the current value of each metric.
+The bottom table has a list selected properties of all Snowplow events that matches the event name.
+
+If a new `i_code_review_user_create_mr` event is fired, the metrics values will get updated and a new event will appear in the `SNOWPLOW EVENTS` table.
+
+The monitor looks like below.
+
+```plaintext
+Updated at 2023-10-11 10:17:59 UTC
+Monitored events: i_code_review_user_create_mr
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                          RELEVANT METRICS                                                                          |
++-----------------------------------------------------------------------------+------------------------------+-----------------------+---------------+---------------+
+| Key Path                                                                    | Monitored Events             | Instrumentation Class | Initial Value | Current Value |
++-----------------------------------------------------------------------------+------------------------------+-----------------------+---------------+---------------+
+| counts_monthly.aggregated_metrics.code_review_category_monthly_active_users | i_code_review_user_create_mr | AggregatedMetric      | 13            | 14            |
+| counts_monthly.aggregated_metrics.code_review_group_monthly_active_users    | i_code_review_user_create_mr | AggregatedMetric      | 13            | 14            |
+| counts_weekly.aggregated_metrics.code_review_category_monthly_active_users  | i_code_review_user_create_mr | AggregatedMetric      | 0             | 1             |
+| counts_weekly.aggregated_metrics.code_review_group_monthly_active_users     | i_code_review_user_create_mr | AggregatedMetric      | 0             | 1             |
+| redis_hll_counters.code_review.i_code_review_user_create_mr_monthly         | i_code_review_user_create_mr | RedisHLLMetric        | 8             | 9             |
+| redis_hll_counters.code_review.i_code_review_user_create_mr_weekly          | i_code_review_user_create_mr | RedisHLLMetric        | 0             | 1             |
++-----------------------------------------------------------------------------+------------------------------+-----------------------+---------------+---------------+
++---------------------------------------------------------------------------------------------------------+
+|                                             SNOWPLOW EVENTS                                             |
++------------------------------+--------------------------+---------+--------------+------------+---------+
+| Event Name                   | Collector Timestamp      | user_id | namespace_id | project_id | plan    |
++------------------------------+--------------------------+---------+--------------+------------+---------+
+| i_code_review_user_create_mr | 2023-10-11T10:17:15.504Z | 29      | 93           |            | default |
++------------------------------+--------------------------+---------+--------------+------------+---------+
+```
 
 ## Snowplow Analytics Debugger Chrome Extension
 

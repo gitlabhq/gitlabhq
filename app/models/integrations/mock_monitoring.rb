@@ -2,11 +2,11 @@
 
 module Integrations
   class MockMonitoring < BaseMonitoring
-    def title
+    def self.title
       'Mock monitoring'
     end
 
-    def description
+    def self.description
       'Mock monitoring service'
     end
 

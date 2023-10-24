@@ -1,16 +1,11 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { n__, __, sprintf } from '~/locale';
+import { __, n__, sprintf } from '~/locale';
+import { COMPONENTS } from '~/vue_merge_request_widget/components/checks/constants';
 import mergeRequestQueryVariablesMixin from '../mixins/merge_request_query_variables';
 import mergeChecksQuery from '../queries/merge_checks.query.graphql';
 import StateContainer from './state_container.vue';
 import BoldText from './bold_text.vue';
-
-const COMPONENTS = {
-  conflicts: () => import('./checks/conflicts.vue'),
-  rebase: () => import('./checks/rebase.vue'),
-  default: () => import('./checks/message.vue'),
-};
 
 export default {
   apollo: {

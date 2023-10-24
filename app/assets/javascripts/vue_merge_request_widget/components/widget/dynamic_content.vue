@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { generateText } from '../extensions/utils';
 import ContentRow from './widget_content_row.vue';
@@ -15,6 +15,7 @@ export default {
   },
   directives: {
     SafeHtml,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     data: {
@@ -78,7 +79,11 @@ export default {
         <div class="gl-display-flex gl-flex-grow-1">
           <div class="gl-display-flex gl-flex-grow-1 gl-align-items-baseline">
             <div>
-              <p v-safe-html="generatedText" class="gl-mb-0 gl-mr-1"></p>
+              <p
+                v-gl-tooltip="{ title: data.tooltipText, boundary: 'viewport' }"
+                v-safe-html="generatedText"
+                class="gl-mb-0 gl-mr-1"
+              ></p>
               <gl-link v-if="data.link" :href="data.link.href">{{ data.link.text }}</gl-link>
               <p
                 v-if="data.supportingText"

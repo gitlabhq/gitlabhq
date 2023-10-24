@@ -5,11 +5,11 @@ module Integrations
     include SlackMattermostNotifier
     include SlackMattermostFields
 
-    def title
+    def self.title
       'Slack notifications'
     end
 
-    def description
+    def self.description
       'Send notifications about project events to Slack.'
     end
 

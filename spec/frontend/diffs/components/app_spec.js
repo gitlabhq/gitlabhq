@@ -22,11 +22,14 @@ import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vu
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 import eventHub from '~/diffs/event_hub';
+import { EVT_DISCUSSIONS_ASSIGNED } from '~/diffs/constants';
 
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { Mousetrap } from '~/lib/mousetrap';
 import * as urlUtils from '~/lib/utils/url_utility';
+import * as commonUtils from '~/lib/utils/common_utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
@@ -662,6 +665,12 @@ describe('diffs/components/app', () => {
   });
 
   describe('file-by-file', () => {
+    let hashSpy;
+
+    beforeEach(() => {
+      hashSpy = jest.spyOn(commonUtils, 'handleLocationHash');
+    });
+
     it('renders a single diff', async () => {
       createComponent(
         undefined,
@@ -679,6 +688,48 @@ describe('diffs/components/app', () => {
       await nextTick();
 
       expect(wrapper.findAllComponents(DiffFile).length).toBe(1);
+    });
+
+    describe('rechecking the url hash for scrolling', () => {
+      const advanceAndCheckCalls = (count = 0) => {
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        expect(hashSpy).toHaveBeenCalledTimes(count);
+      };
+
+      it('re-checks one time after the file finishes loading', () => {
+        createComponent(
+          undefined,
+          ({ state }) => {
+            state.diffs.diffFiles = [{ isLoadingFullFile: true }];
+          },
+          undefined,
+          { viewDiffsFileByFile: true },
+        );
+
+        // The hash check is not called if the file is still marked as loading
+        expect(hashSpy).toHaveBeenCalledTimes(0);
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls();
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls();
+        // Once the file has finished loading, it calls through to check the hash
+        store.state.diffs.diffFiles[0].isLoadingFullFile = false;
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls(1);
+        // No further scrolls happen after one hash check / scroll
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls(1);
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+        advanceAndCheckCalls(1);
+      });
+
+      it('does not re-check when not in single-file mode', () => {
+        createComponent();
+
+        eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
+
+        expect(hashSpy).not.toHaveBeenCalled();
+      });
     });
 
     describe('pagination', () => {

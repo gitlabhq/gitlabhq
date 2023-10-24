@@ -1,4 +1,5 @@
 <script>
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import { reportToSentry } from '~/ci/utils';
 import { LOAD_FAILURE } from '../../constants';
@@ -18,6 +19,7 @@ export default {
     LinkedPipeline,
     PipelineGraph: () => import('./graph_component.vue'),
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     columnTitle: {
       type: String,
@@ -63,23 +65,30 @@ export default {
     'gl-pipeline-job-width',
     'gl-text-truncate',
     'gl-line-height-36',
-    'gl-pl-3',
-    'gl-mb-5',
   ],
   minWidth: `${ONE_COL_WIDTH}px`,
   computed: {
     columnClass() {
-      const positionValues = {
+      const positionValuesOld = {
         right: 'gl-ml-6',
         left: 'gl-mx-6',
       };
+      const positionValues = {
+        right: 'gl-ml-5',
+        left: 'gl-mx-4 gl-flex-basis-full',
+      };
+      const usePositionValues = this.isNewPipelineGraph ? positionValues : positionValuesOld;
 
-      return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
+      return `graph-position-${this.graphPosition} ${usePositionValues[this.graphPosition]}`;
     },
     computedTitleClasses() {
       const positionalClasses = this.isUpstream ? ['gl-w-full', 'gl-linked-pipeline-padding'] : [];
 
-      return [...this.$options.titleClasses, ...positionalClasses];
+      return [
+        ...this.$options.titleClasses,
+        !this.isNewPipelineGraph ?? ['gl-pl-3', 'gl-mb-5'],
+        ...positionalClasses,
+      ];
     },
     graphPosition() {
       return this.isUpstream ? 'left' : 'right';
@@ -92,6 +101,9 @@ export default {
     },
     minWidth() {
       return this.isUpstream ? 0 : this.$options.minWidth;
+    },
+    isNewPipelineGraph() {
+      return this.glFeatures.newPipelineGraph;
     },
   },
   methods: {
@@ -197,7 +209,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-display-flex" :class="{ 'gl-w-full': isNewPipelineGraph }">
     <div :class="columnClass" class="linked-pipelines-column">
       <div data-testid="linked-column-title" :class="computedTitleClasses">
         {{ columnTitle }}
@@ -206,8 +218,12 @@ export default {
         <li
           v-for="pipeline in linkedPipelines"
           :key="pipeline.id"
-          class="gl-display-flex gl-mb-3"
-          :class="{ 'gl-flex-direction-row-reverse': isUpstream }"
+          class="gl-display-flex"
+          :class="{
+            'gl-mb-3': !isNewPipelineGraph,
+            'gl-flex-wrap gl-sm-flex-nowrap gl-mb-6': isNewPipelineGraph,
+            'gl-flex-direction-row-reverse': !isNewPipelineGraph && isUpstream,
+          }"
         >
           <linked-pipeline
             class="gl-display-inline-block"
@@ -224,12 +240,15 @@ export default {
           <div
             v-if="showContainer(pipeline.id)"
             :style="{ minWidth }"
-            class="gl-display-inline-block"
+            class="gl-display-inline-block pipeline-show-container"
           >
             <pipeline-graph
               v-if="isExpanded(pipeline.id)"
               :type="type"
-              class="gl-inline-block gl-mt-n2"
+              class="gl-inline-block"
+              :class="{
+                'gl-mt-n2': !isNewPipelineGraph,
+              }"
               :config-paths="configPaths"
               :pipeline="currentPipeline"
               :computed-pipeline-info="getPipelineLayers(pipeline.id)"

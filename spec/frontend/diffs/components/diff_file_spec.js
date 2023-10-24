@@ -13,6 +13,7 @@ import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import DiffFileHeaderComponent from '~/diffs/components/diff_file_header.vue';
 
 import {
+  EVT_DISCUSSIONS_ASSIGNED,
   EVT_EXPAND_ALL_FILES,
   EVT_PERF_MARK_DIFF_FILES_END,
   EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN,
@@ -271,9 +272,10 @@ describe('DiffFile', () => {
         await nextTick(); // Wait for the idleCallback
         await nextTick(); // Wait for nextTick inside postRender
 
-        expect(eventHub.$emit).toHaveBeenCalledTimes(2);
+        expect(eventHub.$emit).toHaveBeenCalledTimes(3);
         expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
         expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_DIFF_FILES_END);
+        expect(eventHub.$emit).toHaveBeenCalledWith(EVT_DISCUSSIONS_ASSIGNED);
       });
     });
   });

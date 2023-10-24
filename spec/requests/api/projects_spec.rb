@@ -3688,6 +3688,16 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       it_behaves_like '412 response' do
         subject(:request) { api("/projects/#{project.id}/share/#{group.id}", user) }
       end
+
+      it "returns an error when link is not destroyed" do
+        allow(::Projects::GroupLinks::DestroyService).to receive_message_chain(:new, :execute)
+          .and_return(ServiceResponse.error(message: '404 Not Found', reason: :not_found))
+
+        delete api("/projects/#{project.id}/share/#{group.id}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq '404 Not Found'
+      end
     end
 
     it 'returns a 400 when group id is not an integer' do

@@ -40,6 +40,21 @@ module Gitlab
         # Order Summary
         div :selected_plan
         div :total_amount
+
+        # Alerts
+        div :lock_competition_error, text: /Operation failed due to a lock competition, please retry later./
+
+        def purchase
+          ::QA::Support::Retrier.retry_until(
+            max_duration: 60,
+            sleep_interval: 10,
+            message: 'Expected no Zuora lock competition error'
+          ) do
+            confirm_purchase
+            ::QA::Support::WaitForRequests.wait_for_requests
+            !lock_competition_error?
+          end
+        end
       end
     end
   end

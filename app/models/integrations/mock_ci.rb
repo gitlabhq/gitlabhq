@@ -14,11 +14,11 @@ module Integrations
 
     validates :mock_service_url, presence: true, public_url: true, if: :activated?
 
-    def title
+    def self.title
       'MockCI'
     end
 
-    def description
+    def self.description
       'Mock an external CI'
     end
 

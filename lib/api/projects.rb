@@ -792,7 +792,12 @@ module API
         not_found!('Group Link') unless link
 
         destroy_conditionally!(link) do
-          ::Projects::GroupLinks::DestroyService.new(user_project, current_user).execute(link)
+          result = ::Projects::GroupLinks::DestroyService.new(user_project, current_user).execute(link)
+
+          if result.error?
+            status = :not_found if result.reason == :not_found
+            render_api_error!(result.message, status)
+          end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

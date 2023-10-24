@@ -30,24 +30,29 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
     end
 
     let(:expiry_date) { 1.month.from_now.to_date }
+    let(:group_access) { Gitlab::Access::GUEST }
 
-    before do
-      travel_to Time.now.utc.beginning_of_day
-
+    subject(:update_link) do
       put(
         :update,
         params: {
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
           id: link.id,
-          group_link: { group_access: Gitlab::Access::GUEST, expires_at: expiry_date }
+          group_link: { group_access: group_access, expires_at: expiry_date }
         },
         format: :json
       )
     end
 
+    before do
+      travel_to Time.now.utc.beginning_of_day
+    end
+
     context 'when `expires_at` is set' do
       it 'returns correct json response' do
+        update_link
+
         expect(json_response).to eq({ "expires_in" => controller.helpers.time_ago_with_tooltip(expiry_date), "expires_soon" => false })
       end
     end
@@ -56,27 +61,41 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
       let(:expiry_date) { nil }
 
       it 'returns empty json response' do
+        update_link
+
         expect(json_response).to be_empty
       end
+    end
+
+    it "returns an error when link is not updated" do
+      allow(::Projects::GroupLinks::UpdateService).to receive_message_chain(:new, :execute)
+        .and_return(ServiceResponse.error(message: '404 Not Found', reason: :not_found))
+
+      update_link
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Not Found')
     end
   end
 
   describe '#destroy' do
     let(:group_owner) { create(:user) }
+    let(:group_access) { Gitlab::Access::DEVELOPER }
+    let(:format) { :html }
 
-    let(:link) do
-      create(:project_group_link, project: project, group: group, group_access: Gitlab::Access::DEVELOPER)
+    let!(:link) do
+      create(:project_group_link, project: project, group: group, group_access: group_access)
     end
 
     subject(:destroy_link) do
       post(:destroy, params: { namespace_id: project.namespace.to_param,
                                project_id: project.to_param,
-                               id: link.id })
+                               id: link.id }, format: format)
     end
 
     shared_examples 'success response' do
       it 'deletes the project group link' do
-        destroy_link
+        expect { destroy_link }.to change { project.reload.project_group_links.count }
 
         expect(response).to redirect_to(project_project_members_path(project))
         expect(response).to have_gitlab_http_status(:found)
@@ -119,6 +138,27 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
         end
 
         it_behaves_like 'success response'
+
+        it "returns an error when link is not destroyed" do
+          allow(::Projects::GroupLinks::DestroyService).to receive_message_chain(:new, :execute)
+            .and_return(ServiceResponse.error(message: 'The error message'))
+
+          expect { destroy_link }.not_to change { project.reload.project_group_links.count }
+          expect(flash[:alert]).to eq('The project-group link could not be removed.')
+        end
+
+        context 'when format is js' do
+          let(:format) { :js }
+
+          it "returns an error when link is not destroyed" do
+            allow(::Projects::GroupLinks::DestroyService).to receive_message_chain(:new, :execute)
+              .and_return(ServiceResponse.error(message: '404 Not Found', reason: :not_found))
+
+            expect { destroy_link }.not_to change { project.reload.project_group_links.count }
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to eq('404 Not Found')
+          end
+        end
       end
 
       context 'when user is not a project maintainer' do

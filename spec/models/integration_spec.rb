@@ -157,6 +157,18 @@ RSpec.describe Integration, feature_category: :integrations do
     include_examples 'hook scope', 'incident'
   end
 
+  describe '.title' do
+    it 'raises an error' do
+      expect { described_class.title }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '.description' do
+    it 'raises an error' do
+      expect { described_class.description }.to raise_error(NotImplementedError)
+    end
+  end
+
   describe '#operating?' do
     it 'is false when the integration is not active' do
       expect(build(:integration).operating?).to eq(false)

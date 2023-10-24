@@ -125,21 +125,27 @@
 // They are here to still access a variable or because they use magic values.
 // scoped to the graph. Do not add other styles.
 .gl-pipeline-min-h {
-  min-height: $dropdown-max-height-lg;
+  min-height: calc(#{$dropdown-max-height-lg} + #{$gl-spacing-scale-6});
 }
 
 .gl-pipeline-job-width {
   width: 100%;
-  max-width: 400px;
 }
 
 .gl-pipeline-job-width\! {
   width: 100% !important;
-  max-width: 400px !important;
 }
 
 .gl-downstream-pipeline-job-width {
   width: 8rem;
+
+  .pipeline-graph-container & {
+    width: 100%;
+
+    @media (min-width: $breakpoint-sm) {
+      width: 8rem;
+    }
+  }
 }
 
 .gl-linked-pipeline-padding {
@@ -154,8 +160,8 @@
 
   // Action Icons in big pipeline-graph nodes
   &.ci-action-icon-wrapper {
-    height: 30px;
-    width: 30px;
+    height: 24px;
+    width: 24px;
     border-radius: 100%;
     display: block;
     padding: 0;
@@ -240,5 +246,66 @@
     .job-failed {
       background-color: var(--gray-200, $gray-200);
     }
+  }
+}
+
+.pipeline-graph-container {
+  .stage-column.is-stage-view:not(:last-of-type)::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: $gl-spacing-scale-6;
+    width: 2px;
+    height: $gl-spacing-scale-5 * 2;
+    background-color: $gray-200;
+
+    @media (min-width: $breakpoint-sm) {
+      top: 1.25rem;
+      left: 100%;
+      width: $gl-spacing-scale-5 * 2;
+      height: 2px;
+    }
+  }
+
+  .stage-column,
+  .stage-column.is-stage-view {
+    @media (min-width: $breakpoint-sm) {
+      &:first-of-type {
+        margin-left: $gl-spacing-scale-6;
+      }
+    }
+  }
+
+  .linked-pipeline-container[aria-expanded=true] {
+    @media (max-width: $breakpoint-sm) {
+      width: 100%;
+
+      > div {
+        border-bottom-left-radius: 0;
+      }
+
+      > div > button {
+        border-bottom-right-radius: 0 !important;
+      }
+    }
+  }
+
+  .linked-pipelines-column,
+  .pipeline-show-container,
+  .pipeline-links-container {
+    @media (max-width: $breakpoint-sm) {
+      width: 100%;
+    }
+  }
+
+  .pipeline-graph {
+    @media (max-width: $breakpoint-sm) {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+
+  .pipeline-graph .pipeline-graph {
+    background-color: $gray-100;
   }
 }

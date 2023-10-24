@@ -14,11 +14,11 @@ module Integrations
       false
     end
 
-    def title
+    def self.title
       s_('Integrations|Mattermost slash commands')
     end
 
-    def description
+    def self.description
       s_('Integrations|Perform common tasks with slash commands.')
     end
 

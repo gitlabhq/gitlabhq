@@ -20,15 +20,15 @@ module Integrations
       title: -> { s_('Integrations|Restrict to branch (optional)') },
       help: -> { s_('AsanaService|Comma-separated list of branches to be automatically inspected. Leave blank to include all branches.') }
 
-    def title
+    def self.title
       'Asana'
     end
 
-    def description
+    def self.description
       s_('AsanaService|Add commit messages as comments to Asana tasks.')
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/asana'), target: '_blank', rel: 'noopener noreferrer'
       s_('Add commit messages as comments to Asana tasks. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end

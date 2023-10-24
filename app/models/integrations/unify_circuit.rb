@@ -17,11 +17,11 @@ module Integrations
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
       choices: -> { branch_choices }
 
-    def title
+    def self.title
       'Unify Circuit'
     end
 
-    def description
+    def self.description
       s_('Integrations|Send notifications about project events to Unify Circuit.')
     end
 
@@ -29,7 +29,7 @@ module Integrations
       'unify_circuit'
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to _('How do I set up this service?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/unify_circuit'), target: '_blank', rel: 'noopener noreferrer'
       s_('Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end

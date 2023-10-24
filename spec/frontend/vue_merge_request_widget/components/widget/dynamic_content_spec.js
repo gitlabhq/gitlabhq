@@ -2,6 +2,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 import DynamicContent from '~/vue_merge_request_widget/components/widget/dynamic_content.vue';
 import ContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 describe('~/vue_merge_request_widget/components/widget/dynamic_content.vue', () => {
   let wrapper;
@@ -16,10 +17,13 @@ describe('~/vue_merge_request_widget/components/widget/dynamic_content.vue', () 
         DynamicContent,
         ContentRow,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
-  it('renders given data', () => {
+  beforeEach(() => {
     createComponent({
       propsData: {
         data: {
@@ -49,10 +53,23 @@ describe('~/vue_merge_request_widget/components/widget/dynamic_content.vue', () 
               text: 'This is recursive. It will be listed in level 3.',
             },
           ],
+          tooltipText: 'Tooltip text',
         },
       },
     });
+  });
 
+  it('renders given data', () => {
     expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('has a tooltip on the row text', () => {
+    const text = wrapper.findByText('Main text for the row');
+    const tooltip = getBinding(text.element, 'gl-tooltip');
+
+    expect(tooltip.value).toMatchObject({
+      title: 'Tooltip text',
+      boundary: 'viewport',
+    });
   });
 });

@@ -15,11 +15,11 @@ module Integrations
       exposes_secrets: true,
       placeholder: ''
 
-    def title
+    def self.title
       'Assembla'
     end
 
-    def description
+    def self.description
       _('Manage projects.')
     end
 

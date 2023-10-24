@@ -17,11 +17,11 @@ module Integrations
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
       choices: -> { branch_choices }
 
-    def title
+    def self.title
       'Google Chat'
     end
 
-    def description
+    def self.description
       'Send notifications from GitLab to a room in Google Chat.'
     end
 
@@ -29,7 +29,7 @@ module Integrations
       'hangouts_chat'
     end
 
-    def help
+    def self.help
       docs_link = ActionController::Base.helpers.link_to(_('How do I set up a Google Chat webhook?'),
         Rails.application.routes.url_helpers.help_page_url('user/project/integrations/hangouts_chat'),
         target: '_blank', rel: 'noopener noreferrer')

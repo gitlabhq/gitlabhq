@@ -26,11 +26,11 @@ module Integrations
       update(active: !!slack_integration)
     end
 
-    def title
+    def self.title
       s_('Integrations|GitLab for Slack app')
     end
 
-    def description
+    def self.description
       s_('Integrations|Enable slash commands and notifications for a Slack workspace.')
     end
 

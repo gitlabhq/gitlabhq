@@ -44,11 +44,11 @@ module Integrations
       end
     end
 
-    def title
+    def self.title
       _('Pipeline status emails')
     end
 
-    def description
+    def self.description
       _('Email the pipeline status to a list of recipients.')
     end
 
