@@ -40,18 +40,6 @@ RSpec.describe MergeRequestCleanupRefsWorker, feature_category: :code_review_wor
           end
         end
       end
-
-      context 'when merge_request_refs_cleanup flag is disabled' do
-        before do
-          stub_feature_flags(merge_request_refs_cleanup: false)
-        end
-
-        it 'does nothing' do
-          expect(MergeRequests::CleanupRefsService).not_to receive(:new)
-
-          worker.perform_work
-        end
-      end
     end
 
     context 'when there is no next cleanup schedule found' do
