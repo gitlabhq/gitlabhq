@@ -6,9 +6,9 @@ module Banzai
       self.reference_type = :user
 
       def referenced_by(nodes, options = {})
-        group_ids = []
-        user_ids = []
-        project_ids = []
+        group_ids = Set.new
+        user_ids = Set.new
+        project_ids = Set.new
 
         nodes.each do |node|
           if node.has_attribute?('data-group')
@@ -20,8 +20,10 @@ module Banzai
           end
         end
 
-        find_users_for_groups(group_ids) | find_users(user_ids) |
-          find_users_for_projects(project_ids)
+        user_ids += find_user_ids_for_groups(group_ids)
+        user_ids += find_user_ids_for_projects(project_ids)
+
+        find_users(user_ids)
       end
 
       def nodes_visible_to_user(user, nodes)
@@ -49,20 +51,6 @@ module Banzai
         visible + super(current_user, remaining)
       end
 
-      # Check if project belongs to a group which
-      # user can read.
-      def can_read_group_reference?(node, user, groups)
-        node_group = groups[node]
-
-        node_group && can?(user, :read_group, node_group)
-      end
-
-      def can_read_project_reference?(node)
-        node_id = node.attr('data-project').to_i
-
-        project_for_node(node)&.id == node_id
-      end
-
       def nodes_user_can_reference(current_user, nodes)
         project_attr = 'data-project'
         author_attr = 'data-author'
@@ -88,28 +76,44 @@ module Banzai
         end
       end
 
+      private
+
+      # Check if project belongs to a group which
+      # user can read.
+      def can_read_group_reference?(node, user, groups)
+        node_group = groups[node]
+
+        node_group && can?(user, :read_group, node_group)
+      end
+
+      def can_read_project_reference?(node)
+        node_id = node.attr('data-project').to_i
+
+        project_for_node(node)&.id == node_id
+      end
+
       def find_users(ids)
         return [] if ids.empty?
 
         collection_objects_for_ids(User, ids)
       end
 
-      def find_users_for_groups(ids)
-        return [] if ids.empty?
+      def find_user_ids_for_groups(group_ids)
+        return [] if group_ids.empty?
 
-        cross_join_issue = "https://gitlab.com/gitlab-org/gitlab/-/issues/417466"
-        ::Gitlab::Database.allow_cross_joins_across_databases(url: cross_join_issue) do
-          User.joins(:group_members).where(members: {
-            source_id: Namespace.where(id: ids).where('mentions_disabled IS NOT TRUE').select(:id)
-          }).to_a
-        end
+        GroupMember
+          .of_groups(Group.id_in(group_ids).where('mentions_disabled IS NOT TRUE'))
+          .non_request
+          .non_invite
+          .non_minimal_access
+          .distinct
+          .pluck(:user_id)
       end
 
-      def find_users_for_projects(ids)
-        return [] if ids.empty?
+      def find_user_ids_for_projects(project_ids)
+        return [] if project_ids.empty?
 
-        collection_objects_for_ids(Project, ids)
-          .flat_map { |p| p.team.members.to_a }
+        ProjectAuthorization.for_project(project_ids).pluck(:user_id)
       end
 
       def can_read_reference?(user, ref_project, node)

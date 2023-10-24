@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Patch::SidekiqScheduledEnq, :clean_gitlab_redis_queues, f
       allow(Sidekiq).to receive(:load_json).and_return(payload)
 
       # stub data in both namespaces
-      Sidekiq.redis { |c| c.zadd('schedule', 100, 'dummy') }
+      Gitlab::Redis::Queues.with { |c| c.zadd('resque:gitlab:schedule', 100, 'dummy') }
       Gitlab::Redis::Queues.with { |c| c.zadd('schedule', 100, 'dummy') }
     end
 
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Patch::SidekiqScheduledEnq, :clean_gitlab_redis_queues, f
       end
 
       Gitlab::Redis::Queues.with do |conn|
-        expect(conn.zcard('schedule')).to eq(0)
+        expect(conn.zcard('resque:gitlab:schedule')).to eq(0)
       end
     end
 
@@ -45,29 +45,13 @@ RSpec.describe Gitlab::Patch::SidekiqScheduledEnq, :clean_gitlab_redis_queues, f
         end
 
         Gitlab::Redis::Queues.with do |conn|
-          expect(conn.zcard('schedule')).to eq(1)
+          expect(conn.zcard('resque:gitlab:schedule')).to eq(1)
         end
       end
     end
 
-    context 'when both envvar are enabled' do
-      around do |example|
-        # runs the zadd to ensure it goes into namespaced set
-        Sidekiq.redis { |c| c.zadd('schedule', 100, 'dummy') }
-
-        holder = Sidekiq.redis_pool
-
-        # forcibly replace Sidekiq.redis since this is set in config/initializer/sidekiq.rb
-        Sidekiq.redis = Gitlab::Redis::Queues.pool
-
-        example.run
-
-      ensure
-        Sidekiq.redis = holder
-      end
-
+    context 'when SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING is enabled' do
       before do
-        stub_env('SIDEKIQ_ENQUEUE_NON_NAMESPACED', 'true')
         stub_env('SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING', 'true')
       end
 
@@ -81,7 +65,7 @@ RSpec.describe Gitlab::Patch::SidekiqScheduledEnq, :clean_gitlab_redis_queues, f
         end
 
         Gitlab::Redis::Queues.with do |conn|
-          expect(conn.zcard('schedule')).to eq(0)
+          expect(conn.zcard('resque:gitlab:schedule')).to eq(0)
         end
       end
     end

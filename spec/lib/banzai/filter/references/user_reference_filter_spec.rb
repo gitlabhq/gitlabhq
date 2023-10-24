@@ -231,16 +231,17 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
 
     it 'does not have N+1 per multiple user references', :use_sql_query_cache do
       markdown = reference.to_s
+      reference_filter(markdown) # warm up
 
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         reference_filter(markdown)
-      end.count
+      end
 
       markdown = "#{reference} @qwertyuiopzx @wertyuio @ertyu @rtyui #{reference2} #{reference3}"
 
       expect do
         reference_filter(markdown)
-      end.not_to exceed_all_query_limit(control_count)
+      end.to issue_same_number_of_queries_as(control_count)
     end
   end
 end

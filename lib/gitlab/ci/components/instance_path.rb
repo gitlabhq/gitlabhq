@@ -17,7 +17,6 @@ module Gitlab
         def initialize(address:)
           @full_path, @version = address.to_s.split('@', 2)
           @host = Settings.gitlab_ci['component_fqdn']
-          @component_project = ::Ci::Catalog::ComponentsProject.new(project, sha)
         end
 
         def fetch_content!(current_user:)
@@ -26,7 +25,8 @@ module Gitlab
 
           raise Gitlab::Access::AccessDeniedError unless Ability.allowed?(current_user, :download_code, project)
 
-          @component_project.fetch_component(component_name)
+          component_project = ::Ci::Catalog::ComponentsProject.new(project, sha)
+          component_project.fetch_component(component_name)
         end
 
         def project

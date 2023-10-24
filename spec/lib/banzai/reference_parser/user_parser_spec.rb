@@ -25,8 +25,14 @@ RSpec.describe Banzai::ReferenceParser::UserParser, feature_category: :team_plan
 
         context 'when group has members' do
           let!(:group_member) { create(:group_member, group: group, user: user) }
+          let!(:user2) { create(:user) }
+          let!(:user3) { create(:user) }
+          let!(:user4) { create(:user) }
+          let!(:group_member2) { create(:group_member, :minimal_access, group: group, user: user2) }
+          let!(:group_member3) { create(:group_member, :access_request, group: group, user: user3) }
+          let!(:group_member4) { create(:group_member, :invited, group: group, user: user4) }
 
-          it 'returns the users of the group' do
+          it 'returns the relevant users of the group with enough access' do
             expect(subject.referenced_by([link])).to eq([user])
           end
 

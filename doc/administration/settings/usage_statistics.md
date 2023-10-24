@@ -64,6 +64,7 @@ In the following table, you can see:
 | [Custom Text in Emails](../../administration/settings/email.md#custom-additional-text) | GitLab 16.5 and later |
 | [Contribution analytics](../../user/group/contribution_analytics/index.md) | GitLab 16.5 and later |
 | [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
+| [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks) | GitLab 16.6 and later |
 
 ### Enable registration features
 

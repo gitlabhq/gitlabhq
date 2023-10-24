@@ -20727,9 +20727,6 @@ msgstr ""
 msgid "For the GitLab Team to keep your subscription data up to date, this is a reminder to report your license usage on a monthly basis, or at the cadence set in your agreement with GitLab. This allows us to simplify the billing process for overages and renewals. To report your usage data, export your license usage file and email it to %{renewal_service_email}. If you need an updated license, GitLab will send the license to the email address registered in the %{customers_dot}, and you can upload this license to your instance."
 msgstr ""
 
-msgid "For the next few releases, you can go to your avatar at any time to turn the new navigation on and off."
-msgstr ""
-
 msgid "Forbidden"
 msgstr ""
 
@@ -38898,9 +38895,6 @@ msgstr ""
 msgid "Read more about GitLab at %{link_to_promo}."
 msgstr ""
 
-msgid "Read more about the %{changes_link_start}changes%{link_end}, the %{vision_link_start}vision%{link_end}, and the %{design_link_start}design%{link_end}."
-msgstr ""
-
 msgid "Read the documentation before applying changes."
 msgstr ""
 
@@ -53465,9 +53459,6 @@ msgid "Welcome to GitLab, %{first_name}!"
 msgstr ""
 
 msgid "Welcome to GitLab,%{br_tag}%{name}!"
-msgstr ""
-
-msgid "Welcome to a new navigation experience"
 msgstr ""
 
 msgid "Welcome, %{name}!"
