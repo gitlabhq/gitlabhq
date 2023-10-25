@@ -26,7 +26,7 @@
   .settings-content
     = render 'ip_limits'
 
-%section.settings.as-packages-limits.no-animate#js-packages-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'packages_limits_content' } }
+%section.settings.as-packages-limits.no-animate#js-packages-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Package registry rate limits')
@@ -72,7 +72,7 @@
   .settings-content
     = render partial: 'network_rate_limits', locals: { anchor: 'js-deprecated-limits-settings', setting_fragment: 'deprecated_api' }
 
-%section.settings.as-git-lfs-limits.no-animate#js-git-lfs-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'git_lfs_limits_content' } }
+%section.settings.as-git-lfs-limits.no-animate#js-git-lfs-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Git LFS Rate Limits')

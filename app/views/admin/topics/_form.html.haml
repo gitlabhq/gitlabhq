@@ -4,7 +4,7 @@
   .form-group
     = f.label :name do
       = _("Topic slug (name)")
-    = f.text_field :name, placeholder: _('my-topic'), class: 'form-control input-lg', data: { qa_selector: 'topic_name_field' },
+    = f.text_field :name, placeholder: _('my-topic'), class: 'form-control input-lg',
       required: true,
       title: _('Please fill in a name for your topic.'),
       autofocus: true
@@ -12,7 +12,7 @@
   .form-group
     = f.label :title do
       = _("Topic title")
-    = f.text_field :title, placeholder: _('My topic'), class: 'form-control input-lg', data: { qa_selector: 'topic_title_field' },
+    = f.text_field :title, placeholder: _('My topic'), class: 'form-control input-lg',
       required: true,
       title: _('Please fill in a title for your topic.')
 

@@ -221,7 +221,7 @@ export default {
           class="note-textarea js-gfm-input js-autosize markdown-area"
           dir="auto"
           data-supports-quick-actions="false"
-          data-qa-selector="note_textarea"
+          data-testid="note-textarea"
           :aria-label="__('Description')"
           :placeholder="__('Write a comment…')"
           @input="handleInput"
@@ -243,7 +243,7 @@ export default {
         variant="confirm"
         type="submit"
         data-track-action="click_button"
-        data-qa-selector="save_comment_button"
+        data-testid="save-comment-button"
         @click="submitForm"
       >
         {{ buttonText }}

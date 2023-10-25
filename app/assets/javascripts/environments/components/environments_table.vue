@@ -147,12 +147,7 @@ export default {
       </div>
     </div>
     <template v-for="(model, i) in sortedEnvironments">
-      <environment-item
-        :key="`environment-item-${i}`"
-        :model="model"
-        :table-data="tableData"
-        data-qa-selector="environment_item"
-      />
+      <environment-item :key="`environment-item-${i}`" :model="model" :table-data="tableData" />
 
       <div
         v-if="shouldRenderDeployBoard(model)"
@@ -185,7 +180,6 @@ export default {
               :key="`environment-row-${i}-${index}`"
               :model="child"
               :table-data="tableData"
-              data-qa-selector="environment_item"
             />
 
             <div

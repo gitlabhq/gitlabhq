@@ -1,5 +1,5 @@
 - expanded = expanded_by_default?
-%section.settings.js-service-desk-setting-wrapper.no-animate#js-service-desk{ class: ('expanded' if expanded), data: { qa_selector: 'service_desk_settings_content' } }
+%section.settings.js-service-desk-setting-wrapper.no-animate#js-service-desk{ class: ('expanded' if expanded) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Service Desk')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do

@@ -53,7 +53,7 @@
     = render 'usage'
 
 - if Feature.enabled?(:configure_sentry_in_application_settings)
-  %section.settings.as-sentry.no-animate#js-sentry-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'sentry_settings_content' } }
+  %section.settings.as-sentry.no-animate#js-sentry-settings{ class: ('expanded' if expanded_by_default?) }
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
         = _('Sentry')

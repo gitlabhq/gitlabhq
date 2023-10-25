@@ -293,7 +293,6 @@ export default {
     <ul
       class="design-discussion bordered-box gl-relative gl-p-0 gl-list-style-none"
       :class="{ 'gl-bg-blue-50': isDiscussionActive }"
-      data-qa-selector="design_discussion_content"
       data-testid="design-discussion-content"
     >
       <design-note

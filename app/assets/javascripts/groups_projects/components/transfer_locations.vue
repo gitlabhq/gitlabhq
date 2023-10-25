@@ -260,11 +260,7 @@ export default {
           >
           <gl-dropdown-divider />
         </template>
-        <div
-          v-if="hasUserTransferLocations"
-          data-qa-selector="namespaces_list_users"
-          data-testid="user-transfer-locations"
-        >
+        <div v-if="hasUserTransferLocations" data-testid="user-transfer-locations">
           <gl-dropdown-section-header>{{ $options.i18n.USERS }}</gl-dropdown-section-header>
           <gl-dropdown-item
             v-for="item in userTransferLocations"

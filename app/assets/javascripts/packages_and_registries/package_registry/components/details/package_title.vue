@@ -77,7 +77,6 @@ export default {
     v-gl-resize-observer="checkBreakpoints"
     :title="packageEntity.name"
     :avatar="packageIcon"
-    data-qa-selector="package_title"
   >
     <template #sub-header>
       <div data-testid="sub-header" class="gl-display-flex gl-flex-wrap gl-gap-3">

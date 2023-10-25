@@ -151,7 +151,6 @@ export default {
           ref="deleteTagButton"
           :disabled="deleteButtonDisabled"
           variant="danger"
-          data-qa-selector="delete_tag_confirmation_button"
           data-testid="delete-tag-confirmation-button"
           @click="submitForm"
           >{{ buttonText }}</gl-button

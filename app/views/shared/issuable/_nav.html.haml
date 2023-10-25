@@ -11,7 +11,7 @@
     = gl_tab_link_to page_filter_path(state: 'closed'), item_active: params[:state] == 'closed', id: 'state-closed', title: _('Filter by merge requests that are currently closed and unmerged.'), data: { state: 'closed' } do
       #{issuables_state_counter_text(type, :closed, display_count)}
   - else
-    = gl_tab_link_to page_filter_path(state: 'closed'), item_active: params[:state] == 'closed', id: 'state-closed', title: _('Filter by issues that are currently closed.'), data: { state: 'closed', qa_selector: 'closed_issues_link' } do
+    = gl_tab_link_to page_filter_path(state: 'closed'), item_active: params[:state] == 'closed', id: 'state-closed', title: _('Filter by issues that are currently closed.'), data: { state: 'closed' } do
       #{issuables_state_counter_text(type, :closed, display_count)}
 
   = render 'shared/issuable/nav_links/all', page_context_word: page_context_word, counter: issuables_state_counter_text(type, :all, display_count)

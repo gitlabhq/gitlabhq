@@ -43,7 +43,7 @@ export default {
           value="all_branches"
           data-testid="rule_all_branches"
         >
-          <div data-qa-selector="strategy_radio_all">{{ __('All branches') }}</div>
+          <div>{{ __('All branches') }}</div>
         </gl-form-radio>
 
         <!-- wildcard -->
@@ -52,7 +52,7 @@ export default {
           value="wildcard"
           data-testid="rule_wildcard"
         >
-          <div data-qa-selector="strategy_radio_wildcard">
+          <div>
             {{ s__('Webhooks|Wildcard pattern') }}
           </div>
         </gl-form-radio>
@@ -61,7 +61,6 @@ export default {
             v-if="branchFilterStrategyData === 'wildcard'"
             v-model="pushEventsBranchFilterData"
             name="hook[push_events_branch_filter]"
-            data-qa-selector="webhook_branch_filter_field"
             data-testid="webhook_branch_filter_field"
           />
         </div>
@@ -85,7 +84,7 @@ export default {
           value="regex"
           data-testid="rule_regex"
         >
-          <div data-qa-selector="strategy_radio_regex">
+          <div>
             {{ s__('Webhooks|Regular expression') }}
           </div>
         </gl-form-radio>
@@ -94,7 +93,6 @@ export default {
             v-if="branchFilterStrategyData === 'regex'"
             v-model="pushEventsBranchFilterData"
             name="hook[push_events_branch_filter]"
-            data-qa-selector="webhook_branch_filter_field"
             data-testid="webhook_branch_filter_field"
           />
         </div>

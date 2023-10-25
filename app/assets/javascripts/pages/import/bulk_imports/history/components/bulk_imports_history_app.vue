@@ -225,12 +225,7 @@ export default {
       :description="s__('BulkImport|Your imported groups and projects will appear here.')"
     />
     <template v-else>
-      <gl-table-lite
-        :fields="$options.fields"
-        :items="historyItems"
-        data-qa-selector="import_history_table"
-        class="gl-w-full"
-      >
+      <gl-table-lite :fields="$options.fields" :items="historyItems" class="gl-w-full">
         <template #cell(destination_name)="{ item }">
           <gl-icon
             v-gl-tooltip

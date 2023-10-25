@@ -190,7 +190,7 @@ describe('ErrorDetails', () => {
     });
 
     describe('unsafe chars for culprit field', () => {
-      const findReportedText = () => wrapper.find('[data-qa-selector="reported_text"]');
+      const findReportedText = () => wrapper.find('[data-testid="reported-text"]');
       const culprit = '<script>console.log("surprise!")</script>';
       beforeEach(() => {
         store.state.details.loadingStacktrace = false;
@@ -350,7 +350,7 @@ describe('ErrorDetails', () => {
       it('should submit the form', () => {
         window.HTMLFormElement.prototype.submit = () => {};
         const submitSpy = jest.spyOn(wrapper.vm.$refs.sentryIssueForm, 'submit');
-        wrapper.find('[data-qa-selector="create_issue_button"]').vm.$emit('click');
+        wrapper.find('[data-testid="create-issue-button"]').vm.$emit('click');
         expect(submitSpy).toHaveBeenCalled();
         submitSpy.mockRestore();
       });
@@ -462,7 +462,7 @@ describe('ErrorDetails', () => {
     describe('GitLab issue link', () => {
       const gitlabIssuePath = 'https://gitlab.example.com/issues/1';
       const findGitLabLink = () => wrapper.find(`[href="${gitlabIssuePath}"]`);
-      const findCreateIssueButton = () => wrapper.find('[data-qa-selector="create_issue_button"]');
+      const findCreateIssueButton = () => wrapper.find('[data-testid="create-issue-button"]');
       const findViewIssueButton = () => wrapper.find('[data-qa-selector="view_issue_button"]');
 
       describe('is present', () => {
@@ -562,7 +562,7 @@ describe('ErrorDetails', () => {
       });
 
       it('should track create issue button click', async () => {
-        await wrapper.find('[data-qa-selector="create_issue_button"]').vm.$emit('click');
+        await wrapper.find('[data-testid="create-issue-button"]').vm.$emit('click');
         expect(Tracking.event).toHaveBeenCalledWith(category, 'click_create_issue_from_error', {
           extra: {
             variant: integrated ? 'integrated' : 'external',

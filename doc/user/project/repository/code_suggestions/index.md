@@ -62,22 +62,13 @@ Code Suggestions do not prevent you from writing code in your IDE.
 
 ## Supported languages
 
-The best results from Code Suggestions are expected for languages that [Anthropic Claude](https://www.anthropic.com/product) and the [Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_coding_languages) directly support:
+Code Suggestions support is a function of the:
 
-- C++
-- C#
-- Go
-- Google SQL
-- Java
-- JavaScript
-- Kotlin
-- PHP
-- Python
-- Ruby
-- Rust
-- Scala
-- Swift
-- TypeScript
+- Underlying large language model.
+- IDE used.
+- Extension or plug-in support in the IDE.
+
+For languages not listed in the following table, Code Suggestions might not function as expected.
 
 ### Supported languages in IDEs
 

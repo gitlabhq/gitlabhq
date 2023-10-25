@@ -43,7 +43,6 @@ export default {
   <div
     class="board-add-new-list board gl-display-inline-block gl-h-full gl-vertical-align-top gl-white-space-normal gl-flex-shrink-0 gl-rounded-base gl-px-3"
     data-testid="board-add-new-column"
-    data-qa-selector="board_add_new_list"
   >
     <div
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"

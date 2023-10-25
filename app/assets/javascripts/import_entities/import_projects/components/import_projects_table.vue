@@ -155,7 +155,6 @@ export default {
         <slot name="actions"></slot>
         <form v-if="filterable" class="gl-ml-auto" novalidate @submit.prevent>
           <gl-search-box-by-click
-            data-qa-selector="githubish_import_filter_field"
             name="filter"
             :placeholder="__('Filter by name')"
             autofocus

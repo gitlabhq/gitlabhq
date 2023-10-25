@@ -71,7 +71,6 @@ export default {
             variant="link"
             class="gl-ml-2"
             data-testid="assign-yourself"
-            data-qa-selector="assign_yourself_button"
             @click="assignSelf"
           >
             <span class="gl-text-gray-500 gl-hover-text-blue-800">{{ __('assign yourself') }}</span>

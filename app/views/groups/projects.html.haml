@@ -17,15 +17,15 @@
           = _("New project")
   - c.with_body do
     %ul.content-list{ class: 'gl-px-3!' }
-      - @projects.each_with_index do |project, idx|
-        %li.project-row.gl-align-items-center{ class: 'gl-display-flex!', data: { qa_selector: 'project_row_container', qa_index: idx } }
+      - @projects.each do |project|
+        %li.project-row.gl-align-items-center{ class: 'gl-display-flex!' }
           .avatar-container.rect-avatar.s40.gl-flex-shrink-0
             = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)
           .gl-min-w-0.gl-flex-grow-1
             .title
               = link_to project_path(project), class: 'js-prefetch-document' do
-                %span.project-full-name{ data: { qa_selector: 'project_fullname_content' } }
-                  %span.namespace-name{ data: { qa_selector: 'project_namespace_content' } }
+                %span.project-full-name
+                  %span.namespace-name
                     - if project.namespace
                       = project.namespace.human_name
                       \/
@@ -43,13 +43,12 @@
           .controls.gl-flex-shrink-0.gl-ml-5
             = render Pajamas::ButtonComponent.new(href: project_project_members_path(project),
               variant: :link,
-              button_options: { class: 'gl-mr-2', data: { qa_selector: 'project_members_button' } }) do
+              button_options: { class: 'gl-mr-2' }) do
               = _('View members')
             = render Pajamas::ButtonComponent.new(href: edit_project_path(project),
-              size: :small,
-              button_options: { data: { qa_selector: 'project_edit_button' } }) do
+              size: :small) do
               = _('Edit')
-            = render 'delete_project_button', project: project, data: { qa_selector: 'project_delete_button' }
+            = render 'delete_project_button', project: project
       - if @projects.blank?
         .nothing-here-block= _("This group has no projects yet")
 

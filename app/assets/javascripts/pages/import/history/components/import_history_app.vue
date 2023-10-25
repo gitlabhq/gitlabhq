@@ -144,12 +144,7 @@ export default {
       :description="s__('BulkImport|Your imported projects will appear here.')"
     />
     <template v-else>
-      <gl-table
-        :fields="$options.fields"
-        :items="historyItems"
-        data-qa-selector="import_history_table"
-        class="gl-w-full"
-      >
+      <gl-table :fields="$options.fields" :items="historyItems" class="gl-w-full">
         <template #cell(source)="{ item }">
           <template v-if="item.import_url">
             <gl-link

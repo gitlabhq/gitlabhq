@@ -79,7 +79,6 @@ export default {
       :autocomplete-data-sources="autocompleteDataSources"
       supports-quick-actions
       autofocus
-      data-qa-selector="description_field"
       @input="$emit('input', $event)"
       @keydown.meta.enter="saveIssuable"
       @keydown.ctrl.enter="saveIssuable"

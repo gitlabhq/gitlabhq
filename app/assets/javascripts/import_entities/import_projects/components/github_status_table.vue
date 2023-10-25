@@ -78,7 +78,6 @@ export default {
                 @input="setFilter({ organization_login: $event })"
               />
               <gl-search-box-by-click
-                data-qa-selector="githubish_import_filter_field"
                 name="filter"
                 :disabled="isNameFilterDisabled"
                 :value="nameFilter"

@@ -17102,8 +17102,10 @@ Total weight of open and closed descendant issues.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicdescendantweightsclosedissues"></a>`closedIssues` | [`Int`](#int) | Total weight of completed (closed) issues in this epic, including epic descendants. |
-| <a id="epicdescendantweightsopenedissues"></a>`openedIssues` | [`Int`](#int) | Total weight of opened issues in this epic, including epic descendants. |
+| <a id="epicdescendantweightsclosedissues"></a>`closedIssues` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 16.6. Use `closedIssuesTotal`. |
+| <a id="epicdescendantweightsclosedissuestotal"></a>`closedIssuesTotal` | [`BigInt`](#bigint) | Total weight of completed (closed) issues in this epic, including epic descendants, encoded as a string. |
+| <a id="epicdescendantweightsopenedissues"></a>`openedIssues` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 16.6. Use `OpenedIssuesTotal`. |
+| <a id="epicdescendantweightsopenedissuestotal"></a>`openedIssuesTotal` | [`BigInt`](#bigint) | Total weight of opened issues in this epic, including epic descendants, encoded as a string. |
 
 ### `EpicHealthStatus`
 

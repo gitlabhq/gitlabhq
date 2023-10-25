@@ -4,7 +4,7 @@ module QA
   module Support
     module Helpers
       module Plan
-        FREE = { name: 'free', price: 0, yearly_price: 0, ci_minutes: 400 }.freeze
+        FREE = { name: 'free', price: 0, yearly_price: 0, compute_minutes: 400 }.freeze
 
         PREMIUM = {
           plan_id: '2c92a00d76f0d5060176f2fb0a5029ff',
@@ -12,7 +12,7 @@ module QA
           name: 'premium',
           price: 19,
           yearly_price: 228,
-          ci_minutes: 10000
+          compute_minutes: 10000
         }.freeze
 
         PREMIUM_SELF_MANAGED = {
@@ -29,7 +29,7 @@ module QA
           name: 'ultimate',
           price: 99,
           yearly_price: 1188,
-          ci_minutes: 50000
+          compute_minutes: 50000
         }.freeze
 
         ULTIMATE_SELF_MANAGED = {
@@ -40,12 +40,12 @@ module QA
           yearly_price: 1188
         }.freeze
 
-        CI_MINUTES = {
+        COMPUTE_MINUTES = {
           plan_id: '2c92a0086a07f4a8016a2c0a1f7b4b4c',
           rate_charge_id: '2c92a0fd6a07f4c6016a2c0af07c3f21',
-          name: 'ci_minutes',
+          name: 'compute_minutes',
           price: 10,
-          ci_minutes: 1000
+          compute_minutes: 1000
         }.freeze
 
         STORAGE = {

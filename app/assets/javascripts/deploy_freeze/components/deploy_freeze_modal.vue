@@ -142,7 +142,6 @@ export default {
         ref="freezeStartCron"
         v-model="freezeStartCron"
         class="gl-font-monospace!"
-        data-qa-selector="deploy_freeze_start_field"
         :placeholder="$options.i18n.cronPlaceholder"
         :state="freezeStartCronState"
         autofocus
@@ -160,7 +159,6 @@ export default {
         id="deploy-freeze-end"
         v-model="freezeEndCron"
         class="gl-font-monospace!"
-        data-qa-selector="deploy_freeze_end_field"
         :placeholder="$options.i18n.cronPlaceholder"
         :state="freezeEndCronState"
         trim

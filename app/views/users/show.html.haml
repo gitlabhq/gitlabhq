@@ -157,7 +157,7 @@
                     = gl_badge_tag @user.followers.count, size: :sm
               - if profile_tab?(:following)
                 %li.js-following-tab
-                  = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), qa_selector: 'following_tab' } do
+                  = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json) } do
                     = s_('UserProfile|Following')
                     = gl_badge_tag @user.followees.count, size: :sm
     - if !profile_tabs.empty? && Feature.enabled?(:profile_tabs_vue, current_user)

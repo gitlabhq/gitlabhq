@@ -98,7 +98,6 @@ export default {
       :class="$options.userColorScheme"
       data-type="simple"
       :data-path="blob.path"
-      data-qa-selector="blob_viewer_file_content"
     >
       <chunk
         v-for="(chunk, index) in chunks"

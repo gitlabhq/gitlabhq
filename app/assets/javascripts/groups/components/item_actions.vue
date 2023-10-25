@@ -57,7 +57,6 @@ export default {
       icon="ellipsis_v"
       no-caret
       :data-testid="`group-${group.id}-dropdown-button`"
-      data-qa-selector="group_dropdown_button"
       :data-qa-group-id="group.id"
     >
       <gl-dropdown-item

@@ -311,7 +311,6 @@ export default {
           variant="confirm"
           class="gl-mt-5"
           data-testid="save_service_desk_settings_button"
-          data-qa-selector="save_service_desk_settings_button"
           :disabled="isTemplateSaving || !isIssueTrackerEnabled"
           @click="onSaveTemplate"
         >

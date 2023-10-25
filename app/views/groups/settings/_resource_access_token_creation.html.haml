@@ -7,4 +7,4 @@
   - link_start_group = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: group_access_tokens_link }
   = f.gitlab_ui_checkbox_component :resource_access_token_creation_allowed,
     s_('GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group').html_safe % { link_start_project: link_start_project, link_start_group: link_start_group, link_end: '</a>'.html_safe },
-    checkbox_options: { checked: group.namespace_settings.resource_access_token_creation_allowed?, data: { qa_selector: 'resource_access_token_creation_allowed_checkbox' } }
+    checkbox_options: { checked: group.namespace_settings.resource_access_token_creation_allowed? }

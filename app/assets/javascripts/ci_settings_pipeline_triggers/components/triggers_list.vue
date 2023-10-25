@@ -180,17 +180,11 @@ export default {
           data-confirm-btn-variant="danger"
           rel="nofollow"
           data-testid="trigger_revoke_button"
-          data-qa-selector="trigger_revoke_button"
           :href="item.projectTriggerPath"
         />
       </template>
     </gl-table>
-    <div
-      v-else
-      class="gl-new-card-empty gl-px-5 gl-py-4"
-      data-testid="no_triggers_content"
-      data-qa-selector="no_triggers_content"
-    >
+    <div v-else class="gl-new-card-empty gl-px-5 gl-py-4" data-testid="no_triggers_content">
       {{ s__('Pipelines|No triggers have been created yet. Add one using the form above.') }}
     </div>
   </div>

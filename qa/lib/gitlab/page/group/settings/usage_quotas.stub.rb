@@ -125,75 +125,75 @@ module Gitlab
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
-          # @note Defined as +link :buy_ci_minutes+
-          # Clicks +buy_ci_minutes+
-          def buy_ci_minutes
+          # @note Defined as +link :buy_compute_minutes+
+          # Clicks +buy_compute_minutes+
+          def buy_compute_minutes
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
           # @example
           #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.buy_ci_minutes_element).to exist
+          #     expect(usage_quotas.buy_compute_minutes_element).to exist
           #   end
           # @return [Watir::Link] The raw +Link+ element
-          def buy_ci_minutes_element
+          def buy_compute_minutes_element
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
           # @example
           #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_buy_ci_minutes
+          #     expect(usage_quotas).to be_buy_compute_minutes
           #   end
-          # @return [Boolean] true if the +buy_ci_minutes+ element is present on the page
-          def buy_ci_minutes?
+          # @return [Boolean] true if the +buy_compute_minutes+ element is present on the page
+          def buy_compute_minutes?
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
-          # @note Defined as +div :plan_ci_minutes+
-          # @return [String] The text content or value of +plan_ci_minutes+
-          def plan_ci_minutes
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.plan_ci_minutes_element).to exist
-          #   end
-          # @return [Watir::Div] The raw +Div+ element
-          def plan_ci_minutes_element
+          # @note Defined as +div :plan_compute_minutes+
+          # @return [String] The text content or value of +plan_compute_minutes+
+          def plan_compute_minutes
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
           # @example
           #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_plan_ci_minutes
-          #   end
-          # @return [Boolean] true if the +plan_ci_minutes+ element is present on the page
-          def plan_ci_minutes?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @note Defined as +div :additional_ci_minutes+
-          # @return [String] The text content or value of +additional_ci_minutes+
-          def additional_ci_minutes
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.additional_ci_minutes_element).to exist
+          #     expect(usage_quotas.plan_compute_minutes_element).to exist
           #   end
           # @return [Watir::Div] The raw +Div+ element
-          def additional_ci_minutes_element
+          def plan_compute_minutes_element
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
           # @example
           #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_additional_ci_minutes
+          #     expect(usage_quotas).to be_plan_compute_minutes
           #   end
-          # @return [Boolean] true if the +additional_ci_minutes+ element is present on the page
-          def additional_ci_minutes?
+          # @return [Boolean] true if the +plan_compute_minutes+ element is present on the page
+          def plan_compute_minutes?
+            # This is a stub, used for indexing. The method is dynamically generated.
+          end
+
+          # @note Defined as +div :additional_compute_minutes+
+          # @return [String] The text content or value of +additional_compute_minutes+
+          def additional_compute_minutes
+            # This is a stub, used for indexing. The method is dynamically generated.
+          end
+
+          # @example
+          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
+          #     expect(usage_quotas.additional_compute_minutes_element).to exist
+          #   end
+          # @return [Watir::Div] The raw +Div+ element
+          def additional_compute_minutes_element
+            # This is a stub, used for indexing. The method is dynamically generated.
+          end
+
+          # @example
+          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
+          #     expect(usage_quotas).to be_additional_compute_minutes
+          #   end
+          # @return [Boolean] true if the +additional_compute_minutes+ element is present on the page
+          def additional_compute_minutes?
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 

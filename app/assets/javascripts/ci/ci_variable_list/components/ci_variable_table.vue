@@ -386,7 +386,6 @@ export default {
               icon="remove"
               size="small"
               :aria-label="$options.i18n.deleteButton"
-              data-qa-selector="delete_ci_variable_button"
             />
             <gl-modal
               ref="modal"
