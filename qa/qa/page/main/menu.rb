@@ -112,7 +112,7 @@ module QA
         end
 
         def signed_in_as_user?(user)
-          return false unless has_personal_area?
+          return false unless signed_in?
 
           within_user_menu do
             has_element?('user-profile-link', text: /#{user.username}/)

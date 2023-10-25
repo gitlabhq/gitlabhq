@@ -70,7 +70,7 @@ export default {
     @fetch-suggestions="fetchTags"
     v-on="$listeners"
   >
-    <template #view-token="{ viewTokenProps: { listeners, inputValue, activeTokenValue } }">
+    <template #view-token="{ viewTokenProps: { listeners = {}, inputValue, activeTokenValue } }">
       <gl-token variant="search-value" :class="$options.RUNNER_TAG_BG_CLASS" v-on="listeners">
         {{ activeTokenValue ? activeTokenValue.text : inputValue }}
       </gl-token>

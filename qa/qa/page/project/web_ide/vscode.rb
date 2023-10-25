@@ -40,6 +40,10 @@ module QA
             click_element('span[aria-label="New Folder..."]')
           end
 
+          def has_committed_and_pushed_successfully?
+            page.has_css?('.span[title="Success! Your changes have been committed."]')
+          end
+
           def click_upload_menu_item
             click_element('span[aria-label="Upload..."]')
           end
@@ -88,6 +92,10 @@ module QA
             click_element('.monaco-button[title="Create new branch"]')
           end
 
+          def click_continue_with_existing_branch
+            page.find('.monaco-button[title="Continue"]').click
+          end
+
           def has_branch_input_field?
             has_element?('input[aria-label="input"]')
           end
@@ -101,6 +109,32 @@ module QA
           def within_vscode_editor(&block)
             iframe = find('#ide iframe')
             page.within_frame(iframe, &block)
+          end
+
+          def click_new_file_menu_item
+            page.find('[aria-label="New File..."]').click
+          end
+
+          def switch_to_original_window
+            page.driver.browser.switch_to.window(page.driver.browser.window_handles.first)
+          end
+
+          def create_new_file_from_template(filename, template)
+            within_vscode_editor do
+              Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
+                click_new_file_menu_item
+                enter_new_file_text_input(filename)
+                page.within('div.editor-container') do
+                  page.find('textarea.inputarea.monaco-mouse-cursor-text').send_keys(template)
+                end
+                page.has_content?(filename)
+              end
+            end
+          end
+
+          def enter_new_file_text_input(name)
+            page.find('.explorer-item-edited', visible: true)
+            send_keys(name, :enter)
           end
 
           # Used for stablility, due to feature_caching of vscode_web_ide
@@ -154,6 +188,13 @@ module QA
               has_text?(message)
               click_commit_button
               has_notification_box?
+            end
+          end
+
+          def push_to_existing_branch
+            within_vscode_editor do
+              click_continue_with_existing_branch
+              has_committed_and_pushed_successfully?
             end
           end
 

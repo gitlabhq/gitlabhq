@@ -18,7 +18,7 @@ module Packages
 
           process_symbol_entries
         rescue ExtractionError => e
-          Gitlab::ErrorTracking.log_exception(e, class: self.class.name, package_id: package.id)
+          Gitlab::ErrorTracking.track_exception(e, class: self.class.name, package_id: package.id)
         end
 
         private
@@ -31,7 +31,7 @@ module Packages
               raise ExtractionError, 'too many symbol entries' if index >= SYMBOL_ENTRIES_LIMIT
 
               entry.extract(tmp_file.path) { true }
-              File.open(tmp_file.path) do |file|
+              File.open(tmp_file.path, 'rb') do |file|
                 create_symbol(entry.name, file)
               end
             end
@@ -43,25 +43,27 @@ module Packages
         end
 
         def create_symbol(path, file)
-          signature = extract_signature(file.read(1.kilobyte))
-          return if signature.blank?
+          signature, checksum = extract_signature_and_checksum(file)
+          return if signature.blank? || checksum.blank?
 
           ::Packages::Nuget::Symbol.create!(
             package: package,
             file: { tempfile: file, filename: path.downcase, content_type: CONTENT_TYPE },
             file_path: path,
             signature: signature,
-            size: file.size
+            size: file.size,
+            file_sha256: checksum
           )
         rescue StandardError => e
-          Gitlab::ErrorTracking.log_exception(e, class: self.class.name, package_id: package.id)
+          Gitlab::ErrorTracking.track_exception(e, class: self.class.name, package_id: package.id)
         end
 
-        def extract_signature(content_fragment)
-          ExtractSymbolSignatureService
-            .new(content_fragment)
+        def extract_signature_and_checksum(file)
+          ::Packages::Nuget::Symbols::ExtractSignatureAndChecksumService
+            .new(file)
             .execute
             .payload
+            .values_at(:signature, :checksum)
         end
       end
     end

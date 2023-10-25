@@ -50704,6 +50704,9 @@ msgstr ""
 msgid "Unauthorized to create an environment"
 msgstr ""
 
+msgid "Unauthorized to delete a package protection rule"
+msgstr ""
+
 msgid "Unauthorized to update the environment"
 msgstr ""
 
@@ -53824,9 +53827,6 @@ msgstr ""
 msgid "Wiki|Create New Page"
 msgstr ""
 
-msgid "Wiki|Created date"
-msgstr ""
-
 msgid "Wiki|Edit Page"
 msgstr ""
 
@@ -53843,9 +53843,6 @@ msgid "Wiki|Pages"
 msgstr ""
 
 msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
-msgstr ""
-
-msgid "Wiki|Title"
 msgstr ""
 
 msgid "Wiki|View All Pages"

@@ -15,9 +15,9 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
   describe '#execute' do
     subject { service.execute }
 
-    shared_examples 'logs an error' do |error_class|
-      it 'logs an error' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+    shared_examples 'logging an error' do |error_class|
+      it 'logs the error' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
           an_instance_of(error_class),
           class: described_class.name,
           package_id: package.id
@@ -29,8 +29,8 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
 
     context 'when symbol files are found' do
       it 'creates a symbol record and extracts the signature' do
-        expect_next_instance_of(Packages::Nuget::Symbols::ExtractSymbolSignatureService,
-          instance_of(String)) do |service|
+        expect_next_instance_of(Packages::Nuget::Symbols::ExtractSignatureAndChecksumService,
+          instance_of(File)) do |service|
           expect(service).to receive(:execute).and_call_original
         end
 
@@ -47,13 +47,13 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
         expect { subject }.not_to change { package.nuget_symbols.count }
       end
 
-      it_behaves_like 'logs an error', described_class::ExtractionError
+      it_behaves_like 'logging an error', described_class::ExtractionError
     end
 
-    context 'when creating a symbol record without a signature' do
+    context 'without a signature' do
       before do
-        allow_next_instance_of(Packages::Nuget::Symbols::ExtractSymbolSignatureService) do |instance|
-          allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: nil))
+        allow_next_instance_of(Packages::Nuget::Symbols::ExtractSignatureAndChecksumService) do |instance|
+          allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: { signature: nil }))
         end
       end
 
@@ -64,12 +64,28 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
       end
     end
 
-    context 'when creating duplicate symbol records' do
+    context 'without a checksum' do
+      before do
+        allow_next_instance_of(Packages::Nuget::Symbols::ExtractSignatureAndChecksumService) do |instance|
+          allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: { checksum: nil }))
+        end
+      end
+
+      it 'does not call create! on the symbol record' do
+        expect(::Packages::Nuget::Symbol).not_to receive(:create!)
+
+        subject
+      end
+    end
+
+    context 'with existing duplicate symbol records' do
       let_it_be(:symbol) { create(:nuget_symbol, package: package) }
 
       before do
-        allow_next_instance_of(Packages::Nuget::Symbols::ExtractSymbolSignatureService) do |instance|
-          allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: symbol.signature))
+        allow_next_instance_of(Packages::Nuget::Symbols::ExtractSignatureAndChecksumService) do |instance|
+          allow(instance).to receive(:execute).and_return(
+            ServiceResponse.success(payload: { signature: symbol.signature, checksum: symbol.file_sha256 })
+          )
         end
       end
 
@@ -77,7 +93,7 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
         expect { subject }.not_to change { package.nuget_symbols.count }
       end
 
-      it_behaves_like 'logs an error', ActiveRecord::RecordInvalid
+      it_behaves_like 'logging an error', ActiveRecord::RecordInvalid
     end
 
     context 'when a symbol file has the wrong entry size' do
@@ -87,7 +103,7 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
         end
       end
 
-      it_behaves_like 'logs an error', described_class::ExtractionError
+      it_behaves_like 'logging an error', described_class::ExtractionError
     end
 
     context 'when a symbol file has the wrong entry name' do
@@ -97,7 +113,7 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
         end
       end
 
-      it_behaves_like 'logs an error', described_class::ExtractionError
+      it_behaves_like 'logging an error', described_class::ExtractionError
     end
   end
 end

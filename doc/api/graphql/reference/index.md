@@ -3034,6 +3034,31 @@ Input type: `DeleteAnnotationInput`
 | <a id="mutationdeleteannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeleteannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.deletePackagesProtectionRule`
+
+Deletes a protection rule for packages. Available only when feature flag `packages_protected_packages` is enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `DeletePackagesProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationdeletepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule that was deleted successfully. |
+
 ### `Mutation.designManagementDelete`
 
 Input type: `DesignManagementDeleteInput`
@@ -30745,6 +30770,12 @@ An example `PackagesPackageFileID` is: `"gid://gitlab/Packages::PackageFile/1"`.
 A `PackagesPackageID` is a global ID. It is encoded as a string.
 
 An example `PackagesPackageID` is: `"gid://gitlab/Packages::Package/1"`.
+
+### `PackagesProtectionRuleID`
+
+A `PackagesProtectionRuleID` is a global ID. It is encoded as a string.
+
+An example `PackagesProtectionRuleID` is: `"gid://gitlab/Packages::Protection::Rule/1"`.
 
 ### `PackagesPypiMetadatumID`
 

@@ -20,21 +20,26 @@ module QA
         end
 
         def switch_to_code
-          switch_to_tab(:code_tab)
+          click_element(:nav_item_link, submenu_item: 'Code')
         end
 
         def switch_to_projects
           switch_to_tab(:projects_tab)
         end
 
-        def has_file_in_project?(file_name, project_name)
-          has_element?(:result_item_content, text: "#{project_name}: #{file_name}")
+        def has_project_in_search_result?(project_name)
+          has_element?(:result_item_content, text: project_name)
         end
 
-        def has_file_with_content?(file_name, file_text)
-          within_element_by_index(:result_item_content, 0) do
-            break false unless has_element?(:file_title_content, text: file_name)
+        def has_file_in_project?(file_name, project_name)
+          within_element(:result_item_content, text: project_name) do
+            has_element?(:file_title_content, text: file_name)
+          end
+        end
 
+        def has_file_in_project_with_content?(file_text, file_path)
+          within_element(:result_item_content,
+            text: file_path) do
             has_element?(:file_text_content, text: file_text)
           end
         end

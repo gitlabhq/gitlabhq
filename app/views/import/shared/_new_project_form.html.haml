@@ -1,7 +1,7 @@
 .row
   .form-group.project-name.col-sm-12
     = label_tag :name, _('Project name'), class: 'label-bold'
-    = text_field_tag :name, @name, placeholder: "My awesome project", class: "js-project-name form-control gl-form-input input-lg", autofocus: true, required: true, aria: { required: true }, data: { qa_selector: 'project_name_field' }
+    = text_field_tag :name, @name, placeholder: "My awesome project", class: "js-project-name form-control gl-form-input input-lg", autofocus: true, required: true, aria: { required: true }, data: { testid: 'project-name-field' }
   .form-group.col-12.col-sm-6.gl-pr-0
     = label_tag :namespace_id, _('Project URL'), class: 'label-bold'
     .input-group.gl-flex-nowrap
@@ -21,4 +21,4 @@
       .gl-align-self-center.gl-pl-5 /
   .form-group.col-12.col-sm-6.project-path
     = label_tag :path, _('Project slug'), class: 'label-bold'
-    = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control gl-form-input", required: true, aria: { required: true }, data: { qa_selector: 'project_slug_field' }
+    = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control gl-form-input", required: true, aria: { required: true }

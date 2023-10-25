@@ -9,16 +9,16 @@ module QA
             super
 
             base.view 'app/views/projects/_import_project_pane.html.haml' do
-              element :gitlab_import_button
+              element 'gitlab-import-button'
             end
           end
 
           def click_gitlab
             retry_until(reload: true, max_attempts: 10, message: 'Waiting for import source to be enabled') do
-              has_element?(:gitlab_import_button)
+              has_element?('gitlab-import-button')
             end
 
-            click_element(:gitlab_import_button)
+            click_element('gitlab-import-button')
           end
         end
       end

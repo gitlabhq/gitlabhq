@@ -1,0 +1,9 @@
+---
+table_name: approval_group_rules_users
+classes: []
+feature_categories:
+  - source_code_management
+description: Keeps connection between user and a group approval rule
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132651
+milestone: '16.5'
+gitlab_schema: gitlab_main

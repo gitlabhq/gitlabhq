@@ -41,7 +41,7 @@
   .settings-content
     = render 'performance_bar'
 
-%section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'usage_statistics_settings_content' } }
+%section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'usage-statistics-settings-content' } }
   .settings-header#usage-statistics
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Usage statistics')

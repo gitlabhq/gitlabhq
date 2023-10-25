@@ -12000,6 +12000,74 @@ CREATE SEQUENCE application_settings_id_seq
 
 ALTER SEQUENCE application_settings_id_seq OWNED BY application_settings.id;
 
+CREATE TABLE approval_group_rules (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    approvals_required smallint DEFAULT 0 NOT NULL,
+    report_type smallint,
+    rule_type smallint DEFAULT 1 NOT NULL,
+    security_orchestration_policy_configuration_id bigint,
+    scan_result_policy_id bigint,
+    name text NOT NULL,
+    CONSTRAINT check_25d42add43 CHECK ((char_length(name) <= 255))
+);
+
+CREATE TABLE approval_group_rules_groups (
+    id bigint NOT NULL,
+    approval_group_rule_id bigint NOT NULL,
+    group_id bigint NOT NULL
+);
+
+CREATE SEQUENCE approval_group_rules_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE approval_group_rules_groups_id_seq OWNED BY approval_group_rules_groups.id;
+
+CREATE SEQUENCE approval_group_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE approval_group_rules_id_seq OWNED BY approval_group_rules.id;
+
+CREATE TABLE approval_group_rules_protected_branches (
+    id bigint NOT NULL,
+    approval_group_rule_id bigint NOT NULL,
+    protected_branch_id bigint NOT NULL
+);
+
+CREATE SEQUENCE approval_group_rules_protected_branches_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE approval_group_rules_protected_branches_id_seq OWNED BY approval_group_rules_protected_branches.id;
+
+CREATE TABLE approval_group_rules_users (
+    id bigint NOT NULL,
+    approval_group_rule_id bigint NOT NULL,
+    user_id bigint NOT NULL
+);
+
+CREATE SEQUENCE approval_group_rules_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE approval_group_rules_users_id_seq OWNED BY approval_group_rules_users.id;
+
 CREATE TABLE approval_merge_request_rule_sources (
     id bigint NOT NULL,
     approval_merge_request_rule_id bigint NOT NULL,
@@ -20148,6 +20216,7 @@ CREATE TABLE packages_nuget_symbols (
     file_path text NOT NULL,
     signature text NOT NULL,
     object_storage_key text NOT NULL,
+    file_sha256 bytea,
     CONSTRAINT check_0e93ca58b7 CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_28b82b08fa CHECK ((char_length(object_storage_key) <= 255)),
     CONSTRAINT check_30b0ef2ca2 CHECK ((char_length(file_path) <= 255)),
@@ -25924,6 +25993,14 @@ ALTER TABLE ONLY application_setting_terms ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY application_settings ALTER COLUMN id SET DEFAULT nextval('application_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY approval_group_rules ALTER COLUMN id SET DEFAULT nextval('approval_group_rules_id_seq'::regclass);
+
+ALTER TABLE ONLY approval_group_rules_groups ALTER COLUMN id SET DEFAULT nextval('approval_group_rules_groups_id_seq'::regclass);
+
+ALTER TABLE ONLY approval_group_rules_protected_branches ALTER COLUMN id SET DEFAULT nextval('approval_group_rules_protected_branches_id_seq'::regclass);
+
+ALTER TABLE ONLY approval_group_rules_users ALTER COLUMN id SET DEFAULT nextval('approval_group_rules_users_id_seq'::regclass);
+
 ALTER TABLE ONLY approval_merge_request_rule_sources ALTER COLUMN id SET DEFAULT nextval('approval_merge_request_rule_sources_id_seq'::regclass);
 
 ALTER TABLE ONLY approval_merge_request_rules ALTER COLUMN id SET DEFAULT nextval('approval_merge_request_rules_id_seq'::regclass);
@@ -27724,6 +27801,18 @@ ALTER TABLE ONLY application_setting_terms
 
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT application_settings_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY approval_group_rules_groups
+    ADD CONSTRAINT approval_group_rules_groups_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY approval_group_rules
+    ADD CONSTRAINT approval_group_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY approval_group_rules_protected_branches
+    ADD CONSTRAINT approval_group_rules_protected_branches_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY approval_group_rules_users
+    ADD CONSTRAINT approval_group_rules_users_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY approval_merge_request_rule_sources
     ADD CONSTRAINT approval_merge_request_rule_sources_pkey PRIMARY KEY (id);
@@ -31100,6 +31189,18 @@ CREATE INDEX idx_mrs_on_target_id_and_created_at_and_state_id ON merge_requests 
 
 CREATE UNIQUE INDEX idx_namespace_settings_on_default_compliance_framework_id ON namespace_settings USING btree (default_compliance_framework_id);
 
+CREATE UNIQUE INDEX idx_on_approval_group_rules_any_approver_type ON approval_group_rules USING btree (group_id, rule_type) WHERE (rule_type = 4);
+
+CREATE UNIQUE INDEX idx_on_approval_group_rules_group_id_type_name ON approval_group_rules USING btree (group_id, rule_type, name);
+
+CREATE UNIQUE INDEX idx_on_approval_group_rules_groups_rule_group ON approval_group_rules_groups USING btree (approval_group_rule_id, group_id);
+
+CREATE UNIQUE INDEX idx_on_approval_group_rules_protected_branch ON approval_group_rules_protected_branches USING btree (approval_group_rule_id, protected_branch_id);
+
+CREATE INDEX idx_on_approval_group_rules_security_orch_policy ON approval_group_rules USING btree (security_orchestration_policy_configuration_id);
+
+CREATE UNIQUE INDEX idx_on_approval_group_rules_users_rule_user ON approval_group_rules_users USING btree (approval_group_rule_id, user_id);
+
 CREATE UNIQUE INDEX idx_on_compliance_management_frameworks_namespace_id_name ON compliance_management_frameworks USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX idx_on_external_approval_rules_project_id_external_url ON external_approval_rules USING btree (project_id, external_url);
@@ -31109,6 +31210,8 @@ CREATE UNIQUE INDEX idx_on_external_approval_rules_project_id_name ON external_a
 CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_external_url ON external_status_checks USING btree (project_id, external_url);
 
 CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_name ON external_status_checks USING btree (project_id, name);
+
+CREATE INDEX idx_on_protected_branch ON approval_group_rules_protected_branches USING btree (protected_branch_id);
 
 CREATE INDEX idx_open_issues_on_project_and_confidential_and_author_and_id ON issues USING btree (project_id, confidential, author_id, id) WHERE (state_id = 1);
 
@@ -31337,6 +31440,12 @@ CREATE UNIQUE INDEX index_application_settings_on_push_rule_id ON application_se
 CREATE INDEX index_application_settings_on_usage_stats_set_by_user_id ON application_settings USING btree (usage_stats_set_by_user_id);
 
 CREATE INDEX index_applicationsettings_on_instance_administration_project_id ON application_settings USING btree (instance_administration_project_id);
+
+CREATE INDEX index_approval_group_rules_groups_on_group_id ON approval_group_rules_groups USING btree (group_id);
+
+CREATE INDEX index_approval_group_rules_on_scan_result_policy_id ON approval_group_rules USING btree (scan_result_policy_id);
+
+CREATE INDEX index_approval_group_rules_users_on_user_id ON approval_group_rules_users USING btree (user_id);
 
 CREATE UNIQUE INDEX index_approval_merge_request_rule_sources_1 ON approval_merge_request_rule_sources USING btree (approval_merge_request_rule_id);
 
@@ -36775,6 +36884,9 @@ ALTER TABLE ONLY remote_development_agent_configs
 ALTER TABLE ONLY dast_sites
     ADD CONSTRAINT fk_0a57f2271b FOREIGN KEY (dast_site_validation_id) REFERENCES dast_site_validations(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY approval_group_rules_protected_branches
+    ADD CONSTRAINT fk_0b85e6c388 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_0c0037f723 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -36804,6 +36916,9 @@ ALTER TABLE ONLY vulnerabilities
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_131d289c65 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY approval_group_rules
+    ADD CONSTRAINT fk_1485c451e3 FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY catalog_resource_versions
     ADD CONSTRAINT fk_15376d917e FOREIGN KEY (release_id) REFERENCES releases(id) ON DELETE CASCADE;
@@ -37054,11 +37169,17 @@ ALTER TABLE ONLY user_achievements
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_4f593f6c62 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY approval_group_rules_protected_branches
+    ADD CONSTRAINT fk_4f85f13b20 FOREIGN KEY (approval_group_rule_id) REFERENCES approval_group_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_compliance_standards_adherence
     ADD CONSTRAINT fk_4fd1d9d9b0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_5001652292 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_group_rules_groups
+    ADD CONSTRAINT fk_50edc8134e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;
@@ -37134,6 +37255,9 @@ ALTER TABLE ONLY vulnerability_reads
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_641731faff FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY approval_group_rules
+    ADD CONSTRAINT fk_64450bea52 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipeline_chat_data
     ADD CONSTRAINT fk_64ebfab6b3 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
@@ -37285,6 +37409,9 @@ ALTER TABLE ONLY packages_package_files
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_87f4cefcda FOREIGN KEY (upstream_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY approval_group_rules_users
+    ADD CONSTRAINT fk_888a0df3b7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_88b4d546ef FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
@@ -37353,6 +37480,9 @@ ALTER TABLE ONLY protected_branch_merge_access_levels
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_99e097b079 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_group_rules_users
+    ADD CONSTRAINT fk_9a4b673183 FOREIGN KEY (approval_group_rule_id) REFERENCES approval_group_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_9a9b9ba21c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -37758,6 +37888,9 @@ ALTER TABLE ONLY approval_project_rules
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_efb96ab1e2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_group_rules_groups
+    ADD CONSTRAINT fk_efff219a48 FOREIGN KEY (approval_group_rule_id) REFERENCES approval_group_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY emails
     ADD CONSTRAINT fk_emails_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -38583,6 +38716,9 @@ ALTER TABLE ONLY namespace_admin_notes
 
 ALTER TABLE ONLY ci_runner_machines
     ADD CONSTRAINT fk_rails_666b61f04f FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_group_rules
+    ADD CONSTRAINT fk_rails_6727675176 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY jira_imports
     ADD CONSTRAINT fk_rails_675d38c03b FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE SET NULL;

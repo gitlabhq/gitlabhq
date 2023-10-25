@@ -11,17 +11,16 @@ module QA
             super
 
             base.view 'app/views/import/gitlab_projects/new.html.haml' do
-              element :import_project_button
+              element 'import-project-button'
             end
 
             base.view 'app/views/import/shared/_new_project_form.html.haml' do
-              element :project_name_field
-              element :project_slug_field
+              element 'project-name-field'
             end
           end
 
           def set_imported_project_name(name)
-            fill_element(:project_name_field, name)
+            fill_element('project-name-field', name)
           end
 
           def attach_exported_file(path)
@@ -29,7 +28,7 @@ module QA
           end
 
           def click_import_gitlab_project
-            click_element(:import_project_button)
+            click_element('import-project-button')
 
             wait_until(reload: false) do
               has_notice?("The project was successfully imported.") || has_element?('project-name-content')

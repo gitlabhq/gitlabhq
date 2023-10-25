@@ -38,6 +38,7 @@ describe('CiResourceComponents', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findCopyToClipboardButton = (i) => wrapper.findAllByTestId('copy-to-clipboard').at(i);
   const findComponents = () => wrapper.findAllByTestId('component-section');
 
   beforeEach(() => {
@@ -95,6 +96,15 @@ describe('CiResourceComponents', () => {
         expect(wrapper.text()).toContain(component.name);
         expect(wrapper.text()).toContain(component.description);
         expect(wrapper.text()).toContain(component.path);
+      });
+    });
+
+    it('adds a copy-to-clipboard button', () => {
+      components.forEach((component, i) => {
+        const button = findCopyToClipboardButton(i);
+
+        expect(button.props().icon).toBe('copy-to-clipboard');
+        expect(button.attributes('data-clipboard-text')).toContain(component.path);
       });
     });
 

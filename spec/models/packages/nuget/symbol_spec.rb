@@ -6,6 +6,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
   subject(:symbol) { create(:nuget_symbol) }
 
   it { is_expected.to be_a FileStoreMounter }
+  it { is_expected.to be_a ShaAttribute }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:package).inverse_of(:nuget_symbols) }

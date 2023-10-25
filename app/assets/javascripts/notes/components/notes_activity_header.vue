@@ -40,7 +40,7 @@ export default {
     showAiActions() {
       return (
         this.resourceGlobalId &&
-        this.glFeatures.openaiExperimentation &&
+        (this.glFeatures.openaiExperimentation || this.glFeatures.aiGlobalSwitch) &&
         this.glFeatures.summarizeNotes
       );
     },
