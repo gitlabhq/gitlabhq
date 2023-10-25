@@ -249,7 +249,11 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
     context 'when exception occurs' do
       it 'raises an exception' do
-        expect { subject.gzip(dir: path, filename: 'test') }.to raise_error(Gitlab::ImportExport::Error)
+        expect { subject.gzip(dir: path, filename: 'test') }
+          .to raise_error(
+            Gitlab::ImportExport::Error,
+            %r{File compression or decompression failed. Command exited with error code 1: gzip}
+          )
       end
     end
   end
@@ -269,7 +273,11 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
     context 'when exception occurs' do
       it 'raises an exception' do
-        expect { subject.gunzip(dir: path, filename: 'test') }.to raise_error(Gitlab::ImportExport::Error)
+        expect { subject.gunzip(dir: path, filename: 'test') }
+          .to raise_error(
+            Gitlab::ImportExport::Error,
+            %r{File compression or decompression failed. Command exited with error code 1: gzip}
+          )
       end
     end
   end
@@ -292,7 +300,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
           include Gitlab::ImportExport::CommandLineUtil
         end.new
 
-        expect { klass.tar_cf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'command exited with error code 1: Error')
+        expect { klass.tar_cf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'Command exited with error code 1: Error')
       end
     end
   end
@@ -347,7 +355,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
           include Gitlab::ImportExport::CommandLineUtil
         end.new
 
-        expect { klass.untar_xf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'command exited with error code 1: Error')
+        expect { klass.untar_xf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'Command exited with error code 1: Error')
       end
 
       it 'returns false and includes error status' do
@@ -362,7 +370,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
         end.new
 
         expect(klass.tar_czf(archive: 'test', dir: 'test')).to eq(false)
-        expect(klass.shared.errors).to eq(['command exited with error code 1: Error'])
+        expect(klass.shared.errors).to eq(['Command exited with error code 1: Error'])
       end
     end
   end

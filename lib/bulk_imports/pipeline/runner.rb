@@ -120,7 +120,7 @@ module BulkImports
           pipeline_class: pipeline,
           pipeline_step: step,
           exception_class: exception.class.to_s,
-          exception_message: exception.message.truncate(255),
+          exception_message: exception.message,
           correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
         }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Failure, type: :model do
+RSpec.describe BulkImports::Failure, type: :model, feature_category: :importers do
   let(:failure) { create(:bulk_import_failure) }
 
   describe 'associations' do
@@ -42,6 +42,20 @@ RSpec.describe BulkImports::Failure, type: :model do
 
         expect(failure.relation).to eq('test_relation')
       end
+    end
+  end
+
+  describe '#exception_message=' do
+    it 'filters file paths' do
+      failure = described_class.new
+      failure.exception_message = 'Failed to read /FILE/PATH'
+      expect(failure.exception_message).to eq('Failed to read [FILTERED]')
+    end
+
+    it 'truncates long string' do
+      failure = described_class.new
+      failure.exception_message = 'A' * 1000
+      expect(failure.exception_message.size).to eq(255)
     end
   end
 end

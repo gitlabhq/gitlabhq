@@ -56,7 +56,7 @@ module BulkImports
         pipeline_class: tracker.pipeline_name,
         pipeline_step: 'pipeline_batch_worker_run',
         exception_class: exception.class.to_s,
-        exception_message: exception.message.truncate(255),
+        exception_message: exception.message,
         correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
       )
     end

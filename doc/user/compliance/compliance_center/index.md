@@ -393,6 +393,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 With compliance frameworks report, you can see all the compliance frameworks in a group. Each row of the report shows:
 
 - Framework name.
+- Associated projects.
 
 The default framework for the group has a **default** badge.
 
