@@ -138,7 +138,7 @@ To enable or disable Service Ping and version check:
 NOTE:
 Service Ping settings only control whether the data is being shared with GitLab, or used only internally.
 Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
-The payload is available in the [Service Usage data](#manually-upload-service-ping-payload) admin section.
+The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
 
 ## Disable usage statistics with the configuration file
 
@@ -192,7 +192,7 @@ You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To vi
 1. Sign in as a user with administrator access.
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
-1. Select **Settings > Service usage data**.
+1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Preview payload**.
 
 For an example payload, see [Example Service Ping payload](../../development/internal_analytics/service_ping/index.md#example-service-ping-payload).
@@ -210,7 +210,7 @@ To upload the payload manually:
 1. Sign in as a user with administrator access.
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
-1. Select **Settings > Service usage data**.
+1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Download payload**.
 1. Save the JSON file.
 1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).

@@ -7,4 +7,4 @@ feature_categories:
 description: Project level settings for container registry cleanup policies
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20412
 milestone: '12.6'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell

@@ -75,6 +75,12 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
     it_behaves_like 'controller action that does not require authentication'
   end
 
+  describe 'GET #users' do
+    subject(:gitlab_request) { get users_organization_path(organization) }
+
+    it_behaves_like 'controller action that does not require authentication'
+  end
+
   describe 'GET #new' do
     subject(:gitlab_request) { get new_organization_path }
 

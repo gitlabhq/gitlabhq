@@ -64,6 +64,27 @@ RSpec.describe 'issuable templates', :js, feature_category: :groups_and_projects
     end
   end
 
+  context 'user creates an issue template using issuable_template query param' do
+    let(:template_content) { 'this is a test "bug" template' }
+
+    before do
+      project.repository.create_file(
+        user,
+        '.gitlab/issue_templates/bug.md',
+        template_content,
+        message: 'added issue template',
+        branch_name: 'master')
+    end
+
+    it 'applies correctly in the rich text editor' do
+      visit new_project_issue_path project
+      click_button "Switch to rich text editing"
+      visit new_project_issue_path(project, { issuable_template: 'bug' })
+
+      expect(page).to have_content(template_content)
+    end
+  end
+
   context 'user creates an issue using templates, with a prior description' do
     let(:prior_description) { 'test issue description' }
     let(:template_content) { 'this is a test "bug" template' }

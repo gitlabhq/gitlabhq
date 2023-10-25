@@ -19,5 +19,9 @@ module Organizations
     def groups_and_projects
       authorize_read_organization!
     end
+
+    def users
+      authorize_read_organization!
+    end
   end
 end

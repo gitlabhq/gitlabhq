@@ -92,7 +92,6 @@ Lint/RedundantCopDisableDirective:
     - 'ee/app/controllers/ee/projects/settings/ci_cd_controller.rb'
     - 'ee/app/controllers/groups/todos_controller.rb'
     - 'ee/app/finders/epics/with_issues_finder.rb'
-    - 'ee/app/finders/geo/file_registry_finder.rb'
     - 'ee/app/finders/geo/registry_finder.rb'
     - 'ee/app/finders/status_page/incident_comments_finder.rb'
     - 'ee/app/finders/status_page/incidents_finder.rb'
