@@ -1,15 +1,15 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import MlModelsIndexApp from '~/ml/model_registry/routes/models/index';
-import ModelRow from '~/ml/model_registry/routes/models/index/components/model_row.vue';
-import { TITLE_LABEL, NO_MODELS_LABEL } from '~/ml/model_registry/routes/models/index/translations';
+import { IndexMlModels } from '~/ml/model_registry/apps';
+import ModelRow from '~/ml/model_registry/components/model_row.vue';
+import { TITLE_LABEL, NO_MODELS_LABEL } from '~/ml/model_registry/translations';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
-import SearchBar from '~/ml/model_registry/routes/models/index/components/search_bar.vue';
-import { BASE_SORT_FIELDS } from '~/ml/model_registry/routes/models/index/constants';
-import { mockModels, startCursor, defaultPageInfo } from './mock_data';
+import SearchBar from '~/ml/model_registry/components/search_bar.vue';
+import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
+import { mockModels, startCursor, defaultPageInfo } from '../mock_data';
 
 let wrapper;
 const createWrapper = (propsData = { models: mockModels, pageInfo: defaultPageInfo }) => {
-  wrapper = shallowMountExtended(MlModelsIndexApp, { propsData });
+  wrapper = shallowMountExtended(IndexMlModels, { propsData });
 };
 
 const findModelRow = (index) => wrapper.findAllComponents(ModelRow).at(index);

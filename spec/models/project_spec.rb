@@ -9141,6 +9141,56 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#update_catalog_resource' do
+    let_it_be_with_reload(:project) { create(:project, name: 'My project name', description: 'My description') }
+    let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+
+    shared_examples 'name and description of the catalog resource matches the project' do
+      it do
+        expect(project).to receive(:update_catalog_resource).once.and_call_original
+
+        project.save!
+
+        expect(resource.reload.name).to eq(project.name)
+        expect(resource.reload.description).to eq(project.description)
+      end
+    end
+
+    context 'when the project name is updated' do
+      before do
+        project.name = 'My new project name'
+      end
+
+      it_behaves_like 'name and description of the catalog resource matches the project'
+    end
+
+    context 'when the project description is updated' do
+      before do
+        project.description = 'My new description'
+      end
+
+      it_behaves_like 'name and description of the catalog resource matches the project'
+    end
+
+    context 'when neither the project name nor description are updated' do
+      it 'does not call update_catalog_resource' do
+        expect(project).not_to receive(:update_catalog_resource)
+
+        project.update!(path: 'path')
+      end
+    end
+
+    context 'when the project does not have a catalog resource' do
+      let_it_be(:project2) { create(:project) }
+
+      it 'does not call update_catalog_resource' do
+        expect(project2).not_to receive(:update_catalog_resource)
+
+        project.update!(name: 'name')
+      end
+    end
+  end
+
   private
 
   def finish_job(export_job)

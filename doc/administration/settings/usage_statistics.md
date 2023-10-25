@@ -66,6 +66,7 @@ In the following table, you can see:
 | [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
 | [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks) | GitLab 16.6 and later |
 | [Service Level Agreement countdown timer](../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer) | GitLab 16.6 and later |
+| [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) | GitLab 16.6 and later |
 
 ### Enable registration features
 

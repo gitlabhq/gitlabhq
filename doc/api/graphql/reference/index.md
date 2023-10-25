@@ -157,7 +157,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querycicatalogresourcesprojectpath"></a>`projectPath` | [`ID`](#id) | Project with the namespace catalog. |
-| <a id="querycicatalogresourcessort"></a>`sort` | [`CiCatalogResourceSort`](#cicatalogresourcesort) | Sort Catalog Resources by given criteria. |
+| <a id="querycicatalogresourcessearch"></a>`search` | [`String`](#string) | Search term to filter the catalog resources by name or description. |
+| <a id="querycicatalogresourcessort"></a>`sort` | [`CiCatalogResourceSort`](#cicatalogresourcesort) | Sort catalog resources by given criteria. |
 
 ### `Query.ciConfig`
 
@@ -27665,18 +27666,12 @@ Values for sorting catalog resources.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cicatalogresourcesortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
-| <a id="cicatalogresourcesortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="cicatalogresourcesortcreated_asc"></a>`CREATED_ASC` | Created date by ascending order. |
+| <a id="cicatalogresourcesortcreated_desc"></a>`CREATED_DESC` | Created date by descending order. |
 | <a id="cicatalogresourcesortlatest_released_at_asc"></a>`LATEST_RELEASED_AT_ASC` | Latest release date by ascending order. |
 | <a id="cicatalogresourcesortlatest_released_at_desc"></a>`LATEST_RELEASED_AT_DESC` | Latest release date by descending order. |
 | <a id="cicatalogresourcesortname_asc"></a>`NAME_ASC` | Name by ascending order. |
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
-| <a id="cicatalogresourcesortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
-| <a id="cicatalogresourcesortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="cicatalogresourcesortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="cicatalogresourcesortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="cicatalogresourcesortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="cicatalogresourcesortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `CiConfigIncludeType`
 

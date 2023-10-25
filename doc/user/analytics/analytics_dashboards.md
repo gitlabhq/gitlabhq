@@ -39,6 +39,12 @@ When [product analytics](../product_analytics/index.md) is enabled and onboarded
 - **Audience** displays metrics related to traffic, such as the number of users and sessions.
 - **Behavior** displays metrics related to user activity, such as the number of page views and events.
 
+For more information about the development of product analytics, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/). To leave feedback about bugs or functionality:
+
+- Comment on issue [391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
+- Create an issue with the `group::product analytics` label.
+- [Schedule a call](https://calendly.com/jheimbuck/30-minute-call) with the team.
+
 ### Value Stream Management
 
 - **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devsecops-metrics-comparison-panel).

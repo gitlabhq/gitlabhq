@@ -7,12 +7,26 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
 
   let_it_be(:namespace) { create(:group) }
   let_it_be(:project_1) { create(:project, name: 'Z', namespace: namespace) }
-  let_it_be(:project_2) { create(:project, name: 'A', namespace: namespace) }
-  let_it_be(:project_3) { create(:project, name: 'L', namespace: namespace) }
+  let_it_be(:project_2) { create(:project, name: 'A_Test', namespace: namespace) }
+  let_it_be(:project_3) { create(:project, name: 'L', description: 'Test', namespace: namespace) }
   let_it_be(:resource_1) { create(:ci_catalog_resource, project: project_1) }
   let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2) }
   let_it_be(:resource_3) { create(:ci_catalog_resource, project: project_3) }
   let_it_be(:user) { create(:user) }
+
+  let(:ctx) { { current_user: user } }
+  let(:search) { nil }
+  let(:sort) { nil }
+
+  let(:args) do
+    {
+      project_path: project_1.full_path,
+      sort: sort,
+      search: search
+    }.compact
+  end
+
+  subject(:result) { resolve(described_class, ctx: ctx, args: args) }
 
   describe '#resolve' do
     context 'with an authorized user' do
@@ -20,31 +34,36 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
         namespace.add_owner(user)
       end
 
-      it 'returns all CI Catalog resources visible to the current user in the namespace' do
-        result = resolve(described_class, ctx: { current_user: user }, args: { project_path: project_1.full_path })
-
+      it 'returns all catalog resources visible to the current user in the namespace' do
         expect(result.items.count).to be(3)
-        expect(result.items.pluck(:name)).to contain_exactly('Z', 'A', 'L')
+        expect(result.items.pluck(:name)).to contain_exactly('Z', 'A_Test', 'L')
       end
 
-      it 'returns all resources sorted by descending created date when given no sort param' do
-        result = resolve(described_class, ctx: { current_user: user }, args: { project_path: project_1.full_path })
-
-        expect(result.items.pluck(:name)).to eq(%w[L A Z])
+      context 'when the sort parameter is not provided' do
+        it 'returns all catalog resources sorted by descending created date' do
+          expect(result.items.pluck(:name)).to eq(%w[L A_Test Z])
+        end
       end
 
-      it 'returns all CI Catalog resources sorted by descending name when there is a sort parameter' do
-        result = resolve(described_class, ctx: { current_user: user }, args: { project_path: project_1.full_path, sort:
-        'NAME_DESC' })
+      context 'when the sort parameter is provided' do
+        let(:sort) { 'NAME_DESC' }
 
-        expect(result.items.pluck(:name)).to eq(%w[Z L A])
+        it 'returns all catalog resources sorted by descending name' do
+          expect(result.items.pluck(:name)).to eq(%w[Z L A_Test])
+        end
+      end
+
+      context 'when the search parameter is provided' do
+        let(:search) { 'test' }
+
+        it 'returns the catalog resources that match the search term' do
+          expect(result.items.pluck(:name)).to contain_exactly('A_Test', 'L')
+        end
       end
     end
 
     context 'when the current user cannot read the namespace catalog' do
-      it 'raises ResourceNotAvailable' do
-        result = resolve(described_class, ctx: { current_user: user }, args: { project_path: project_1.full_path })
-
+      it 'returns empty response' do
         expect(result).to be_empty
       end
     end

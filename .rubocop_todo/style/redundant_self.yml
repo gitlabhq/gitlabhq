@@ -194,7 +194,6 @@ Style/RedundantSelf:
     - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/ee/packages/package_file.rb'
     - 'ee/app/models/ee/project.rb'
-    - 'ee/app/models/ee/project_feature.rb'
     - 'ee/app/models/ee/project_import_state.rb'
     - 'ee/app/models/ee/snippet_repository.rb'
     - 'ee/app/models/ee/user.rb'

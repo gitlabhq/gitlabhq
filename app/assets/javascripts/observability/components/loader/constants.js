@@ -1,8 +1,11 @@
 import { __ } from '~/locale';
 
-export const SKELETON_SPINNER_VARIANT = 'spinner';
+export const CONTENT_STATE = Object.freeze({
+  ERROR: 'error',
+  LOADED: 'loaded',
+});
 
-export const SKELETON_STATE = Object.freeze({
+export const LOADER_STATE = Object.freeze({
   ERROR: 'error',
   VISIBLE: 'visible',
   HIDDEN: 'hidden',

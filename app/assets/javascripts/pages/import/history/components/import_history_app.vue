@@ -11,11 +11,8 @@ import { DEFAULT_ERROR } from '../utils/error_messages';
 import ImportErrorDetails from './import_error_details.vue';
 
 const DEFAULT_PER_PAGE = 20;
-const DEFAULT_TH_CLASSES =
-  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-200! gl-border-b-1! gl-p-5!';
 
 const tableCell = (config) => ({
-  thClass: DEFAULT_TH_CLASSES,
   tdClass: (value, key, item) => {
     return {
       // eslint-disable-next-line no-underscore-dangle
@@ -57,12 +54,12 @@ export default {
     tableCell({
       key: 'source',
       label: s__('BulkImport|Source'),
-      thClass: `${DEFAULT_TH_CLASSES} gl-w-30p`,
+      thClass: 'gl-w-30p',
     }),
     tableCell({
       key: 'destination',
       label: s__('BulkImport|Destination'),
-      thClass: `${DEFAULT_TH_CLASSES} gl-w-40p`,
+      thClass: 'gl-w-40p',
     }),
     tableCell({
       key: 'created_at',

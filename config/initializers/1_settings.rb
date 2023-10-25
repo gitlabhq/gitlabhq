@@ -874,6 +874,9 @@ Gitlab.ee do
   Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker'] ||= {}
   Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['job_class'] = 'Ci::ScheduleUnlockPipelinesInQueueCronWorker'
+  Settings.cron_jobs['timeout_pending_status_check_responses_worker'] ||= {}
+  Settings.cron_jobs['timeout_pending_status_check_responses_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['timeout_pending_status_check_responses_worker']['job_class'] = 'ComplianceManagement::TimeoutPendingStatusCheckResponsesWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

@@ -2,6 +2,7 @@
 
 # frozen_string_literal: true
 
+require 'optparse'
 require 'open3'
 require 'fileutils'
 require 'uri'
@@ -27,6 +28,10 @@ class SchemaRegenerator
   # directory when it runs.
   SCHEMA_MIGRATIONS_DIR = 'db/schema_migrations/'
 
+  def initialize(options)
+    @rollback_testing = options.delete(:rollback_testing)
+  end
+
   def execute
     Dir.chdir(File.expand_path('..', __dir__)) do
       checkout_ref
@@ -37,6 +42,7 @@ class SchemaRegenerator
       reset_db
       unhide_migrations
       migrate
+      rollback if @rollback_testing
     ensure
       unhide_migrations
     end
@@ -168,6 +174,15 @@ class SchemaRegenerator
   end
 
   ##
+  # Run rake task to rollback migrations.
+  def rollback
+    (untracked_schema_migrations + committed_schema_migrations).sort.reverse_each do |filename|
+      version = filename[/\d+\Z/]
+      run %(bin/rails db:rollback:main db:rollback:ci RAILS_ENV=test VERSION=#{version})
+    end
+  end
+
+  ##
   # Run the given +cmd+.
   #
   # The command is colored green, and the output of the command is
@@ -224,4 +239,19 @@ class SchemaRegenerator
   end
 end
 
-SchemaRegenerator.new.execute
+if $PROGRAM_NAME == __FILE__
+  options = {}
+
+  OptionParser.new do |opts|
+    opts.on("-r", "--rollback-testing", String, "Enable rollback testing") do
+      options[:rollback_testing] = true
+    end
+
+    opts.on("-h", "--help", "Prints this help") do
+      puts opts
+      exit
+    end
+  end.parse!
+
+  SchemaRegenerator.new(options).execute
+end

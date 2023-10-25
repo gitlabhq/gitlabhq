@@ -884,7 +884,6 @@ Layout/LineLength:
     - 'ee/app/models/ee/packages/package_file.rb'
     - 'ee/app/models/ee/pages_deployment.rb'
     - 'ee/app/models/ee/project.rb'
-    - 'ee/app/models/ee/project_feature.rb'
     - 'ee/app/models/ee/resource_label_event.rb'
     - 'ee/app/models/ee/snippet_repository.rb'
     - 'ee/app/models/ee/terraform/state_version.rb'

@@ -1,13 +1,13 @@
 <script>
 import { isEmpty } from 'lodash';
-import * as translations from '~/ml/model_registry/routes/models/index/translations';
+import * as translations from '~/ml/model_registry/translations';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import { BASE_SORT_FIELDS } from '../constants';
-import SearchBar from './search_bar.vue';
-import ModelRow from './model_row.vue';
+import SearchBar from '../components/search_bar.vue';
+import ModelRow from '../components/model_row.vue';
 
 export default {
-  name: 'MlModelRegistryApp',
+  name: 'IndexMlModels',
   components: {
     Pagination,
     ModelRow,

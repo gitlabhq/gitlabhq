@@ -30,6 +30,10 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
   - [Gitaly configuration structure change](#gitaly-configuration-structure-change).
 
+## 16.5.0
+
+- Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+
 ## 16.4.0
 
 - Updating a group path [received a bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/419289) that uses a database index introduced in 16.3.

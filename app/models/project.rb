@@ -140,8 +140,12 @@ class Project < ApplicationRecord
   after_create -> { create_or_load_association(:pages_metadatum) }
   after_create :set_timestamps_for_create
   after_create :check_repository_absence!
+
+  after_update :update_catalog_resource, if: -> { (saved_change_to_name? || saved_change_to_description?) && catalog_resource }
+
   before_destroy :remove_private_deploy_keys
   after_destroy :remove_exports
+
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
@@ -3529,6 +3533,10 @@ class Project < ApplicationRecord
     pool_repository_shard = pool.shard.name
 
     pool_repository_shard == repository_storage
+  end
+
+  def update_catalog_resource
+    catalog_resource.sync_with_project!
   end
 end
 

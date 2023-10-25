@@ -30,4 +30,5 @@ Default.args = {
   serializerConfig: {},
   extensions: [],
   enableAutocomplete: false,
+  markdownDocsPath: 'fake/path',
 };

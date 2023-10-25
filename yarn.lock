@@ -13528,10 +13528,10 @@ vscode-uri@^3.0.0:
   resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-3.0.3.tgz#a95c1ce2e6f41b7549f86279d19f47951e4f4d84"
   integrity sha512-EcswR2S8bpR7fD0YPeS7r2xXExrScVMxg4MedACaWHEtx9ftCF/qHG1xGkolzTPcEmjTavCQgbVzHUIdTMzFGA==
 
-vue-apollo@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/vue-apollo/-/vue-apollo-3.1.1.tgz#304c436d8e39e43df86d898f637f6581437665cc"
-  integrity sha512-rvRH6MIjkZffJi4Mfzek3jh4pAXgOTP3EaaUkAkA10yUxvFjw+NfAnzL14xkV3r0mczuLe1vetxz47pByZ137g==
+vue-apollo@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/vue-apollo/-/vue-apollo-3.0.7.tgz#97a031d45641faa4888a6d5a7f71c40834359704"
+  integrity sha512-EUfIn4cJmoflnDJiSNP8gH4fofIEzd0I2AWnd9nhHB8mddmzIfgSNjIRihDcRB10wypYG1OG0GcU335CFgZRfA==
   dependencies:
     chalk "^2.4.2"
     serialize-javascript "^4.0.0"

@@ -13153,7 +13153,9 @@ CREATE TABLE catalog_resources (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     state smallint DEFAULT 0 NOT NULL,
-    latest_released_at timestamp with time zone
+    latest_released_at timestamp with time zone,
+    name character varying,
+    description text
 );
 
 CREATE SEQUENCE catalog_resources_id_seq
@@ -23434,7 +23436,8 @@ CREATE TABLE status_check_responses (
     sha bytea NOT NULL,
     external_status_check_id bigint NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    retried_at timestamp with time zone
+    retried_at timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 CREATE SEQUENCE status_check_responses_id_seq
@@ -31181,6 +31184,8 @@ CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan
 
 CREATE UNIQUE INDEX idx_software_license_policies_unique_on_project_and_scan_policy ON software_license_policies USING btree (project_id, software_license_id, scan_result_policy_id);
 
+CREATE INDEX idx_status_check_responses_on_id_and_status ON status_check_responses USING btree (id, status);
+
 CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON audit_events_streaming_headers USING btree (external_audit_event_destination_id);
 
 CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_management_test_reports USING btree (issue_id, created_at, id);
@@ -31540,6 +31545,10 @@ CREATE INDEX index_catalog_resource_versions_on_catalog_resource_id ON catalog_r
 CREATE INDEX index_catalog_resource_versions_on_project_id ON catalog_resource_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_catalog_resource_versions_on_release_id ON catalog_resource_versions USING btree (release_id);
+
+CREATE INDEX index_catalog_resources_on_description_trigram ON catalog_resources USING gin (description gin_trgm_ops);
+
+CREATE INDEX index_catalog_resources_on_name_trigram ON catalog_resources USING gin (name gin_trgm_ops);
 
 CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 

@@ -1,6 +1,7 @@
 const BLAME_INFO_CLASSLIST = ['gl-border-t', 'gl-border-gray-500', 'gl-pt-3!'];
 const PADDING_BOTTOM_LARGE = 'gl-pb-6!';
 const PADDING_BOTTOM_SMALL = 'gl-pb-3!';
+const VIEWER_SELECTOR = '.file-holder .blob-viewer';
 
 const findLineNumberElement = (lineNumber) => document.getElementById(`L${lineNumber}`);
 
@@ -8,7 +9,7 @@ const findLineContentElement = (lineNumber) => document.getElementById(`LC${line
 
 export const calculateBlameOffset = (lineNumber) => {
   if (lineNumber === 1) return '0px';
-  const blobViewerOffset = document.querySelector('.blob-viewer')?.getBoundingClientRect().top;
+  const blobViewerOffset = document.querySelector(VIEWER_SELECTOR)?.getBoundingClientRect().top;
   const lineContentOffset = findLineContentElement(lineNumber).getBoundingClientRect().top;
   return `${lineContentOffset - blobViewerOffset}px`;
 };

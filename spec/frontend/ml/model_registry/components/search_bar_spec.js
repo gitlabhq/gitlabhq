@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlHelpers from '~/lib/utils/url_utility';
-import SearchBar from '~/ml/model_registry/routes/models/index/components/search_bar.vue';
-import { BASE_SORT_FIELDS } from '~/ml/model_registry/routes/models/index/constants';
+import SearchBar from '~/ml/model_registry/components/search_bar.vue';
+import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 
 let wrapper;

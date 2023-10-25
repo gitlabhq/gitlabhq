@@ -1,12 +1,11 @@
 <script>
 import { buildClient } from '../client';
-import { SKELETON_SPINNER_VARIANT } from '../constants';
-import ObservabilitySkeleton from './skeleton/index.vue';
+import ObservabilityLoader from './loader/index.vue';
+import { CONTENT_STATE } from './loader/constants';
 
 export default {
-  SKELETON_SPINNER_VARIANT,
   components: {
-    ObservabilitySkeleton,
+    ObservabilityLoader,
   },
   props: {
     oauthUrl: {
@@ -34,6 +33,7 @@ export default {
     return {
       observabilityClient: null,
       authCompleted: false,
+      loaderContentState: null,
     };
   },
   mounted() {
@@ -69,12 +69,12 @@ export default {
             servicesUrl: this.servicesUrl,
             operationsUrl: this.operationsUrl,
           });
-          this.$refs.observabilitySkeleton?.onContentLoaded();
           this.$emit('observability-client-ready', this.observabilityClient);
+          this.loaderContentState = CONTENT_STATE.LOADED;
         } else if (status === 'error') {
           // eslint-disable-next-line @gitlab/require-i18n-strings,no-console
           console.error('GOB auth failed with error:', message, statusCode);
-          this.$refs.observabilitySkeleton?.onError();
+          this.loaderContentState = CONTENT_STATE.ERROR;
         }
         this.authCompleted = true;
       }
@@ -93,11 +93,8 @@ export default {
       data-testid="observability-oauth-iframe"
     ></iframe>
 
-    <observability-skeleton
-      ref="observabilitySkeleton"
-      :variant="$options.SKELETON_SPINNER_VARIANT"
-    >
+    <observability-loader :content-state="loaderContentState">
       <slot v-if="observabilityClient" :observability-client="observabilityClient"></slot>
-    </observability-skeleton>
+    </observability-loader>
   </div>
 </template>

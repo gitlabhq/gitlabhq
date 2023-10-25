@@ -22,6 +22,7 @@ module Ci
         when 'name_asc' then relation.order_by_name_asc
         when 'latest_released_at_desc' then relation.order_by_latest_released_at_desc
         when 'latest_released_at_asc' then relation.order_by_latest_released_at_asc
+        when 'created_at_asc' then relation.order_by_created_at_asc
         else
           relation.order_by_created_at_desc
         end

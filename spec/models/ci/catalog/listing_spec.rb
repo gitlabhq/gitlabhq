@@ -87,15 +87,15 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
           let_it_be(:tomorrow) { today + 1.day }
 
           let_it_be(:resource_1) do
-            create(:ci_catalog_resource, project: project_x, latest_released_at: yesterday)
+            create(:ci_catalog_resource, project: project_x, latest_released_at: yesterday, created_at: today)
           end
 
           let_it_be(:resource_2) do
-            create(:ci_catalog_resource, project: project_b, latest_released_at: today)
+            create(:ci_catalog_resource, project: project_b, latest_released_at: today, created_at: yesterday)
           end
 
           let_it_be(:resource_3) do
-            create(:ci_catalog_resource, project: project_a, latest_released_at: nil)
+            create(:ci_catalog_resource, project: project_a, latest_released_at: nil, created_at: tomorrow)
           end
 
           let_it_be(:other_namespace_resource) do
@@ -108,6 +108,22 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
           context 'with a sort parameter' do
             let(:params) { { namespace: namespace, sort: sort } }
+
+            context 'when the sort is created_at ascending' do
+              let_it_be(:sort) { :created_at_asc }
+
+              it 'contains catalog resources sorted by created_at ascending' do
+                is_expected.to eq([resource_2, resource_1, resource_3])
+              end
+            end
+
+            context 'when the sort is created_at descending' do
+              let_it_be(:sort) { :created_at_desc }
+
+              it 'contains catalog resources sorted by created_at descending' do
+                is_expected.to eq([resource_3, resource_1, resource_2])
+              end
+            end
 
             context 'when the sort is name ascending' do
               let_it_be(:sort) { :name_asc }

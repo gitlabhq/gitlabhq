@@ -24,18 +24,20 @@ export const CHUNK_2 = {
 };
 
 export const SOURCE_CODE_CONTENT_MOCK = `    
-<div class="blob-viewer">
-  <div class="content">
-    <div>
-      <div id="L1">1</div>
-      <div id="L2">2</div>
-      <div id="L3">3</div>
-    </div>
+<div class="file-holder">
+  <div class="blob-viewer">
+    <div class="content">
+      <div>
+        <div id="L1">1</div>
+        <div id="L2">2</div>
+        <div id="L3">3</div>
+      </div>
 
-    <div>
-      <div id="LC1">Content 1</div>
-      <div id="LC2">Content 2</div>
-      <div id="LC3">Content 3</div>
+      <div>
+        <div id="LC1">Content 1</div>
+        <div id="LC2">Content 2</div>
+        <div id="LC3">Content 3</div>
+      </div>
     </div>
   </div>
 </div>`;

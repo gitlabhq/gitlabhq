@@ -78,7 +78,7 @@
 
 .row.js-todos-all
   - if @allowed_todos.any?
-    .col.js-todos-list-container{ data: { qa_selector: "todos_list_container" } }
+    .col.js-todos-list-container{ data: { testid: "todos-list-container" } }
       .js-todos-options{ data: { per_page: @allowed_todos.count, current_page: @todos.current_page, total_pages: @todos.total_pages } }
         %ul.content-list.todos-list
           = render @allowed_todos

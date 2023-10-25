@@ -42,9 +42,6 @@ import ImportTargetCell from './import_target_cell.vue';
 const VALIDATION_DEBOUNCE_TIME = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
 const PAGE_SIZES = [20, 50, 100];
 const DEFAULT_PAGE_SIZE = PAGE_SIZES[0];
-const DEFAULT_TH_CLASSES =
-  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-200! gl-border-b-1! gl-p-5!';
-const DEFAULT_TD_CLASSES = 'gl-vertical-align-top!';
 
 export default {
   components: {
@@ -129,36 +126,28 @@ export default {
     {
       key: 'selected',
       label: '',
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      thClass: `${DEFAULT_TH_CLASSES} gl-w-3 gl-pr-3!`,
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      tdClass: `${DEFAULT_TD_CLASSES} gl-pr-3!`,
+      thClass: 'gl-w-3 gl-pr-3!',
+      tdClass: 'gl-pr-3!',
     },
     {
       key: 'webUrl',
       label: s__('BulkImport|Source group'),
-      thClass: `${DEFAULT_TH_CLASSES} gl-pl-0! gl-w-half`,
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      tdClass: `${DEFAULT_TD_CLASSES} gl-pl-0!`,
+      thClass: 'gl-pl-0! gl-w-half',
+      tdClass: 'gl-pl-0!',
     },
     {
       key: 'importTarget',
       label: s__('BulkImport|New group'),
-      thClass: `${DEFAULT_TH_CLASSES} gl-w-half`,
-      tdClass: DEFAULT_TD_CLASSES,
+      thClass: `gl-w-half`,
     },
     {
       key: 'progress',
       label: __('Status'),
-      thClass: `${DEFAULT_TH_CLASSES}`,
-      tdClass: DEFAULT_TD_CLASSES,
       tdAttr: { 'data-qa-selector': 'import_status_indicator' },
     },
     {
       key: 'actions',
       label: '',
-      thClass: `${DEFAULT_TH_CLASSES}`,
-      tdClass: DEFAULT_TD_CLASSES,
     },
   ],
 

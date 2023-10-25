@@ -436,7 +436,6 @@ Style/IfUnlessModifier:
     - 'ee/app/models/ee/milestone_release.rb'
     - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/ee/project.rb'
-    - 'ee/app/models/ee/project_feature.rb'
     - 'ee/app/models/ee/project_team.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/geo/tracking_base.rb'

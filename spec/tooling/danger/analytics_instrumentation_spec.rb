@@ -231,4 +231,64 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
       end
     end
   end
+
+  describe '#check_deprecated_data_sources!' do
+    let(:fake_project_helper) { instance_double(Tooling::Danger::ProjectHelper) }
+
+    subject(:check_data_source) { analytics_instrumentation.check_deprecated_data_sources! }
+
+    before do
+      allow(fake_helper).to receive(:added_files).and_return([added_file])
+      allow(fake_helper).to receive(:changed_lines).with(added_file).and_return(changed_lines)
+      allow(analytics_instrumentation).to receive(:project_helper).and_return(fake_project_helper)
+      allow(analytics_instrumentation.project_helper).to receive(:file_lines).and_return(changed_lines.map { |line| line.delete_prefix('+') })
+    end
+
+    context 'when no metric definitions were modified' do
+      let(:added_file) { 'app/models/user.rb' }
+      let(:changed_lines) { ['+ data_source: redis,'] }
+
+      it 'does not trigger warning' do
+        expect(analytics_instrumentation).not_to receive(:markdown)
+
+        check_data_source
+      end
+    end
+
+    context 'when metrics fields were modified' do
+      let(:added_file) { 'config/metrics/count7_d/example_metric.yml' }
+
+      [:redis, :redis_hll].each do |source|
+        context "when source is #{source}" do
+          let(:changed_lines) { ["+ data_source: #{source}"] }
+          let(:template) do
+            <<~SUGGEST_COMMENT
+              ```suggestion
+              data_source: internal_events
+              ```
+
+              %<message>s
+            SUGGEST_COMMENT
+          end
+
+          it 'issues a warning' do
+            expected_comment = format(template, message: Tooling::Danger::AnalyticsInstrumentation::CHANGE_DEPRECATED_DATA_SOURCE_MESSAGE)
+            expect(analytics_instrumentation).to receive(:markdown).with(expected_comment.strip, file: added_file, line: 1)
+
+            check_data_source
+          end
+        end
+      end
+
+      context 'when neither redis nor redis_hll used as a data_source' do
+        let(:changed_lines) { ['+ data_source: database,'] }
+
+        it 'does not issue a warning' do
+          expect(analytics_instrumentation).not_to receive(:markdown)
+
+          check_data_source
+        end
+      end
+    end
+  end
 end

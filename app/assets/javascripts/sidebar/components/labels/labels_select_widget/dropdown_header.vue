@@ -81,7 +81,6 @@ export default {
       :value="searchKey"
       :placeholder="__('Search labels')"
       :disabled="labelsFetchInProgress"
-      data-qa-selector="dropdown_input_field"
       data-testid="dropdown-input-field"
       @input="$emit('input', $event)"
       @keydown.enter="$emit('searchEnter', $event)"

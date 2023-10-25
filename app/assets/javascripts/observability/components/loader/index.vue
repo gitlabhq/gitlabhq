@@ -1,31 +1,30 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlSkeletonLoader, GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 
 import {
-  SKELETON_STATE,
+  LOADER_STATE,
+  CONTENT_STATE,
   DEFAULT_TIMERS,
   TIMEOUT_ERROR_LABEL,
   TIMEOUT_ERROR_MESSAGE,
-  SKELETON_SPINNER_VARIANT,
-} from '../../constants';
+} from './constants';
 
 export default {
   components: {
-    GlSkeletonLoader,
     GlAlert,
     GlLoadingIcon,
   },
-  SKELETON_STATE,
+  LOADER_STATE,
   i18n: {
     TIMEOUT_ERROR_LABEL,
     TIMEOUT_ERROR_MESSAGE,
   },
   props: {
-    variant: {
+    contentState: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
   },
   data() {
@@ -35,18 +34,25 @@ export default {
       errorTimeout: null,
     };
   },
+
   computed: {
-    skeletonVisible() {
-      return this.state === SKELETON_STATE.VISIBLE;
+    loaderVisible() {
+      return this.state === LOADER_STATE.VISIBLE;
     },
-    skeletonHidden() {
-      return this.state === SKELETON_STATE.HIDDEN;
+    loaderHidden() {
+      return this.state === LOADER_STATE.HIDDEN;
     },
     errorVisible() {
-      return this.state === SKELETON_STATE.ERROR;
+      return this.state === LOADER_STATE.ERROR;
     },
-    spinnerVariant() {
-      return this.variant === SKELETON_SPINNER_VARIANT;
+  },
+  watch: {
+    contentState(newValue) {
+      if (newValue === CONTENT_STATE.LOADED) {
+        this.onContentLoaded();
+      } else if (newValue === CONTENT_STATE.ERROR) {
+        this.onError();
+      }
     },
   },
   mounted() {
@@ -62,7 +68,7 @@ export default {
       clearTimeout(this.errorTimeout);
       clearTimeout(this.loadingTimeout);
 
-      this.hideSkeleton();
+      this.hideLoader();
     },
     onError() {
       clearTimeout(this.errorTimeout);
@@ -74,10 +80,10 @@ export default {
       this.loadingTimeout = setTimeout(() => {
         /**
          *  If content is not loaded within CONTENT_WAIT_MS,
-         *  show the skeleton
+         *  show the loader
          */
-        if (this.state !== SKELETON_STATE.HIDDEN) {
-          this.showSkeleton();
+        if (this.state !== LOADER_STATE.HIDDEN) {
+          this.showLoader();
         }
       }, DEFAULT_TIMERS.CONTENT_WAIT_MS);
     },
@@ -87,19 +93,19 @@ export default {
          *  If content is not loaded within TIMEOUT_MS,
          *  show the error dialog
          */
-        if (this.state !== SKELETON_STATE.HIDDEN) {
+        if (this.state !== LOADER_STATE.HIDDEN) {
           this.showError();
         }
       }, DEFAULT_TIMERS.TIMEOUT_MS);
     },
-    hideSkeleton() {
-      this.state = SKELETON_STATE.HIDDEN;
+    hideLoader() {
+      this.state = LOADER_STATE.HIDDEN;
     },
-    showSkeleton() {
-      this.state = SKELETON_STATE.VISIBLE;
+    showLoader() {
+      this.state = LOADER_STATE.VISIBLE;
     },
     showError() {
-      this.state = SKELETON_STATE.ERROR;
+      this.state = LOADER_STATE.ERROR;
     },
   },
 };
@@ -107,19 +113,12 @@ export default {
 <template>
   <div class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch">
     <transition name="fade">
-      <div v-if="skeletonVisible" class="gl-px-5 gl-my-5">
-        <gl-loading-icon v-if="spinnerVariant" size="lg" />
-        <gl-skeleton-loader v-else>
-          <rect y="2" width="10" height="8" />
-          <rect y="2" x="15" width="15" height="8" />
-          <rect y="2" x="35" width="15" height="8" />
-          <rect y="15" width="400" height="30" />
-        </gl-skeleton-loader>
+      <div v-if="loaderVisible" class="gl-px-5 gl-my-5">
+        <gl-loading-icon size="lg" />
       </div>
 
-      <!-- The double condition is only here temporarily for back-compatibility reasons. Will be removed in next iteration https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2275 -->
       <div
-        v-else-if="spinnerVariant && skeletonHidden"
+        v-else-if="loaderHidden"
         data-testid="content-wrapper"
         class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch"
       >
@@ -136,16 +135,5 @@ export default {
     >
       {{ $options.i18n.TIMEOUT_ERROR_MESSAGE }}
     </gl-alert>
-
-    <!-- This is only kept temporarily for back-compatibility reasons. Will be removed in next iteration https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2275 -->
-    <transition v-if="!spinnerVariant">
-      <div
-        v-show="skeletonHidden"
-        data-testid="content-wrapper"
-        class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch"
-      >
-        <slot></slot>
-      </div>
-    </transition>
   </div>
 </template>

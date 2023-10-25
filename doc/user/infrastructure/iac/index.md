@@ -85,7 +85,6 @@ To use a Terraform template:
    ```yaml
    variables:
     TF_STATE_NAME: default
-    TF_CACHE_KEY: default
     # If your terraform files are in a subdirectory, set TF_ROOT accordingly. For example:
     # TF_ROOT: terraform/production
    ```

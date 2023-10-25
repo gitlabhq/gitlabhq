@@ -13,8 +13,6 @@ import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
 import PipelineStatusBadge from '../pipelines_page/components/pipeline_status_badge.vue';
 
 const HIDE_TD_ON_MOBILE = 'gl-display-none! gl-lg-display-table-cell!';
-const DEFAULT_TH_CLASSES =
-  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
 
 /**
  * Pipelines Table
@@ -77,7 +75,6 @@ export default {
         {
           key: 'status',
           label: s__('Pipeline|Status'),
-          thClass: DEFAULT_TH_CLASSES,
           columnClass: 'gl-w-15p',
           tdClass: this.tdClasses,
           thAttr: { 'data-testid': 'status-th' },
@@ -85,7 +82,6 @@ export default {
         {
           key: 'pipeline',
           label: __('Pipeline'),
-          thClass: DEFAULT_TH_CLASSES,
           tdClass: `${this.tdClasses}`,
           columnClass: 'gl-w-30p',
           thAttr: { 'data-testid': 'pipeline-th' },
@@ -93,7 +89,6 @@ export default {
         {
           key: 'triggerer',
           label: s__('Pipeline|Created by'),
-          thClass: DEFAULT_TH_CLASSES,
           tdClass: `${this.tdClasses} ${HIDE_TD_ON_MOBILE}`,
           columnClass: 'gl-w-15p',
           thAttr: { 'data-testid': 'triggerer-th' },
@@ -101,14 +96,12 @@ export default {
         {
           key: 'stages',
           label: s__('Pipeline|Stages'),
-          thClass: DEFAULT_TH_CLASSES,
           tdClass: this.tdClasses,
           columnClass: 'gl-w-quarter',
           thAttr: { 'data-testid': 'stages-th' },
         },
         {
           key: 'actions',
-          thClass: DEFAULT_TH_CLASSES,
           tdClass: this.tdClasses,
           columnClass: 'gl-w-20p',
           thAttr: { 'data-testid': 'actions-th' },

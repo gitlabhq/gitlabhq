@@ -1,17 +1,15 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
 import ObservabilityContainer from '~/observability/components/observability_container.vue';
-import ObservabilitySkeleton from '~/observability/components/skeleton/index.vue';
+import ObservabilityLoader from '~/observability/components/loader/index.vue';
+import { CONTENT_STATE } from '~/observability/components/loader/constants';
+
 import { buildClient } from '~/observability/client';
 
 jest.mock('~/observability/client');
 
 describe('ObservabilityContainer', () => {
   let wrapper;
-
-  const mockSkeletonOnContentLoaded = jest.fn();
-  const mockSkeletonOnError = jest.fn();
 
   const OAUTH_URL = 'https://example.com/oauth';
   const TRACING_URL = 'https://example.com/tracing';
@@ -33,11 +31,6 @@ describe('ObservabilityContainer', () => {
         provisioningUrl: PROVISIONING_URL,
         servicesUrl: SERVICES_URL,
         operationsUrl: OPERATIONS_URL,
-      },
-      stubs: {
-        ObservabilitySkeleton: stubComponent(ObservabilitySkeleton, {
-          methods: { onContentLoaded: mockSkeletonOnContentLoaded, onError: mockSkeletonOnError },
-        }),
       },
       slots: {
         default: {
@@ -63,6 +56,7 @@ describe('ObservabilityContainer', () => {
 
   const findIframe = () => wrapper.findByTestId('observability-oauth-iframe');
   const findSlotComponent = () => wrapper.findComponent({ name: 'MockComponent' });
+  const findLoader = () => wrapper.findComponent(ObservabilityLoader);
 
   it('should render the oauth iframe', () => {
     const iframe = findIframe();
@@ -72,9 +66,8 @@ describe('ObservabilityContainer', () => {
     expect(iframe.attributes('sandbox')).toBe('allow-same-origin allow-forms allow-scripts');
   });
 
-  it('should render the ObservabilitySkeleton', () => {
-    const skeleton = wrapper.findComponent(ObservabilitySkeleton);
-    expect(skeleton.exists()).toBe(true);
+  it('should render the ObservabilityLoader', () => {
+    expect(findLoader().exists()).toBe(true);
   });
 
   it('should not render the default slot', () => {
@@ -92,8 +85,8 @@ describe('ObservabilityContainer', () => {
       await nextTick();
     });
 
-    it('renders invoke onContentLoaded on the skeleton', () => {
-      expect(mockSkeletonOnContentLoaded).toHaveBeenCalledTimes(1);
+    it('sets the loader contentState to LOADED', () => {
+      expect(findLoader().props('contentState')).toBe(CONTENT_STATE.LOADED);
     });
 
     it('renders the slot content', () => {
@@ -115,29 +108,44 @@ describe('ObservabilityContainer', () => {
     });
   });
 
-  it('does not render the slot content and removes the iframe on oauth error message', async () => {
+  describe('on oauth error message', () => {
+    beforeEach(async () => {
+      dispatchMessageEvent('error');
+
+      await nextTick();
+    });
+
+    it('set the loader contentState to ERROR', () => {
+      expect(findLoader().props('contentState')).toBe(CONTENT_STATE.ERROR);
+    });
+
+    it('does not renders the slot content', () => {
+      expect(findSlotComponent().exists()).toBe(false);
+    });
+
+    it('does not build the observability client', () => {
+      expect(buildClient).not.toHaveBeenCalled();
+    });
+
+    it('does not emit observability-client-ready', () => {
+      expect(wrapper.emitted('observability-client-ready')).toBeUndefined();
+    });
+  });
+
+  it('handles oauth message only once', async () => {
+    dispatchMessageEvent('success');
     dispatchMessageEvent('error');
 
     await nextTick();
 
-    expect(mockSkeletonOnError).toHaveBeenCalledTimes(1);
-
-    expect(findSlotComponent().exists()).toBe(false);
-    expect(findIframe().exists()).toBe(false);
-    expect(buildClient).not.toHaveBeenCalled();
-  });
-
-  it('handles oauth message only once', () => {
-    dispatchMessageEvent('success');
-    dispatchMessageEvent('success');
-
-    expect(mockSkeletonOnContentLoaded).toHaveBeenCalledTimes(1);
+    expect(buildClient).toHaveBeenCalledTimes(1);
+    expect(findLoader().props('contentState')).toBe(CONTENT_STATE.LOADED);
   });
 
   it('only handles messages from the oauth url', () => {
     dispatchMessageEvent('success', 'www.fake-url.com');
 
-    expect(mockSkeletonOnContentLoaded).toHaveBeenCalledTimes(0);
+    expect(findLoader().props('contentState')).toBe(null);
     expect(findSlotComponent().exists()).toBe(false);
     expect(findIframe().exists()).toBe(true);
   });
@@ -147,6 +155,6 @@ describe('ObservabilityContainer', () => {
 
     dispatchMessageEvent('success');
 
-    expect(mockSkeletonOnContentLoaded).toHaveBeenCalledTimes(0);
+    expect(findLoader().props('contentState')).toBe(null);
   });
 });

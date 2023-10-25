@@ -1,0 +1,38 @@
+diff --git a/node_modules/vue-apollo/dist/vue-apollo.esm.js b/node_modules/vue-apollo/dist/vue-apollo.esm.js
+index e4b4b15..6d3040b 100644
+--- a/node_modules/vue-apollo/dist/vue-apollo.esm.js
++++ b/node_modules/vue-apollo/dist/vue-apollo.esm.js
+@@ -1933,14 +1933,6 @@ function initProvider() {
+     this.$apolloProvider = typeof optionValue === 'function' ? optionValue() : optionValue;
+   } else if (options.parent && options.parent.$apolloProvider) {
+     this.$apolloProvider = options.parent.$apolloProvider;
+-  } else if (options.provide) {
+-    // TODO remove
+-    // Temporary retro-compatibility
+-    var provided = typeof options.provide === 'function' ? options.provide.call(this) : options.provide;
+-
+-    if (provided && provided.$apolloProvider) {
+-      this.$apolloProvider = provided.$apolloProvider;
+-    }
+   }
+ }
+ 
+diff --git a/node_modules/vue-apollo/dist/vue-apollo.umd.js b/node_modules/vue-apollo/dist/vue-apollo.umd.js
+index 2310455..895f996 100644
+--- a/node_modules/vue-apollo/dist/vue-apollo.umd.js
++++ b/node_modules/vue-apollo/dist/vue-apollo.umd.js
+@@ -1939,14 +1939,6 @@
+       this.$apolloProvider = typeof optionValue === 'function' ? optionValue() : optionValue;
+     } else if (options.parent && options.parent.$apolloProvider) {
+       this.$apolloProvider = options.parent.$apolloProvider;
+-    } else if (options.provide) {
+-      // TODO remove
+-      // Temporary retro-compatibility
+-      var provided = typeof options.provide === 'function' ? options.provide.call(this) : options.provide;
+-
+-      if (provided && provided.$apolloProvider) {
+-        this.$apolloProvider = provided.$apolloProvider;
+-      }
+     }
+   }
+ 

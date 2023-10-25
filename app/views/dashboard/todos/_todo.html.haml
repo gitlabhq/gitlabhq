@@ -33,7 +33,7 @@
               - if todo.note.present?
                 \:
 
-          %span.action-name{ data: { qa_selector: "todo_action_name_content" } }<
+          %span.action-name{ data: { testid: "todo-action-name-content" } }<
             - if !todo.note.present?
               = todo_action_name(todo)
               - unless todo.self_assigned?

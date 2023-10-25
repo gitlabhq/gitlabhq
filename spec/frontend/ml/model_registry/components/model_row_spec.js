@@ -1,10 +1,7 @@
 import { GlLink } from '@gitlab/ui';
-import {
-  mockModels,
-  modelWithoutVersion,
-} from 'jest/ml/model_registry/routes/models/index/components/mock_data';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import ModelRow from '~/ml/model_registry/routes/models/index/components/model_row.vue';
+import ModelRow from '~/ml/model_registry/components/model_row.vue';
+import { mockModels, modelWithoutVersion } from '../mock_data';
 
 let wrapper;
 const createWrapper = (model = mockModels[0]) => {
