@@ -4,7 +4,7 @@ class DropColumnsFromGeoNodeStatusTable < Gitlab::Database::Migration[2.1]
   enable_lock_retries!
 
   def up
-    remove_columns :geo_node_statuses,
+    [
       :wikis_checksum_failed_count,
       :wikis_checksum_mismatch_count,
       :wikis_checksummed_count,
@@ -17,6 +17,9 @@ class DropColumnsFromGeoNodeStatusTable < Gitlab::Database::Migration[2.1]
       :design_repositories_synced_count,
       :design_repositories_failed_count,
       :design_repositories_registry_count
+    ].each do |column_name|
+      remove_column :geo_node_statuses, column_name, if_exists: true
+    end
   end
 
   def down
