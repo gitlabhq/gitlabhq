@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:user) { create(:admin, :no_super_sidebar) }
+  let_it_be(:user) { create(:admin) }
 
   before do
     sign_in(user)
@@ -13,10 +13,10 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
   end
 
   describe 'GET /admin/hooks' do
-    it 'is ok' do
+    it 'is ok', :js do
       visit admin_root_path
 
-      page.within '.nav-sidebar' do
+      within_testid('super-sidebar') do
         click_on 'System Hooks', match: :first
       end
 

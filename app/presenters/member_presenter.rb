@@ -15,6 +15,10 @@ class MemberPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def valid_member_roles
+    []
+  end
+
   def can_resend_invite?
     invite? &&
       can?(current_user, admin_member_permission, source)

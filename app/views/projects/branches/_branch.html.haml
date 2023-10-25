@@ -28,7 +28,7 @@
 
   .pipeline-status.d-none.d-md-block<
     - if commit_status
-      = render 'ci/status/icon', size: 16, status: commit_status
+      = render 'ci/status/icon', status: commit_status
     - elsif show_commit_status
       .gl-display-inline-flex.gl-vertical-align-middle.gl-mr-3
         %svg.s16

@@ -7,7 +7,7 @@
 
 %tr.generic-commit-status{ class: ('retried' if retried) }
   %td.status
-    = render 'ci/status/badge', status: generic_commit_status.detailed_status(current_user)
+    = render 'ci/status/icon', status: generic_commit_status.detailed_status(current_user), show_status_text: true
 
   %td
     = generic_commit_status.name

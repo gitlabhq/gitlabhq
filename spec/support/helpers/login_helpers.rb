@@ -70,7 +70,13 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def gitlab_sign_out
-    find(".header-user-dropdown-toggle").click
+    if has_testid?('super-sidebar')
+      click_on "#{@current_user.name} user’s menu"
+    else
+      # This can be removed once https://gitlab.com/gitlab-org/gitlab/-/issues/420121 is complete.
+      find(".header-user-dropdown-toggle").click
+    end
+
     click_link "Sign out"
     @current_user = nil
 
@@ -79,11 +85,8 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def gitlab_disable_admin_mode
-    open_top_nav
-
-    within_top_nav do
-      click_on 'Leave admin mode'
-    end
+    click_on 'Search or go to…'
+    click_on 'Leave admin mode'
   end
 
   private

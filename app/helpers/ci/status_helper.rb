@@ -16,41 +16,41 @@ module Ci
 
     # rubocop:disable Metrics/CyclomaticComplexity
     def ci_icon_for_status(status, size: 16)
-      if detailed_status?(status)
-        return sprite_icon(status.icon, size: size)
-      end
-
       icon_name =
-        case status
-        when 'success'
-          'status_success'
-        when 'success-with-warnings'
-          'status_warning'
-        when 'failed'
-          'status_failed'
-        when 'pending'
-          'status_pending'
-        when 'waiting_for_resource'
-          'status_pending'
-        when 'preparing'
-          'status_preparing'
-        when 'running'
-          'status_running'
-        when 'play'
-          'play'
-        when 'created'
-          'status_created'
-        when 'skipped'
-          'status_skipped'
-        when 'manual'
-          'status_manual'
-        when 'scheduled'
-          'status_scheduled'
+        if detailed_status?(status)
+          status.icon
         else
-          'status_canceled'
+          case status
+          when 'success'
+            'status_success'
+          when 'success-with-warnings'
+            'status_warning'
+          when 'failed'
+            'status_failed'
+          when 'pending'
+            'status_pending'
+          when 'waiting-for-resource'
+            'status_pending'
+          when 'preparing'
+            'status_preparing'
+          when 'running'
+            'status_running'
+          when 'play'
+            'play'
+          when 'created'
+            'status_created'
+          when 'skipped'
+            'status_skipped'
+          when 'manual'
+            'status_manual'
+          when 'scheduled'
+            'status_scheduled'
+          else
+            'status_canceled'
+          end
         end
 
-      sprite_icon(icon_name, size: size)
+      sprite_icon(icon_name, size: size, css_class: 'gl-icon')
     end
     # rubocop:enable Metrics/CyclomaticComplexity
 
@@ -68,23 +68,34 @@ module Ci
       project = commit.project
       path = pipelines_project_commit_path(project, commit, ref: ref)
 
-      render_status_with_link(
+      render_ci_icon(
         status,
         path,
         tooltip_placement: tooltip_placement,
-        icon_size: 16)
+        option_css_classes: 'gl-ml-3'
+      )
     end
 
-    def render_status_with_link(status, path = nil, type: _('pipeline'), tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)
+    def render_ci_icon(
+      status,
+      path = nil,
+      tooltip_placement: 'left',
+      option_css_classes: '',
+      container: 'body',
+      show_status_text: false
+    )
       variant = badge_variant(status)
-      klass = "js-ci-status-badge-legacy #{ci_icon_class_for_status(status)} d-inline-flex gl-line-height-1 #{cssclass}"
-      title = "#{type.titleize}: #{ci_label_for_status(status)}"
-      data = { toggle: 'tooltip', placement: tooltip_placement, container: container, testid: 'ci-status-badge-legacy' }
-      badge_classes = 'gl-px-2 gl-ml-3'
+      klass = "js-ci-status-badge-legacy ci-status-icon #{ci_icon_class_for_status(status)} gl-rounded-full gl-justify-content-center gl-line-height-0"
+      title = "#{_('Pipeline')}: #{ci_label_for_status(status)}"
+      data = { toggle: 'tooltip', placement: tooltip_placement, container: container, testid: 'ci-icon' }
+      badge_classes = "ci-icon gl-p-2 #{option_css_classes}"
 
       gl_badge_tag(variant: variant, size: :md, href: path, class: badge_classes, title: title, data: data) do
-        content_tag :span, ci_icon_for_status(status, size: icon_size),
-          class: klass
+        if show_status_text
+          content_tag(:span, ci_icon_for_status(status), { class: klass }) + content_tag(:span, status.label, { class: 'gl-mx-2 gl-white-space-nowrap' })
+        else
+          content_tag(:span, ci_icon_for_status(status), { class: klass })
+        end
       end
     end
 

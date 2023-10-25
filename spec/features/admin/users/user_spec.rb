@@ -6,8 +6,8 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
   include Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:user) { create(:omniauth_user, :no_super_sidebar, provider: 'twitter', extern_uid: '123456') }
-  let_it_be(:current_user) { create(:admin, :no_super_sidebar) }
+  let_it_be(:user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
+  let_it_be(:current_user) { create(:admin) }
 
   before do
     sign_in(current_user)
@@ -145,7 +145,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
     end
 
     describe 'Impersonation' do
-      let_it_be(:another_user) { create(:user, :no_super_sidebar) }
+      let_it_be(:another_user) { create(:user) }
 
       context 'before impersonating' do
         subject { visit admin_user_path(user_to_visit) }
@@ -257,15 +257,13 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
           visit admin_user_path(another_user)
         end
 
-        it 'logs in as the user when impersonate is clicked' do
+        it 'logs in as the user when impersonate is clicked', :js do
           subject
 
-          find('[data-testid="user-dropdown"]').click
-
-          expect(page.find(:css, '[data-testid="user-profile-link"]')['data-user']).to eql(another_user.username)
+          expect(page).to have_button("#{another_user.name} user’s menu")
         end
 
-        it 'sees impersonation log out icon' do
+        it 'sees impersonation log out icon', :js do
           subject
 
           icon = first('[data-testid="incognito-icon"]')
@@ -306,8 +304,8 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
         end
       end
 
-      context 'ending impersonation' do
-        subject { find(:css, 'li.impersonation a').click }
+      context 'ending impersonation', :js do
+        subject { click_on 'Stop impersonating' }
 
         before do
           visit admin_user_path(another_user)
@@ -317,9 +315,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
         it 'logs out of impersonated user back to original user' do
           subject
 
-          find('[data-testid="user-dropdown"]').click
-
-          expect(page.find(:css, '[data-testid="user-profile-link"]')['data-user']).to eq(current_user.username)
+          expect(page).to have_button("#{current_user.name} user’s menu")
         end
 
         it 'is redirected back to the impersonated users page in the admin after stopping' do

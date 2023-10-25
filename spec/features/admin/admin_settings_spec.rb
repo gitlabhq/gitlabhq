@@ -7,7 +7,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
   include TermsHelper
   include UsageDataHelpers
 
-  let_it_be(:admin) { create(:admin, :no_super_sidebar) }
+  let_it_be(:admin) { create(:admin) }
 
   context 'application setting :admin_mode is enabled', :request_store do
     before do
@@ -990,15 +990,14 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
     end
 
-    context 'Nav bar' do
+    context 'Nav bar', :js do
       it 'shows default help links in nav' do
         default_support_url = "https://#{ApplicationHelper.promo_host}/get-help/"
 
         visit root_dashboard_path
 
-        find('.header-help-dropdown-toggle').click
-
-        page.within '.header-help' do
+        within_testid('super-sidebar') do
+          click_on 'Help'
           expect(page).to have_link(text: 'Help', href: help_path)
           expect(page).to have_link(text: 'Support', href: default_support_url)
         end
@@ -1010,9 +1009,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         visit root_dashboard_path
 
-        find('.header-help-dropdown-toggle').click
-
-        page.within '.header-help' do
+        within_testid('super-sidebar') do
+          click_on 'Help'
           expect(page).to have_link(text: 'Support', href: new_support_url)
         end
       end

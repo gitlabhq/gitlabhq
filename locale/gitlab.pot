@@ -29298,9 +29298,6 @@ msgstr ""
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}."
 msgstr ""
 
-msgid "MemberRole|%{role} - custom"
-msgstr ""
-
 msgid "MemberRole|can't be changed"
 msgstr ""
 
@@ -34803,9 +34800,6 @@ msgid "PipelineSource|Web IDE"
 msgstr ""
 
 msgid "PipelineStatusTooltip|Pipeline: %{ciStatus}"
-msgstr ""
-
-msgid "PipelineStatusTooltip|Pipeline: %{ci_status}"
 msgstr ""
 
 msgid "PipelineWizardDefaultCommitMessage|Add %{filename}"
@@ -57356,9 +57350,6 @@ msgid "personal access token"
 msgstr ""
 
 msgid "personal access tokens"
-msgstr ""
-
-msgid "pipeline"
 msgstr ""
 
 msgid "pipelineEditorWalkthrough|Let's do this!"

@@ -5,9 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
   include TermsHelper
   include UserLoginHelper
-  include Features::TopNavSpecHelpers
 
-  let(:user) { create(:admin, :no_super_sidebar) }
+  let(:user) { create(:admin) }
 
   before do
     # TODO: This used to use gitlab_sign_in, instead of sign_in, but that is buggy.  See
@@ -22,11 +21,9 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
 
     expect(page).to have_current_path root_path, ignore_query: true
 
-    open_top_nav
+    click_button 'Search or go to…'
 
-    within_top_nav do
-      expect(page).to have_link(href: new_admin_session_path)
-    end
+    expect(page).to have_link(href: new_admin_session_path)
   end
 
   it 'disable shows flash notice' do
@@ -45,11 +42,9 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
 
       expect(page).to have_current_path root_path, ignore_query: true
 
-      open_top_nav
+      click_button 'Search or go to…'
 
-      within_top_nav do
-        expect(page).to have_link(href: new_admin_session_path)
-      end
+      expect(page).to have_link(href: new_admin_session_path)
     end
   end
 end

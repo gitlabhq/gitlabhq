@@ -4,10 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Admin mode', :js, feature_category: :shared do
   include MobileHelpers
-  include Features::TopNavSpecHelpers
   include StubENV
 
-  let(:admin) { create(:admin, :no_super_sidebar) }
+  let(:admin) { create(:admin) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -21,20 +20,16 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
     context 'when not in admin mode' do
       it 'has no leave admin mode button' do
         visit new_admin_session_path
-        open_top_nav
+        open_search_modal
 
-        page.within('.navbar-sub-nav') do
-          expect(page).not_to have_link(href: destroy_admin_session_path)
-        end
+        expect(page).not_to have_link(href: destroy_admin_session_path)
       end
 
       it 'can open pages not in admin scope' do
         visit new_admin_session_path
-        open_top_nav_projects
+        open_search_modal
 
-        within_top_nav do
-          click_link('View all projects')
-        end
+        click_link('View all my projects')
 
         expect(page).to have_current_path(dashboard_projects_path)
       end
@@ -78,29 +73,23 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
       end
 
       it 'contains link to leave admin mode' do
-        open_top_nav
+        open_search_modal
 
-        within_top_nav do
-          expect(page).to have_link(href: destroy_admin_session_path)
-        end
+        expect(page).to have_link(href: destroy_admin_session_path)
       end
 
       it 'can leave admin mode using main dashboard link' do
         gitlab_disable_admin_mode
 
-        open_top_nav
+        open_search_modal
 
-        within_top_nav do
-          expect(page).to have_link(href: new_admin_session_path)
-        end
+        expect(page).to have_link(href: new_admin_session_path)
       end
 
       it 'can open pages not in admin scope' do
-        open_top_nav_projects
+        open_search_modal
 
-        within_top_nav do
-          click_link('View all projects')
-        end
+        click_link('View all my projects')
 
         expect(page).to have_current_path(dashboard_projects_path)
       end
@@ -108,7 +97,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
       context 'nav bar' do
         it 'shows admin dashboard links on bigger screen' do
           visit root_dashboard_path
-          open_top_nav
+          open_search_modal
 
           expect(page).to have_link(text: 'Admin', href: admin_root_path, visible: true)
           expect(page).to have_link(text: 'Leave admin mode', href: destroy_admin_session_path, visible: true)
@@ -123,11 +112,9 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
         it 'can leave admin mode' do
           gitlab_disable_admin_mode
 
-          open_top_nav
+          open_search_modal
 
-          within_top_nav do
-            expect(page).to have_link(href: new_admin_session_path)
-          end
+          expect(page).to have_link(href: new_admin_session_path)
         end
       end
     end
@@ -141,10 +128,14 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
 
     it 'shows no admin mode buttons in navbar' do
       visit admin_root_path
-      open_top_nav
+      open_search_modal
 
       expect(page).not_to have_link(href: new_admin_session_path)
       expect(page).not_to have_link(href: destroy_admin_session_path)
     end
+  end
+
+  def open_search_modal
+    click_button 'Search or go to…'
   end
 end

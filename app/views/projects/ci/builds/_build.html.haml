@@ -14,7 +14,7 @@
   %td.status
     -# Sending 'status' prevents calling the user relation inside the presenter, generating N+1,
     -# see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68743
-    = render "ci/status/badge", status: status, title: job.status_title(status)
+    = render "ci/status/icon", status: status, show_status_text: true
 
   %td
     - if can?(current_user, :read_build, job)

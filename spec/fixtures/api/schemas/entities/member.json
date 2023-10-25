@@ -11,7 +11,8 @@
     "type",
     "can_update",
     "can_remove",
-    "is_direct_member"
+    "is_direct_member",
+    "custom_roles"
   ],
   "properties": {
     "id": {
@@ -48,7 +49,8 @@
       "type": "object",
       "required": [
         "integer_value",
-        "string_value"
+        "string_value",
+        "member_role_id"
       ],
       "properties": {
         "integer_value": {
@@ -56,6 +58,12 @@
         },
         "string_value": {
           "type": "string"
+        },
+        "member_role_id": {
+          "type": [
+            "integer",
+            "null"
+          ]
         }
       },
       "additionalProperties": false
@@ -138,6 +146,26 @@
         }
       },
       "additionalProperties": false
+    },
+    "custom_roles": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "base_access_level": {
+              "type": "integer"
+            },
+            "member_role_id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
     }
   }
 }

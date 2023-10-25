@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CommitSignature
   extend ActiveSupport::Concern
 
