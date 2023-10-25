@@ -228,6 +228,8 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in |
 |:-----|:------------|:------------------|:---------|:--------------|
+| [`create_ssh_certificate`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134556) | Event triggered when an SSH certificate is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/427413) |
+| [`delete_ssh_certificate`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134556) | Event triggered when an SSH certificate is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/427413) |
 | [`group_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121005) | Event triggered when a group is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/411595) |
 | [`group_lfs_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106079) | Event triggered when a groups lfs enabled is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369323) |
 | [`group_membership_lock_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106079) | Event triggered when a groups membership lock is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369323) |

@@ -3,9 +3,10 @@
 module Groups
   module SshCertificates
     class CreateService
-      def initialize(group, params)
+      def initialize(group, params, current_user)
         @group = group
         @params = params
+        @current_user = current_user
       end
 
       def execute
@@ -41,7 +42,7 @@ module Groups
 
       private
 
-      attr_reader :group, :params
+      attr_reader :group, :params, :current_user
 
       def generate_fingerprint(key)
         Gitlab::SSHPublicKey.new(key).fingerprint_sha256&.delete_prefix('SHA256:')
@@ -49,3 +50,5 @@ module Groups
     end
   end
 end
+
+Groups::SshCertificates::CreateService.prepend_mod_with('Groups::SshCertificates::CreateService')

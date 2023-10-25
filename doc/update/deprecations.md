@@ -944,6 +944,24 @@ we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### The GitHub importer Rake task
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/428225).
+</div>
+
+In GitLab 16.6 the [GitHub importer Rake task](https://docs.gitlab.com/ee/administration/raketasks/github_import.html) is deprecated. The Rake task lacks several features that are supported by the API and is not actively maintained.
+
+In GitLab 17.0, the Rake task will be removed.
+
+Instead, GitHub repositories can be imported by using the [API](https://docs.gitlab.com/ee/api/import.html#import-repository-from-github) or the [UI](https://docs.gitlab.com/ee/user/project/import/github.html).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### The GitLab legacy requirement IID is deprecated in favor of work item IID
 
 <div class="deprecation-notes">

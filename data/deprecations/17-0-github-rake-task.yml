@@ -1,0 +1,14 @@
+- title: "The GitHub importer Rake task"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.6"
+  breaking_change: true
+  reporter: wortschi
+  stage: manage
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428225
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    In GitLab 16.6 the [GitHub importer Rake task](https://docs.gitlab.com/ee/administration/raketasks/github_import.html) is deprecated. The Rake task lacks several features that are supported by the API and is not actively maintained.
+
+    In GitLab 17.0, the Rake task will be removed.
+
+    Instead, GitHub repositories can be imported by using the [API](https://docs.gitlab.com/ee/api/import.html#import-repository-from-github) or the [UI](https://docs.gitlab.com/ee/user/project/import/github.html).
+  documentation_url: https://docs.gitlab.com/ee/administration/raketasks/github_import.html

@@ -31,6 +31,8 @@ a single-node Geo site or a multi-node Geo site.
 If both Geo sites are based on the [1K reference architecture](../../reference_architectures/1k_users.md), follow
 [Set up Geo for two single-node sites](two_single_node_sites.md).
 
+If using external PostgreSQL services, for example Amazon RDS, follow [Set up Geo for two single-node sites (with external PostgreSQL services)](two_single_node_external_services.md).
+
 Depending on your GitLab deployment, [additional configuration](#additional-configuration) for LDAP, object storage, and the Container Registry might be required.
 
 ### Multi-node Geo sites

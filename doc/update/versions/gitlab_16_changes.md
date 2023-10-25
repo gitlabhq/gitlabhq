@@ -227,6 +227,24 @@ Specific information applies to installations using Geo:
     Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
     You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
 
+#### Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced
+
+A [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/410413) in the Geo proxying logic for LFS objects meant that all LFS clone requests against a secondary site are proxied to the primary even if the secondary site is up-to-date. This can result in increased load on the primary site and longer access times for LFS objects for users cloning from the secondary site.
+
+In GitLab 15.1 proxying was enabled by default.
+
+You are not impacted:
+
+- If your installation is not configured to use LFS objects
+- If you do not use Geo to accelerate remote users
+- If you are using Geo to accelerate remote users but have disabled proxying
+
+| Affected minor releases | Affected patch releases | Fixed in |
+|-------------------------|-------------------------|----------|
+| 15.1 - 16.2             | All                     | 16.3 and later    |
+
+Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/index.md#disable-geo-proxying). Note that the secondary site fails to serve LFS files that have not been replicated at the time of cloning.
+
 ## 16.1.0
 
 - A `BackfillPreparedAtMergeRequests` background migration is finalized with
@@ -273,6 +291,7 @@ Specific information applies to installations using Geo:
   - While running an affected version, artifacts which appeared to become synced may actually be missing on the secondary site.
     Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
     You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
+  - Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
 
 #### Wiki repositories not initialized on project creation
 
@@ -334,6 +353,7 @@ Specific information applies to installations using Geo:
 
 - Some project imports do not initialize wiki repositories on project creation. See
   [the details and workaround](#wiki-repositories-not-initialized-on-project-creation).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
 
 ### Gitaly configuration structure change
 

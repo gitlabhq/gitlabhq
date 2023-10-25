@@ -609,7 +609,8 @@ Updates to example must be made at:
 -->
 
    ```ruby
-   roles ["sidekiq_role"]
+   # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles
+   roles(["sidekiq_role"])
 
    # External URL
    external_url 'https://gitlab.example.com'

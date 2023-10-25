@@ -14,6 +14,10 @@ You can also manage your storage usage by improving [pipeline efficiency](../ci/
 
 For more help with API automation, you can also use the [GitLab community forum and Discord](https://about.gitlab.com/community/).
 
+WARNING:
+The script examples in this page are for demonstration purposes only and should not
+be used in production. You can use the examples to design and test your own scripts for storage automation.
+
 ## API requirements
 
 To automate storage management, your GitLab.com SaaS or self-managed instance must have access to the [GitLab REST API](../api/api_resources.md).
@@ -567,11 +571,17 @@ Support for creating a retention policy for job logs is proposed in [issue 37471
 
 ### Delete old pipelines
 
-Pipelines do not add to the overall storage consumption, but if required you can delete them with the following methods.
+Pipelines do not add to the overall storage usage, but if required you can automate their deletion.
 
-Automatic deletion of old pipelines is proposed in [issue 338480](https://gitlab.com/gitlab-org/gitlab/-/issues/338480).
+To delete pipelines based on a specific date, specify the `created_at` key.
+You can use the date to calculate the difference between the current date and
+when the pipeline was created. If the age is larger than the threshold, the pipeline is deleted.
 
-Example with the GitLab CLI:
+NOTE:
+The `created_at` key must be converted from a timestamp to Unix epoch time,
+for example with `date -d '2023-08-08T18:59:47.581Z' +%s`.
+
+Example with GitLab CLI:
 
 ```shell
 export GL_PROJECT_ID=48349590
@@ -589,12 +599,10 @@ glab api --method GET projects/$GL_PROJECT_ID/pipelines | jq --compact-output '.
 "2023-08-08T18:59:47.581Z"
 ```
 
-The `created_at` key must be converted from a timestamp to Unix epoch time,
-for example with `date -d '2023-08-08T18:59:47.581Z' +%s`. In the next step, the
-age can be calculated with the difference between now, and the pipeline creation
-date. If the age is larger than the threshold, the pipeline should be deleted.
+In the following example that uses a Bash script:
 
-The following example uses a Bash script that expects `jq` and the GitLab CLI installed, and authorized, and the exported environment variable `GL_PROJECT_ID`.
+- `jq` and the GitLab CLI are installed and authorized.
+- The exported environment variable `GL_PROJECT_ID`.
 
 The full script `get_cicd_pipelines_compare_age_threshold_example.sh` is located in the [GitLab API with Linux Shell](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-linux-shell) project.
 
@@ -624,7 +632,7 @@ do
 done
 ```
 
-You can use the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/pipelines_and_jobs.html#project-pipelines) and
+You can also use the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/pipelines_and_jobs.html#project-pipelines) and
 the `created_at` attribute to implement a similar algorithm that compares the job artifact age:
 
 ```python
@@ -644,6 +652,8 @@ the `created_at` attribute to implement a similar algorithm that compares the jo
                 print("Deleting pipeline", pipeline.id)
                 pipeline_obj.delete()
 ```
+
+Automatic deletion of old pipelines is proposed in [issue 338480](https://gitlab.com/gitlab-org/gitlab/-/issues/338480).
 
 ### List expiry settings for job artifacts
 
@@ -817,8 +827,6 @@ glab api --method GET projects/$GL_PROJECT_ID/registry/repositories/4435617/tags
 ```
 
 ::EndTabs
-
-A similar automation shell script is created in the [delete old pipelines](#delete-old-pipelines) section.
 
 ### Delete container images in bulk
 

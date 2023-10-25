@@ -302,6 +302,10 @@ update the firewall on the instance to only allow traffic from your Prometheus I
        static_configs:
          - targets:
            - 1.1.1.1:9236
+     - job_name: registry
+       static_configs:
+         - targets:
+           - 1.1.1.1:5001
    ```
 
    WARNING:

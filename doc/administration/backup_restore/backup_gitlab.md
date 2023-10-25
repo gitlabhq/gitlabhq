@@ -853,7 +853,7 @@ For the Linux package (Omnibus):
 
      ## If you have CNAME buckets (foo.example.com), you might run into SSL issues
      ## when uploading backups ("hostname foo.example.com.storage.googleapis.com
-     ## does not match the server certificate"). In that case, uncomnent the following
+     ## does not match the server certificate"). In that case, uncomment the following
      ## setting. See: https://github.com/fog/fog/issues/2834
      #'path_style' => true
    }

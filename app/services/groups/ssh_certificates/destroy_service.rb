@@ -3,16 +3,17 @@
 module Groups
   module SshCertificates
     class DestroyService
-      def initialize(group, params)
+      def initialize(group, params, current_user)
         @group = group
         @params = params
+        @current_user = current_user
       end
 
       def execute
         ssh_certificate = group.ssh_certificates.find(params[:ssh_certificates_id])
 
         ssh_certificate.destroy!
-        ServiceResponse.success
+        ServiceResponse.success(payload: { ssh_certificate: ssh_certificate })
 
       rescue ActiveRecord::RecordNotFound
         ServiceResponse.error(
@@ -29,7 +30,9 @@ module Groups
 
       private
 
-      attr_reader :group, :params
+      attr_reader :group, :params, :current_user
     end
   end
 end
+
+Groups::SshCertificates::DestroyService.prepend_mod_with('Groups::SshCertificates::DestroyService')
