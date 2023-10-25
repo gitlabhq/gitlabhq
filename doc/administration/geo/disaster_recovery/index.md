@@ -88,6 +88,7 @@ Note the following when promoting a secondary:
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error message during this process, for more information, see this
   [troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
+- You should [point the primary domain DNS at the newly promoted site](#step-4-optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
 
 #### Promoting a **secondary** site running on a single node running GitLab 14.5 and later
 

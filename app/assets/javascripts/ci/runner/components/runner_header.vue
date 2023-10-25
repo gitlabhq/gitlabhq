@@ -1,16 +1,15 @@
 <script>
-import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { I18N_LOCKED_RUNNER_DESCRIPTION } from '../constants';
 import { formatRunnerName } from '../utils';
+import RunnerCreatedAt from './runner_created_at.vue';
 import RunnerTypeBadge from './runner_type_badge.vue';
 import RunnerStatusBadge from './runner_status_badge.vue';
 
 export default {
   components: {
     GlIcon,
-    GlSprintf,
-    TimeAgo,
+    RunnerCreatedAt,
     RunnerTypeBadge,
     RunnerStatusBadge,
     RunnerUpgradeStatusBadge: () =>
@@ -43,21 +42,13 @@ export default {
       <runner-status-badge :contacted-at="runner.contactedAt" :status="runner.status" />
       <runner-type-badge :type="runner.runnerType" />
       <runner-upgrade-status-badge :runner="runner" />
-      <span v-if="runner.createdAt">
-        <gl-sprintf :message="__('%{locked} created %{timeago}')">
-          <template #locked>
-            <gl-icon
-              v-if="runner.locked"
-              v-gl-tooltip="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
-              name="lock"
-              :aria-label="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
-            />
-          </template>
-          <template #timeago>
-            <time-ago :time="runner.createdAt" />
-          </template>
-        </gl-sprintf>
-      </span>
+      <gl-icon
+        v-if="runner.locked"
+        v-gl-tooltip="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
+        name="lock"
+        :aria-label="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
+      />
+      <runner-created-at :runner="runner" />
     </div>
   </div>
 </template>

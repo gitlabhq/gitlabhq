@@ -88,6 +88,9 @@ export default {
     workItemIid() {
       return String(this.iid);
     },
+    pipelinePath() {
+      return this.pipelineStatus?.details_path || this.pipelineStatus?.detailsPath;
+    },
   },
   methods: {
     handleTitleClick(event) {
@@ -192,7 +195,7 @@ export default {
             class="item-attributes-area gl-display-flex gl-align-items-center gl-flex-wrap gl-gap-3"
           >
             <span v-if="hasPipeline" class="mr-ci-status order-md-last">
-              <a :href="pipelineStatus.details_path">
+              <a :href="pipelinePath">
                 <ci-icon :status="pipelineStatus" :title="pipelineStatusTooltip" />
               </a>
             </span>

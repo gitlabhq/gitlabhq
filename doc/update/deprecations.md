@@ -239,6 +239,24 @@ the aliasing for the `CiRunnerUpgradeStatusType` type will be removed.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Container Registry support for the Swift and OSS storage drivers
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1141).
+</div>
+
+The container registry uses storage drivers to work with various object storage platforms. While each driver's code is relatively self-contained, there is a high maintenance burden for these drivers. Each driver implementation is unique and making changes to a driver requires a high level of domain expertise with that specific driver.
+
+As we look to reduce maintenance costs, we are deprecating support for OSS (Object Storage Service) and OpenStack Swift. Both have already been removed from the upstream Docker Distribution. This helps align the container registry with the broader GitLab product offering with regards to [object storage support](https://docs.gitlab.com/ee/administration/object_storage.html#supported-object-storage-providers).
+
+OSS has an [S3 compatibility mode](https://www.alibabacloud.com/help/en/oss/developer-reference/compatibility-with-amazon-s3), so consider using that if you can't migrate to a supported driver. Swift is [compatible with S3 API operations](https://docs.openstack.org/swift/latest/s3_compat.html), required by the S3 storage driver as well.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### DAST ZAP advanced configuration variables deprecation
 
 <div class="deprecation-notes">

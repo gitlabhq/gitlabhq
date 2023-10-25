@@ -5,6 +5,9 @@ require 'json'
 require 'set'
 require 'zlib'
 
+# Load query analyzers
+require_relative File.expand_path('database/query_analyzers.rb', __dir__)
+
 source = ENV['CI_MERGE_REQUEST_SOURCE_BRANCH_SHA']
 target = ENV['CI_MERGE_REQUEST_TARGET_BRANCH_SHA']
 log_path = ENV['RSPEC_AUTO_EXPLAIN_LOG_PATH']
@@ -14,6 +17,7 @@ exit(0) unless Dir.exist?(logs_path)
 
 fingerprints = Set.new
 jobs = Set.new
+query_analyzers = Database::QueryAnalyzers.new
 
 JOB_NAME = %r{^(.*)\.\d+\.[^.]+\.ndjson\.gz$}
 
@@ -22,20 +26,24 @@ Zlib::GzipWriter.open(log_path) do |log|
     job_name = File.basename(file)[JOB_NAME, 1]
     Zlib::GzipReader.open(file) do |gz|
       gz.each_line do |line|
-        json = JSON.parse(line)
-        fingerprint = json['fingerprint']
+        query = JSON.parse(line)
+        fingerprint = query['fingerprint']
 
         next unless fingerprints.add?(fingerprint)
 
+        query_analyzers.analyze(query)
+
         jobs << job_name
-        json['job_name'] = job_name
-        log.puts(json.to_s)
+        query['job_name'] = job_name
+        log.puts(JSON.generate(query))
       end
     end
 
     File.delete(file)
   end
 end
+
+query_analyzers.save!
 
 warn("auto_explain log contains #{fingerprints.size} entries from: #{jobs.to_a.sort.join(', ')}")
 warn("auto_explain comparison of #{target} to #{source}") if source && target

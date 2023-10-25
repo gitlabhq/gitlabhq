@@ -1,21 +1,15 @@
 import { GlSprintf } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import RunnerSummaryCell from '~/ci/runner/components/cells/runner_summary_cell.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import RunnerCreatedAt from '~/ci/runner/components/runner_created_at.vue';
 import RunnerManagersBadge from '~/ci/runner/components/runner_managers_badge.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import RunnerSummaryField from '~/ci/runner/components/cells/runner_summary_field.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
-import {
-  INSTANCE_TYPE,
-  I18N_INSTANCE_TYPE,
-  PROJECT_TYPE,
-  I18N_CREATED_AT_LABEL,
-  I18N_CREATED_AT_BY_LABEL,
-} from '~/ci/runner/constants';
+import { INSTANCE_TYPE, I18N_INSTANCE_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 
 import { allRunnersWithCreatorData } from '../../mock_data';
 
@@ -182,45 +176,11 @@ describe('RunnerTypeCell', () => {
     expect(findRunnerSummaryField('pipeline').text()).toContain('1,000+');
   });
 
-  describe('Displays creation info', () => {
-    const findCreatedTime = () => findRunnerSummaryField('calendar').findComponent(TimeAgo);
+  it('Displays creation info', () => {
+    createComponent();
 
-    it('Displays created at ...', () => {
-      createComponent({
-        runner: { createdBy: null },
-      });
-
-      expect(findRunnerSummaryField('calendar').text()).toMatchInterpolatedText(
-        sprintf(I18N_CREATED_AT_LABEL, {
-          timeAgo: findCreatedTime().text(),
-        }),
-      );
-      expect(findCreatedTime().props('time')).toBe(mockRunner.createdAt);
-    });
-
-    it('Displays created at ... by ...', () => {
-      createComponent({ mountFn: mountExtended });
-
-      expect(findRunnerSummaryField('calendar').text()).toMatchInterpolatedText(
-        sprintf(I18N_CREATED_AT_BY_LABEL, {
-          timeAgo: findCreatedTime().text(),
-          avatar: mockRunner.createdBy.username,
-        }),
-      );
-
-      expect(findCreatedTime().props('time')).toBe(mockRunner.createdAt);
-    });
-
-    it('Displays creator avatar', () => {
-      const { name, avatarUrl, webUrl, username } = mockRunner.createdBy;
-
-      expect(wrapper.findComponent(UserAvatarLink).props()).toMatchObject({
-        imgAlt: expect.stringContaining(name),
-        imgSrc: avatarUrl,
-        linkHref: webUrl,
-        tooltipText: username,
-      });
-    });
+    const createdAt = findRunnerSummaryField('calendar').findComponent(RunnerCreatedAt);
+    expect(createdAt.props('runner')).toEqual(mockRunner);
   });
 
   it('Displays tag list', () => {

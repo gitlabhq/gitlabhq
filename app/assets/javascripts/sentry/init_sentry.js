@@ -23,7 +23,7 @@ const initSentry = () => {
   const client = new BrowserClient({
     // Sentry.init(...) options
     dsn: gon.sentry_dsn,
-    release: gon.version,
+    release: gon.revision,
     allowUrls:
       process.env.NODE_ENV === 'production'
         ? [gon.gitlab_url]
@@ -56,7 +56,7 @@ const initSentry = () => {
   hub.bindClient(client);
 
   hub.setTags({
-    revision: gon.revision,
+    version: gon.version,
     feature_category: gon.feature_category,
     page,
   });

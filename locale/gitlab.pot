@@ -930,9 +930,6 @@ msgstr ""
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
-msgid "%{locked} created %{timeago}"
-msgstr ""
-
 msgid "%{mergeLength}/%{usersLength} can merge"
 msgstr ""
 
@@ -40796,7 +40793,10 @@ msgstr ""
 msgid "Runners|Created %{timeAgo}"
 msgstr ""
 
-msgid "Runners|Created %{timeAgo} by %{avatar}"
+msgid "Runners|Created by %{user}"
+msgstr ""
+
+msgid "Runners|Created by %{user} %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Delete"

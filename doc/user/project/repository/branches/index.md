@@ -389,3 +389,18 @@ To fix this problem:
 
 Git versions [2.16.0 and later](https://github.com/git/git/commit/a625b092cc59940521789fe8a3ff69c8d6b14eb2),
 prevent you from creating a branch with this name.
+
+### Find all branches you've authored
+
+To find all branches you've authored in a project, run this command in a Git repository:
+
+```shell
+git for-each-ref --format='%(refname:short) %(authoremail)'  | grep $(git config --get user.email)
+```
+
+To get a total of all branches in a project, sorted by author, run this command
+in a Git repository:
+
+```shell
+git for-each-ref --format='%(authoremail)'  | sort | uniq -c | sort -g
+```

@@ -739,6 +739,7 @@ export default {
         </div>
       </div>
       <merge-immediately-confirmation-dialog
+        v-if="mr.mergeImmediatelyDocsPath"
         ref="confirmationDialog"
         :docs-url="mr.mergeImmediatelyDocsPath"
         @mergeImmediately="onMergeImmediatelyConfirmation"

@@ -6,7 +6,6 @@ import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_na
 import SmallScreenDrawerNavigation from '~/search/sidebar/components/small_screen_drawer_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import {
   SCOPE_ISSUES,
@@ -42,7 +41,6 @@ export default {
     CommitsFilters,
     MilestonesFilters,
   },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     // useSidebarNavigation refers to whether the new left sidebar navigation is enabled
     ...mapState(['useSidebarNavigation', 'searchType']),
@@ -60,21 +58,13 @@ export default {
       return this.currentScope === SCOPE_PROJECTS;
     },
     showNotesFilters() {
-      // for now, the feature flag is placed here. Since we have only one filter in notes scope
-      return this.currentScope === SCOPE_NOTES && this.glFeatures.searchNotesHideArchivedProjects;
+      return this.currentScope === SCOPE_NOTES;
     },
     showCommitsFilters() {
-      // for now, the feature flag is placed here. Since we have only one filter in commits scope
-      return (
-        this.currentScope === SCOPE_COMMITS && this.glFeatures.searchCommitsHideArchivedProjects
-      );
+      return this.currentScope === SCOPE_COMMITS;
     },
     showMilestonesFilters() {
-      // for now, the feature flag is placed here. Since we have only one filter in milestones scope
-      return (
-        this.currentScope === SCOPE_MILESTONES &&
-        this.glFeatures.searchMilestonesHideArchivedProjects
-      );
+      return this.currentScope === SCOPE_MILESTONES;
     },
     showScopeNavigation() {
       // showScopeNavigation refers to whether the scope navigation should be shown
