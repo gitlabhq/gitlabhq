@@ -34,7 +34,13 @@ module QA
       let!(:source_api_client) { source_admin_api_client }
 
       let!(:source_group) do
-        create(:sandbox, api_client: source_api_client, path: gitlab_source_group)
+        paths = gitlab_source_group.split("/")
+        sandbox = build(:sandbox, api_client: source_api_client, path: paths.first).reload!
+        next sandbox if paths.size == 1
+
+        paths[1..].each_with_object([sandbox]) do |path, arr|
+          arr << build(:group, api_client: source_api_client, sandbox: arr.last, path: path).reload!
+        end.last
       end
 
       # generate unique target group because source group has a static name

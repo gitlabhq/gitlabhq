@@ -30142,25 +30142,13 @@ msgstr ""
 msgid "Milestone(s) not found: %{milestones}"
 msgstr ""
 
-msgid "MilestoneCombobox|An error occurred while searching for milestones"
-msgstr ""
-
 msgid "MilestoneCombobox|Group milestones"
-msgstr ""
-
-msgid "MilestoneCombobox|Milestone"
-msgstr ""
-
-msgid "MilestoneCombobox|No matching results"
 msgstr ""
 
 msgid "MilestoneCombobox|No milestone"
 msgstr ""
 
 msgid "MilestoneCombobox|Project milestones"
-msgstr ""
-
-msgid "MilestoneCombobox|Search Milestones"
 msgstr ""
 
 msgid "MilestoneCombobox|Select milestone"
@@ -50854,6 +50842,9 @@ msgid "Unresolved"
 msgstr ""
 
 msgid "Unschedule job"
+msgstr ""
+
+msgid "Unselect"
 msgstr ""
 
 msgid "Unselect \"Expand variable reference\" if you want to use the variable value as a raw string."

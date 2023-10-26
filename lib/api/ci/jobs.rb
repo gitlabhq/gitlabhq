@@ -57,7 +57,7 @@ module API
           builds = filter_builds(builds, params[:scope])
           builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, :tags, pipeline: :project)
 
-          present paginate_with_strategies(builds, paginator_params: { without_count: true }), with: Entities::Ci::Job
+          present paginate_with_strategies(builds, user_project, paginator_params: { without_count: true }), with: Entities::Ci::Job
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

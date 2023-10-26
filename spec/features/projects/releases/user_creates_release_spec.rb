@@ -148,8 +148,7 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
 
     fill_release_title(release_title)
 
-    select_milestone(milestone_1.title)
-    select_milestone(milestone_2.title)
+    select_milestones(milestone_1.title, milestone_2.title)
 
     fill_release_notes(release_notes)
 

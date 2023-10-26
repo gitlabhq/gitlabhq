@@ -97,8 +97,8 @@ RSpec.describe 'Markdown keyboard shortcuts', :js, feature_category: :team_plann
 
   context 'Vue.js markdown editor' do
     let(:path_to_visit) { new_project_release_path(project) }
-    let(:markdown_field) { find_field('Release notes') }
-    let(:non_markdown_field) { find_field('Release title') }
+    let(:markdown_field) { find_field('release-notes') }
+    let(:non_markdown_field) { find_field('release-title') }
 
     it_behaves_like 'keyboard shortcuts'
     it_behaves_like 'no side effects'

@@ -34,8 +34,10 @@ module Gitlab
           order_satisfied?(relation, cursor_based_request_context)
       end
 
-      def self.enforced_for_type?(relation)
-        ENFORCED_TYPES.include?(relation.klass)
+      def self.enforced_for_type?(request_scope, relation)
+        enforced = ENFORCED_TYPES
+        enforced += [::Ci::Build] if ::Feature.enabled?(:enforce_ci_builds_pagination_limit, request_scope, type: :ops)
+        enforced.include?(relation.klass)
       end
 
       def self.order_satisfied?(relation, cursor_based_request_context)

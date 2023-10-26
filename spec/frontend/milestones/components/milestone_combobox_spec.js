@@ -1,12 +1,11 @@
-import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
+import { GlLoadingIcon, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { ENTER_KEY } from '~/lib/utils/keys';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import createStore from '~/milestones/stores/';
 import { projectMilestones, groupMilestones } from '../mock_data';
@@ -52,9 +51,6 @@ describe('Milestone combobox component', () => {
           wrapper.setProps({ value: selectedMilestone });
         },
       },
-      stubs: {
-        GlSearchBoxByType: true,
-      },
       store: createStore(),
     });
   };
@@ -89,57 +85,25 @@ describe('Milestone combobox component', () => {
   //
   // Finders
   //
-  const findButtonContent = () => wrapper.find('[data-testid="milestone-combobox-button-content"]');
-
-  const findNoResults = () => wrapper.find('[data-testid="milestone-combobox-no-results"]');
-
+  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findButtonContent = () => wrapper.find('[data-testid="base-dropdown-toggle"]');
+  const findNoResults = () => wrapper.find('[data-testid="listbox-no-results-text"]');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
-
   const findProjectMilestonesSection = () =>
-    wrapper.find('[data-testid="project-milestones-section"]');
-  const findProjectMilestonesDropdownItems = () =>
-    findProjectMilestonesSection().findAllComponents(GlDropdownItem);
-  const findFirstProjectMilestonesDropdownItem = () => findProjectMilestonesDropdownItems().at(0);
-
-  const findGroupMilestonesSection = () => wrapper.find('[data-testid="group-milestones-section"]');
-  const findGroupMilestonesDropdownItems = () =>
-    findGroupMilestonesSection().findAllComponents(GlDropdownItem);
-  const findFirstGroupMilestonesDropdownItem = () => findGroupMilestonesDropdownItems().at(0);
-
-  //
-  // Expecters
-  //
-  const projectMilestoneSectionContainsErrorMessage = () => {
-    const projectMilestoneSection = findProjectMilestonesSection();
-
-    return projectMilestoneSection
-      .text()
-      .includes('An error occurred while searching for milestones');
-  };
-
-  const groupMilestoneSectionContainsErrorMessage = () => {
-    const groupMilestoneSection = findGroupMilestonesSection();
-
-    return groupMilestoneSection
-      .text()
-      .includes('An error occurred while searching for milestones');
-  };
+    findGlCollapsibleListbox().find('[data-testid="project-milestones-section"]');
+  const findGroupMilestonesSection = () =>
+    findGlCollapsibleListbox().find('[data-testid="group-milestones-section"]');
+  const findDropdownItems = () => findGlCollapsibleListbox().findAllComponents(GlListboxItem);
 
   //
   // Convenience methods
   //
   const updateQuery = (newQuery) => {
-    findSearchBox().vm.$emit('input', newQuery);
+    findGlCollapsibleListbox().vm.$emit('search', newQuery);
   };
 
-  const selectFirstProjectMilestone = () => {
-    findFirstProjectMilestonesDropdownItem().vm.$emit('click');
-  };
-
-  const selectFirstGroupMilestone = () => {
-    findFirstGroupMilestonesDropdownItem().vm.$emit('click');
+  const selectItem = (item) => {
+    findGlCollapsibleListbox().vm.$emit('select', item);
   };
 
   const waitForRequests = async ({ andClearMocks } = { andClearMocks: false }) => {
@@ -224,22 +188,6 @@ describe('Milestone combobox component', () => {
       });
     });
 
-    describe('when the Enter is pressed', () => {
-      beforeEach(() => {
-        createComponent();
-
-        return waitForRequests({ andClearMocks: true });
-      });
-
-      it('requeries the search when Enter is pressed', () => {
-        findSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
-
-        return waitForRequests().then(() => {
-          expect(searchApiCallSpy).toHaveBeenCalledTimes(1);
-        });
-      });
-    });
-
     describe('when no results are found', () => {
       beforeEach(() => {
         projectMilestonesApiCallSpy = jest
@@ -257,7 +205,7 @@ describe('Milestone combobox component', () => {
 
       describe('when the search query is empty', () => {
         it('renders a "no results" message', () => {
-          expect(findNoResults().text()).toBe('No matching results');
+          expect(findNoResults().text()).toBe('No results found');
         });
       });
     });
@@ -275,22 +223,14 @@ describe('Milestone combobox component', () => {
         });
 
         it('renders the "Project milestones" heading with a total number indicator', () => {
-          expect(
-            findProjectMilestonesSection()
-              .find('[data-testid="milestone-results-section-header"]')
-              .text(),
-          ).toBe('Project milestones  6');
-        });
-
-        it("does not render an error message in the project milestone section's body", () => {
-          expect(projectMilestoneSectionContainsErrorMessage()).toBe(false);
+          expect(findProjectMilestonesSection().text()).toBe('Project milestones 6');
         });
 
         it('renders each project milestones as a selectable item', () => {
-          const dropdownItems = findProjectMilestonesDropdownItems();
+          const dropdownItems = findDropdownItems();
 
-          projectMilestones.forEach((milestone, i) => {
-            expect(dropdownItems.at(i).text()).toBe(milestone.title);
+          projectMilestones.forEach((milestone) => {
+            expect(dropdownItems.filter((x) => x.text() === milestone.title).exists()).toBe(true);
           });
         });
       });
@@ -323,12 +263,8 @@ describe('Milestone combobox component', () => {
           return waitForRequests();
         });
 
-        it('renders the project milestones section in the dropdown', () => {
-          expect(findProjectMilestonesSection().exists()).toBe(true);
-        });
-
-        it("renders an error message in the project milestones section's body", () => {
-          expect(projectMilestoneSectionContainsErrorMessage()).toBe(true);
+        it('does not render the project milestones section in the dropdown', () => {
+          expect(findProjectMilestonesSection().exists()).toBe(false);
         });
       });
 
@@ -339,52 +275,24 @@ describe('Milestone combobox component', () => {
           return waitForRequests();
         });
 
-        it('renders a checkmark by the selected item', async () => {
-          selectFirstProjectMilestone();
+        describe('when a project milestone is selected', () => {
+          const item = 'v1.0';
 
-          await nextTick();
-
-          expect(
-            findFirstProjectMilestonesDropdownItem()
-              .find('svg')
-              .classes('gl-dropdown-item-check-icon'),
-          ).toBe(true);
-
-          selectFirstProjectMilestone();
-
-          await nextTick();
-
-          expect(
-            findFirstProjectMilestonesDropdownItem().find('svg').classes('gl-visibility-hidden'),
-          ).toBe(true);
-        });
-
-        describe('when a project milestones is selected', () => {
           beforeEach(() => {
             createComponent();
             projectMilestonesApiCallSpy = jest
               .fn()
               .mockReturnValue([HTTP_STATUS_OK, [{ title: 'v1.0' }], { [X_TOTAL_HEADER]: '1' }]);
 
+            selectItem([item]);
             return waitForRequests();
           });
 
-          it("displays the project milestones name in the dropdown's button", async () => {
-            selectFirstProjectMilestone();
-            await nextTick();
-
-            expect(findButtonContent().text()).toBe('v1.0');
-
-            selectFirstProjectMilestone();
-            await nextTick();
-
-            expect(findButtonContent().text()).toBe('No milestone');
+          it("displays the project milestones name in the dropdown's button", () => {
+            expect(findButtonContent().text()).toBe(item);
           });
 
-          it('updates the v-model binding with the project milestone title', async () => {
-            selectFirstProjectMilestone();
-            await nextTick();
-
+          it('updates the v-model binding with the project milestone title', () => {
             expect(wrapper.emitted().input[0][0]).toStrictEqual(['v1.0']);
           });
         });
@@ -404,22 +312,14 @@ describe('Milestone combobox component', () => {
         });
 
         it('renders the "Group milestones" heading with a total number indicator', () => {
-          expect(
-            findGroupMilestonesSection()
-              .find('[data-testid="milestone-results-section-header"]')
-              .text(),
-          ).toBe('Group milestones  6');
-        });
-
-        it("does not render an error message in the group milestone section's body", () => {
-          expect(groupMilestoneSectionContainsErrorMessage()).toBe(false);
+          expect(findGroupMilestonesSection().text()).toBe('Group milestones 6');
         });
 
         it('renders each group milestones as a selectable item', () => {
-          const dropdownItems = findGroupMilestonesDropdownItems();
+          const dropdownItems = findDropdownItems();
 
-          groupMilestones.forEach((milestone, i) => {
-            expect(dropdownItems.at(i).text()).toBe(milestone.title);
+          groupMilestones.forEach((milestone) => {
+            expect(dropdownItems.filter((x) => x.text() === milestone.title).exists()).toBe(true);
           });
         });
       });
@@ -452,74 +352,8 @@ describe('Milestone combobox component', () => {
           return waitForRequests();
         });
 
-        it('renders the group milestones section in the dropdown', () => {
-          expect(findGroupMilestonesSection().exists()).toBe(true);
-        });
-
-        it("renders an error message in the group milestones section's body", () => {
-          expect(groupMilestoneSectionContainsErrorMessage()).toBe(true);
-        });
-      });
-
-      describe('selection', () => {
-        beforeEach(() => {
-          createComponent();
-
-          return waitForRequests();
-        });
-
-        it('renders a checkmark by the selected item', async () => {
-          selectFirstGroupMilestone();
-
-          await nextTick();
-
-          expect(
-            findFirstGroupMilestonesDropdownItem()
-              .find('svg')
-              .classes('gl-dropdown-item-check-icon'),
-          ).toBe(true);
-
-          selectFirstGroupMilestone();
-
-          await nextTick();
-
-          expect(
-            findFirstGroupMilestonesDropdownItem().find('svg').classes('gl-visibility-hidden'),
-          ).toBe(true);
-        });
-
-        describe('when a group milestones is selected', () => {
-          beforeEach(() => {
-            createComponent();
-            groupMilestonesApiCallSpy = jest
-              .fn()
-              .mockReturnValue([
-                HTTP_STATUS_OK,
-                [{ title: 'group-v1.0' }],
-                { [X_TOTAL_HEADER]: '1' },
-              ]);
-
-            return waitForRequests();
-          });
-
-          it("displays the group milestones name in the dropdown's button", async () => {
-            selectFirstGroupMilestone();
-            await nextTick();
-
-            expect(findButtonContent().text()).toBe('group-v1.0');
-
-            selectFirstGroupMilestone();
-            await nextTick();
-
-            expect(findButtonContent().text()).toBe('No milestone');
-          });
-
-          it('updates the v-model binding with the group milestone title', async () => {
-            selectFirstGroupMilestone();
-            await nextTick();
-
-            expect(wrapper.emitted().input[0][0]).toStrictEqual(['group-v1.0']);
-          });
+        it('does not render the group milestones section', () => {
+          expect(findGroupMilestonesSection().exists()).toBe(false);
         });
       });
     });

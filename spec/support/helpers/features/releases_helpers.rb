@@ -44,20 +44,22 @@ module Features
     end
 
     def fill_release_title(release_title)
-      fill_in('Release title', with: release_title)
+      fill_in('release-title', with: release_title)
     end
 
-    def select_milestone(milestone_title)
-      page.within '[data-testid="milestones-field"]' do
-        find('button').click
+    def select_milestones(*milestone_titles)
+      within_testid 'milestones-field' do
+        find_by_testid('base-dropdown-toggle').click
 
         wait_for_all_requests
 
-        find('input[aria-label="Search Milestones"]').set(milestone_title)
+        milestone_titles.each do |milestone_title|
+          find('input[type="search"]').set(milestone_title)
 
-        wait_for_all_requests
+          wait_for_all_requests
 
-        find('button', text: milestone_title, match: :first).click
+          find('[role="option"]', text: milestone_title).click
+        end
       end
     end
 

@@ -295,6 +295,10 @@ up confusion or verify that the end result matches what they had in mind, to
 database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
 
+If you know you'll need many merge requests to deliver a feature (for example, you created a proof of concept and it is clear the feature will consist of 10+ merge requests),
+consider identifying reviewers and maintainers who possess the necessary understanding of the feature (you share the context with them). Then direct all merge requests to these reviewers.
+The best DRI for finding these reviewers is the EM or Staff Engineer. Having stable reviewer counterparts for multiple merge requests with the same context improves efficiency.
+
 If your merge request touches more than one domain (for example, Dynamic Analysis and GraphQL), ask for reviews from an expert from each domain.
 
 If an author is unsure if a merge request needs a [domain expert's](#domain-experts) opinion,

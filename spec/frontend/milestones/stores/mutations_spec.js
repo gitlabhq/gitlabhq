@@ -163,10 +163,12 @@ describe('Milestones combobox Vuex store mutations', () => {
       expect(state.matches.projectMilestones).toEqual({
         list: [
           {
-            title: 'v0.1',
+            text: 'v0.1',
+            value: 'v0.1',
           },
           {
-            title: 'v0.2',
+            text: 'v0.2',
+            value: 'v0.2',
           },
         ],
         error: null,
@@ -192,10 +194,12 @@ describe('Milestones combobox Vuex store mutations', () => {
       expect(state.matches.projectMilestones).toEqual({
         list: [
           {
-            title: 'v0.1',
+            text: 'v0.1',
+            value: 'v0.1',
           },
           {
-            title: 'v0.2',
+            text: 'v0.2',
+            value: 'v0.2',
           },
         ],
         error: null,
@@ -245,10 +249,12 @@ describe('Milestones combobox Vuex store mutations', () => {
       expect(state.matches.groupMilestones).toEqual({
         list: [
           {
-            title: 'group-0.1',
+            text: 'group-0.1',
+            value: 'group-0.1',
           },
           {
-            title: 'group-0.2',
+            text: 'group-0.2',
+            value: 'group-0.2',
           },
         ],
         error: null,
@@ -274,10 +280,12 @@ describe('Milestones combobox Vuex store mutations', () => {
       expect(state.matches.groupMilestones).toEqual({
         list: [
           {
-            title: 'group-0.1',
+            text: 'group-0.1',
+            value: 'group-0.1',
           },
           {
-            title: 'group-0.2',
+            text: 'group-0.2',
+            value: 'group-0.2',
           },
         ],
         error: null,

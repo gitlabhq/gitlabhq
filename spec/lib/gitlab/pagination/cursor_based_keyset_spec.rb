@@ -28,7 +28,9 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
   end
 
   describe '.enforced_for_type?' do
-    subject { described_class.enforced_for_type?(relation) }
+    let_it_be(:project) { create(:project) }
+
+    subject { described_class.enforced_for_type?(project, relation) }
 
     context 'when relation is Group' do
       let(:relation) { Group.all }
@@ -45,7 +47,21 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
     context 'when relation is Ci::Build' do
       let(:relation) { Ci::Build.all }
 
-      it { is_expected.to be false }
+      before do
+        stub_feature_flags(enforce_ci_builds_pagination_limit: false)
+      end
+
+      context 'when feature flag enforce_ci_builds_pagination_limit is enabled' do
+        before do
+          stub_feature_flags(enforce_ci_builds_pagination_limit: project)
+        end
+
+        it { is_expected.to be true }
+      end
+
+      context 'when feature fllag enforce_ci_builds_pagination_limit is disabled' do
+        it { is_expected.to be false }
+      end
     end
   end
 
