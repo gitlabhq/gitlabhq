@@ -270,9 +270,7 @@ In the Free tier, the reports above aren't parsed by GitLab. As a result, the wi
 
 A merge request contains a security widget which displays a summary of the _new_ results. New results are determined by comparing the findings of the merge request against the findings of the most recent completed pipeline (`success`, `failed`, `canceled` or `skipped`) for the commit when the feature branch was created from the target branch.
 
-If the `check_multiple_pipelines_for_security_reports` [feature flag is enabled](../../administration/feature_flags.md), GitLab checks the last 10 pipelines for the commit when the feature was created from the target branch to find one with security reports to use in comparison logic.
-
-If security scans have not run for the completed pipeline in the target branch when the feature branch was created, there is no base for comparison. The vulnerabilities from the merge request findings are listed as new in the merge request security widget. We recommend you run a scan of the `default` (target) branch before enabling feature branch scans for your developers.
+GitLab checks the last 10 pipelines for the commit when the feature was created from the target branch to find one with security reports to use in comparison logic. If security scans have not run for the last 10 completed pipelines in the target branch when the feature branch was created, there is no base for comparison. The vulnerabilities from the merge request findings are listed as new in the merge request security widget. We recommend you run a scan of the `default` (target) branch before enabling feature branch scans for your developers.
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both new and existing findings.
 

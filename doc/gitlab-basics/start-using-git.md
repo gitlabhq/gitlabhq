@@ -117,8 +117,10 @@ This connection requires you to add credentials. You can either use SSH or HTTPS
 Clone with SSH when you want to authenticate only one time.
 
 1. Authenticate with GitLab by following the instructions in the [SSH documentation](../user/ssh.md).
-1. Go to your project's landing page and select **Clone**. Copy the URL for **Clone with SSH**.
-1. Open a terminal and go to the directory where you want to clone the files. Git automatically creates a folder with the repository name and downloads the files there.
+1. On the left sidebar, select **Search or go to** and find the project you want to clone.
+1. On the right-hand side of the page, select **Clone**, then copy the URL for **Clone with SSH**.
+1. Open a terminal and go to the directory where you want to clone the files.
+   Git automatically creates a folder with the repository name and downloads the files there.
 1. Run this command:
 
    ```shell
@@ -139,7 +141,8 @@ You can also
 Clone with HTTPS when you want to authenticate each time you perform an operation
 between your computer and GitLab.
 
-1. Go to your project's landing page and select **Clone**. Copy the URL for **Clone with HTTPS**.
+1. On the left sidebar, select **Search or go to** and find the project you want to clone.
+1. On the right-hand side of the page, select **Clone**, then copy the URL for **Clone with HTTPS**.
 1. Open a terminal and go to the directory where you want to clone the files.
 1. Run the following command. Git automatically creates a folder with the repository name and downloads the files there.
 

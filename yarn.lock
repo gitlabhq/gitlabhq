@@ -1274,10 +1274,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.67.0.tgz#72dc27e6b611acf6bdae2d7074fc413f24da6f1f"
   integrity sha512-N2otHyWJqnUpJcP/lz//KdAD6VV6za7zv7QQqpD9v/p/dzCneyEc4t52g09ERHV71kv9/pWOVPqqwk9eQ2iz9A==
 
-"@gitlab/ui@66.36.1":
-  version "66.36.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-66.36.1.tgz#92a3ae8846066f55ec1ee0271055040f13da9c38"
-  integrity sha512-2qT2+k7VXyNJbkQblhRUFI1LCey9vn+11efF5snIYHP/cuFmo+OarogYt0fhDnR9gONNMjKBk6CLyvb2rGM8sA==
+"@gitlab/ui@66.37.0":
+  version "66.37.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-66.37.0.tgz#0b785b5f4380b37fb4021246a102c7eca2e0bab5"
+  integrity sha512-yTyV9Ht5YPtofRHLfOtab08kNFG0Z+VK5/ZtVur/HmgZSMAZv20FfPAo3VqYaieVRYAkTgtLlxpXRO9S2pMpHg==
   dependencies:
     "@floating-ui/dom" "1.2.9"
     bootstrap-vue "2.23.1"
@@ -9477,10 +9477,10 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-mermaid@10.5.0:
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/mermaid/-/mermaid-10.5.0.tgz#e90512a65b5c6e29bd86cd04ce45aa31da2be76d"
-  integrity sha512-9l0o1uUod78D3/FVYPGSsgV+Z0tSnzLBDiC9rVzvelPxuO80HbN1oDr9ofpPETQy9XpypPQa26fr09VzEPfvWA==
+mermaid@10.6.0:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/mermaid/-/mermaid-10.6.0.tgz#151af64fb7c6cf1f8a5c403c53c6151832268b87"
+  integrity sha512-Hcti+Q2NiWnb2ZCijSX89Bn2i7TCUwosBdIn/d+u63Sz7y40XU6EKMctT4UX4qZuZGfKGZpfOeim2/KTrdR7aQ==
   dependencies:
     "@braintree/sanitize-url" "^6.0.1"
     "@types/d3-scale" "^4.0.3"

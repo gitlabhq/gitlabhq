@@ -437,7 +437,16 @@ the existing package is overwritten.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293748) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `nuget_duplicates_option`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/419078) in GitLab 16.6. Feature flag `nuget_duplicates_option` removed.
 
-To prevent users from publishing duplicate NuGet packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings).
+To prevent users from publishing duplicate NuGet packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
+
+In the UI:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Packages and registries**.
+1. In the **NuGet** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
+1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
+
+Your changes are automatically saved.
 
 WARNING:
 If the .nuspec file isn't located in the root of the package, the package might

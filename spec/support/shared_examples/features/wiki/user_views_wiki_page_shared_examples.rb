@@ -264,7 +264,10 @@ RSpec.shared_examples 'User views a wiki page' do
   it 'opens a default wiki page', :js do
     visit wiki.container.web_url
 
-    find('.shortcuts-wiki').click
+    within_testid('super-sidebar') do
+      click_button 'Plan'
+      click_link 'Wiki'
+    end
 
     wait_for_svg_to_be_loaded
 

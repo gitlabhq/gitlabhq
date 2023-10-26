@@ -60,13 +60,17 @@ describe('Packages Settings', () => {
   const findDescription = () => wrapper.findByTestId('description');
   const findMavenSettings = () => wrapper.findByTestId('maven-settings');
   const findGenericSettings = () => wrapper.findByTestId('generic-settings');
+  const findNugetSettings = () => wrapper.findByTestId('nuget-settings');
 
   const findMavenDuplicatedSettingsToggle = () => findMavenSettings().findComponent(GlToggle);
   const findGenericDuplicatedSettingsToggle = () => findGenericSettings().findComponent(GlToggle);
+  const findNugetDuplicatedSettingsToggle = () => findNugetSettings().findComponent(GlToggle);
   const findMavenDuplicatedSettingsExceptionsInput = () =>
     findMavenSettings().findComponent(ExceptionsInput);
   const findGenericDuplicatedSettingsExceptionsInput = () =>
     findGenericSettings().findComponent(ExceptionsInput);
+  const findNugetDuplicatedSettingsExceptionsInput = () =>
+    findNugetSettings().findComponent(ExceptionsInput);
 
   const fillApolloCache = () => {
     apolloProvider.defaultClient.cache.writeQuery({
@@ -204,6 +208,58 @@ describe('Packages Settings', () => {
 
       expect(mutationResolver).toHaveBeenCalledWith({
         input: { genericDuplicateExceptionRegex: ')', namespacePath: 'foo_group_path' },
+      });
+    });
+  });
+
+  describe('nuget settings', () => {
+    it('exists', () => {
+      mountComponent({ mountFn: mountExtended });
+
+      expect(findNugetSettings().find('td').text()).toBe('NuGet');
+    });
+
+    it('renders toggle', () => {
+      mountComponent({ mountFn: mountExtended });
+
+      const { nugetDuplicatesAllowed } = packageSettings;
+
+      expect(findNugetDuplicatedSettingsToggle().exists()).toBe(true);
+      expect(findNugetDuplicatedSettingsToggle().props()).toMatchObject({
+        label: DUPLICATES_TOGGLE_LABEL,
+        value: nugetDuplicatesAllowed,
+        disabled: false,
+        labelPosition: 'hidden',
+      });
+    });
+
+    it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
+      mountComponent({ mountFn: mountExtended });
+
+      const { nugetDuplicatesAllowed, nugetDuplicateExceptionRegex } = packageSettings;
+
+      expect(findNugetDuplicatedSettingsExceptionsInput().props()).toMatchObject({
+        duplicatesAllowed: nugetDuplicatesAllowed,
+        duplicateExceptionRegex: nugetDuplicateExceptionRegex,
+        duplicateExceptionRegexError: '',
+        loading: false,
+        name: 'nugetDuplicateExceptionRegex',
+        id: 'nuget-duplicated-settings-regex-input',
+      });
+    });
+
+    it('on update event calls the mutation', () => {
+      const mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock());
+      mountComponent({ mountFn: mountExtended, mutationResolver });
+
+      fillApolloCache();
+
+      findNugetDuplicatedSettingsExceptionsInput().vm.$emit('update', {
+        nugetDuplicateExceptionRegex: ')',
+      });
+
+      expect(mutationResolver).toHaveBeenCalledWith({
+        input: { nugetDuplicateExceptionRegex: ')', namespacePath: 'foo_group_path' },
       });
     });
   });

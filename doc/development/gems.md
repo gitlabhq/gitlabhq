@@ -254,13 +254,12 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
 1. Create a project in the [`gitlab-org/ruby/gems` group](https://gitlab.com/gitlab-org/ruby/gems/) (or in a subgroup of it):
     1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#creating-a-new-project).
     1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration).
-    1. Use the [shared CI/CD config](https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/master/ci/gem-release.yml)
+    1. Use the [gem-release CI component](https://gitlab.com/gitlab-org/quality/pipeline-common/-/tree/master/gem-release)
        to release and publish new gem versions by adding the following to their `.gitlab-ci.yml`:
 
        ```yaml
        include:
-         - project: 'gitlab-org/quality/pipeline-common'
-           file: '/ci/gem-release.yml'
+         - component: gitlab.com/gitlab-org/quality/pipeline-common/gem-release@<REPLACE WITH LATEST TAG FROM https://gitlab.com/gitlab-org/quality/pipeline-common/-/releases>
        ```
 
        This job will handle building and publishing the gem (it uses a `gitlab_rubygems` Rubygems.org

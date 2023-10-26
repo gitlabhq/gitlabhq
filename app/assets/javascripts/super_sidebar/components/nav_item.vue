@@ -220,7 +220,6 @@ export default {
       class="gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--control hide-on-focus-or-hover--control"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
-      data-qa-selector="nav_item_link"
     >
       <div
         :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"

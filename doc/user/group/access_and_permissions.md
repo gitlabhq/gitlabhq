@@ -118,7 +118,7 @@ To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com
 > - Support for restricting access to projects in the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
 > - Support for restricting group memberships to groups with a subset of the allowed email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/354791) in GitLab 15.1.1
 
-You can prevent users with email addresses in specific domains from being added to a group and its projects.
+You can prevent users with email addresses in specific domains from being added to a group and its projects. You can define an email domain allowlist at the top-level namespace only. Subgroups do not offer the ability to define an alternative allowlist.
 
 To restrict group access by domain:
 

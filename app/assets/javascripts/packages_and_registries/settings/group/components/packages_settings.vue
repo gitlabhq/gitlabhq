@@ -3,6 +3,7 @@ import { GlTableLite, GlToggle } from '@gitlab/ui';
 import {
   GENERIC_PACKAGE_FORMAT,
   MAVEN_PACKAGE_FORMAT,
+  NUGET_PACKAGE_FORMAT,
   PACKAGE_FORMATS_TABLE_HEADER,
   PACKAGE_SETTINGS_HEADER,
   PACKAGE_SETTINGS_DESCRIPTION,
@@ -90,6 +91,18 @@ export default {
             exception: 'genericDuplicateExceptionRegex',
           },
           testid: 'generic-settings',
+        },
+        {
+          id: 'nuget-duplicated-settings-regex-input',
+          format: NUGET_PACKAGE_FORMAT,
+          duplicatesAllowed: this.packageSettings.nugetDuplicatesAllowed,
+          duplicateExceptionRegex: this.packageSettings.nugetDuplicateExceptionRegex,
+          duplicateExceptionRegexError: this.errors.nugetDuplicateExceptionRegex,
+          modelNames: {
+            allowed: 'nugetDuplicatesAllowed',
+            exception: 'nugetDuplicateExceptionRegex',
+          },
+          testid: 'nuget-settings',
         },
       ];
     },

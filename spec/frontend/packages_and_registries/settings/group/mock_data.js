@@ -3,6 +3,8 @@ const packageDuplicateSettings = {
   mavenDuplicateExceptionRegex: '',
   genericDuplicatesAllowed: true,
   genericDuplicateExceptionRegex: '',
+  nugetDuplicatesAllowed: true,
+  nugetDuplicateExceptionRegex: '',
 };
 
 export const packageForwardingSettings = {

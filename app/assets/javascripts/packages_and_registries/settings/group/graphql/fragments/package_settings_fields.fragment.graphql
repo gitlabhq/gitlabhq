@@ -3,6 +3,8 @@ fragment PackageSettingsFields on PackageSettings {
   mavenDuplicateExceptionRegex
   genericDuplicatesAllowed
   genericDuplicateExceptionRegex
+  nugetDuplicatesAllowed
+  nugetDuplicateExceptionRegex
   mavenPackageRequestsForwarding
   lockMavenPackageRequestsForwarding
   mavenPackageRequestsForwardingLocked

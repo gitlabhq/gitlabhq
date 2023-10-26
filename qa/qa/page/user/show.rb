@@ -21,7 +21,7 @@ module QA
         end
 
         def click_following_tab
-          click_element(:nav_item_link, submenu_item: 'Following')
+          click_element('nav-item-link', submenu_item: 'Following')
         end
 
         def click_user_link(username)
