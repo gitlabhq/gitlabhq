@@ -3,6 +3,15 @@
 #
 # Do not edit it manually!
 ---
+- :name: activity_pub:activity_pub_projects_releases_subscription
+  :worker_name: ActivityPub::Projects::ReleasesSubscriptionWorker
+  :feature_category: :release_orchestration
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :system_access

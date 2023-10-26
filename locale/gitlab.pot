@@ -19575,6 +19575,11 @@ msgstr ""
 msgid "Exceptions"
 msgstr ""
 
+msgid "Excluding 1 project with no DORA metrics"
+msgid_plural "Excluding %d projects with no DORA metrics"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Excluding USB security keys, you should include the browser name together with the device name."
 msgstr ""
 

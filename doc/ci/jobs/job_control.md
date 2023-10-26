@@ -933,7 +933,7 @@ types the variables can control for:
 | `CI_COMMIT_BRANCH`                         | Yes    |     |               | Yes       |
 | `CI_COMMIT_TAG`                            |        | Yes |               | Yes, if the scheduled pipeline is configured to run on a tag. |
 | `CI_PIPELINE_SOURCE = push`                | Yes    | Yes |               |           |
-| `CI_PIPELINE_SOURCE = scheduled`           |        |     |               | Yes       |
+| `CI_PIPELINE_SOURCE = schedule`            |        |     |               | Yes       |
 | `CI_PIPELINE_SOURCE = merge_request_event` |        |     | Yes           |           |
 | `CI_MERGE_REQUEST_IID`                     |        |     | Yes           |           |
 

@@ -25,6 +25,8 @@
 :queues:
 - - abuse_new_abuse_report
   - 1
+- - activity_pub
+  - 1
 - - adjourned_project_deletion
   - 1
 - - admin_emails
