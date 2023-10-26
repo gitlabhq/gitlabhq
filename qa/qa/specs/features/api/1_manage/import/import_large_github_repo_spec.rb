@@ -3,6 +3,12 @@
 require "etc"
 
 # Lifesize project import test executed from https://gitlab.com/gitlab-org/manage/import/import-metrics
+#
+# This test is executed using different size live projects on GitHub.
+# Due to projects being active, there can be a lag between when test is fetching data from GitHub and
+#   when importer is fetching data. It can create extra objects in imported project compared to test expectation.
+# Because of this, all expectation check for inclusion rather than exact match to avoid failures if extra issues,
+#   comments, events got created while import was running.
 
 # rubocop:disable Rails/Pluck
 module QA
@@ -21,7 +27,6 @@ module QA
       let(:api_parallel_threads) { ENV['QA_LARGE_IMPORT_API_PARALLEL']&.to_i || Etc.nprocessors }
 
       let(:logger) { Runtime::Logger.logger }
-      let(:differ) { RSpec::Support::Differ.new(color: true) }
       let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address.chomp("/") }
       let(:dummy_url) { "https://example.com" } # this is used to replace all dynamic urls in descriptions and comments
       let(:api_request_params) { { auto_paginate: true, attempts: 2 } }
@@ -359,10 +364,8 @@ module QA
       def verify_repository_import
         logger.info("== Verifying repository import ==")
         expect(imported_project.description).to eq(gh_repo.description)
-        # check via include, importer creates more branches
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/332711
         expect(gl_branches).to include(*gh_branches)
-        expect(gl_commits).to match_array(gh_commits)
+        expect(gl_commits).to include(*gh_commits)
       end
 
       # Verify imported labels
@@ -370,7 +373,6 @@ module QA
       # @return [void]
       def verify_labels_import
         logger.info("== Verifying label import ==")
-        # check via include, additional labels can be inherited from parent group
         expect(gl_labels).to include(*gh_labels)
       end
 
@@ -379,7 +381,7 @@ module QA
       # @return [void]
       def verify_milestones_import
         logger.info("== Verifying milestones import ==")
-        expect(gl_milestones).to match_array(gh_milestones)
+        expect(gl_milestones).to include(*gh_milestones)
       end
 
       # Verify imported merge requests and mr issues
@@ -426,12 +428,16 @@ module QA
       def verify_mrs_or_issues(type)
         # Compare length to have easy to read overview how many objects are missing
         #
-        expected = type == 'mr' ? mrs : gl_issues
-        actual = type == 'mr' ? gh_prs : gh_issues
-        count_msg = "Expected to contain same amount of #{type}s. Gitlab: #{expected.length}, Github: #{actual.length}"
-        expect(expected.length).to eq(actual.length), count_msg
+        expected = type == 'mr' ? gh_prs : gh_issues
+        actual = type == 'mr' ? mrs : gl_issues
 
-        missing_objects = (actual.keys - expected.keys).map { |it| actual[it].slice(:title, :url) }
+        missing_objects = (expected.keys - actual.keys).map { |it| expected[it].slice(:title, :url) }
+        count_msg = <<~MSG
+          Expected to contain all of GitHub's #{type}s. Gitlab: #{actual.length}, Github: #{expected.length}.
+          Missing: #{missing_objects.map { |it| it[:url] }}
+        MSG
+        expect(expected.length <= actual.length).to be_truthy, count_msg
+
         missing_content = verify_comments_and_events(type, actual, expected)
 
         {
@@ -461,39 +467,36 @@ module QA
           #
           expected_body = expected_item[:body]
           actual_body = actual_item[:body]
-          body_msg = <<~MSG
-            #{msg} same description. diff:\n#{differ.diff(expected_body, actual_body)}
-          MSG
+          body_msg = "#{msg} same description"
           expect(expected_body).to eq(actual_body), body_msg
 
           # Print amount difference first
           #
           expected_comments = expected_item[:comments]
           actual_comments = actual_item[:comments]
-          comment_count_msg = <<~MSG
-            #{msg} same amount of comments. Gitlab: #{expected_comments.length}, Github: #{actual_comments.length}
+          comment_count_msg = <<~MSG.strip
+            #{msg} same comments. GitHub: #{expected_comments.length}, GitLab: #{actual_comments.length}
           MSG
-          expect(expected_comments.length).to eq(actual_comments.length), comment_count_msg
-          expect(expected_comments).to match_array(actual_comments)
+          expect(actual_comments).to include(*expected_comments), comment_count_msg
 
           expected_events = expected_item[:events]
           actual_events = actual_item[:events]
-          event_count_msg = <<~MSG
-            #{msg} same amount of events. Gitlab: #{expected_events.length}, Github: #{actual_events.length}
+          event_count_msg = <<~MSG.strip
+            #{msg} same events. GitHub: #{expected_events.length}, GitLab: #{actual_events.length}.
+            Missing event: #{expected_events - actual_events}
           MSG
-          expect(expected_events.length).to eq(actual_events.length), event_count_msg
-          expect(expected_events).to match_array(actual_events)
+          expect(actual_events).to include(*expected_events), event_count_msg
 
           # Save missing comments and events
           #
-          comment_diff = actual_comments - expected_comments
-          event_diff = actual_events - expected_events
+          comment_diff = expected_comments - actual_comments
+          event_diff = expected_events - actual_events
           next if comment_diff.empty? && event_diff.empty?
 
           missing_content << {
             title: title,
-            github_url: actual_item[:url],
-            gitlab_url: expected_item[:url],
+            github_url: expected_item[:url],
+            gitlab_url: actual_item[:url],
             missing_comments: comment_diff.empty? ? nil : comment_diff,
             missing_events: event_diff.empty? ? nil : event_diff
           }.compact

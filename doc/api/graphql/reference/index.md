@@ -29244,6 +29244,7 @@ Values for package manager.
 | <a id="packagemanagerpip"></a>`PIP` | Package manager: pip. |
 | <a id="packagemanagerpipenv"></a>`PIPENV` | Package manager: pipenv. |
 | <a id="packagemanagerpnpm"></a>`PNPM` | Package manager: pnpm. |
+| <a id="packagemanagerpoetry"></a>`POETRY` | Package manager: poetry. |
 | <a id="packagemanagersbt"></a>`SBT` | Package manager: sbt. |
 | <a id="packagemanagersetuptools"></a>`SETUPTOOLS` | Package manager: setuptools. |
 | <a id="packagemanageryarn"></a>`YARN` | Package manager: yarn. |

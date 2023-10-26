@@ -147,7 +147,7 @@ module QA
               end
             end
 
-            wait_for_requests
+            Support::WaitForRequests.wait_for_requests(finish_loading_wait: 30)
             Support::Waiter.wait_until(max_duration: 10, reload_page: page, retry_on_exception: true) do
               within_vscode_editor do
                 # Check for webide file_explorer element
@@ -232,8 +232,9 @@ module QA
             end
           end
 
-          def add_file_content(prompt_data)
+          def add_prompt_into_a_file(file_name, prompt_data)
             within_vscode_editor do
+              open_file_from_explorer(file_name)
               click_inside_editor_frame
               within_file_editor do
                 send_keys(:enter, :enter, prompt_data)
