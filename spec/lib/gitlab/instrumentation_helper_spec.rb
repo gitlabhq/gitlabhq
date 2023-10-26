@@ -7,6 +7,7 @@ require 'support/helpers/rails_helpers'
 RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cache, :clean_gitlab_redis_cache,
                :use_null_store_as_repository_cache, feature_category: :scalability do
   using RSpec::Parameterized::TableSyntax
+  include RedisHelpers
 
   describe '.add_instrumentation_data', :request_store do
     let(:payload) { {} }
@@ -39,11 +40,18 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     end
 
     context 'when Redis calls are made' do
+      let_it_be(:redis_store_class) { define_helper_redis_store_class }
+
+      before do # init redis connection with `test` env details
+        redis_store_class.with(&:ping)
+        RequestStore.clear!
+      end
+
       it 'adds Redis data and omits Gitaly data' do
         stub_rails_env('staging') # to avoid raising CrossSlotError
-        Gitlab::Redis::Sessions.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
+        redis_store_class.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          Gitlab::Redis::Sessions.with { |redis| redis.mget('cache-test', 'cache-test-2') }
+          redis_store_class.with { |redis| redis.mget('cache-test', 'cache-test-2') }
         end
         Gitlab::Redis::Queues.with { |redis| redis.set('test-queues', 321) }
 

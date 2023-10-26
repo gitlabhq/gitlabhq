@@ -231,8 +231,16 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
 
   def check_existing_keys
     index = 0
-    # spec only, we do not actually scan keys in the code
-    recently_finished_keys_count = Gitlab::Redis::SharedState.with { |redis| redis.scan(0, match: "#{described_class::RECENTLY_FINISHED_REBALANCE_PREFIX}:*") }.last.count
+    cursor = '0'
+    recently_finished_keys_count = 0
+
+    # loop to scan since it may run against a Redis Cluster
+    loop do
+      # spec only, we do not actually scan keys in the code
+      cursor, items = Gitlab::Redis::SharedState.with { |redis| redis.scan(cursor, match: "#{described_class::RECENTLY_FINISHED_REBALANCE_PREFIX}:*") }
+      recently_finished_keys_count += items.count
+      break if cursor == '0'
+    end
 
     index += 1 if rebalance_caching.get_current_index > 0
     index += 1 if rebalance_caching.get_current_project_id.present?

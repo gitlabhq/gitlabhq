@@ -379,6 +379,10 @@ $tabs-holder-z-index: 250;
     .deployment-info {
       margin-bottom: $gl-padding-8;
     }
+
+    .gl-button {
+      margin-left: 0;
+    }
   }
 
   > *:not(:last-child) {
@@ -645,6 +649,9 @@ $tabs-holder-z-index: 250;
     // to the end of the line or to force it to a
     // new line if there is not enough space.
     flex-grow: 999;
+    // Avoid layout shift of title when Mini Graph
+    // moves below title
+    padding-top: 5px;
   }
 
   .label-branch {

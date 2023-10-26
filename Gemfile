@@ -363,10 +363,10 @@ gem 'gitlab-labkit', '~> 0.34.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'thrift', '>= 0.16.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # I18n
-gem 'rails-i18n', '~> 7.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gettext_i18n_rails', '~> 1.11.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gettext_i18n_rails_js', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gettext', '~> 3.3', require: false, group: :development # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'rails-i18n', '~> 7.0', feature_category: :internationalization
+gem 'gettext_i18n_rails', '~> 1.11.0', feature_category: :internationalization
+gem 'gettext_i18n_rails_js', '~> 2.0.0', feature_category: :internationalization
+gem 'gettext', '~> 3.3', require: false, group: :development, feature_category: :internationalization
 
 gem 'batch-loader', '~> 2.0.1' # rubocop:todo Gemfile/MissingFeatureCategory
 

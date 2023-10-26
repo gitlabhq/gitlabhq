@@ -25,7 +25,7 @@ module QA
 
         Page::File::Show.perform do |file|
           aggregate_failures 'file details' do
-            expect(file).to have_notice('Your changes have been successfully committed.')
+            expect(file).to have_notice('Your changes have been committed successfully.')
             expect(file).to have_file_content(updated_file_content)
             expect(file).to have_commit_message(commit_message_for_update)
           end

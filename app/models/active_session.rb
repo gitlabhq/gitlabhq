@@ -84,7 +84,7 @@ class ActiveSession
       )
 
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-        redis.pipelined do |pipeline|
+        Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
           pipeline.setex(
             key_name(user.id, session_private_id),
             expiry,
@@ -135,9 +135,15 @@ class ActiveSession
 
     redis.srem(lookup_key_name(user.id), session_ids)
 
+    session_keys = rack_session_keys(session_ids)
     Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-      redis.del(key_names)
-      redis.del(rack_session_keys(session_ids))
+      if Gitlab::Redis::ClusterUtil.cluster?(redis)
+        Gitlab::Redis::ClusterUtil.batch_unlink(key_names, redis)
+        Gitlab::Redis::ClusterUtil.batch_unlink(session_keys, redis)
+      else
+        redis.del(key_names)
+        redis.del(session_keys)
+      end
     end
   end
 
@@ -206,7 +212,13 @@ class ActiveSession
 
       session_keys.each_slice(SESSION_BATCH_SIZE).flat_map do |session_keys_batch|
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          redis.mget(session_keys_batch).compact.map do |raw_session|
+          raw_sessions = if Gitlab::Redis::ClusterUtil.cluster?(redis)
+                           Gitlab::Redis::ClusterUtil.batch_get(session_keys_batch, redis)
+                         else
+                           redis.mget(session_keys_batch)
+                         end
+
+          raw_sessions.compact.map do |raw_session|
             load_raw_session(raw_session)
           end
         end
@@ -249,7 +261,13 @@ class ActiveSession
 
     found = Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
       entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
-      session_ids.zip(redis.mget(entry_keys)).to_h
+      entries = if Gitlab::Redis::ClusterUtil.cluster?(redis)
+                  Gitlab::Redis::ClusterUtil.batch_get(entry_keys, redis)
+                else
+                  redis.mget(entry_keys)
+                end
+
+      session_ids.zip(entries).to_h
     end
 
     found.compact!
@@ -258,7 +276,13 @@ class ActiveSession
 
     fallbacks = Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
       entry_keys = missing.map { |session_id| key_name_v1(user_id, session_id) }
-      missing.zip(redis.mget(entry_keys)).to_h
+      entries = if Gitlab::Redis::ClusterUtil.cluster?(redis)
+                  Gitlab::Redis::ClusterUtil.batch_get(entry_keys, redis)
+                else
+                  redis.mget(entry_keys)
+                end
+
+      missing.zip(entries).to_h
     end
 
     fallbacks.merge(found.compact)

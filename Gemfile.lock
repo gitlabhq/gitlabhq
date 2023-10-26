@@ -609,6 +609,7 @@ GEM
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
+    forwardable (1.3.3)
     fugit (1.8.1)
       et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
@@ -627,15 +628,18 @@ GEM
     gemoji (3.0.1)
     get_process_mem (0.2.7)
       ffi (~> 1.0)
-    gettext (3.3.6)
+    gettext (3.4.9)
+      erubi
       locale (>= 2.0.5)
+      prime
+      racc
       text (>= 1.3.0)
     gettext_i18n_rails (1.11.0)
       fast_gettext (>= 0.9.0)
-    gettext_i18n_rails_js (1.3.0)
+    gettext_i18n_rails_js (2.0.0)
       gettext (>= 3.0.2)
       gettext_i18n_rails (>= 0.7.1)
-      po_to_json (>= 1.0.0)
+      po_to_json (>= 2.0.0)
       rails (>= 3.2.0)
     git (1.18.0)
       addressable (~> 2.8)
@@ -1200,7 +1204,7 @@ GEM
       google-protobuf (>= 3.22.3)
     plist (3.6.0)
     png_quantizator (0.2.1)
-    po_to_json (1.0.1)
+    po_to_json (2.0.0)
       json (>= 1.6.0)
     premailer (1.16.0)
       addressable
@@ -1209,6 +1213,9 @@ GEM
     premailer-rails (1.10.3)
       actionmailer (>= 3)
       premailer (~> 1.7, >= 1.7.9)
+    prime (0.1.2)
+      forwardable
+      singleton
     proc_to_ast (0.1.0)
       coderay
       parser
@@ -1502,6 +1509,7 @@ GEM
     simplecov-html (0.12.3)
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
+    singleton (0.1.1)
     sixarm_ruby_unaccent (1.2.0)
     slack-messenger (2.3.4)
     snaky_hash (2.0.0)
@@ -1811,7 +1819,7 @@ DEPENDENCIES
   fuubar (~> 2.2.0)
   gettext (~> 3.3)
   gettext_i18n_rails (~> 1.11.0)
-  gettext_i18n_rails_js (~> 1.3)
+  gettext_i18n_rails_js (~> 2.0.0)
   gitaly (~> 16.5.0.pre.rc1)
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 4.5.1)

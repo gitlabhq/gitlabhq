@@ -1059,7 +1059,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     def value_in_queues
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Workhorse.with do |redis|
         runner_queue_key = runner.send(:runner_queue_key)
         redis.get(runner_queue_key)
       end

@@ -18,6 +18,11 @@ development:
   queues_metadata:
     cluster:
       - redis://localhost:7001
+  shared_state:
+    cluster:
+      - redis://localhost:7001
+  workhorse:
+    url: redis://localhost:6379
 
 test:
   chat:
@@ -38,3 +43,10 @@ test:
   queues_metadata:
     cluster:
       - redis://localhost:7001
+  shared_state:
+    cluster:
+      - redis://localhost:7001
+  # pubsub and workhorse are not redis-cluster compatible
+  # even though they fall-back to shared_state
+  workhorse:
+    url: redis://localhost:6379

@@ -50,7 +50,10 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
     click_button 'Commit changes'
     wait_for_requests
 
-    expect(page).to have_content('Your changes have been successfully committed')
+    expect(page).to have_content('Your changes have been committed successfully')
+    page.within '.flash-container' do
+      expect(page).to have_link 'changes'
+    end
     expect(page).to have_content(content)
   end
 end

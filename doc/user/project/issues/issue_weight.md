@@ -10,7 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 When you have a lot of issues, it can be hard to get an overview.
 With weighted issues, you can get a better idea of how much time,
-value, or complexity a given issue has or costs.
+value, or complexity a given issue has or costs. You can also [sort by weight](sorting_issue_lists.md#sorting-by-weight)
+to see which issues need to be prioritized.
 
 ## View the issue weight
 

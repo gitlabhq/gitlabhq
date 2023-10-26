@@ -79,6 +79,25 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :gr
       expect(page).to have_content('*.rbca')
     end
 
+    it 'displays a flash message with a link when an edited file was committed' do
+      click_link('.gitignore')
+      edit_in_single_file_editor
+      find('.file-editor', match: :first)
+
+      editor_set_value('*.rbca')
+      fill_in(:commit_message, with: 'New commit message', visible: true)
+      click_button('Commit changes')
+
+      expect(page).to have_current_path(project_blob_path(project, 'master/.gitignore'), ignore_query: true)
+
+      wait_for_requests
+
+      expect(page).to have_content('Your changes have been committed successfully')
+      page.within '.flash-container' do
+        expect(page).to have_link 'changes'
+      end
+    end
+
     it 'commits an edited file to a new branch' do
       click_link('.gitignore')
       edit_in_single_file_editor

@@ -26,6 +26,15 @@ module Gitlab
           end
           expired_count
         end
+
+        # Redis cluster alternative to mget
+        def batch_get(keys, redis)
+          keys.each_slice(1000).flat_map do |subset|
+            Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
+              subset.map { |key| pipeline.get(key) }
+            end
+          end
+        end
       end
     end
   end

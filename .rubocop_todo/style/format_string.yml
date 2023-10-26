@@ -255,7 +255,6 @@ Style/FormatString:
     - 'lib/gitlab/exceptions_app.rb'
     - 'lib/gitlab/github_import/importer/single_endpoint_issue_events_importer.rb'
     - 'lib/gitlab/github_import/issuable_finder.rb'
-    - 'lib/gitlab/github_import/label_finder.rb'
     - 'lib/gitlab/github_import/object_counter.rb'
     - 'lib/gitlab/github_import/page_counter.rb'
     - 'lib/gitlab/github_import/parallel_scheduling.rb'

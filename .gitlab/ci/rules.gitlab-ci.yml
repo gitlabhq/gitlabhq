@@ -2129,14 +2129,6 @@
     - if: '$VERTEX_AI_EMBEDDINGS == null'
       when: never
 
-.rails:rules:ee-gitlab-duo-chat-open-ai:
-  rules:
-    - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
-    - if: '$OPENAI_API_KEY == null'
-      when: never
-    - if: '$OPENAI_EMBEDDINGS == null'
-      when: never
-
 .rails:rules:as-if-foss-migration:
   rules:
     - !reference [".strict-ee-only-rules", rules]

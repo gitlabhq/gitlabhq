@@ -143,7 +143,9 @@ export default {
     :collapsed="mr.mergeDetailsCollapsed"
     @toggle="() => mr.toggleMergeDetails()"
   >
-    <span class="gl-ml-0! gl-text-body! gl-flex-grow-1">
+    <span
+      class="gl-display-inline-flex gl-align-self-start gl-pt-2 gl-ml-0! gl-text-body! gl-flex-grow-1"
+    >
       <bold-text :message="$options.i18n.removeDraftStatus" />
     </span>
     <template #actions>

@@ -5491,6 +5491,9 @@ msgstr ""
 msgid "Analytics|Create your visualization"
 msgstr ""
 
+msgid "Analytics|Current month to date"
+msgstr ""
+
 msgid "Analytics|Custom dashboards"
 msgstr ""
 
@@ -5557,6 +5560,9 @@ msgstr ""
 msgid "Analytics|Event Props"
 msgstr ""
 
+msgid "Analytics|Event counts update hourly"
+msgstr ""
+
 msgid "Analytics|Failed to fetch data"
 msgstr ""
 
@@ -5602,6 +5608,9 @@ msgstr ""
 msgid "Analytics|Pages"
 msgstr ""
 
+msgid "Analytics|Previous month"
+msgstr ""
+
 msgid "Analytics|Referer"
 msgstr ""
 
@@ -5638,6 +5647,9 @@ msgstr ""
 msgid "Analytics|Something went wrong while loading available visualizations. Refresh the page to try again."
 msgstr ""
 
+msgid "Analytics|Something went wrong while loading product analytics usage data. Refresh the page to try again."
+msgstr ""
+
 msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
@@ -5653,6 +5665,12 @@ msgstr ""
 msgid "Analytics|Target URL"
 msgstr ""
 
+msgid "Analytics|This group has no projects with product analytics onboarded in the current or previous month."
+msgstr ""
+
+msgid "Analytics|This table excludes projects that do not have product analytics onboarded."
+msgstr ""
+
 msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
 msgstr ""
 
@@ -5663,6 +5681,9 @@ msgid "Analytics|Updating dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Updating visualization %{visualizationName}"
+msgstr ""
+
+msgid "Analytics|Usage by project"
 msgstr ""
 
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
@@ -55202,6 +55223,9 @@ msgstr[1] ""
 msgid "YouTube"
 msgstr ""
 
+msgid "Your %{changes_link} have been committed successfully."
+msgstr ""
+
 msgid "Your %{group} membership will now expire in %{days}."
 msgstr ""
 
@@ -55900,6 +55924,9 @@ msgid "change"
 msgid_plural "changes"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "changes"
+msgstr ""
 
 msgid "check"
 msgid_plural "checks"
