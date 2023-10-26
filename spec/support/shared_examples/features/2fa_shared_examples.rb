@@ -14,7 +14,7 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
   end
 
   describe "registration" do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
 
     before do
       gitlab_sign_in(user)
@@ -66,8 +66,8 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
     end
   end
 
-  describe 'fallback code authentication' do
-    let(:user) { create(:user, :no_super_sidebar) }
+  describe 'fallback code authentication', :js do
+    let(:user) { create(:user) }
 
     before do
       # Register and logout

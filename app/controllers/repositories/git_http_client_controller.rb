@@ -142,7 +142,7 @@ module Repositories
       Gitlab::ProtocolAccess.allowed?('http') &&
       download_request? &&
       container &&
-      Guest.can?(repo_type.guest_read_ability, container)
+      ::Users::Anonymous.can?(repo_type.guest_read_ability, container)
     end
 
     def bypass_admin_mode!(&block)

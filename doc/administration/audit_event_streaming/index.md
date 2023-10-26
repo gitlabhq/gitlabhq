@@ -206,7 +206,8 @@ To add Google Cloud Logging streaming destinations to a top-level group:
 1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
-1. Enter the Google project ID, Google client email, log ID, and Google private key to add.
+1. Enter the Google project ID, Google client email, and Google private key from previously-created Google Cloud service account key to add to the new destination.
+1. Enter a random string to use as a log ID for the new destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add** to add the new streaming destination.
 
 #### List Google Cloud Logging destinations
@@ -236,7 +237,8 @@ To update Google Cloud Logging streaming destinations to a top-level group:
 1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
-1. Enter the Google project ID, Google client email, and log ID to update.
+1. Enter the Google project ID and Google client email from previously-created Google Cloud service account key to update on the destination.
+1. Enter a random string to update the log ID for the destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add a new private key** and enter a Google private key to update the private key.
 1. Select **Save** to update the streaming destination.
 
@@ -446,7 +448,8 @@ To add Google Cloud Logging streaming destinations to an instance:
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. On the main area, select **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
-1. Enter the Google project ID, Google client email, log ID, and Google private key to add.
+1. Enter the Google project ID, Google client email, and Google private key from previously-created Google Cloud service account key to add to the new destination.
+1. Enter a random string to use as a log ID for the new destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add** to add the new streaming destination.
 
 #### List Google Cloud Logging destinations
@@ -476,7 +479,8 @@ To update Google Cloud Logging streaming destinations to an instance:
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. On the main area, select **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
-1. Enter the Google project ID, Google client email, and log ID to update.
+1. Enter the Google project ID and Google client email from previously-created Google Cloud service account key to update on the destination.
+1. Enter a random string to update the log ID for the destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add a new private key** and enter a Google private key to update the private key.
 1. Select **Save** to update the streaming destination.
 

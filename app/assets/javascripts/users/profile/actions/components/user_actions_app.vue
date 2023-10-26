@@ -83,7 +83,13 @@ export default {
 
 <template>
   <span>
-    <gl-disclosure-dropdown icon="ellipsis_v" category="tertiary" no-caret :items="dropdownItems" />
+    <gl-disclosure-dropdown
+      data-testid="user-profile-actions"
+      icon="ellipsis_v"
+      category="tertiary"
+      no-caret
+      :items="dropdownItems"
+    />
     <abuse-category-selector
       v-if="reportedUserId"
       :reported-user-id="reportedUserId"

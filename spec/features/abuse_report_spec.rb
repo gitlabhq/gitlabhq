@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
-  let_it_be(:abusive_user) { create(:user, :no_super_sidebar) }
+  let_it_be(:abusive_user) { create(:user) }
 
-  let_it_be(:reporter1) { create(:user, :no_super_sidebar) }
+  let_it_be(:reporter1) { create(:user) }
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:issue) { create(:issue, project: project, author: abusive_user) }
@@ -56,11 +56,11 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
     end
 
     context 'when reporting a user profile for abuse' do
-      let_it_be(:reporter2) { create(:user, :no_super_sidebar) }
+      let_it_be(:reporter2) { create(:user) }
 
       before do
         visit user_path(abusive_user)
-        find_by_testid('base-dropdown-toggle').click
+        find_by_testid('user-profile-actions').click
       end
 
       it_behaves_like 'reports the user with an abuse category'
@@ -68,7 +68,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       it 'allows the reporter to report the same user for different abuse categories' do
         visit user_path(abusive_user)
 
-        find_by_testid('base-dropdown-toggle').click
+        find_by_testid('user-profile-actions').click
         fill_and_submit_abuse_category_form
         fill_and_submit_report_abuse_form
 
@@ -76,14 +76,14 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
         visit user_path(abusive_user)
 
-        find_by_testid('base-dropdown-toggle').click
+        find_by_testid('user-profile-actions').click
         fill_and_submit_abuse_category_form("They're being offensive or abusive.")
         fill_and_submit_report_abuse_form
 
         expect(page).to have_content 'Thank you for your report'
       end
 
-      it 'allows multiple users to report the same user' do
+      it 'allows multiple users to report the same user', :js do
         fill_and_submit_abuse_category_form
         fill_and_submit_report_abuse_form
 
@@ -94,7 +94,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
         visit user_path(abusive_user)
 
-        find_by_testid('base-dropdown-toggle').click
+        find_by_testid('user-profile-actions').click
         fill_and_submit_abuse_category_form
         fill_and_submit_report_abuse_form
 
