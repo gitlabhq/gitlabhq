@@ -94,37 +94,6 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       helpers do
-        def commit
-          strong_memoize(:commit) do
-            user_project.commit(params[:sha])
-          end
-        end
-
-        def all_matching_pipelines
-          pipelines = user_project.ci_pipelines.newest_first(sha: commit.sha)
-          pipelines = pipelines.for_ref(params[:ref]) if params[:ref]
-          pipelines = pipelines.id_in(params[:pipeline_id]) if params[:pipeline_id]
-          pipelines
-        end
-
-        def apply_job_state!(job)
-          case params[:state]
-          when 'pending'
-            job.enqueue!
-          when 'running'
-            job.enqueue
-            job.run!
-          when 'success'
-            job.success!
-          when 'failed'
-            job.drop!(:api_failure)
-          when 'canceled'
-            job.cancel!
-          else
-            render_api_error!('invalid state', 400)
-          end
-        end
-
         def optional_commit_status_params
           updatable_optional_attributes = %w[target_url description coverage]
           attributes_for_keys(updatable_optional_attributes)

@@ -1,4 +1,4 @@
-%p.text-center
+%p{ class: local_assigns.fetch(:wrapper_class, 'gl-text-center') }
   %span.light
     = _('Already have an account?')
     - path_params = { redirect_to_referer: 'yes' }

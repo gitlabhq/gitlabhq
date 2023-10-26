@@ -1,17 +1,23 @@
 # frozen_string_literal: true
 
 require_relative '../../migration_helpers'
+require_relative '../../batched_background_migrations_dictionary'
 
 module RuboCop
   module Cop
     module BackgroundMigration
       # Checks the batched background migration has the corresponding dictionary file
-      class MissingDictionaryFile < RuboCop::Cop::Base
+      class DictionaryFile < RuboCop::Cop::Base
         include MigrationHelpers
 
-        MSG = "Missing %{file_name}. " \
-              "Use the generator 'batched_background_migration' to create dictionary files automatically. " \
-              "For more details refer: https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#generator"
+        MSG = {
+          missing_key: "Mandatory key '%{key}' is missing from the dictionary. Please add with an appropriate value.",
+          missing_dictionary: <<-MESSAGE.delete("\n").squeeze(' ').strip
+            Missing %{file_name}.
+            Use the generator 'batched_background_migration' to create dictionary files automatically.
+            For more details refer: https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#generator
+          MESSAGE
+        }.freeze
 
         DICTIONARY_DIR = "db/docs/batched_background_migrations"
 
@@ -35,9 +41,10 @@ module RuboCop
                              migration_name_node.value
                            end
 
-          return if dictionary_file?(migration_name)
+          error_code, msg_params = validate_dictionary_file(migration_name, node)
+          return unless error_code.present?
 
-          add_offense(node, message: format(MSG, file_name: dictionary_file_path(migration_name)))
+          add_offense(node, message: format(MSG[error_code], msg_params))
         end
 
         private
@@ -48,6 +55,18 @@ module RuboCop
 
         def dictionary_file_path(migration_class_name)
           File.join(rails_root, DICTIONARY_DIR, "#{migration_class_name.underscore}.yml")
+        end
+
+        def validate_dictionary_file(migration_name, node)
+          unless dictionary_file?(migration_name)
+            return [:missing_dictionary, { file_name: dictionary_file_path(migration_name) }]
+          end
+
+          bbm_dictionary = RuboCop::BatchedBackgroundMigrationsDictionary.new(version(node))
+
+          return [:missing_key, { key: :finalize_after }] unless bbm_dictionary.finalize_after.present?
+
+          return [:missing_key, { key: :introduced_by_url }] unless bbm_dictionary.introduced_by_url.present?
         end
 
         def rails_root

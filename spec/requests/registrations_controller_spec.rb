@@ -6,9 +6,7 @@ RSpec.describe RegistrationsController, type: :request, feature_category: :syste
   describe 'POST #create' do
     let_it_be(:user_attrs) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
 
-    subject(:request) { post user_registration_path, params: { user: user_attrs } }
-
-    it_behaves_like 'Base action controller'
+    subject(:create_user) { post user_registration_path, params: { user: user_attrs } }
 
     context 'when email confirmation is required' do
       before do
@@ -17,7 +15,7 @@ RSpec.describe RegistrationsController, type: :request, feature_category: :syste
       end
 
       it 'redirects to the `users_almost_there_path`', unless: Gitlab.ee? do
-        request
+        create_user
 
         expect(response).to redirect_to(users_almost_there_path(email: user_attrs[:email]))
       end

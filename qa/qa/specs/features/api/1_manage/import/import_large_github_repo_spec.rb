@@ -18,6 +18,21 @@ module QA
       tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "rspec/rspec-core" }
     } do
     describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      let!(:api_client) { Runtime::API::Client.as_admin }
+      let!(:user) { create(:user, api_client: api_client) }
+      let!(:user_api_client) do
+        Runtime::API::Client.new(
+          user: user,
+          is_new_session: false,
+          personal_access_token: Resource::PersonalAccessToken.fabricate_via_api! do |pat|
+            pat.user = user
+            # importing very large project can take multiple days
+            # token must not expire while we still poll for import result
+            pat.expires_at = (Time.now.to_date + 5)
+          end.token
+        )
+      end
+
       # Full object comparison is a fairly heavy operation
       # Importer itself returns counts of objects it fetched and counts it imported
       # We can use that for a lightweight comparison for very large projects
@@ -102,10 +117,6 @@ module QA
           "mentioned"
         ]
       end
-
-      let(:api_client) { Runtime::API::Client.as_admin }
-
-      let(:user) { create(:user, api_client: api_client) }
 
       let(:github_client) do
         Octokit::Client.new(

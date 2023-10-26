@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RuboCop
-  class BatchedBackgroundMigrations
+  class BatchedBackgroundMigrationsDictionary
     DICTIONARY_BASE_DIR = 'db/docs/batched_background_migrations'
 
     attr_reader :queued_migration_version
@@ -14,6 +14,7 @@ module RuboCop
           next unless dictionary['queued_migration_version'].present?
 
           data[dictionary['queued_migration_version'].to_s] = {
+            introduced_by_url: dictionary['introduced_by_url'],
             finalize_after: dictionary['finalize_after'],
             finalized_by: dictionary['finalized_by'].to_s
           }
@@ -26,7 +27,21 @@ module RuboCop
     end
 
     def finalized_by
-      self.class.dictionary_data.dig(queued_migration_version.to_s, :finalized_by)
+      dictionary_data&.dig(:finalized_by)
+    end
+
+    def finalize_after
+      dictionary_data&.dig(:finalize_after)
+    end
+
+    def introduced_by_url
+      dictionary_data&.dig(:introduced_by_url)
+    end
+
+    private
+
+    def dictionary_data
+      @dictionary_data ||= self.class.dictionary_data[queued_migration_version.to_s]
     end
   end
 end

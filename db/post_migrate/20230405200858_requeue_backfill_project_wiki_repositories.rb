@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable BackgroundMigration/MissingDictionaryFile
+# rubocop:disable BackgroundMigration/DictionaryFile
 class RequeueBackfillProjectWikiRepositories < Gitlab::Database::Migration[2.1]
   MIGRATION = "BackfillProjectWikiRepositories"
   DELAY_INTERVAL = 2.minutes
@@ -26,4 +26,4 @@ class RequeueBackfillProjectWikiRepositories < Gitlab::Database::Migration[2.1]
     delete_batched_background_migration(MIGRATION, :projects, :id, [])
   end
 end
-# rubocop:enable BackgroundMigration/MissingDictionaryFile
+# rubocop:enable BackgroundMigration/DictionaryFile

@@ -36,8 +36,7 @@ export default function initDiffsApp(store = notesStore) {
         iid: dataset.iid || '',
         endpointCoverage: dataset.endpointCoverage || '',
         endpointCodequality: dataset.endpointCodequality || '',
-        // This is a workaround which will be solved in: https://gitlab.com/gitlab-org/gitlab/-/issues/428758
-        sastReportAvailable: Boolean(dataset.endpointSast),
+        sastReportAvailable: dataset.endpointSast,
         helpPagePath: dataset.helpPagePath,
         currentUser: JSON.parse(dataset.currentUserData) || {},
         changesEmptyStateIllustration: dataset.changesEmptyStateIllustration,

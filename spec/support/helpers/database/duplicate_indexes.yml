@@ -6,9 +6,6 @@ abuse_reports:
 alert_management_http_integrations:
   index_http_integrations_on_project_and_endpoint:
   - index_alert_management_http_integrations_on_project_id
-analytics_cycle_analytics_group_stages:
-  index_group_stages_on_group_id_group_value_stream_id_and_name:
-  - index_analytics_ca_group_stages_on_group_id
 approval_project_rules_users:
   index_approval_project_rules_users_1:
   - index_approval_project_rules_users_on_approval_project_rule_id
@@ -111,9 +108,6 @@ members:
 merge_request_assignees:
   index_merge_request_assignees_on_merge_request_id_and_user_id:
   - index_merge_request_assignees_on_merge_request_id
-merge_request_metrics:
-  index_mr_metrics_on_target_project_id_merged_at_nulls_last:
-  - index_merge_request_metrics_on_target_project_id
 merge_requests:
   index_merge_requests_on_author_id_and_created_at:
   - index_merge_requests_on_author_id

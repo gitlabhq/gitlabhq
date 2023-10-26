@@ -24739,10 +24739,19 @@ msgstr ""
 msgid "InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA"
 msgstr ""
 
+msgid "InProductMarketing|%{upper_start}Start your 30-day free trial of%{upper_end} %{lower_start}GitLab Ultimate%{lower_end}"
+msgstr ""
+
+msgid "InProductMarketing|Accelerate your digital transform"
+msgstr ""
+
 msgid "InProductMarketing|Blog"
 msgstr ""
 
 msgid "InProductMarketing|Built-in security"
+msgstr ""
+
+msgid "InProductMarketing|Deliver software faster"
 msgstr ""
 
 msgid "InProductMarketing|Ensure compliance"
@@ -24760,10 +24769,16 @@ msgstr ""
 msgid "InProductMarketing|If you no longer wish to receive marketing emails from us,"
 msgstr ""
 
+msgid "InProductMarketing|Improve collaboration and visibility"
+msgstr ""
+
 msgid "InProductMarketing|Invite unlimited colleagues"
 msgstr ""
 
 msgid "InProductMarketing|No credit card required"
+msgstr ""
+
+msgid "InProductMarketing|No credit card required."
 msgstr ""
 
 msgid "InProductMarketing|Start a Self-Managed trial"
@@ -33222,6 +33237,9 @@ msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and 
 msgstr ""
 
 msgid "Options"
+msgstr ""
+
+msgid "Or create your own GitLab account:"
 msgstr ""
 
 msgid "Ordered list"
@@ -42651,6 +42669,9 @@ msgstr ""
 msgid "SecurityOrchestration|Branch types don't match any existing branches."
 msgstr ""
 
+msgid "SecurityOrchestration|Cannot create an empty policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Choose a project"
 msgstr ""
 
@@ -42724,6 +42745,9 @@ msgid "SecurityOrchestration|Failed to load cluster agents."
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to load images."
+msgstr ""
+
+msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply. No additional approvals are required."
 msgstr ""
 
 msgid "SecurityOrchestration|For any merge request on %{branches}%{commitType}%{branchExceptionsString}"
@@ -42805,6 +42829,9 @@ msgid "SecurityOrchestration|On runners with tag:"
 msgid_plural "SecurityOrchestration|On runners with the tags:"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecurityOrchestration|Only overriding settings will take effect"
+msgstr ""
 
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
@@ -42969,6 +42996,9 @@ msgid "SecurityOrchestration|This is a group-level policy"
 msgstr ""
 
 msgid "SecurityOrchestration|This is a project-level policy"
+msgstr ""
+
+msgid "SecurityOrchestration|This policy doesn't contain any actions or override project approval settings. You cannot create an empty policy."
 msgstr ""
 
 msgid "SecurityOrchestration|This policy is inherited"
@@ -44718,6 +44748,9 @@ msgid "Sign out & Register"
 msgstr ""
 
 msgid "Sign up"
+msgstr ""
+
+msgid "Sign up for your free trial with:"
 msgstr ""
 
 msgid "Sign up was successful! Please confirm your email to sign in."

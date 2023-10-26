@@ -335,29 +335,11 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_bbb95b2d6929() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."shared_runners_duration_convert_to_bigint" := NEW."shared_runners_duration";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_bfad0e2b9c86() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
   NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
-  RETURN NEW;
-END;
-$$;
-
-CREATE FUNCTION trigger_c0353bbb6145() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."shared_runners_duration_convert_to_bigint" := NEW."shared_runners_duration";
   RETURN NEW;
 END;
 $$;
@@ -13788,7 +13770,6 @@ CREATE TABLE ci_namespace_monthly_usages (
     namespace_id bigint NOT NULL,
     date date NOT NULL,
     notification_level smallint DEFAULT 100 NOT NULL,
-    shared_runners_duration_convert_to_bigint integer DEFAULT 0 NOT NULL,
     created_at timestamp with time zone,
     amount_used numeric(18,4) DEFAULT 0.0 NOT NULL,
     shared_runners_duration bigint DEFAULT 0 NOT NULL,
@@ -14074,7 +14055,6 @@ CREATE TABLE ci_project_monthly_usages (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
     date date NOT NULL,
-    shared_runners_duration_convert_to_bigint integer DEFAULT 0 NOT NULL,
     created_at timestamp with time zone,
     amount_used numeric(18,4) DEFAULT 0.0 NOT NULL,
     shared_runners_duration bigint DEFAULT 0 NOT NULL,
@@ -31413,8 +31393,6 @@ CREATE INDEX index_allowed_email_domains_on_group_id ON allowed_email_domains US
 
 CREATE INDEX index_analytics_ca_group_stages_on_end_event_label_id ON analytics_cycle_analytics_group_stages USING btree (end_event_label_id);
 
-CREATE INDEX index_analytics_ca_group_stages_on_group_id ON analytics_cycle_analytics_group_stages USING btree (group_id);
-
 CREATE INDEX index_analytics_ca_group_stages_on_relative_position ON analytics_cycle_analytics_group_stages USING btree (relative_position);
 
 CREATE INDEX index_analytics_ca_group_stages_on_start_event_label_id ON analytics_cycle_analytics_group_stages USING btree (start_event_label_id);
@@ -33128,8 +33106,6 @@ CREATE INDEX index_merge_request_metrics_on_merged_at ON merge_request_metrics U
 CREATE INDEX index_merge_request_metrics_on_merged_by_id ON merge_request_metrics USING btree (merged_by_id);
 
 CREATE INDEX index_merge_request_metrics_on_pipeline_id ON merge_request_metrics USING btree (pipeline_id);
-
-CREATE INDEX index_merge_request_metrics_on_target_project_id ON merge_request_metrics USING btree (target_project_id);
 
 CREATE INDEX index_merge_request_review_llm_summaries_on_mr_diff_id ON merge_request_review_llm_summaries USING btree (merge_request_diff_id);
 
@@ -36779,11 +36755,7 @@ CREATE TRIGGER trigger_7f3d66a7d7f5 BEFORE INSERT OR UPDATE ON ci_pipeline_varia
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
-CREATE TRIGGER trigger_bbb95b2d6929 BEFORE INSERT OR UPDATE ON ci_project_monthly_usages FOR EACH ROW EXECUTE FUNCTION trigger_bbb95b2d6929();
-
 CREATE TRIGGER trigger_bfad0e2b9c86 BEFORE INSERT OR UPDATE ON ci_pipeline_messages FOR EACH ROW EXECUTE FUNCTION trigger_bfad0e2b9c86();
-
-CREATE TRIGGER trigger_c0353bbb6145 BEFORE INSERT OR UPDATE ON ci_namespace_monthly_usages FOR EACH ROW EXECUTE FUNCTION trigger_c0353bbb6145();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 

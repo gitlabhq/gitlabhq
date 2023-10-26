@@ -121,6 +121,7 @@ To install `agentk`:
    kind: Secret
    metadata:
      name: gitlab-agent-token
+     namespace: gitlab
    type: Opaque
    stringData:
       token: "<your-token-here>"

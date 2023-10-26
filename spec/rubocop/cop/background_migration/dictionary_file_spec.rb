@@ -1,15 +1,34 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-require_relative '../../../../rubocop/cop/background_migration/missing_dictionary_file'
+require_relative '../../../../rubocop/cop/background_migration/dictionary_file'
 
-RSpec.describe RuboCop::Cop::BackgroundMigration::MissingDictionaryFile, feature_category: :database do
+RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_category: :database do
   let(:config) do
     RuboCop::Config.new(
-      'BackgroundMigration/MissingDictionaryFile' => {
-        'EnforcedSince' => 20230307160251
+      'BackgroundMigration/DictionaryFile' => {
+        'EnforcedSince' => 20231018100907
       }
     )
+  end
+
+  shared_examples 'migration with missing dictionary keys offense' do |missing_key|
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        class QueueMyMigration < Gitlab::Database::Migration[2.1]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{format(described_class::MSG[:missing_key], key: missing_key)}
+          MIGRATION = 'MyMigration'
+
+          def up
+            queue_batched_background_migration(
+              MIGRATION,
+              :users,
+              :id
+            )
+          end
+        end
+      RUBY
+    end
   end
 
   context 'for non post migrations' do
@@ -57,7 +76,7 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::MissingDictionaryFile, feature
 
       context 'for migrations before enforced time' do
         before do
-          allow(cop).to receive(:version).and_return(20230307160250)
+          allow(cop).to receive(:version).and_return(20230918100907)
         end
 
         it 'does not throw any offenses' do
@@ -79,7 +98,7 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::MissingDictionaryFile, feature
 
       context 'for migrations after enforced time' do
         before do
-          allow(cop).to receive(:version).and_return(20230307160252)
+          allow(cop).to receive(:version).and_return(20231118100907)
         end
 
         it 'throws offense on not having the appropriate dictionary file with migration name as a constant' do
@@ -114,22 +133,48 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::MissingDictionaryFile, feature
           RUBY
         end
 
-        it 'does not throw offense with appropriate dictionary file' do
-          expect(File).to receive(:exist?).with(dictionary_file_path).and_return(true)
+        context 'with dictionary file' do
+          let(:introduced_by_url) { 'https://test_url' }
+          let(:finalize_after) { '20230507160251' }
 
-          expect_no_offenses(<<~RUBY)
-            class QueueMyMigration < Gitlab::Database::Migration[2.1]
-              MIGRATION = 'MyMigration'
+          before do
+            allow(File).to receive(:exist?).with(dictionary_file_path).and_return(true)
 
-              def up
-                queue_batched_background_migration(
-                  MIGRATION,
-                  :users,
-                  :id
-                )
-              end
+            allow_next_instance_of(RuboCop::BatchedBackgroundMigrationsDictionary) do |dictionary|
+              allow(dictionary).to receive(:finalize_after).and_return(finalize_after)
+              allow(dictionary).to receive(:introduced_by_url).and_return(introduced_by_url)
             end
-          RUBY
+          end
+
+          context 'without introduced_by_url' do
+            it_behaves_like 'migration with missing dictionary keys offense', :introduced_by_url do
+              let(:introduced_by_url) { nil }
+            end
+          end
+
+          context 'without finalize_after' do
+            it_behaves_like 'migration with missing dictionary keys offense', :finalize_after do
+              let(:finalize_after) { nil }
+            end
+          end
+
+          context 'with required dictionary keys' do
+            it 'does not throw offense with appropriate dictionary file' do
+              expect_no_offenses(<<~RUBY)
+                class QueueMyMigration < Gitlab::Database::Migration[2.1]
+                  MIGRATION = 'MyMigration'
+
+                  def up
+                    queue_batched_background_migration(
+                      MIGRATION,
+                      :users,
+                      :id
+                    )
+                  end
+                end
+              RUBY
+            end
+          end
         end
       end
     end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class HealthController < BaseActionController
+# rubocop:disable Rails/ApplicationController
+class HealthController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
   include RequiresAllowlistedMonitoringClient
 
@@ -39,3 +40,4 @@ class HealthController < BaseActionController
     render json: result.json, status: result.http_status
   end
 end
+# rubocop:enable Rails/ApplicationController
