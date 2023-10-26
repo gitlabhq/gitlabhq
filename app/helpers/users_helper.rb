@@ -334,27 +334,6 @@ module UsersHelper
     end
   end
 
-  def user_table_headers
-    [
-      {
-        section_class_name: 'section-40',
-        header_text: _('Name')
-      },
-      {
-        section_class_name: 'section-10',
-        header_text: _('Projects')
-      },
-      {
-        section_class_name: 'section-15',
-        header_text: _('Created on')
-      },
-      {
-        section_class_name: 'section-15',
-        header_text: _('Last activity')
-      }
-    ]
-  end
-
   # the keys should match the user model defined roles in app/models/user.rb
   def localized_user_roles
     {

@@ -2,9 +2,11 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-%h1.page-title.gl-font-size-h-display
-  = custom_icon('gitea_logo')
+%h1.page-title.gl-font-size-h-display.d-flex.gl-align-items-center
+  .gl-display-flex.gl-align-items-center.gl-justify-content-center
+    = sprite_icon('gitea', css_class: 'gl-mr-3', size: 48)
   = _('Import projects from Gitea')
+%hr
 
 %p
   - link_to_personal_token = link_to(_('personal access token'), 'https://docs.gitea.io/en-us/api-usage/#authentication-via-the-api')

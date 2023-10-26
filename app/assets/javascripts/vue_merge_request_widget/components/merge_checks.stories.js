@@ -34,13 +34,11 @@ const Template = ({ canMerge, failed, pushToSourceBranch }) => {
                 userPermissions: { canMerge },
                 mergeChecks: [
                   {
-                    failureReason: 'Unresolved discussions',
-                    identifier: 'unresolved_discussions',
+                    identifier: 'discussions_not_resolved',
                     result: failed ? 'failed' : 'passed',
                   },
                   {
-                    failureReason: 'Resolve conflicts',
-                    identifier: 'conflicts',
+                    identifier: 'conflict',
                     result: failed ? 'failed' : 'passed',
                   },
                 ],

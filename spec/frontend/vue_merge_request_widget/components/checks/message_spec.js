@@ -12,9 +12,9 @@ function factory(propsData = {}) {
 
 describe('Merge request merge checks message component', () => {
   it('renders failure reason text', () => {
-    factory({ check: { result: 'passed', failureReason: 'Failed message' } });
+    factory({ check: { result: 'passed', identifier: 'discussions_not_resolved' } });
 
-    expect(wrapper.text()).toEqual('Failed message');
+    expect(wrapper.text()).toEqual('Unresolved discussions must be resolved.');
   });
 
   it.each`
@@ -23,7 +23,7 @@ describe('Merge request merge checks message component', () => {
     ${'failed'}          | ${'failed'}
     ${'allowed_to_fail'} | ${'neutral'}
   `('renders $icon icon for $result result', ({ result, icon }) => {
-    factory({ check: { result, failureReason: 'Failed message' } });
+    factory({ check: { result } });
 
     expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe(icon);
   });

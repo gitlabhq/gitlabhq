@@ -9520,6 +9520,9 @@ msgstr ""
 msgid "Cannot merge"
 msgstr ""
 
+msgid "Cannot merge the source into the target branch, due to a conflict."
+msgstr ""
+
 msgid "Cannot modify %{profile_name} referenced in security policy"
 msgstr ""
 
@@ -21704,6 +21707,9 @@ msgstr ""
 msgid "GitLab Community Edition"
 msgstr ""
 
+msgid "GitLab Duo didn't respond. Try again? If it fails again, your request might be too large."
+msgstr ""
+
 msgid "GitLab Enterprise Edition"
 msgstr ""
 
@@ -29552,6 +29558,9 @@ msgstr ""
 msgid "Merge conflicts"
 msgstr ""
 
+msgid "Merge conflicts must be resolved."
+msgstr ""
+
 msgid "Merge date & time could not be determined"
 msgstr ""
 
@@ -29601,6 +29610,15 @@ msgid "Merge request dependencies"
 msgstr ""
 
 msgid "Merge request events"
+msgstr ""
+
+msgid "Merge request must be open."
+msgstr ""
+
+msgid "Merge request must be rebased, because a fast-forward merge is not possible."
+msgstr ""
+
+msgid "Merge request must not be draft."
 msgstr ""
 
 msgid "Merge request not merged"
@@ -34442,6 +34460,9 @@ msgid "Pipeline durations for the last 30 commits"
 msgstr ""
 
 msgid "Pipeline editor"
+msgstr ""
+
+msgid "Pipeline must succeed."
 msgstr ""
 
 msgid "Pipeline ran in fork of project"
@@ -50839,6 +50860,9 @@ msgid "Unresolve thread"
 msgstr ""
 
 msgid "Unresolved"
+msgstr ""
+
+msgid "Unresolved discussions must be resolved."
 msgstr ""
 
 msgid "Unschedule job"

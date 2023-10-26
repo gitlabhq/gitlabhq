@@ -1,8 +1,8 @@
 - page_title _('Bitbucket Server import')
 
-%h1.page-title.gl-font-size-h-display.d-flex
+%h1.page-title.gl-font-size-h-display.d-flex.gl-align-items-center
   .gl-display-flex.gl-align-items-center.gl-justify-content-center
-    = sprite_icon('bitbucket', css_class: 'gl-mr-2')
+    = sprite_icon('bitbucket', css_class: 'gl-mr-3', size: 48)
   = _('Import projects from Bitbucket Server')
 
 = render 'import/githubish_status', provider: 'bitbucket_server', paginatable: true, default_namespace: @namespace, extra_data: { reconfigure_path: configure_import_bitbucket_server_path }

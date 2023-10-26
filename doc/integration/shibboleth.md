@@ -4,7 +4,7 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Use Shibboleth as an OAuth 2.0 authentication provider **(FREE ALL)**
+# Use Shibboleth as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 NOTE:
 Use the [GitLab SAML integration](saml.md) to integrate specific Shibboleth identity providers (IdPs). For Shibboleth federation support (Discovery Service), use this document.

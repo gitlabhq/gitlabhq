@@ -301,8 +301,6 @@ RSpec.configure do |config|
       # https://gitlab.com/gitlab-org/gitlab/-/issues/385453
       stub_feature_flags(vscode_web_ide: false)
 
-      stub_feature_flags(ai_global_switch: false)
-
       enable_rugged = example.metadata[:enable_rugged].present?
 
       # Disable Rugged features by default

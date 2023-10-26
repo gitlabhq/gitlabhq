@@ -3,9 +3,9 @@
 RSpec.shared_context 'project navbar structure' do
   include NavbarStructureHelper
 
-  let(:security_and_compliance_nav_item) do
+  let(:secure_nav_item) do
     {
-      nav_item: _('Security and Compliance'),
+      nav_item: _('Secure'),
       nav_sub_items: [
         (_('Audit events') if Gitlab.ee?),
         _('Security configuration')
@@ -16,65 +16,58 @@ RSpec.shared_context 'project navbar structure' do
   let(:structure) do
     [
       {
-        nav_item: "#{project.name[0, 1].upcase} #{project.name}",
-        nav_sub_items: []
-      },
-      {
-        nav_item: _('Project information'),
+        nav_item: _('Manage'),
         nav_sub_items: [
           _('Activity'),
-          _('Labels'),
-          _('Members')
+          _('Members'),
+          _('Labels')
         ]
       },
       {
-        nav_item: _('Repository'),
+        nav_item: _('Plan'),
         nav_sub_items: [
-          _('Files'),
-          _('Commits'),
+          _('Issues'),
+          _('Issue boards'),
+          _('Milestones'),
+          _('Wiki')
+        ]
+      },
+      {
+        nav_item: _('Code'),
+        nav_sub_items: [
+          _('Merge requests'),
+          _('Repository'),
           _('Branches'),
+          _('Commits'),
           _('Tags'),
-          _('Contributor statistics'),
-          _('Graph'),
+          _('Repository graph'),
           _('Compare revisions'),
+          _('Snippets'),
           (_('Locked files') if Gitlab.ee?)
         ]
       },
       {
-        nav_item: _('Issues'),
-        nav_sub_items: [
-          _('List'),
-          _('Boards'),
-          _('Service Desk'),
-          _('Milestones')
-        ]
-      },
-      {
-        nav_item: _('Merge requests'),
-        nav_sub_items: []
-      },
-      {
-        nav_item: _('CI/CD'),
+        nav_item: _('Build'),
         nav_sub_items: [
           _('Pipelines'),
-          s_('Pipelines|Editor'),
           _('Jobs'),
-          _('Artifacts'),
-          _('Schedules')
+          _('Pipeline editor'),
+          _('Pipeline schedules'),
+          _('Artifacts')
         ]
       },
-      security_and_compliance_nav_item,
+      secure_nav_item,
       {
-        nav_item: _('Deployments'),
+        nav_item: _('Deploy'),
+        nav_sub_items: [
+          _('Releases'),
+          s_('FeatureFlags|Feature flags')
+        ]
+      },
+      {
+        nav_item: _('Operate'),
         nav_sub_items: [
           _('Environments'),
-          s_('FeatureFlags|Feature flags'),
-          _('Releases')
-        ]
-      },
-      {
-        nav_item: _('Infrastructure'),
-        nav_sub_items: [
           _('Kubernetes clusters'),
           s_('Terraform|Terraform states')
         ]
@@ -84,20 +77,13 @@ RSpec.shared_context 'project navbar structure' do
         nav_sub_items: [
           _('Error Tracking'),
           _('Alerts'),
-          _('Incidents')
+          _('Incidents'),
+          _('Service Desk')
         ]
       },
       {
-        nav_item: _('Analytics'),
+        nav_item: _('Analyze'),
         nav_sub_items: project_analytics_sub_nav_item
-      },
-      {
-        nav_item: _('Wiki'),
-        nav_sub_items: []
-      },
-      {
-        nav_item: _('Snippets'),
-        nav_sub_items: []
       },
       {
         nav_item: _('Settings'),
@@ -120,9 +106,9 @@ RSpec.shared_context 'project navbar structure' do
 end
 
 RSpec.shared_context 'group navbar structure' do
-  let(:analytics_nav_item) do
+  let(:analyze_nav_item) do
     {
-      nav_item: _('Analytics'),
+      nav_item: _("Analyze"),
       nav_sub_items: group_analytics_sub_nav_item
     }
   end
@@ -148,65 +134,46 @@ RSpec.shared_context 'group navbar structure' do
 
   let(:settings_for_maintainer_nav_item) do
     {
-      nav_item: _('Settings'),
-      nav_sub_items: [
-        _('Repository')
-      ]
+      nav_item: _("Settings"),
+      nav_sub_items: [_("Repository")]
     }
   end
 
-  let(:security_and_compliance_nav_item) do
+  let(:secure_nav_item) do
     {
-      nav_item: _('Security and Compliance'),
-      nav_sub_items: [
-        _('Audit events')
-      ]
+      nav_item: _("Secure"),
+      nav_sub_items: [_("Audit events")]
     }
   end
 
-  let(:issues_nav_items) do
-    [
-      _('List'),
-      _('Board'),
-      _('Milestones'),
-      (_('Iterations') if Gitlab.ee?)
-    ]
+  let(:plan_nav_items) do
+    [_("Issues"), _("Issue board"), _("Milestones"), (_('Iterations') if Gitlab.ee?)]
   end
 
   let(:structure) do
     [
       {
-        nav_item: "#{group.name[0, 1].upcase} #{group.name}",
-        nav_sub_items: []
+        nav_item: _("Manage"),
+        nav_sub_items: [_("Activity"), _("Members"), _("Labels")]
       },
       {
-        nav_item: group.root? ? _('Group information') : _('Subgroup information'),
-        nav_sub_items: [
-          _('Activity'),
-          _('Labels'),
-          _('Members')
-        ]
+        nav_item: _("Plan"),
+        nav_sub_items: plan_nav_items
       },
       {
-        nav_item: _('Issues'),
-        nav_sub_items: issues_nav_items
+        nav_item: _("Code"),
+        nav_sub_items: [_("Merge requests")]
       },
       {
-        nav_item: _('Merge requests'),
-        nav_sub_items: []
+        nav_item: _("Build"),
+        nav_sub_items: [_("Runners")]
       },
-      (security_and_compliance_nav_item if Gitlab.ee?),
+      (secure_nav_item if Gitlab.ee?),
       {
-        nav_item: _('CI/CD'),
-        nav_sub_items: [
-          s_('Runners|Runners')
-        ]
+        nav_item: _("Operate"),
+        nav_sub_items: [_("Kubernetes")]
       },
-      {
-        nav_item: _('Kubernetes'),
-        nav_sub_items: []
-      },
-      (analytics_nav_item if Gitlab.ee?)
+      (analyze_nav_item if Gitlab.ee?)
     ]
   end
 end
@@ -214,10 +181,6 @@ end
 RSpec.shared_context 'dashboard navbar structure' do
   let(:structure) do
     [
-      {
-        nav_item: "Your work",
-        nav_sub_items: []
-      },
       {
         nav_item: _("Projects"),
         nav_sub_items: []
@@ -237,8 +200,8 @@ RSpec.shared_context 'dashboard navbar structure' do
       {
         nav_item: _("Merge requests"),
         nav_sub_items: [
-          _('Assigned 0'),
-          _('Review requests 0')
+          _('Assigned'),
+          _('Review requests')
         ]
       },
       {
@@ -265,10 +228,6 @@ RSpec.shared_context '"Explore" navbar structure' do
   let(:structure) do
     [
       {
-        nav_item: "Explore",
-        nav_sub_items: []
-      },
-      {
         nav_item: _("Projects"),
         nav_sub_items: []
       },
@@ -291,10 +250,6 @@ end
 RSpec.shared_context '"Explore" navbar structure with global_ci_catalog FF' do
   let(:structure) do
     [
-      {
-        nav_item: "Explore",
-        nav_sub_items: []
-      },
       {
         nav_item: _("Projects"),
         nav_sub_items: []

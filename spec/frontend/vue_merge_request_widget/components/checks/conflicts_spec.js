@@ -42,7 +42,7 @@ function factory({
     apolloProvider,
     propsData: {
       mr,
-      check: { result, failureReason: 'Conflicts message' },
+      check: { result, identifier: 'conflict' },
     },
   });
 }
@@ -55,7 +55,7 @@ describe('Merge request merge checks conflicts component', () => {
   it('renders failure reason text', () => {
     factory();
 
-    expect(wrapper.text()).toEqual('Conflicts message');
+    expect(wrapper.text()).toEqual('Merge conflicts must be resolved.');
   });
 
   it.each`

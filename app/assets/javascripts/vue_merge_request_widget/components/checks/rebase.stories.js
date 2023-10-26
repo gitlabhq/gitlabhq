@@ -62,8 +62,7 @@ const Template = ({
   return defaultRender({
     apolloProvider,
     check: {
-      failureReason: 'Needs rebasing',
-      identifier: 'rebase',
+      identifier: 'need_rebase',
       result: failed ? 'failed' : 'passed',
     },
     mr: { onlyAllowMergeIfPipelineSucceeds },

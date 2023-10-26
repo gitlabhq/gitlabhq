@@ -145,14 +145,6 @@ RSpec.describe NavHelper, feature_category: :navigation do
         let(:user_preference) { nil }
 
         specify { expect(subject).to eq true }
-
-        context 'when the user was not enrolled into the new nav via a special feature flag' do
-          before do
-            stub_feature_flags(super_sidebar_nav_enrolled: false)
-          end
-
-          specify { expect(subject).to eq false }
-        end
       end
 
       context 'when user has new nav disabled' do

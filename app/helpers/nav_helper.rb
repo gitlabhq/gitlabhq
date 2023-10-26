@@ -92,13 +92,11 @@ module NavHelper
     # should return true
     return Feature.enabled?(:super_sidebar_logged_out) unless user
 
-    # Users who got the special `super_sidebar_nav_enrolled` enabled,
-    # see the new nav as long as they don't explicitly opt-out via the toggle
-    if user.use_new_navigation.nil? && Feature.enabled?(:super_sidebar_nav_enrolled, user)
-      true
-    else
-      !!user.use_new_navigation
-    end
+    # Users who get the new nav unless they explicitly
+    # opt-out via the toggle
+    return true if user.use_new_navigation.nil?
+
+    !!user.use_new_navigation
   end
 
   private
