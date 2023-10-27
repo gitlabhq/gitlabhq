@@ -8,7 +8,7 @@ module Gitlab
         class PartitioningRoutingAnalyzer < Database::QueryAnalyzers::Base
           RoutingTableNotUsedError = Class.new(QueryAnalyzerError)
 
-          ENABLED_TABLES = %w[ci_builds_metadata].freeze
+          ENABLED_TABLES = %w[ci_builds ci_builds_metadata].freeze
 
           class << self
             def enabled?

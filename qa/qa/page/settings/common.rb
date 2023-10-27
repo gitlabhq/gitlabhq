@@ -6,7 +6,7 @@ module QA
       module Common
         # Click the Expand button present in the specified section
         #
-        # @param [Symbol] element_name `element` name defined in a `view` block
+        # @param [Symbol|String] element_name `element` name defined in a `view` block
         def expand_content(element_name)
           within_element(element_name) do
             # Because it is possible to click the button before the JS toggle code is bound

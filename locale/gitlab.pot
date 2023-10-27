@@ -34971,9 +34971,6 @@ msgstr ""
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr ""
 
-msgid "Pipelines|API"
-msgstr ""
-
 msgid "Pipelines|Are you sure you want to run this pipeline?"
 msgstr ""
 
@@ -35401,6 +35398,9 @@ msgid "Pipeline|We are currently unable to fetch pipeline data"
 msgstr ""
 
 msgid "Pipeline|You're about to stop pipeline #%{pipelineId}."
+msgstr ""
+
+msgid "Pipeline|api"
 msgstr ""
 
 msgid "Pipeline|for"
@@ -49060,6 +49060,9 @@ msgstr ""
 msgid "This pipeline was created by a schedule."
 msgstr ""
 
+msgid "This pipeline was triggered using the api"
+msgstr ""
+
 msgid "This process deletes the project repository and all related resources."
 msgstr ""
 
@@ -50814,6 +50817,9 @@ msgid "Unauthenticated web rate limit period in seconds"
 msgstr ""
 
 msgid "Unauthorized to access the cluster agent in this project"
+msgstr ""
+
+msgid "Unauthorized to create a container registry protection rule"
 msgstr ""
 
 msgid "Unauthorized to create a package protection rule"
@@ -57634,6 +57640,9 @@ msgid "scan-execution-policy: policy not applied, %{policy_path} file is invalid
 msgstr ""
 
 msgid "scan-execution-policy: policy not applied, %{policy_path} file is missing"
+msgstr ""
+
+msgid "scheduled"
 msgstr ""
 
 msgid "seat"

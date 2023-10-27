@@ -23,7 +23,8 @@ module Banzai
           begin
             uri = URI.parse(original_src)
 
-            next if uri.host.nil? && !original_src.start_with?('///')
+            # Skip URLs like `/path.ext` or `path.ext` which are relative to the current host
+            next if uri.relative? && uri.host.nil? && original_src.match(%r{\A/*})[0].length < 2
             next if asset_host_allowed?(uri.host)
           rescue StandardError
             # Ignored

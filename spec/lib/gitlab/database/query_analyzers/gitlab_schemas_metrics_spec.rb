@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
         },
         "for query accessing gitlab_ci and gitlab_main" => {
           model: ApplicationRecord,
-          sql: "SELECT 1 FROM projects LEFT JOIN ci_builds ON ci_builds.project_id=projects.id",
+          sql: "SELECT 1 FROM projects LEFT JOIN p_ci_builds ON p_ci_builds.project_id=projects.id",
           expectations: {
             gitlab_schemas: "gitlab_ci,gitlab_main_cell",
             db_config_name: "main"
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
         },
         "for query accessing gitlab_ci and gitlab_main the gitlab_schemas is always ordered" => {
           model: ApplicationRecord,
-          sql: "SELECT 1 FROM ci_builds LEFT JOIN projects ON ci_builds.project_id=projects.id",
+          sql: "SELECT 1 FROM p_ci_builds LEFT JOIN projects ON p_ci_builds.project_id=projects.id",
           expectations: {
             gitlab_schemas: "gitlab_ci,gitlab_main_cell",
             db_config_name: "main"
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
         },
         "for query accessing CI database" => {
           model: Ci::ApplicationRecord,
-          sql: "SELECT 1 FROM ci_builds",
+          sql: "SELECT 1 FROM p_ci_builds",
           expectations: {
             gitlab_schemas: "gitlab_ci",
             db_config_name: "ci"

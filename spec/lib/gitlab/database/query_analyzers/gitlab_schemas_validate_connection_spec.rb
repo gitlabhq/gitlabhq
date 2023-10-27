@@ -26,14 +26,14 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
         },
         "for query accessing gitlab_ci and gitlab_main" => {
           model: ApplicationRecord,
-          sql: "SELECT 1 FROM projects LEFT JOIN ci_builds ON ci_builds.project_id=projects.id",
-          expect_error: /The query tried to access \["projects", "ci_builds"\]/,
+          sql: "SELECT 1 FROM projects LEFT JOIN p_ci_builds ON p_ci_builds.project_id=projects.id",
+          expect_error: /The query tried to access \["projects", "p_ci_builds"\]/,
           setup: -> (_) { skip_if_shared_database(:ci) }
         },
         "for query accessing gitlab_ci and gitlab_main the gitlab_schemas is always ordered" => {
           model: ApplicationRecord,
-          sql: "SELECT 1 FROM ci_builds LEFT JOIN projects ON ci_builds.project_id=projects.id",
-          expect_error: /The query tried to access \["ci_builds", "projects"\]/,
+          sql: "SELECT 1 FROM p_ci_builds LEFT JOIN projects ON p_ci_builds.project_id=projects.id",
+          expect_error: /The query tried to access \["p_ci_builds", "projects"\]/,
           setup: -> (_) { skip_if_shared_database(:ci) }
         },
         "for query accessing main table from CI database" => {
@@ -44,13 +44,13 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
         },
         "for query accessing CI database" => {
           model: Ci::ApplicationRecord,
-          sql: "SELECT 1 FROM ci_builds",
+          sql: "SELECT 1 FROM p_ci_builds",
           expect_error: nil
         },
         "for query accessing CI table from main database" => {
           model: ::ApplicationRecord,
-          sql: "SELECT 1 FROM ci_builds",
-          expect_error: /The query tried to access \["ci_builds"\]/,
+          sql: "SELECT 1 FROM p_ci_builds",
+          expect_error: /The query tried to access \["p_ci_builds"\]/,
           setup: -> (_) { skip_if_shared_database(:ci) }
         },
         "for query accessing unknown gitlab_schema" => {
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
 
     it "throws an error when trying to access a table that belongs to the gitlab_ci schema from the main database" do
       expect do
-        ApplicationRecord.connection.execute("select * from ci_builds limit 1")
+        ApplicationRecord.connection.execute("select * from p_ci_builds limit 1")
       end.to raise_error(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection::CrossSchemaAccessError)
     end
   end

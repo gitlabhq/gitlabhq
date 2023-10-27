@@ -51,7 +51,6 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
           page.within(find('[data-testid="pipeline-table-row"]', match: :first)) do
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Passed')
             expect(page).to have_content(pipeline.id)
-            expect(page).to have_content('API')
             expect(page).to have_css('[data-testid="pipeline-mini-graph"]')
             expect(page).to have_css('[data-testid="pipelines-manual-actions-dropdown"]')
             expect(page).to have_css('[data-testid="pipeline-multi-actions-dropdown"]')

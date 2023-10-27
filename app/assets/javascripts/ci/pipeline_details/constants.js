@@ -2,7 +2,6 @@ import { __, s__ } from '~/locale';
 
 export const CANCEL_REQUEST = 'CANCEL_REQUEST';
 export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source'];
-export const SCHEDULE_ORIGIN = 'schedule';
 export const NEEDS_PROPERTY = 'needs';
 export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
 

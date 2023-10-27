@@ -29,9 +29,5 @@ export default {
     <gl-avatar-link v-if="user" v-gl-tooltip :href="user.path" :title="user.name" class="gl-ml-3">
       <gl-avatar :size="32" :src="user.avatar_url" />
     </gl-avatar-link>
-
-    <span v-else class="gl-ml-3">
-      {{ s__('Pipelines|API') }}
-    </span>
   </div>
 </template>

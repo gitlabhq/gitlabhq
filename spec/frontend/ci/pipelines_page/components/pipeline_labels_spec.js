@@ -2,6 +2,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import PipelineLabelsComponent from '~/ci/pipelines_page/components/pipeline_labels.vue';
 import { mockPipeline } from 'jest/ci/pipeline_details/mock_data';
+import { SCHEDULE_ORIGIN, API_ORIGIN } from '~/ci/pipelines_page/constants';
 
 const projectPath = 'test/test';
 
@@ -19,6 +20,7 @@ describe('Pipeline label component', () => {
   const findFailureTag = () => wrapper.findByTestId('pipeline-url-failure');
   const findForkTag = () => wrapper.findByTestId('pipeline-url-fork');
   const findTrainTag = () => wrapper.findByTestId('pipeline-url-train');
+  const findApiTag = () => wrapper.findByTestId('pipeline-api-badge');
 
   const defaultProps = mockPipeline(projectPath);
 
@@ -121,14 +123,14 @@ describe('Pipeline label component', () => {
 
   it('should render scheduled badge when pipeline was triggered by a schedule', () => {
     const scheduledPipeline = defaultProps.pipeline;
-    scheduledPipeline.source = 'schedule';
+    scheduledPipeline.source = SCHEDULE_ORIGIN;
 
     createComponent({
       ...scheduledPipeline,
     });
 
     expect(findScheduledTag().exists()).toBe(true);
-    expect(findScheduledTag().text()).toContain('Scheduled');
+    expect(findScheduledTag().text()).toContain('scheduled');
   });
 
   it('should render the fork badge when the pipeline was run in a fork', () => {
@@ -201,4 +203,26 @@ describe('Pipeline label component', () => {
 
     expect(findMergedResultsTag().exists()).toBe(false);
   });
+
+  it.each`
+    display  | source
+    ${true}  | ${API_ORIGIN}
+    ${false} | ${SCHEDULE_ORIGIN}
+  `(
+    'should display the api badge: $display, when the pipeline has a source of $source',
+    ({ display, source }) => {
+      const apiPipeline = defaultProps.pipeline;
+      apiPipeline.source = source;
+
+      createComponent({
+        ...apiPipeline,
+      });
+
+      if (display) {
+        expect(findApiTag().text()).toBe(API_ORIGIN);
+      } else {
+        expect(findApiTag().exists()).toBe(false);
+      }
+    },
+  );
 });

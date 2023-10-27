@@ -95,18 +95,14 @@ task :revoke_user_pats, [:revoke_before, :dry_run] do |_, args|
 end
 
 desc "Generate group with multiple projects for direct transfer test"
-task :generate_direct_transfer_test_group,
-  [:project_tar_path, :group_path, :project_copies, :import_wait, :parallel_imports] do |_, args|
+task :generate_direct_transfer_test_group, [:project_tar_paths, :group_path, :project_copies] do |_, args|
   QA::Support::GitlabAddress.define_gitlab_address_attribute!
   QA::Runtime::Browser.configure!
   QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 
+  numeric_args = { project_copies: Integer(args[:project_copies], exception: false) }.compact
   string_args = args.to_h
-    .slice(:project_tar_path, :group_path)
-    .compact_blank
-  numeric_args = args.to_h
-    .slice(:project_copies, :import_wait, :parallel_imports)
-    .transform_values { |arg| Integer(arg, exception: false) }
+    .slice(:project_tar_paths, :group_path)
     .compact_blank
 
   QA::Tools::GenerateImportTestGroup.new(**string_args, **numeric_args).generate

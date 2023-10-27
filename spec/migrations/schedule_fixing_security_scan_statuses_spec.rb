@@ -4,20 +4,21 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ScheduleFixingSecurityScanStatuses,
-  :suppress_gitlab_schemas_validate_connection, feature_category: :vulnerability_management do
+  :suppress_gitlab_schemas_validate_connection, :suppress_partitioning_routing_analyzer,
+  feature_category: :vulnerability_management do
   let!(:namespaces) { table(:namespaces) }
   let!(:projects) { table(:projects) }
-  let!(:pipelines) { table(:ci_pipelines) }
-  let!(:builds) { table(:ci_builds) }
+  let!(:pipelines) { table(:ci_pipelines, database: :ci) }
+  let!(:builds) { table(:ci_builds, database: :ci) { |model| model.primary_key = :id } }
   let!(:security_scans) { table(:security_scans) }
 
   let!(:namespace) { namespaces.create!(name: "foo", path: "bar") }
   let!(:project) { projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
   let!(:pipeline) do
-    pipelines.create!(project_id: project.id, ref: 'master', sha: 'adf43c3a', status: 'success', partition_id: 1)
+    pipelines.create!(project_id: project.id, ref: 'master', sha: 'adf43c3a', status: 'success', partition_id: 100)
   end
 
-  let!(:ci_build) { builds.create!(commit_id: pipeline.id, retried: false, type: 'Ci::Build', partition_id: 1) }
+  let!(:ci_build) { builds.create!(commit_id: pipeline.id, retried: false, type: 'Ci::Build', partition_id: 100) }
 
   let!(:security_scan_1) { security_scans.create!(build_id: ci_build.id, scan_type: 1, created_at: 91.days.ago) }
   let!(:security_scan_2) { security_scans.create!(build_id: ci_build.id, scan_type: 2) }

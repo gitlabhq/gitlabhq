@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Database::Migrations::ReestablishedConnectionStack do
 
               # establish connection
               ApplicationRecord.connection.select_one("SELECT 1 FROM projects LIMIT 1")
-              Ci::ApplicationRecord.connection.select_one("SELECT 1 FROM ci_builds LIMIT 1")
+              Ci::ApplicationRecord.connection.select_one("SELECT 1 FROM p_ci_builds LIMIT 1")
             end
 
             expect(new_handler).not_to eq(original_handler), "is reconnected"

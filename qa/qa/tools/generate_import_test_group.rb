@@ -6,19 +6,22 @@ module QA
   module Tools
     # Helper to generate group with projects for Direct Transfer testing
     #
+    # Should be used with care as it can trigger a lot of project imports
+    #
     class GenerateImportTestGroup
+      # Generate test group
+      #
+      # @param [String] project_tar_paths exported project tar.gz file path, optionally several separated by ';'
+      # @param [String] group_path path of group where projects will be generated
+      # @param [Integer] project_copies number of projects to create in a group
       def initialize(
-        project_tar_path: Runtime::Path.fixture('export.tar.gz'),
+        project_tar_paths: Runtime::Path.fixture('export.tar.gz'),
         group_path: "import-test",
-        project_copies: 10,
-        import_wait: 60,
-        parallel_imports: Etc.nprocessors
+        project_copies: 10
       )
-        @project_tar_path = project_tar_path
+        @project_tar_paths = project_tar_paths
         @group_path = group_path
         @project_copies = project_copies
-        @import_wait = import_wait
-        @parallel_imports = parallel_imports
         @logger = Runtime::Logger.logger
       end
 
@@ -26,41 +29,62 @@ module QA
       #
       # @return [void]
       def generate
-        validate_tar_path
+        check_access_token
+        raise("Project pool has no valid archive files") if project_pool.empty?
 
-        logger.info("Creating import-test group with #{project_copies} copies of '#{project_tar_path}' project")
+        logger.info("Creating '#{group_path}' group with #{project_copies} copies of exported projects")
         create_group
 
-        Parallel.each((1..project_copies), in_threads: parallel_imports) do |copy|
+        (1..project_copies).each do
           name = "imported-project-#{SecureRandom.hex(8)}"
-          logger.info("Fabricating project copy nr: #{copy} with name '#{name}'")
+          tar = project_pool[rand(0..project_pool.size - 1)]
+
+          logger.info("Fabricating copy of '#{tar.basename}' with name '#{name}'")
           Resource::ImportProject.fabricate_via_api! do |project|
-            project.file_path = project_tar_path
+            project.file_path = tar.to_s
             project.api_client = api_client
-            project.import_wait_duration = import_wait
             project.name = name
             project.group = group
+            # we mark project as not import so it doesn't wait for import to finish
+            # when generating large projects, it can take a long time
+            project.import = false
           end
+
+          sleep(10) # add pause to not trigger 'too many requests error'
+        rescue StandardError => e
+          logger.error("Failed to fabricate project '#{name}', error: #{e}")
         end
       end
 
       private
 
-      attr_reader :project_tar_path,
-        :group_path,
-        :project_copies,
-        :import_wait,
-        :parallel_imports,
-        :logger
+      attr_reader :project_tar_paths, :group_path, :project_copies, :logger
+
+      # Gitlab access token
+      #
+      # @return [String]
+      def access_token
+        @access_token ||= ENV['GITLAB_QA_ACCESS_TOKEN'] || raise("GITLAB_QA_ACCESS_TOKEN required")
+      end
+      alias_method :check_access_token, :access_token
 
       # API client
       #
       # @return [Runtime::API::Client]
       def api_client
-        @api_client ||= Runtime::API::Client.new(
-          :gitlab,
-          personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'] || raise("GITLAB_QA_ACCESS_TOKEN required")
-        )
+        @api_client ||= Runtime::API::Client.new(:gitlab, personal_access_token: access_token)
+      end
+
+      # Pool of project tar files
+      #
+      # @return [Array<Pathname>]
+      def project_pool
+        @project_pool ||= project_tar_paths.split(";").filter_map do |f|
+          path = Pathname.new(f)
+          next logger.warn("#{f} is not a valid path!") && nil unless path.exist?
+
+          path
+        end
       end
 
       # Create group with all subgroups
@@ -93,13 +117,6 @@ module QA
           resource.sandbox = parent unless type == :sandbox
           resource.path = path
         end
-      end
-
-      # Validate project import file exists
-      #
-      # @return [void]
-      def validate_tar_path
-        raise("'#{project_tar_path}' path does not exist!") unless File.exist?(project_tar_path)
       end
     end
   end

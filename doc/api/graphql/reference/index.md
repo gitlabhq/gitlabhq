@@ -2290,6 +2290,34 @@ Input type: `CreateComplianceFrameworkInput`
 | <a id="mutationcreatecomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatecomplianceframeworkframework"></a>`framework` | [`ComplianceFramework`](#complianceframework) | Created compliance framework. |
 
+### `Mutation.createContainerRegistryProtectionRule`
+
+Creates a protection rule to restrict access to a project's container registry. Available only when feature flag `container_registry_protected_containers` is enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `CreateContainerRegistryProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecontainerregistryprotectionrulecontainerpathpattern"></a>`containerPathPattern` | [`String!`](#string) | ContainerRegistryname protected by the protection rule. For example `@my-scope/my-container-*`. Wildcard character `*` allowed. |
+| <a id="mutationcreatecontainerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from deleting container images in the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="mutationcreatecontainerregistryprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
+| <a id="mutationcreatecontainerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | Container registry protection rule after mutation. |
+| <a id="mutationcreatecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.createCustomEmoji`
 
 WARNING:
@@ -15650,6 +15678,19 @@ A tag expiration policy designed to keep only the images that matter most.
 | <a id="containerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older that this will expire. |
 | <a id="containerexpirationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the container expiration policy was updated. |
 
+### `ContainerRegistryProtectionRule`
+
+A container registry protection rule designed to prevent users with a certain access level or lower from altering the container registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistryprotectionrulecontainerpathpattern"></a>`containerPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example `@my-scope/my-container-*`. Wildcard character `*` allowed. |
+| <a id="containerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="containerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | ID of the container registry protection rule. |
+| <a id="containerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+
 ### `ContainerRepository`
 
 A container repository.
@@ -28150,6 +28191,16 @@ Values for sorting contacts.
 | <a id="containerexpirationpolicyolderthanenumsixty_days"></a>`SIXTY_DAYS` | 60 days until tags are automatically removed. |
 | <a id="containerexpirationpolicyolderthanenumthirty_days"></a>`THIRTY_DAYS` | 30 days until tags are automatically removed. |
 
+### `ContainerRegistryProtectionRuleAccessLevel`
+
+Access level of a container registry protection rule resource.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="containerregistryprotectionruleaccessleveldeveloper"></a>`DEVELOPER` | Developer access. |
+| <a id="containerregistryprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
+| <a id="containerregistryprotectionruleaccesslevelowner"></a>`OWNER` | Owner access. |
+
 ### `ContainerRepositoryCleanupStatus`
 
 Status of the tags cleanup of a container repository.
@@ -30436,6 +30487,12 @@ For example: "#fefefe".
 A `ComplianceManagementFrameworkID` is a global ID. It is encoded as a string.
 
 An example `ComplianceManagementFrameworkID` is: `"gid://gitlab/ComplianceManagement::Framework/1"`.
+
+### `ContainerRegistryProtectionRuleID`
+
+A `ContainerRegistryProtectionRuleID` is a global ID. It is encoded as a string.
+
+An example `ContainerRegistryProtectionRuleID` is: `"gid://gitlab/ContainerRegistry::Protection::Rule/1"`.
 
 ### `ContainerRepositoryID`
 
