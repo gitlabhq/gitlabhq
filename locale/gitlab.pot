@@ -29303,6 +29303,9 @@ msgstr ""
 msgid "MemberRoles|Custom roles"
 msgstr ""
 
+msgid "MemberRoles|Custom roles based on %{accessLevel}"
+msgstr ""
+
 msgid "MemberRoles|Delete role"
 msgstr ""
 
@@ -29358,6 +29361,9 @@ msgid "MemberRoles|Role successfully deleted."
 msgstr ""
 
 msgid "MemberRoles|Select a standard role to add permissions."
+msgstr ""
+
+msgid "MemberRoles|Standard roles"
 msgstr ""
 
 msgid "MemberRoles|To add a new role select 'Add new role'."

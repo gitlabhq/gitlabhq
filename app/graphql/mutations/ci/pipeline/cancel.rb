@@ -6,7 +6,7 @@ module Mutations
       class Cancel < Base
         graphql_name 'PipelineCancel'
 
-        authorize :update_pipeline
+        authorize :cancel_pipeline
 
         def resolve(id:)
           pipeline = authorized_find!(id: id)

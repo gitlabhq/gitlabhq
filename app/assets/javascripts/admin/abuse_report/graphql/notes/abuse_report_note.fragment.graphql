@@ -1,0 +1,24 @@
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+#import "./abuse_report_note_permissions.fragment.graphql"
+
+fragment AbuseReportNote on Note {
+  id
+  author {
+    ...Author
+  }
+  body
+  bodyHtml
+  createdAt
+  resolved
+  userPermissions {
+    ...AbuseReportNotePermissions
+  }
+  discussion {
+    id
+    notes {
+      nodes {
+        id
+      }
+    }
+  }
+}

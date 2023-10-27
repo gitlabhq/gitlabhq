@@ -18,7 +18,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_read_build!, only: [:index, :show]
   before_action :authorize_read_ci_cd_analytics!, only: [:charts]
   before_action :authorize_create_pipeline!, only: [:new, :create]
-  before_action :authorize_update_pipeline!, only: [:retry, :cancel]
+  before_action :authorize_update_pipeline!, only: [:retry]
+  before_action :authorize_cancel_pipeline!, only: [:cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
 
@@ -301,6 +302,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def authorize_update_pipeline!
     return access_denied! unless can?(current_user, :update_pipeline, @pipeline)
+  end
+
+  def authorize_cancel_pipeline!
+    return access_denied! unless can?(current_user, :cancel_pipeline, @pipeline)
   end
 
   def limited_pipelines_count(project, scope = nil)

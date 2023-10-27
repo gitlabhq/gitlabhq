@@ -5,6 +5,7 @@ module Gitlab
     module Ci
       module Catalog
         class ResourceSeeder
+          # This is currently disabled until it gets fixed: https://gitlab.com/gitlab-org/gitlab/-/issues/429649
           # Initializes the class
           #
           # @param [String] Path of the group to find

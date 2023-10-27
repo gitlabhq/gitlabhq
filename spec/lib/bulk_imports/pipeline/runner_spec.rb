@@ -299,34 +299,6 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
 
         subject.run
       end
-
-      context 'with FF bulk_import_idempotent_workers disabled' do
-        before do
-          stub_feature_flags(bulk_import_idempotent_workers: false)
-        end
-
-        it 'does not touch the cache' do
-          expect_next_instance_of(BulkImports::Extractor) do |extractor|
-            expect(extractor)
-              .to receive(:extract)
-              .with(context)
-              .and_return(extracted_data)
-          end
-
-          expect_next_instance_of(BulkImports::Transformer) do |transformer|
-            expect(transformer)
-              .to receive(:transform)
-              .with(context, extracted_data.data.first)
-              .and_return(extracted_data.data.first)
-          end
-
-          expect_next_instance_of(BulkImports::MyPipeline) do |klass|
-            expect(klass).not_to receive(:save_processed_entry)
-          end
-
-          subject.run
-        end
-      end
     end
 
     context 'when the entry is already processed' do
@@ -355,36 +327,6 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
 
         subject.run
-      end
-
-      context 'with FF bulk_import_idempotent_workers disabled' do
-        before do
-          stub_feature_flags(bulk_import_idempotent_workers: false)
-        end
-
-        it 'calls extractor, transformer, and loader' do
-          expect_next_instance_of(BulkImports::Extractor) do |extractor|
-            expect(extractor)
-              .to receive(:extract)
-              .with(context)
-              .and_return(extracted_data)
-          end
-
-          expect_next_instance_of(BulkImports::Transformer) do |transformer|
-            expect(transformer)
-              .to receive(:transform)
-              .with(context, extracted_data.data.first)
-              .and_return(extracted_data.data.first)
-          end
-
-          expect_next_instance_of(BulkImports::Loader) do |loader|
-            expect(loader)
-              .to receive(:load)
-              .with(context, extracted_data.data.first)
-          end
-
-          subject.run
-        end
       end
     end
 

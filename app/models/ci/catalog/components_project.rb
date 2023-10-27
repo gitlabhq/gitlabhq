@@ -10,6 +10,7 @@ module Ci
       TEMPLATE_FILE = 'template.yml'
       TEMPLATES_DIR = 'templates'
       TEMPLATE_PATH_REGEX = '^templates\/\w+\-?\w+(?:\/template)?\.yml$'
+      COMPONENTS_LIMIT = 10
 
       ComponentData = Struct.new(:content, :path, keyword_init: true)
 
@@ -18,8 +19,8 @@ module Ci
         @sha = sha
       end
 
-      def fetch_component_paths(sha)
-        project.repository.search_files_by_regexp(TEMPLATE_PATH_REGEX, sha)
+      def fetch_component_paths(sha, limit: COMPONENTS_LIMIT)
+        project.repository.search_files_by_regexp(TEMPLATE_PATH_REGEX, sha, limit: limit)
       end
 
       def extract_component_name(path)

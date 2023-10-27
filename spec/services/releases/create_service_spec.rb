@@ -60,7 +60,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       let!(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
 
       context 'and it is valid' do
-        let_it_be(:project) { create(:project, :repository, description: 'our components') }
+        let_it_be(:project) { create(:project, :catalog_resource_with_components, create_tag: 'final') }
 
         it_behaves_like 'a successful release creation'
       end
@@ -70,7 +70,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
           result = service.execute
 
           expect(result[:status]).to eq(:error)
-          expect(result[:message]).to eq('Project must have a description')
+          expect(result[:message]).to eq('Project must have a description, Project must contain components')
         end
       end
     end

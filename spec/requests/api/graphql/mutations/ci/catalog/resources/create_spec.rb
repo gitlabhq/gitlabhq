@@ -6,7 +6,7 @@ RSpec.describe 'CatalogResourcesCreate', feature_category: :pipeline_composition
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, description: 'our components') }
+  let_it_be(:project) { create(:project, :catalog_resource_with_components) }
 
   let(:mutation) do
     variables = {

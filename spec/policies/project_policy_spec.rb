@@ -214,6 +214,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       it 'allows modify pipelines' do
         expect_allowed(:create_pipeline)
         expect_allowed(:update_pipeline)
+        expect_allowed(:cancel_pipeline)
         expect_allowed(:create_pipeline_schedule)
       end
     end
@@ -224,6 +225,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       it 'disallows to modify pipelines' do
         expect_disallowed(:create_pipeline)
         expect_disallowed(:update_pipeline)
+        expect_disallowed(:cancel_pipeline)
         expect_disallowed(:destroy_pipeline)
         expect_disallowed(:create_pipeline_schedule)
       end
@@ -304,7 +306,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       it 'disallows pipeline and commit_status permissions' do
         builds_permissions = [
-          :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
+          :create_pipeline, :update_pipeline, :cancel_pipeline, :admin_pipeline, :destroy_pipeline,
           :create_commit_status, :update_commit_status, :admin_commit_status, :destroy_commit_status
         ]
 
@@ -316,7 +318,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   context 'repository feature' do
     let(:repository_permissions) do
       [
-        :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
+        :create_pipeline, :update_pipeline, :cancel_pipeline, :admin_pipeline, :destroy_pipeline,
         :create_build, :read_build, :update_build, :admin_build, :destroy_build,
         :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,

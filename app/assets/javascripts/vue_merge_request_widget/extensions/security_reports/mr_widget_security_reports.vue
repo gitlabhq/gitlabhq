@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, sprintf } from '~/locale';
@@ -10,11 +10,7 @@ export default {
   name: 'WidgetSecurityReportsCE',
   components: {
     MrWidget,
-    GlDropdown,
-    GlDropdownItem,
-  },
-  directives: {
-    GlTooltip,
+    GlDisclosureDropdown,
   },
   i18n: {
     apiError: s__(
@@ -76,16 +72,22 @@ export default {
     summary() {
       return { title: this.$options.i18n.scansHaveRun };
     },
+    listboxOptions() {
+      return this.artifacts.map(({ name, path }) => ({
+        text: sprintf(s__('SecurityReports|Download %{artifactName}'), {
+          artifactName: name,
+        }),
+        href: path,
+        extraAttrs: {
+          download: '',
+          rel: 'nofollow',
+        },
+      }));
+    },
   },
   methods: {
     handleIsLoading(value) {
       this.isLoading = value;
-    },
-
-    artifactText({ name }) {
-      return sprintf(s__('SecurityReports|Download %{artifactName}'), {
-        artifactName: name,
-      });
     },
   },
   widgetHelpPopover: {
@@ -116,26 +118,12 @@ export default {
     @is-loading="handleIsLoading"
   >
     <template #action-buttons>
-      <div class="gl-ml-3">
-        <gl-dropdown
-          v-gl-tooltip
-          icon="download"
-          size="small"
-          category="tertiary"
-          variant="confirm"
-          right
-        >
-          <gl-dropdown-item
-            v-for="artifact in artifacts"
-            :key="artifact.path"
-            :href="artifact.path"
-            :data-testid="`download-${artifact.name}`"
-            download
-          >
-            {{ artifactText(artifact) }}
-          </gl-dropdown-item>
-        </gl-dropdown>
-      </div>
+      <gl-disclosure-dropdown
+        class="gl-ml-3"
+        size="small"
+        icon="download"
+        :items="listboxOptions"
+      />
     </template>
   </mr-widget>
 </template>

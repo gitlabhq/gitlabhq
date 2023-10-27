@@ -19,6 +19,7 @@ RSpec.describe Types::Notes::NoteableInterface do
       expect(described_class.resolve_type(build(:merge_request), {})).to eq(Types::MergeRequestType)
       expect(described_class.resolve_type(build(:design), {})).to eq(Types::DesignManagement::DesignType)
       expect(described_class.resolve_type(build(:alert_management_alert), {})).to eq(Types::AlertManagement::AlertType)
+      expect(described_class.resolve_type(build(:abuse_report), {})).to eq(Types::AbuseReportType)
     end
   end
 end

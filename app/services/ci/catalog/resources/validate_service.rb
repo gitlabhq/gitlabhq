@@ -4,7 +4,7 @@ module Ci
   module Catalog
     module Resources
       class ValidateService
-        attr_reader :project
+        MINIMUM_AMOUNT_OF_COMPONENTS = 1
 
         def initialize(project, ref)
           @project = project
@@ -13,30 +13,38 @@ module Ci
         end
 
         def execute
-          check_project_readme
-          check_project_description
+          verify_presence_project_readme
+          verify_presence_project_description
+          scan_directory_for_components
 
           if errors.empty?
             ServiceResponse.success
           else
-            ServiceResponse.error(message: errors.join(' , '))
+            ServiceResponse.error(message: errors.join(', '))
           end
         end
 
         private
 
-        attr_reader :ref, :errors
+        attr_reader :project, :ref, :errors
 
-        def check_project_description
+        def verify_presence_project_readme
+          return if project_has_readme?
+
+          errors << 'Project must have a README'
+        end
+
+        def verify_presence_project_description
           return if project.description.present?
 
           errors << 'Project must have a description'
         end
 
-        def check_project_readme
-          return if project_has_readme?
+        def scan_directory_for_components
+          return if Ci::Catalog::ComponentsProject.new(project).fetch_component_paths(ref,
+            limit: MINIMUM_AMOUNT_OF_COMPONENTS).any?
 
-          errors << 'Project must have a README'
+          errors << 'Project must contain components'
         end
 
         def project_has_readme?

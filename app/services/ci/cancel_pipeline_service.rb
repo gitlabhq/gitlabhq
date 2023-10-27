@@ -24,7 +24,7 @@ module Ci
     end
 
     def execute
-      unless can?(current_user, :update_pipeline, pipeline)
+      unless can?(current_user, :cancel_pipeline, pipeline)
         return ServiceResponse.error(
           message: 'Insufficient permissions to cancel the pipeline',
           reason: :insufficient_permissions)

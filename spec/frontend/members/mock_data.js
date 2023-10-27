@@ -50,6 +50,7 @@ export const member = {
     Owner: 50,
     'Minimal access': 5,
   },
+  customRoles: [],
 };
 
 export const group = {

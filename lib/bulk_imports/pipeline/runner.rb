@@ -17,7 +17,7 @@ module BulkImports
         if extracted_data
           extracted_data.each_with_index do |entry, index|
             raw_entry = entry.dup
-            next if Feature.enabled?(:bulk_import_idempotent_workers) && already_processed?(raw_entry, index)
+            next if already_processed?(raw_entry, index)
 
             transformers.each do |transformer|
               entry = run_pipeline_step(:transformer, transformer.class.name) do
@@ -29,7 +29,7 @@ module BulkImports
               loader.load(context, entry)
             end
 
-            save_processed_entry(raw_entry, index) if Feature.enabled?(:bulk_import_idempotent_workers)
+            save_processed_entry(raw_entry, index)
           end
 
           tracker.update!(

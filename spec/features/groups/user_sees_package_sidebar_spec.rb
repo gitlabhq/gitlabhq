@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > sidebar', feature_category: :groups_and_projects do
-  let(:user) { create(:user, :no_super_sidebar) }
+RSpec.describe 'Groups > sidebar', :js, feature_category: :groups_and_projects do
+  let(:user) { create(:user) }
   let(:group) { create(:group) }
 
   before do
@@ -19,13 +19,15 @@ RSpec.describe 'Groups > sidebar', feature_category: :groups_and_projects do
       end
 
       it 'shows main menu' do
-        within '.nav-sidebar' do
-          expect(page).to have_link(_('Packages'))
+        within_testid 'super-sidebar' do
+          click_button 'Deploy'
+          expect(page).to have_link(_('Package Registry'))
         end
       end
 
       it 'has container registry link' do
-        within '.nav-sidebar' do
+        within_testid 'super-sidebar' do
+          click_button 'Deploy'
           expect(page).to have_link(_('Container Registry'))
         end
       end
@@ -38,7 +40,8 @@ RSpec.describe 'Groups > sidebar', feature_category: :groups_and_projects do
       end
 
       it 'does not have container registry link' do
-        within '.nav-sidebar' do
+        within_testid 'super-sidebar' do
+          click_button 'Deploy'
           expect(page).not_to have_link(_('Container Registry'))
         end
       end

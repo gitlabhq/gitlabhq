@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelinePolicy, :models do
+RSpec.describe Ci::PipelinePolicy, :models, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
@@ -25,6 +25,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
         it 'does not include ability to update pipeline' do
           expect(policy).to be_disallowed :update_pipeline
+          expect(policy).to be_disallowed :cancel_pipeline
         end
       end
 
@@ -35,6 +36,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
         it 'includes ability to update pipeline' do
           expect(policy).to be_allowed :update_pipeline
+          expect(policy).to be_allowed :cancel_pipeline
         end
       end
 
@@ -47,6 +49,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
         it 'does not include ability to update pipeline' do
           expect(policy).to be_disallowed :update_pipeline
+          expect(policy).to be_disallowed :cancel_pipeline
         end
       end
 
@@ -57,6 +60,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
 
         it 'includes ability to update pipeline' do
           expect(policy).to be_allowed :update_pipeline
+          expect(policy).to be_allowed :cancel_pipeline
         end
       end
     end
@@ -70,6 +74,7 @@ RSpec.describe Ci::PipelinePolicy, :models do
         allow_any_instance_of(Project).to receive(:branch_allows_collaboration?).and_return(true)
 
         expect(policy).to be_allowed :update_pipeline
+        expect(policy).to be_allowed :cancel_pipeline
       end
     end
 

@@ -103,9 +103,13 @@ export const mockLabelsQueryResponse = {
 export const mockReportQueryResponse = {
   data: {
     abuseReport: {
+      id: 'gid://gitlab/AbuseReport/1',
       labels: {
         nodes: [mockLabel1],
         __typename: 'LabelConnection',
+      },
+      discussions: {
+        nodes: [],
       },
       __typename: 'AbuseReport',
     },

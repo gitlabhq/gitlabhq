@@ -1,8 +1,8 @@
 <script>
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
+import abuseReportQuery from '../graphql/abuse_report.query.graphql';
 import LabelsSelect from './labels_select.vue';
-import abuseReportQuery from './graphql/abuse_report.query.graphql';
 
 export default {
   name: 'ReportDetails',

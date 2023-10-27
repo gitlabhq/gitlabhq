@@ -91,7 +91,8 @@ RSpec.describe ::Gitlab::Seeders::Ci::Catalog::ResourceSeeder, feature_category:
       expect(project.repository.blob_at(default_branch, "template.yml")).not_to be_nil
     end
 
-    it 'creates projects with CI catalog resources' do
+    # This should be run again when fixing: https://gitlab.com/gitlab-org/gitlab/-/issues/429649
+    xit 'creates projects with CI catalog resources' do
       expect { seed }.to change { Project.count }.by(seed_count)
 
       expect(group.projects.all?(&:catalog_resource)).to eq true

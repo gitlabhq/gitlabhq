@@ -45,6 +45,15 @@ module Ci
       enable :read_pipeline_variable
     end
 
+    # TODO: splitting out cancel from update in Issue #20207
+    rule { can?(:update_pipeline) }.policy do
+      enable :cancel_pipeline
+    end
+
+    rule { ~can?(:update_pipeline) }.policy do
+      prevent :cancel_pipeline
+    end
+
     rule { project_allows_read_dependency }.policy do
       enable :read_dependency
     end

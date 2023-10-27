@@ -11,7 +11,7 @@ import DropdownContentsCreateView from '~/sidebar/components/labels/labels_selec
 import DropdownHeader from '~/sidebar/components/labels/labels_select_widget/dropdown_header.vue';
 import DropdownFooter from '~/sidebar/components/labels/labels_select_widget/dropdown_footer.vue';
 import DropdownWidget from '~/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue';
-import abuseReportLabelsQuery from './graphql/abuse_report_labels.query.graphql';
+import abuseReportLabelsQuery from '../graphql/abuse_report_labels.query.graphql';
 
 export default {
   components: {

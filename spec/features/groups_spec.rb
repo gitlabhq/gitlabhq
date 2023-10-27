@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group', feature_category: :groups_and_projects do
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -441,21 +441,30 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
 
       expect(page).to have_content(nested_group.name)
       expect(page).to have_content(project.name)
-      expect(page).to have_link('Group information')
     end
 
-    it 'renders subgroup page with the text "Subgroup information"' do
+    it 'renders group page with the text "Group" in the sidebar header' do
+      visit group_path(group)
+
+      within('#super-sidebar-context-header') do
+        expect(page).to have_text('Group')
+      end
+    end
+
+    it 'renders subgroup page with the text "Group" in the sidebar header' do
       visit group_path(nested_group)
-      wait_for_requests
 
-      expect(page).to have_link('Subgroup information')
+      within('#super-sidebar-context-header') do
+        expect(page).to have_text('Group')
+      end
     end
 
-    it 'renders project page with the text "Project information"' do
+    it 'renders project page with the text "Project" in the sidebar header' do
       visit project_path(project)
-      wait_for_requests
 
-      expect(page).to have_link('Project information')
+      within('#super-sidebar-context-header') do
+        expect(page).to have_text('Project')
+      end
     end
   end
 

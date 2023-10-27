@@ -71,9 +71,7 @@ describe('RoleDropdown', () => {
 
   it('has items prop with all valid roles', () => {
     createComponent();
-    const roles = findListbox()
-      .props('items')
-      .map((item) => item.text);
+    const roles = findListboxItems().wrappers.map((item) => item.text());
     expect(roles).toEqual(Object.keys(member.validRoles));
   });
 
@@ -102,7 +100,7 @@ describe('RoleDropdown', () => {
 
         expect(actions.updateMemberRole).toHaveBeenCalledWith(expect.any(Object), {
           memberId: member.id,
-          accessLevel: { integerValue: 30, stringValue: 'Developer' },
+          accessLevel: { integerValue: 30, memberRoleId: null },
         });
       });
 
@@ -247,7 +245,7 @@ describe('RoleDropdown', () => {
       });
 
       it('resets selected dropdown item', () => {
-        expect(findListbox().props('selected')).toBe(member.validRoles.Owner);
+        expect(findListbox().props('selected')).toMatch(/role-static-\d+/);
       });
     });
   });

@@ -106,7 +106,7 @@ class Ci::PipelineEntity < Grape::Entity
   end
 
   def can_cancel?
-    can?(request.current_user, :update_pipeline, pipeline) &&
+    can?(request.current_user, :cancel_pipeline, pipeline) &&
       pipeline.cancelable?
   end
 

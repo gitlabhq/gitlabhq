@@ -256,6 +256,35 @@ FactoryBot.define do
       end
     end
 
+    # A catalog resource repository with a file structure set up for ci components.
+    trait :catalog_resource_with_components do
+      small_repo
+      description { 'catalog resource' }
+
+      files do
+        {
+          'templates/secret-detection.yml' => "spec:\n inputs:\n  website:\n---\nimage: alpine_1",
+          'templates/dast/template.yml' => 'image: alpine_2',
+          'templates/template.yml' => 'image: alpine_3',
+          'templates/blank-yaml.yml' => '',
+          'README.md' => 'readme'
+        }
+      end
+
+      transient do
+        create_tag { nil }
+      end
+
+      after(:create) do |project, evaluator|
+        if evaluator.create_tag
+          project.repository.add_tag(
+            project.creator,
+            evaluator.create_tag,
+            project.repository.commit.sha)
+        end
+      end
+    end
+
     # A basic repository with a single file 'test.txt'. It also has the HEAD as the default branch.
     trait :small_repo do
       custom_repo
