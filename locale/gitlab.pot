@@ -10232,6 +10232,9 @@ msgstr ""
 msgid "Ci config already present"
 msgstr ""
 
+msgid "CiCatalogComponent|Component details not available"
+msgstr ""
+
 msgid "CiCatalogComponent|Default Value"
 msgstr ""
 
@@ -10245,6 +10248,9 @@ msgid "CiCatalogComponent|Parameters"
 msgstr ""
 
 msgid "CiCatalogComponent|There was an error fetching this resource's components"
+msgstr ""
+
+msgid "CiCatalogComponent|This tab displays auto-collected information about the components in the repository, but no information was found."
 msgstr ""
 
 msgid "CiCatalog|Back to the CI/CD Catalog"
@@ -15193,10 +15199,10 @@ msgstr ""
 msgid "DORA4Metrics|Took more than 7 days to restore service when a service incident or a defect that impacts users occurs."
 msgstr ""
 
-msgid "DORA4Metrics|Total projects (%{count}) by DORA performers score for %{groupName} group"
+msgid "DORA4Metrics|Total projects (%{count}) with DORA performers score for %{groupName} group"
 msgstr ""
 
-msgid "DORA4Metrics|Total projects by DORA performers score"
+msgid "DORA4Metrics|Total projects with DORA performers score"
 msgstr ""
 
 msgid "DORA4Metrics|Value Streams Dashboard"
@@ -51287,6 +51293,9 @@ msgstr ""
 msgid "UsageQuota|Group settings %{gt} Usage quotas"
 msgstr ""
 
+msgid "UsageQuota|How are limits applied?"
+msgstr ""
+
 msgid "UsageQuota|Included in %{planName} subscription"
 msgstr ""
 
@@ -51344,7 +51353,7 @@ msgstr ""
 msgid "UsageQuota|Product analytics"
 msgstr ""
 
-msgid "UsageQuota|Projects under this namespace have %{planLimit} of storage. %{linkStart}How are limits applied?%{linkEnd}"
+msgid "UsageQuota|Projects under this namespace have %{planLimit} of storage."
 msgstr ""
 
 msgid "UsageQuota|Recalculate repository usage"
@@ -51401,7 +51410,7 @@ msgstr ""
 msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. View and manage your usage from %{strong_start}%{usage_quotas_nav_instruction}%{strong_end}. %{docs_link_start}Learn more%{link_end} about how to reduce your storage."
 msgstr ""
 
-msgid "UsageQuota|This namespace has %{planLimit} of storage. %{linkStart}How are limits applied?%{linkEnd}"
+msgid "UsageQuota|This namespace has %{planLimit} of storage."
 msgstr ""
 
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"

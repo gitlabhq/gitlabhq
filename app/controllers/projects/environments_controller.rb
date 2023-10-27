@@ -8,6 +8,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   layout 'project'
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:k8s_watch_api, project)
+  end
+
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]

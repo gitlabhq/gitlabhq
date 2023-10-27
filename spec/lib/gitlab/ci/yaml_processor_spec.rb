@@ -3668,6 +3668,70 @@ module Gitlab
           it { is_expected.to be_valid }
         end
       end
+
+      context 'for pages jobs', feature_category: :pages do
+        context 'on publish option' do
+          context 'when not in a pages job' do
+            let(:config) do
+              <<-EOYML
+              not-pages:
+                script: echo
+                publish: 'foo'
+              EOYML
+            end
+
+            it_behaves_like 'returns errors', 'jobs:not-pages publish can only be used within a `pages` job'
+          end
+
+          context 'when in a pages job' do
+            let(:config) do
+              <<-EOYML
+              pages:
+                script: echo
+                publish: 'foo'
+              EOYML
+            end
+
+            it { is_expected.to be_valid }
+
+            it 'sets the publish configuration' do
+              expect(subject.builds.first[:options][:publish]).to eq('foo')
+            end
+          end
+        end
+
+        context 'on pages option' do
+          context 'when not in a pages job' do
+            let(:config) do
+              <<-EOYML
+              not-pages:
+                script: echo
+                pages:
+                  path_prefix: 'foo'
+              EOYML
+            end
+
+            it_behaves_like 'returns errors', 'jobs:not-pages pages can only be used within a `pages` job'
+          end
+
+          context 'when in a pages job' do
+            let(:config) do
+              <<-EOYML
+              pages:
+                script: echo
+                pages:
+                  path_prefix: 'foo'
+              EOYML
+            end
+
+            it { is_expected.to be_valid }
+
+            it 'sets the pages configuration' do
+              expect(subject.builds.first[:options][:pages]).to eq(path_prefix: 'foo')
+            end
+          end
+        end
+      end
     end
   end
 end

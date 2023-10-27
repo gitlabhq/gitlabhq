@@ -519,3 +519,13 @@ export const mockComponents = {
     },
   },
 };
+
+export const mockComponentsEmpty = {
+  data: {
+    ciCatalogResource: {
+      __typename: 'CiCatalogResource',
+      id: `gid://gitlab/CiCatalogResource/1`,
+      components: [],
+    },
+  },
+};

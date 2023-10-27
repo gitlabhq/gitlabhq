@@ -2093,9 +2093,15 @@
           "description": "A path to a directory that contains the files to be published with Pages",
           "type": "string"
         },
-        "pages_path_prefix": {
-          "description": "The path prefix identifier for this version of pages. Allows creation of multiple versions of the same site with different path prefixes",
-          "type": "string"
+        "pages": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path_prefix": {
+              "type": "string",
+              "markdownDescription": "The GitLab Pages URL path prefix used in this version of pages."
+            }
+          }
         }
       },
       "oneOf": [

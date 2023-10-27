@@ -8,8 +8,7 @@ module Gitlab
       class Result
         attr_reader :errors, :warnings,
                     :root_variables, :root_variables_with_prefill_data,
-                    :stages, :jobs,
-                    :workflow_rules, :workflow_name
+                    :stages, :jobs, :workflow_rules, :workflow_name
 
         def initialize(ci_config: nil, errors: [], warnings: [])
           @ci_config = ci_config
@@ -124,7 +123,8 @@ module Gitlab
               trigger: job[:trigger],
               bridge_needs: job.dig(:needs, :bridge)&.first,
               release: job[:release],
-              publish: job[:publish]
+              publish: job[:publish],
+              pages: job[:pages]
             }.compact }.compact
         end
 

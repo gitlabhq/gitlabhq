@@ -6,7 +6,7 @@ RSpec.describe 'Gcp Cluster', :js, feature_category: :deployment_management do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
 
   before do
     project.add_maintainer(user)
@@ -54,7 +54,7 @@ RSpec.describe 'Gcp Cluster', :js, feature_category: :deployment_management do
         before do
           visit project_clusters_path(project)
 
-          click_button(class: 'gl-new-dropdown-toggle')
+          click_button(class: 'gl-new-dropdown-toggle', text: 'Connect a cluster (agent)')
           click_link 'Connect a cluster (certificate - deprecated)'
         end
 

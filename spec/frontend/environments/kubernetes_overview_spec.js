@@ -30,6 +30,7 @@ const configuration = {
   headers: {
     'GitLab-Agent-Id': '1',
     'Content-Type': 'application/json',
+    Accept: 'application/json',
   },
   credentials: 'include',
 };

@@ -64,6 +64,7 @@ export default {
         headers: {
           'GitLab-Agent-Id': this.gitlabAgentId,
           'Content-Type': 'application/json',
+          Accept: 'application/json',
           ...csrf.headers,
         },
         credentials: 'include',

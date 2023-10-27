@@ -39,8 +39,15 @@ async function loadEmoji() {
   const { data } = await axios.get(
     `${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/emojis.json`,
   );
-  window.localStorage.setItem(CACHE_VERSION_KEY, EMOJI_VERSION);
-  window.localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+
+  try {
+    window.localStorage.setItem(CACHE_VERSION_KEY, EMOJI_VERSION);
+    window.localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {
+    // Setting data in localstorage may fail when storage quota is exceeded.
+    // We should continue even when this fails.
+  }
+
   return data;
 }
 

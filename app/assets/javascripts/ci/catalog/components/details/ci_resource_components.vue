@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import getCiCatalogResourceComponents from '../../graphql/queries/get_ci_catalog_resource_components.query.graphql';
@@ -7,6 +7,7 @@ import getCiCatalogResourceComponents from '../../graphql/queries/get_ci_catalog
 export default {
   components: {
     GlButton,
+    GlEmptyState,
     GlLoadingIcon,
     GlTableLite,
   },
@@ -38,6 +39,9 @@ export default {
     },
   },
   computed: {
+    isMetadataMissing() {
+      return !this.components || this.components?.length === 0;
+    },
     isLoading() {
       return this.$apollo.queries.components.loading;
     },
@@ -73,6 +77,10 @@ export default {
   i18n: {
     copyText: __('Copy value'),
     copyAriaText: __('Copy to clipboard'),
+    emptyStateTitle: s__('CiCatalogComponent|Component details not available'),
+    emptyStateDesc: s__(
+      'CiCatalogComponent|This tab displays auto-collected information about the components in the repository, but no information was found.',
+    ),
     inputTitle: s__('CiCatalogComponent|Inputs'),
     fetchError: s__("CiCatalogComponent|There was an error fetching this resource's components"),
   },
@@ -82,6 +90,11 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isLoading" size="lg" />
+    <gl-empty-state
+      v-else-if="isMetadataMissing"
+      :title="$options.i18n.emptyStateTitle"
+      :description="$options.i18n.emptyStateDesc"
+    />
     <template v-else>
       <div
         v-for="component in components"
