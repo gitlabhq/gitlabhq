@@ -3,15 +3,16 @@
 module QA
   module Resource
     class ImportProject < Resource::Project
-      attr_writer :file_path
+      attr_accessor :file_path, :overwrite
 
       def initialize
         @name = "ImportedProject-#{SecureRandom.hex(8)}"
         @file_path = Runtime::Path.fixture('export.tar.gz')
+        @import = true
+        @overwrite = false
       end
 
       def fabricate!
-        self.import = true
         super
 
         group.visit!
@@ -27,8 +28,29 @@ module QA
         end
       end
 
-      def fabricate_via_api!
-        raise NotImplementedError
+      def api_post_path
+        "/projects/import"
+      end
+
+      def api_post_body
+        {
+          file: ::File.new(file_path),
+          path: name,
+          namespace: personal_namespace || group.full_path,
+          overwrite: overwrite
+        }
+      end
+
+      private
+
+      def transform_api_resource(api_resource)
+        api_resource
+      end
+
+      def resource_web_url(resource)
+        super
+      rescue ResourceURLMissingError
+        # this particular resource does not expose a web_url property
       end
     end
   end

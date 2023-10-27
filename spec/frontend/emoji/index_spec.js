@@ -1,6 +1,5 @@
 import {
   emojiFixtureMap,
-  mockEmojiData,
   initEmojiMock,
   validEmoji,
   invalidEmoji,
@@ -14,7 +13,7 @@ import {
   getEmojiInfo,
   sortEmoji,
   initEmojiMap,
-  getAllEmoji,
+  getEmojiMap,
   emojiFallbackImageSrc,
   loadCustomEmojiWithNames,
 } from '~/emoji';
@@ -90,7 +89,7 @@ describe('emoji', () => {
     it('should contain valid emoji', async () => {
       await initEmojiMap();
 
-      const allEmoji = Object.keys(getAllEmoji());
+      const allEmoji = Object.keys(getEmojiMap());
       Object.keys(validEmoji).forEach((key) => {
         expect(allEmoji.includes(key)).toBe(true);
       });
@@ -99,32 +98,9 @@ describe('emoji', () => {
     it('should not contain invalid emoji', async () => {
       await initEmojiMap();
 
-      const allEmoji = Object.keys(getAllEmoji());
+      const allEmoji = Object.keys(getEmojiMap());
       Object.keys(invalidEmoji).forEach((key) => {
         expect(allEmoji.includes(key)).toBe(false);
-      });
-    });
-
-    it('fixes broken pride emoji', async () => {
-      clearEmojiMock();
-      await initEmojiMock({
-        gay_pride_flag: {
-          c: 'flags',
-          // Without a zero-width joiner
-          e: '🏳🌈',
-          name: 'gay_pride_flag',
-          u: '6.0',
-        },
-      });
-
-      expect(getAllEmoji()).toEqual({
-        gay_pride_flag: {
-          c: 'flags',
-          // With a zero-width joiner
-          e: '🏳️‍🌈',
-          name: 'gay_pride_flag',
-          u: '6.0',
-        },
       });
     });
   });
@@ -448,11 +424,11 @@ describe('emoji', () => {
 
   describe('getEmojiInfo', () => {
     it.each(['atom', 'five', 'black_heart'])("should return a correct emoji for '%s'", (name) => {
-      expect(getEmojiInfo(name)).toEqual(mockEmojiData[name]);
+      expect(getEmojiInfo(name)).toEqual(getEmojiMap()[name]);
     });
 
     it('should return fallback emoji by default', () => {
-      expect(getEmojiInfo('atjs')).toEqual(mockEmojiData.grey_question);
+      expect(getEmojiInfo('atjs')).toEqual(getEmojiMap().grey_question);
     });
 
     it('should return null when fallback is false', () => {
@@ -461,7 +437,7 @@ describe('emoji', () => {
 
     describe('when query is undefined', () => {
       it('should return fallback emoji by default', () => {
-        expect(getEmojiInfo()).toEqual(mockEmojiData.grey_question);
+        expect(getEmojiInfo()).toEqual(getEmojiMap().grey_question);
       });
 
       it('should return null when fallback is false', () => {
@@ -489,9 +465,9 @@ describe('emoji', () => {
           }
 
           return {
-            emoji: mockEmojiData[name],
+            emoji: getEmojiMap()[name],
             field: 'd',
-            fieldValue: mockEmojiData[name].d,
+            fieldValue: getEmojiMap()[name].d,
             score,
           };
         })
@@ -542,7 +518,7 @@ describe('emoji', () => {
         const { field, score, fieldValue, name } = item;
 
         return {
-          emoji: mockEmojiData[name],
+          emoji: getEmojiMap()[name],
           field,
           fieldValue,
           score,
@@ -669,9 +645,9 @@ describe('emoji', () => {
         const { field, score, name } = item;
 
         return {
-          emoji: mockEmojiData[name],
+          emoji: getEmojiMap()[name],
           field,
-          fieldValue: mockEmojiData[name][field],
+          fieldValue: getEmojiMap()[name][field],
           score,
         };
       });
@@ -737,7 +713,7 @@ describe('emoji', () => {
 
     it.each`
       emoji         | src
-      ${'thumbsup'} | ${'/-/emojis/2/thumbsup.png'}
+      ${'thumbsup'} | ${'/-/emojis/3/thumbsup.png'}
       ${'parrot'}   | ${'parrot.gif'}
     `('returns $src for emoji with name $emoji', ({ emoji, src }) => {
       expect(emojiFallbackImageSrc(emoji)).toBe(src);
@@ -757,7 +733,7 @@ describe('emoji', () => {
       it('returns empty object', async () => {
         const result = await loadCustomEmojiWithNames();
 
-        expect(result).toEqual({});
+        expect(result).toEqual({ emojis: {}, names: [] });
       });
     });
 
@@ -769,7 +745,7 @@ describe('emoji', () => {
       it('returns empty object', async () => {
         const result = await loadCustomEmojiWithNames();
 
-        expect(result).toEqual({});
+        expect(result).toEqual({ emojis: {}, names: [] });
       });
     });
 
@@ -778,14 +754,17 @@ describe('emoji', () => {
         const result = await loadCustomEmojiWithNames();
 
         expect(result).toEqual({
-          parrot: {
-            c: 'custom',
-            d: 'parrot',
-            e: undefined,
-            name: 'parrot',
-            src: 'parrot.gif',
-            u: 'custom',
+          emojis: {
+            parrot: {
+              c: 'custom',
+              d: 'parrot',
+              e: undefined,
+              name: 'parrot',
+              src: 'parrot.gif',
+              u: 'custom',
+            },
           },
+          names: ['parrot'],
         });
       });
     });

@@ -93,3 +93,21 @@ desc "Revokes user's personal access tokens"
 task :revoke_user_pats, [:revoke_before, :dry_run] do |_, args|
   QA::Tools::RevokeUserPersonalAccessTokens.new(args).run
 end
+
+desc "Generate group with multiple projects for direct transfer test"
+task :generate_direct_transfer_test_group,
+  [:project_tar_path, :group_path, :project_copies, :import_wait, :parallel_imports] do |_, args|
+  QA::Support::GitlabAddress.define_gitlab_address_attribute!
+  QA::Runtime::Browser.configure!
+  QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
+
+  string_args = args.to_h
+    .slice(:project_tar_path, :group_path)
+    .compact_blank
+  numeric_args = args.to_h
+    .slice(:project_copies, :import_wait, :parallel_imports)
+    .transform_values { |arg| Integer(arg, exception: false) }
+    .compact_blank
+
+  QA::Tools::GenerateImportTestGroup.new(**string_args, **numeric_args).generate
+end

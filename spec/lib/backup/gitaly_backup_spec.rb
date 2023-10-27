@@ -166,25 +166,40 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
     let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 
-    def copy_fixture_to_backup_path(backup_name, repo_disk_path)
-      FileUtils.mkdir_p(File.join(Gitlab.config.backup.path, 'repositories', File.dirname(repo_disk_path)))
+    def create_repo_backup(backup_name, repo)
+      repo_backup_root = File.join(Gitlab.config.backup.path, 'repositories')
+
+      FileUtils.mkdir_p(File.join(repo_backup_root, 'manifests', repo.storage, repo.relative_path))
+      FileUtils.mkdir_p(File.join(repo_backup_root, repo.relative_path))
 
       %w[.bundle .refs].each do |filetype|
         FileUtils.cp(
           Rails.root.join('spec/fixtures/lib/backup', backup_name + filetype),
-          File.join(Gitlab.config.backup.path, 'repositories', repo_disk_path + filetype)
+          File.join(repo_backup_root, repo.relative_path + filetype)
         )
       end
+
+      manifest = <<-TOML
+        object_format = 'sha1'
+        head_references = 'heads/refs/master'
+
+        [[steps]]
+        bundle_path = '#{repo.relative_path}.bundle'
+        ref_path = '#{repo.relative_path}.refs'
+        custom_hooks_path = '#{repo.relative_path}.custom_hooks.tar'
+      TOML
+
+      File.write(File.join(repo_backup_root, 'manifests', repo.storage, repo.relative_path, backup_id + '.toml'), manifest)
     end
 
     it 'restores from repository bundles', :aggregate_failures do
-      copy_fixture_to_backup_path('project_repo', project.disk_path)
-      copy_fixture_to_backup_path('wiki_repo', project.wiki.disk_path)
-      copy_fixture_to_backup_path('design_repo', project.design_repository.disk_path)
-      copy_fixture_to_backup_path('personal_snippet_repo', personal_snippet.disk_path)
-      copy_fixture_to_backup_path('project_snippet_repo', project_snippet.disk_path)
+      create_repo_backup('project_repo', project.repository.raw)
+      create_repo_backup('wiki_repo', project.wiki.repository)
+      create_repo_backup('design_repo', project.design_repository)
+      create_repo_backup('personal_snippet_repo', personal_snippet.repository)
+      create_repo_backup('project_snippet_repo', project_snippet.repository)
 
-      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer').and_call_original
+      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
 
       subject.start(:restore, destination, backup_id: backup_id)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
@@ -204,9 +219,9 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     end
 
     it 'clears specified storages when remove_all_repositories is set' do
-      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-remove-all-repositories', 'default').and_call_original
+      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-remove-all-repositories', 'default', '-id', backup_id).and_call_original
 
-      copy_fixture_to_backup_path('project_repo', project.disk_path)
+      create_repo_backup('project_repo', project.repository.raw)
       subject.start(:restore, destination, backup_id: backup_id, remove_all_repositories: %w[default])
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
       subject.finish!
@@ -216,7 +231,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
       let(:max_parallelism) { 3 }
 
       it 'passes parallel option through' do
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel', '3').and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel', '3', '-id', backup_id).and_call_original
 
         subject.start(:restore, destination, backup_id: backup_id)
         subject.finish!
@@ -227,7 +242,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
       let(:storage_parallelism) { 3 }
 
       it 'passes parallel option through' do
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3').and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3', '-id', backup_id).and_call_original
 
         subject.start(:restore, destination, backup_id: backup_id)
         subject.finish!

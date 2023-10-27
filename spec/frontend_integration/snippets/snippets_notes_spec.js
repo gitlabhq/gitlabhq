@@ -51,7 +51,7 @@ describe('Integration Snippets notes', () => {
           'circled latin capital letter m',
         ],
       ],
-      [':', ['100', '1234', '8ball', 'a', 'ab']],
+      [':', ['grinning', 'smiley', 'smile', 'grin', 'laughing']],
       // We do not want the search to start with space https://gitlab.com/gitlab-org/gitlab/-/issues/322548
       [': ', []],
       // We want to preserve that we can have space INSIDE the search

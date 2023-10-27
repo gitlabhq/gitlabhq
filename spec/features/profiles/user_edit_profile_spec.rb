@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User edit profile', feature_category: :user_profile do
   include Features::NotesHelpers
 
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be_with_reload(:user) { create(:user, :no_super_sidebar) }
 
   before do
     stub_feature_flags(edit_user_profile_vue: false)
@@ -200,7 +200,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'adds emoji to user status' do
-        emoji = 'basketball'
+        emoji = 'laughing'
         select_emoji(emoji)
         submit_settings
 
@@ -225,7 +225,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'adds message and emoji to user status' do
-        emoji = '8ball'
+        emoji = 'grinning'
         message = 'Playing outside'
         select_emoji(emoji)
         fill_in s_("SetStatusModal|What's your status?"), with: message
@@ -376,7 +376,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'adds emoji to user status' do
-        emoji = '8ball'
+        emoji = 'grinning'
         open_user_status_modal
         select_emoji(emoji, true)
         set_user_status_in_modal
@@ -407,7 +407,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
       it 'opens the emoji modal again after closing it' do
         open_user_status_modal
-        select_emoji('8ball', true)
+        select_emoji('grinning', true)
 
         find('.emoji-menu-toggle-button').click
 
@@ -418,7 +418,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         project.add_maintainer(user)
         visit(project_issue_path(project, issue))
 
-        emoji = '8ball'
+        emoji = 'grinning'
         open_user_status_modal
         select_emoji(emoji, true)
 
@@ -440,7 +440,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'adds message and emoji to user status' do
-        emoji = '8ball'
+        emoji = 'grinning'
         message = 'Playing outside'
         open_user_status_modal
         select_emoji(emoji, true)

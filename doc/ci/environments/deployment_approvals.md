@@ -23,6 +23,10 @@ require approvals for deployments to production environments.
 You can require approvals for deployments to protected environments in
 a project.
 
+Prerequisite:
+
+- To update an environment, you must have at least the Maintainer role.
+
 To configure deployment approvals for a project:
 
 1. Create a deployment job in the `.gitlab-ci.yml` file of your project:
@@ -41,45 +45,27 @@ To configure deployment approvals for a project:
 
    The job does not need to be manual (`when: manual`).
 
-1. Add the required [approval rules](#multiple-approval-rules).
+1. Add the required [approval rules](#add-multiple-approval-rules).
 
 The environments in your project require approval before deployment.
 
-<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
-
-### Multiple approval rules
+### Add multiple approval rules
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
 > - UI configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378445) in GitLab 15.11.
 
-- Using the [REST API](../../api/group_protected_environments.md#protect-a-single-environment).
-  - `deploy_access_levels` represents which entity can execute the deployment job.
-  - `approval_rules` represents which entity can approve the deployment job.
-- Using the [UI](protected_environments.md#protecting-environments).
-  - **Allowed to deploy** sets which entities can execute the deployment job.
-  - **Approvers** sets which entities can approve the deployment job.
+Add multiple approval rules to control who can approve and execute deployment jobs.
 
-After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy. Once a deployment job is approved, it must be [run manually](../jobs/job_control.md#run-a-manual-job).
+To configure multiple approval rules, use the [CI/CD settings](protected_environments.md#protecting-environments).
+You can [also use the API](../../api/group_protected_environments.md#protect-a-single-environment).
 
-A configuration that uses the REST API might look like:
+All jobs deploying to the environment are blocked and wait for approvals before running.
+Make sure the number of required approvals is less than the number of users allowed to deploy.
 
-```shell
-curl --header 'Content-Type: application/json' --request POST \
-     --data '{"name": "production", "deploy_access_levels": [{"group_id": 138}], "approval_rules": [{"group_id": 134}, {"group_id": 135, "required_approvals": 2}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/128/protected_environments"
-```
+After a deployment job is approved, you must [run the job manually](../jobs/job_control.md#run-a-manual-job).
 
-With this setup:
-
-- The operator group (`group_id: 138`) has permission to execute the deployment jobs to the `production` environment in the organization (`group_id: 128`).
-- The QA tester group (`group_id: 134`) and security group (`group_id: 135`) have permission to approve the deployment jobs to the `production` environment in the organization (`group_id: 128`).
-- Unless two approvals from security group and one approval from QA tester group have been collected, the operator group can't execute the deployment jobs.
-
-NOTE:
-To protect, update, or unprotect an environment, you must have at least the
-Maintainer role.
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
 
 ### Unified approval setting (deprecated)
 
@@ -107,10 +93,6 @@ curl --header 'Content-Type: application/json' --request POST \
      "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
 
-NOTE:
-To protect, update, or unprotect an environment, you must have at least the
-Maintainer role.
-
 <!--- end_remove -->
 
 ### Migrate to multiple approval rules
@@ -128,7 +110,7 @@ To migrate with the UI:
 1. From the **Environment** list, select your environment.
 1. For each entity allowed to deploy to the environment:
    1. Select **Add approval rules**.
-   1. In the modal window, select which entity is allowed to approve the
+   1. On the dialog, select which entity is allowed to approve the
       deployment job.
    1. Enter the number of required approvals.
    1. Select **Save**.

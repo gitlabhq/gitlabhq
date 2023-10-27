@@ -515,7 +515,7 @@ RSpec.shared_examples 'work items award emoji' do
   let(:award_button_selector) { '[data-testid="award-button"]' }
   let(:selected_award_button_selector) { '[data-testid="award-button"].selected' }
   let(:emoji_picker_button_selector) { '[data-testid="emoji-picker"]' }
-  let(:basketball_emoji_selector) { 'gl-emoji[data-name="basketball"]' }
+  let(:grinning_emoji_selector) { 'gl-emoji[data-name="grinning"]' }
   let(:tooltip_selector) { '.gl-tooltip' }
 
   def select_emoji
@@ -561,9 +561,9 @@ RSpec.shared_examples 'work items award emoji' do
   it 'add custom award to the work item for current user' do
     within(award_section_selector) do
       find(emoji_picker_button_selector).click
-      find(basketball_emoji_selector).click
+      find(grinning_emoji_selector).click
 
-      expect(page).to have_selector(basketball_emoji_selector)
+      expect(page).to have_selector(grinning_emoji_selector)
     end
   end
 end

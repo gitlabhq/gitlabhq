@@ -235,7 +235,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: ':',
-        dataSource: () => Object.values(getAllEmoji()),
+        dataSource: () => getAllEmoji(),
         nodeType: 'emoji',
         search: (query) => ({ d, name }) => find(d, query) || find(name, query),
         limit: 10,

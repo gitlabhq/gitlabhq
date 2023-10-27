@@ -4311,7 +4311,6 @@
 - './spec/frontend/fixtures/search.rb'
 - './spec/frontend/fixtures/sessions.rb'
 - './spec/frontend/fixtures/snippet.rb'
-- './spec/frontend/fixtures/startup_css.rb'
 - './spec/frontend/fixtures/tabs.rb'
 - './spec/frontend/fixtures/tags.rb'
 - './spec/frontend/fixtures/timezones.rb'

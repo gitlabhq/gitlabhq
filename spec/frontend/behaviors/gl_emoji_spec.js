@@ -15,20 +15,22 @@ jest.mock('~/lib/graphql', () => {
 });
 
 describe('gl_emoji', () => {
-  const emojiData = {
-    grey_question: {
+  const emojiData = [
+    {
+      n: 'grey_question',
       c: 'symbols',
       e: '❔',
       d: 'white question mark ornament',
       u: '6.0',
     },
-    bomb: {
+    {
+      n: 'bomb',
       c: 'objects',
       e: '💣',
       d: 'bomb',
       u: '6.0',
     },
-  };
+  ];
 
   beforeAll(() => {
     jest.spyOn(EmojiUnicodeSupport, 'default').mockReturnValue(true);
@@ -119,7 +121,7 @@ describe('gl_emoji', () => {
       await waitForPromises();
 
       expect(glEmojiElement.outerHTML).toBe(
-        '<gl-emoji data-name="&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;" data-unicode-version="x"><img class="emoji" title=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" alt=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" src="/-/emojis/2/grey_question.png" align="absmiddle"></gl-emoji>',
+        '<gl-emoji data-name="&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;" data-unicode-version="x"><img class="emoji" title=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" alt=":&quot;x=&quot;y&quot; onload=&quot;alert(document.location.href)&quot;:" src="/-/emojis/3/grey_question.png" align="absmiddle"></gl-emoji>',
       );
     });
 

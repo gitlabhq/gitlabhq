@@ -979,7 +979,7 @@ GfmAutoComplete.Emoji = {
   },
   filter(query) {
     if (query.length === 0) {
-      return Object.values(Emoji.getAllEmoji())
+      return Emoji.getAllEmoji()
         .map((emoji) => ({
           emoji,
           fieldValue: emoji.name,

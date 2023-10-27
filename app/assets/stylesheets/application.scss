@@ -31,7 +31,3 @@
 @media print {
   @import 'print';
 }
-
-/* Rules for overriding cloaking in startup-general.scss */
-@import 'startup/cloaking';
-@include cloak-startup-scss(block);

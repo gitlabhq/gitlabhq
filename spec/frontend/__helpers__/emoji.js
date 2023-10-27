@@ -95,10 +95,10 @@ export const emojiFixtureMap = {
 
 export const mockEmojiData = Object.keys(emojiFixtureMap).reduce((acc, k) => {
   const { moji: e, unicodeVersion: u, category: c, description: d } = emojiFixtureMap[k];
-  acc[k] = { name: k, e, u, c, d };
+  acc.push({ n: k, e, u, c, d });
 
   return acc;
-}, {});
+}, []);
 
 export function clearEmojiMock() {
   localStorage.clear();

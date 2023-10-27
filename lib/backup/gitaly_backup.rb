@@ -92,7 +92,7 @@ module Backup
         args += ['-id', backup_id] if backup_id
       when :restore
         args += ['-remove-all-repositories', remove_all_repositories.join(',')] if remove_all_repositories
-        args += ['-id', backup_id] if backup_id && server_side?
+        args += ['-id', backup_id] if backup_id
       end
 
       args

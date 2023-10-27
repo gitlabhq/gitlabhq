@@ -168,3 +168,7 @@ attempt to fix this issue in a Rails console. For example, if a new `root` passw
 The password might be too short, too weak, or not meet complexity
 requirements. Ensure the password you are attempting to set meets all
 [password requirements](../user/profile/user_passwords.md#password-requirements).
+
+### Expired password
+
+You might not be able to reset a user's expired password due to the [Password Expired error on Git Fetch via SSH for LDAP users](../topics/git/troubleshooting_git.md#password-expired-error-on-git-fetch-via-ssh-for-ldap-user).

@@ -1,5 +1,5 @@
 import { Node, InputRule } from '@tiptap/core';
-import { initEmojiMap, getAllEmoji } from '~/emoji';
+import { initEmojiMap, getEmojiMap } from '~/emoji';
 
 export default Node.create({
   name: 'emoji',
@@ -58,7 +58,7 @@ export default Node.create({
         find: emojiInputRegex,
         handler: ({ state, range: { from, to }, match }) => {
           const [, , name] = match;
-          const emojis = getAllEmoji();
+          const emojis = getEmojiMap();
           const emoji = emojis[name];
           const { tr } = state;
 

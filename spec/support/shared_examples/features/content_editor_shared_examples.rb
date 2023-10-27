@@ -653,14 +653,14 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
     it 'shows suggestions for emojis' do
       type_in_content_editor ':smile'
 
-      expect(find(suggestions_dropdown)).to have_text('🙂 slight_smile')
+      expect(find(suggestions_dropdown)).to have_text('😃 smiley')
       expect(find(suggestions_dropdown)).to have_text('😸 smile_cat')
 
       send_keys [:arrow_down, :enter]
 
       expect(page).not_to have_css(suggestions_dropdown)
 
-      expect(page).to have_text('🙂')
+      expect(page).to have_text('😃')
     end
 
     it 'doesn\'t show suggestions dropdown if there are no suggestions to show' do
@@ -676,7 +676,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
     it 'scrolls selected item into view when navigating with keyboard' do
       type_in_content_editor ':'
 
-      expect(find(suggestions_dropdown)).to have_text('hundred points symbol')
+      expect(find(suggestions_dropdown)).to have_text('grinning')
 
       expect(dropdown_scroll_top).to be 0
 
