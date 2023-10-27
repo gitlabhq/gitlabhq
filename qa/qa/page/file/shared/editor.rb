@@ -11,7 +11,7 @@ module QA
             super
 
             base.view 'app/views/projects/blob/_editor.html.haml' do
-              element :source_editor_preview_container
+              element 'source-editor-preview-container'
             end
           end
 
@@ -30,7 +30,7 @@ module QA
           private
 
           def text_area
-            within_element :source_editor_preview_container do
+            within_element 'source-editor-preview-container' do
               find('textarea', visible: false)
             end
           end

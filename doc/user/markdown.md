@@ -379,7 +379,8 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 To prevent malicious activity, GitLab renders only the first 50 inline math instances.
 The number of math blocks is also limited based on render time. If the limit is exceeded,
-GitLab renders the excess math instances as text.
+GitLab renders the excess math instances as text. Wiki and repository files do not have
+these limits.
 
 Math written between dollar signs with backticks (``$`...`$``) or single dollar signs (`$...$`)
 is rendered inline with the text.

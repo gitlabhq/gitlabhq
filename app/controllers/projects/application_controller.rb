@@ -91,6 +91,19 @@ class Projects::ApplicationController < ApplicationController
   def check_issues_available!
     return render_404 unless @project.feature_available?(:issues, current_user)
   end
+
+  def set_is_ambiguous_ref
+    return @is_ambiguous_ref if defined? @is_ambiguous_ref
+
+    @is_ambiguous_ref = if Feature.enabled?(:ambiguous_ref_modal, @project)
+                          ExtractsRef::RequestedRef
+                                                .new(@project.repository, ref_type: ref_type, ref: @ref)
+                                                .find
+                                                .fetch(:ambiguous, false)
+                        else
+                          false
+                        end
+  end
 end
 
 Projects::ApplicationController.prepend_mod_with('Projects::ApplicationController')

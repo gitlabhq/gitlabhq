@@ -3,12 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Snippet', :js, feature_category: :source_code_management do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:snippet) { create(:personal_snippet, :public, :repository, author: user) }
-
-  before do
-    stub_feature_flags(super_sidebar_logged_out: false)
-  end
 
   it_behaves_like 'show and render proper snippet blob' do
     let(:anchor) { nil }
@@ -35,7 +31,7 @@ RSpec.describe 'Snippet', :js, feature_category: :source_code_management do
     it 'shows the "Explore" sidebar' do
       visit snippet_path(snippet)
 
-      expect(page).to have_css('aside.nav-sidebar[aria-label="Explore"]')
+      expect(page).to have_css('#super-sidebar-context-header', text: 'Explore')
     end
   end
 

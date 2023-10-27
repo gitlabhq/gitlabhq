@@ -6,7 +6,7 @@ RSpec.describe 'User creates snippet', :js, feature_category: :source_code_manag
   include DropzoneHelper
   include Features::SnippetSpecHelpers
 
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
 
   let(:title) { 'My Snippet Title' }
   let(:file_content) { 'Hello World!' }

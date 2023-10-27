@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workflow do
+RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_workflow do
   include Features::SortingHelpers
   include FilteredSearchHelpers
   include ProjectForksHelper
 
-  let(:current_user) { create(:user, :no_super_sidebar) }
+  let(:current_user) { create(:user) }
   let(:user) { current_user }
   let(:project) { create(:project) }
 
@@ -19,7 +19,21 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
     sign_in(current_user)
   end
 
-  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :merge_requests_dashboard_path, :merge_requests
+  describe 'sidebar' do
+    it 'has nav items for assigned MRs and review requests' do
+      visit merge_requests_dashboard_path(assignee_username: user)
+
+      within('#super-sidebar') do
+        expect(page).to have_css("a[data-track-label='merge_requests_assigned'][aria-current='page']")
+      end
+
+      click_link 'Review requests'
+
+      within('#super-sidebar') do
+        expect(page).to have_css("a[data-track-label='merge_requests_to_review'][aria-current='page']")
+      end
+    end
+  end
 
   it 'disables target branch filter' do
     visit merge_requests_dashboard_path
@@ -35,7 +49,7 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
       visit merge_requests_dashboard_path
     end
 
-    it 'shows projects only with merge requests feature enabled', :js do
+    it 'shows projects only with merge requests feature enabled' do
       click_button 'Select project to create merge request'
       wait_for_requests
 
@@ -132,14 +146,10 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
     end
 
     it 'includes assigned and reviewers in badge' do
-      within("span[aria-label='#{n_("%d merge request", "%d merge requests", 3) % 3}']") do
-        expect(page).to have_content('3')
+      within('#merge-requests') do
+        expect(page).to have_css("a", text: 'Assigned 2')
+        expect(page).to have_css("a", text: 'Review requests 1')
       end
-
-      find('.dashboard-shortcuts-merge_requests').click
-
-      expect(find('.js-assigned-mr-count')).to have_content('2')
-      expect(find('.js-reviewer-mr-count')).to have_content('1')
     end
 
     it 'shows assigned merge requests' do
@@ -156,7 +166,7 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
       expect(page).not_to have_content(review_requested_merge_request.title)
     end
 
-    it 'shows authored merge requests', :js do
+    it 'shows authored merge requests' do
       reset_filters
       input_filtered_search("author:=#{current_user.to_reference}")
 
@@ -169,7 +179,7 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
       expect(page).not_to have_content(other_merge_request.title)
     end
 
-    it 'shows labeled merge requests', :js do
+    it 'shows labeled merge requests' do
       reset_filters
       input_filtered_search("label:=#{label.name}")
 
@@ -182,13 +192,13 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
       expect(page).not_to have_content(other_merge_request.title)
     end
 
-    it 'shows error message without filter', :js do
+    it 'shows error message without filter' do
       reset_filters
 
       expect(page).to have_content('Please select at least one filter to see results')
     end
 
-    it 'shows sorted merge requests', :js do
+    it 'shows sorted merge requests' do
       pajamas_sort_by(s_('SortOptions|Created date'))
 
       visit merge_requests_dashboard_path(assignee_username: current_user.username)
@@ -196,7 +206,7 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
       expect(find('.issues-filters')).to have_content('Created date')
     end
 
-    it 'keeps sorting merge requests after visiting Projects MR page', :js do
+    it 'keeps sorting merge requests after visiting Projects MR page' do
       pajamas_sort_by(s_('SortOptions|Created date'))
 
       visit project_merge_requests_path(project)
@@ -205,7 +215,7 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
     end
   end
 
-  context 'merge request review', :js do
+  context 'merge request review' do
     let_it_be(:author_user) { create(:user) }
 
     let!(:review_requested_merge_request) do

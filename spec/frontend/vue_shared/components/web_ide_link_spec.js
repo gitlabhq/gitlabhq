@@ -35,7 +35,7 @@ const ACTION_EDIT = {
   text: 'Edit single file',
   secondaryText: 'Edit this file only.',
   attrs: {
-    'data-qa-selector': 'edit_menu_item',
+    'data-testid': 'edit-menu-item',
   },
   tracking: {
     action: 'click_consolidated_edit',
@@ -51,7 +51,7 @@ const ACTION_WEB_IDE = {
   secondaryText: i18n.webIdeText,
   text: 'Web IDE',
   attrs: {
-    'data-qa-selector': 'webide_menu_item',
+    'data-testid': 'webide-menu-item',
   },
   href: undefined,
   handle: expect.any(Function),
@@ -71,7 +71,7 @@ const ACTION_GITPOD = {
   secondaryText: 'Launch a ready-to-code development environment for your project.',
   text: 'Gitpod',
   attrs: {
-    'data-qa-selector': 'gitpod_menu_item',
+    'data-testid': 'gitpod-menu-item',
   },
   tracking: {
     action: 'click_consolidated_edit',
@@ -88,7 +88,7 @@ const ACTION_PIPELINE_EDITOR = {
   secondaryText: 'Edit, lint, and visualize your pipeline.',
   text: 'Edit in pipeline editor',
   attrs: {
-    'data-qa-selector': 'pipeline_editor_menu_item',
+    'data-testid': 'pipeline_editor-menu-item',
   },
   tracking: {
     action: 'click_consolidated_edit',
@@ -149,7 +149,7 @@ describe('vue_shared/components/web_ide_link', () => {
         href: props.item.href,
         handle: props.item.handle,
         attrs: {
-          'data-qa-selector': attributes['data-qa-selector'],
+          'data-testid': attributes['data-testid'],
         },
       };
     });

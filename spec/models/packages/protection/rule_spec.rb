@@ -209,7 +209,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
         )
     end
 
-    describe "with different users and protection levels" do
+    describe 'with different users and protection levels' do
       # rubocop:disable Layout/LineLength
       where(:project, :access_level, :package_name, :package_type, :push_protected) do
         ref(:project_with_ppr)    | Gitlab::Access::REPORTER  | '@my-scope/my-package-stage-sha-1234' | :npm   | true

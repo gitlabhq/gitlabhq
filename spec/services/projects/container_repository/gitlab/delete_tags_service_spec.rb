@@ -15,7 +15,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
     RSpec.shared_examples 'deleting tags' do
       it 'deletes the tags by name' do
         stub_delete_reference_requests(tags)
-        expect_delete_tag_by_names(tags)
+        expect_delete_tags(tags)
 
         is_expected.to eq(status: :success, deleted: tags)
       end
@@ -59,7 +59,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
               tags.each do |tag|
                 stub_delete_reference_requests(tag => 500)
               end
-              allow(container_repository).to receive(:delete_tag_by_name).and_return(false)
+              allow(container_repository).to receive(:delete_tag).and_return(false)
             end
 
             it 'truncates the log message' do
@@ -119,7 +119,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
       let_it_be(:tags) { [] }
 
       it 'does not remove anything' do
-        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_name)
+        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_digest)
 
         is_expected.to eq(status: :success, deleted: [])
       end

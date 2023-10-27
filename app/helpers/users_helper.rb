@@ -80,10 +80,6 @@ module UsersHelper
     current_user&.max_member_access_for_project(project.id) || Gitlab::Access::NO_ACCESS
   end
 
-  def max_project_member_access_cache_key(project)
-    "access:#{max_project_member_access(project)}"
-  end
-
   def user_status(user)
     return unless user
 

@@ -8,11 +8,12 @@ import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 
+import { removeHierarchyChild } from '../graphql/cache_utils';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
-  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  SUPPORTED_PARENT_TYPE_MAP,
 } from '../constants';
 
 export default {
@@ -31,7 +32,7 @@ export default {
     GlCollapsibleListbox,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -61,6 +62,7 @@ export default {
       availableWorkItems: [],
       localSelectedItem: this.parent?.id,
       isNotFocused: true,
+      oldParent: this.parent,
     };
   },
   computed: {
@@ -88,6 +90,9 @@ export default {
         'is-not-focused': this.isNotFocused && !this.searchStarted,
       };
     },
+    parentType() {
+      return SUPPORTED_PARENT_TYPE_MAP[this.workItemType];
+    },
   },
   watch: {
     parent: {
@@ -106,7 +111,7 @@ export default {
         return {
           fullPath: this.fullPath,
           searchTerm: this.search,
-          types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+          types: this.parentType,
           in: this.search ? 'TITLE' : undefined,
         };
       },
@@ -146,6 +151,14 @@ export default {
               },
             },
           },
+          update: (cache) =>
+            removeHierarchyChild({
+              cache,
+              fullPath: this.fullPath,
+              iid: this.oldParent?.iid,
+              isGroup: this.isGroup,
+              workItem: { id: this.workItemId },
+            }),
         });
 
         if (errors.length) {

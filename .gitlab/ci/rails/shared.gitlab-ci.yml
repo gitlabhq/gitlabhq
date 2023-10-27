@@ -121,11 +121,6 @@ include:
   after_script:
     - !reference [.rspec-base, after_script]
 
-.rspec-base-pg12:
-  extends:
-    - .rspec-base
-    - .use-pg12
-
 .rspec-base-pg13:
   extends:
     - .rspec-base
@@ -162,11 +157,6 @@ include:
   extends:
     - .rspec-base
     - .use-pg15
-
-.rspec-ee-base-pg12:
-  extends:
-    - .rspec-base
-    - .use-pg12-es7-ee
 
 .rspec-ee-base-pg13:
   extends:

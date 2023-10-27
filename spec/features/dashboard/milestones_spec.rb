@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
+RSpec.describe 'Dashboard > Milestones', :js, feature_category: :team_planning do
   describe 'as anonymous user' do
     before do
       visit dashboard_milestones_path
@@ -14,7 +14,7 @@ RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
   end
 
   describe 'as logged-in user' do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:project) { create(:project, namespace: user.namespace) }
     let!(:milestone) { create(:milestone, project: project) }
@@ -35,8 +35,8 @@ RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
       expect(first('.milestone')).to have_content('Merge requests')
     end
 
-    describe 'new milestones dropdown', :js do
-      it 'takes user to a new milestone page', :js do
+    describe 'new milestones dropdown' do
+      it 'takes user to a new milestone page' do
         click_button 'Select project to create milestone'
 
         page.within('[data-testid="new-resource-dropdown"]') do
@@ -50,7 +50,7 @@ RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
   end
 
   describe 'with merge requests disabled' do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:project) { create(:project, :merge_requests_disabled, namespace: user.namespace) }
     let!(:milestone) { create(:milestone, project: project) }

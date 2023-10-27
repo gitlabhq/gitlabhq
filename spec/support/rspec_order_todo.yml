@@ -3783,7 +3783,6 @@
 - './spec/features/profiles/two_factor_auths_spec.rb'
 - './spec/features/profiles/user_changes_notified_of_own_activity_spec.rb'
 - './spec/features/profiles/user_edit_preferences_spec.rb'
-- './spec/features/profiles/user_edit_profile_spec.rb'
 - './spec/features/profiles/user_manages_applications_spec.rb'
 - './spec/features/profiles/user_manages_emails_spec.rb'
 - './spec/features/profiles/user_search_settings_spec.rb'

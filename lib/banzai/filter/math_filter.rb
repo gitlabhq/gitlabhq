@@ -93,9 +93,19 @@ module Banzai
       end
 
       def render_nodes_limit_reached?(count)
+        return false if wiki?
+        return false if blob?
         return false unless settings.math_rendering_limits_enabled?
 
         count >= RENDER_NODES_LIMIT
+      end
+
+      def wiki?
+        context[:wiki].present?
+      end
+
+      def blob?
+        context[:text_source] == :blob
       end
     end
   end

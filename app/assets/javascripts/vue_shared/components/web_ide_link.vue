@@ -335,7 +335,7 @@ export default {
       :variant="isBlob ? 'confirm' : 'default'"
       :category="isBlob ? 'primary' : 'secondary'"
       :toggle-text="$options.i18n.toggleText"
-      data-qa-selector="action_dropdown"
+      data-testid="action-dropdown"
       fluid-width
       block
       @shown="$emit('shown')"
@@ -347,7 +347,7 @@ export default {
           v-for="action in actions"
           :key="action.key"
           :item="action"
-          :data-qa-selector="`${action.key}_menu_item`"
+          :data-testid="`${action.key}-menu-item`"
           @action="executeAction(action)"
         >
           <template #list-item>

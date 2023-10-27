@@ -53,6 +53,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
         {
           title: "Title",
           icon: nil,
+          id: 'menu',
           avatar: nil,
           avatar_shape: 'rect',
           entity_id: nil,
@@ -94,6 +95,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
         {
           title: "Title",
           icon: nil,
+          id: 'menu',
           avatar: nil,
           avatar_shape: 'rect',
           entity_id: nil,

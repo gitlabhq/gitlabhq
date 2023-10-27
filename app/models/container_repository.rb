@@ -505,15 +505,11 @@ class ContainerRepository < ApplicationRecord
 
     digests = tags.map { |tag| tag.digest }.compact.to_set
 
-    digests.map { |digest| delete_tag_by_digest(digest) }.all?
+    digests.map { |digest| delete_tag(digest) }.all?
   end
 
-  def delete_tag_by_digest(digest)
-    client.delete_repository_tag_by_digest(self.path, digest)
-  end
-
-  def delete_tag_by_name(name)
-    client.delete_repository_tag_by_name(self.path, name)
+  def delete_tag(name_or_digest)
+    client.delete_repository_tag_by_digest(self.path, name_or_digest)
   end
 
   def start_expiration_policy!

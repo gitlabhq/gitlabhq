@@ -20,7 +20,7 @@ module Packages
       scope :for_package_name, ->(package_name) {
         return none if package_name.blank?
 
-        where(":package_name ILIKE package_name_pattern_ilike_query", package_name: package_name)
+        where(':package_name ILIKE package_name_pattern_ilike_query', package_name: package_name)
       }
 
       def self.push_protected_from?(access_level:, package_name:, package_type:)

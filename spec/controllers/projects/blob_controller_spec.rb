@@ -23,16 +23,10 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
     render_views
 
     context 'with file path' do
-      before do
-        expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
-        project.repository.add_tag(project.creator, 'ambiguous_ref', RepoHelpers.sample_commit.id)
-        project.repository.add_branch(project.creator, 'ambiguous_ref', RepoHelpers.another_sample_commit.id)
-        request
-      end
+      include_context 'with ambiguous refs for controllers'
 
-      after do
-        project.repository.rm_tag(project.creator, 'ambiguous_ref')
-        project.repository.rm_branch(project.creator, 'ambiguous_ref')
+      before do
+        request
       end
 
       context 'when the ref is ambiguous' do
@@ -42,6 +36,8 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
 
         context 'and the redirect_with_ref_type flag is disabled' do
           let(:redirect_with_ref_type) { false }
+
+          it_behaves_like '#set_is_ambiguous_ref when ref is ambiguous'
 
           context 'and explicitly requesting a branch' do
             let(:ref_type) { 'heads' }
@@ -61,14 +57,20 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         end
 
         context 'and the redirect_with_ref_type flag is enabled' do
-          context 'when the ref_type is nil' do
-            let(:ref_type) { nil }
+          let(:ref_type) { nil }
 
-            it 'redirects to the tag' do
-              expect(response).to redirect_to(project_blob_path(project, id, ref_type: 'tags'))
-            end
+          it 'redirects to the tag' do
+            expect(response).to redirect_to(project_blob_path(project, id, ref_type: 'tags'))
           end
         end
+      end
+
+      describe '#set_is_ambiguous_ref with no ambiguous ref' do
+        let(:id) { 'master/invalid-path.rb' }
+        let(:redirect_with_ref_type) { false }
+        let(:ambiguous_ref_modal) { true }
+
+        it_behaves_like '#set_is_ambiguous_ref when ref is not ambiguous'
       end
 
       context "valid branch, valid file" do

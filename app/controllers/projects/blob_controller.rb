@@ -31,6 +31,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 
   before_action :commit, except: [:new, :create]
+  before_action :set_is_ambiguous_ref, only: [:show]
   before_action :check_for_ambiguous_ref, only: [:show]
   before_action :blob, except: [:new, :create]
   before_action :require_branch_head, only: [:edit, :update]

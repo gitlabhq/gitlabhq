@@ -68,7 +68,7 @@ export default {
       :size="32"
     />
     <div class="commit-detail flex-list gl-display-flex gl-flex-grow-1 gl-min-w-0">
-      <div class="commit-content gl-w-full gl-text-truncate" data-qa-selector="commit_content">
+      <div class="commit-content gl-w-full gl-text-truncate" data-testid="commit-content">
         <gl-link
           v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
           :href="commit.webPath"

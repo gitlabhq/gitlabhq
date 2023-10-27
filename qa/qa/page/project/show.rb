@@ -149,8 +149,8 @@ module QA
         end
 
         def open_web_ide!
-          click_element(:action_dropdown)
-          click_element(:webide_menu_item)
+          click_element('action-dropdown')
+          click_element('webide-menu-item')
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end
 
@@ -160,8 +160,8 @@ module QA
         end
 
         def has_edit_fork_button?
-          click_element(:action_dropdown)
-          has_element?(:webide_menu_item, text: 'Edit fork in Web IDE')
+          click_element('action-dropdown')
+          has_element?('webide-menu-item', text: 'Edit fork in Web IDE')
         end
 
         def project_name

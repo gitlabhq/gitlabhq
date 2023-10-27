@@ -1,0 +1,8 @@
+---
+name: ambiguous_ref_modal
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133093
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429523
+milestone: '16.6'
+type: development
+group: group::source code
+default_enabled: false

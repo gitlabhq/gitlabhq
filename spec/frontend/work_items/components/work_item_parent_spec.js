@@ -7,6 +7,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
+import { removeHierarchyChild } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
@@ -20,6 +21,9 @@ import {
 } from '../mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/work_items/graphql/cache_utils', () => ({
+  removeHierarchyChild: jest.fn(),
+}));
 
 describe('WorkItemParent component', () => {
   Vue.use(VueApollo);
@@ -28,6 +32,7 @@ describe('WorkItemParent component', () => {
 
   const workItemId = 'gid://gitlab/WorkItem/1';
   const workItemType = 'Objective';
+  const mockFullPath = 'full-path';
 
   const availableWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const availableWorkItemsFailureHandler = jest.fn().mockRejectedValue(new Error());
@@ -41,6 +46,7 @@ describe('WorkItemParent component', () => {
     parent = null,
     searchQueryHandler = availableWorkItemsSuccessHandler,
     mutationHandler = successUpdateWorkItemMutationHandler,
+    isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemParent, {
       apolloProvider: createMockApollo([
@@ -48,7 +54,8 @@ describe('WorkItemParent component', () => {
         [updateWorkItemMutation, mutationHandler],
       ]),
       provide: {
-        fullPath: 'full-path',
+        fullPath: mockFullPath,
+        isGroup,
       },
       propsData: {
         canUpdate,
@@ -180,6 +187,14 @@ describe('WorkItemParent component', () => {
           },
         },
       });
+
+      expect(removeHierarchyChild).toHaveBeenCalledWith({
+        cache: expect.anything(Object),
+        fullPath: mockFullPath,
+        iid: undefined,
+        isGroup: false,
+        workItem: { id: 'gid://gitlab/WorkItem/1' },
+      });
     });
 
     it('calls mutation when item is unassigned', async () => {
@@ -187,6 +202,9 @@ describe('WorkItemParent component', () => {
         .fn()
         .mockResolvedValue(updateWorkItemMutationResponseFactory({ parent: null }));
       createComponent({
+        parent: {
+          iid: '1',
+        },
         mutationHandler: unAssignParentWorkItemMutationHandler,
       });
 
@@ -201,6 +219,13 @@ describe('WorkItemParent component', () => {
             parentId: null,
           },
         },
+      });
+      expect(removeHierarchyChild).toHaveBeenCalledWith({
+        cache: expect.anything(Object),
+        fullPath: mockFullPath,
+        iid: '1',
+        isGroup: false,
+        workItem: { id: 'gid://gitlab/WorkItem/1' },
       });
     });
 

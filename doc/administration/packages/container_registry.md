@@ -1028,7 +1028,7 @@ projects.each do |p|
    end
 
    if project_total_size > 0
-      projects_and_size << [p.project_id, p.creator.id, project_total_size, p.full_path]
+      projects_and_size << [p.project_id, p.creator&.id, project_total_size, p.full_path]
    end
 end
 

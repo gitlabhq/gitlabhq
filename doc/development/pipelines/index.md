@@ -632,7 +632,7 @@ Our test suite runs against PostgreSQL 14 as GitLab.com runs on PostgreSQL 14 an
 
 We do run our test suite against PostgreSQL 14 on nightly scheduled pipelines.
 
-We also run our test suite against PostgreSQL 12 and PostgreSQL 13 upon specific database library changes in merge requests and `main` pipelines (with the `rspec db-library-code pg12` and `rspec db-library-code pg13` jobs).
+We also run our test suite against PostgreSQL 13 upon specific database library changes in merge requests and `main` pipelines (with the `rspec db-library-code pg13` job).
 
 #### Current versions testing
 
@@ -642,7 +642,7 @@ We also run our test suite against PostgreSQL 12 and PostgreSQL 13 upon specific
 | `master` branch commits                                                                          | 14 (default version), 13 for DB library changes | 3.0 (default version) |
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)             | 14 (default version), 13 for DB library changes | 3.0 (default version) |
 | `maintenance` scheduled pipelines for the `ruby3_1` branch (every odd-numbered hour), see below. | 14 (default version), 13 for DB library changes | 3.1                   |
-| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 12, 13, 15                | 3.0 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 13, 15                    | 3.0 (default version) |
 
 There are 2 pipeline schedules used for testing Ruby 3.1. One is triggering a
 pipeline in `ruby3_1-sync` branch, which updates the `ruby3_1` branch with latest

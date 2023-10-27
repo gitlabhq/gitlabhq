@@ -8,6 +8,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:work_item) { create(:work_item, project: project) }
+  let_it_be(:task) { create(:work_item, :task, project: project) }
   let_it_be(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
@@ -93,6 +94,18 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it_behaves_like 'work items comment actions for guest users'
+  end
+
+  context 'when item is a task' do
+    before do
+      project.add_developer(user)
+
+      sign_in(user)
+
+      visit project_work_item_path(project, task.iid)
+    end
+
+    it_behaves_like 'work items parent', :issue
   end
 
   context 'for user not signed in' do

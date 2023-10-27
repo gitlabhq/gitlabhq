@@ -11,7 +11,7 @@ module QA
         include Shared::Editor
 
         view 'app/views/projects/blob/_editor.html.haml' do
-          element :file_name_field
+          element 'file-name-field'
         end
 
         view 'app/assets/javascripts/blob/filepath_form/components/template_selector.vue' do
@@ -19,7 +19,7 @@ module QA
         end
 
         def add_name(name)
-          fill_element(:file_name_field, name)
+          fill_element('file-name-field', name)
         end
 
         def add_custom_name(template_name)

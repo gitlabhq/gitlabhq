@@ -273,7 +273,7 @@ export default {
               v-model="form.fields['commit_message'].value"
               v-validation:[form.showValidation]
               name="commit_message"
-              data-qa-selector="commit_message_field"
+              data-testid="commit-message-field"
               :state="form.fields['commit_message'].state"
               :disabled="loading"
               required

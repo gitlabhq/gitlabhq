@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Projects', feature_category: :groups_and_projects do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects do
+  let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository, creator: build(:user)) } # ensure creator != owner to avoid N+1 false-positive
   let_it_be(:project2) { create(:project, :public) }
 
@@ -91,7 +91,7 @@ RSpec.describe 'Dashboard Projects', feature_category: :groups_and_projects do
       expect(find('.gl-tabs-nav li:nth-child(1) .badge-pill')).to have_content(1)
     end
 
-    it 'shows personal projects on personal projects tab', :js do
+    it 'shows personal projects on personal projects tab' do
       project3 = create(:project, namespace: user.namespace)
 
       visit dashboard_projects_path
@@ -111,7 +111,7 @@ RSpec.describe 'Dashboard Projects', feature_category: :groups_and_projects do
     end
   end
 
-  context 'when on Starred projects tab', :js do
+  context 'when on Starred projects tab' do
     it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :starred_dashboard_projects_path, :projects
 
     it 'shows the empty state when there are no starred projects' do

@@ -720,7 +720,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
-  describe '#delete_tag_by_name' do
+  describe '#delete_tag' do
     let(:repository) do
       create(
         :container_repository,
@@ -733,22 +733,22 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     context 'when action succeeds' do
       it 'returns status that indicates success' do
         expect(repository.client)
-          .to receive(:delete_repository_tag_by_name)
+          .to receive(:delete_repository_tag_by_digest)
           .with(repository.path, "latest")
           .and_return(true)
 
-        expect(repository.delete_tag_by_name('latest')).to be_truthy
+        expect(repository.delete_tag('latest')).to be_truthy
       end
     end
 
     context 'when action fails' do
       it 'returns status that indicates failure' do
         expect(repository.client)
-          .to receive(:delete_repository_tag_by_name)
+          .to receive(:delete_repository_tag_by_digest)
           .with(repository.path, "latest")
           .and_return(false)
 
-        expect(repository.delete_tag_by_name('latest')).to be_falsey
+        expect(repository.delete_tag('latest')).to be_falsey
       end
     end
   end

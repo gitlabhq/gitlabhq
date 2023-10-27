@@ -42389,6 +42389,9 @@ msgstr ""
 msgid "SecretDetection|This description appears to have a token in it. Are you sure you want to add it?"
 msgstr ""
 
+msgid "Secrets"
+msgstr ""
+
 msgid "Secure Code Warrior"
 msgstr ""
 

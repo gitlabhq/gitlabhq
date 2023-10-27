@@ -567,3 +567,34 @@ RSpec.shared_examples 'work items award emoji' do
     end
   end
 end
+
+RSpec.shared_examples 'work items parent' do |type|
+  let(:work_item_parent) { create(:work_item, type, project: project) }
+
+  def set_parent(parent_dropdown, parent_text)
+    parent_dropdown.click
+
+    find('[data-testid="listbox-search-input"] .gl-listbox-search-input',
+      visible: true).send_keys "\"#{parent_text}\""
+    wait_for_requests
+
+    find('.gl-new-dropdown-item').click
+    wait_for_requests
+  end
+
+  let(:parent_dropdown_selector) { 'work-item-parent-listbox' }
+
+  it 'searches and sets or removes parent for the work item' do
+    within_testid('work-item-parent-form') do
+      set_parent(find_by_testid(parent_dropdown_selector), work_item_parent.title)
+
+      expect(find_by_testid(parent_dropdown_selector)).to have_text(work_item_parent.title)
+
+      find_by_testid(parent_dropdown_selector).click
+
+      click_button('Unassign')
+
+      expect(find_by_testid(parent_dropdown_selector)).to have_text('None')
+    end
+  end
+end

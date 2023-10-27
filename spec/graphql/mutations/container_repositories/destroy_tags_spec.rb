@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::ContainerRepositories::DestroyTags do
+RSpec.describe Mutations::ContainerRepositories::DestroyTags, feature_category: :container_registry do
   include GraphqlHelpers
 
   include_context 'container repository delete tags service shared context'
@@ -23,7 +23,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags do
     shared_examples 'destroying container repository tags' do
       before do
         stub_delete_reference_requests(tags)
-        expect_delete_tag_by_names(tags)
+        expect_delete_tags(tags)
         allow_next_instance_of(ContainerRegistry::Client) do |client|
           allow(client).to receive(:supports_tag_delete?).and_return(true)
         end
