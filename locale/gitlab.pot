@@ -14936,9 +14936,6 @@ msgstr ""
 msgid "DORA4Metrics|Change failure rate (percentage)"
 msgstr ""
 
-msgid "DORA4Metrics|Closed issues"
-msgstr ""
-
 msgid "DORA4Metrics|Critical Vulnerabilities over time"
 msgstr ""
 
@@ -15010,6 +15007,12 @@ msgstr ""
 msgid "DORA4Metrics|High Vulnerabilities over time"
 msgstr ""
 
+msgid "DORA4Metrics|Issues closed"
+msgstr ""
+
+msgid "DORA4Metrics|Issues created"
+msgstr ""
+
 msgid "DORA4Metrics|Lead Time for Changes"
 msgstr ""
 
@@ -15062,9 +15065,6 @@ msgid "DORA4Metrics|Metrics comparison for %{name} project"
 msgstr ""
 
 msgid "DORA4Metrics|Month to date"
-msgstr ""
-
-msgid "DORA4Metrics|New issues"
 msgstr ""
 
 msgid "DORA4Metrics|No data available for Namespace: %{fullPath}"
@@ -30562,13 +30562,13 @@ msgstr ""
 msgid "MlExperimentTracking|Triggered by"
 msgstr ""
 
-msgid "MlModelRegistry|%d version"
-msgid_plural "MlModelRegistry|%d versions"
+msgid "MlModelRegistry|%d model"
+msgid_plural "MlModelRegistry|%d models"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "MlModelRegistry|%{version} · No other versions"
-msgid_plural "MlModelRegistry|%{version} · %{versionCount} versions"
+msgid "MlModelRegistry|%d version"
+msgid_plural "MlModelRegistry|%d versions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -30595,6 +30595,11 @@ msgstr ""
 
 msgid "MlModelRegistry|Versions"
 msgstr ""
+
+msgid "MlModelRegistry|· No other versions"
+msgid_plural "MlModelRegistry|· %d versions"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Modal updated"
 msgstr ""

@@ -8,27 +8,33 @@ const createWrapper = (model = mockModels[0]) => {
   wrapper = shallowMountExtended(ModelRow, { propsData: { model } });
 };
 
-const findLink = () => wrapper.findComponent(GlLink);
+const findTitleLink = () => wrapper.findAllComponents(GlLink).at(0);
+const findVersionLink = () => wrapper.findAllComponents(GlLink).at(1);
 const findMessage = (message) => wrapper.findByText(message);
 
 describe('ModelRow', () => {
-  beforeEach(() => {
-    createWrapper();
-  });
-
   it('Has a link to the model', () => {
-    expect(findLink().text()).toBe(mockModels[0].name);
-    expect(findLink().attributes('href')).toBe(mockModels[0].path);
+    createWrapper();
+
+    expect(findTitleLink().text()).toBe(mockModels[0].name);
+    expect(findTitleLink().attributes('href')).toBe(mockModels[0].path);
   });
 
   it('Shows the latest version and the version count', () => {
-    expect(findMessage('1.0 · 3 versions').exists()).toBe(true);
+    createWrapper();
+
+    expect(findVersionLink().text()).toBe(mockModels[0].version);
+    expect(findVersionLink().attributes('href')).toBe(mockModels[0].versionPath);
+    expect(findMessage('· 3 versions').exists()).toBe(true);
   });
 
   it('Shows the latest version and no version count if it has only 1 version', () => {
     createWrapper(mockModels[1]);
 
-    expect(findMessage('1.1 · No other versions').exists()).toBe(true);
+    expect(findVersionLink().text()).toBe(mockModels[1].version);
+    expect(findVersionLink().attributes('href')).toBe(mockModels[1].versionPath);
+
+    expect(findMessage('· No other versions').exists()).toBe(true);
   });
 
   it('Shows no version message if model has no versions', () => {

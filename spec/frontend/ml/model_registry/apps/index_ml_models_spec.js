@@ -5,18 +5,23 @@ import { TITLE_LABEL, NO_MODELS_LABEL } from '~/ml/model_registry/translations';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import SearchBar from '~/ml/model_registry/components/search_bar.vue';
 import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { mockModels, startCursor, defaultPageInfo } from '../mock_data';
 
 let wrapper;
-const createWrapper = (propsData = { models: mockModels, pageInfo: defaultPageInfo }) => {
+const createWrapper = (
+  propsData = { models: mockModels, pageInfo: defaultPageInfo, modelCount: 2 },
+) => {
   wrapper = shallowMountExtended(IndexMlModels, { propsData });
 };
 
 const findModelRow = (index) => wrapper.findAllComponents(ModelRow).at(index);
 const findPagination = () => wrapper.findComponent(Pagination);
-const findTitle = () => wrapper.findByText(TITLE_LABEL);
 const findEmptyLabel = () => wrapper.findByText(NO_MODELS_LABEL);
 const findSearchBar = () => wrapper.findComponent(SearchBar);
+const findTitleArea = () => wrapper.findComponent(TitleArea);
+const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
 
 describe('MlModelsIndex', () => {
   describe('empty state', () => {
@@ -46,7 +51,11 @@ describe('MlModelsIndex', () => {
 
     describe('header', () => {
       it('displays the title', () => {
-        expect(findTitle().exists()).toBe(true);
+        expect(findTitleArea().props('title')).toBe(TITLE_LABEL);
+      });
+
+      it('sets model metadata item to model count', () => {
+        expect(findModelCountMetadataItem().props('text')).toBe(`2 models`);
       });
     });
 

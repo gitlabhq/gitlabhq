@@ -1,6 +1,6 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import { modelVersionCountMessage } from '../translations';
+import { s__, n__ } from '~/locale';
 
 export default {
   name: 'MlModelRow',
@@ -17,8 +17,16 @@ export default {
     hasVersions() {
       return this.model.version != null;
     },
+    modelVersionCountMessage() {
+      if (!this.model.versionCount) return s__('MlModelRegistry|No registered versions');
+
+      return n__(
+        'MlModelRegistry|· No other versions',
+        'MlModelRegistry|· %d versions',
+        this.model.versionCount,
+      );
+    },
   },
-  modelVersionCountMessage,
 };
 </script>
 
@@ -29,7 +37,9 @@ export default {
     </gl-link>
 
     <div class="gl-text-secondary">
-      {{ $options.modelVersionCountMessage(model.version, model.versionCount) }}
+      <gl-link v-if="hasVersions" :href="model.versionPath">{{ model.version }}</gl-link>
+
+      {{ modelVersionCountMessage }}
     </div>
   </div>
 </template>

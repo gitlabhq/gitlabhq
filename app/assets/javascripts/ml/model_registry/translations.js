@@ -1,4 +1,4 @@
-import { s__, n__, sprintf } from '~/locale';
+import { s__, n__ } from '~/locale';
 
 export const MODEL_DETAILS_TAB_LABEL = s__('MlModelRegistry|Details');
 export const MODEL_OTHER_VERSIONS_TAB_LABEL = s__('MlModelRegistry|Versions');
@@ -12,14 +12,5 @@ export const versionsCountLabel = (versionCount) =>
 export const TITLE_LABEL = s__('MlModelRegistry|Model registry');
 export const NO_MODELS_LABEL = s__('MlModelRegistry|No models registered in this project');
 
-export const modelVersionCountMessage = (version, versionCount) => {
-  if (!versionCount) return s__('MlModelRegistry|No registered versions');
-
-  const message = n__(
-    'MlModelRegistry|%{version} · No other versions',
-    'MlModelRegistry|%{version} · %{versionCount} versions',
-    versionCount,
-  );
-
-  return sprintf(message, { version, versionCount });
-};
+export const modelsCountLabel = (modelCount) =>
+  n__('MlModelRegistry|%d model', 'MlModelRegistry|%d models', modelCount);

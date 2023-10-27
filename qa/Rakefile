@@ -83,7 +83,10 @@ end
 
 desc "Deletes user's projects"
 task :delete_user_projects, [:delete_before, :dry_run] do |_, args|
-  QA::Tools::DeleteUserProjects.new(args).run
+  args.with_defaults(delete_before: (Date.today - 1).to_s, dry_run: false)
+  QA::Tools::DeleteUserProjects.new(
+    delete_before: args[:delete_before],
+    dry_run: !!(args[:dry_run] =~ /true|1|y/i)).run
 end
 
 desc "Revokes user's personal access tokens"
