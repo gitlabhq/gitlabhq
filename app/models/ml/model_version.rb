@@ -20,6 +20,7 @@ module Ml
     belongs_to :model, class_name: 'Ml::Model'
     belongs_to :project
     belongs_to :package, class_name: 'Packages::MlModel::Package', optional: true
+    has_one :candidate, class_name: 'Ml::Candidate'
 
     delegate :name, to: :model
 

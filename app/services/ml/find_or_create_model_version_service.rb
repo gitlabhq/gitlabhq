@@ -12,7 +12,15 @@ module Ml
 
     def execute
       model = Ml::FindOrCreateModelService.new(project, name).execute
-      Ml::ModelVersion.find_or_create!(model, version, package, description)
+
+      model_version = Ml::ModelVersion.find_or_create!(model, version, package, description)
+
+      model_version.candidate = ::Ml::CreateCandidateService.new(
+        model.default_experiment,
+        { model_version: model_version }
+      ).execute
+
+      model_version
     end
 
     private

@@ -19,9 +19,3 @@ All access to Gitaly from other parts of GitLab are through Create: Source Code 
 After a call is made to Gitaly, Git `commit` information is stored in memory. This information is wrapped by the [Ruby `Commit` Model](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/commit.rb), which is a wrapper around [`Gitlab::Git::Commit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/git/commit.rb).
 
 The `Commit` model acts like an ActiveRecord object, but it does not have a PostgreSQL backend. Instead, it maps back to Gitaly RPCs.
-
-## Rugged Patches
-
-Historically in GitLab, access to the server-based `git` repositories was provided through the [rugged](https://github.com/libgit2/rugged) RubyGem, which provides Ruby bindings to `libgit2`. This was further extended by what is termed "Rugged Patches", [a set of extensions to the Rugged library](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/57317). Rugged implementations of some of the most commonly-used RPCs can be [enabled via feature flags](../../gitaly.md#legacy-rugged-code).
-
-Rugged access requires the use of a NFS file system, a direction GitLab is moving away from in favor of Gitaly Cluster. Rugged has been proposed for [deprecation and removal](https://gitlab.com/gitlab-org/gitaly/-/issues/1690). Several large customers are still using NFS, and a specific removal date is not planned at this point.

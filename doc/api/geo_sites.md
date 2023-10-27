@@ -292,7 +292,6 @@ Example response:
 [
   {
     "geo_node_id": 1,
-    "job_artifacts_synced_missing_on_primary_count": null,
     "projects_count": 19,
     "container_repositories_replication_enabled": null,
     "lfs_objects_count": 0,
@@ -510,7 +509,6 @@ Example response:
   },
   {
     "geo_node_id": 2,
-    "job_artifacts_synced_missing_on_primary_count": null,
     "projects_count": 19,
     "container_repositories_replication_enabled": null,
     "lfs_objects_count": 0,
@@ -744,7 +742,6 @@ Example response:
 ```json
   {
   "geo_node_id": 2,
-  "job_artifacts_synced_missing_on_primary_count": null,
   "projects_count": 19,
   "container_repositories_replication_enabled": null,
   "lfs_objects_count": 0,

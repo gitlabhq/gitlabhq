@@ -276,6 +276,7 @@ including a large number of false positives.
 | `CS_REGISTRY_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
 | `CS_DOCKERFILE_PATH`              | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All |
 | `CS_QUIET`                     | `""`          | If set, this variable disables output of the [vulnerabilities table](#container-scanning-job-log-format) in the job log. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/merge_requests/50) in GitLab 15.1. | All |
+| `CS_TRIVY_JAVA_DB`             | `"ghcr.io/aquasecurity/trivy-java-db"` | Specify an alternate location for the [trivy-java-db](https://github.com/aquasecurity/trivy-java-db) vulnerability database. | Trivy |
 | `SECURE_LOG_LEVEL`             | `info`        | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. | All |
 
 ### Supported distributions
@@ -657,6 +658,32 @@ Also:
   options aren't selected.
 
 Scanning images in external private registries is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
+
+#### Create and use a Trivy Java database mirror
+
+When the `trivy` scanner is used and a `jar` file is encountered in a container image being scanned, `trivy` downloads an additional `trivy-java-db` vulnerability database. By default, the `trivy-java-db` database is hosted as an [OCI artifact](https://oras.land/docs/quickstart) at `ghcr.io/aquasecurity/trivy-java-db:1`. If this registry is not accessible, for example in a network-isolated offline GitLab instance, one solution is to mirror the `trivy-java-db` to a container registry that can be accessed in the offline instance:
+
+```yaml
+mirror trivy java db:
+  image:
+    name: ghcr.io/oras-project/oras:v1.1.0
+    entrypoint: [""]
+  script:
+    - oras login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - oras pull ghcr.io/aquasecurity/trivy-java-db:1
+    - oras push $CI_REGISTRY_IMAGE:1 --config /dev/null:application/vnd.aquasec.trivy.config.v1+json javadb.tar.gz:application/vnd.aquasec.trivy.javadb.layer.v1.tar+gzip
+```
+
+If the above container registry is `gitlab.example.com/trivy-java-db-mirror`, then the container scanning job should be configured in the following way:
+
+```yaml
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_TRIVY_JAVA_DB: gitlab.example.com/trivy-java-db-mirror:1
+```
 
 ## Running the standalone container scanning tool
 

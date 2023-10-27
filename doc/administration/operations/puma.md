@@ -140,37 +140,6 @@ When running Puma in single mode, some features are not supported:
 
 For more information, see [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
 
-## Performance caveat when using Puma with Rugged
-
-For deployments where NFS is used to store Git repositories, GitLab uses
-[direct Git access](../gitaly/index.md#direct-access-to-git-in-gitlab) to improve performance by using
-[Rugged](https://github.com/libgit2/rugged).
-
-Rugged usage is automatically enabled if direct Git access [is available](../gitaly/index.md#automatic-detection) and
-Puma is running single threaded, unless it is disabled by a [feature flag](../../development/gitaly.md#legacy-rugged-code).
-
-MRI Ruby uses a Global VM Lock (GVL). GVL allows MRI Ruby to be multi-threaded, but running at
-most on a single core.
-
-Git includes intensive I/O operations. When Rugged uses a thread for a long period of time,
-other threads that might be processing requests can starve. Puma running in single thread mode
-does not have this issue, because concurrently at most one request is being processed.
-
-GitLab is working to remove Rugged usage. Even though performance without Rugged
-is acceptable today, in some cases it might be still beneficial to run with it.
-
-Given the caveat of running Rugged with multi-threaded Puma, and acceptable
-performance of Gitaly, we disable Rugged usage if Puma multi-threaded is
-used (when Puma is configured to run with more than one thread).
-
-This default behavior may not be the optimal configuration in some situations. If Rugged
-plays an important role in your deployment, we suggest you benchmark to find the
-optimal configuration:
-
-- The safest option is to start with single-threaded Puma.
-- To force Rugged to be used with multi-threaded Puma, you can use a
-  [feature flag](../../development/gitaly.md#legacy-rugged-code).
-
 ## Configuring Puma to listen over SSL
 
 Puma, when deployed with a Linux package installation, listens over a Unix socket by

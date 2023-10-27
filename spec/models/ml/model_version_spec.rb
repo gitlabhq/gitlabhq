@@ -18,6 +18,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:model) }
     it { is_expected.to belong_to(:package).class_name('Packages::MlModel::Package') }
+    it { is_expected.to have_one(:candidate).class_name('Ml::Candidate') }
   end
 
   describe 'validation' do

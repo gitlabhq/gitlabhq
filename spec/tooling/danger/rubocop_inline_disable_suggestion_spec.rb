@@ -15,10 +15,15 @@ RSpec.describe Tooling::Danger::RubocopInlineDisableSuggestion, feature_category
 
   let(:template) do
     <<~SUGGESTION_MARKDOWN.chomp
+    ```suggestion
+    %<suggested_line>s
+    ```
 
     Consider removing this inline disabling and adhering to the rubocop rule.
-    If that isn't possible, please provide context as a reply for reviewers.
-    See [rubocop best practices](https://docs.gitlab.com/ee/development/rubocop_development_guide.html).
+
+    If that isn't possible, please provide the reason as a code comment in the
+    same line where the rule is disabled separated by ` -- `.
+    See [rubocop best practices](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#disabling-rules-inline).
 
     ----
 
@@ -77,6 +82,9 @@ RSpec.describe Tooling::Danger::RubocopInlineDisableSuggestion, feature_category
 
       def show_my_new_dot?(project, namespace)
         return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks -- Reason for disabling
+        thatsfine = "".dup # rubocop:disable Lint/UselessAssignment,Performance/UnfreezeString -- That's OK
+        me = "".dup # rubocop:disable Lint/UselessAssignment,Performance/UnfreezeString
+        test = "".dup # rubocop:disable Lint/UselessAssignment, Performance/UnfreezeString
         return false if notification_dot_acknowledged?
 
         show_out_of_pipeline_minutes_notification?(project, namespace)
@@ -102,6 +110,8 @@ RSpec.describe Tooling::Danger::RubocopInlineDisableSuggestion, feature_category
       +  return false unless ::Gitlab.com? # rubocop:todo Gitlab/AvoidGitlabInstanceChecks
       +  return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks
       +  return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks -- Reason for disabling
+      +  me = "".dup # rubocop:disable Lint/UselessAssignment,Performance/UnfreezeString
+      +  test = "".dup # rubocop:disable Lint/UselessAssignment, Performance/UnfreezeString
       +  return false unless ::Gitlab.com? # rubocop: todo Gitlab/AvoidGitlabInstanceChecks --
     DIFF
   end
@@ -119,8 +129,12 @@ RSpec.describe Tooling::Danger::RubocopInlineDisableSuggestion, feature_category
   end
 
   it 'adds comments at the correct lines', :aggregate_failures do
-    [3, 7, 13, 20, 27, 34, 41, 55].each do |line_number|
-      expect(rubocop).to receive(:markdown).with(template, file: filename, line: line_number)
+    [3, 7, 13, 20, 27, 34, 41, 50, 51, 58].each do |line_number|
+      existing_line = file_lines[line_number - 1].sub(/ --\s*$/, '')
+      suggested_line = "#{existing_line} -- TODO: Reason why the rule must be disabled"
+      comment = format(template, suggested_line: suggested_line)
+
+      expect(rubocop).to receive(:markdown).with(comment, file: filename, line: line_number)
     end
 
     rubocop.add_suggestions_for(filename)

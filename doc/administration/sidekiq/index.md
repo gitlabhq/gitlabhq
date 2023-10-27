@@ -356,20 +356,6 @@ To enable LDAP with the synchronization worker for Sidekiq:
 
 If you use [SAML Group Sync](../../user/group/saml_sso/group_sync.md), you must configure [SAML Groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) on all your Sidekiq nodes.
 
-## Disable Rugged
-
-Calls into Rugged, Ruby bindings for `libgit2`, [lock the Sidekiq processes (GVL)](https://silverhammermba.github.io/emberb/c/#c-in-ruby-threads),
-blocking all jobs on that worker from proceeding. If Rugged calls performed by Sidekiq are slow, this can cause significant delays in
-background task processing.
-
-By default, Rugged is used when Git repository data is stored on local storage or on an NFS mount.
-Using Rugged is recommended when using NFS, but if
-you are using local storage, disabling Rugged can improve Sidekiq performance:
-
-```shell
-sudo gitlab-rake gitlab:features:disable_rugged
-```
-
 ## Related topics
 
 - [Extra Sidekiq processes](extra_sidekiq_processes.md)

@@ -1,9 +1,9 @@
 ---
 table_name: approval_group_rules
 classes:
-  - ApprovalRules::ApprovalGroupRule
+- ApprovalRules::ApprovalGroupRule
 feature_categories:
-  - source_code_management
+- source_code_management
 description: Keeps approval group rules
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132651
 milestone: '16.5'

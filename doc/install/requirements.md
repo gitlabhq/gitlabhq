@@ -227,8 +227,7 @@ optimal settings for your infrastructure.
 
 ### Puma threads
 
-The recommended number of threads is dependent on several factors, including total memory, and use
-of [legacy Rugged code](../administration/gitaly/index.md#direct-access-to-git-in-gitlab).
+The recommended number of threads is dependent on several factors, including total memory.
 
 - If the operating system has a maximum 2 GB of memory, the recommended number of threads is `1`.
   A higher value results in excess swapping, and decrease performance.

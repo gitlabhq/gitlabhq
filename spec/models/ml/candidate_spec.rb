@@ -16,6 +16,7 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:package) }
     it { is_expected.to belong_to(:ci_build).class_name('Ci::Build') }
+    it { is_expected.to belong_to(:model_version).class_name('Ml::ModelVersion') }
     it { is_expected.to have_many(:params) }
     it { is_expected.to have_many(:metrics) }
     it { is_expected.to have_many(:metadata) }
@@ -33,6 +34,45 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
 
   describe 'default values' do
     it { expect(described_class.new.eid).to be_present }
+  end
+
+  describe 'validation' do
+    let_it_be(:model) { create(:ml_models, project: candidate.project) }
+    let_it_be(:model_version1) { create(:ml_model_versions, model: model) }
+    let_it_be(:model_version2) { create(:ml_model_versions, model: model) }
+    let_it_be(:validation_candidate) do
+      create(:ml_candidates, model_version: model_version1, project: candidate.project)
+    end
+
+    let(:params) do
+      {
+        model_version: nil
+      }
+    end
+
+    subject(:errors) do
+      candidate = described_class.new(**params)
+      candidate.validate
+      candidate.errors
+    end
+
+    describe 'model_version' do
+      context 'when model_version is nil' do
+        it { expect(errors).not_to include(:model_version_id) }
+      end
+
+      context 'when no other candidate is associated to the model_version' do
+        let(:params) { { model_version: model_version2 } }
+
+        it { expect(errors).not_to include(:model_version_id) }
+      end
+
+      context 'when another candidate has model_version_id' do
+        let(:params) { { model_version: validation_candidate.model_version } }
+
+        it { expect(errors).to include(:model_version_id) }
+      end
+    end
   end
 
   describe '.destroy' do

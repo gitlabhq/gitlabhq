@@ -28,6 +28,7 @@ RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops d
 
       it 'returns existing model version', :aggregate_failures do
         expect { model_version }.to change { Ml::ModelVersion.count }.by(0)
+        expect { model_version }.to change { Ml::Candidate.count }.by(0)
         expect(model_version).to eq(existing_version)
       end
     end
@@ -41,11 +42,12 @@ RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops d
       let(:package) { create(:ml_model_package, project: project, name: name, version: version) }
 
       it 'creates a new model version', :aggregate_failures do
-        expect { model_version }.to change { Ml::ModelVersion.count }
+        expect { model_version }.to change { Ml::ModelVersion.count }.by(1).and change { Ml::Candidate.count }.by(1)
 
         expect(model_version.name).to eq(name)
         expect(model_version.version).to eq(version)
         expect(model_version.package).to eq(package)
+        expect(model_version.candidate.model_version_id).to eq(model_version.id)
         expect(model_version.description).to eq(description)
       end
     end

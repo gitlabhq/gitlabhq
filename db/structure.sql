@@ -298,6 +298,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_10ee1357e825() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."auto_canceled_by_id_convert_to_bigint" := NEW."auto_canceled_by_id";
+  NEW."commit_id_convert_to_bigint" := NEW."commit_id";
+  NEW."erased_by_id_convert_to_bigint" := NEW."erased_by_id";
+  NEW."project_id_convert_to_bigint" := NEW."project_id";
+  NEW."runner_id_convert_to_bigint" := NEW."runner_id";
+  NEW."trigger_request_id_convert_to_bigint" := NEW."trigger_request_id";
+  NEW."upstream_pipeline_id_convert_to_bigint" := NEW."upstream_pipeline_id";
+  NEW."user_id_convert_to_bigint" := NEW."user_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_1bd97da9c1a4() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13379,6 +13395,14 @@ CREATE TABLE p_ci_builds (
     stage_id bigint,
     partition_id bigint NOT NULL,
     auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
+    auto_canceled_by_id_convert_to_bigint bigint,
+    commit_id_convert_to_bigint bigint,
+    erased_by_id_convert_to_bigint bigint,
+    project_id_convert_to_bigint bigint,
+    runner_id_convert_to_bigint bigint,
+    trigger_request_id_convert_to_bigint bigint,
+    upstream_pipeline_id_convert_to_bigint bigint,
+    user_id_convert_to_bigint bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
@@ -13429,6 +13453,14 @@ CREATE TABLE ci_builds (
     stage_id bigint,
     partition_id bigint NOT NULL,
     auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
+    auto_canceled_by_id_convert_to_bigint bigint,
+    commit_id_convert_to_bigint bigint,
+    erased_by_id_convert_to_bigint bigint,
+    project_id_convert_to_bigint bigint,
+    runner_id_convert_to_bigint bigint,
+    trigger_request_id_convert_to_bigint bigint,
+    upstream_pipeline_id_convert_to_bigint bigint,
+    user_id_convert_to_bigint bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -18883,6 +18915,7 @@ CREATE TABLE ml_candidates (
     project_id bigint,
     internal_id bigint,
     ci_build_id bigint,
+    model_version_id bigint,
     CONSTRAINT check_25e6c65051 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_cd160587d4 CHECK ((eid IS NOT NULL))
 );
@@ -33229,6 +33262,8 @@ CREATE INDEX index_ml_candidates_on_ci_build_id ON ml_candidates USING btree (ci
 
 CREATE UNIQUE INDEX index_ml_candidates_on_experiment_id_and_eid ON ml_candidates USING btree (experiment_id, eid);
 
+CREATE UNIQUE INDEX index_ml_candidates_on_model_version_id ON ml_candidates USING btree (model_version_id);
+
 CREATE INDEX index_ml_candidates_on_package_id ON ml_candidates USING btree (package_id);
 
 CREATE INDEX index_ml_candidates_on_project_id ON ml_candidates USING btree (project_id);
@@ -36747,6 +36782,8 @@ CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE 
 
 CREATE TRIGGER trigger_07bc3c48f407 BEFORE INSERT OR UPDATE ON ci_stages FOR EACH ROW EXECUTE FUNCTION trigger_07bc3c48f407();
 
+CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
+
 CREATE TRIGGER trigger_1bd97da9c1a4 BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_1bd97da9c1a4();
 
 CREATE TRIGGER trigger_68d7b6653c7d BEFORE INSERT OR UPDATE ON ci_sources_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_68d7b6653c7d();
@@ -37827,6 +37864,9 @@ ALTER TABLE ONLY namespaces
 
 ALTER TABLE ONLY fork_networks
     ADD CONSTRAINT fk_e7b436b2b5 FOREIGN KEY (root_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ml_candidates
+    ADD CONSTRAINT fk_e86e0bfa5a FOREIGN KEY (model_version_id) REFERENCES ml_model_versions(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_e8fe908a34 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
