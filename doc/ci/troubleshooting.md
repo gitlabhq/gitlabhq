@@ -321,7 +321,7 @@ If the merge train pipeline was canceled before the merge request was merged, wi
 
 ### Merge request rules widget shows a scan result policy is invalid or duplicated **(ULTIMATE SELF)**
 
-On GitLab self-managed 15.0 and later, the most likely cause is that the project was exported from a
+On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a
 group and imported into another, and had scan result policy rules. These rules are stored in a
 separate project to the one that was exported. As a result, the project contains policy rules that
 reference entities that don't exist in the imported project's group. The result is policy rules that

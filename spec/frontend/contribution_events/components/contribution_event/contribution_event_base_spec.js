@@ -38,7 +38,7 @@ describe('ContributionEventBase', () => {
     expect(avatarLink.attributes('href')).toBe(defaultPropsData.event.author.web_url);
     expect(avatarLabeled.attributes()).toMatchObject({
       src: defaultPropsData.event.author.avatar_url,
-      size: '32',
+      size: '24',
     });
     expect(avatarLabeled.props()).toMatchObject({
       label: defaultPropsData.event.author.name,

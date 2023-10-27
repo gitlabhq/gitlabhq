@@ -9,6 +9,8 @@ import Reject from './reject.vue';
 import Unban from './unban.vue';
 import Unblock from './unblock.vue';
 import Unlock from './unlock.vue';
+import Trust from './trust_user.vue';
+import Untrust from './untrust_user.vue';
 
 export default {
   Activate,
@@ -22,4 +24,6 @@ export default {
   Unblock,
   Unlock,
   Reject,
+  Trust,
+  Untrust,
 };

@@ -1419,6 +1419,16 @@ RSpec.describe User, feature_category: :user_profile do
           'ORDER BY "users"."current_sign_in_at" ASC NULLS LAST')
       end
     end
+
+    describe '.trusted' do
+      let_it_be(:trusted_user1) { create(:user, :trusted) }
+      let_it_be(:trusted_user2) { create(:user, :trusted) }
+      let_it_be(:user3) { create(:user) }
+
+      it 'returns only the trusted users' do
+        expect(described_class.trusted).to match_array([trusted_user1, trusted_user2])
+      end
+    end
   end
 
   context 'strip attributes' do
@@ -2857,6 +2867,12 @@ RSpec.describe User, feature_category: :user_profile do
       expect(described_class).to receive(:without_projects).and_return([user])
 
       expect(described_class.filter_items('wop')).to include user
+    end
+
+    it 'filters by trusted' do
+      expect(described_class).to receive(:trusted).and_return([user])
+
+      expect(described_class.filter_items('trusted')).to include user
     end
   end
 

@@ -82,4 +82,12 @@ RSpec.describe "Admin::Users", feature_category: :user_management do
       end
     end
   end
+
+  it 'does not perform N+1 queries' do
+    control_queries = ActiveRecord::QueryRecorder.new { visit admin_users_path }
+
+    expect { create(:user) }.to change { User.count }.by(1)
+
+    expect { visit admin_users_path }.not_to exceed_query_limit(control_queries)
+  end
 end

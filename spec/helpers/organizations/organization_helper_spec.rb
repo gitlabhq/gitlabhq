@@ -107,4 +107,14 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       )
     end
   end
+
+  describe '#organization_user_app_data' do
+    it 'returns expected data object' do
+      expect(helper.organization_user_app_data(organization)).to eq(
+        {
+          organization_gid: organization.to_global_id
+        }
+      )
+    end
+  end
 end

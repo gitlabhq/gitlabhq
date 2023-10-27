@@ -29,7 +29,7 @@ module QA
 
         Page::File::Show.perform do |file|
           aggregate_failures 'file details' do
-            expect(file).to have_notice('Your changes have been successfully committed.')
+            expect(file).to have_notice('Your changes have been committed successfully.')
             expect(file).to have_file_content(edited_readme_content)
           end
         end

@@ -310,7 +310,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def users_with_included_associations(users)
-    users.includes(:authorized_projects) # rubocop: disable CodeReuse/ActiveRecord
+    users.includes(:authorized_projects, :trusted_with_spam_attribute) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def admin_making_changes_for_another_user?

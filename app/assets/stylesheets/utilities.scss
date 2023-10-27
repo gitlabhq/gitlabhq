@@ -65,8 +65,6 @@
   min-width: 0;
 }
 
-// .gl-font-size-inherit will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1466
-.gl-font-size-inherit,
 .font-size-inherit { font-size: inherit; }
 .gl-w-16 { width: px-to-rem($grid-size * 2); }
 .gl-w-64 { width: px-to-rem($grid-size * 8); }

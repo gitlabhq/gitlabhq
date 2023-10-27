@@ -601,6 +601,12 @@ class User < MainClusterwide::ApplicationRecord
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
   scope :without_forbidden_states, -> { where.not(state: FORBIDDEN_SEARCH_STATES) }
+  scope :trusted, -> do
+    where('EXISTS (?)', ::UserCustomAttribute
+      .select(1)
+      .where('user_id = users.id')
+      .trusted_with_spam)
+  end
 
   strip_attributes! :name
 
@@ -769,6 +775,8 @@ class User < MainClusterwide::ApplicationRecord
         external
       when 'deactivated'
         deactivated
+      when "trusted"
+        trusted
       else
         active_without_ghosts
       end

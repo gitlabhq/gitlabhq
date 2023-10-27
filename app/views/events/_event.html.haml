@@ -2,7 +2,7 @@
 
 - if event.visible_to_user?(current_user)
   .event-item
-    .event-item-timestamp
+    .event-item-timestamp.gl-font-sm
       #{time_ago_with_tooltip(event.created_at)}
 
     - if event.wiki_page?

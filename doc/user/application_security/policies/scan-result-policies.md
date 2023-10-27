@@ -279,7 +279,25 @@ actions:
   - adalberto.dare
 ```
 
-## Example situations where scan result policies require additional approval
+## Understanding scan result policy approvals
+
+### Scope of scan result policy comparison
+
+- To determine when approval is required on a merge request, we compare the latest completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
+- We compare findings from the latest completed pipelines that ran on `HEAD` of the source and target branch.
+- Scan result policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipeline sources `webide` and `parent_pipeline` are not supported.
+
+### Accepting risk and ignoring vulnerabilities in future merge requests
+
+For scan result policies that are scoped to `newly_detected` findings, it's important to understand the implications of this vulnerability state. A finding is considered `newly_detected` if it exists on the merge request's branch but not on the default branch. When a merge request whose branch contains `newly_detected` findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities were detected after this time, their status would be `previously_detected` and so not be out of scope of a policy aimed at `newly_detected` findings. For example:
+
+- A scan result policy is created to block critical SAST findings. If a SAST finding for CVE-1234 is approved, future merge requests with the same violation will not require approval in the project.
+
+When using license approval policies, the combination of project, component (dependency), and license are considered in the evaluation. If a license is approved as an exception, future merge requests don't require approval for the same combination of project, component (dependency), and license. The component's version is not be considered in this case. If a previously approved package is updated to a new version, approvers will not need to re-approve. For example:
+
+- A license approval policy is created to block merge requests with newly detected licenses matching `AGPL-1.0`. A change is made in project `demo` for component `osframework` that violates the policy. If approved and merged, future merge requests to `osframework` in project `demo` with the license `AGPL-1.0` don't require approval.
+
+### Multiple approvals
 
 There are several situations where the scan result policy requires an additional approval step. For example:
 
@@ -296,3 +314,11 @@ There are several situations where the scan result policy requires an additional
 - Someone stops a pipeline security job, and users can't skip the security scan.
 - A job in a merge request fails and is configured with `allow_failure: false`. As a result, the pipeline is in a blocked state.
 - A pipeline has a manual job that must run successfully for the entire pipeline to pass.
+
+### Known issues
+
+We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) common areas of confusion in scan result findings that need to be addressed. Below are a few of the known issues:
+
+- When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency). We currently use `main tip` of the target branch for comparison. In the future, we plan to use `merge base` for `newly_detected` policies (see [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518)).
+- Findings or errors that cause approval to be required on a scan result policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
+- Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).

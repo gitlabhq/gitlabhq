@@ -42,6 +42,12 @@ module Organizations
       }
     end
 
+    def organization_user_app_data(organization)
+      {
+        organization_gid: organization.to_global_id
+      }
+    end
+
     private
 
     def shared_groups_and_projects_app_data

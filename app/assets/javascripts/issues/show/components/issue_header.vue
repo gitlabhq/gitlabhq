@@ -115,11 +115,9 @@ export default {
     <template #status-badge>
       <gl-sprintf v-if="closedStatusLink" :message="statusText">
         <template #link>
-          <gl-link
-            class="gl-reset-color! gl-reset-font-size gl-text-decoration-underline"
-            :href="closedStatusLink"
-            >{{ closedStatusText }}</gl-link
-          >
+          <gl-link class="gl-reset-color! gl-text-decoration-underline" :href="closedStatusLink">{{
+            closedStatusText
+          }}</gl-link>
         </template>
       </gl-sprintf>
       <template v-else>{{ statusText }}</template>

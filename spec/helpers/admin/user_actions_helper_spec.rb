@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Admin::UserActionsHelper do
+RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
   describe '#admin_actions' do
     let_it_be(:current_user) { build(:user) }
 
@@ -29,13 +29,33 @@ RSpec.describe Admin::UserActionsHelper do
     context 'the user is a standard user' do
       let_it_be(:user) { create(:user) }
 
-      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "delete", "delete_with_contributions") }
+      it do
+        is_expected.to contain_exactly(
+          "edit",
+          "block",
+          "ban",
+          "deactivate",
+          "delete",
+          "delete_with_contributions",
+          "trust"
+        )
+      end
     end
 
     context 'the user is an admin user' do
       let_it_be(:user) { create(:user, :admin) }
 
-      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "delete", "delete_with_contributions") }
+      it do
+        is_expected.to contain_exactly(
+          "edit",
+          "block",
+          "ban",
+          "deactivate",
+          "delete",
+          "delete_with_contributions",
+          "trust"
+        )
+      end
     end
 
     context 'the user is blocked by LDAP' do
@@ -59,7 +79,16 @@ RSpec.describe Admin::UserActionsHelper do
     context 'the user is deactivated' do
       let_it_be(:user) { create(:user, :deactivated) }
 
-      it { is_expected.to contain_exactly("edit", "block", "ban", "activate", "delete", "delete_with_contributions") }
+      it do
+        is_expected.to contain_exactly(
+          "edit",
+          "block",
+          "ban",
+          "activate",
+          "delete",
+          "delete_with_contributions"
+        )
+      end
     end
 
     context 'the user is locked' do
@@ -77,7 +106,8 @@ RSpec.describe Admin::UserActionsHelper do
           "deactivate",
           "unlock",
           "delete",
-          "delete_with_contributions"
+          "delete_with_contributions",
+          "trust"
         )
       }
     end
@@ -88,6 +118,21 @@ RSpec.describe Admin::UserActionsHelper do
       it { is_expected.to contain_exactly("edit", "unban", "delete", "delete_with_contributions") }
     end
 
+    context 'the user is trusted' do
+      let_it_be(:user) { create(:user, :trusted) }
+
+      it do
+        is_expected.to contain_exactly("edit",
+          "block",
+          "deactivate",
+          "ban",
+          "delete",
+          "delete_with_contributions",
+          "untrust"
+        )
+      end
+    end
+
     context 'the current_user does not have permission to delete the user' do
       let_it_be(:user) { build(:user) }
 
@@ -95,7 +140,7 @@ RSpec.describe Admin::UserActionsHelper do
         allow(helper).to receive(:can?).with(current_user, :destroy_user, user).and_return(false)
       end
 
-      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate") }
+      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "trust") }
     end
 
     context 'the user is a sole owner of a group' do
@@ -106,7 +151,7 @@ RSpec.describe Admin::UserActionsHelper do
         group.add_owner(user)
       end
 
-      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "delete_with_contributions") }
+      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "delete_with_contributions", "trust") }
     end
 
     context 'the user is a bot' do

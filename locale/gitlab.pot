@@ -4056,6 +4056,9 @@ msgstr ""
 msgid "AdminUsers|Projects, issues, merge requests, and comments of this user are hidden from other users."
 msgstr ""
 
+msgid "AdminUsers|Re-enable spam monitoring for %{username}?"
+msgstr ""
+
 msgid "AdminUsers|Reactivating a user will:"
 msgstr ""
 
@@ -4095,7 +4098,13 @@ msgstr ""
 msgid "AdminUsers|Sort by"
 msgstr ""
 
+msgid "AdminUsers|Stop monitoring %{username} for possible spam?"
+msgstr ""
+
 msgid "AdminUsers|The maximum compute minutes that jobs in this namespace can use on shared runners each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
+msgstr ""
+
+msgid "AdminUsers|The user can create issues, notes, snippets, and merge requests that appear to be spam without being blocked."
 msgstr ""
 
 msgid "AdminUsers|The user can't access git repositories."
@@ -4128,6 +4137,12 @@ msgstr ""
 msgid "AdminUsers|To confirm, type %{username}."
 msgstr ""
 
+msgid "AdminUsers|Trust user"
+msgstr ""
+
+msgid "AdminUsers|Trusted"
+msgstr ""
+
 msgid "AdminUsers|Unban user"
 msgstr ""
 
@@ -4141,6 +4156,9 @@ msgid "AdminUsers|Unblock user %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Unlock user %{username}?"
+msgstr ""
+
+msgid "AdminUsers|Untrust user"
 msgstr ""
 
 msgid "AdminUsers|User administration"
@@ -4176,6 +4194,9 @@ msgstr ""
 msgid "AdminUsers|When banned:"
 msgstr ""
 
+msgid "AdminUsers|When not being monitored for spam:"
+msgstr ""
+
 msgid "AdminUsers|When the user logs back in, their account will reactivate as a fully active account"
 msgstr ""
 
@@ -4206,7 +4227,13 @@ msgstr ""
 msgid "AdminUsers|You can ban their account in the future if necessary."
 msgstr ""
 
+msgid "AdminUsers|You can trust this user in the future if necessary."
+msgstr ""
+
 msgid "AdminUsers|You can unban their account in the future. Their data remains intact."
+msgstr ""
+
+msgid "AdminUsers|You can untrust this user in the future."
 msgstr ""
 
 msgid "AdminUsers|You cannot remove your own administrator access."
@@ -33266,6 +33293,9 @@ msgid "Organization|An error occurred creating an organization. Please try again
 msgstr ""
 
 msgid "Organization|An error occurred loading the groups. Please refresh the page to try again."
+msgstr ""
+
+msgid "Organization|An error occurred loading the organization users. Please refresh the page to try again."
 msgstr ""
 
 msgid "Organization|An error occurred loading the projects. Please refresh the page to try again."

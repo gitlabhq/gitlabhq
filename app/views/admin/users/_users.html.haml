@@ -44,6 +44,9 @@
       = gl_tab_link_to admin_users_path(filter: "wop"), { item_active: active_when(params[:filter] == 'wop'), class: 'gl-border-0!' } do
         = s_('AdminUsers|Without projects')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.without_projects))
+      = gl_tab_link_to admin_users_path(filter: "trusted"), { item_active: active_when(params[:filter] == 'trusted'), class: 'gl-border-0!' } do
+        = s_('AdminUsers|Trusted')
+        = gl_tab_counter_badge(limited_counter_with_delimiter(User.trusted))
   .nav-controls
     = render_if_exists 'admin/users/admin_email_users'
     = render_if_exists 'admin/users/admin_export_user_permissions'

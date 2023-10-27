@@ -9,6 +9,8 @@ const REJECT = 'reject';
 const APPROVE = 'approve';
 const BAN = 'ban';
 const UNBAN = 'unban';
+const TRUST = 'trust';
+const UNTRUST = 'untrust';
 
 export const EDIT = 'edit';
 
@@ -24,6 +26,8 @@ export const CONFIRMATION_ACTIONS = [
   UNBAN,
   APPROVE,
   REJECT,
+  TRUST,
+  UNTRUST,
 ];
 
 export const DELETE_ACTIONS = [DELETE, DELETE_WITH_CONTRIBUTIONS];

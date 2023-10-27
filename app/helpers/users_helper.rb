@@ -262,7 +262,9 @@ module UsersHelper
       delete_with_contributions: admin_user_path(:id, hard_delete: true),
       admin_user: admin_user_path(:id),
       ban: ban_admin_user_path(:id),
-      unban: unban_admin_user_path(:id)
+      unban: unban_admin_user_path(:id),
+      trust: trust_admin_user_path(:id),
+      untrust: untrust_admin_user_path(:id)
     }
   end
 

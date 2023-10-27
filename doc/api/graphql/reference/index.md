@@ -5941,6 +5941,26 @@ Input type: `ProjectSetLockedInput`
 | <a id="mutationprojectsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsetlockedproject"></a>`project` | [`Project`](#project) | Project after mutation. |
 
+### `Mutation.projectSubscriptionCreate`
+
+Input type: `ProjectSubscriptionCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsubscriptioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsubscriptioncreateprojectpath"></a>`projectPath` | [`String!`](#string) | Full path of the downstream project of the Project Subscription. |
+| <a id="mutationprojectsubscriptioncreateupstreampath"></a>`upstreamPath` | [`String!`](#string) | Full path of the upstream project of the Project Subscription. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsubscriptioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsubscriptioncreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsubscriptioncreatesubscription"></a>`subscription` | [`CiSubscriptionsProject`](#cisubscriptionsproject) | Project Subscription created by the mutation. |
+
 ### `Mutation.projectSyncFork`
 
 WARNING:
@@ -15114,6 +15134,17 @@ Represents the Geo replication and verification state of a ci_secure_file.
 | <a id="cistagejobs"></a>`jobs` | [`CiJobConnection`](#cijobconnection) | Jobs for the stage. (see [Connections](#connections)) |
 | <a id="cistagename"></a>`name` | [`String`](#string) | Name of the stage. |
 | <a id="cistagestatus"></a>`status` | [`String`](#string) | Status of the pipeline stage. |
+
+### `CiSubscriptionsProject`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisubscriptionsprojectauthor"></a>`author` | [`UserCore`](#usercore) | Author of the subscription. |
+| <a id="cisubscriptionsprojectdownstreamproject"></a>`downstreamProject` | [`Project`](#project) | Downstream project of the subscription. |
+| <a id="cisubscriptionsprojectid"></a>`id` | [`CiSubscriptionsProjectID`](#cisubscriptionsprojectid) | Global ID of the subscription. |
+| <a id="cisubscriptionsprojectupstreamproject"></a>`upstreamProject` | [`Project`](#project) | Upstream project of the subscription. |
 
 ### `CiTemplate`
 
@@ -30332,6 +30363,12 @@ An example `CiRunnerManagerID` is: `"gid://gitlab/Ci::RunnerManager/1"`.
 A `CiStageID` is a global ID. It is encoded as a string.
 
 An example `CiStageID` is: `"gid://gitlab/Ci::Stage/1"`.
+
+### `CiSubscriptionsProjectID`
+
+A `CiSubscriptionsProjectID` is a global ID. It is encoded as a string.
+
+An example `CiSubscriptionsProjectID` is: `"gid://gitlab/Ci::Subscriptions::Project/1"`.
 
 ### `CiTriggerID`
 
