@@ -172,7 +172,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/graphql/ee/mutations/ci/job_token_scope/add_project_spec.rb'
     - 'ee/spec/graphql/ee/mutations/ci/job_token_scope/remove_project_spec.rb'
     - 'ee/spec/graphql/ee/resolvers/project_issues_resolver_spec.rb'
-    - 'ee/spec/graphql/ee/types/clusters/agent_type_spec.rb'
     - 'ee/spec/graphql/ee/types/group_type_spec.rb'
     - 'ee/spec/graphql/mutations/boards/epic_boards/create_spec.rb'
     - 'ee/spec/graphql/mutations/boards/epic_boards/destroy_spec.rb'

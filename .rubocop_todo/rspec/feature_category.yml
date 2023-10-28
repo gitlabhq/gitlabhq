@@ -134,7 +134,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/graphql/ee/types/board_type_spec.rb'
     - 'ee/spec/graphql/ee/types/boards/board_issue_input_type_spec.rb'
     - 'ee/spec/graphql/ee/types/ci/pipeline_merge_request_type_enum_spec.rb'
-    - 'ee/spec/graphql/ee/types/clusters/agent_type_spec.rb'
     - 'ee/spec/graphql/ee/types/compliance_management/compliance_framework_type_spec.rb'
     - 'ee/spec/graphql/ee/types/environment_type_spec.rb'
     - 'ee/spec/graphql/ee/types/group_type_spec.rb'
