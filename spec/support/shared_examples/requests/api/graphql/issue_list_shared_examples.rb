@@ -5,7 +5,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
   let(:fields) do
     <<~QUERY
     nodes {
-      #{all_graphql_fields_for('issues'.classify, excluded: ['relatedMergeRequests'])}
+      #{all_graphql_fields_for('issues'.classify, excluded: %w[relatedMergeRequests productAnalyticsState])}
     }
     QUERY
   end
