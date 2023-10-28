@@ -240,12 +240,7 @@ export default {
               "
             >
               <template #link="{ content }">
-                <gl-link
-                  :href="emailSuffixHelpUrl"
-                  target="_blank"
-                  class="gl-text-blue-600 font-size-inherit"
-                  >{{ content }}
-                </gl-link>
+                <gl-link :href="emailSuffixHelpUrl" target="_blank">{{ content }} </gl-link>
               </template>
             </gl-sprintf>
           </template>
@@ -259,10 +254,7 @@ export default {
                 "
               >
                 <template #link="{ content }">
-                  <gl-link
-                    :href="serviceDeskEmailAddressHelpUrl"
-                    target="_blank"
-                    class="gl-text-blue-600 font-size-inherit"
+                  <gl-link :href="serviceDeskEmailAddressHelpUrl" target="_blank"
                     >{{ content }}
                   </gl-link>
                 </template>

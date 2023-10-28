@@ -248,7 +248,7 @@ export default {
             <gl-emoji
               v-if="snippet.author.status"
               v-gl-tooltip
-              class="gl-vertical-align-baseline font-size-inherit gl-mr-1"
+              class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1"
               :title="snippet.author.status.message"
               :data-name="snippet.author.status.emoji"
             />

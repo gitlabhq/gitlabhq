@@ -94,14 +94,12 @@ export default {
   <gl-modal visible size="sm" modal-id="success-pipeline-modal-id-not-used">
     <template #modal-title>
       {{ $options.i18n.modalTitle }}
-      <gl-emoji class="gl-vertical-align-baseline font-size-inherit gl-mr-1" data-name="tada" />
+      <gl-emoji class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1" data-name="tada" />
     </template>
     <p>
       <gl-sprintf :message="$options.i18n.bodyMessage">
         <template #codeQualityLink="{ content }">
-          <gl-link :href="codeQualityLink" target="_blank" class="font-size-inherit">{{
-            content
-          }}</gl-link>
+          <gl-link :href="codeQualityLink" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </p>

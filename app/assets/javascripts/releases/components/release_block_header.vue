@@ -50,7 +50,7 @@ export default {
 <template>
   <div class="card-header d-flex align-items-center bg-white pr-0">
     <h2 class="card-title my-2 mr-auto">
-      <gl-link v-if="selfLink" :href="selfLink" class="font-size-inherit">
+      <gl-link v-if="selfLink" :href="selfLink">
         {{ release.name }}
       </gl-link>
       <template v-else>
