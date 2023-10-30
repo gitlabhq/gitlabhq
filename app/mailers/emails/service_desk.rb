@@ -211,7 +211,11 @@ module Emails
     end
 
     def issue_description
-      @issue.description_html.to_s
+      return '' if @issue.description_html.blank?
+
+      # Remove references etc. from description HTML because external participants
+      # are no regular users and don't have permission to access them.
+      ::Banzai::Renderer.post_process(@issue.description_html, {})
     end
 
     def subject_base
