@@ -519,3 +519,13 @@ unexpectedly high `buff/cache` usage.
 When you reindex, you might get a `Couldn't load task status` error. A `sliceId must be greater than 0 but was [-1]` error might also appear on the Elasticsearch host. As a workaround, consider [reindexing from scratch](../../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index) or upgrading to GitLab 16.3.
 
 For more information, see [issue 422938](https://gitlab.com/gitlab-org/gitlab/-/issues/422938).
+
+## Migration `BackfillProjectPermissionsInBlobs` has been halted in GitLab 15.11
+
+In GitLab 15.11, it is possible for the `BackfillProjectPermissionsInBlobs` migration to be halted with the following error message in the `elasticsearch.log`:
+
+```shell
+migration has failed with NoMethodError:undefined method `<<' for nil:NilClass, no retries left
+```
+
+If `BackfillProjectPermissionsInBlobs` is the only halted migration, you can upgrade to the latest patch version of GitLab 16.0, which includes [the fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118494). Otherwise, you can ignore the error as it will not affect the current functionality of advanced search.

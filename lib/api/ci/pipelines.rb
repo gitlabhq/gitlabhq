@@ -288,6 +288,33 @@ module API
           end
         end
 
+        desc 'Updates pipeline metadata' do
+          detail 'This feature was introduced in GitLab 16.6'
+          success status: 200, model: Entities::Ci::PipelineWithMetadata
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+        end
+        params do
+          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :name, type: String, desc: 'The name of the pipeline', documentation: { example: 'Deployment to production' }
+        end
+        route_setting :authentication, job_token_allowed: true
+        put ':id/pipelines/:pipeline_id/metadata', urgency: :low, feature_category: :continuous_integration do
+          authorize! :update_pipeline, pipeline
+
+          response = ::Ci::Pipelines::UpdateMetadataService.new(pipeline, params.slice(:name)).execute
+
+          if response.success?
+            present response.payload, with: Entities::Ci::PipelineWithMetadata
+          else
+            render_api_error_with_reason!(response.reason, response.message, response.payload.join(', '))
+          end
+        end
+
         desc 'Retry builds in the pipeline' do
           detail 'This feature was introduced in GitLab 8.11.'
           success status: 201, model: Entities::Ci::Pipeline

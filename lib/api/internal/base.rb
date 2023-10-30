@@ -66,7 +66,8 @@ module API
               git_config_options: ["uploadpack.allowFilter=true",
                                    "uploadpack.allowAnySHA1InWant=true"],
               gitaly: gitaly_payload(params[:action]),
-              gl_console_messages: check_result.console_messages
+              gl_console_messages: check_result.console_messages,
+              need_audit: need_git_audit_event?
             }.merge!(actor.key_details)
 
             # Custom option for git-receive-pack command
@@ -77,7 +78,9 @@ module API
               payload[:git_config_options] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
             end
 
-            send_git_audit_streaming_event(protocol: params[:protocol], action: params[:action])
+            unless Feature.enabled?(:log_git_streaming_audit_events, project)
+              send_git_audit_streaming_event(protocol: params[:protocol], action: params[:action])
+            end
 
             response_with_status(**payload)
           when ::Gitlab::GitAccessResult::CustomAction

@@ -387,6 +387,7 @@ module API
     mount ::API::Internal::MailRoom
     mount ::API::Internal::ContainerRegistry::Migration
     mount ::API::Internal::Workhorse
+    mount ::API::Internal::Shellhorse
 
     version 'v3', using: :path do
       # Although the following endpoints are kept behind V3 namespace,

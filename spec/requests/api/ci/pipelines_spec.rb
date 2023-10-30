@@ -1107,6 +1107,78 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
   end
 
+  describe 'PUT /projects/:id/pipelines/:pipeline_id/name' do
+    let_it_be(:pipeline_creator) { create(:user) }
+    let(:pipeline) { create(:ci_pipeline, project: project, user: pipeline_creator) }
+    let(:name) { 'A new pipeline name' }
+
+    subject(:execute) do
+      put api("/projects/#{project.id}/pipelines/#{pipeline.id}/metadata", current_user), params: { name: name }
+    end
+
+    context 'authorized user' do
+      let(:current_user) { create(:user) }
+
+      before do
+        project.add_developer(current_user)
+      end
+
+      it 'renames pipeline when name is valid', :aggregate_failures do
+        expect { execute }.to change { pipeline.reload.name }.to(name)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when name is invalid' do
+        let(:name) { 'a' * 256 }
+
+        it 'does not rename pipeline', :aggregate_failures do
+          expect { execute }.not_to change { pipeline.reload.name }
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Failed to update pipeline - Name is too long (maximum is 255 characters)')
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      let(:current_user) { create(:user) }
+
+      context 'when user is not a member' do
+        it 'does not rename pipeline', :aggregate_failures do
+          expect { execute }.not_to change { pipeline.reload.name }
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user is a member' do
+        before do
+          project.add_reporter(current_user)
+        end
+
+        it 'does not rename pipeline', :aggregate_failures do
+          expect { execute }.not_to change { pipeline.reload.name }
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'when authorized with job token' do
+      let(:job) { create(:ci_build, :running, pipeline: pipeline, project: project, user: pipeline.user) }
+
+      before do
+        project.add_developer(pipeline.user)
+      end
+
+      subject(:execute) do
+        put api("/projects/#{project.id}/pipelines/#{pipeline.id}/metadata", nil, job_token: job.token), params: { name: name }
+      end
+
+      it 'renames pipeline when name is valid', :aggregate_failures do
+        expect { execute }.to change { pipeline.reload.name }.to(name)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
   describe 'POST /projects/:id/pipelines/:pipeline_id/retry' do
     context 'authorized user' do
       let_it_be(:pipeline) do

@@ -20,7 +20,7 @@ module Gitlab
     include JwtAuthenticatable
 
     class << self
-      def git_http_ok(repository, repo_type, user, action, show_all_refs: false)
+      def git_http_ok(repository, repo_type, user, action, show_all_refs: false, need_audit: false)
         raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
 
         attrs = {
@@ -28,6 +28,7 @@ module Gitlab
           GL_REPOSITORY: repo_type.identifier_for_container(repository.container),
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
+          NeedAudit: need_audit,
           Repository: repository.gitaly_repository.to_h,
           GitConfigOptions: [],
           GitalyServer: {

@@ -2127,28 +2127,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe 'sorting by name' do
-    let_it_be(:project1) { create(:project, name: 'A') }
-    let_it_be(:project2) { create(:project, name: 'Z') }
-    let_it_be(:project3) { create(:project, name: 'L') }
-
-    context 'when using .sort_by_name_desc' do
-      it 'reorders the projects by descending name order' do
-        projects = described_class.sorted_by_name_desc
-
-        expect(projects.pluck(:name)).to eq(%w[Z L A])
-      end
-    end
-
-    context 'when using .sort_by_name_asc' do
-      it 'reorders the projects by ascending name order' do
-        projects = described_class.sorted_by_name_asc
-
-        expect(projects.pluck(:name)).to eq(%w[A L Z])
-      end
-    end
-  end
-
   describe '.with_shared_runners_enabled' do
     subject { described_class.with_shared_runners_enabled }
 

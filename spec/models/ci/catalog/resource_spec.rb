@@ -53,18 +53,30 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   end
 
   describe '.order_by_name_desc' do
-    it 'returns catalog resources sorted by descending name' do
-      ordered_resources = described_class.order_by_name_desc
+    subject(:ordered_resources) { described_class.order_by_name_desc }
 
+    it 'returns catalog resources sorted by descending name' do
       expect(ordered_resources.pluck(:name)).to eq(%w[Z L A])
+    end
+
+    it 'returns catalog resources sorted by descending name with nulls last' do
+      resource.update!(name: nil)
+
+      expect(ordered_resources.pluck(:name)).to eq(['Z', 'L', nil])
     end
   end
 
   describe '.order_by_name_asc' do
-    it 'returns catalog resources sorted by ascending name' do
-      ordered_resources = described_class.order_by_name_asc
+    subject(:ordered_resources) { described_class.order_by_name_asc }
 
+    it 'returns catalog resources sorted by ascending name' do
       expect(ordered_resources.pluck(:name)).to eq(%w[A L Z])
+    end
+
+    it 'returns catalog resources sorted by ascending name with nulls last' do
+      resource.update!(name: nil)
+
+      expect(ordered_resources.pluck(:name)).to eq(['L', 'Z', nil])
     end
   end
 

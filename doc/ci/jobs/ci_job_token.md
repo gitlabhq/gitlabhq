@@ -22,6 +22,7 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - [Get job token's job](../../api/jobs.md#get-job-tokens-job).
 - [Pipeline triggers](../../api/pipeline_triggers.md), using the `token=` parameter
   to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
+- [Update pipeline metadata](../../api/pipelines.md#update-pipeline-metadata)
 - [Releases](../../api/releases/index.md) and [Release links](../../api/releases/links.md).
 - [Terraform plan](../../user/infrastructure/index.md).
 - [Deployments](../../api/deployments.md).

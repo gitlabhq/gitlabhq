@@ -59,8 +59,14 @@
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
 
+.if-merge-request-labels-run-in-ruby3_0: &if-merge-request-labels-run-in-ruby3_0
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_0/'
+
 .if-merge-request-labels-run-in-ruby3_1: &if-merge-request-labels-run-in-ruby3_1
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
+
+.if-merge-request-labels-run-in-non-default-ruby: &if-merge-request-labels-run-in-non-default-ruby
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/'
 
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
@@ -2738,9 +2744,9 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.setup:rules:verify-ruby-3.0:
+.setup:rules:verify-default-ruby:
   rules:
-    - <<: *if-merge-request-labels-run-in-ruby3_1
+    - <<: *if-merge-request-labels-run-in-non-default-ruby
 
 .setup:rules:verify-tests-yml:
   rules:

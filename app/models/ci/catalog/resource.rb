@@ -17,8 +17,8 @@ module Ci
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
       scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
       scope :order_by_created_at_asc, -> { reorder(created_at: :asc) }
-      scope :order_by_name_desc, -> { joins(:project).merge(Project.sorted_by_name_desc) }
-      scope :order_by_name_asc, -> { joins(:project).merge(Project.sorted_by_name_asc) }
+      scope :order_by_name_desc, -> { reorder(arel_table[:name].desc.nulls_last) }
+      scope :order_by_name_asc, -> { reorder(arel_table[:name].asc.nulls_last) }
       scope :order_by_latest_released_at_desc, -> { reorder(arel_table[:latest_released_at].desc.nulls_last) }
       scope :order_by_latest_released_at_asc, -> { reorder(arel_table[:latest_released_at].asc.nulls_last) }
 

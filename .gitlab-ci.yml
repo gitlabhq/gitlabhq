@@ -64,15 +64,15 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    # For merge requests running exclusively in Ruby 3.1
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
+    # For merge requests running exclusively in Ruby 3.0
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_0/'
       variables:
-        <<: *next-ruby-variables
+        <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
         NO_SOURCEMAPS: 'true'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
       variables:
-        <<: *default-ruby-variables
+        <<: *next-ruby-variables
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline (community contribution)'
         NO_SOURCEMAPS: 'true'
@@ -83,7 +83,7 @@ workflow:
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
-        <<: *default-ruby-variables
+        <<: *next-ruby-variables
         <<: *default-merge-request-slow-tests-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
         NO_SOURCEMAPS: 'true'
@@ -156,7 +156,7 @@ variables:
   DOCKER_VERSION: "24.0.5"
   RUBYGEMS_VERSION: "3.4"
   GO_VERSION: "1.20"
-  RUST_VERSION: "1.65"
+  RUST_VERSION: "1.73"
 
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json

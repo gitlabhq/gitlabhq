@@ -744,6 +744,17 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'false')
           end
         end
+
+        context 'with audit event' do
+          it 'does not send a git streaming audit event' do
+            expect(::Gitlab::Audit::Auditor).not_to receive(:audit)
+
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response["need_audit"]).to be_falsy
+          end
+        end
       end
 
       context "git push" do
@@ -757,6 +768,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["gl_project_path"]).to eq(project.full_path)
             expect(json_response["gl_key_type"]).to eq("key")
             expect(json_response["gl_key_id"]).to eq(key.id)
+            expect(json_response["need_audit"]).to be_falsy
             expect(json_response["gitaly"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)

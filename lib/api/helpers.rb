@@ -337,6 +337,12 @@ module API
       unauthorized!
     end
 
+    def authenticate_by_gitlab_shell_or_workhorse_token!
+      return require_gitlab_workhorse! unless headers[GITLAB_SHELL_API_HEADER].present?
+
+      authenticate_by_gitlab_shell_token!
+    end
+
     def authenticated_with_can_read_all_resources!
       authenticate!
       forbidden! unless current_user.can_read_all_resources?
