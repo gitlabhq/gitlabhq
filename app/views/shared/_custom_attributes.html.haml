@@ -2,7 +2,7 @@
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-py-0' }) do |c|
   - c.with_header do
-    = link_to(_('Custom Attributes'), help_page_path('api/custom_attributes.md'))
+    = link_to(_('Custom Attributes'), help_page_path('api/custom_attributes'))
   - c.with_body do
     %ul.content-list
       - custom_attributes.each do |custom_attribute|

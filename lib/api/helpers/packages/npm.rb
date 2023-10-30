@@ -64,7 +64,7 @@ module API
             package_name = params[:package_name]
 
             namespace =
-              if Feature.enabled?(:npm_allow_packages_in_multiple_projects)
+              if Feature.enabled?(:npm_allow_packages_in_multiple_projects, top_namespace_from(package_name))
                 top_namespace_from(package_name)
               else
                 namespace_path = ::Packages::Npm.scope_of(package_name)
@@ -94,10 +94,12 @@ module API
         private
 
         def top_namespace_from(package_name)
-          namespace_path = ::Packages::Npm.scope_of(package_name)
-          return unless namespace_path
+          strong_memoize_with(:top_namespace_from, package_name) do
+            namespace_path = ::Packages::Npm.scope_of(package_name)
+            next unless namespace_path
 
-          Namespace.top_most.by_path(namespace_path)
+            Namespace.top_most.by_path(namespace_path)
+          end
         end
 
         def group

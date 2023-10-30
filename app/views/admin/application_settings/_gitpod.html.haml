@@ -8,7 +8,7 @@
       = expanded ? _('Collapse') : _('Expand')
     .gl-text-secondary.gl-mb-5
       #js-gitpod-settings-help-text{ data: {"message" => gitpod_enable_description, "message-url" => "https://gitpod.io/" } }
-      = link_to sprite_icon('question-o'), help_page_path('integration/gitpod.md'), target: '_blank', class: 'has-tooltip', title: _('More information')
+      = link_to sprite_icon('question-o'), help_page_path('integration/gitpod'), target: '_blank', class: 'has-tooltip', title: _('More information')
 
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-gitpod-settings'), html: { class: 'fieldset-form', id: 'gitpod-settings' } do |f|

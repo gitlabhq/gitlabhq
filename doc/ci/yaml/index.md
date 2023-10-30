@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# `.gitlab-ci.yml` keyword reference **(FREE ALL)**
+# CI/CD YAML syntax reference **(FREE ALL)**
 
 This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
 This file is where you define the CI/CD jobs that make up your pipeline.

@@ -62,7 +62,11 @@ export default {
     <collapsed-reviewer-list :users="sortedReviewers" :issuable-type="issuableType" />
 
     <div class="value hide-collapsed">
-      <span v-if="hasNoUsers" class="no-value" data-testid="no-value">
+      <span
+        v-if="hasNoUsers"
+        class="no-value gl-display-flex gl-font-base gl-line-height-normal"
+        data-testid="no-value"
+      >
         {{ __('None') }}
         <template v-if="editable">
           -

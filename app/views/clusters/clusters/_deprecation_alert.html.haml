@@ -2,6 +2,6 @@
   - c.with_body do
     - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
     - issue_link_start = link_start % { url: 'https://gitlab.com/gitlab-org/configure/general/-/issues/199' }
-    - docs_link_start = link_start % { url: help_page_path('user/clusters/agent/index.md') }
+    - docs_link_start = link_start % { url: help_page_path('user/clusters/agent/index') }
     - link_end = '</a>'.html_safe
     = s_('ClusterIntegration|This process is %{issue_link_start}deprecated%{issue_link_end}. Use the %{docs_link_start}the GitLab agent for Kubernetes%{docs_link_end} instead.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end, issue_link_start: issue_link_start, issue_link_end: link_end }

@@ -8,7 +8,7 @@
       = _('reCAPTCHA helps prevent credential stuffing.')
       = link_to _('Only reCAPTCHA v2 is supported:'), 'https://developers.google.com/recaptcha/docs/versions', target: '_blank', rel: 'noopener noreferrer'
     .form-group
-      - spam_help_link_url = help_page_path('integration/recaptcha.md')
+      - spam_help_link_url = help_page_path('integration/recaptcha')
       - spam_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: spam_help_link_url }
       = f.gitlab_ui_checkbox_component :recaptcha_enabled, _("Enable reCAPTCHA"),
       help_text: _('Helps prevent bots from creating accounts. %{link_start}How do I configure it?%{link_end}').html_safe % { link_start: spam_help_link_start, link_end: '</a>'.html_safe }
@@ -40,7 +40,7 @@
       = _('Akismet')
     %p
       = _('Akismet helps prevent the creation of spam issues in public projects.')
-      = link_to _('How do I configure Akismet?'), help_page_path('integration/akismet.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('How do I configure Akismet?'), help_page_path('integration/akismet'), target: '_blank', rel: 'noopener noreferrer'
 
     .form-group
       = f.gitlab_ui_checkbox_component :akismet_enabled, _('Enable Akismet'),

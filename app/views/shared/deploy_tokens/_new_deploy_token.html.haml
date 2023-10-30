@@ -9,7 +9,7 @@
         .input-group-append
           = deprecated_clipboard_button(text: deploy_token.username, title: s_('DeployTokens|Copy username'), placement: 'left')
       %span.deploy-token-help-block.gl-mt-2.text-success
-        - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/deploy_tokens/index.md') }
+        - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/deploy_tokens/index') }
         - link_end = "</a>".html_safe
         = s_("DeployTokens|This username supports access. %{link_start}What kind of access?%{link_end}").html_safe % { link_start: link_start, link_end: link_end }
 

@@ -26,7 +26,7 @@
       = f.text_area :outbound_local_requests_allowlist_raw, placeholder: "example.com, 192.168.1.1, xn--itlab-j1a.com", class: 'form-control gl-form-input', rows: 8
       %span.form-text.text-muted
         = s_('OutboundRequests|Requests can be made to these IP addresses and domains even when local requests are not allowed. IP ranges such as %{code_start}1:0:0:0:0:0:0:0/124%{code_end} and %{code_start}127.0.0.0/28%{code_end} are supported. Domain wildcards are not supported. To separate entries, use commas, semicolons, or newlines. The allowlist can have a maximum of 1000 entries. Domains must be IDNA-encoded.').html_safe % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
-        = link_to _('Learn more.'), help_page_path('security/webhooks.md', anchor: 'allow-outbound-requests-to-certain-ip-addresses-and-domains'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more.'), help_page_path('security/webhooks', anchor: 'allow-outbound-requests-to-certain-ip-addresses-and-domains'), target: '_blank', rel: 'noopener noreferrer'
 
     .form-group
       = f.gitlab_ui_checkbox_component :dns_rebinding_protection_enabled,

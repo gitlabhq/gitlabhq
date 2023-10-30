@@ -84,7 +84,7 @@ module QA
         let(:text2) { 'is not one of the allowed_pull_policies ([never])' }
 
         it(
-          'fails job with policy not allowed message',
+          'fails job with policy not allowed message', :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853'
         ) do
           visit_job

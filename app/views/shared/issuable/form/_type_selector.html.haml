@@ -10,6 +10,6 @@
 
   - if issuable.incident_type_issue?
     %p.form-text.text-muted
-      - incident_docs_url = help_page_path('operations/incident_management/incidents.md')
+      - incident_docs_url = help_page_path('operations/incident_management/incidents')
       - incident_docs_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">', url: incident_docs_url)
       = format(_('A %{incident_docs_start}modified issue%{incident_docs_end} to guide the resolution of incidents.'), incident_docs_start: incident_docs_start, incident_docs_end: '</a>').html_safe

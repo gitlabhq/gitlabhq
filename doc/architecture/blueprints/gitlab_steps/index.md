@@ -131,7 +131,14 @@ TBD
 
 ## Proposal
 
-TBD
+### GitLab Steps definition and syntax
+
+- [Step Definition](step-definition.md).
+- [Syntactic Sugar extensions](steps-syntactic-sugar.md).
+
+### Integration of GitLab Steps in `.gitlab-ci.yml`
+
+- [Usage of the GitLab Steps with `.gitlab-ci.yml`](gitlab-ci.md).
 
 ## Design and implementation details
 

@@ -278,9 +278,21 @@ To enable an Outbound Private Link:
 GitLab then configures the tenant instance to create the necessary Endpoint Interfaces based on the service names you provided. Any matching outbound
 connections made from the tenant GitLab instance are directed through the PrivateLink into your VPC.
 
-#### Custom certificates
+### Custom certificates
 
 In some cases, the GitLab Dedicated instance can't reach an internal service you own because it exposes a certificate that can't be validated using a public Certification Authority (CA). In these cases, custom certificates are required.
+
+#### Add a custom certificate with Switchboard
+
+1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **Custom Certificate Authorities**.
+1. Select **+ Add Certificate**.
+1. Paste the certificate into the text box.
+1. Select **Save**.
+1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
+
+#### Add a custom certificate with a Support Request
 
 To request that GitLab add custom certificates when communicating with your services over PrivateLink, attach the custom public certificate files to your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
@@ -292,6 +304,19 @@ GitLab Dedicated limits the number of reverse PrivateLink connections to 10.
 
 GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist.
 
+#### Add an IP to the allowlist with Switchboard
+
+1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **Allowed Source List Config / IP allowlist**.
+1. Turn on the **Enable** toggle.
+1. Select **Add Item**.
+1. Enter the IP address and description. To add another IP address, repeat steps 5 and 6.
+1. Select **Save**.
+1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
+
+#### Add an IP to the allowlist with a Support Request
+
 Specify a comma separated list of IP addresses that can access your GitLab Dedicated instance in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). After the configuration has been applied, when an IP not on the allowlist tries to access your instance, the connection is refused.
 
 ### SAML
@@ -302,6 +327,23 @@ GitLab Dedicated supports a limited number of SAML parameters. Parameters not sh
 Prerequisites:
 
 - You must configure the identity provider before sending the required data to GitLab.
+
+#### Activate SAML with Switchboard
+
+To activate SAML for your GitLab Dedicated instance:
+
+1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **SAML Config**.
+1. Turn on the **Enable** toggle.
+1. Complete the fields.
+1. Select **Save**.
+1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
+1. To verify the SAML configuration is successful:
+    - Check that the SSO button description is displayed on your instance's sign-in page.
+    - Go to the metadata URL of your instance (`https://INSTANCE-URL/users/auth/saml/metadata`). This page can be used to simplify much of the configuration of the identity provider, and manually validate the settings.
+
+#### Activate SAML with a Support Request
 
 To activate SAML for your GitLab Dedicated instance:
 
