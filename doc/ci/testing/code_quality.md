@@ -710,3 +710,39 @@ Replace `gitlab.example.com` with the actual domain of the registry.
          mount_path = "/etc/docker/certs.d/gitlab.example.com/ca.crt"
          sub_path = "gitlab.example.com.crt"
    ```
+
+### Failed to load Code Quality report
+
+The Code Quality report can fail to load when there are issues parsing data from the artifact file.
+To gain insight into the errors, you can execute a GraphQL query using the following steps:
+
+1. Go to the pipeline details page.
+1. Append `.json` to the URL.
+1. Copy the `iid` of the pipeline.
+1. Go to [GraphiQL explorer](../../api/graphql/index.md#graphiql).
+1. Run the following query:
+
+   ```graphql
+   {
+     project(fullPath: "<fullpath-to-your-project>") {
+       pipeline(iid: "<iid>") {
+         codeQualityReports {
+           count
+           nodes {
+             line
+             description
+             path
+             fingerprint
+             severity
+           }
+           pageInfo {
+             hasNextPage
+             hasPreviousPage
+             startCursor
+             endCursor
+           }
+         }
+       }
+     }
+   }
+   ```

@@ -11,7 +11,7 @@ import {
   DEFAULT_VALUE_STREAM,
   PAGINATION_TYPE,
   PAGINATION_SORT_DIRECTION_DESC,
-  PAGINATION_SORT_FIELD_END_EVENT,
+  PAGINATION_SORT_FIELD_DURATION,
 } from '~/analytics/cycle_analytics/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
@@ -245,7 +245,7 @@ export const valueStreamStages = rawValueStreamStages.map((s) =>
 
 export const initialPaginationQuery = {
   page: 15,
-  sort: PAGINATION_SORT_FIELD_END_EVENT,
+  sort: PAGINATION_SORT_FIELD_DURATION,
   direction: PAGINATION_SORT_DIRECTION_DESC,
 };
 
@@ -257,7 +257,7 @@ export const initialPaginationState = {
 
 export const basePaginationResult = {
   pagination: PAGINATION_TYPE,
-  sort: PAGINATION_SORT_FIELD_END_EVENT,
+  sort: PAGINATION_SORT_FIELD_DURATION,
   direction: PAGINATION_SORT_DIRECTION_DESC,
   page: null,
 };

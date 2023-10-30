@@ -1,5 +1,5 @@
 import {
-  PAGINATION_SORT_FIELD_END_EVENT,
+  PAGINATION_SORT_FIELD_DURATION,
   PAGINATION_SORT_DIRECTION_DESC,
 } from '~/analytics/cycle_analytics/constants';
 
@@ -29,7 +29,7 @@ export default () => ({
   pagination: {
     page: null,
     hasNextPage: false,
-    sort: PAGINATION_SORT_FIELD_END_EVENT,
+    sort: PAGINATION_SORT_FIELD_DURATION,
     direction: PAGINATION_SORT_DIRECTION_DESC,
   },
   predefinedDateRange: null,

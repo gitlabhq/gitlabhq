@@ -170,4 +170,11 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [113.1](113.1.md) | Improper Neutralization of CRLF Sequences in HTTP Headers | High | Active |
 | [22.1](22.1.md) | Improper limitation of a pathname to a restricted directory (Path traversal) | High | Active |
 | [611.1](611.1.md) | External XML Entity Injection (XXE) | High | Active |
+| [89.1](89.1.md) | SQL Injection | High | Active |
+| [917.1](917.1.md) | Expression Language Injection | High | Active |
+| [94.1](94.1.md) | Server-side code injection (PHP) | High | Active |
+| [94.2](94.2.md) | Server-side code injection (Ruby) | High | Active |
+| [94.3](94.3.md) | Server-side code injection (Python) | High | Active |
 | [94.4](94.4.md) | Server-side code injection (NodeJS) | High | Active |
+| [943.1](943.1.md) | Improper neutralization of special elements in data query logic | High | Active |
+>
