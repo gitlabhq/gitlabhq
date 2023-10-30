@@ -48,6 +48,20 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
           it 'fetches the content' do
             expect(path.fetch_content!(current_user: user)).to eq(content)
           end
+
+          shared_examples 'prevents infinite loop' do |prefix|
+            context "when the project path starts with '#{prefix}'" do
+              let(:project_path) { "#{prefix}#{existing_project.full_path}" }
+
+              it 'returns nil' do
+                result = path.fetch_content!(current_user: user)
+                expect(result).to be_nil
+              end
+            end
+          end
+
+          it_behaves_like 'prevents infinite loop', '/'
+          it_behaves_like 'prevents infinite loop', '//'
         end
 
         context 'when user does not have permissions to download code' do
