@@ -123,3 +123,13 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 ### Shell Scripting guides
 
 - [Shell scripting standards and style guidelines](shell_scripting_guide/index.md)
+
+## Clear written communication
+
+While writing any comment in an issue or merge request or any other mode of communication,
+follow [IETF standard](https://www.ietf.org/rfc/rfc2119.txt) while using terms like
+"MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT","RECOMMENDED", "MAY",
+and "OPTIONAL".
+
+This ensures that different team members from different cultures have a clear understanding of
+the terms being used.

@@ -41,5 +41,11 @@ RSpec.describe Gitlab::Database::Migrations::MilestoneMixin, feature_category: :
         expect { migration_mixin_version.new(4, 4, :regular) }.not_to raise_error
       end
     end
+
+    context 'when initialize arguments are not provided' do
+      it "does not raise an error" do
+        expect { migration_mixin_version.new }.not_to raise_error
+      end
+    end
   end
 end

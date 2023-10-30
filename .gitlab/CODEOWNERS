@@ -467,6 +467,7 @@ lib/gitlab/checks/**
 /doc/administration/consul.md @axil
 /doc/administration/credentials_inventory.md @jglassman1
 /doc/administration/custom_project_templates.md @msedlakjakubowski
+/doc/administration/dedicated/ @lyspin
 /doc/administration/diff_limits.md @msedlakjakubowski
 /doc/administration/docs_self_host.md @axil
 /doc/administration/encrypted_configuration.md @axil
@@ -790,7 +791,6 @@ lib/gitlab/checks/**
 /doc/development/fe_guide/merge_request_widget_extensions.md @aqualls
 /doc/development/fe_guide/onboarding_course/ @sselhorn
 /doc/development/fe_guide/source_editor.md @msedlakjakubowski
-/doc/development/fe_guide/style/ @aqualls
 /doc/development/fe_guide/view_component.md @sselhorn
 /doc/development/feature_categorization/ @sselhorn
 /doc/development/fips_compliance.md @msedlakjakubowski
@@ -874,6 +874,7 @@ lib/gitlab/checks/**
 /doc/security/email_verification.md @phillipwells
 /doc/security/identity_verification.md @phillipwells
 /doc/subscriptions/ @fneill
+/doc/subscriptions/gitlab_dedicated/ @lyspin
 /doc/topics/autodevops/ @phillipwells
 /doc/topics/data_seeder.md @sselhorn
 /doc/topics/git/ @msedlakjakubowski
@@ -892,6 +893,7 @@ lib/gitlab/checks/**
 /doc/tutorials/install_gitlab_single_node/ @axil
 /doc/tutorials/issue_triage/ @msedlakjakubowski
 /doc/tutorials/move_personal_project_to_group/ @lciutacu
+/doc/tutorials/product_analytics_onboarding_website_project/ @lciutacu
 /doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/scan_execution_policy/ @rdickenson
 /doc/tutorials/scan_result_policy/ @rdickenson
@@ -912,7 +914,6 @@ lib/gitlab/checks/**
 /doc/user/discussions/ @aqualls
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
-/doc/user/feature_flags.md @sselhorn
 /doc/user/gitlab_duo_chat.md @sselhorn
 /doc/user/group/ @lciutacu
 /doc/user/group/clusters/ @phillipwells
@@ -992,6 +993,7 @@ lib/gitlab/checks/**
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
 /doc/user/search/command_palette.md @sselhorn
+/doc/user/shortcuts.md @sselhorn
 /doc/user/snippets.md @msedlakjakubowski
 /doc/user/ssh.md @jglassman1
 /doc/user/storage_management_automation.md @fneill

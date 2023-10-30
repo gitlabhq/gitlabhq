@@ -19,8 +19,8 @@ module Gitlab
           end
         end
 
-        def initialize(name = class_name, version = nil, _type = nil)
-          raise MilestoneNotSetError, "Milestone is not set for #{self.class.name}" if milestone.nil?
+        def initialize(name = self.class.name, version = nil, _type = nil)
+          raise MilestoneNotSetError, "Milestone is not set for #{name}" if milestone.nil?
 
           super(name, version)
         end

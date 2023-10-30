@@ -5,7 +5,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be_with_reload(:project) { create(:project, :pages_published, pages_https_only: false) }
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
@@ -85,7 +85,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
         it 'renders "Pages" tab' do
           visit project_pages_path(project)
 
-          page.within '.nav-sidebar' do
+          within_testid 'super-sidebar' do
             expect(page).to have_link('Pages')
           end
         end
@@ -96,7 +96,8 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
           it 'renders "Pages" tab' do
             visit project_environments_path(project)
 
-            page.within '.nav-sidebar' do
+            within_testid 'super-sidebar' do
+              click_button 'Deploy'
               expect(page).to have_link('Pages')
             end
           end
@@ -110,7 +111,8 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
           it 'does not render "Pages" tab' do
             visit project_environments_path(project)
 
-            page.within '.nav-sidebar' do
+            within_testid 'super-sidebar' do
+              click_button 'Deploy'
               expect(page).not_to have_link('Pages')
             end
           end

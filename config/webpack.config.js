@@ -383,6 +383,15 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /swagger-ui-dist\/.*\.js?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          plugins: ['@babel/plugin-proposal-logical-assignment-operators'],
+          ...defaultJsOptions,
+        },
+      },
+      {
         test: /\.(js|cjs)$/,
         exclude: shouldExcludeFromCompliling,
         use: [

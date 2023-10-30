@@ -35,6 +35,8 @@ class MemberEntity < Grape::Entity
     expose :member_role_id
   end
 
+  expose :custom_permissions
+
   expose :source do |member|
     GroupEntity.represent(member.source, only: [:id, :full_name, :web_url])
   end

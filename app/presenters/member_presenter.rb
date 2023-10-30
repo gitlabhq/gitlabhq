@@ -41,6 +41,11 @@ class MemberPresenter < Gitlab::View::Presenter::Delegated
     false
   end
 
+  # This functionality is only available in EE.
+  def custom_permissions
+    []
+  end
+
   def last_owner?
     raise NotImplementedError
   end

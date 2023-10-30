@@ -6,7 +6,7 @@ RSpec.describe 'User creates branch', :js, feature_category: :groups_and_project
   include Features::BranchesHelpers
 
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
 
   shared_examples 'creates new branch' do
     specify do

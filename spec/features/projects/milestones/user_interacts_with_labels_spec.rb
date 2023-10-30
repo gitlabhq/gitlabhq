@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User interacts with labels', feature_category: :team_planning do
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project, title: 'v2.2', description: '# Description header') }
   let(:issue1) { create(:issue, project: project, title: 'Bugfix1', milestone: milestone) }
@@ -25,9 +25,7 @@ RSpec.describe 'User interacts with labels', feature_category: :team_planning do
   it 'shows the list of labels', :js do
     click_link('v2.2')
 
-    page.within('.nav-sidebar') do
-      page.find(:xpath, "//a[@href='#tab-labels']").click
-    end
+    page.find(:xpath, "//a[@href='#tab-labels']").click
 
     expect(page).to have_selector('ul.manage-labels-list')
 

@@ -7184,10 +7184,10 @@ graphql@^15.7.2:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.7.2.tgz#85ab0eeb83722977151b3feb4d631b5f2ab287ef"
   integrity sha512-AnnKk7hFQFmU/2I9YSQf3xw44ctnSFCfp3zE0N6W174gqe9fWG/2rKaKxROK7CcI3XtERpjEKFqts8o319Kf7A==
 
-gridstack@^9.4.0:
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-9.4.0.tgz#806b5f8dc2d52ac6aade5d5fc799979a167f6977"
-  integrity sha512-4dcXGT5IzWfLxJIj4oGZPohgYfHrbdNHenRwwApzialkG2bVd9J9NmcdZsRFX6Q4cANqR0M56yF2Km2FAQkVCw==
+gridstack@^9.5.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-9.5.0.tgz#7a48fbddca6e13cb55d921bdbe6ab22f5a12e470"
+  integrity sha512-mGYID0mdmtPzv/Qt9lgc3TfQjFgPcxEkGZ/Z6ESCCAplli5UUJLbOsEtaM5uGUGExOC8zo7FoHNL01Xze5AF9g==
 
 gzip-size@^6.0.0:
   version "6.0.0"
@@ -12603,10 +12603,10 @@ swagger-cli@^4.0.4:
   dependencies:
     "@apidevtools/swagger-cli" "4.0.4"
 
-swagger-ui-dist@4.12.0:
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.12.0.tgz#986d90f05e81fb9db3ca40372278a5d8ce71db3a"
-  integrity sha512-B0Iy2ueXtbByE6OOyHTi3lFQkpPi/L7kFOKFeKTr44za7dJIELa9kzaca6GkndCgpK1QTjArnoXG+aUy0XQp1w==
+swagger-ui-dist@5.9.1:
+  version "5.9.1"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-5.9.1.tgz#d0bcd614e3752da02df141846348f84468ae815e"
+  integrity sha512-5zAx+hUwJb9T3EAntc7TqYkV716CMqG6sZpNlAAMOMWkNXRYxGkN8ADIvD55dQZ10LxN90ZM/TQmN7y1gpICnw==
 
 symbol-observable@^1.0.4:
   version "1.2.0"

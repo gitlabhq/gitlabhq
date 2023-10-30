@@ -248,19 +248,19 @@ export default {
         class="ml-1"
       />
     </td>
-    <td class="d-none d-sm-table-cell tree-commit cursor-default gl-text-secondary">
+    <td class="d-none d-sm-table-cell tree-commit cursor-default">
       <gl-link
         v-if="commitData"
         v-safe-html:[$options.safeHtmlConfig]="commitData.titleHtml"
         :href="commitData.commitPath"
         :title="commitData.message"
-        class="str-truncated-100 tree-commit-link gl-text-secondary"
+        class="str-truncated-100 tree-commit-link gl-text-gray-600"
       />
       <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
         <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
       </gl-intersection-observer>
     </td>
-    <td class="tree-time-ago text-right cursor-default gl-text-secondary">
+    <td class="tree-time-ago text-right cursor-default gl-text-gray-600">
       <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
         <timeago-tooltip v-if="commitData" :time="commitData.committedDate" />
       </gl-intersection-observer>
