@@ -49,6 +49,7 @@ RSpec.describe Gitlab::Ci::Jwt do
         expect(payload[:environment]).to be_nil
         expect(payload[:environment_protected]).to be_nil
         expect(payload[:deployment_tier]).to be_nil
+        expect(payload[:environment_action]).to be_nil
       end
     end
 
@@ -109,7 +110,10 @@ RSpec.describe Gitlab::Ci::Jwt do
           project: project,
           user: user,
           pipeline: pipeline,
-          environment: environment.name
+          environment: {
+            name: environment.name,
+            action: 'start'
+          }
         )
       end
 
@@ -121,6 +125,7 @@ RSpec.describe Gitlab::Ci::Jwt do
         expect(payload[:environment]).to eq('production')
         expect(payload[:environment_protected]).to eq('false')
         expect(payload[:deployment_tier]).to eq('production')
+        expect(payload[:environment_action]).to eq('start')
       end
 
       describe 'deployment_tier' do
@@ -131,6 +136,18 @@ RSpec.describe Gitlab::Ci::Jwt do
 
           it 'uses deployment_tier from build options' do
             expect(payload[:deployment_tier]).to eq('development')
+          end
+        end
+      end
+
+      describe 'environment_action' do
+        context 'when build options specifies a different environment_action' do
+          before do
+            build.options[:environment] = { name: environment.name, action: 'prepare' }
+          end
+
+          it 'uses environment_action from build options' do
+            expect(payload[:environment_action]).to eq('prepare')
           end
         end
       end
