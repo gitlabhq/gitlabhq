@@ -2,6 +2,31 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.4.2 (2023-10-30)
+
+### Fixed (4 changes)
+
+- [Fix pipeline schedules view when owner is nil](gitlab-org/security/gitlab@663b1328b6e05e472f60ebdcec9866220b88d066)
+- [Update dependency prometheus-client-mmap to '>= 0.28.1'](gitlab-org/security/gitlab@a478482f3616bfe205e10fcca997b0e6f133d692)
+- [Fix failing migration when commit_message_negative_regex is missing](gitlab-org/security/gitlab@1488c3ed6568d44aa7c8b7d0551fa8160b59c1dc)
+- [Backport fix flaky epic tests](gitlab-org/security/gitlab@155cb51939d5b3c1f4b847219a5cb62c9f2ae1b0) **GitLab Enterprise Edition**
+
+### Security (9 changes)
+
+- [Fix infinite loop when finding component project](gitlab-org/security/gitlab@b38efc987c1081fcd092c96e69c7ebb539324679) ([merge request](gitlab-org/security/gitlab!3666))
+- [Update gitlab-chronic-duration to 0.12](gitlab-org/security/gitlab@1c8dd2e890c1121b1c1ad947f701a39ec6ac5310) ([merge request](gitlab-org/security/gitlab!3628))
+- [Guard gitlab_version_check helper](gitlab-org/security/gitlab@e6c833ee0da8a801f08d5d7411b4ff683d0cde31) ([merge request](gitlab-org/security/gitlab!3653))
+- [Add the environment action to the CI JWT token fields](gitlab-org/security/gitlab@10fe34349f2e1d8230b805316f559b2dde8e6240) ([merge request](gitlab-org/security/gitlab!3616))
+- [Remove FIFO files from tarball extract](gitlab-org/security/gitlab@5d5acf918d68ffcf193a7c477c637788aadd882e) ([merge request](gitlab-org/security/gitlab!3633))
+- [Backport add abuse detection for pipes](gitlab-org/security/gitlab@2ccde2dbbcc647c8fc34ebb71c5472e2b70560ab) ([merge request](gitlab-org/security/gitlab!3618))
+- [Prevent unprivileged user assignment in templated projects](gitlab-org/security/gitlab@977371d7af40caa2a9b8fb18fe093be12d2e8443) ([merge request](gitlab-org/security/gitlab!3636))
+- [Fixes Service Desk email template issue description privileges](gitlab-org/security/gitlab@6e8e58e222937232397502828fa0985dee1bf786) ([merge request](gitlab-org/security/gitlab!3640))
+- [Update mermaid version for DOS fixes](gitlab-org/security/gitlab@5047299db60c7ab27fb521812d04dee7e70e319b) ([merge request](gitlab-org/security/gitlab!3626))
+
+### Other (1 change)
+
+- [Create Geo event when project is created](gitlab-org/security/gitlab@1f743fba3af02ab30e65c03da7f088610880a90a) **GitLab Enterprise Edition**
+
 ## 16.4.1 (2023-09-28)
 
 ### Security (15 changes)
