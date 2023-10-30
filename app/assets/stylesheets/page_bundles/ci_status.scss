@@ -48,6 +48,7 @@
 
   &.ci-pending,
   &.ci-waiting-for-resource,
+  &.ci-waiting-for-callback,
   &.ci-failed-with-warnings,
   &.ci-success-with-warnings {
     @include status-color(

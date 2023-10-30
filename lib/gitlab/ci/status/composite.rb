@@ -61,6 +61,8 @@ module Gitlab
               'running'
             elsif any_of?(:waiting_for_resource)
               'waiting_for_resource'
+            elsif any_of?(:waiting_for_callback)
+              'waiting_for_callback'
             elsif any_of?(:manual)
               'manual'
             elsif any_of?(:scheduled)

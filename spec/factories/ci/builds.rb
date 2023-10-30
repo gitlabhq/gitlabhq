@@ -117,6 +117,11 @@ FactoryBot.define do
       status { 'running' }
     end
 
+    trait :waiting_for_callback do
+      started
+      status { 'waiting_for_callback' }
+    end
+
     trait :pending do
       with_token
       queued_at { 'Di 29. Okt 09:50:59 CET 2013' }

@@ -190,6 +190,7 @@ module Ci
 
         # this is needed to ensure tests to be covered
         transition [:running] => :running
+        transition [:waiting_for_callback] => :waiting_for_callback
       end
 
       event :request_resource do
@@ -202,6 +203,10 @@ module Ci
 
       event :run do
         transition any - [:running] => :running
+      end
+
+      event :wait_for_callback do
+        transition any - [:waiting_for_callback] => :waiting_for_callback
       end
 
       event :skip do
@@ -555,7 +560,7 @@ module Ci
     end
 
     def self.bridgeable_statuses
-      ::Ci::Pipeline::AVAILABLE_STATUSES - %w[created waiting_for_resource preparing pending]
+      ::Ci::Pipeline::AVAILABLE_STATUSES - %w[created waiting_for_resource waiting_for_callback preparing pending]
     end
 
     def self.auto_devops_pipelines_completed_total
@@ -851,6 +856,7 @@ module Ci
         when 'created' then nil
         when 'waiting_for_resource' then request_resource
         when 'preparing' then prepare
+        when 'waiting_for_callback' then wait_for_callback
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed

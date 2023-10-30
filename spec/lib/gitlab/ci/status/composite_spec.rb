@@ -57,6 +57,7 @@ RSpec.describe Gitlab::Ci::Status::Composite, feature_category: :continuous_inte
         %i[pending created skipped success] | true  | 'skipped'              | false
         %i[running created skipped success] | true  | 'skipped'              | false
         %i[success waiting_for_resource]    | false | 'waiting_for_resource' | false
+        %i[success waiting_for_callback]    | false | 'waiting_for_callback' | false
         %i[success manual]                  | false | 'manual'               | false
         %i[success scheduled]               | false | 'scheduled'            | false
         %i[created preparing]               | false | 'preparing'            | false

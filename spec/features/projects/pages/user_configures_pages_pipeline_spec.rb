@@ -24,7 +24,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
       it 'renders onboarding instructions' do
         visit project_pages_path(project)
 
-        expect(page).to have_content('Get started with Pages')
+        expect(page).to have_content('Get started with GitLab Pages')
       end
     end
 

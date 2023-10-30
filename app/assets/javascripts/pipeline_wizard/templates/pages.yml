@@ -1,12 +1,10 @@
 id: gitlab/pages
-title: Get started with Pages
-description: "GitLab Pages lets you deploy static websites in minutes. All you
- need is a .gitlab-ci.yml file. Follow the below steps to
-    create one for your app now."
+title: Get started with GitLab Pages
+description: "Use GitLab Pages to deploy your static website. Follow these steps to create the configuration file, .gitlab-ci.yml, and start a pipeline to deploy the site."
 steps:
   - inputs:
       - label: Select your build image
-        description: A Docker image that we can use to build your image
+        description: A Docker image, used to create an instance where your job runs.
         placeholder: node:lts
         widget: text
         target: $BUILD_IMAGE
@@ -14,18 +12,15 @@ steps:
         pattern: "(?:[a-z]+/)?([a-z]+)(?::[0-9]+)?"
         invalid-feedback: Please enter a valid docker image
       - widget: checklist
-        title: "Before we begin, please check:"
         items:
-          - text: The app's built output files are in a folder named "public"
-            help: GitLab Pages will only publish files in that folder.
-                  You may need to adjust your build engine's config.
+          - text: The application files are in the `public` folder
+            help: GitLab Pages publishes files in the public folder only. If needed, change your jobs to send output to this folder.
     template:
       # The Docker image that will be used to build your app
       image: $BUILD_IMAGE
   - inputs:
       - label: Installation Steps
-        description: "Enter the steps that need to run to set up a local build
-          environment, for example installing dependencies."
+        description: "Enter steps to set up a local build environment, like installing dependencies."
         placeholder: npm ci
         widget: list
         target: $INSTALLATION_STEPS
@@ -34,8 +29,7 @@ steps:
       before_script: $INSTALLATION_STEPS
   - inputs:
       - label: Build Steps
-        description: "Enter the steps necessary to build a production version of
-          your application."
+        description: "Enter steps to build a production version of your application."
         widget: list
         target: $BUILD_STEPS
     template:

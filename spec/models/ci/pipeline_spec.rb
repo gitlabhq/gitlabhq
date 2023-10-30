@@ -2819,7 +2819,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { described_class.bridgeable_statuses }
 
     it { is_expected.to be_an(Array) }
-    it { is_expected.not_to include('created', 'waiting_for_resource', 'preparing', 'pending') }
+    it { is_expected.to contain_exactly('running', 'success', 'failed', 'canceled', 'skipped', 'manual', 'scheduled') }
   end
 
   describe '#status', :sidekiq_inline do
@@ -3176,6 +3176,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     %i[
       enqueue
       request_resource
+      wait_for_callback
       prepare
       run
       skip

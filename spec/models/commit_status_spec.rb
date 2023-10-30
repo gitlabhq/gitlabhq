@@ -156,7 +156,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   describe '.cancelable' do
     subject { described_class.cancelable }
 
-    %i[running pending waiting_for_resource preparing created scheduled].each do |status|
+    %i[running pending waiting_for_resource waiting_for_callback preparing created scheduled].each do |status|
       context "when #{status} commit status" do
         let!(:commit_status) { create(:commit_status, status, pipeline: pipeline) }
 

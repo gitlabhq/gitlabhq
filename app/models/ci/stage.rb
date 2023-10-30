@@ -78,6 +78,10 @@ module Ci
         transition any - [:running] => :running
       end
 
+      event :wait_for_callback do
+        transition any - [:waiting_for_callback] => :waiting_for_callback
+      end
+
       event :skip do
         transition any - [:skipped] => :skipped
       end
@@ -109,6 +113,7 @@ module Ci
         when 'created' then nil
         when 'waiting_for_resource' then request_resource
         when 'preparing' then prepare
+        when 'waiting_for_callback' then wait_for_callback
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed

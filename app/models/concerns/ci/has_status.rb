@@ -6,19 +6,20 @@ module Ci
 
     DEFAULT_STATUS = 'created'
     BLOCKED_STATUS = %w[manual scheduled].freeze
-    AVAILABLE_STATUSES = %w[created waiting_for_resource preparing pending running success failed canceled skipped manual scheduled].freeze
+    AVAILABLE_STATUSES = %w[created waiting_for_resource preparing waiting_for_callback pending running success failed canceled skipped manual scheduled].freeze
     STARTED_STATUSES = %w[running success failed].freeze
-    ACTIVE_STATUSES = %w[waiting_for_resource preparing pending running].freeze
+    ACTIVE_STATUSES = %w[waiting_for_resource preparing waiting_for_callback pending running].freeze
     COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
     STOPPED_STATUSES = COMPLETED_STATUSES + BLOCKED_STATUS
-    ORDERED_STATUSES = %w[failed preparing pending running waiting_for_resource manual scheduled canceled success skipped created].freeze
+    ORDERED_STATUSES = %w[failed preparing pending running waiting_for_callback waiting_for_resource manual scheduled canceled success skipped created].freeze
     PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
     IGNORED_STATUSES = %w[manual].to_set.freeze
     ALIVE_STATUSES = (ACTIVE_STATUSES + ['created']).freeze
     CANCELABLE_STATUSES = (ALIVE_STATUSES + ['scheduled']).freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
                       failed: 4, canceled: 5, skipped: 6, manual: 7,
-                      scheduled: 8, preparing: 9, waiting_for_resource: 10 }.freeze
+                      scheduled: 8, preparing: 9, waiting_for_resource: 10,
+                      waiting_for_callback: 11 }.freeze
 
     UnknownStatusError = Class.new(StandardError)
 
@@ -58,6 +59,7 @@ module Ci
         state :created, value: 'created'
         state :waiting_for_resource, value: 'waiting_for_resource'
         state :preparing, value: 'preparing'
+        state :waiting_for_callback, value: 'waiting_for_callback'
         state :pending, value: 'pending'
         state :running, value: 'running'
         state :failed, value: 'failed'
@@ -72,6 +74,7 @@ module Ci
       scope :waiting_for_resource, -> { with_status(:waiting_for_resource) }
       scope :preparing, -> { with_status(:preparing) }
       scope :relevant, -> { without_status(:created) }
+      scope :waiting_for_callback, -> { with_status(:waiting_for_callback) }
       scope :running, -> { with_status(:running) }
       scope :pending, -> { with_status(:pending) }
       scope :success, -> { with_status(:success) }

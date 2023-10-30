@@ -43,6 +43,7 @@ RSpec.describe Ci::JobsHelper, feature_category: :continuous_integration do
         "scheduled" => "SCHEDULED",
         "skipped" => "SKIPPED",
         "success" => "SUCCESS",
+        "waiting_for_callback" => "WAITING_FOR_CALLBACK",
         "waiting_for_resource" => "WAITING_FOR_RESOURCE"
       })
     end

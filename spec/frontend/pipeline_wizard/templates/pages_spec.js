@@ -39,7 +39,11 @@ describe('Pages Template', () => {
           }),
           expect.objectContaining({
             widget: 'checklist',
-            title: 'Before we begin, please check:',
+            items: [
+              expect.objectContaining({
+                text: 'The application files are in the `public` folder',
+              }),
+            ],
           }),
         ],
         template: expect.stringContaining(VAR_BUILD_IMAGE),

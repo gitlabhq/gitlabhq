@@ -159,15 +159,15 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     event :drop do
-      transition [:created, :waiting_for_resource, :preparing, :pending, :running, :manual, :scheduled] => :failed
+      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :failed
     end
 
     event :success do
-      transition [:created, :waiting_for_resource, :preparing, :pending, :running] => :success
+      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running] => :success
     end
 
     event :cancel do
-      transition [:created, :waiting_for_resource, :preparing, :pending, :running, :manual, :scheduled] => :canceled
+      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :canceled
     end
 
     before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|

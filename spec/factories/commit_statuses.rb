@@ -32,6 +32,10 @@ FactoryBot.define do
       status { 'running' }
     end
 
+    trait :waiting_for_callback do
+      status { 'waiting_for_callback' }
+    end
+
     trait :pending do
       status { 'pending' }
     end

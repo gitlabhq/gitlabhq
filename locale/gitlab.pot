@@ -10364,6 +10364,9 @@ msgstr ""
 msgid "CiStatusLabel|skipped"
 msgstr ""
 
+msgid "CiStatusLabel|waiting for callback"
+msgstr ""
+
 msgid "CiStatusLabel|waiting for delayed job"
 msgstr ""
 
@@ -18493,6 +18496,9 @@ msgstr ""
 msgid "Enter the username for password-protected Elasticsearch servers."
 msgstr ""
 
+msgid "Enter values to populate the .gitlab-ci.yml configuration file."
+msgstr ""
+
 msgid "Enter verification code"
 msgstr ""
 
@@ -21992,7 +21998,7 @@ msgstr ""
 msgid "GitLabPages|Your Pages site is not configured yet. See the %{docs_link_start}GitLab Pages documentation%{link_end} to learn how to upload your static site and have GitLab serve it. You can also take some inspiration from the %{samples_link_start}sample Pages projects%{link_end}."
 msgstr ""
 
-msgid "GitLabPages|Your Project has been configured for Pages. Now we have to wait for the Pipeline to succeed for the first time."
+msgid "GitLabPages|Your project is configured for GitLab Pages and the pipeline is running..."
 msgstr ""
 
 msgid "Gitaly Servers"
@@ -45899,9 +45905,6 @@ msgid "Start date"
 msgstr ""
 
 msgid "Start free trial"
-msgstr ""
-
-msgid "Start inputting changes and we will generate a YAML-file for you to add to your repository"
 msgstr ""
 
 msgid "Start internal thread"

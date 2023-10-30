@@ -166,6 +166,18 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       end
     end
 
+    context 'when build is waiting for callback' do
+      before do
+        create(:ci_build, :waiting_for_callback, stage_id: stage.id)
+      end
+
+      it 'updates status to waiting for callback' do
+        expect { stage.update_legacy_status }
+          .to change { stage.reload.status }
+          .to 'waiting_for_callback'
+      end
+    end
+
     context 'when stage is skipped because is empty' do
       it 'updates status to skipped' do
         expect { stage.update_legacy_status }

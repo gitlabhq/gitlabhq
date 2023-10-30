@@ -36,6 +36,7 @@
 
 .ci-status-icon-pending,
 .ci-status-icon-waiting-for-resource,
+.ci-status-icon-waiting-for-callback,
 .ci-status-icon-failed-with-warnings,
 .ci-status-icon-success-with-warnings {
   @include icon-styles($orange-500, $orange-100);
