@@ -33,31 +33,32 @@ ID tokens are JSON Web Tokens (JWTs) used for OIDC authentication with third-par
 
 The following fields are included in the JWT:
 
-| Field                   | When                         | Description |
-|-------------------------|------------------------------|-------------|
-| `jti`                   | Always                       | Unique identifier for this token |
-| `iss`                   | Always                       | Issuer, the domain of your GitLab instance |
-| `iat`                   | Always                       | Issued at   |
-| `nbf`                   | Always                       | Not valid before |
-| `exp`                   | Always                       | Expires at  |
-| `sub`                   | Always                       | Subject (job ID) |
-| `namespace_id`          | Always                       | Use this to scope to group or user level namespace by ID |
-| `namespace_path`        | Always                       | Use this to scope to group or user level namespace by path |
-| `project_id`            | Always                       | Use this to scope to project by ID |
-| `project_path`          | Always                       | Use this to scope to project by path |
-| `user_id`               | Always                       | ID of the user executing the job |
-| `user_login`            | Always                       | Username of the user executing the job |
-| `user_email`            | Always                       | Email of the user executing the job |
-| `pipeline_id`           | Always                       | ID of this pipeline |
-| `pipeline_source`       | Always                       | [Pipeline source](../../jobs/job_control.md#common-if-clauses-for-rules) |
-| `job_id`                | Always                       | ID of this job |
-| `ref`                   | Always                       | Git ref for this job |
-| `ref_type`              | Always                       | Git ref type, either `branch` or `tag` |
-| `ref_path`              | Always                       | Fully qualified ref for the job. For example, `refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0. |
-| `ref_protected`         | Always                       | `true` if this Git ref is protected, `false` otherwise |
-| `environment`           | Job specifies an environment | Environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
-| `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
+| Field                   | When                         | Description                                                                                                                                                                                          |
+|-------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `jti`                   | Always                       | Unique identifier for this token                                                                                                                                                                     |
+| `iss`                   | Always                       | Issuer, the domain of your GitLab instance                                                                                                                                                           |
+| `iat`                   | Always                       | Issued at                                                                                                                                                                                            |
+| `nbf`                   | Always                       | Not valid before                                                                                                                                                                                     |
+| `exp`                   | Always                       | Expires at                                                                                                                                                                                           |
+| `sub`                   | Always                       | Subject (job ID)                                                                                                                                                                                     |
+| `namespace_id`          | Always                       | Use this to scope to group or user level namespace by ID                                                                                                                                             |
+| `namespace_path`        | Always                       | Use this to scope to group or user level namespace by path                                                                                                                                           |
+| `project_id`            | Always                       | Use this to scope to project by ID                                                                                                                                                                   |
+| `project_path`          | Always                       | Use this to scope to project by path                                                                                                                                                                 |
+| `user_id`               | Always                       | ID of the user executing the job                                                                                                                                                                     |
+| `user_login`            | Always                       | Username of the user executing the job                                                                                                                                                               |
+| `user_email`            | Always                       | Email of the user executing the job                                                                                                                                                                  |
+| `pipeline_id`           | Always                       | ID of this pipeline                                                                                                                                                                                  |
+| `pipeline_source`       | Always                       | [Pipeline source](../../jobs/job_control.md#common-if-clauses-for-rules)                                                                                                                             |
+| `job_id`                | Always                       | ID of this job                                                                                                                                                                                       |
+| `ref`                   | Always                       | Git ref for this job                                                                                                                                                                                 |
+| `ref_type`              | Always                       | Git ref type, either `branch` or `tag`                                                                                                                                                               |
+| `ref_path`              | Always                       | Fully qualified ref for the job. For example, `refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0.                                          |
+| `ref_protected`         | Always                       | `true` if this Git ref is protected, `false` otherwise                                                                                                                                               |
+| `environment`           | Job specifies an environment | Environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                                                   |
+| `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                  |
 | `deployment_tier`       | Job specifies an environment | [Deployment tier](../../environments/index.md#deployment-tier-of-environments) of environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2) |
+| `environment_action`    | Job specifies an environment | [Environment action (`environment:action`)](../../environments/index.md) specified in the job. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/) in GitLab 16.5)                                   |
 
 Example JWT payload:
 
@@ -84,7 +85,8 @@ Example JWT payload:
   "ref_path": "refs/heads/auto-deploy-2020-04-01",
   "ref_protected": "true",
   "environment": "production",
-  "environment_protected": "true"
+  "environment_protected": "true",
+  "environment_action": "start"
 }
 ```
 
