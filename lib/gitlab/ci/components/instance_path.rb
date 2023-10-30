@@ -5,7 +5,6 @@ module Gitlab
     module Components
       class InstancePath
         include Gitlab::Utils::StrongMemoize
-        include ::Gitlab::LoopHelpers
 
         LATEST_VERSION_KEYWORD = '~latest'
         TEMPLATES_DIR = 'templates'
@@ -61,15 +60,9 @@ module Gitlab
         # Given a path like "my-org/sub-group/the-project/path/to/component"
         # find the project "my-org/sub-group/the-project" by looking at all possible paths.
         def find_project_by_component_path(path)
-          return if path.start_with?('/') # exit early if path starts with `/` or it will loop forever.
-
           possible_paths = [path]
-          index = nil
 
-          loop_until(limit: 20) do
-            index = path.rindex('/') # find index of last `/` in a path
-            break unless index
-
+          while index = path.rindex('/') # find index of last `/` in a path
             possible_paths << (path = path[0..index - 1])
           end
 

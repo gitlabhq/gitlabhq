@@ -12,7 +12,7 @@
 #
 class DurationValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
-    ChronicDuration.parse(value)
+    ChronicDuration.parse(value, use_complete_matcher: true)
   rescue ChronicDuration::DurationParseError
     if options[:message]
       record.errors.add(:base, options[:message])

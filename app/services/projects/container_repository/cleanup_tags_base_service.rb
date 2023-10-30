@@ -100,7 +100,7 @@ module Projects
 
       def older_than_in_seconds
         strong_memoize(:older_than_in_seconds) do
-          ChronicDuration.parse(older_than).seconds
+          ChronicDuration.parse(older_than, use_complete_matcher: true).seconds
         end
       end
     end

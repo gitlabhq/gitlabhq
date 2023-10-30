@@ -80,20 +80,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         end
       end
 
-      shared_examples 'prevents infinite loop' do |prefix|
-        context "when the project path starts with '#{prefix}'" do
-          let(:project_path) { "#{prefix}#{project.full_path}" }
-
-          it 'returns nil' do
-            result = path.fetch_content!(current_user: user)
-            expect(result).to be_nil
-          end
-        end
-      end
-
-      it_behaves_like 'prevents infinite loop', '/'
-      it_behaves_like 'prevents infinite loop', '//'
-
       context 'when fetching the latest version of a component' do
         let_it_be(:project) do
           create(

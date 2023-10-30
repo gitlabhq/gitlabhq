@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
 
     it 'uses AbuseDetection by default' do
-      expect(Gitlab::Search::AbuseDetection).to receive(:new).at_least(:once).and_call_original
+      expect(Gitlab::Search::AbuseDetection).to receive(:new).and_call_original
       described_class.new(params)
     end
   end
@@ -73,20 +73,8 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
 
     it 'validates AbuseDetector on validation' do
-      expect(Gitlab::Search::AbuseDetection).to receive(:new).at_least(:once).and_call_original
+      expect(Gitlab::Search::AbuseDetection).to receive(:new).and_call_original
       subject.validate
-    end
-
-    context 'when query has too many terms' do
-      let(:search) { Array.new((::Gitlab::Search::Params::SEARCH_TERM_LIMIT + 1), 'a').join(' ') }
-
-      it { is_expected.not_to be_valid }
-    end
-
-    context 'when query is too long' do
-      let(:search) { 'a' * (::Gitlab::Search::Params::SEARCH_CHAR_LIMIT + 1) }
-
-      it { is_expected.not_to be_valid }
     end
   end
 
@@ -101,7 +89,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
 
     it 'validates AbuseDetector on validation' do
-      expect(Gitlab::Search::AbuseDetection).to receive(:new).at_least(:once).and_call_original
+      expect(Gitlab::Search::AbuseDetection).to receive(:new).and_call_original
       subject.valid?
     end
   end

@@ -10,14 +10,12 @@ module VersionCheckHelper
   end
 
   def gitlab_version_check
-    return unless show_version_check?
-
     VersionCheck.new.response
   end
   strong_memoize_attr :gitlab_version_check
 
   def show_security_patch_upgrade_alert?
-    return false unless gitlab_version_check
+    return false unless show_version_check? && gitlab_version_check
 
     Gitlab::Utils.to_boolean(gitlab_version_check['critical_vulnerability'])
   end

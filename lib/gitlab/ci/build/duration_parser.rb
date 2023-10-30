@@ -41,7 +41,7 @@ module Gitlab
         def parse
           return if never?
 
-          ChronicDuration.parse(value)
+          ChronicDuration.parse(value, use_complete_matcher: true)
         end
 
         def validation_cache

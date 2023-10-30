@@ -71,8 +71,7 @@ module Gitlab
           fields.merge!(
             environment: environment.name,
             environment_protected: environment_protected?.to_s,
-            deployment_tier: build.environment_tier,
-            environment_action: build.environment_action
+            deployment_tier: build.environment_tier
           )
         end
 

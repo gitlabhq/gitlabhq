@@ -18,7 +18,7 @@ module ChronicDurationAttribute
 
         begin
           new_value = if value.present?
-                        ChronicDuration.parse(value).to_i
+                        ChronicDuration.parse(value, use_complete_matcher: true).to_i
                       else
                         parameters[:default].presence
                       end
