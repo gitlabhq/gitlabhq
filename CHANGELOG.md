@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.5.1 (2023-10-30)
+
+### Fixed (1 change)
+
+- [Revert "Merge branch '419642-better-error-messages-for-pull-mirroring' into 'master'"](gitlab-org/security/gitlab@08ae4b9d3814a05631d9b486fea1d4353a702a7d) by @Taucher2003
+
+### Security (7 changes)
+
+- [Fix infinite loop when finding component project](gitlab-org/security/gitlab@9f9f87376e23c3f7aab74348c47f7401ac2d78ee) ([merge request](gitlab-org/security/gitlab!3665))
+- [Guard gitlab_version_check helper](gitlab-org/security/gitlab@35c8592afc0225653677a00c545043eb7212a6d4) ([merge request](gitlab-org/security/gitlab!3652))
+- [Add the environment action to the CI JWT token fields](gitlab-org/security/gitlab@cdfcea2200b0a18b9972ffd2acd9630089022f8e) ([merge request](gitlab-org/security/gitlab!3648))
+- [Remove FIFO files from tarball extract](gitlab-org/security/gitlab@c284870b8f1ffcc9697ea34c8bd3b7314040e39c) ([merge request](gitlab-org/security/gitlab!3644))
+- [Backport add abuse detection for pipes](gitlab-org/security/gitlab@1720c5ba557946e5805719deaaf0b9834f1a91d6) ([merge request](gitlab-org/security/gitlab!3647))
+- [Prevent unprivileged user assignment in templated projects](gitlab-org/security/gitlab@b74af1395876a4ffb32f692f090b268815e75afd) ([merge request](gitlab-org/security/gitlab!3645))
+- [Fixes Service Desk email template issue description privileges](gitlab-org/security/gitlab@097a300ac6144f0b80dfa3bc4aea73410ef74cb1) ([merge request](gitlab-org/security/gitlab!3641))
+
+### Other (1 change)
+
+- [Update migration to drop column only if it exists](gitlab-org/security/gitlab@36bcb0e41d37aa92457f60ee1016bd32003da2f6)
+
 ## 16.5.0 (2023-10-20)
 
 ### Added (140 changes)
