@@ -8,31 +8,24 @@ module QA
       let(:project) { create(:project, :private, name: 'nuget-package-project', template_name: 'dotnetcore') }
       let(:personal_access_token) { Resource::PersonalAccessToken.fabricate! }
       let(:project_deploy_token) do
-        Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
-          deploy_token.name = 'package-deploy-token'
-          deploy_token.project = project
-          deploy_token.scopes = %w[
+        create(:project_deploy_token,
+          name: 'package-deploy-token',
+          project: project,
+          scopes: %w[
             read_repository
             read_package_registry
             write_package_registry
-          ]
-        end
+          ])
       end
 
-      let(:package) do
-        Resource::Package.init do |package|
-          package.name = "dotnetcore-#{SecureRandom.hex(8)}"
-          package.project = project
-        end
-      end
+      let(:package) { build(:package, name: "dotnetcore-#{SecureRandom.hex(8)}", project: project) }
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.name}"]
-          runner.executor = :docker
-          runner.project = project
-        end
+        create(:project_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.name}"],
+          executor: :docker,
+          project: project)
       end
 
       after do

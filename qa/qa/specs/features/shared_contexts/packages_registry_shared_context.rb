@@ -25,19 +25,15 @@ module QA
     end
 
     let(:package) do
-      Resource::Package.init do |package|
-        package.name = package_name
-        package.project = package_project
-      end
+      build(:package, name: package_name, project: package_project)
     end
 
     let(:runner) do
-      Resource::GroupRunner.fabricate! do |runner|
-        runner.name = "qa-runner-#{Time.now.to_i}"
-        runner.tags = ["runner-for-#{package_project.group.name}"]
-        runner.executor = :docker
-        runner.group = package_project.group
-      end
+      create(:group_runner,
+        name: "qa-runner-#{Time.now.to_i}",
+        tags: ["runner-for-#{package_project.group.name}"],
+        executor: :docker,
+        group: package_project.group)
     end
 
     let(:gitlab_address_with_port) do
@@ -45,15 +41,14 @@ module QA
     end
 
     let(:project_deploy_token) do
-      Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
-        deploy_token.name = 'package-deploy-token'
-        deploy_token.project = package_project
-        deploy_token.scopes = %w[
+      create(:project_deploy_token,
+        name: 'package-deploy-token',
+        project: package_project,
+        scopes: %w[
           read_repository
           read_package_registry
           write_package_registry
-        ]
-      end
+        ])
     end
 
     before do

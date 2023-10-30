@@ -284,17 +284,17 @@ gem 'connection_pool', '~> 2.4' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'redis-actionpack', '~> 5.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Discord integration
-gem 'discordrb-webhooks', '~> 3.4', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'discordrb-webhooks', '~> 3.4', require: false, feature_category: :integrations
 
 # Jira integration
-gem 'jira-ruby', '~> 2.1.4' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'atlassian-jwt', '~> 0.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'jira-ruby', '~> 2.1.4', feature_category: :integrations
+gem 'atlassian-jwt', '~> 0.2.0', feature_category: :integrations
 
 # Slack integration
-gem 'slack-messenger', '~> 2.3.4' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'slack-messenger', '~> 2.3.4', feature_category: :integrations
 
 # FogBugz integration
-gem 'ruby-fogbugz', '~> 0.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'ruby-fogbugz', '~> 0.3.0', feature_category: :importers
 
 # Kubernetes integration
 gem 'kubeclient', '~> 4.11.0' # rubocop:todo Gemfile/MissingFeatureCategory

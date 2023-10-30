@@ -9,10 +9,7 @@ module QA
 
         access_token = Resource::PersonalAccessToken.fabricate!.token
 
-        user = Resource::User.init do |user|
-          user.username = Runtime::User.username
-          user.password = access_token
-        end
+        user = build(:user, username: Runtime::User.username, password: access_token)
 
         push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.user = user

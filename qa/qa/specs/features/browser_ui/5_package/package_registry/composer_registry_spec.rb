@@ -5,21 +5,15 @@ module QA
     describe 'Composer Repository', :external_api_calls do
       include Runtime::Fixtures
 
-      let(:project) { create(:project, :privtae, name: 'composer-package-project') }
-      let(:package) do
-        Resource::Package.init do |package|
-          package.name = "my_package-#{SecureRandom.hex(4)}"
-          package.project = project
-        end
-      end
+      let(:project) { create(:project, :private, name: 'composer-package-project') }
+      let(:package) { build(:package, name: "my_package-#{SecureRandom.hex(4)}", project: project) }
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.name}"]
-          runner.executor = :docker
-          runner.project = project
-        end
+        create(:project_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.name}"],
+          executor: :docker,
+          project: project)
       end
 
       let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port }

@@ -16,15 +16,14 @@ module QA
       end
 
       let(:project_deploy_token) do
-        Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
-          deploy_token.name = 'npm-deploy-token'
-          deploy_token.project = project
-          deploy_token.scopes = %w[
+        create(:project_deploy_token,
+          name: 'npm-deploy-token',
+          project: project,
+          scopes: %w[
             read_repository
             read_package_registry
             write_package_registry
-          ]
-        end
+          ])
       end
 
       let(:gitlab_address_without_port) { Support::GitlabAddress.address_with_port(with_default_port: false) }
@@ -32,19 +31,15 @@ module QA
       let!(:project) { create(:project, name: 'npm-instance-level-publish') }
       let!(:another_project) { create(:project, name: 'npm-instance-level-install', group: project.group) }
       let!(:runner) do
-        Resource::GroupRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.group.name}"]
-          runner.executor = :docker
-          runner.group = project.group
-        end
+        create(:group_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.group.name}"],
+          executor: :docker,
+          group: project.group)
       end
 
       let(:package) do
-        Resource::Package.init do |package|
-          package.name = "@#{registry_scope}/#{project.name}-#{SecureRandom.hex(8)}"
-          package.project = project
-        end
+        build(:package, name: "@#{registry_scope}/#{project.name}-#{SecureRandom.hex(8)}", project: project)
       end
 
       after do

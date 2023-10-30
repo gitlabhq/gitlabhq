@@ -7,20 +7,14 @@ module QA
       include Support::Helpers::MaskToken
 
       let(:project) { create(:project, :private, name: 'pypi-package-project') }
-      let(:package) do
-        Resource::Package.init do |package|
-          package.name = "mypypipackage-#{SecureRandom.hex(8)}"
-          package.project = project
-        end
-      end
+      let(:package) { build(:package, name: "mypypipackage-#{SecureRandom.hex(8)}", project: project) }
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.name}"]
-          runner.executor = :docker
-          runner.project = project
-        end
+        create(:project_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.name}"],
+          executor: :docker,
+          project: project)
       end
 
       let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }

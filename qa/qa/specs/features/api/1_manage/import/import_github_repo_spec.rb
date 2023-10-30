@@ -136,11 +136,11 @@ module QA
 
         def verify_merge_requests_import
           merge_requests = imported_project.merge_requests
-          merge_request = Resource::MergeRequest.init do |mr|
-            mr.project = imported_project
-            mr.iid = merge_requests.first[:iid]
-            mr.api_client = user_api_client
-          end.reload!
+          merge_request = build(:merge_request,
+            project: imported_project,
+            iid: merge_requests.first[:iid],
+            api_client: user_api_client).reload!
+
           comments, events = fetch_events_and_comments(merge_request)
 
           expect(merge_requests.length).to eq(1)

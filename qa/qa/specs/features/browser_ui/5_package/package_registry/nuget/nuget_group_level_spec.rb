@@ -17,23 +17,17 @@ module QA
       end
 
       let(:group_deploy_token) do
-        Resource::GroupDeployToken.fabricate_via_api! do |deploy_token|
-          deploy_token.name = 'nuget-group-deploy-token'
-          deploy_token.group = project.group
-          deploy_token.scopes = %w[
+        create(:group_deploy_token,
+          name: 'nuget-group-deploy-token',
+          group: project.group,
+          scopes: %w[
             read_repository
             read_package_registry
             write_package_registry
-          ]
-        end
+          ])
       end
 
-      let(:package) do
-        Resource::Package.init do |package|
-          package.name = "dotnetcore-#{SecureRandom.hex(8)}"
-          package.project = project
-        end
-      end
+      let(:package) { build(:package, name: "dotnetcore-#{SecureRandom.hex(8)}", project: project) }
 
       let(:another_project) { create(:project, name: 'nuget-package-install-project', template_name: 'dotnetcore', group: project.group) }
       let(:package_project_inbound_job_token_disabled) do
@@ -51,12 +45,11 @@ module QA
       end
 
       let!(:runner) do
-        Resource::GroupRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.group.name}"]
-          runner.executor = :docker
-          runner.group = project.group
-        end
+        create(:group_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.group.name}"],
+          executor: :docker,
+          group: project.group)
       end
 
       after do

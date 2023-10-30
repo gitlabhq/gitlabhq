@@ -564,11 +564,7 @@ module QA
 
           logger.debug("- Fetching merge request comments #{api_parallel_threads} parallel threads -")
           Parallel.map(imported_mrs, in_threads: api_parallel_threads) do |mr|
-            resource = Resource::MergeRequest.init do |resource|
-              resource.project = imported_project
-              resource.iid = mr[:iid]
-              resource.api_client = api_client
-            end
+            resource = build(:merge_request, project: imported_project, iid: mr[:iid], api_client: api_client)
 
             comments = resource.comments(**api_request_params)
             label_events = resource.label_events(**api_request_params)
