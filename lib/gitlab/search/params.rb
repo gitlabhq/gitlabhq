@@ -81,7 +81,7 @@ module Gitlab
       end
 
       def search_terms
-        @search_terms ||= query_string.split.select { |word| word.length >= MIN_TERM_LENGTH }
+        @search_terms ||= query_string.split
       end
 
       def not_too_many_terms
