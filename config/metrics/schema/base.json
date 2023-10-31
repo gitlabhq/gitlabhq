@@ -87,28 +87,6 @@
     "options": {
       "type": "object"
     },
-    "events": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "unique": {
-            "type": "string",
-            "enum": [
-              "user.id",
-              "project.id",
-              "namespace.id"
-            ]
-          }
-        }
-      }
-    },
     "time_frame": {
       "type": "string",
       "enum": [
@@ -188,50 +166,5 @@
     "value_json_schema": {
       "type": "string"
     }
-  },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "status": {
-            "const": "broken"
-          }
-        }
-      },
-      "then": {
-        "required": [
-          "repair_issue_url"
-        ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "data_source": {
-            "const": "internal_events"
-          }
-        }
-      },
-      "then": {
-        "required": [
-          "events"
-        ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "status": {
-            "const": "removed"
-          }
-        }
-      },
-      "then": {
-        "required": [
-          "removed_by_url",
-          "milestone_removed"
-        ]
-      }
-    }
-  ]
+  }
 }

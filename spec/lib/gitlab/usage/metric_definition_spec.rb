@@ -194,6 +194,134 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           described_class.new(path, attributes).validate!
         end
       end
+
+      context 'when metric has removed status' do
+        before do
+          attributes[:status] = 'removed'
+        end
+
+        it 'raise dev exception when removed_by_url is not provided' do
+          attributes.delete(:removed_by_url)
+
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+
+          described_class.new(path, attributes).validate!
+        end
+
+        it 'raises dev exception when milestone_removed is not provided' do
+          attributes.delete(:milestone_removed)
+
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+
+          described_class.new(path, attributes).validate!
+        end
+      end
+
+      context 'internal metric' do
+        before do
+          attributes[:data_source] = 'internal_events'
+        end
+
+        where(:instrumentation_class, :options, :events, :is_valid) do
+          'TotalCountMetric' | {} | [] | true
+          'AnotherClass'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
+          nil              | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric' | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | true
+          'RedisHLLMetric' | { events: ['a'] } | nil | false
+          'RedisHLLMetric' | nil               | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric' | { events: ['a'] } | [{ name: 'a', unique: 'a' }] | false
+          'RedisHLLMetric' | { events: 'a' } | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric' | { events: [2] } | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric' | { events: ['a'], a: 'b' } | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric' | { events: ['a'] } | [{ name: 'a', unique: 'user.id', b: 'c' }] | false
+          'RedisHLLMetric' | { events: ['a'] } | [{ name: 'a' }] | false
+          'RedisHLLMetric' | { events: ['a'] } | [{ unique: 'user.id' }] | false
+        end
+
+        with_them do
+          it 'raises dev exception when invalid' do
+            attributes[:instrumentation_class] = instrumentation_class if instrumentation_class
+            attributes[:options] = options if options
+            attributes[:events] = events if events
+
+            if is_valid
+              expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+            else
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+            end
+
+            described_class.new(path, attributes).validate!
+          end
+        end
+      end
+
+      context 'Redis metric' do
+        before do
+          attributes[:data_source] = 'redis'
+        end
+
+        where(:instrumentation_class, :options, :is_valid) do
+          'AnotherClass'                      | { event: 'a', widget: 'b' } | false
+          'MergeRequestWidgetExtensionMetric' | { event: 'a', widget: 'b' } | true
+          'MergeRequestWidgetExtensionMetric' | { event: 'a', widget: 2 } | false
+          'MergeRequestWidgetExtensionMetric' | { event: 'a', widget: 'b', c: 'd' } | false
+          'MergeRequestWidgetExtensionMetric' | { event: 'a' } | false
+          'MergeRequestWidgetExtensionMetric' | { widget: 'b' } | false
+          'RedisMetric'                       | { event: 'a', prefix: 'b', include_usage_prefix: true } | true
+          'RedisMetric'                       | { event: 'a', prefix: nil, include_usage_prefix: true } | true
+          'RedisMetric'                       | { event: 'a', prefix: 'b', include_usage_prefix: 2 } | false
+          'RedisMetric'                       | { event: 'a', prefix: 'b', include_usage_prefix: true, c: 'd' } | false
+          'RedisMetric'                       | { prefix: 'b', include_usage_prefix: true } | false
+          'RedisMetric'                       | { event: 'a', include_usage_prefix: true } | false
+          'RedisMetric'                       | { event: 'a', prefix: 'b' } | true
+        end
+
+        with_them do
+          it 'validates properly' do
+            attributes[:instrumentation_class] = instrumentation_class
+            attributes[:options] = options
+
+            if is_valid
+              expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+            else
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+            end
+
+            described_class.new(path, attributes).validate!
+          end
+        end
+      end
+
+      context 'RedisHLL metric' do
+        before do
+          attributes[:data_source] = 'redis_hll'
+        end
+
+        where(:instrumentation_class, :options, :is_valid) do
+          'AnotherClass'     | { events: ['a'] } | false
+          'RedisHLLMetric'   | { events: ['a'] } | true
+          'RedisHLLMetric'   | { events: ['a'], b: 'c' } | false
+          'RedisHLLMetric'   | { events: [2] } | false
+          'RedisHLLMetric'   | { events: 'a' } | false
+          'RedisHLLMetric'   | { event: ['a'] } | false
+          'AggregatedMetric' | {} | true
+        end
+
+        with_them do
+          it 'validates properly' do
+            attributes[:instrumentation_class] = instrumentation_class
+            attributes[:options] = options
+
+            if is_valid
+              expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+            else
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+            end
+
+            described_class.new(path, attributes).validate!
+          end
+        end
+      end
     end
   end
 
@@ -213,10 +341,10 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     end
 
     context 'when metric is using new format' do
-      let(:attributes) { { events: [{ name: 'my_event', unique: 'user_id' }] } }
+      let(:attributes) { { events: [{ name: 'my_event', unique: 'user.id' }] } }
 
       it 'returns a correct hash' do
-        expect(definition.events).to eq({ 'my_event' => :user_id })
+        expect(definition.events).to eq({ 'my_event' => :'user.id' })
       end
     end
 

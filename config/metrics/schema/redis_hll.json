@@ -1,0 +1,67 @@
+{
+  "if": {
+    "properties": {
+      "data_source": {
+        "const": "redis_hll"
+      }
+    }
+  },
+  "then": {
+    "oneOf": [
+      {
+        "properties": {
+          "instrumentation_class": {
+            "const": "RedisHLLMetric"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "events"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "instrumentation_class",
+          "options"
+        ]
+      },
+      {
+        "properties": {
+          "instrumentation_class": {
+            "const": "AggregatedMetric"
+          }
+        },
+        "required": [
+          "instrumentation_class"
+        ]
+      },
+      {
+        "properties": {
+          "key_path": {
+            "description": "Legacy metrics that do not match with the schema",
+            "enum": [
+              "usage_activity_by_stage_monthly.create.merge_requests_users",
+              "usage_activity_by_stage_monthly.create.action_monthly_active_users_web_ide_edit",
+              "usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit",
+              "usage_activity_by_stage_monthly.create.action_monthly_active_users_snippet_editor_edit",
+              "usage_activity_by_stage_monthly.create.action_monthly_active_users_sse_edit",
+              "counts_monthly.aggregated_metrics.product_analytics_test_metrics_union",
+              "counts_weekly.aggregated_metrics.product_analytics_test_metrics_union",
+              "counts_monthly.aggregated_metrics.product_analytics_test_metrics_intersection",
+              "counts_weekly.aggregated_metrics.product_analytics_test_metrics_intersection"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

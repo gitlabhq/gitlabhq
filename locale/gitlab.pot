@@ -40764,9 +40764,6 @@ msgstr ""
 msgid "Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more.%{helpLinkEnd}"
 msgstr ""
 
-msgid "Runners|Add your feedback to this issue"
-msgstr ""
-
 msgid "Runners|Admin area › Runners"
 msgstr ""
 
@@ -41546,12 +41543,6 @@ msgid "Runners|Wait time (secs)"
 msgstr ""
 
 msgid "Runners|Wait time to pick a job"
-msgstr ""
-
-msgid "Runners|We've been making improvements to how you register runners so that it's more secure and efficient. Tell us how we're doing."
-msgstr ""
-
-msgid "Runners|We've made some changes and want your feedback"
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %{percentage} spot."

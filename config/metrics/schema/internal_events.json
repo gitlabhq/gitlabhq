@@ -1,0 +1,74 @@
+{
+  "if": {
+    "properties": {
+      "data_source": {
+        "const": "internal_events"
+      }
+    }
+  },
+  "then": {
+    "oneOf": [
+      {
+        "properties": {
+          "instrumentation_class": {
+            "const": "RedisHLLMetric"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "events"
+            ],
+            "additionalProperties": false
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "unique"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "unique": {
+                  "type": "string",
+                  "enum": [
+                    "user.id",
+                    "project.id",
+                    "namespace.id"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "events",
+          "options",
+          "instrumentation_class"
+        ]
+      },
+      {
+        "properties": {
+          "instrumentation_class": {
+            "const": "TotalCountMetric"
+          }
+        },
+        "required": [
+          "instrumentation_class"
+        ]
+      }
+    ]
+  }
+}

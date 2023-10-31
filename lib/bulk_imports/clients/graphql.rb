@@ -4,11 +4,14 @@ module BulkImports
   module Clients
     class Graphql
       class HTTP < Graphlient::Adapters::HTTP::Adapter
+        REQUEST_TIMEOUT = 60
+
         def execute(document:, operation_name: nil, variables: {}, context: {})
           response = ::Gitlab::HTTP.post(
             url,
             headers: headers,
             follow_redirects: false,
+            timeout: REQUEST_TIMEOUT,
             body: {
               query: document.to_query_string,
               operationName: operation_name,

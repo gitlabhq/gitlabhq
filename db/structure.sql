@@ -31670,6 +31670,8 @@ CREATE INDEX index_catalog_resources_on_name_trigram ON catalog_resources USING 
 
 CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 
+CREATE INDEX index_catalog_resources_on_state ON catalog_resources USING btree (state);
+
 CREATE INDEX index_chat_names_on_team_id_and_chat_id ON chat_names USING btree (team_id, chat_id);
 
 CREATE INDEX index_chat_names_on_user_id ON chat_names USING btree (user_id);

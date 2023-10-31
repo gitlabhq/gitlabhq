@@ -1,7 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { HR_DEFAULT_CLASSES } from '../constants';
 import { statusFilterData } from './status_filter/data';
 import StatusFilter from './status_filter/index.vue';
@@ -16,15 +15,11 @@ export default {
     FiltersTemplate,
     ArchivedFilter,
   },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapGetters(['currentScope']),
     ...mapState(['useSidebarNavigation', 'searchType']),
     showArchivedFilter() {
-      return (
-        archivedFilterData.scopes.includes(this.currentScope) &&
-        this.glFeatures.searchMergeRequestsHideArchivedProjects
-      );
+      return archivedFilterData.scopes.includes(this.currentScope);
     },
     showStatusFilter() {
       return Object.values(statusFilterData.scopes).includes(this.currentScope);

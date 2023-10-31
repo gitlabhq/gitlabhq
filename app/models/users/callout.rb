@@ -65,7 +65,7 @@ module Users
       # 62, removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131314
       # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
       branch_rules_info_callout: 65,
-      create_runner_workflow_banner: 66,
+      # 66 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135470/
       # 67 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
       project_repository_limit_alert_warning_threshold: 68, # EE-only
       project_repository_limit_alert_alert_threshold: 69, # EE-only
