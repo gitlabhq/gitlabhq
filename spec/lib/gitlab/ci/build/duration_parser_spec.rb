@@ -25,8 +25,8 @@ RSpec.describe Gitlab::Ci::Build::DurationParser do
       it { is_expected.to be_truthy }
 
       it 'caches data' do
-        expect(ChronicDuration).to receive(:parse).with(value, use_complete_matcher: true).once.and_call_original
-        expect(ChronicDuration).to receive(:parse).with(other_value, use_complete_matcher: true).once.and_call_original
+        expect(ChronicDuration).to receive(:parse).with(value).once.and_call_original
+        expect(ChronicDuration).to receive(:parse).with(other_value).once.and_call_original
 
         2.times do
           expect(described_class.validate_duration(value)).to eq(86400)
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Build::DurationParser do
       it { is_expected.to be_falsy }
 
       it 'caches data' do
-        expect(ChronicDuration).to receive(:parse).with(value, use_complete_matcher: true).once.and_call_original
+        expect(ChronicDuration).to receive(:parse).with(value).once.and_call_original
 
         2.times do
           expect(described_class.validate_duration(value)).to be_falsey

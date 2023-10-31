@@ -17,10 +17,8 @@ module Gitlab
         begin
           ChronicDuration.parse(
             string,
-            CUSTOM_DAY_AND_MONTH_LENGTH.merge(
-              default_unit: 'hours', keep_zero: keep_zero,
-              use_complete_matcher: true
-            ))
+            CUSTOM_DAY_AND_MONTH_LENGTH.merge(default_unit: 'hours', keep_zero: keep_zero)
+          )
         rescue StandardError
           nil
         end
