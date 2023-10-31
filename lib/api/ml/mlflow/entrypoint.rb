@@ -42,6 +42,7 @@ module API
           namespace MLFLOW_API_PREFIX do
             mount ::API::Ml::Mlflow::Experiments
             mount ::API::Ml::Mlflow::Runs
+            mount ::API::Ml::Mlflow::RegisteredModels
           end
         end
       end

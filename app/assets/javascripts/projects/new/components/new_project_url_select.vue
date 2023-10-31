@@ -67,7 +67,7 @@ export default {
           }
         : this.$options.emptyNameSpace,
       shouldSkipQuery: true,
-      userNamespaceId: this.userNamespaceId,
+      userNamespaceUniqueId: this.userNamespaceId,
     };
   },
   computed: {
@@ -186,7 +186,7 @@ export default {
             {{ group.fullPath }}
           </gl-dropdown-item>
         </template>
-        <template v-if="hasNamespaceMatches && userNamespaceId">
+        <template v-if="hasNamespaceMatches && userNamespaceUniqueId">
           <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
           <gl-dropdown-item @click="handleDropdownItemClick(userNamespace)">
             {{ userNamespace.fullPath }}
@@ -202,7 +202,7 @@ export default {
       :id="inputId"
       type="hidden"
       :name="inputName"
-      :value="selectedNamespace.id || userNamespaceId"
+      :value="selectedNamespace.id || userNamespaceUniqueId"
     />
   </gl-button-group>
 </template>

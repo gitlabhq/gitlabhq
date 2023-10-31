@@ -1,0 +1,10 @@
+---
+table_name: ml_model_metadata
+classes:
+  - Ml::ModelMetadata
+feature_categories:
+  - mlops
+gitlab_schema: gitlab_main
+description: A Model Metadata record holds extra information about the model
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134443
+milestone: 16.6

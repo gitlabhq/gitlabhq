@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import { GlFormCheckbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
-import { createStore } from '~/ide/stores';
+import { createStoreOptions } from '~/ide/stores';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 Vue.use(Vuex);
@@ -22,17 +22,25 @@ describe('NewMergeRequestOption component', () => {
     shouldDisableNewMrOption = false,
     shouldCreateMR = false,
   } = {}) => {
-    store = createStore();
+    const storeOptions = createStoreOptions();
 
-    wrapper = shallowMountExtended(NewMergeRequestOption, {
-      store: {
-        ...store,
-        getters: {
-          'commit/shouldHideNewMrOption': shouldHideNewMrOption,
-          'commit/shouldDisableNewMrOption': shouldDisableNewMrOption,
-          'commit/shouldCreateMR': shouldCreateMR,
+    store = new Vuex.Store({
+      ...storeOptions,
+      modules: {
+        ...storeOptions.modules,
+        commit: {
+          ...storeOptions.modules.commit,
+          getters: {
+            shouldHideNewMrOption: () => shouldHideNewMrOption,
+            shouldDisableNewMrOption: () => shouldDisableNewMrOption,
+            shouldCreateMR: () => shouldCreateMR,
+          },
         },
       },
+    });
+
+    wrapper = shallowMountExtended(NewMergeRequestOption, {
+      store,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },

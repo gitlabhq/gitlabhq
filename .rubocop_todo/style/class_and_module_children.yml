@@ -99,7 +99,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/oauth/applications_controller.rb'
     - 'app/controllers/oauth/authorizations_controller.rb'
     - 'app/controllers/oauth/authorized_applications_controller.rb'
-    - 'app/controllers/oauth/jira_dvcs/authorizations_controller.rb'
     - 'app/controllers/oauth/token_info_controller.rb'
     - 'app/controllers/oauth/tokens_controller.rb'
     - 'app/controllers/profiles/accounts_controller.rb'

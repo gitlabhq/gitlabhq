@@ -2557,3 +2557,74 @@
   footnote reference tag [^fortytwo]
 
   [^fortytwo]: footnote text
+09_00_00__gfm_undocumented_extensions_and_more_robust_test__footnotes__002: |
+  This is some text![^1]. Other text.[^footnote].
+
+  Here's a thing[^other-note].
+
+  And another thing[^codeblock-note].
+
+  This doesn't have a referent[^nope].
+
+
+  [^other-note]:       no code block here (spaces are stripped away)
+
+  [^codeblock-note]:
+          this is now a code block (8 spaces indentation)
+
+  [^1]: Some *bolded* footnote definition.
+
+  Hi!
+
+  [^footnote]:
+      > Blockquotes can be in a footnote.
+
+          as well as code blocks
+
+      or, naturally, simple paragraphs.
+
+  [^unused]: This is unused.
+? 09_01_00__gfm_undocumented_extensions_and_more_robust_test__when_a_footnote_is_used_multiple_times,_we_insert_multiple_backrefs.__001
+: |
+  This is some text. It has a footnote[^a-footnote].
+
+  This footnote is referenced[^a-footnote] multiple times, in lots of different places.[^a-footnote]
+
+  [^a-footnote]: This footnote definition should have three backrefs.
+09_02_00__gfm_undocumented_extensions_and_more_robust_test__footnote_reference_labels_are_href_escaped__001: |
+  Hello[^"><script>alert(1)</script>]
+
+  [^"><script>alert(1)</script>]: pwned
+09_03_00__gfm_undocumented_extensions_and_more_robust_test__interop__001: |
+  ~~www.google.com~~
+
+  ~~http://google.com~~
+09_03_00__gfm_undocumented_extensions_and_more_robust_test__interop__002: |
+  | a | b |
+  | --- | --- |
+  | https://github.com www.github.com | http://pokemon.com |
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__001: |
+  - [ ] foo
+  - [x] bar
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__002: |
+  - [x] foo
+    - [ ] bar
+    - [x] baz
+  - [ ] bim
+
+  Show a regular (non task) list to show that it has the same structure
+  - [@] foo
+    - [@] bar
+    - [@] baz
+  - [@] bim
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__003: |
+  - [x] foo
+      - [ ] bar
+      - [x] baz
+  - [ ] bim
+
+  Show a regular (non task) list to show that it has the same structure
+  - [@] foo
+      - [@] bar
+      - [@] baz
+  - [@] bim

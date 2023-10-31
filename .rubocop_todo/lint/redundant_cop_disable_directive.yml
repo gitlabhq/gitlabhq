@@ -49,7 +49,6 @@ Lint/RedundantCopDisableDirective:
     - 'app/services/groups/import_export/import_service.rb'
     - 'app/services/issues/export_csv_service.rb'
     - 'app/services/labels/transfer_service.rb'
-    - 'app/services/members/create_service.rb'
     - 'app/services/members/projects/creator_service.rb'
     - 'app/services/members/standard_member_builder.rb'
     - 'app/services/projects/auto_devops/disable_service.rb'

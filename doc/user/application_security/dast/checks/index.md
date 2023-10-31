@@ -177,4 +177,3 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [94.3](94.3.md) | Server-side code injection (Python) | High | Active |
 | [94.4](94.4.md) | Server-side code injection (NodeJS) | High | Active |
 | [943.1](943.1.md) | Improper neutralization of special elements in data query logic | High | Active |
->

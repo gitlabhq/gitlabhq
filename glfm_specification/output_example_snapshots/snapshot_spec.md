@@ -10625,3 +10625,231 @@ footnote text
 </section>
 ````````````````````````````````
 
+# GFM undocumented extensions and more robust test
+
+This section contains tests borrowed from https://github.com/github/cmark-gfm/blob/master/test/extensions.txt.
+It includes items not found in the official GFM specification, such as footnotes and additional tests for tables,
+task lists, etc.
+
+## Footnotes
+
+```````````````````````````````` example
+This is some text![^1]. Other text.[^footnote].
+
+Here's a thing[^other-note].
+
+And another thing[^codeblock-note].
+
+This doesn't have a referent[^nope].
+
+
+[^other-note]:       no code block here (spaces are stripped away)
+
+[^codeblock-note]:
+        this is now a code block (8 spaces indentation)
+
+[^1]: Some *bolded* footnote definition.
+
+Hi!
+
+[^footnote]:
+    > Blockquotes can be in a footnote.
+
+        as well as code blocks
+
+    or, naturally, simple paragraphs.
+
+[^unused]: This is unused.
+.
+<p>This is some text!<sup class="footnote-ref"><a href="#fn-1" id="fnref-1" data-footnote-ref>1</a></sup>. Other text.<sup class="footnote-ref"><a href="#fn-footnote" id="fnref-footnote" data-footnote-ref>2</a></sup>.</p>
+<p>Here's a thing<sup class="footnote-ref"><a href="#fn-other-note" id="fnref-other-note" data-footnote-ref>3</a></sup>.</p>
+<p>And another thing<sup class="footnote-ref"><a href="#fn-codeblock-note" id="fnref-codeblock-note" data-footnote-ref>4</a></sup>.</p>
+<p>This doesn't have a referent[^nope].</p>
+<p>Hi!</p>
+<section class="footnotes" data-footnotes>
+<ol>
+<li id="fn-1">
+<p>Some <em>bolded</em> footnote definition. <a href="#fnref-1" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1">↩</a></p>
+</li>
+<li id="fn-footnote">
+<blockquote>
+<p>Blockquotes can be in a footnote.</p>
+</blockquote>
+<pre><code>as well as code blocks
+</code></pre>
+<p>or, naturally, simple paragraphs. <a href="#fnref-footnote" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2">↩</a></p>
+</li>
+<li id="fn-other-note">
+<p>no code block here (spaces are stripped away) <a href="#fnref-other-note" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3">↩</a></p>
+</li>
+<li id="fn-codeblock-note">
+<pre><code>this is now a code block (8 spaces indentation)
+</code></pre>
+<a href="#fnref-codeblock-note" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="4" aria-label="Back to reference 4">↩</a>
+</li>
+</ol>
+</section>
+````````````````````````````````
+
+## When a footnote is used multiple times, we insert multiple backrefs.
+
+```````````````````````````````` example
+This is some text. It has a footnote[^a-footnote].
+
+This footnote is referenced[^a-footnote] multiple times, in lots of different places.[^a-footnote]
+
+[^a-footnote]: This footnote definition should have three backrefs.
+.
+<p>This is some text. It has a footnote<sup class="footnote-ref"><a href="#fn-a-footnote" id="fnref-a-footnote" data-footnote-ref>1</a></sup>.</p>
+<p>This footnote is referenced<sup class="footnote-ref"><a href="#fn-a-footnote" id="fnref-a-footnote-2" data-footnote-ref>1</a></sup> multiple times, in lots of different places.<sup class="footnote-ref"><a href="#fn-a-footnote" id="fnref-a-footnote-3" data-footnote-ref>1</a></sup></p>
+<section class="footnotes" data-footnotes>
+<ol>
+<li id="fn-a-footnote">
+<p>This footnote definition should have three backrefs. <a href="#fnref-a-footnote" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1">↩</a> <a href="#fnref-a-footnote-2" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1-2" aria-label="Back to reference 1-2">↩<sup class="footnote-ref">2</sup></a> <a href="#fnref-a-footnote-3" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1-3" aria-label="Back to reference 1-3">↩<sup class="footnote-ref">3</sup></a></p>
+</li>
+</ol>
+</section>
+````````````````````````````````
+
+## Footnote reference labels are href escaped
+
+```````````````````````````````` example
+Hello[^"><script>alert(1)</script>]
+
+[^"><script>alert(1)</script>]: pwned
+.
+<p>Hello<sup class="footnote-ref"><a href="#fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" id="fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" data-footnote-ref>1</a></sup></p>
+<section class="footnotes" data-footnotes>
+<ol>
+<li id="fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E">
+<p>pwned <a href="#fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E" class="footnote-backref" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1">↩</a></p>
+</li>
+</ol>
+</section>
+````````````````````````````````
+
+## Interop
+
+Autolink and strikethrough.
+
+```````````````````````````````` example
+~~www.google.com~~
+
+~~http://google.com~~
+.
+<p><del><a href="http://www.google.com">www.google.com</a></del></p>
+<p><del><a href="http://google.com">http://google.com</a></del></p>
+````````````````````````````````
+
+Autolink and tables.
+
+```````````````````````````````` example
+| a | b |
+| --- | --- |
+| https://github.com www.github.com | http://pokemon.com |
+.
+<table>
+<thead>
+<tr>
+<th>a</th>
+<th>b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com">https://github.com</a> <a href="http://www.github.com">www.github.com</a></td>
+<td><a href="http://pokemon.com">http://pokemon.com</a></td>
+</tr>
+</tbody>
+</table>
+````````````````````````````````
+
+## Task lists
+
+```````````````````````````````` example
+- [ ] foo
+- [x] bar
+.
+<ul>
+<li><input type="checkbox" disabled="" /> foo</li>
+<li><input type="checkbox" checked="" disabled="" /> bar</li>
+</ul>
+````````````````````````````````
+
+Show that a task list and a regular list get processed the same in
+the way that sublists are created. If something works in a list
+item, then it should work the same way with a task.  The only
+difference should be the tasklist marker. So, if we use something
+other than a space or x, it won't be recognized as a task item, and
+so will be treated as a regular item.
+
+```````````````````````````````` example
+- [x] foo
+  - [ ] bar
+  - [x] baz
+- [ ] bim
+
+Show a regular (non task) list to show that it has the same structure
+- [@] foo
+  - [@] bar
+  - [@] baz
+- [@] bim
+.
+<ul>
+<li><input type="checkbox" checked="" disabled="" /> foo
+<ul>
+<li><input type="checkbox" disabled="" /> bar</li>
+<li><input type="checkbox" checked="" disabled="" /> baz</li>
+</ul>
+</li>
+<li><input type="checkbox" disabled="" /> bim</li>
+</ul>
+<p>Show a regular (non task) list to show that it has the same structure</p>
+<ul>
+<li>[@] foo
+<ul>
+<li>[@] bar</li>
+<li>[@] baz</li>
+</ul>
+</li>
+<li>[@] bim</li>
+</ul>
+````````````````````````````````
+Use a larger indent -- a task list and a regular list should produce
+the same structure.
+
+```````````````````````````````` example
+- [x] foo
+    - [ ] bar
+    - [x] baz
+- [ ] bim
+
+Show a regular (non task) list to show that it has the same structure
+- [@] foo
+    - [@] bar
+    - [@] baz
+- [@] bim
+.
+<ul>
+<li><input type="checkbox" checked="" disabled="" /> foo
+<ul>
+<li><input type="checkbox" disabled="" /> bar</li>
+<li><input type="checkbox" checked="" disabled="" /> baz</li>
+</ul>
+</li>
+<li><input type="checkbox" disabled="" /> bim</li>
+</ul>
+<p>Show a regular (non task) list to show that it has the same structure</p>
+<ul>
+<li>[@] foo
+<ul>
+<li>[@] bar</li>
+<li>[@] baz</li>
+</ul>
+</li>
+<li>[@] bim</li>
+</ul>
+````````````````````````````````
+
+<!-- end of the "GFM undocumented extensions and more robust test" section -->
+

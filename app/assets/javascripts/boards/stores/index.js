@@ -8,12 +8,13 @@ import state from 'ee_else_ce/boards/stores/state';
 
 Vue.use(Vuex);
 
-export const createStore = () =>
-  new Vuex.Store({
-    state,
-    getters,
-    actions,
-    mutations,
-  });
+export const storeOptions = {
+  state,
+  getters,
+  actions,
+  mutations,
+};
+
+export const createStore = (options = storeOptions) => new Vuex.Store(options);
 
 export default createStore();

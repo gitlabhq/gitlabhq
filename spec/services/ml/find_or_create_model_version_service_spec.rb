@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops do
   let_it_be(:existing_version) { create(:ml_model_versions) }
   let_it_be(:another_project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   let(:package) { nil }
   let(:description) { nil }
@@ -14,7 +15,8 @@ RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops d
       model_name: name,
       version: version,
       package: package,
-      description: description
+      description: description,
+      user: user
     }
   end
 

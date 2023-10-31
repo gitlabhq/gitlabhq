@@ -10,4 +10,10 @@ RSpec.describe Types::WorkItems::LinkedItemType, feature_category: :portfolio_ma
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
+
+  describe 'work_item' do
+    subject { described_class.fields['workItem'] }
+
+    it { is_expected.to have_nullable_graphql_type(Types::WorkItemType) }
+  end
 end

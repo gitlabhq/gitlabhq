@@ -111,7 +111,6 @@ Style/SymbolProc:
     - 'lib/api/entities/merge_request_approvals.rb'
     - 'lib/api/entities/package.rb'
     - 'lib/api/entities/protected_ref_access.rb'
-    - 'lib/api/github/entities.rb'
     - 'lib/api/go_proxy.rb'
     - 'lib/api/helpers/internal_helpers.rb'
     - 'lib/api/package_files.rb'

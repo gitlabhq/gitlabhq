@@ -249,7 +249,6 @@ Rails/Pluck:
     - 'spec/requests/api/topics_spec.rb'
     - 'spec/requests/api/unleash_spec.rb'
     - 'spec/requests/api/users_spec.rb'
-    - 'spec/requests/api/v3/github_spec.rb'
     - 'spec/requests/groups/autocomplete_sources_spec.rb'
     - 'spec/requests/groups/milestones_controller_spec.rb'
     - 'spec/requests/jwks_controller_spec.rb'

@@ -2,21 +2,17 @@
 
 module Ml
   class FindOrCreateModelService
-    def initialize(project, model_name)
+    def initialize(project, name, user = nil, description = nil, metadata = [])
       @project = project
-      @name = model_name
+      @name = name
+      @description = description
+      @metadata = metadata
+      @user = user
     end
 
     def execute
-      Ml::Model.find_or_create(
-        project,
-        name,
-        Ml::FindOrCreateExperimentService.new(project, name).execute
-      )
+      FindModelService.new(@project, @name).execute ||
+        CreateModelService.new(@project, @name, @user, @description, @metadata).execute
     end
-
-    private
-
-    attr_reader :name, :project
   end
 end

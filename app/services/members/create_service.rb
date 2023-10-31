@@ -21,10 +21,9 @@ module Members
     def execute
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, create_member_permission(source), source)
 
-      # rubocop:disable Layout/EmptyLineAfterGuardClause
-      raise Gitlab::Access::AccessDeniedError if adding_at_least_one_owner &&
-        cannot_assign_owner_responsibilities_to_member_in_project?
-      # rubocop:enable Layout/EmptyLineAfterGuardClause
+      if adding_at_least_one_owner && cannot_assign_owner_responsibilities_to_member_in_project?
+        raise Gitlab::Access::AccessDeniedError
+      end
 
       validate_invite_source!
       validate_invitable!
@@ -73,8 +72,8 @@ module Members
 
       return unless user_limit && invites.size > user_limit
 
-      raise TooManyInvitesError,
-            format(s_("AddMember|Too many users specified (limit is %{user_limit})"), user_limit: user_limit)
+      message = format(s_("AddMember|Too many users specified (limit is %{user_limit})"), user_limit: user_limit)
+      raise TooManyInvitesError, message
     end
 
     def blank_invites_message
@@ -140,11 +139,13 @@ module Members
     end
 
     def track_invite_source(member)
-      Gitlab::Tracking.event(self.class.name,
-                             'create_member',
-                             label: invite_source,
-                             property: tracking_property(member),
-                             user: current_user)
+      Gitlab::Tracking.event(
+        self.class.name,
+        'create_member',
+        label: invite_source,
+        property: tracking_property(member),
+        user: current_user
+      )
     end
 
     def invite_source
@@ -165,9 +166,13 @@ module Members
     end
 
     def enqueue_onboarding_progress_action
-      return unless member_created_namespace_id
+      return unless at_least_one_member_created?
 
       Onboarding::UserAddedWorker.perform_async(member_created_namespace_id)
+    end
+
+    def at_least_one_member_created?
+      member_created_namespace_id.present?
     end
 
     def result
@@ -183,7 +188,7 @@ module Members
     end
 
     def publish_event!
-      return unless member_created_namespace_id
+      return unless at_least_one_member_created?
 
       Gitlab::EventStore.publish(
         Members::MembersAddedEvent.new(data: {

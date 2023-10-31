@@ -15,7 +15,7 @@ module Types
       field :link_updated_at, Types::TimeType,
         description: 'Timestamp the link was updated.', null: false
       field :work_item, Types::WorkItemType,
-        description: 'Linked work item.', null: false
+        description: 'Linked work item.', null: true
     end
     # rubocop:enable Graphql/AuthorizeTypes
   end

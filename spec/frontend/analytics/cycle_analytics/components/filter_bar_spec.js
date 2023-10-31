@@ -216,7 +216,7 @@ describe('Filter bar', () => {
       urlUtils.mergeUrlParams = jest.fn();
 
       mock = new MockAdapter(axios);
-      wrapper = createComponent(storeConfig);
+      wrapper = createComponent(storeConfig());
 
       wrapper.vm.$store.dispatch('filters/setFilters', {
         ...initialFilterBarState,

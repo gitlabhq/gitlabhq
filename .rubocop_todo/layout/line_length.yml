@@ -4349,7 +4349,6 @@ Layout/LineLength:
     - 'spec/requests/api/unleash_spec.rb'
     - 'spec/requests/api/user_counts_spec.rb'
     - 'spec/requests/api/users_spec.rb'
-    - 'spec/requests/api/v3/github_spec.rb'
     - 'spec/requests/dashboard_controller_spec.rb'
     - 'spec/requests/git_http_spec.rb'
     - 'spec/requests/groups/milestones_controller_spec.rb'

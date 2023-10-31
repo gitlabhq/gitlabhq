@@ -2255,3 +2255,27 @@
 08_06_00__gitlab_internal_extension_markdown__footnotes__001:
   spec_example_position: 754
   source_specification: gitlab
+09_00_00__gfm_undocumented_extensions_and_more_robust_test__footnotes__002:
+  spec_example_position: 755
+  source_specification: commonmark
+? 09_01_00__gfm_undocumented_extensions_and_more_robust_test__when_a_footnote_is_used_multiple_times,_we_insert_multiple_backrefs.__001
+: spec_example_position: 756
+  source_specification: commonmark
+09_02_00__gfm_undocumented_extensions_and_more_robust_test__footnote_reference_labels_are_href_escaped__001:
+  spec_example_position: 757
+  source_specification: commonmark
+09_03_00__gfm_undocumented_extensions_and_more_robust_test__interop__001:
+  spec_example_position: 758
+  source_specification: commonmark
+09_03_00__gfm_undocumented_extensions_and_more_robust_test__interop__002:
+  spec_example_position: 759
+  source_specification: commonmark
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__001:
+  spec_example_position: 760
+  source_specification: commonmark
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__002:
+  spec_example_position: 761
+  source_specification: commonmark
+09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__003:
+  spec_example_position: 762
+  source_specification: commonmark

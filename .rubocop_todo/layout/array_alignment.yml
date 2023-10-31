@@ -79,7 +79,6 @@ Layout/ArrayAlignment:
     - 'ee/spec/features/boards/boards_licensed_features_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/charts_spec.rb'
     - 'ee/spec/features/groups/group_roadmap_spec.rb'
-    - 'ee/spec/finders/namespaces/billed_users_finder_spec.rb'
     - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
     - 'ee/spec/frontend/fixtures/search.rb'
     - 'ee/spec/graphql/resolvers/analytics/contribution_analytics/contributions_resolver_spec.rb'

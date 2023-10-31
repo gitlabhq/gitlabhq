@@ -12465,6 +12465,23 @@ CREATE SEQUENCE audit_events_streaming_headers_id_seq
 
 ALTER SEQUENCE audit_events_streaming_headers_id_seq OWNED BY audit_events_streaming_headers.id;
 
+CREATE TABLE audit_events_streaming_http_group_namespace_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_audit_event_destination_id bigint NOT NULL,
+    namespace_id bigint NOT NULL
+);
+
+CREATE SEQUENCE audit_events_streaming_http_group_namespace_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_streaming_http_group_namespace_filters_id_seq OWNED BY audit_events_streaming_http_group_namespace_filters.id;
+
 CREATE TABLE audit_events_streaming_instance_event_type_filters (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -18959,6 +18976,26 @@ CREATE SEQUENCE ml_experiments_id_seq
 
 ALTER SEQUENCE ml_experiments_id_seq OWNED BY ml_experiments.id;
 
+CREATE TABLE ml_model_metadata (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    model_id bigint NOT NULL,
+    name text NOT NULL,
+    value text NOT NULL,
+    CONSTRAINT check_26d3322153 CHECK ((char_length(value) <= 5000)),
+    CONSTRAINT check_36240c80a7 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ml_model_metadata_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_model_metadata_id_seq OWNED BY ml_model_metadata.id;
+
 CREATE TABLE ml_model_versions (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -18987,7 +19024,10 @@ CREATE TABLE ml_models (
     updated_at timestamp with time zone NOT NULL,
     project_id bigint NOT NULL,
     name text NOT NULL,
-    CONSTRAINT check_1fd2cc7d93 CHECK ((char_length(name) <= 255))
+    description text,
+    user_id integer,
+    CONSTRAINT check_1fd2cc7d93 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_d0c47d63b5 CHECK ((char_length(description) <= 5000))
 );
 
 CREATE SEQUENCE ml_models_id_seq
@@ -26042,6 +26082,8 @@ ALTER TABLE ONLY audit_events_streaming_event_type_filters ALTER COLUMN id SET D
 
 ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_http_group_namespace_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_instance_event_type_filters_id_seq'::regclass);
 
 ALTER TABLE ONLY authentication_events ALTER COLUMN id SET DEFAULT nextval('authentication_events_id_seq'::regclass);
@@ -26595,6 +26637,8 @@ ALTER TABLE ONLY ml_candidates ALTER COLUMN id SET DEFAULT nextval('ml_candidate
 ALTER TABLE ONLY ml_experiment_metadata ALTER COLUMN id SET DEFAULT nextval('ml_experiment_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY ml_experiments ALTER COLUMN id SET DEFAULT nextval('ml_experiments_id_seq'::regclass);
+
+ALTER TABLE ONLY ml_model_metadata ALTER COLUMN id SET DEFAULT nextval('ml_model_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY ml_model_versions ALTER COLUMN id SET DEFAULT nextval('ml_model_versions_id_seq'::regclass);
 
@@ -27881,6 +27925,9 @@ ALTER TABLE ONLY audit_events_streaming_event_type_filters
 ALTER TABLE ONLY audit_events_streaming_headers
     ADD CONSTRAINT audit_events_streaming_headers_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters
+    ADD CONSTRAINT audit_events_streaming_http_group_namespace_filters_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters
     ADD CONSTRAINT audit_events_streaming_instance_event_type_filters_pkey PRIMARY KEY (id);
 
@@ -28876,6 +28923,9 @@ ALTER TABLE ONLY ml_experiment_metadata
 
 ALTER TABLE ONLY ml_experiments
     ADD CONSTRAINT ml_experiments_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ml_model_metadata
+    ADD CONSTRAINT ml_model_metadata_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT ml_model_versions_pkey PRIMARY KEY (id);
@@ -31049,6 +31099,8 @@ CREATE UNIQUE INDEX i_bulk_import_export_batches_id_batch_number ON bulk_import_
 CREATE UNIQUE INDEX i_bulk_import_trackers_id_batch_number ON bulk_import_batch_trackers USING btree (tracker_id, batch_number);
 
 CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_management_frameworks USING btree (id, created_at, pipeline_configuration_full_path);
+
+CREATE INDEX i_compliance_standards_adherence_on_namespace_id_and_proj_id ON project_compliance_standards_adherence USING btree (namespace_id, project_id DESC, id DESC);
 
 CREATE INDEX i_compliance_violations_for_export ON merge_requests_compliance_violations USING btree (target_project_id, id);
 
@@ -33276,6 +33328,8 @@ CREATE INDEX index_ml_models_on_project_id ON ml_models USING btree (project_id)
 
 CREATE UNIQUE INDEX index_ml_models_on_project_id_and_name ON ml_models USING btree (project_id, name);
 
+CREATE INDEX index_ml_models_on_user_id ON ml_models USING btree (user_id);
+
 CREATE UNIQUE INDEX index_mr_blocks_on_blocking_and_blocked_mr_ids ON merge_request_blocks USING btree (blocking_merge_request_id, blocked_merge_request_id);
 
 CREATE INDEX index_mr_cleanup_schedules_timestamps_status ON merge_request_cleanup_schedules USING btree (scheduled_at) WHERE ((completed_at IS NULL) AND (status = 0));
@@ -33725,8 +33779,6 @@ CREATE UNIQUE INDEX index_project_ci_feature_usages_unique_columns ON project_ci
 CREATE INDEX index_project_compliance_framework_settings_on_framework_id ON project_compliance_framework_settings USING btree (framework_id);
 
 CREATE INDEX index_project_compliance_framework_settings_on_project_id ON project_compliance_framework_settings USING btree (project_id);
-
-CREATE INDEX index_project_compliance_standards_adherence_on_namespace_id ON project_compliance_standards_adherence USING btree (namespace_id);
 
 CREATE INDEX index_project_compliance_standards_adherence_on_project_id ON project_compliance_standards_adherence USING btree (project_id);
 
@@ -35076,6 +35128,10 @@ CREATE UNIQUE INDEX unique_amazon_s3_configurations_namespace_id_and_name ON aud
 
 CREATE UNIQUE INDEX unique_any_approver_merge_request_rule_type_post_merge ON approval_merge_request_rules USING btree (merge_request_id, rule_type, applicable_post_merge) WHERE (rule_type = 4);
 
+CREATE UNIQUE INDEX unique_audit_events_group_namespace_filters_destination_id ON audit_events_streaming_http_group_namespace_filters USING btree (external_audit_event_destination_id);
+
+CREATE UNIQUE INDEX unique_audit_events_group_namespace_filters_namespace_id ON audit_events_streaming_http_group_namespace_filters USING btree (namespace_id);
+
 CREATE UNIQUE INDEX unique_batched_background_migrations_queued_migration_version ON batched_background_migrations USING btree (queued_migration_version);
 
 CREATE UNIQUE INDEX unique_ci_builds_token_encrypted_and_partition_id ON ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
@@ -35089,6 +35145,8 @@ CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_
 CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_id ON ci_build_pending_states USING btree (partition_id, build_id);
 
 CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_settings USING btree (pages_unique_domain) WHERE (pages_unique_domain IS NOT NULL);
+
+CREATE UNIQUE INDEX unique_index_ml_model_metadata_name ON ml_model_metadata USING btree (model_id, name);
 
 CREATE UNIQUE INDEX unique_index_on_system_note_metadata_id ON resource_link_events USING btree (system_note_metadata_id);
 
@@ -37257,6 +37315,9 @@ ALTER TABLE ONLY ci_pipelines
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ml_models
+    ADD CONSTRAINT fk_6c95e61a6e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY projects
     ADD CONSTRAINT fk_6ca23af0a3 FOREIGN KEY (project_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -38136,6 +38197,9 @@ ALTER TABLE ONLY security_orchestration_policy_rule_schedules
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_rails_17dbea07a6 FOREIGN KEY (policy_id) REFERENCES incident_management_escalation_policies(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters
+    ADD CONSTRAINT fk_rails_17f19c81df FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY cluster_providers_aws
     ADD CONSTRAINT fk_rails_18983d9ea4 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
@@ -38786,6 +38850,9 @@ ALTER TABLE ONLY dast_site_profiles
 
 ALTER TABLE ONLY merge_request_context_commit_diff_files
     ADD CONSTRAINT fk_rails_74a00a1787 FOREIGN KEY (merge_request_context_commit_id) REFERENCES merge_request_context_commits(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters
+    ADD CONSTRAINT fk_rails_74a28d2432 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_crm_settings
     ADD CONSTRAINT fk_rails_74fdf2f13d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -39458,6 +39525,9 @@ ALTER TABLE ONLY packages_rpm_metadata
 
 ALTER TABLE ONLY note_metadata
     ADD CONSTRAINT fk_rails_d853224d37 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_model_metadata
+    ADD CONSTRAINT fk_rails_d907835e01 FOREIGN KEY (model_id) REFERENCES ml_models(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT fk_rails_d9fec24b9d FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

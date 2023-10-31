@@ -16,7 +16,9 @@ module Ml
 
     has_one :default_experiment, class_name: 'Ml::Experiment'
     belongs_to :project
+    belongs_to :user
     has_many :versions, class_name: 'Ml::ModelVersion'
+    has_many :metadata, class_name: 'Ml::ModelMetadata'
     has_one :latest_version, -> { latest_by_model }, class_name: 'Ml::ModelVersion', inverse_of: :model
 
     scope :including_latest_version, -> { includes(:latest_version) }
@@ -35,13 +37,12 @@ module Ml
       errors.add(:default_experiment) unless default_experiment.project_id == project_id
     end
 
-    def self.find_or_create(project, name, experiment)
-      create_with(default_experiment: experiment)
-        .find_or_create_by(project: project, name: name)
-    end
-
     def self.by_project_id_and_id(project_id, id)
       find_by(project_id: project_id, id: id)
+    end
+
+    def self.by_project_id_and_name(project_id, name)
+      find_by(project_id: project_id, name: name)
     end
   end
 end

@@ -73,7 +73,6 @@ export default {
       'branchCollaboration',
       'modalTitle',
       'existingBranch',
-      'prependedText',
       'targetProjectId',
       'targetProjectName',
       'branchesEndpoint',

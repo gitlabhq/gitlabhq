@@ -11,9 +11,9 @@ module Ml
     end
 
     def execute
-      model = Ml::FindOrCreateModelService.new(project, name).execute
+      model = Ml::FindOrCreateModelService.new(@project, @name).execute
 
-      model_version = Ml::ModelVersion.find_or_create!(model, version, package, description)
+      model_version = Ml::ModelVersion.find_or_create!(model, @version, @package, @description)
 
       model_version.candidate = ::Ml::CreateCandidateService.new(
         model.default_experiment,
@@ -22,9 +22,5 @@ module Ml
 
       model_version
     end
-
-    private
-
-    attr_reader :version, :name, :project, :package, :description
   end
 end

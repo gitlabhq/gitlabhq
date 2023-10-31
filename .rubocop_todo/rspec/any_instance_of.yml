@@ -69,7 +69,6 @@ RSpec/AnyInstanceOf:
     - 'spec/controllers/groups/settings/ci_cd_controller_spec.rb'
     - 'spec/controllers/groups_controller_spec.rb'
     - 'spec/controllers/import/bitbucket_controller_spec.rb'
-    - 'spec/controllers/oauth/jira_dvcs/authorizations_controller_spec.rb'
     - 'spec/controllers/omniauth_callbacks_controller_spec.rb'
     - 'spec/controllers/projects/artifacts_controller_spec.rb'
     - 'spec/controllers/projects/branches_controller_spec.rb'

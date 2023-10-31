@@ -84,6 +84,20 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
     end
   end
 
+  shared_examples 'deletes pipes' do |compression, decompression|
+    it 'deletes the pipes', :aggregate_failures do
+      FileUtils.touch("#{source_dir}/file.txt")
+      File.mkfifo("#{source_dir}/pipe")
+
+      archive_file = File.join(archive_dir, 'file_with_pipes.tar.gz')
+      subject.public_send(compression, archive: archive_file, dir: source_dir)
+      subject.public_send(decompression, archive: archive_file, dir: target_dir)
+
+      expect(File).to exist("#{target_dir}/file.txt")
+      expect(File).not_to exist("#{target_dir}/pipe")
+    end
+  end
+
   describe '#download_or_copy_upload' do
     let(:upload) { instance_double(Upload, local?: local) }
     let(:uploader) { instance_double(ImportExportUploader, path: :path, url: :url, upload: upload) }
@@ -310,6 +324,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
     it_behaves_like 'deletes symlinks', :tar_czf, :untar_zxf
     it_behaves_like 'handles shared hard links', :tar_czf, :untar_zxf
+    it_behaves_like 'deletes pipes', :tar_czf, :untar_zxf
 
     it 'has the right mask for project.json' do
       subject.untar_zxf(archive: tar_archive_fixture, dir: target_dir)
@@ -329,6 +344,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
     it_behaves_like 'deletes symlinks', :tar_cf, :untar_xf
     it_behaves_like 'handles shared hard links', :tar_cf, :untar_xf
+    it_behaves_like 'deletes pipes', :tar_czf, :untar_zxf
 
     it 'extracts archive without decompression' do
       filename = 'archive.tar.gz'

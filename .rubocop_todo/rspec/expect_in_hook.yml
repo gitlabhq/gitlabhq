@@ -335,7 +335,6 @@ RSpec/ExpectInHook:
     - 'spec/requests/api/project_debian_distributions_spec.rb'
     - 'spec/requests/api/project_packages_spec.rb'
     - 'spec/requests/api/projects_spec.rb'
-    - 'spec/requests/api/v3/github_spec.rb'
     - 'spec/requests/health_controller_spec.rb'
     - 'spec/requests/import/gitlab_groups_controller_spec.rb'
     - 'spec/requests/openid_connect_spec.rb'

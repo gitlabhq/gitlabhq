@@ -6897,10 +6897,25 @@ msgstr[1] ""
 msgid "AuditStreams|A header with this name already exists."
 msgstr ""
 
+msgid "AuditStreams|AKIA1231dsdsdsdsds23"
+msgstr ""
+
+msgid "AuditStreams|AWS Region"
+msgstr ""
+
+msgid "AuditStreams|AWS S3"
+msgstr ""
+
+msgid "AuditStreams|Access Key Xid"
+msgstr ""
+
 msgid "AuditStreams|Active"
 msgstr ""
 
 msgid "AuditStreams|Add a new private key"
+msgstr ""
+
+msgid "AuditStreams|Add a new secret access key"
 msgstr ""
 
 msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems."
@@ -6931,6 +6946,9 @@ msgid "AuditStreams|An error occurred when updating external audit event stream 
 msgstr ""
 
 msgid "AuditStreams|Are you sure about deleting this destination?"
+msgstr ""
+
+msgid "AuditStreams|Bucket Name"
 msgstr ""
 
 msgid "AuditStreams|Cancel editing"
@@ -6996,6 +7014,9 @@ msgstr ""
 msgid "AuditStreams|Save external stream destination"
 msgstr ""
 
+msgid "AuditStreams|Secret Access Key"
+msgstr ""
+
 msgid "AuditStreams|Select events"
 msgstr ""
 
@@ -7020,6 +7041,9 @@ msgstr ""
 msgid "AuditStreams|This is great for keeping everything one place."
 msgstr ""
 
+msgid "AuditStreams|Use the AWS console to view the secret access key. To change the secret access key, replace it with a new secret access key."
+msgstr ""
+
 msgid "AuditStreams|Use the Google Cloud console to view the private key. To change the private key, replace it with a new private key."
 msgstr ""
 
@@ -7030,6 +7054,9 @@ msgid "AuditStreams|Verification token"
 msgstr ""
 
 msgid "AuditStreams|audit-events"
+msgstr ""
+
+msgid "AuditStreams|bucket-name"
 msgstr ""
 
 msgid "AuditStreams|ex: 1000"
@@ -7045,6 +7072,9 @@ msgid "AuditStreams|my-email@my-google-project.iam.gservice.account.com"
 msgstr ""
 
 msgid "AuditStreams|my-google-project"
+msgstr ""
+
+msgid "AuditStreams|us-east-1"
 msgstr ""
 
 msgid "Aug"
@@ -42895,6 +42925,9 @@ msgstr ""
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
+msgid "SecurityOrchestration|Override the following project settings:"
+msgstr ""
+
 msgid "SecurityOrchestration|Policies"
 msgstr ""
 
@@ -50145,9 +50178,6 @@ msgstr ""
 msgid "Total Score"
 msgstr ""
 
-msgid "Total Spans"
-msgstr ""
-
 msgid "Total cores (CPUs)"
 msgstr ""
 
@@ -50155,6 +50185,9 @@ msgid "Total issue weight"
 msgstr ""
 
 msgid "Total memory (GB)"
+msgstr ""
+
+msgid "Total spans"
 msgstr ""
 
 msgid "Total test time for all commits/merges"
@@ -50178,7 +50211,7 @@ msgstr ""
 msgid "Trace Details"
 msgstr ""
 
-msgid "Trace Start"
+msgid "Trace start"
 msgstr ""
 
 msgid "Tracing"
@@ -50205,7 +50238,7 @@ msgstr ""
 msgid "Tracing|Failed to load traces."
 msgstr ""
 
-msgid "Tracing|Filter Traces"
+msgid "Tracing|Filter traces"
 msgstr ""
 
 msgid "Tracing|Last 1 hour"
@@ -50256,13 +50289,13 @@ msgstr ""
 msgid "Tracing|Something went wrong while fetching the services"
 msgstr ""
 
-msgid "Tracing|Span Details"
-msgstr ""
-
 msgid "Tracing|Span ID"
 msgstr ""
 
-msgid "Tracing|Status Code"
+msgid "Tracing|Span details"
+msgstr ""
+
+msgid "Tracing|Status code"
 msgstr ""
 
 msgid "Tracing|Time range"

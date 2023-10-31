@@ -182,7 +182,6 @@ Lint/UnusedBlockArgument:
     - 'lib/api/entities/todo.rb'
     - 'lib/api/entities/tree_object.rb'
     - 'lib/api/entities/user_basic.rb'
-    - 'lib/api/github/entities.rb'
     - 'lib/api/group_variables.rb'
     - 'lib/api/helpers/authentication.rb'
     - 'lib/api/helpers/container_registry_helpers.rb'

@@ -15,7 +15,7 @@ WARNING:
 Do not run DAST scans against a production server. Not only can it perform *any* function that
 a user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data. Only run DAST scans against a test server.
 
-The analyzer uses the [OWASP Zed Attack Proxy](https://www.zaproxy.org/) (ZAP) to scan in two different ways:
+The analyzer uses the [Software Security Project Zed Attack Proxy](https://www.zaproxy.org/) (ZAP) to scan in two different ways:
 
 - Passive scan only (default). DAST executes
   [ZAP's Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/) and doesn't

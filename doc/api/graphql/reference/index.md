@@ -20073,7 +20073,7 @@ Represents an entry from the Cloud License history.
 | <a id="linkedworkitemtypelinkid"></a>`linkId` | [`WorkItemsRelatedWorkItemLinkID!`](#workitemsrelatedworkitemlinkid) | Global ID of the link. |
 | <a id="linkedworkitemtypelinktype"></a>`linkType` | [`String!`](#string) | Type of link. |
 | <a id="linkedworkitemtypelinkupdatedat"></a>`linkUpdatedAt` | [`Time!`](#time) | Timestamp the link was updated. |
-| <a id="linkedworkitemtypeworkitem"></a>`workItem` | [`WorkItem!`](#workitem) | Linked work item. |
+| <a id="linkedworkitemtypeworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Linked work item. |
 
 ### `Location`
 

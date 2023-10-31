@@ -31,16 +31,6 @@ InitializerConnections.raise_if_new_database_connection do
     end
     put '/oauth/applications/:id/renew(.:format)' => 'oauth/applications#renew', as: :renew_oauth_application
 
-    # This prefixless path is required because Jira gets confused if we set it up with a path
-    # More information: https://gitlab.com/gitlab-org/gitlab/issues/6752
-    scope path: '/login/oauth', controller: 'oauth/jira_dvcs/authorizations', as: :oauth_jira_dvcs do
-      get :authorize, action: :new
-      get :callback
-      post :access_token
-
-      match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
-    end
-
     draw :oauth
 
     use_doorkeeper_openid_connect do

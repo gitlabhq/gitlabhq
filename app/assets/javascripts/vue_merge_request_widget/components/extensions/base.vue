@@ -102,7 +102,7 @@ export default {
       return this.statusIcon(this.collapsedData);
     },
     tertiaryActionsButtons() {
-      return this.tertiaryButtons ? this.tertiaryButtons() : undefined;
+      return 'tertiaryButtons' in this ? this.tertiaryButtons() : undefined;
     },
     hydratedSummary() {
       const structuredOutput = this.summary(this.collapsedData);

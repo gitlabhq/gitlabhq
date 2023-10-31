@@ -501,7 +501,7 @@ class Project < ApplicationRecord
 
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, to: :project_feature, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
-  delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
+  delegate :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
   delegate :last_pipeline, to: :commit, allow_nil: true
 
   with_options to: :team do

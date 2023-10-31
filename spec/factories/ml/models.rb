@@ -18,5 +18,11 @@ FactoryBot.define do
       versions { [version] }
       latest_version { version }
     end
+
+    trait :with_metadata do
+      after(:create) do |model|
+        model.metadata = FactoryBot.create_list(:ml_model_metadata, 2, model: model) # rubocop:disable StrategyInCallback
+      end
+    end
   end
 end
