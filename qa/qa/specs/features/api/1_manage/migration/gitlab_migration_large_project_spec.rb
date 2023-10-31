@@ -343,7 +343,7 @@ module QA
         imported_mrs = project.merge_requests(auto_paginate: true, attempts: 2)
 
         Parallel.map(imported_mrs, in_threads: api_parallel_threads) do |mr|
-          resource = build(:merge_request, project: project, idd: mr[:iid], api_client: client)
+          resource = build(:merge_request, project: project, iid: mr[:iid], api_client: client)
 
           [mr[:iid], {
             url: mr[:web_url],

@@ -22023,7 +22023,7 @@ Represents a package with pipelines in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="package_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
+| <a id="packagecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packageid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
@@ -22035,6 +22035,7 @@ Represents a package with pipelines in the Package Registry.
 | <a id="packagestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packageupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+| <a id="packageuserpermissions"></a>`userPermissions` | [`PackagePermissions!`](#packagepermissions) | Permissions for the current user on the resource. |
 | <a id="packageversion"></a>`version` | [`String`](#string) | Version string. |
 
 ### `PackageBase`
@@ -22046,7 +22047,7 @@ Represents a package in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagebase_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagebasecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
+| <a id="packagebasecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagebasecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagebasemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
@@ -22057,6 +22058,7 @@ Represents a package in the Package Registry.
 | <a id="packagebasestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagebasetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packagebaseupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+| <a id="packagebaseuserpermissions"></a>`userPermissions` | [`PackagePermissions!`](#packagepermissions) | Permissions for the current user on the resource. |
 | <a id="packagebaseversion"></a>`version` | [`String`](#string) | Version string. |
 
 ### `PackageComposerJsonType`
@@ -22106,7 +22108,7 @@ Represents a package details in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagedetailstype_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagedetailstypecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
+| <a id="packagedetailstypecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagedetailstypecomposerconfigrepositoryurl"></a>`composerConfigRepositoryUrl` | [`String`](#string) | Url of the Composer setup endpoint. |
 | <a id="packagedetailstypecomposerurl"></a>`composerUrl` | [`String`](#string) | Url of the Composer endpoint. |
 | <a id="packagedetailstypeconanurl"></a>`conanUrl` | [`String`](#string) | Url of the Conan project endpoint. |
@@ -22130,6 +22132,7 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagedetailstypetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
 | <a id="packagedetailstypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+| <a id="packagedetailstypeuserpermissions"></a>`userPermissions` | [`PackagePermissions!`](#packagepermissions) | Permissions for the current user on the resource. |
 | <a id="packagedetailstypeversion"></a>`version` | [`String`](#string) | Version string. |
 | <a id="packagedetailstypeversions"></a>`versions` | [`PackageBaseConnection`](#packagebaseconnection) | Other versions of the package. (see [Connections](#connections)) |
 
@@ -22240,6 +22243,14 @@ Represents links to perform actions on the package.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagelinkswebpath"></a>`webPath` | [`String`](#string) | Path to the package details page. |
+
+### `PackagePermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagepermissionsdestroypackage"></a>`destroyPackage` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_package` on this resource. |
 
 ### `PackageSettings`
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User views the Confluence page', feature_category: :integrations do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, :public) }
 
@@ -11,12 +11,14 @@ RSpec.describe 'User views the Confluence page', feature_category: :integrations
     sign_in(user)
   end
 
-  it 'shows the page when the Confluence integration is enabled' do
+  it 'shows the page when the Confluence integration is enabled', :js do
     service = create(:confluence_integration, project: project)
 
     visit project_wikis_confluence_path(project)
 
-    expect(page).to have_css('.nav-sidebar li.active', text: 'Confluence', match: :first)
+    within_testid('super-sidebar') do
+      expect(page).to have_css('a[aria-current="page"]', text: 'Confluence')
+    end
 
     element = page.find('.row.empty-state')
 

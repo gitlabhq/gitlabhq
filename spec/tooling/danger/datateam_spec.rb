@@ -16,17 +16,24 @@ RSpec.describe Tooling::Danger::Datateam do
 
     where do
       {
-        'with structure.sql changes and no Data Warehouse::Impact Check label' => {
+        'with structure.sql subtraction changes and no Data Warehouse::Impact Check label' => {
           modified_files: %w(db/structure.sql app/models/user.rb),
-          changed_lines: ['+group_id bigint NOT NULL'],
+          changed_lines: ['-group_id bigint NOT NULL'],
           mr_labels: [],
           impacted: true,
           impacted_files: %w(db/structure.sql)
         },
-        'with structure.sql changes and Data Warehouse::Impact Check label' => {
+        'with structure.sql subtraction changes and Data Warehouse::Impact Check label' => {
           modified_files: %w(db/structure.sql),
-          changed_lines: ['+group_id bigint NOT NULL)'],
+          changed_lines: ['-group_id bigint NOT NULL)'],
           mr_labels: ['Data Warehouse::Impact Check'],
+          impacted: false,
+          impacted_files: %w(db/structure.sql)
+        },
+        'with structure.sql addition changes and no Data Warehouse::Impact Check label' => {
+          modified_files: %w(db/structure.sql app/models/user.rb),
+          changed_lines: ['+group_id bigint NOT NULL'],
+          mr_labels: [],
           impacted: false,
           impacted_files: %w(db/structure.sql)
         },

@@ -83,32 +83,6 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
 
       it_behaves_like 'returns the packages json'
     end
-
-    context 'with composer_use_ssh_source_urls disabled' do
-      before do
-        stub_feature_flags(composer_use_ssh_source_urls: false)
-      end
-
-      context 'with a public project' do
-        it_behaves_like 'returns the packages json'
-      end
-
-      context 'with an internal project' do
-        before do
-          project.update!(visibility: Gitlab::VisibilityLevel::INTERNAL)
-        end
-
-        it_behaves_like 'returns the packages json'
-      end
-
-      context 'with a private project' do
-        before do
-          project.update!(visibility: Gitlab::VisibilityLevel::PRIVATE)
-        end
-
-        it_behaves_like 'returns the packages json'
-      end
-    end
   end
 
   describe '#sha' do

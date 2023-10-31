@@ -17,7 +17,7 @@ module Tooling
       PERFORMANCE_INDICATOR_REGEX = %r{gmau|smau|paid_gmau|umau}
       METRIC_REMOVED = %r{\+status: removed}
       DATABASE_REGEX = %r{\Adb/structure\.sql}
-      STRUCTURE_SQL_FILE = %w[db/structure.sql].freeze
+      DATABASE_LINE_REMOVAL_REGEX = %r{\A-}
 
       def build_message
         return unless impacted?
@@ -47,12 +47,15 @@ module Tooling
         end.compact
       end
 
-      def database_changes?
-        !helper.modified_files.grep(DATABASE_REGEX).empty?
+      def database_changed_files
+        database_changed_files = helper.modified_files.grep(DATABASE_REGEX)
+        database_changed_files.select do |file|
+          helper.changed_lines(file).any? { |change| database_line_removal?(change) }
+        end.compact
       end
 
-      def database_changed_files
-        helper.modified_files & STRUCTURE_SQL_FILE
+      def database_line_removal?(change)
+        change =~ DATABASE_LINE_REMOVAL_REGEX
       end
 
       def performance_indicator_changed?(change)

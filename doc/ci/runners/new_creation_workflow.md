@@ -99,7 +99,7 @@ If you specify a runner authentication token with:
 Authentication tokens have the prefix, `glrt-`.
 
 To ensure minimal disruption to your automation workflow,
-[legacy-compatible registration processing](https://docs.gitlab.com/runner/register/#legacy-compatible-registration-processing)
+[legacy-compatible registration processing](https://docs.gitlab.com/runner/register/#legacy-compatible-registration-process)
 triggers if a runner authentication token is specified in the legacy parameter `--registration-token`.
 
 Example command for GitLab 15.9:

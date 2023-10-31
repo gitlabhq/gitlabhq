@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User searches for files', feature_category: :groups_and_projects do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
@@ -18,7 +18,7 @@ RSpec.describe 'Projects > Files > User searches for files', feature_category: :
         visit project_path(project)
       end
 
-      it 'does not show any result' do
+      it 'does not show any result', :js do
         submit_search('coffee')
 
         expect(page).to have_content("We couldn't find any")
@@ -41,7 +41,7 @@ RSpec.describe 'Projects > Files > User searches for files', feature_category: :
       visit project_tree_path(project, project.default_branch)
     end
 
-    it 'shows found files' do
+    it 'shows found files', :js do
       expect(page).to have_selector('.tree-controls .shortcuts-find-file')
 
       submit_search('coffee')
