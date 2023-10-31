@@ -161,6 +161,8 @@ export default {
     },
 
     onKeyDown({ event }) {
+      if (!this.items.length) return false;
+
       if (event.key === 'ArrowUp') {
         this.upHandler();
         return true;

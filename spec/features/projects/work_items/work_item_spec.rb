@@ -19,9 +19,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   context 'for signed in user' do
     before do
       project.add_developer(user)
-
       sign_in(user)
-
       visit work_items_path
     end
 
@@ -38,7 +36,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it 'actions dropdown is displayed' do
-      expect(page).to have_selector('[data-testid="work-item-actions-dropdown"]')
+      expect(page).to have_button _('More actions')
     end
 
     it 'reassigns to another user',
@@ -75,9 +73,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   context 'for signed in owner' do
     before do
       project.add_owner(user)
-
       sign_in(user)
-
       visit work_items_path
     end
 
@@ -87,9 +83,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   context 'for guest users' do
     before do
       project.add_guest(user)
-
       sign_in(user)
-
       visit work_items_path
     end
 
@@ -114,14 +108,12 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it 'todos action is not displayed' do
-      expect(page).not_to have_selector('[data-testid="work-item-todos-action"]')
+      expect(page).not_to have_button s_('WorkItem|Add a to do')
     end
 
     it 'award button is disabled and add reaction is not displayed' do
-      within('[data-testid="work-item-award-list"]') do
-        expect(page).not_to have_selector('[data-testid="emoji-picker"]')
-        expect(page).to have_selector('[data-testid="award-button"].disabled')
-      end
+      expect(page).not_to have_button _('Add reaction')
+      expect(page).to have_selector('[data-testid="award-button"].disabled')
     end
 
     it 'assignees input field is disabled' do

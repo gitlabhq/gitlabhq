@@ -12,7 +12,6 @@ import toast from '~/vue_shared/plugins/global_toast';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import {
   TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  TEST_ID_NOTIFICATIONS_TOGGLE_ACTION,
   TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   TEST_ID_DELETE_ACTION,
   TEST_ID_PROMOTE_ACTION,
@@ -44,8 +43,6 @@ describe('WorkItemActions component', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfidentialityToggleButton = () =>
     wrapper.findByTestId(TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION);
-  const findNotificationsToggleButton = () =>
-    wrapper.findByTestId(TEST_ID_NOTIFICATIONS_TOGGLE_ACTION);
   const findDeleteButton = () => wrapper.findByTestId(TEST_ID_DELETE_ACTION);
   const findPromoteButton = () => wrapper.findByTestId(TEST_ID_PROMOTE_ACTION);
   const findCopyReferenceButton = () => wrapper.findByTestId(TEST_ID_COPY_REFERENCE_ACTION);
@@ -248,7 +245,7 @@ describe('WorkItemActions component', () => {
     });
 
     it('renders toggle button', () => {
-      expect(findNotificationsToggleButton().exists()).toBe(true);
+      expect(findNotificationsToggle().exists()).toBe(true);
     });
 
     it.each`

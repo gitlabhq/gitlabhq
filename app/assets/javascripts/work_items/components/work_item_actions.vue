@@ -20,7 +20,6 @@ import {
   I18N_WORK_ITEM_DELETE,
   I18N_WORK_ITEM_ARE_YOU_SURE_DELETE,
   TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  TEST_ID_NOTIFICATIONS_TOGGLE_ACTION,
   TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   TEST_ID_DELETE_ACTION,
   TEST_ID_PROMOTE_ACTION,
@@ -39,8 +38,8 @@ import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.
 
 export default {
   i18n: {
-    enableTaskConfidentiality: s__('WorkItem|Turn on confidentiality'),
-    disableTaskConfidentiality: s__('WorkItem|Turn off confidentiality'),
+    enableConfidentiality: s__('WorkItem|Turn on confidentiality'),
+    disableConfidentiality: s__('WorkItem|Turn off confidentiality'),
     notifications: s__('WorkItem|Notifications'),
     notificationOn: s__('WorkItem|Notifications turned on.'),
     notificationOff: s__('WorkItem|Notifications turned off.'),
@@ -60,7 +59,6 @@ export default {
   },
   mixins: [Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
-  notificationsToggleTestId: TEST_ID_NOTIFICATIONS_TOGGLE_ACTION,
   notificationsToggleFormTestId: TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   confidentialityTestId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
   copyReferenceTestId: TEST_ID_COPY_REFERENCE_ACTION,
@@ -165,6 +163,11 @@ export default {
     canPromoteToObjective() {
       return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
     },
+    confidentialItemText() {
+      return this.isConfidential
+        ? this.$options.i18n.disableConfidentiality
+        : this.$options.i18n.enableConfidentiality;
+    },
     objectiveWorkItemTypeId() {
       return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_VALUE_OBJECTIVE).id;
     },
@@ -267,7 +270,7 @@ export default {
       icon="ellipsis_v"
       data-testid="work-item-actions-dropdown"
       text-sr-only
-      :text="__('More actions')"
+      :toggle-text="__('More actions')"
       category="tertiary"
       :auto-close="false"
       no-caret
@@ -282,7 +285,6 @@ export default {
             <gl-toggle
               :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
-              :data-testid="$options.notificationsToggleTestId"
               class="work-item-notification-toggle"
               label-position="left"
               @change="toggleNotifications($event)"
@@ -299,49 +301,46 @@ export default {
       >
         <template #list-item>{{ __('Promote to objective') }}</template>
       </gl-disclosure-dropdown-item>
-      <template v-if="canUpdate && !isParentConfidential">
-        <gl-disclosure-dropdown-item
-          :data-testid="$options.confidentialityTestId"
-          @action="handleToggleWorkItemConfidentiality"
-          ><template #list-item>{{
-            isConfidential
-              ? $options.i18n.disableTaskConfidentiality
-              : $options.i18n.enableTaskConfidentiality
-          }}</template></gl-disclosure-dropdown-item
-        >
-      </template>
+
       <gl-disclosure-dropdown-item
-        ref="workItemReference"
+        v-if="canUpdate && !isParentConfidential"
+        :data-testid="$options.confidentialityTestId"
+        @action="handleToggleWorkItemConfidentiality"
+      >
+        <template #list-item>{{ confidentialItemText }}</template>
+      </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
         :data-testid="$options.copyReferenceTestId"
         :data-clipboard-text="workItemReference"
         @action="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
-        ><template #list-item>{{
-          $options.i18n.copyReference
-        }}</template></gl-disclosure-dropdown-item
       >
-      <template v-if="$options.isLoggedIn && workItemCreateNoteEmail">
-        <gl-disclosure-dropdown-item
-          ref="workItemCreateNoteEmail"
-          :data-testid="$options.copyCreateNoteEmailTestId"
-          :data-clipboard-text="workItemCreateNoteEmail"
-          @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
-          ><template #list-item>{{
-            i18n.copyCreateNoteEmail
-          }}</template></gl-disclosure-dropdown-item
-        >
-      </template>
-      <gl-dropdown-divider v-if="canDelete" />
-      <gl-disclosure-dropdown-item
-        v-if="canDelete"
-        :data-testid="$options.deleteActionTestId"
-        variant="danger"
-        @action="handleDelete"
-      >
-        <template #list-item
-          ><span class="text-danger">{{ i18n.deleteWorkItem }}</span></template
-        >
+        <template #list-item>{{ $options.i18n.copyReference }}</template>
       </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
+        v-if="$options.isLoggedIn && workItemCreateNoteEmail"
+        :data-testid="$options.copyCreateNoteEmailTestId"
+        :data-clipboard-text="workItemCreateNoteEmail"
+        @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
+      >
+        <template #list-item>{{ i18n.copyCreateNoteEmail }}</template>
+      </gl-disclosure-dropdown-item>
+
+      <template v-if="canDelete">
+        <gl-dropdown-divider />
+        <gl-disclosure-dropdown-item
+          :data-testid="$options.deleteActionTestId"
+          variant="danger"
+          @action="handleDelete"
+        >
+          <template #list-item>
+            <span class="text-danger">{{ i18n.deleteWorkItem }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </template>
     </gl-disclosure-dropdown>
+
     <gl-modal
       ref="modal"
       modal-id="work-item-confirm-delete"

@@ -104,10 +104,7 @@ export default {
 </script>
 
 <template>
-  <gl-button
-    :loading="updateInProgress"
-    data-testid="work-item-state-toggle"
-    @click="updateWorkItem"
-    >{{ toggleWorkItemStateText }}</gl-button
-  >
+  <gl-button :loading="updateInProgress" @click="updateWorkItem">{{
+    toggleWorkItemStateText
+  }}</gl-button>
 </template>

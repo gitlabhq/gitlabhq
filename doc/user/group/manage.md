@@ -513,7 +513,7 @@ To disable third-party AI features for a group:
 1. Select **Save changes**.
 
 When Code Suggestions are enabled and disabled, an
-[audit event](../../administration/audit_events.md#view-audit-events) is created.
+[audit event](../../administration/audit_events.md) is created.
 
 ## Group activity analytics **(PREMIUM ALL)**
 

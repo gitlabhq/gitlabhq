@@ -57,6 +57,7 @@ function createSuggestionPlugin({
     render: () => {
       let component;
       let popup;
+      let isHidden = false;
 
       const onUpdate = (props) => {
         component?.updateProps({ ...props, loading: false });
@@ -88,6 +89,12 @@ function createSuggestionPlugin({
           popup = tippy('body', {
             getReferenceClientRect: props.clientRect,
             appendTo: () => document.body,
+            onHide: () => {
+              isHidden = true;
+            },
+            onShow: () => {
+              isHidden = false;
+            },
             content: component.element,
             showOnCreate: true,
             interactive: true,
@@ -100,6 +107,8 @@ function createSuggestionPlugin({
         onUpdate,
 
         onKeyDown(props) {
+          if (isHidden) return false;
+
           if (props.event.key === 'Escape') {
             popup?.[0].hide();
 

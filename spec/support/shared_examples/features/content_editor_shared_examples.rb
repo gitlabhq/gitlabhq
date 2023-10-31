@@ -560,6 +560,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
       it 'adds the correct prefix for /assign' do
         type_in_content_editor '/assign'
 
+        expect(find(suggestions_dropdown)).to have_text('/assign')
         send_keys [:arrow_down, :enter]
 
         expect(page).to have_text('/assign @')
@@ -568,6 +569,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
       it 'adds the correct prefix for /label' do
         type_in_content_editor '/label'
 
+        expect(find(suggestions_dropdown)).to have_text('/label')
         send_keys [:arrow_down, :enter]
 
         expect(page).to have_text('/label ~')
@@ -576,6 +578,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
       it 'adds the correct prefix for /milestone' do
         type_in_content_editor '/milestone'
 
+        expect(find(suggestions_dropdown)).to have_text('/milestone')
         send_keys [:arrow_down, :enter]
 
         expect(page).to have_text('/milestone %')
@@ -595,6 +598,39 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
 
       expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('@abc123')
+    end
+
+    it 'allows dismissing the suggestion popup and typing more text' do
+      type_in_content_editor '@ab'
+
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+
+      send_keys :escape
+
+      expect(page).not_to have_css(suggestions_dropdown)
+
+      type_in_content_editor :enter
+      type_in_content_editor 'foobar'
+
+      # ensure that the texts are in separate paragraphs
+      expect(page).to have_selector('p', text: '@ab')
+      expect(page).to have_selector('p', text: 'foobar')
+      expect(page).not_to have_selector('p', text: '@abfoobar')
+    end
+
+    it 'allows typing more text after the popup has disappeared because no suggestions match' do
+      type_in_content_editor '@ab'
+
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+
+      type_in_content_editor 'foo'
+      type_in_content_editor :enter
+      type_in_content_editor 'bar'
+
+      # ensure that the texts are in separate paragraphs
+      expect(page).to have_selector('p', text: '@abfoo')
+      expect(page).to have_selector('p', text: 'bar')
+      expect(page).not_to have_selector('p', text: '@abfoobar')
     end
 
     context 'when `disable_all_mention` is enabled' do

@@ -787,7 +787,7 @@ and primarily the restore prerequisites. Then, follow the steps under the
 
 ## Updating GitLab
 
-GitLab releases a new version every month on the 22nd. Whenever a new version is
+GitLab releases a new version every month on the [release date](https://about.gitlab.com/releases/). Whenever a new version is
 released, you can update your GitLab instance:
 
 1. SSH into your instance

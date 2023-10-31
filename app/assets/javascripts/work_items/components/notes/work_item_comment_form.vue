@@ -195,7 +195,6 @@ export default {
             :autocomplete-data-sources="autocompleteDataSources"
             :form-field-props="formFieldProps"
             :add-spacing-classes="false"
-            data-testid="work-item-add-comment"
             use-bottom-toolbar
             supports-quick-actions
             :autofocus="autofocus"

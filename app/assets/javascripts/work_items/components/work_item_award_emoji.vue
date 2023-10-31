@@ -238,7 +238,6 @@ export default {
 <template>
   <div v-if="!isLoading" class="gl-mt-3">
     <awards-list
-      data-testid="work-item-award-list"
       :awards="awards"
       :can-award-emoji="$options.isLoggedIn"
       :current-user-id="currentUserId"

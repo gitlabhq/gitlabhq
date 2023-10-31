@@ -207,7 +207,6 @@ export default {
     <gl-button
       v-if="showEdit"
       v-gl-tooltip
-      data-testid="edit-work-item-note"
       data-track-action="click_button"
       data-track-label="edit_button"
       category="tertiary"
@@ -219,7 +218,6 @@ export default {
     <gl-disclosure-dropdown
       ref="dropdown"
       v-gl-tooltip
-      data-testid="work-item-note-actions"
       icon="ellipsis_v"
       text-sr-only
       placement="right"

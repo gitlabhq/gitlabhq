@@ -244,13 +244,7 @@ export default {
           @keydown.ctrl.enter="updateWorkItem"
         />
         <div class="gl-display-flex">
-          <gl-alert
-            v-if="hasConflicts"
-            :dismissible="false"
-            variant="danger"
-            class="gl-w-full"
-            data-testid="work-item-description-conflicts"
-          >
+          <gl-alert v-if="hasConflicts" :dismissible="false" variant="danger" class="gl-w-full">
             <p>
               {{
                 s__(

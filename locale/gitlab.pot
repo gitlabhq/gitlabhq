@@ -41983,6 +41983,9 @@ msgstr ""
 msgid "ScanResultPolicy|Prevent branch protection modification"
 msgstr ""
 
+msgid "ScanResultPolicy|Prevent pushing and force pushing"
+msgstr ""
+
 msgid "ScanResultPolicy|Protected branch settings"
 msgstr ""
 

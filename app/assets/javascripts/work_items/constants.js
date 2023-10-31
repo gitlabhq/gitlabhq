@@ -246,7 +246,6 @@ export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
 ];
 
 export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';
-export const TEST_ID_NOTIFICATIONS_TOGGLE_ACTION = 'notifications-toggle-action';
 export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
 export const TEST_ID_DELETE_ACTION = 'delete-action';
 export const TEST_ID_PROMOTE_ACTION = 'promote-action';

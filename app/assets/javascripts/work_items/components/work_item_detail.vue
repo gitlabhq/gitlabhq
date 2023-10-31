@@ -409,7 +409,7 @@ export default {
         </gl-skeleton-loader>
       </div>
       <template v-else>
-        <div class="gl-display-flex gl-align-items-center" data-testid="work-item-body">
+        <div class="gl-display-flex gl-align-items-center">
           <ul
             v-if="parentWorkItem"
             class="list-unstyled gl-display-flex gl-min-w-0 gl-mr-auto gl-mb-0 gl-z-index-0"
