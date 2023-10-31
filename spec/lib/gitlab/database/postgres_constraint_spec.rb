@@ -51,9 +51,11 @@ RSpec.describe Gitlab::Database::PostgresConstraint, type: :model do
     subject(:check_constraints) { described_class.check_constraints.by_table_identifier(table_identifier) }
 
     it 'finds check constraints for the table' do
-      expect(check_constraints.map(&:name)).to contain_exactly(check_constraint_a_positive,
-                                                               check_constraint_a_gt_b,
-                                                               invalid_constraint_a)
+      expect(check_constraints.map(&:name)).to contain_exactly(
+        check_constraint_a_positive,
+        check_constraint_a_gt_b,
+        invalid_constraint_a
+      )
     end
 
     it 'includes columns for the check constraints', :aggregate_failures do
@@ -108,8 +110,12 @@ RSpec.describe Gitlab::Database::PostgresConstraint, type: :model do
   describe '#including_column' do
     it 'only matches constraints on the given column' do
       constraints_on_a = described_class.by_table_identifier(table_identifier).including_column('a').map(&:name)
-      expect(constraints_on_a).to contain_exactly(check_constraint_a_positive, check_constraint_a_gt_b,
-                                                  unique_constraint_a, invalid_constraint_a)
+      expect(constraints_on_a).to contain_exactly(
+        check_constraint_a_positive,
+        check_constraint_a_gt_b,
+        unique_constraint_a,
+        invalid_constraint_a
+      )
     end
   end
 

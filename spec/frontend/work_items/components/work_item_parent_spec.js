@@ -87,7 +87,6 @@ describe('WorkItemParent component', () => {
         headerText: 'Assign parent',
         category: 'tertiary',
         loading: false,
-        noCaret: true,
         isCheckCentered: true,
         searchable: true,
         searching: false,
@@ -96,7 +95,6 @@ describe('WorkItemParent component', () => {
         toggleText: 'None',
         searchPlaceholder: 'Search',
         resetButtonLabel: 'Unassign',
-        block: true,
       });
     });
 
@@ -104,14 +102,12 @@ describe('WorkItemParent component', () => {
       createComponent({ canUpdate: false, parent: mockParentWidgetResponse });
 
       expect(findCollapsibleListbox().exists()).toBe(false);
-      expect(findParentText().exists()).toBe(true);
       expect(findParentText().text()).toBe('Objective 101');
     });
 
     it('shows loading while searching', async () => {
       await findCollapsibleListbox().vm.$emit('shown');
       expect(findCollapsibleListbox().props('searching')).toBe(true);
-      expect(findCollapsibleListbox().props('no-caret')).toBeUndefined();
     });
   });
 
@@ -170,7 +166,6 @@ describe('WorkItemParent component', () => {
 
   describe('listbox', () => {
     const selectWorkItem = async (workItem) => {
-      await findCollapsibleListbox().vm.$emit('shown');
       await findCollapsibleListbox().vm.$emit('select', workItem);
     };
 

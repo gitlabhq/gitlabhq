@@ -51,13 +51,15 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
 
       it 'delegates to a method on List::ConvertTable' do
-        expect_next_instance_of(Gitlab::Database::Partitioning::List::ConvertTable,
-                                migration_context: migration,
-                                table_name: source_table,
-                                parent_table_name: partitioned_table,
-                                partitioning_column: partition_column,
-                                zero_partition_value: min_date,
-                                **extra_options) do |converter|
+        expect_next_instance_of(
+          Gitlab::Database::Partitioning::List::ConvertTable,
+          migration_context: migration,
+          table_name: source_table,
+          parent_table_name: partitioned_table,
+          partitioning_column: partition_column,
+          zero_partition_value: min_date,
+          **extra_options
+        ) do |converter|
           expect(converter).to receive(expected_method)
         end
 
@@ -70,11 +72,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         let(:lock_tables) { [source_table] }
         let(:expected_method) { :partition }
         let(:migrate) do
-          migration.convert_table_to_first_list_partition(table_name: source_table,
-                                                          partitioning_column: partition_column,
-                                                          parent_table_name: partitioned_table,
-                                                          initial_partitioning_value: min_date,
-                                                          lock_tables: lock_tables)
+          migration.convert_table_to_first_list_partition(
+            table_name: source_table,
+            partitioning_column: partition_column,
+            parent_table_name: partitioned_table,
+            initial_partitioning_value: min_date,
+            lock_tables: lock_tables
+          )
         end
       end
     end
@@ -83,10 +87,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :revert_partitioning }
         let(:migrate) do
-          migration.revert_converting_table_to_first_list_partition(table_name: source_table,
-                                                                    partitioning_column: partition_column,
-                                                                    parent_table_name: partitioned_table,
-                                                                    initial_partitioning_value: min_date)
+          migration.revert_converting_table_to_first_list_partition(
+            table_name: source_table,
+            partitioning_column: partition_column,
+            parent_table_name: partitioned_table,
+            initial_partitioning_value: min_date
+          )
         end
       end
     end
@@ -95,11 +101,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :prepare_for_partitioning }
         let(:migrate) do
-          migration.prepare_constraint_for_list_partitioning(table_name: source_table,
-                                                             partitioning_column: partition_column,
-                                                             parent_table_name: partitioned_table,
-                                                             initial_partitioning_value: min_date,
-                                                             async: false)
+          migration.prepare_constraint_for_list_partitioning(
+            table_name: source_table,
+            partitioning_column: partition_column,
+            parent_table_name: partitioned_table,
+            initial_partitioning_value: min_date,
+            async: false
+          )
         end
       end
     end
@@ -108,10 +116,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :revert_preparation_for_partitioning }
         let(:migrate) do
-          migration.revert_preparing_constraint_for_list_partitioning(table_name: source_table,
-                                                                      partitioning_column: partition_column,
-                                                                      parent_table_name: partitioned_table,
-                                                                      initial_partitioning_value: min_date)
+          migration.revert_preparing_constraint_for_list_partitioning(
+            table_name: source_table,
+            partitioning_column: partition_column,
+            parent_table_name: partitioned_table,
+            initial_partitioning_value: min_date
+          )
         end
       end
     end

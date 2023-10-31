@@ -25,6 +25,9 @@ Situations where auditor access for users could be helpful include:
   you can create an account with auditor access and then share the credentials
   with those users to which you want to grant access.
 
+NOTE:
+An auditor user counts as a billable user and consumes a license seat.
+
 ## Add a user with auditor access
 
 To create a new user account with auditor access (or change an existing user):

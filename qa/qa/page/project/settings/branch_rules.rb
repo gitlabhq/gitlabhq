@@ -6,22 +6,22 @@ module QA
       module Settings
         class BranchRules < Page::Base
           view 'app/assets/javascripts/projects/settings/repository/branch_rules/app.vue' do
-            element :add_branch_rule_button
+            element 'add-branch-rule-button'
           end
 
           view 'app/assets/javascripts/projects/settings/repository/branch_rules/components/branch_rule.vue' do
-            element :branch_content
-            element :details_button
+            element 'branch-content'
+            element 'details-button'
           end
 
           def click_add_branch_rule
-            click_element(:add_branch_rule_button)
+            click_element('add-branch-rule-button')
             click_button('Create protected branch')
           end
 
           def navigate_to_branch_rules_details(branch_name)
-            within_element(:branch_content, branch_name: branch_name) do
-              click_element(:details_button)
+            within_element('branch-content', branch_name: branch_name) do
+              click_element('details-button')
             end
           end
         end

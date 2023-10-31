@@ -371,12 +371,12 @@ RSpec.shared_examples 'work items milestone' do
   it 'searches and sets or removes milestone for the work item' do
     click_button s_('WorkItem|Add to milestone')
     send_keys "\"#{milestone.title}\""
-    click_button milestone.title
+    select_listbox_item(milestone.title, exact_text: true)
 
     expect(page).to have_button(milestone.title)
 
     click_button milestone.title
-    click_button s_('WorkItem|No milestone')
+    select_listbox_item(s_('WorkItem|No milestone'), exact_text: true)
 
     expect(page).to have_button(s_('WorkItem|Add to milestone'))
   end

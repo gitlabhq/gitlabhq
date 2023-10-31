@@ -156,7 +156,7 @@ export default {
   <li>
     <div
       class="gl-display-flex gl-justify-content-space-between"
-      data-qa-selector="branch_content"
+      data-testid="branch-content"
       :data-qa-branch-name="name"
     >
       <div>
@@ -178,7 +178,7 @@ export default {
         class="gl-align-self-start"
         category="tertiary"
         size="small"
-        data-qa-selector="details_button"
+        data-testid="details-button"
         :href="detailsPath"
       >
         {{ $options.i18n.detailsButtonLabel }}</gl-button

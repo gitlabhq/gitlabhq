@@ -13,9 +13,11 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
 
   describe '#check_constraint_name' do
     it 'returns a valid constraint name' do
-      name = model.check_constraint_name(:this_is_a_very_long_table_name,
-                                         :with_a_very_long_column_name,
-                                         :with_a_very_long_type)
+      name = model.check_constraint_name(
+        :this_is_a_very_long_table_name,
+        :with_a_very_long_column_name,
+        :with_a_very_long_type
+      )
 
       expect(name).to be_an_instance_of(String)
       expect(name).to start_with('check_')
@@ -404,9 +406,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
   describe '#add_text_limit' do
     context 'when it is called with the default options' do
       it 'calls add_check_constraint with an infered constraint name and validate: true' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'max_length')
+        constraint_name = model.check_constraint_name(:test_table, :name, 'max_length')
         check = "char_length(name) <= 255"
 
         expect(model).to receive(:check_constraint_name).and_call_original
@@ -440,9 +440,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
   describe '#validate_text_limit' do
     context 'when constraint_name is not provided' do
       it 'calls validate_check_constraint with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'max_length')
+        constraint_name = model.check_constraint_name(:test_table, :name, 'max_length')
 
         expect(model).to receive(:check_constraint_name).and_call_original
         expect(model).to receive(:validate_check_constraint)
@@ -468,9 +466,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
   describe '#remove_text_limit' do
     context 'when constraint_name is not provided' do
       it 'calls remove_check_constraint with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'max_length')
+        constraint_name = model.check_constraint_name(:test_table, :name, 'max_length')
 
         expect(model).to receive(:check_constraint_name).and_call_original
         expect(model).to receive(:remove_check_constraint)
@@ -496,9 +492,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
   describe '#check_text_limit_exists?' do
     context 'when constraint_name is not provided' do
       it 'calls check_constraint_exists? with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'max_length')
+        constraint_name = model.check_constraint_name(:test_table, :name, 'max_length')
 
         expect(model).to receive(:check_constraint_name).and_call_original
         expect(model).to receive(:check_constraint_exists?)
@@ -524,9 +518,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
   describe '#add_not_null_constraint' do
     context 'when it is called with the default options' do
       it 'calls add_check_constraint with an infered constraint name and validate: true' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'not_null')
+        constraint_name = model.check_constraint_name(:test_table, :name, 'not_null')
         check = "name IS NOT NULL"
 
         expect(model).to receive(:column_is_nullable?).and_return(true)
@@ -571,9 +563,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
   describe '#validate_not_null_constraint' do
     context 'when constraint_name is not provided' do
       it 'calls validate_check_constraint with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'not_null')
+        constraint_name = model.check_constraint_name(:test_table, :name, 'not_null')
 
         expect(model).to receive(:check_constraint_name).and_call_original
         expect(model).to receive(:validate_check_constraint)
@@ -599,9 +589,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
   describe '#remove_not_null_constraint' do
     context 'when constraint_name is not provided' do
       it 'calls remove_check_constraint with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'not_null')
+        constraint_name = model.check_constraint_name(:test_table, :name, 'not_null')
 
         expect(model).to receive(:check_constraint_name).and_call_original
         expect(model).to receive(:remove_check_constraint)
@@ -627,9 +615,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
   describe '#check_not_null_constraint_exists?' do
     context 'when constraint_name is not provided' do
       it 'calls check_constraint_exists? with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'not_null')
+        constraint_name = model.check_constraint_name(:test_table, :name, 'not_null')
 
         expect(model).to receive(:check_constraint_name).and_call_original
         expect(model).to receive(:check_constraint_exists?)

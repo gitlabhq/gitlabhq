@@ -5,11 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::BackgroundMigration::PrometheusMetrics, :prometheus do
   describe '#track' do
     let(:job_record) do
-      build(:batched_background_migration_job, :succeeded,
-            started_at: Time.current - 2.minutes,
-            finished_at: Time.current - 1.minute,
-            updated_at: Time.current,
-            metrics: { 'timings' => { 'update_all' => [0.05, 0.2, 0.4, 0.9, 4] } })
+      build(
+        :batched_background_migration_job,
+        :succeeded,
+        started_at: Time.current - 2.minutes,
+        finished_at: Time.current - 1.minute,
+        updated_at: Time.current,
+        metrics: { 'timings' => { 'update_all' => [0.05, 0.2, 0.4, 0.9, 4] } }
+      )
     end
 
     let(:labels) { job_record.batched_migration.prometheus_labels }

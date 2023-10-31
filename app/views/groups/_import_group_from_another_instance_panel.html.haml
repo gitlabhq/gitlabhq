@@ -24,7 +24,7 @@
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :warning) do |c|
         - c.with_body do
-          - docs_link = link_to('', help_page_path('user/group/import/index.md', anchor: 'migrated-group-items'), target: '_blank', rel: 'noopener noreferrer')
+          - docs_link = link_to('', help_page_path('user/group/import/index', anchor: 'migrated-group-items'), target: '_blank', rel: 'noopener noreferrer')
           = safe_format(s_('GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?'), tag_pair(docs_link, :docs_link_start, :docs_link_end))
 
     %p.gl-mt-3

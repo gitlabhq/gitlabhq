@@ -1,13 +1,5 @@
 <script>
-import {
-  GlFormGroup,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownDivider,
-  GlSkeletonLoader,
-  GlSearchBoxByType,
-  GlDropdownText,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlFormGroup, GlSkeletonLoader } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
@@ -22,7 +14,8 @@ import {
   TRACKING_CATEGORY_SHOW,
 } from '../constants';
 
-const noMilestoneId = 'no-milestone-id';
+export const noMilestoneId = 'no-milestone-id';
+const noMilestoneItem = { text: s__('WorkItem|No milestone'), value: noMilestoneId };
 
 export default {
   i18n: {
@@ -37,13 +30,9 @@ export default {
     EXPIRED_TEXT: __('(expired)'),
   },
   components: {
+    GlCollapsibleListbox,
     GlFormGroup,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
     GlSkeletonLoader,
-    GlSearchBoxByType,
-    GlDropdownText,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -74,11 +63,23 @@ export default {
   data() {
     return {
       localMilestone: this.workItemMilestone,
+      localMilestoneId: this.workItemMilestone?.id,
       searchTerm: '',
       shouldFetch: false,
       updateInProgress: false,
-      isFocused: false,
       milestones: [],
+      dropdownGroups: [
+        {
+          text: this.$options.i18n.NO_MILESTONE,
+          textSrOnly: true,
+          options: [noMilestoneItem],
+        },
+        {
+          text: __('Milestones'),
+          textSrOnly: true,
+          options: [],
+        },
+      ],
     };
   },
   computed: {
@@ -103,23 +104,29 @@ export default {
     isLoadingMilestones() {
       return this.$apollo.queries.milestones.loading;
     },
-    isNoMilestone() {
-      return this.localMilestone?.id === noMilestoneId || !this.localMilestone?.id;
+    milestonesList() {
+      return (
+        this.milestones.map(({ id, title, expired }) => {
+          return {
+            value: id,
+            text: title,
+            expired,
+          };
+        }) ?? []
+      );
     },
-    dropdownClasses() {
-      return {
-        'gl-text-gray-500!': this.canUpdate && this.isNoMilestone,
-        'is-not-focused': !this.isFocused,
-        'gl-min-w-20': true,
-      };
+    toggleClasses() {
+      const toggleClasses = ['gl-max-w-full'];
+
+      if (this.localMilestoneId === noMilestoneId) {
+        toggleClasses.push('gl-text-gray-500!');
+      }
+      return toggleClasses;
     },
   },
   watch: {
-    workItemMilestone: {
-      handler(newVal) {
-        this.localMilestone = newVal;
-      },
-      deep: true,
+    milestones() {
+      this.dropdownGroups[1].options = this.milestonesList;
     },
   },
   created() {
@@ -152,15 +159,11 @@ export default {
       this.localMilestone = milestone;
     },
     onDropdownShown() {
-      this.$refs.search.focusInput();
       this.shouldFetch = true;
-      this.isFocused = true;
     },
     onDropdownHide() {
-      this.isFocused = false;
       this.searchTerm = '';
       this.shouldFetch = false;
-      this.updateMilestone();
     },
     setSearchKey(value) {
       this.searchTerm = value;
@@ -169,6 +172,9 @@ export default {
       return this.localMilestone?.id === milestone?.id;
     },
     updateMilestone() {
+      this.localMilestone =
+        this.milestones.find(({ id }) => id === this.localMilestoneId) ?? noMilestoneItem;
+
       if (this.workItemMilestone?.id === this.localMilestone?.id) {
         return;
       }
@@ -182,8 +188,7 @@ export default {
             input: {
               id: this.workItemId,
               milestoneWidget: {
-                milestoneId:
-                  this.localMilestone?.id === 'no-milestone-id' ? null : this.localMilestone?.id,
+                milestoneId: this.localMilestoneId === noMilestoneId ? null : this.localMilestoneId,
               },
             },
           },
@@ -222,49 +227,45 @@ export default {
     >
       {{ dropdownText }}
     </span>
-    <gl-dropdown
+
+    <gl-collapsible-listbox
       v-else
       id="milestone-value"
-      class="gl-pl-0 gl-max-w-full work-item-field-value"
-      :toggle-class="dropdownClasses"
-      :text="dropdownText"
+      v-model="localMilestoneId"
+      :items="dropdownGroups"
+      category="tertiary"
+      data-testid="work-item-milestone-dropdown"
+      class="gl-max-w-full"
+      :toggle-text="dropdownText"
       :loading="updateInProgress"
+      :toggle-class="toggleClasses"
+      searchable
+      @select="updateMilestone"
       @shown="onDropdownShown"
-      @hide="onDropdownHide"
+      @hidden="onDropdownHide"
+      @search="debouncedSearchKeyUpdate"
     >
-      <template #header>
-        <gl-search-box-by-type ref="search" :value="searchTerm" @input="debouncedSearchKeyUpdate" />
+      <template #list-item="{ item }">
+        {{ item.text }}
+        <span v-if="item.expired">{{ $options.i18n.EXPIRED_TEXT }}</span>
       </template>
-      <gl-dropdown-item
-        data-testid="no-milestone"
-        is-check-item
-        :is-checked="isNoMilestone"
-        @click="handleMilestoneClick({ id: 'no-milestone-id' })"
-      >
-        {{ $options.i18n.NO_MILESTONE }}
-      </gl-dropdown-item>
-      <gl-dropdown-divider />
-      <gl-dropdown-text v-if="isLoadingMilestones">
-        <gl-skeleton-loader :height="90">
+      <template #footer>
+        <gl-skeleton-loader v-if="isLoadingMilestones" :height="90">
           <rect width="380" height="10" x="10" y="15" rx="4" />
           <rect width="280" height="10" x="10" y="30" rx="4" />
           <rect width="380" height="10" x="10" y="50" rx="4" />
           <rect width="280" height="10" x="10" y="65" rx="4" />
         </gl-skeleton-loader>
-      </gl-dropdown-text>
-      <template v-else-if="milestones.length">
-        <gl-dropdown-item
-          v-for="milestone in milestones"
-          :key="milestone.id"
-          is-check-item
-          :is-checked="isMilestoneChecked(milestone)"
-          @click="handleMilestoneClick(milestone)"
+
+        <div
+          v-else-if="!milestones.length"
+          aria-live="assertive"
+          class="gl-pl-7 gl-pr-5 gl-py-3 gl-font-base gl-text-gray-600"
+          data-testid="no-results-text"
         >
-          {{ milestone.title }}
-          <template v-if="milestone.expired">{{ $options.i18n.EXPIRED_TEXT }}</template>
-        </gl-dropdown-item>
+          {{ $options.i18n.NO_MATCHING_RESULTS }}
+        </div>
       </template>
-      <gl-dropdown-text v-else>{{ $options.i18n.NO_MATCHING_RESULTS }}</gl-dropdown-text>
-    </gl-dropdown>
+    </gl-collapsible-listbox>
   </gl-form-group>
 </template>

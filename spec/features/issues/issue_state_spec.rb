@@ -51,7 +51,7 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
         find('#new-actions-header-dropdown > button').click
       end
 
-      it_behaves_like 'issue closed', '.dropdown-menu-right'
+      it_behaves_like 'issue closed', '.gl-new-dropdown-contents'
     end
 
     context 'when clicking the bottom `Close issue` button', :aggregate_failures do
@@ -74,7 +74,7 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
         find('#new-actions-header-dropdown > button').click
       end
 
-      it_behaves_like 'issue reopened', '.dropdown-menu-right'
+      it_behaves_like 'issue reopened', '.gl-new-dropdown-contents'
     end
 
     context 'when clicking the bottom `Reopen issue` button', :aggregate_failures do

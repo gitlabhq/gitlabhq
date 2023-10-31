@@ -66,7 +66,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
       = _('Set sign-in restrictions for all users.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'signin'
 
@@ -78,7 +78,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
       = _('Add a Terms of Service agreement and Privacy Policy for users of this GitLab instance.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/terms.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/terms'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'terms'
 
@@ -95,7 +95,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
       = _('Set the maximum session time for a web terminal.')
-      = link_to _('How do I use a web terminal?'), help_page_path('ci/environments/index.md', anchor: 'web-terminals-deprecated'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('How do I use a web terminal?'), help_page_path('ci/environments/index', anchor: 'web-terminals-deprecated'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'terminal'
 

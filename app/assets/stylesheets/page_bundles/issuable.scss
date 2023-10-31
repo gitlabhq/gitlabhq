@@ -114,29 +114,6 @@
   }
 }
 
-/*
- * Following overrides are done to prevent
- * legacy dropdown styles from influencing
- * GitLab UI components used within GlDropdown
- */
-.issuable-move-dropdown {
-  .b-dropdown-form {
-    @include gl-p-0;
-  }
-
-  .gl-search-box-by-type button.gl-clear-icon-button:hover {
-    @include gl-bg-transparent;
-
-    &:focus {
-      @include gl-focus($inset: true);
-    }
-  }
-
-  .issuable-move-button:not(.disabled):hover {
-    @include gl-text-white;
-  }
-}
-
 .suggestion-footer {
   font-size: 12px;
   line-height: 15px;

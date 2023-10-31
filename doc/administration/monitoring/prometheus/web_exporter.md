@@ -71,3 +71,11 @@ To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 
 When TLS is enabled, the same `port` and `address` is used as described above.
 The metrics server cannot serve both HTTP and HTTPS at the same time.
+
+## Troubleshooting
+
+### Docker container runs out of space
+
+When running [GitLab in Docker](../../../install/docker.md), your container might run out of space. This can happen if you enable certain features which increase your space consumption, for example Web Exporter.
+
+To work around this issue, [update your `shm-size`](../../../install/docker.md#devshm-mount-not-having-enough-space-in-docker-container).

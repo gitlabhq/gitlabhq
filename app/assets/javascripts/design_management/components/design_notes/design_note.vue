@@ -13,6 +13,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { __ } from '~/locale';
+import { setUrlFragment } from '~/lib/utils/url_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
@@ -29,6 +30,7 @@ export default {
     editCommentLabel: __('Edit comment'),
     moreActionsLabel: __('More actions'),
     deleteCommentText: __('Delete comment'),
+    copyCommentLink: __('Copy link'),
   },
   components: {
     DesignNoteAwardsList,
@@ -130,6 +132,18 @@ export default {
           },
           extraAttrs: {
             class: 'gl-sm-display-none!',
+          },
+        },
+        {
+          text: this.$options.i18n.copyCommentLink,
+          action: () => {
+            this.$toast.show(__('Link copied to clipboard.'));
+          },
+          extraAttrs: {
+            'data-clipboard-text': setUrlFragment(
+              window.location.href,
+              `note_${this.noteAnchorId}`,
+            ),
           },
         },
         {

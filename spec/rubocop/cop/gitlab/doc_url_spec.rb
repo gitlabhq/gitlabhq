@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DocUrl, feature_category: :shared do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           'See [the docs](https://docs.gitlab.com/ee/user/permissions#roles).'
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#help_page_url` instead of directly including link. See https://docs.gitlab.com/ee/development/documentation/#linking-to-help-in-ruby.
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#help_page_url` instead of directly including link. See [...]
         RUBY
       end
     end
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DocUrl, feature_category: :shared do
         expect_offense(<<~'RUBY')
           'See the docs: ' \
           'https://docs.gitlab.com/ee/user/permissions#roles'
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#help_page_url` instead of directly including link. See https://docs.gitlab.com/ee/development/documentation/#linking-to-help-in-ruby.
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#help_page_url` instead of directly including link. See [...]
         RUBY
       end
     end
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DocUrl, feature_category: :shared do
           <<-HEREDOC
             See the docs:
             https://docs.gitlab.com/ee/user/permissions#roles
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#help_page_url` instead of directly including link. See https://docs.gitlab.com/ee/development/documentation/#linking-to-help-in-ruby.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#help_page_url` instead of directly including link. See [...]
           HEREDOC
         RUBY
       end

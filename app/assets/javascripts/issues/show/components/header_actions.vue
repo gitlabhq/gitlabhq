@@ -1,9 +1,9 @@
 <script>
 import {
   GlButton,
-  GlDropdown,
+  GlDisclosureDropdown,
   GlDropdownDivider,
-  GlDropdownItem,
+  GlDisclosureDropdownItem,
   GlLink,
   GlModal,
   GlModalDirective,
@@ -59,9 +59,9 @@ export default {
   components: {
     DeleteIssueModal,
     GlButton,
-    GlDropdown,
+    GlDisclosureDropdown,
     GlDropdownDivider,
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
     GlLink,
     GlModal,
     AbuseCategorySelector,
@@ -184,6 +184,18 @@ export default {
     showMovedSidebarOptions() {
       return this.isMrSidebarMoved && this.isUserSignedIn;
     },
+    newIssueItem() {
+      return {
+        text: this.newIssueTypeText,
+        href: this.newIssuePath,
+      };
+    },
+    submitSpamItem() {
+      return {
+        text: __('Submit as spam'),
+        href: this.submitAsSpamPath,
+      };
+    },
   },
   created() {
     eventHub.$on('toggle.issuable.state', this.toggleIssueState);
@@ -197,6 +209,7 @@ export default {
     toggleIssueState() {
       if (!this.isClosed && this.getBlockedByIssues?.length) {
         this.$refs.blockedByIssuesModal.show();
+        this.closeActionsDropdown();
         return;
       }
 
@@ -204,6 +217,7 @@ export default {
     },
     toggleReportAbuseDrawer(isOpen) {
       this.isReportAbuseDrawerOpen = isOpen;
+      this.closeActionsDropdown();
     },
     invokeUpdateIssueMutation() {
       this.toggleStateButtonLoading(true);
@@ -237,6 +251,7 @@ export default {
         .catch(() => createAlert({ message: __('Error occurred while updating the issue status') }))
         .finally(() => {
           this.toggleStateButtonLoading(false);
+          this.closeActionsDropdown();
         });
     },
     promoteToEpic() {
@@ -267,16 +282,24 @@ export default {
         .catch(() => createAlert({ message: this.$options.i18n.promoteErrorMessage }))
         .finally(() => {
           this.toggleStateButtonLoading(false);
+          this.closeActionsDropdown();
         });
     },
     edit() {
       issuesEventHub.$emit('open.form');
+      this.closeActionsDropdown();
     },
     copyReference() {
       toast(__('Reference copied'));
+      this.closeActionsDropdown();
     },
     copyEmailAddress() {
       toast(__('Email address copied'));
+      this.closeActionsDropdown();
+    },
+    closeActionsDropdown() {
+      this.$refs.issuableActionsDropdownMobile?.close();
+      this.$refs.issuableActionsDropdownDesktop?.close();
     },
   },
   TYPE_ISSUE,
@@ -285,87 +308,90 @@ export default {
 
 <template>
   <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3">
-    <gl-dropdown
-      v-if="hasMobileDropdown"
-      class="gl-sm-display-none! w-100"
-      block
-      :text="dropdownText"
-      data-testid="mobile-dropdown"
-      :loading="isToggleStateButtonLoading"
-    >
-      <template v-if="showMovedSidebarOptions">
-        <sidebar-subscriptions-widget
-          :iid="String(iid)"
-          :full-path="fullPath"
-          :issuable-type="$options.TYPE_ISSUE"
-          data-testid="notification-toggle"
+    <div class="gl-sm-display-none! w-100">
+      <gl-disclosure-dropdown
+        v-if="hasMobileDropdown"
+        ref="issuableActionsDropdownMobile"
+        toggle-class="gl-w-full"
+        block
+        :toggle-text="dropdownText"
+        :auto-close="false"
+        data-testid="mobile-dropdown"
+        :loading="isToggleStateButtonLoading"
+        placement="right"
+      >
+        <template v-if="showMovedSidebarOptions">
+          <sidebar-subscriptions-widget
+            :iid="String(iid)"
+            :full-path="fullPath"
+            :issuable-type="$options.TYPE_ISSUE"
+            data-testid="notification-toggle"
+          />
+
+          <gl-dropdown-divider />
+        </template>
+
+        <template v-if="showLockIssueOption">
+          <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
+        </template>
+
+        <gl-disclosure-dropdown-item v-if="canUpdateIssue" @action="edit">
+          <template #list-item>{{ $options.i18n.edit }}</template>
+        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          v-if="showToggleIssueStateButton"
+          :data-testid="`mobile_${qaSelector}`"
+          @action="toggleIssueState"
+        >
+          <template #list-item>{{ buttonText }}</template>
+        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item v-if="canCreateIssue" :item="newIssueItem" />
+        <gl-disclosure-dropdown-item v-if="canPromoteToEpic" @action="promoteToEpic">
+          <template #list-item>{{ __('Promote to epic') }}</template>
+        </gl-disclosure-dropdown-item>
+        <template v-if="isMrSidebarMoved">
+          <gl-disclosure-dropdown-item
+            :data-clipboard-text="issuableReference"
+            button-class="js-copy-reference"
+            data-testid="copy-reference"
+            @action="copyReference"
+            ><template #list-item>{{
+              $options.i18n.copyReferenceText
+            }}</template></gl-disclosure-dropdown-item
+          >
+          <gl-disclosure-dropdown-item
+            v-if="issuableEmailAddress && showMovedSidebarOptions"
+            :data-clipboard-text="issuableEmailAddress"
+            data-testid="copy-email"
+            @action="copyEmailAddress"
+            >{{ copyMailAddressText }}</gl-disclosure-dropdown-item
+          >
+        </template>
+        <gl-disclosure-dropdown-item
+          v-if="canReportSpam"
+          :item="submitSpamItem"
+          data-method="post"
+          rel="nofollow"
         />
-
-        <gl-dropdown-divider />
-      </template>
-
-      <template v-if="showLockIssueOption">
-        <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
-      </template>
-
-      <gl-dropdown-item v-if="canUpdateIssue" @click="edit">
-        {{ $options.i18n.edit }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
-        v-if="showToggleIssueStateButton"
-        :data-testid="`mobile_${qaSelector}`"
-        @click="toggleIssueState"
-      >
-        {{ buttonText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item v-if="canCreateIssue" :href="newIssuePath">
-        {{ newIssueTypeText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item v-if="canPromoteToEpic" @click="promoteToEpic">
-        {{ __('Promote to epic') }}
-      </gl-dropdown-item>
-      <template v-if="isMrSidebarMoved">
-        <gl-dropdown-item
-          :data-clipboard-text="issuableReference"
-          button-class="js-copy-reference"
-          data-testid="copy-reference"
-          @click="copyReference"
-          >{{ $options.i18n.copyReferenceText }}</gl-dropdown-item
+        <template v-if="canDestroyIssue">
+          <gl-dropdown-divider />
+          <gl-disclosure-dropdown-item
+            v-gl-modal="$options.deleteModalId"
+            variant="danger"
+            @action="track('click_dropdown')"
+          >
+            <template #list-item>{{ deleteButtonText }}</template>
+          </gl-disclosure-dropdown-item>
+        </template>
+        <gl-disclosure-dropdown-item
+          v-if="!isIssueAuthor && isUserSignedIn"
+          data-testid="report-abuse-item"
+          @action="toggleReportAbuseDrawer(true)"
         >
-        <gl-dropdown-item
-          v-if="issuableEmailAddress && showMovedSidebarOptions"
-          :data-clipboard-text="issuableEmailAddress"
-          data-testid="copy-email"
-          @click="copyEmailAddress"
-          >{{ copyMailAddressText }}</gl-dropdown-item
-        >
-      </template>
-      <gl-dropdown-item
-        v-if="canReportSpam"
-        :href="submitAsSpamPath"
-        data-method="post"
-        rel="nofollow"
-      >
-        {{ __('Submit as spam') }}
-      </gl-dropdown-item>
-      <template v-if="canDestroyIssue">
-        <gl-dropdown-divider />
-        <gl-dropdown-item
-          v-gl-modal="$options.deleteModalId"
-          variant="danger"
-          @click="track('click_dropdown')"
-        >
-          {{ deleteButtonText }}
-        </gl-dropdown-item>
-      </template>
-      <gl-dropdown-item
-        v-if="!isIssueAuthor && isUserSignedIn"
-        data-testid="report-abuse-item"
-        @click="toggleReportAbuseDrawer(true)"
-      >
-        {{ $options.i18n.reportAbuse }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+          <template #list-item>{{ $options.i18n.reportAbuse }}</template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown>
+    </div>
 
     <gl-button
       v-if="canUpdateIssue"
@@ -379,20 +405,22 @@ export default {
       {{ $options.i18n.edit }}
     </gl-button>
 
-    <gl-dropdown
+    <gl-disclosure-dropdown
       v-if="hasDesktopDropdown"
       id="new-actions-header-dropdown"
+      ref="issuableActionsDropdownDesktop"
       v-gl-tooltip.hover
       class="gl-display-none gl-sm-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
-      :text="dropdownText"
-      :text-sr-only="true"
+      placement="left"
+      :toggle-text="dropdownText"
+      text-sr-only
       :title="dropdownText"
       :aria-label="dropdownText"
+      :auto-close="false"
       data-testid="desktop-dropdown"
       no-caret
-      right
     >
       <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
         <sidebar-subscriptions-widget
@@ -401,73 +429,70 @@ export default {
           :issuable-type="$options.TYPE_ISSUE"
           data-testid="notification-toggle"
         />
-
         <gl-dropdown-divider />
       </template>
-      <gl-dropdown-item
+      <gl-disclosure-dropdown-item
         v-if="showToggleIssueStateButton"
         data-testid="toggle-issue-state-button"
-        @click="toggleIssueState"
+        @action="toggleIssueState"
       >
-        {{ buttonText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item v-if="canCreateIssue && isUserSignedIn" :href="newIssuePath">
-        {{ newIssueTypeText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
+        <template #list-item>{{ buttonText }}</template>
+      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item v-if="canCreateIssue && isUserSignedIn" :item="newIssueItem" />
+      <gl-disclosure-dropdown-item
         v-if="canPromoteToEpic"
         :disabled="isToggleStateButtonLoading"
         data-testid="promote-button"
-        @click="promoteToEpic"
+        @action="promoteToEpic"
       >
-        {{ __('Promote to epic') }}
-      </gl-dropdown-item>
+        <template #list-item>{{ __('Promote to epic') }}</template>
+      </gl-disclosure-dropdown-item>
       <template v-if="showLockIssueOption">
         <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
       </template>
       <template v-if="isMrSidebarMoved">
-        <gl-dropdown-item
+        <gl-disclosure-dropdown-item
           :data-clipboard-text="issuableReference"
           button-class="js-copy-reference"
           data-testid="copy-reference"
-          @click="copyReference"
-          >{{ $options.i18n.copyReferenceText }}</gl-dropdown-item
+          @action="copyReference"
+          ><template #list-item>{{
+            $options.i18n.copyReferenceText
+          }}</template></gl-disclosure-dropdown-item
         >
-        <gl-dropdown-item
+        <gl-disclosure-dropdown-item
           v-if="issuableEmailAddress && showMovedSidebarOptions"
           :data-clipboard-text="issuableEmailAddress"
           data-testid="copy-email"
-          @click="copyEmailAddress"
-          >{{ copyMailAddressText }}</gl-dropdown-item
+          @action="copyEmailAddress"
+          ><template #list-item>{{ copyMailAddressText }}</template></gl-disclosure-dropdown-item
         >
       </template>
-      <gl-dropdown-divider v-if="canDestroyIssue || canReportSpam || !isIssueAuthor" />
-      <gl-dropdown-item
+      <gl-dropdown-divider v-if="showToggleIssueStateButton || canDestroyIssue || canReportSpam" />
+      <gl-disclosure-dropdown-item
         v-if="canReportSpam"
-        :href="submitAsSpamPath"
+        :item="submitSpamItem"
         data-method="post"
         rel="nofollow"
-      >
-        {{ __('Submit as spam') }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
+      />
+      <gl-disclosure-dropdown-item
         v-if="!isIssueAuthor && isUserSignedIn"
         data-testid="report-abuse-item"
-        @click="toggleReportAbuseDrawer(true)"
+        @action="toggleReportAbuseDrawer(true)"
       >
-        {{ $options.i18n.reportAbuse }}
-      </gl-dropdown-item>
+        <template #list-item>{{ $options.i18n.reportAbuse }}</template>
+      </gl-disclosure-dropdown-item>
       <template v-if="canDestroyIssue">
-        <gl-dropdown-item
+        <gl-disclosure-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"
           data-testid="delete-issue-button"
-          @click="track('click_dropdown')"
+          @action="track('click_dropdown')"
         >
-          {{ deleteButtonText }}
-        </gl-dropdown-item>
+          <template #list-item>{{ deleteButtonText }}</template>
+        </gl-disclosure-dropdown-item>
       </template>
-    </gl-dropdown>
+    </gl-disclosure-dropdown>
 
     <gl-modal
       ref="blockedByIssuesModal"

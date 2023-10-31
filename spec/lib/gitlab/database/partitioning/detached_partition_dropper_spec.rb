@@ -57,17 +57,19 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
       SQL
     end
 
-    Postgresql::DetachedPartition.create!(table_name: name,
-                                          drop_after: drop_after)
+    Postgresql::DetachedPartition.create!(table_name: name, drop_after: drop_after)
   end
 
   describe '#perform' do
     context 'when the partition should not be dropped yet' do
       it 'does not drop the partition' do
-        create_partition(name: :_test_partition,
-                         from: 2.months.ago, to: 1.month.ago,
-                         attached: false,
-                         drop_after: 1.day.from_now)
+        create_partition(
+          name: :_test_partition,
+          from: 2.months.ago,
+          to: 1.month.ago,
+          attached: false,
+          drop_after: 1.day.from_now
+        )
 
         dropper.perform
 
@@ -77,11 +79,13 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
     context 'with a partition to drop' do
       before do
-        create_partition(name: :_test_partition,
-                         from: 2.months.ago,
-                         to: 1.month.ago.beginning_of_month,
-                         attached: false,
-                         drop_after: 1.second.ago)
+        create_partition(
+          name: :_test_partition,
+          from: 2.months.ago,
+          to: 1.month.ago.beginning_of_month,
+          attached: false,
+          drop_after: 1.second.ago
+        )
       end
 
       it 'drops the partition' do
@@ -159,11 +163,13 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
     context 'when the partition to drop is still attached to its table' do
       before do
-        create_partition(name: :_test_partition,
-                         from: 2.months.ago,
-                         to: 1.month.ago.beginning_of_month,
-                         attached: true,
-                         drop_after: 1.second.ago)
+        create_partition(
+          name: :_test_partition,
+          from: 2.months.ago,
+          to: 1.month.ago.beginning_of_month,
+          attached: true,
+          drop_after: 1.second.ago
+        )
       end
 
       it 'does not drop the partition, but does remove the DetachedPartition entry' do
@@ -192,17 +198,21 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
     context 'with multiple partitions to drop' do
       before do
-        create_partition(name: :_test_partition_1,
-                         from: 3.months.ago,
-                         to: 2.months.ago,
-                         attached: false,
-                         drop_after: 1.second.ago)
+        create_partition(
+          name: :_test_partition_1,
+          from: 3.months.ago,
+          to: 2.months.ago,
+          attached: false,
+          drop_after: 1.second.ago
+        )
 
-        create_partition(name: :_test_partition_2,
-                         from: 2.months.ago,
-                         to: 1.month.ago,
-                         attached: false,
-                         drop_after: 1.second.ago)
+        create_partition(
+          name: :_test_partition_2,
+          from: 2.months.ago,
+          to: 1.month.ago,
+          attached: false,
+          drop_after: 1.second.ago
+        )
       end
 
       it 'drops both partitions' do

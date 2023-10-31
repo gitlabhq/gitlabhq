@@ -235,8 +235,12 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
         subject { described_class.new(model, partitioning_key, retain_for: 3.months).extra_partitions }
 
         it 'prunes the unbounded partition ending 2020-05-01' do
-          min_value_to_may = Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-05-01',
-                                                                               partition_name: '_test_partitioned_test_000000')
+          min_value_to_may = Gitlab::Database::Partitioning::TimePartition.new(
+            model.table_name,
+            nil,
+            '2020-05-01',
+            partition_name: '_test_partitioned_test_000000'
+          )
 
           expect(subject).to contain_exactly(min_value_to_may)
         end
@@ -247,8 +251,18 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
 
         it 'prunes the unbounded partition and the partition for May-June' do
           expect(subject).to contain_exactly(
-            Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-05-01', partition_name: '_test_partitioned_test_000000'),
-                               Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01', partition_name: '_test_partitioned_test_202005')
+            Gitlab::Database::Partitioning::TimePartition.new(
+              model.table_name,
+              nil,
+              '2020-05-01',
+              partition_name: '_test_partitioned_test_000000'
+            ),
+            Gitlab::Database::Partitioning::TimePartition.new(
+              model.table_name,
+              '2020-05-01',
+              '2020-06-01',
+              partition_name: '_test_partitioned_test_202005'
+            )
           )
         end
 
@@ -257,8 +271,18 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
 
           it 'prunes empty partitions' do
             expect(subject).to contain_exactly(
-              Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-05-01', partition_name: '_test_partitioned_test_000000'),
-                                 Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01', partition_name: '_test_partitioned_test_202005')
+              Gitlab::Database::Partitioning::TimePartition.new(
+                model.table_name,
+                nil,
+                '2020-05-01',
+                partition_name: '_test_partitioned_test_000000'
+              ),
+              Gitlab::Database::Partitioning::TimePartition.new(
+                model.table_name,
+                '2020-05-01',
+                '2020-06-01',
+                partition_name: '_test_partitioned_test_202005'
+              )
             )
           end
 

@@ -29273,13 +29273,28 @@ msgstr ""
 msgid "MemberRoles|Add new role"
 msgstr ""
 
+msgid "MemberRoles|Admin group member"
+msgstr ""
+
+msgid "MemberRoles|Admin merge requests"
+msgstr ""
+
 msgid "MemberRoles|Admin vulnerability"
+msgstr ""
+
+msgid "MemberRoles|Allows admin access to group members."
+msgstr ""
+
+msgid "MemberRoles|Allows admin access to the merge requests."
 msgstr ""
 
 msgid "MemberRoles|Allows admin access to the vulnerability reports. Select 'Read vulnerability' for this to take effect."
 msgstr ""
 
 msgid "MemberRoles|Allows manage access to the project access tokens. Select 'Manage Project Access Tokens' for this to take effect."
+msgstr ""
+
+msgid "MemberRoles|Allows read-only access to the dependencies."
 msgstr ""
 
 msgid "MemberRoles|Allows read-only access to the source code."
@@ -29346,6 +29361,9 @@ msgid "MemberRoles|Permissions"
 msgstr ""
 
 msgid "MemberRoles|Read code"
+msgstr ""
+
+msgid "MemberRoles|Read dependency"
 msgstr ""
 
 msgid "MemberRoles|Read vulnerability"

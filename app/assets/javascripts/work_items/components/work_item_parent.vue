@@ -61,7 +61,6 @@ export default {
       searchStarted: false,
       availableWorkItems: [],
       localSelectedItem: this.parent?.id,
-      isNotFocused: true,
       oldParent: this.parent,
     };
   },
@@ -81,14 +80,6 @@ export default {
     },
     workItems() {
       return this.availableWorkItems.map(({ id, title }) => ({ text: title, value: id }));
-    },
-    listboxCategory() {
-      return this.searchStarted ? 'secondary' : 'tertiary';
-    },
-    listboxClasses() {
-      return {
-        'is-not-focused': this.isNotFocused && !this.searchStarted,
-      };
     },
     parentType() {
       return SUPPORTED_PARENT_TYPE_MAP[this.workItemType];
@@ -184,19 +175,10 @@ export default {
     },
     onListboxShown() {
       this.searchStarted = true;
-      this.isNotFocused = false;
     },
     onListboxHide() {
       this.searchStarted = false;
       this.search = '';
-      this.isNotFocused = true;
-    },
-    setListboxFocused() {
-      // This is to match the caret behaviour of parent listbox
-      // to the other dropdown fields of work items
-      if (document.activeElement.parentElement.id !== 'work-item-parent-listbox-value') {
-        this.isNotFocused = true;
-      }
     },
   },
 };
@@ -219,30 +201,20 @@ export default {
     >
       {{ listboxText }}
     </span>
-    <div
-      v-else
-      :class="{ 'gl-max-w-max-content': !workItemsMvc2Enabled }"
-      @mouseover="isNotFocused = false"
-      @mouseleave="setListboxFocused"
-      @focusout="isNotFocused = true"
-      @focusin="isNotFocused = false"
-    >
+    <div v-else :class="{ 'gl-max-w-max-content': !workItemsMvc2Enabled }">
       <gl-collapsible-listbox
         id="work-item-parent-listbox-value"
         class="gl-max-w-max-content"
         data-testid="work-item-parent-listbox"
-        block
         searchable
-        :no-caret="isNotFocused && !searchStarted"
         is-check-centered
-        :category="listboxCategory"
+        category="tertiary"
         :searching="isLoading"
         :header-text="$options.i18n.assignParentLabel"
         :no-results-text="$options.i18n.noMatchingResults"
         :loading="updateInProgress"
         :items="workItems"
         :toggle-text="listboxText"
-        :toggle-class="listboxClasses"
         :selected="localSelectedItem"
         :reset-button-label="$options.i18n.unAssign"
         @reset="unAssignParent"

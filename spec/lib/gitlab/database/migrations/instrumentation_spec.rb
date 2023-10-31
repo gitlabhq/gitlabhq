@@ -75,8 +75,12 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
 
     context 'on successful execution' do
       subject do
-        instrumentation.observe(version: migration_version, name: migration_name,
-                                connection: connection, meta: migration_meta) {}
+        instrumentation.observe(
+          version: migration_version,
+          name: migration_name,
+          connection: connection,
+          meta: migration_meta
+        ) {}
       end
 
       it 'records a valid observation', :aggregate_failures do
@@ -98,8 +102,12 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
 
       with_them do
         subject(:observe) do
-          instrumentation.observe(version: migration_version, name: migration_name,
-                                  connection: connection, meta: migration_meta) { raise exception, error_message }
+          instrumentation.observe(
+            version: migration_version,
+            name: migration_name,
+            connection: connection,
+            meta: migration_meta
+          ) { raise exception, error_message }
         end
 
         context 'retrieving observations' do

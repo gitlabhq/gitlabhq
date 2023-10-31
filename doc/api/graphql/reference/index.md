@@ -13863,10 +13863,23 @@ Describes a rule for who can approve merge requests.
 | <a id="approvalruleinvalid"></a>`invalid` | [`Boolean`](#boolean) | Indicates if the rule is invalid and cannot be approved. |
 | <a id="approvalrulename"></a>`name` | [`String`](#string) | Name of the rule. |
 | <a id="approvalruleoverridden"></a>`overridden` | [`Boolean`](#boolean) | Indicates if the rule was overridden for the merge request. |
+| <a id="approvalrulescanresultpolicies"></a>`scanResultPolicies` | [`[ApprovalScanResultPolicy!]`](#approvalscanresultpolicy) | List of scan result policies associated with the rule. |
 | <a id="approvalrulesection"></a>`section` | [`String`](#string) | Named section of the Code Owners file that the rule applies to. |
 | <a id="approvalrulesourcerule"></a>`sourceRule` | [`ApprovalRule`](#approvalrule) | Source rule used to create the rule. |
 | <a id="approvalruletype"></a>`type` | [`ApprovalRuleType`](#approvalruletype) | Type of the rule. |
 | <a id="approvalruleusers"></a>`users` | [`UserCoreConnection`](#usercoreconnection) | List of users added as approvers for the rule. (see [Connections](#connections)) |
+
+### `ApprovalScanResultPolicy`
+
+Represents the scan result policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalscanresultpolicyapprovalsrequired"></a>`approvalsRequired` | [`Int!`](#int) | Represents the required approvals defined in the policy. |
+| <a id="approvalscanresultpolicyname"></a>`name` | [`String!`](#string) | Represents the name of the policy. |
+| <a id="approvalscanresultpolicyreporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report_type of the approval rule. |
 
 ### `AssetType`
 
@@ -27764,6 +27777,14 @@ All possible ways to specify the API surface for an API fuzzing scan.
 | <a id="apifuzzingscanmodehar"></a>`HAR` | The API surface is specified by a HAR file. |
 | <a id="apifuzzingscanmodeopenapi"></a>`OPENAPI` | The API surface is specified by a OPENAPI file. |
 | <a id="apifuzzingscanmodepostman"></a>`POSTMAN` | The API surface is specified by a POSTMAN file. |
+
+### `ApprovalReportType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="approvalreporttypeany_merge_request"></a>`ANY_MERGE_REQUEST` | Represents report_type for any_merge_request related approval rules. |
+| <a id="approvalreporttypelicense_scanning"></a>`LICENSE_SCANNING` | Represents report_type for license scanning related approval rules. |
+| <a id="approvalreporttypescan_finding"></a>`SCAN_FINDING` | Represents report_type for vulnerability check related approval rules. |
 
 ### `ApprovalRuleType`
 

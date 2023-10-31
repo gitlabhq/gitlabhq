@@ -25,7 +25,7 @@
     -# TODO: Remove this conditional when https://gitlab.com/gitlab-org/gitlab/-/issues/324764 is resolved.
     - if Feature.enabled?(:disable_ssh_key_used_tracking)
       = _('Unavailable')
-      = link_to sprite_icon('question-o'), help_page_path('user/ssh.md', anchor: 'view-your-accounts-ssh-keys')
+      = link_to sprite_icon('question-o'), help_page_path('user/ssh', anchor: 'view-your-accounts-ssh-keys')
     - else
       = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
 

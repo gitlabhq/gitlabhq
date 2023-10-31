@@ -76,8 +76,8 @@ module EnvironmentsHelper
 
   def static_metrics_data
     {
-      'documentation_path' => help_page_path('administration/monitoring/prometheus/index.md'),
-      'add_dashboard_documentation_path' => help_page_path('operations/metrics/dashboards/index.md', anchor: 'add-a-new-dashboard-to-your-project'),
+      'documentation_path' => help_page_path('administration/monitoring/prometheus/index'),
+      'add_dashboard_documentation_path' => help_page_path('operations/metrics/dashboards/index', anchor: 'add-a-new-dashboard-to-your-project'),
       'empty_getting_started_svg_path' => image_path('illustrations/monitoring/getting_started.svg'),
       'empty_loading_svg_path' => image_path('illustrations/monitoring/loading.svg'),
       'empty_no_data_svg_path' => image_path('illustrations/monitoring/no_data.svg'),

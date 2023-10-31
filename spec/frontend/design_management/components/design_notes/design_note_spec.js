@@ -51,13 +51,19 @@ describe('Design note component', () => {
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDropdownItems = () => findDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findEditDropdownItem = () => findDropdownItems().at(0);
-  const findDeleteDropdownItem = () => findDropdownItems().at(1);
+  const findCopyLinkDropdownItem = () => findDropdownItems().at(1);
+  const findDeleteDropdownItem = () => findDropdownItems().at(2);
+
+  const showToast = jest.fn();
 
   function createComponent({
     props = {},
     data = { isEditing: false },
     mountFn = mountExtended,
     mocks = {
+      $toast: {
+        show: showToast,
+      },
       $route,
       $apollo: {
         mutate: jest.fn().mockResolvedValue({ data: { updateNote: {} } }),
@@ -239,6 +245,7 @@ describe('Design note component', () => {
 
       expect(findDropdown().exists()).toBe(true);
       expect(findEditDropdownItem().exists()).toBe(true);
+      expect(findCopyLinkDropdownItem().exists()).toBe(true);
       expect(findDeleteDropdownItem().exists()).toBe(true);
       expect(findDropdown().props('items')[0].extraAttrs.class).toBe('gl-sm-display-none!');
     });
@@ -264,6 +271,40 @@ describe('Design note component', () => {
     findDeleteDropdownItem().find('button').trigger('click');
 
     expect(wrapper.emitted()).toEqual({ 'delete-note': [[{ ...payload }]] });
+  });
+
+  it('shows a success toast after copying the url to the clipboard', () => {
+    createComponent({
+      props: {
+        note: {
+          ...note,
+          userPermissions: {
+            adminNote: true,
+          },
+        },
+      },
+    });
+
+    findCopyLinkDropdownItem().find('button').trigger('click');
+
+    expect(showToast).toHaveBeenCalledWith('Link copied to clipboard.');
+  });
+
+  it('has data-clipboard-text set to the correct url', () => {
+    createComponent({
+      props: {
+        note: {
+          ...note,
+          userPermissions: {
+            adminNote: true,
+          },
+        },
+      },
+    });
+
+    expect(findCopyLinkDropdownItem().props('item').extraAttrs['data-clipboard-text']).toBe(
+      'http://test.host/#note_123',
+    );
   });
 
   describe('when user has award emoji permissions', () => {

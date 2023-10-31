@@ -15,9 +15,12 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
   let(:detach_partition_if) { double('detach_partition_if') }
 
   subject(:strategy) do
-    described_class.new(model, :partition,
-                        next_partition_if: next_partition_if,
-                        detach_partition_if: detach_partition_if)
+    described_class.new(
+      model,
+      :partition,
+      next_partition_if: next_partition_if,
+      detach_partition_if: detach_partition_if
+    )
   end
 
   before do
@@ -213,9 +216,9 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
           include PartitionedTable
 
           partitioned_by :partition,
-                         strategy: :sliding_list,
-                         next_partition_if: proc { false },
-                         detach_partition_if: proc { false }
+            strategy: :sliding_list,
+            next_partition_if: proc { false },
+            detach_partition_if: proc { false }
         end
       end.to raise_error(/ignored_columns/)
     end
@@ -228,9 +231,9 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
           self.ignored_columns = [:partition]
 
           partitioned_by :partition,
-                         strategy: :sliding_list,
-                         next_partition_if: proc { false },
-                         detach_partition_if: proc { false }
+            strategy: :sliding_list,
+            next_partition_if: proc { false },
+            detach_partition_if: proc { false }
         end
       end.not_to raise_error
     end
@@ -255,9 +258,9 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
           detach_partition?(...)
         end
         partitioned_by :partition,
-                       strategy: :sliding_list,
-                       next_partition_if: method(:next_partition_if_wrapper),
-                       detach_partition_if: method(:detach_partition_if_wrapper)
+          strategy: :sliding_list,
+          next_partition_if: method(:next_partition_if_wrapper),
+          detach_partition_if: method(:detach_partition_if_wrapper)
 
         def self.next_partition?(current_partition); end
 

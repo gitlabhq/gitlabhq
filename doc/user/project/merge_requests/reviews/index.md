@@ -165,7 +165,7 @@ You can submit your completed review in multiple ways:
   In the modal window, you can supply a **Summary comment**, approve the merge request, and
   include quick actions:
 
-  ![Finish review with comment](img/mr_summary_comment_v15_4.png)
+  ![Finish review with comment](img/mr_summary_comment_v16_6.png)
 
 When you submit your review, GitLab:
 
@@ -194,7 +194,7 @@ Pending comments display information about the action to be taken when the comme
 If you have a review in progress, you can also add a comment from the **Overview** tab by selecting
  **Add to review**:
 
-![New thread](img/mr_review_new_comment_v15_3.png)
+![New thread](img/mr_review_new_comment_v16_6.png)
 
 ### Approval Rule information for Reviewers **(PREMIUM ALL)**
 
@@ -228,14 +228,14 @@ them a notification email.
 When commenting on a diff, you can select which lines of code your comment refers
 to by either:
 
-![Comment on any diff file line](img/comment-on-any-diff-line_v13_10.png)
-
 - Dragging **Add a comment to this line** (**{comment}**) in the gutter to highlight
   lines in the diff. GitLab expands the diff lines and displays a comment box.
 - After starting a comment by selecting **Add a comment to this line** (**{comment}**) in the
   gutter, select the first line number your comment refers to in the **Commenting on lines**
   select box. New comments default to single-line comments, unless you select
   a different starting line.
+
+![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
 
 Multiline comments display the comment's line numbers above the body of the comment:
 

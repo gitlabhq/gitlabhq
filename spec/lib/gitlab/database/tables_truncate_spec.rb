@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_base,
-               :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
+  :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
   include MigrationsHelpers
 
   let(:min_batch_size) { 1 }

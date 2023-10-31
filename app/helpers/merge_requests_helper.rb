@@ -187,7 +187,7 @@ module MergeRequestsHelper
       endpoint_batch: diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params),
       endpoint_coverage: @coverage_path,
       endpoint_diff_for_path: diff_for_path_namespace_project_merge_request_path(format: 'json', id: merge_request.iid, namespace_id: project.namespace.to_param, project_id: project.path),
-      help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
+      help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
       project_path: project_path(merge_request.project),
@@ -219,7 +219,7 @@ module MergeRequestsHelper
       source_project_full_path: merge_request.source_project&.full_path,
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       target_branch: merge_request.target_branch,
-      reviewing_docs_path: help_page_path('user/project/merge_requests/reviews/index.md', anchor: "checkout-merge-requests-locally-through-the-head-ref")
+      reviewing_docs_path: help_page_path('user/project/merge_requests/reviews/index', anchor: "checkout-merge-requests-locally-through-the-head-ref")
     }
   end
 

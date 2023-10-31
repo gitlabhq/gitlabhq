@@ -4,7 +4,7 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting SCIM **(PREMIUM SAAS)**
+# Troubleshooting SCIM **(FREE ALL)**
 
 This section contains possible solutions for problems you might encounter.
 
@@ -31,6 +31,8 @@ To solve this problem:
 1. Have the user sign in directly to GitLab.
 1. [Manually link](scim_setup.md#link-scim-and-saml-identities) their account.
 
+Alternatively, self-managed administrators can [add a user identity](../../../administration/admin_area.md#user-identities).
+
 ## User cannot sign in
 
 The following are possible solutions for problems where users cannot sign in:
@@ -38,10 +40,11 @@ The following are possible solutions for problems where users cannot sign in:
 - Ensure that the user was added to the SCIM app.
 - If you receive the `User is not linked to a SAML account` error, the user probably already exists in GitLab. Have the
   user follow the [Link SCIM and SAML identities](scim_setup.md#link-scim-and-saml-identities) instructions.
+  Alternatively, self-managed administrators can [add a user identity](../../../administration/admin_area.md#user-identities).
 - The **Identity** (`extern_uid`) value stored by GitLab is updated by SCIM whenever `id` or `externalId` changes. Users
-  cannot sign in unless the GitLab Identity (`extern_uid`) value matches the `NameId` sent by SAML. This value is also
-  used by SCIM to match users on the `id`, and is updated by SCIM whenever the `id` or `externalId` values change.
-- The SCIM `id` and SCIM `externalId` must be configured to the same value as the SAML `NameId`. You can trace SAML responses
+  cannot sign in unless the GitLab identifier (`extern_uid`) of the sign-in method matches the ID sent by the provider, such as
+  the  `NameId` sent by SAML. This value is also used by SCIM to match users on the `id`, and is updated by SCIM whenever the `id` or `externalId` values change.
+- On GitLab.com, the SCIM `id` and SCIM `externalId` must be configured to the same value as the SAML `NameId`. You can trace SAML responses
   using [debugging tools](troubleshooting.md#saml-debugging-tools), and check any errors against the
   [SAML troubleshooting](troubleshooting.md) information.
 
@@ -94,10 +97,12 @@ When the SCIM app changes:
 
 - Users can follow the instructions in the [Change the SAML app](index.md#change-the-identity-provider) section.
 - Administrators of the identity provider can:
-  1. Remove users from the SCIM app, which unlinks all removed users.
+  1. Remove users from the SCIM app, which:
+     - In GitLab.com, removes all removed users from the group.
+     - In GitLab self-managed, blocks users.
   1. Turn on sync for the new SCIM app to [link existing users](scim_setup.md#link-scim-and-saml-identities).
 
-## SCIM app returns `"User has already been taken","status":409` error
+## SCIM app returns `"User has already been taken","status":409` error **(PREMIUM SAAS)**
 
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
@@ -109,7 +114,7 @@ Changing the SAML or SCIM configuration or provider can cause the following prob
      the SCIM app.
   1. Use the same SCIM API to update the SCIM `extern_uid` for the user on GitLab.com.
 
-## Search Rails logs for SCIM requests
+## Search Rails logs for SCIM requests **(PREMIUM SAAS)**
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
 [Kibana](https://about.gitlab.com/handbook/support/workflows/kibana.html#using-kibana). Use the following filters based

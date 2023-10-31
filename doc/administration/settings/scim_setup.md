@@ -53,3 +53,7 @@ adding them to the SCIM identity provider.
 
 After the identity provider performs a sync based on its configured schedule,
 the user's SCIM identity is reactivated and their GitLab instance access is restored.
+
+## Troubleshooting
+
+See our [troubleshooting SCIM guide](../../user/group/saml_sso/troubleshooting_scim.md).

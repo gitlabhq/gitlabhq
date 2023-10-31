@@ -170,9 +170,14 @@ export default {
 </script>
 
 <template>
-  <li v-if="isMovedMrSidebar && isIssuable" class="gl-dropdown-item">
-    <button type="button" class="dropdown-item" data-testid="issuable-lock" @click="toggleLocked">
-      <span class="gl-dropdown-item-text-wrapper">
+  <li v-if="isMovedMrSidebar && isIssuable" class="gl-new-dropdown-item">
+    <button
+      type="button"
+      class="gl-new-dropdown-item-content"
+      data-testid="issuable-lock"
+      @click="toggleLocked"
+    >
+      <span class="gl-new-dropdown-item-text-wrapper">
         <template v-if="isLoading">
           <gl-loading-icon inline size="sm" /> {{ lockToggleInProgressText }}
         </template>

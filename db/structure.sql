@@ -323,16 +323,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_68d7b6653c7d() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
-  NEW."source_pipeline_id_convert_to_bigint" := NEW."source_pipeline_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_7f3d66a7d7f5() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -14335,9 +14325,7 @@ ALTER SEQUENCE ci_secure_files_id_seq OWNED BY ci_secure_files.id;
 CREATE TABLE ci_sources_pipelines (
     id integer NOT NULL,
     project_id integer,
-    pipeline_id_convert_to_bigint integer,
     source_project_id integer,
-    source_pipeline_id_convert_to_bigint integer,
     source_job_id bigint,
     partition_id bigint NOT NULL,
     source_partition_id bigint NOT NULL,
@@ -32048,8 +32036,6 @@ CREATE INDEX index_ci_secure_files_on_project_id ON ci_secure_files USING btree 
 
 CREATE INDEX index_ci_sources_pipelines_on_pipeline_id ON ci_sources_pipelines USING btree (pipeline_id);
 
-CREATE INDEX index_ci_sources_pipelines_on_pipeline_id_bigint ON ci_sources_pipelines USING btree (pipeline_id_convert_to_bigint);
-
 CREATE INDEX index_ci_sources_pipelines_on_project_id ON ci_sources_pipelines USING btree (project_id);
 
 CREATE INDEX index_ci_sources_pipelines_on_source_job_id ON ci_sources_pipelines USING btree (source_job_id);
@@ -32057,8 +32043,6 @@ CREATE INDEX index_ci_sources_pipelines_on_source_job_id ON ci_sources_pipelines
 CREATE INDEX index_ci_sources_pipelines_on_source_partition_id_source_job_id ON ci_sources_pipelines USING btree (source_partition_id, source_job_id);
 
 CREATE INDEX index_ci_sources_pipelines_on_source_pipeline_id ON ci_sources_pipelines USING btree (source_pipeline_id);
-
-CREATE INDEX index_ci_sources_pipelines_on_source_pipeline_id_bigint ON ci_sources_pipelines USING btree (source_pipeline_id_convert_to_bigint);
 
 CREATE INDEX index_ci_sources_pipelines_on_source_project_id ON ci_sources_pipelines USING btree (source_project_id);
 
@@ -36784,8 +36768,6 @@ CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR E
 
 CREATE TRIGGER trigger_1bd97da9c1a4 BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_1bd97da9c1a4();
 
-CREATE TRIGGER trigger_68d7b6653c7d BEFORE INSERT OR UPDATE ON ci_sources_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_68d7b6653c7d();
-
 CREATE TRIGGER trigger_7f3d66a7d7f5 BEFORE INSERT OR UPDATE ON ci_pipeline_variables FOR EACH ROW EXECUTE FUNCTION trigger_7f3d66a7d7f5();
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
@@ -36968,9 +36950,6 @@ ALTER TABLE ONLY agent_project_authorizations
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_1d37cddf91 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY ci_sources_pipelines
-    ADD CONSTRAINT fk_1df371767f FOREIGN KEY (source_pipeline_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -37676,9 +37655,6 @@ ALTER TABLE ONLY design_management_versions
 
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_c188f0dba4 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY ci_sources_pipelines
-    ADD CONSTRAINT fk_c1b5dc6b6f FOREIGN KEY (pipeline_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_c2a5562923 FOREIGN KEY (source_id) REFERENCES sbom_sources(id) ON DELETE CASCADE;

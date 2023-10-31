@@ -10,8 +10,9 @@ type: reference
 This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
 This file is where you define the CI/CD jobs that make up your pipeline.
 
-- To create your own `.gitlab-ci.yml` file, try a tutorial that demonstrates a
-  [simple](../quick_start/index.md) or [complex](../quick_start/tutorial.md) pipeline.
+- If you are already familiar with [basic CI/CD concepts](../index.md), try creating
+  your own `.gitlab-ci.yml` file by following a tutorial that demonstrates a [simple](../quick_start/index.md)
+  or [complex](../quick_start/tutorial.md) pipeline.
 - For a collection of examples, see [GitLab CI/CD examples](../examples/index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).

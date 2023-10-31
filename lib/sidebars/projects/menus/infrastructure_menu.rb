@@ -70,7 +70,7 @@ module Sidebars
                     highlight: Users::CalloutsHelper::GKE_CLUSTER_INTEGRATION,
                     highlight_priority: Users::Callout.feature_names[:GKE_CLUSTER_INTEGRATION],
                     dismiss_endpoint: callouts_path,
-                    auto_devops_help_path: help_page_path('topics/autodevops/index.md') } }
+                    auto_devops_help_path: help_page_path('topics/autodevops/index') } }
         end
 
         def terraform_states_menu_item

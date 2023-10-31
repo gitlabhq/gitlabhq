@@ -67,6 +67,7 @@ $work-item-sticky-header-height: 52px;
   }
 }
 
+//TODO: remove all the styles related to `gl-dropdown` when all `.work-item-dropdown`s are migrated
 .work-item-dropdown {
   // duplicate classname because we are fighting with gl-button styles
   .gl-dropdown-toggle.gl-dropdown-toggle {
@@ -95,24 +96,25 @@ $work-item-sticky-header-height: 52px;
 
   // need to override the listbox styles to match with dropdown
   // till the dropdown are converted to listbox
-  .gl-new-dropdown-toggle {
+  .gl-new-dropdown-toggle.gl-new-dropdown-toggle {
     &:hover,
     &:focus {
-      background: none !important;
       box-shadow: $work-item-field-inset-shadow;
       background-color: $input-bg;
-    }
 
-    .is-not-focused {
-      &.gl-new-dropdown-button-text {
-        margin: 0 0.25rem;
+      .gl-dark & {
+        // $input-bg is overridden in dark mode but that does not
+        // work in page bundles currently, manually override here
+        background-color: var(--gray-50, $input-bg);
       }
     }
-  }
 
-  .gl-new-dropdown-toggle.is-not-focused {
-    .gl-new-dropdown-button-text {
-      margin: 0 0.25rem;
+    &:not(:hover, :focus) {
+      box-shadow: none;
+
+      .gl-new-dropdown-chevron {
+        visibility: hidden;
+      }
     }
   }
 

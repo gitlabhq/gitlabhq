@@ -1,14 +1,8 @@
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlSearchBoxByType,
-  GlSkeletonLoader,
-  GlFormGroup,
-  GlDropdownText,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem, GlSkeletonLoader, GlFormGroup } from '@gitlab/ui';
+
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
+import WorkItemMilestone, { noMilestoneId } from '~/work_items/components/work_item_milestone.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -32,17 +26,13 @@ describe('WorkItemMilestone component', () => {
   const workItemId = 'gid://gitlab/WorkItem/1';
   const workItemType = 'Task';
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findNoMilestoneDropdownItem = () => wrapper.findByTestId('no-milestone');
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findFirstDropdownItem = () => findDropdownItems().at(0);
-  const findDropdownTexts = () => wrapper.findAllComponents(GlDropdownText);
-  const findDropdownItemAtIndex = (index) => findDropdownItems().at(index);
+  const findNoMilestoneDropdownItem = () => wrapper.findByTestId('listbox-item-no-milestone-id');
+  const findDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
   const findDisabledTextSpan = () => wrapper.findByTestId('disabled-text');
-  const findDropdownTextAtIndex = (index) => findDropdownTexts().at(index);
   const findInputGroup = () => wrapper.findComponent(GlFormGroup);
+  const findNoResultsText = () => wrapper.findByTestId('no-results-text');
 
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectMilestonesResponse);
   const successSearchWithNoMatchingMilestones = jest
@@ -74,8 +64,7 @@ describe('WorkItemMilestone component', () => {
         workItemType,
       },
       stubs: {
-        GlDropdown,
-        GlSearchBoxByType,
+        GlCollapsibleListbox,
       },
     });
   };
@@ -106,7 +95,7 @@ describe('WorkItemMilestone component', () => {
     it(`has a value of "Add to milestone"`, () => {
       createComponent({ canUpdate: true, milestone: null });
 
-      expect(findDropdown().props('text')).toBe(WorkItemMilestone.i18n.MILESTONE_PLACEHOLDER);
+      expect(findDropdown().props('toggleText')).toBe(WorkItemMilestone.i18n.MILESTONE_PLACEHOLDER);
     });
   });
 
@@ -114,7 +103,7 @@ describe('WorkItemMilestone component', () => {
     it('has the search box', () => {
       createComponent();
 
-      expect(findSearchBox().exists()).toBe(true);
+      expect(findDropdown().props('searchable')).toBe(true);
     });
 
     it('shows no matching results when no items', () => {
@@ -122,9 +111,8 @@ describe('WorkItemMilestone component', () => {
         searchQueryHandler: successSearchWithNoMatchingMilestones,
       });
 
-      expect(findDropdownTextAtIndex(0).text()).toBe(WorkItemMilestone.i18n.NO_MATCHING_RESULTS);
+      expect(findNoResultsText().text()).toBe(WorkItemMilestone.i18n.NO_MATCHING_RESULTS);
       expect(findDropdownItems()).toHaveLength(1);
-      expect(findDropdownTexts()).toHaveLength(1);
     });
   });
 
@@ -165,16 +153,18 @@ describe('WorkItemMilestone component', () => {
 
     it('changes the milestone to null when clicked on no milestone', async () => {
       showDropdown();
-      findFirstDropdownItem().vm.$emit('click');
+      findDropdown().vm.$emit('select', noMilestoneId);
 
       hideDropdown();
       await nextTick();
       expect(findDropdown().props('loading')).toBe(true);
 
       await waitForPromises();
-
-      expect(findDropdown().props('loading')).toBe(false);
-      expect(findDropdown().props('text')).toBe(WorkItemMilestone.i18n.MILESTONE_PLACEHOLDER);
+      expect(findDropdown().props()).toMatchObject({
+        loading: false,
+        toggleText: WorkItemMilestone.i18n.MILESTONE_PLACEHOLDER,
+        toggleClass: expect.arrayContaining(['gl-text-gray-500!']),
+      });
     });
 
     it('changes the milestone to the selected milestone', async () => {
@@ -182,15 +172,16 @@ describe('WorkItemMilestone component', () => {
       /** the index is -1 since no matching results is also a dropdown item */
       const milestoneAtIndex =
         projectMilestonesResponse.data.workspace.attributes.nodes[milestoneIndex - 1];
+
       showDropdown();
 
       await waitForPromises();
-      findDropdownItemAtIndex(milestoneIndex).vm.$emit('click');
+      findDropdown().vm.$emit('select', milestoneAtIndex.id);
 
       hideDropdown();
       await waitForPromises();
 
-      expect(findDropdown().props('text')).toBe(milestoneAtIndex.title);
+      expect(findDropdown().props('toggleText')).toBe(milestoneAtIndex.title);
     });
   });
 
@@ -208,7 +199,7 @@ describe('WorkItemMilestone component', () => {
         });
 
         showDropdown();
-        findFirstDropdownItem().vm.$emit('click');
+        findDropdown().vm.$emit('select', noMilestoneId);
         hideDropdown();
 
         await waitForPromises();
@@ -224,7 +215,7 @@ describe('WorkItemMilestone component', () => {
       createComponent({ canUpdate: true });
 
       showDropdown();
-      findFirstDropdownItem().vm.$emit('click');
+      findDropdown().vm.$emit('select', noMilestoneId);
       hideDropdown();
 
       await waitForPromises();
