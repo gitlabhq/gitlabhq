@@ -22,7 +22,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
     it 'returns a link to the author' do
       name = user.name
-      expect(helper.link_to_author(event)).to eq(link_to(name, user_path(user.username), title: name))
+      expect(helper.link_to_author(event)).to eq(link_to(name, user_path(user.username), title: name,
+        data: { user_id: user.id, username: user.username }, class: 'js-user-link'))
     end
 
     it 'returns the author name if the author is not present' do
@@ -35,7 +36,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
       allow(helper).to receive(:current_user).and_return(user)
 
       name = _('You')
-      expect(helper.link_to_author(event, self_added: true)).to eq(link_to(name, user_path(user.username), title: name))
+      expect(helper.link_to_author(event, self_added: true)).to eq(link_to(name, user_path(user.username), title: name,
+        data: { user_id: user.id, username: user.username }, class: 'js-user-link'))
     end
   end
 

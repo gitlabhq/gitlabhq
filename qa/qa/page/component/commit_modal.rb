@@ -5,7 +5,7 @@ module QA
     module Component
       class CommitModal < Page::Base
         view 'app/assets/javascripts/projects/commit/components/form_modal.vue' do
-          element :submit_commit_button, required: true
+          element 'submit-commit', required: true
         end
       end
     end

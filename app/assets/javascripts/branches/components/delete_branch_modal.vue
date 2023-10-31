@@ -182,7 +182,6 @@ export default {
           ref="deleteBranchButton"
           :disabled="deleteButtonDisabled"
           variant="danger"
-          data-qa-selector="delete_branch_confirmation_button"
           data-testid="delete-branch-confirmation-button"
           @click="submitForm"
           >{{ buttonText }}</gl-button

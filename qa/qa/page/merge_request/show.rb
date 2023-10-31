@@ -473,7 +473,7 @@ module QA
 
         def cherry_pick!
           click_element('cherry-pick-button', Page::Component::CommitModal)
-          click_element(:submit_commit_button)
+          click_element('submit-commit')
         end
 
         def revert_change!
@@ -482,7 +482,7 @@ module QA
           retry_on_exception(reload: true) do
             click_element('revert-button', Page::Component::CommitModal)
           end
-          click_element(:submit_commit_button)
+          click_element('submit-commit')
         end
 
         def mr_widget_text

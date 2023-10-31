@@ -65,7 +65,7 @@ First, create a repository for your Kubernetes manifests:
 Next, configure [GitLab CI/CD](../../../../ci/index.md) to package your manifests into an OCI artifact,
 and push the artifact to the [GitLab Container Registry](../../../packages/container_registry/index.md):
 
-1. In the root of `web-app-manifests`, create and push a [`.gitlab-ci.yml`](../../../../ci/yaml/gitlab_ci_yaml.md) file with the following contents:
+1. In the root of `web-app-manifests`, create and push a [`.gitlab-ci.yml`](../../../../ci/index.md#the-gitlab-ciyml-file) file with the following contents:
 
    ```yaml
    package:

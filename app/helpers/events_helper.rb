@@ -70,7 +70,7 @@ module EventsHelper
 
     if author
       name = self_added ? _('You') : author.name
-      link_to name, user_path(author.username), title: name
+      link_to name, user_path(author.username), title: name, data: { user_id: author.id, username: author.username }, class: 'js-user-link'
     else
       escape_once(event.author_name)
     end

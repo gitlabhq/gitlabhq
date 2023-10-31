@@ -38,7 +38,7 @@ functionality.
 
 ### Configuration file
 
-Jenkins can be configured with a [`Jenkinsfile` in the Groovy format](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/). GitLab CI/CD uses a [`.gitlab-ci.yml` YAML file](../../ci/yaml/gitlab_ci_yaml.md) by default.
+Jenkins can be configured with a [`Jenkinsfile` in the Groovy format](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/). GitLab CI/CD uses a [`.gitlab-ci.yml` YAML file](../../ci/index.md#the-gitlab-ciyml-file) by default.
 
 Example of a `Jenkinsfile`:
 
@@ -101,7 +101,7 @@ from Jenkins to GitLab CI/CD.
 
 [Jenkins pipelines](https://www.jenkins.io/doc/book/pipeline/) generate automated CI/CD jobs
 that are triggered when certain event take place, such as a new commit being pushed.
-A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../../ci/yaml/gitlab_ci_yaml.md).
+A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../../ci/index.md#the-gitlab-ciyml-file).
 
 Jenkins does not provide a place to store source code, so the `Jenkinsfile` must be stored
 in a separate source control repository.

@@ -30,7 +30,7 @@ gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfi
 
 gem 'vite_rails' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'bootsnap', '~> 1.16.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'bootsnap', '~> 1.17.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'openssl', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'ipaddr', '~> 1.2.5' # rubocop:todo Gemfile/MissingFeatureCategory

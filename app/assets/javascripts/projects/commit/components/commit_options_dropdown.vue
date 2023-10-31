@@ -51,7 +51,6 @@ export default {
         text: s__('ChangeTypeAction|Cherry-pick'),
         extraAttrs: {
           'data-testid': 'cherry-pick-link',
-          'data-qa-selector': 'cherry_pick_button',
         },
         action: () => this.showModal(OPEN_CHERRY_PICK_MODAL),
       };
@@ -62,7 +61,6 @@ export default {
         text: s__('ChangeTypeAction|Revert'),
         extraAttrs: {
           'data-testid': 'revert-link',
-          'data-qa-selector': 'revert_button',
         },
         action: () => this.showModal(OPEN_REVERT_MODAL),
       };
@@ -85,7 +83,6 @@ export default {
           download: '',
           rel: 'nofollow',
           'data-testid': 'plain-diff-link',
-          'data-qa-selector': 'plain_diff',
         },
       };
     },
@@ -97,7 +94,6 @@ export default {
           download: '',
           rel: 'nofollow',
           'data-testid': 'email-patches-link',
-          'data-qa-selector': 'email_patches',
         },
       };
     },
@@ -148,7 +144,6 @@ export default {
     :toggle-text="__('Options')"
     right
     data-testid="commit-options-dropdown"
-    data-qa-selector="options_button"
     class="gl-xs-w-full gl-line-height-20"
   >
     <gl-disclosure-dropdown-group :group="optionsGroup" @action="closeDropdown" />

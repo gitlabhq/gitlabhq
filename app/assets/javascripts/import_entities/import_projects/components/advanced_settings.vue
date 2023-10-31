@@ -41,7 +41,7 @@ export default {
           :key="name"
           :checked="value[name]"
           :data-qa-option-name="name"
-          data-qa-selector="advanced_settings_checkbox"
+          data-testid="advanced-settings-checkbox"
           @change="$emit('input', { ...value, [name]: $event })"
         >
           {{ label }}

@@ -3,7 +3,7 @@
     = render partial: 'signature', object: @commit.signature
     %strong
       #{ s_('CommitBoxTitle|Commit') }
-      %span.commit-sha{ data: { qa_selector: 'commit_sha_content' } }= @commit.short_id
+      %span.commit-sha{ data: { testid: 'commit-sha-content' } }= @commit.short_id
     = clipboard_button(text: @commit.id, title: _('Copy commit SHA'))
     %span.d-none.d-sm-inline= _('authored')
     #{time_ago_with_tooltip(@commit.authored_date)}
