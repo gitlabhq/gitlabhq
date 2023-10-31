@@ -10,9 +10,10 @@
 .tree-controls
   .d-block.d-sm-flex.flex-wrap.align-items-start.gl-children-ml-sm-3.gl-first-child-ml-sm-0<
     = render_if_exists 'projects/tree/lock_link'
+    = render 'projects/buttons/compare', project: @project, ref: @ref, root_ref: @repository&.root_ref
+
     #js-tree-history-link{ data: { history_link: project_commits_path(@project, @ref) } }
 
-    = render 'projects/buttons/compare', project: @project, ref: @ref, root_ref: @repository&.root_ref
     = render 'projects/find_file_link'
     = render 'shared/web_ide_button', blob: nil
     = render 'projects/buttons/download', project: @project, ref: @ref

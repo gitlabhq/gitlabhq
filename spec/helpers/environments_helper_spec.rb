@@ -95,17 +95,4 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
       expect(subject).to eq(true)
     end
   end
-
-  describe '#environment_logs_data' do
-    it 'returns logs data' do
-      expected_data = {
-        "environment_name": environment.name,
-        "environments_path": api_v4_projects_environments_path(id: project.id),
-        "environment_id": environment.id,
-        "clusters_path": project_clusters_path(project, format: :json)
-      }
-
-      expect(helper.environment_logs_data(project, environment)).to eq(expected_data)
-    end
-  end
 end

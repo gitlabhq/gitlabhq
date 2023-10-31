@@ -270,6 +270,7 @@ export default {
             :is-direct-member="isDirectMember"
             :member-source="member.source"
             :created-by="member.createdBy"
+            :is-shared-with-group-private="member.isSharedWithGroupPrivate"
           />
         </members-table-cell>
       </template>

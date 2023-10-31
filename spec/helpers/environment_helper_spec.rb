@@ -3,45 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe EnvironmentHelper, feature_category: :environment_management do
-  describe '#render_deployment_status' do
-    context 'when using a manual deployment' do
-      it 'renders a span tag' do
-        deploy = build(:deployment, deployable: nil, status: :success)
-        html = helper.render_deployment_status(deploy)
-
-        expect(html).to have_css('span.ci-status.ci-success')
-      end
-    end
-
-    context 'when using a deployment from a build' do
-      it 'renders a link tag' do
-        deploy = build(:deployment, status: :success)
-        html = helper.render_deployment_status(deploy)
-
-        expect(html).to have_css('a.ci-status.ci-success')
-      end
-    end
-
-    context 'when deploying from a bridge' do
-      it 'renders a span tag' do
-        deploy = build(:deployment, deployable: create(:ci_bridge), status: :success)
-        html = helper.render_deployment_status(deploy)
-
-        expect(html).to have_css('span.ci-status.ci-success')
-      end
-    end
-
-    context 'for a blocked deployment' do
-      subject { helper.render_deployment_status(deployment) }
-
-      let(:deployment) { build(:deployment, :blocked) }
-
-      it 'indicates the status' do
-        expect(subject).to have_text('blocked')
-      end
-    end
-  end
-
   describe '#environments_detail_data_json' do
     subject { helper.environments_detail_data_json(user, project, environment) }
 

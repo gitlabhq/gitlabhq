@@ -204,6 +204,7 @@ You can define how long a job can run before it times out.
 1. Expand **General pipelines**.
 1. In the **Timeout** field, enter the number of minutes, or a human-readable value like `2 hours`.
    Must be 10 minutes or more, and less than one month. Default is 60 minutes.
+   Pending jobs are dropped after 24 hours of inactivity. 
 
 Jobs that exceed the timeout are marked as failed.
 

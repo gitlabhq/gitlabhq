@@ -33,15 +33,6 @@ module EnvironmentsHelper
     metrics_data
   end
 
-  def environment_logs_data(project, environment)
-    {
-      "environment_name": environment.name,
-      "environments_path": api_v4_projects_environments_path(id: project.id),
-      "environment_id": environment.id,
-      "clusters_path": project_clusters_path(project, format: :json)
-    }
-  end
-
   def can_destroy_environment?(environment)
     can?(current_user, :destroy_environment, environment)
   end

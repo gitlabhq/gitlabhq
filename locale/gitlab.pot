@@ -16846,27 +16846,6 @@ msgstr ""
 msgid "Deployment|Waiting"
 msgstr ""
 
-msgid "Deployment|blocked"
-msgstr ""
-
-msgid "Deployment|canceled"
-msgstr ""
-
-msgid "Deployment|created"
-msgstr ""
-
-msgid "Deployment|failed"
-msgstr ""
-
-msgid "Deployment|running"
-msgstr ""
-
-msgid "Deployment|skipped"
-msgstr ""
-
-msgid "Deployment|success"
-msgstr ""
-
 msgid "Deprecated API rate limits"
 msgstr ""
 
@@ -29551,6 +29530,9 @@ msgid "Members|Leave \"%{source}\""
 msgstr ""
 
 msgid "Members|Membership"
+msgstr ""
+
+msgid "Members|Private group information is only accessible to its members."
 msgstr ""
 
 msgid "Members|Remove \"%{groupName}\""

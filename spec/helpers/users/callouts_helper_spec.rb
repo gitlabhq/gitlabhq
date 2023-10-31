@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Users::CalloutsHelper do
+RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   let_it_be(:user, refind: true) { create(:user) }
 
   before do

@@ -19,16 +19,28 @@ module GroupLink
       group_link.class.access_options
     end
 
+    expose :is_shared_with_group_private do |group_link|
+      !can_read_shared_group?(group_link)
+    end
+
     expose :shared_with_group do
-      expose :avatar_url do |group_link|
+      expose :avatar_url, if: ->(group_link) { can_read_shared_group?(group_link) } do |group_link|
         group_link.shared_with_group.avatar_url(only_path: false, size: Member::AVATAR_SIZE)
       end
 
-      expose :web_url do |group_link|
+      expose :web_url, if: ->(group_link) { can_read_shared_group?(group_link) } do |group_link|
         group_link.shared_with_group.web_url
       end
 
-      expose :shared_with_group, merge: true, using: GroupBasicEntity
+      # We have to expose shared_with_group.id because we use this to get distinct
+      # with ancestors
+      expose :shared_with_group, merge: true do |group_link|
+        if can_read_shared_group?(group_link)
+          GroupBasicEntity.represent(group_link.shared_with_group)
+        else
+          GroupBasicEntity.represent(group_link.shared_with_group, only: [:id])
+        end
+      end
     end
 
     expose :can_update do |group_link, options|
@@ -44,6 +56,10 @@ module GroupLink
     end
 
     private
+
+    def can_read_shared_group?(group_link)
+      can?(current_user, :read_shared_with_group, group_link)
+    end
 
     def current_user
       options[:current_user]

@@ -70,6 +70,19 @@ export const group = {
   validRoles: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },
 };
 
+export const privateGroup = {
+  accessLevel: { integerValue: 10, stringValue: 'Guest' },
+  isSharedWithGroupPrivate: true,
+  sharedWithGroup: {
+    id: 24,
+  },
+  id: 3,
+  isDirectMember: true,
+  createdAt: '2020-08-06T15:31:07.662Z',
+  expiresAt: null,
+  validRoles: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },
+};
+
 export const modalData = {
   isAccessRequest: true,
   isInvite: true,

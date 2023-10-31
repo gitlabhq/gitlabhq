@@ -9,15 +9,6 @@ module EnvironmentHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def environment_link_for_build(project, build)
-    environment = environment_for_build(project, build)
-    if environment
-      link_to environment.name, project_environment_path(project, environment)
-    else
-      content_tag :span, build.expanded_environment_name
-    end
-  end
-
   def deployment_path(deployment)
     [deployment.project, deployment.deployable]
   end
@@ -28,45 +19,6 @@ module EnvironmentHelper
     link_label = text || "##{deployment.iid}"
 
     link_to link_label, deployment_path(deployment)
-  end
-
-  def last_deployment_link_for_environment_build(project, build)
-    environment = environment_for_build(project, build)
-    return unless environment
-
-    deployment_link(environment.last_deployment)
-  end
-
-  def render_deployment_status(deployment)
-    status = deployment.status
-
-    status_text =
-      case status
-      when 'created'
-        s_('Deployment|created')
-      when 'running'
-        s_('Deployment|running')
-      when 'success'
-        s_('Deployment|success')
-      when 'failed'
-        s_('Deployment|failed')
-      when 'canceled'
-        s_('Deployment|canceled')
-      when 'skipped'
-        s_('Deployment|skipped')
-      when 'blocked'
-        s_('Deployment|blocked')
-      end
-
-    ci_icon_utilities = "gl-display-inline-flex gl-align-items-center gl-line-height-0 gl-px-3 gl-py-2 gl-rounded-base"
-    klass = "ci-status ci-#{status.dasherize} #{ci_icon_utilities}"
-    text = "#{ci_icon_for_status(status)} <span class=\"gl-ml-2\">#{status_text}</span>".html_safe
-
-    if deployment.deployable.instance_of?(::Ci::Build)
-      link_to(text, deployment_path(deployment), class: klass)
-    else
-      content_tag(:span, text, class: klass)
-    end
   end
 
   def environments_detail_data(user, project, environment)

@@ -130,6 +130,11 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 - The **Groups** tab lists the `Engineering` group.
 - The **Groups** tab lists a group regardless of whether it is a public or private group.
+- From [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134623),
+  the invited group's name and membership source will be hidden unless:
+  - the invited group is public, or
+  - the current user is a member of the invited group, or
+  - the current user is a member of the current group.
 - All direct members of the `Engineering` group have access to the `Frontend` group. The least access is granted between the access in the `Engineering` group and the access in the `Frontend` group.
   - If `Member1` has the Maintainer role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member1` has the Developer role in `Frontend`.
   - If `Member2` has the Guest role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member2` has the Guest role in `Frontend`.
