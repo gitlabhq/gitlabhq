@@ -675,7 +675,7 @@ GEM
       rubocop-performance (~> 1.15)
       rubocop-rails (~> 2.17)
       rubocop-rspec (~> 2.22)
-    gitlab_chronic_duration (0.10.6.2)
+    gitlab_chronic_duration (0.12.0)
       numerizer (~> 0.2)
     gitlab_omniauth-ldap (2.2.0)
       net-ldap (~> 0.16)
@@ -1825,7 +1825,7 @@ DEPENDENCIES
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 10.1.0)
   gitlab-utils!
-  gitlab_chronic_duration (~> 0.10.6.2)
+  gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.2.0)
   gitlab_quality-test_tooling (~> 0.9.3)
   gon (~> 6.4.0)

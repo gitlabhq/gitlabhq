@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.3.6 (2023-10-30)
+
+### Security (9 changes)
+
+- [Fix infinite loop when finding component project](gitlab-org/security/gitlab@a1c1255f8f767f1b9a26aee1008ef6a286988a1d) ([merge request](gitlab-org/security/gitlab!3667))
+- [Update gitlab-chronic-duration to 0.12](gitlab-org/security/gitlab@89ed5a67a26c362d197eae4f3228755a5e3a1c03) ([merge request](gitlab-org/security/gitlab!3630))
+- [Guard gitlab_version_check helper](gitlab-org/security/gitlab@b8f490fc3cfe465d46666380b17c065669c216e1) ([merge request](gitlab-org/security/gitlab!3654))
+- [Add the environment action to the CI JWT token fields](gitlab-org/security/gitlab@0563e1a02c2b6886cc21c4dfbedd975c102f0fbb) ([merge request](gitlab-org/security/gitlab!3615))
+- [Remove FIFO files from tarball extract](gitlab-org/security/gitlab@d794f0c972e2e081c0ed78ed5001bdd111688641) ([merge request](gitlab-org/security/gitlab!3634))
+- [Backport add abuse detection for pipes](gitlab-org/security/gitlab@84a3debec3ce0473598d4681850ccca74a892b30) ([merge request](gitlab-org/security/gitlab!3619))
+- [Prevent unprivileged user assignment in templated projects](gitlab-org/security/gitlab@b4ba31c793317dee41382f7a41af4637f38cddaa) ([merge request](gitlab-org/security/gitlab!3637))
+- [Fixes Service Desk email template issue description privileges](gitlab-org/security/gitlab@223765ae04031afda38f10e8487a3785ab53032b) ([merge request](gitlab-org/security/gitlab!3639))
+- [Update mermaid version for DOS fixes](gitlab-org/security/gitlab@602b89ced4ccad048819fc1603d6e978fd58c882) ([merge request](gitlab-org/security/gitlab!3627))
+
 ## 16.3.5 (2023-09-28)
 
 ### Security (16 changes)

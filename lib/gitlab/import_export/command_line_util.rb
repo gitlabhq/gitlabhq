@@ -139,7 +139,7 @@ module Gitlab
 
           raise HardLinkError, 'File shares hard link' if Gitlab::Utils::FileInfo.shares_hard_link?(filepath)
 
-          FileUtils.rm(filepath) if Gitlab::Utils::FileInfo.linked?(filepath)
+          FileUtils.rm(filepath) if Gitlab::Utils::FileInfo.linked?(filepath) || File.pipe?(filepath)
         end
 
         true

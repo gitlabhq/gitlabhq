@@ -210,6 +210,28 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         let(:expected_template_html) { "<p dir=\"auto\">thank you, your new issue has been created. </p>#{issue.description_html}" }
 
         it_behaves_like 'a service desk notification email with template content', 'thank_you'
+
+        context 'when GitLab-specific-reference is in description' do
+          let(:full_issue_reference) { "#{issue.project.full_path}#{issue.to_reference}" }
+          let(:other_issue) { create(:issue, project: project, description: full_issue_reference) }
+
+          let(:template_content) { '%{ISSUE_DESCRIPTION}' }
+          let(:expected_template_html) { "<p data-sourcepos=\"1:1-1:22\" dir=\"auto\">#{full_issue_reference}</p>" }
+
+          subject { ServiceEmailClass.service_desk_thank_you_email(other_issue.id) }
+
+          before do
+            expect(Gitlab::Template::ServiceDeskTemplate).to receive(:find)
+              .with('thank_you', other_issue.project)
+              .and_return(template)
+
+            other_issue.issue_email_participants.create!(email: email)
+          end
+
+          it 'does not render GitLab-specific-reference links with title attribute' do
+            is_expected.to have_body_text(expected_template_html)
+          end
+        end
       end
 
       context 'when issue url placeholder is used' do
