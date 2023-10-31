@@ -38,43 +38,49 @@ RSpec.describe VersionCheckHelper do
   end
 
   describe '#gitlab_version_check' do
+    let(:show_version_check) { false }
+
     before do
-      allow_next_instance_of(VersionCheck) do |instance|
-        allow(instance).to receive(:response).and_return({ "severity" => "success" })
-      end
+      allow(helper).to receive(:show_version_check?).and_return(show_version_check)
     end
 
-    it 'returns an instance of the VersionCheck class' do
-      expect(helper.gitlab_version_check).to eq({ "severity" => "success" })
+    it 'when show_version_check? is false it returns nil' do
+      expect(helper.gitlab_version_check).to be nil
+    end
+
+    context 'when show_version_check? is true' do
+      let(:show_version_check) { true }
+
+      before do
+        allow_next_instance_of(VersionCheck) do |instance|
+          allow(instance).to receive(:response).and_return({ "severity" => "success" })
+        end
+      end
+
+      it 'returns an instance of the VersionCheck class if the user has access' do
+        expect(helper.gitlab_version_check).to eq({ "severity" => "success" })
+      end
     end
   end
 
   describe '#show_security_patch_upgrade_alert?' do
     describe 'return conditions' do
-      where(:show_version_check, :gitlab_version_check, :result) do
+      where(:gitlab_version_check, :result) do
         [
-          [false, nil, false],
-          [false, { "severity" => "success" }, false],
-          [false, { "severity" => "danger" }, false],
-          [false, { "severity" => "danger", "critical_vulnerability" => 'some text' }, false],
-          [false, { "severity" => "danger", "critical_vulnerability" => 'false' }, false],
-          [false, { "severity" => "danger", "critical_vulnerability" => false }, false],
-          [false, { "severity" => "danger", "critical_vulnerability" => 'true' }, false],
-          [false, { "severity" => "danger", "critical_vulnerability" => true }, false],
-          [true, nil, false],
-          [true, { "severity" => "success" }, nil],
-          [true, { "severity" => "danger" }, nil],
-          [true, { "severity" => "danger", "critical_vulnerability" => 'some text' }, nil],
-          [true, { "severity" => "danger", "critical_vulnerability" => 'false' }, false],
-          [true, { "severity" => "danger", "critical_vulnerability" => false }, false],
-          [true, { "severity" => "danger", "critical_vulnerability" => 'true' }, true],
-          [true, { "severity" => "danger", "critical_vulnerability" => true }, true]
+          [nil, false],
+          [{}, nil],
+          [{ "severity" => "success" }, nil],
+          [{ "severity" => "danger" }, nil],
+          [{ "severity" => "danger", "critical_vulnerability" => 'some text' }, nil],
+          [{ "severity" => "danger", "critical_vulnerability" => 'false' }, false],
+          [{ "severity" => "danger", "critical_vulnerability" => false }, false],
+          [{ "severity" => "danger", "critical_vulnerability" => 'true' }, true],
+          [{ "severity" => "danger", "critical_vulnerability" => true }, true]
         ]
       end
 
       with_them do
         before do
-          allow(helper).to receive(:show_version_check?).and_return(show_version_check)
           allow(helper).to receive(:gitlab_version_check).and_return(gitlab_version_check)
         end
 

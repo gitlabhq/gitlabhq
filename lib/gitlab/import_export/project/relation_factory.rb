@@ -81,6 +81,8 @@ module Gitlab
 
         private
 
+        attr_reader :relation_hash, :user
+
         def invalid_relation?
           # Do not create relation if it is a legacy trigger
           legacy_trigger?
