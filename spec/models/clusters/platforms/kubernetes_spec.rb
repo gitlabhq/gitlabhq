@@ -10,7 +10,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
   it { is_expected.to be_kind_of(Gitlab::Kubernetes) }
   it { is_expected.to respond_to :ca_pem }
 
-  it { is_expected.to validate_exclusion_of(:namespace).in_array(%w(gitlab-managed-apps)) }
+  it { is_expected.to validate_exclusion_of(:namespace).in_array(%w[gitlab-managed-apps]) }
   it { is_expected.to validate_presence_of(:api_url) }
   it { is_expected.to validate_presence_of(:token) }
 

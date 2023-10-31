@@ -13,7 +13,7 @@ RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter, feature_catego
 
     context 'when code quality has data' do
       context 'when filenames is empty' do
-        let(:filenames) { %w() }
+        let(:filenames) { %w[] }
 
         it 'returns hash without quality' do
           expect(quality_data).to match(files: {})
@@ -21,7 +21,7 @@ RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter, feature_catego
       end
 
       context 'when filenames do not match code quality data' do
-        let(:filenames) { %w(demo.rb) }
+        let(:filenames) { %w[demo.rb] }
 
         it 'returns hash without quality' do
           expect(quality_data).to match(files: {})
@@ -30,7 +30,7 @@ RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter, feature_catego
 
       context 'when filenames matches code quality data' do
         context 'when asking for one filename' do
-          let(:filenames) { %w(file_a.rb) }
+          let(:filenames) { %w[file_a.rb] }
 
           it 'returns quality for the given filename' do
             expect(quality_data).to match(
@@ -45,7 +45,7 @@ RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter, feature_catego
         end
 
         context 'when asking for multiple filenames' do
-          let(:filenames) { %w(file_a.rb file_b.rb) }
+          let(:filenames) { %w[file_a.rb file_b.rb] }
 
           it 'returns quality for the given filenames' do
             expect(quality_data).to match(

@@ -1336,7 +1336,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           let(:job_status) { :created }
 
           it_behaves_like 'gracefully handling error' do
-            let(:error_message) { %{Status cannot transition via \"create\"} }
+            let(:error_message) { %(Status cannot transition via \"create\") }
           end
         end
 
@@ -1344,7 +1344,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           let(:job_status) { :manual }
 
           it_behaves_like 'gracefully handling error' do
-            let(:error_message) { %{Status cannot transition via \"block\"} }
+            let(:error_message) { %(Status cannot transition via \"block\") }
           end
         end
 
@@ -1374,7 +1374,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           let(:job_status) { :created }
 
           it_behaves_like 'gracefully handling error' do
-            let(:error_message) { %{Status cannot transition via \"create\"} }
+            let(:error_message) { %(Status cannot transition via \"create\") }
           end
         end
 
@@ -1382,7 +1382,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           let(:job_status) { :manual }
 
           it_behaves_like 'gracefully handling error' do
-            let(:error_message) { %{Status cannot transition via \"block\"} }
+            let(:error_message) { %(Status cannot transition via \"block\") }
           end
         end
 
@@ -1390,7 +1390,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           let(:job_status) { :running }
 
           it_behaves_like 'gracefully handling error' do
-            let(:error_message) { %{Status cannot transition via \"run\"} }
+            let(:error_message) { %(Status cannot transition via \"run\") }
           end
         end
 

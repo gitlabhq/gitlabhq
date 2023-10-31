@@ -1303,7 +1303,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       describe '#stages_names' do
         it 'returns a valid names of stages' do
-          expect(pipeline.stages_names).to eq(%w(build test deploy))
+          expect(pipeline.stages_names).to eq(%w[build test deploy])
         end
       end
     end
@@ -2640,7 +2640,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       subject(:latest_successful_for_refs) { described_class.latest_successful_for_refs(refs) }
 
       context 'when refs are specified' do
-        let(:refs) { %w(first_ref second_ref third_ref) }
+        let(:refs) { %w[first_ref second_ref third_ref] }
 
         before do
           create(:ci_empty_pipeline, id: 1001, status: :success, ref: 'first_ref', sha: 'sha')

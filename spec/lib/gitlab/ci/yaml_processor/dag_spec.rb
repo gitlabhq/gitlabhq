@@ -23,8 +23,18 @@ RSpec.describe Gitlab::Ci::YamlProcessor::Dag do
       { 'job_a' => %w[job_c], 'job_b' => %w[job_a], 'job_c' => %w[job_b] }
     end
 
-    it 'raises TSort::Cyclic' do
+    it 'raises TSort::Cyclic error' do
       expect { result }.to raise_error(TSort::Cyclic, /topological sort failed/)
+    end
+
+    context 'when a job has a self-dependency' do
+      let(:nodes) do
+        { 'job_a' => %w[job_a] }
+      end
+
+      it 'raises TSort::Cyclic error' do
+        expect { result }.to raise_error(TSort::Cyclic, /topological sort failed/)
+      end
     end
   end
 

@@ -84,20 +84,20 @@ RSpec.describe PagesDomain, feature_category: :pages do
         attributes = attributes_for(:pages_domain)
         cert, key = attributes.fetch_values(:certificate, :key)
 
-        true  | nil  | nil | false | %i(certificate key)
+        true  | nil  | nil | false | %i[certificate key]
         true  | nil  | nil | true  | []
-        true  | cert | nil | false | %i(key)
-        true  | cert | nil | true  | %i(key)
-        true  | nil  | key | false | %i(certificate key)
-        true  | nil  | key | true  | %i(key)
+        true  | cert | nil | false | %i[key]
+        true  | cert | nil | true  | %i[key]
+        true  | nil  | key | false | %i[certificate key]
+        true  | nil  | key | true  | %i[key]
         true  | cert | key | false | []
         true  | cert | key | true  | []
         false | nil  | nil | false | []
         false | nil  | nil | true  | []
-        false | cert | nil | false | %i(key)
-        false | cert | nil | true  | %i(key)
-        false | nil  | key | false | %i(key)
-        false | nil  | key | true  | %i(key)
+        false | cert | nil | false | %i[key]
+        false | cert | nil | true  | %i[key]
+        false | nil  | key | false | %i[key]
+        false | nil  | key | true  | %i[key]
         false | cert | key | false | []
         false | cert | key | true  | []
       end

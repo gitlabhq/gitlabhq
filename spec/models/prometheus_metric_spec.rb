@@ -94,16 +94,16 @@ RSpec.describe PrometheusMetric do
 
   describe '#required_metrics' do
     where(:group, :required_metrics) do
-      :nginx_ingress_vts | %w(nginx_upstream_responses_total nginx_upstream_response_msecs_avg)
-      :nginx_ingress     | %w(nginx_ingress_controller_requests nginx_ingress_controller_ingress_upstream_latency_seconds_sum)
-      :ha_proxy          | %w(haproxy_frontend_http_requests_total haproxy_frontend_http_responses_total)
-      :aws_elb           | %w(aws_elb_request_count_sum aws_elb_latency_average aws_elb_httpcode_backend_5_xx_sum)
-      :nginx             | %w(nginx_server_requests nginx_server_requestMsec)
-      :kubernetes        | %w(container_memory_usage_bytes container_cpu_usage_seconds_total)
-      :business          | %w()
-      :response          | %w()
-      :system            | %w()
-      :cluster_health    | %w(container_memory_usage_bytes container_cpu_usage_seconds_total)
+      :nginx_ingress_vts | %w[nginx_upstream_responses_total nginx_upstream_response_msecs_avg]
+      :nginx_ingress     | %w[nginx_ingress_controller_requests nginx_ingress_controller_ingress_upstream_latency_seconds_sum]
+      :ha_proxy          | %w[haproxy_frontend_http_requests_total haproxy_frontend_http_responses_total]
+      :aws_elb           | %w[aws_elb_request_count_sum aws_elb_latency_average aws_elb_httpcode_backend_5_xx_sum]
+      :nginx             | %w[nginx_server_requests nginx_server_requestMsec]
+      :kubernetes        | %w[container_memory_usage_bytes container_cpu_usage_seconds_total]
+      :business          | %w[]
+      :response          | %w[]
+      :system            | %w[]
+      :cluster_health    | %w[container_memory_usage_bytes container_cpu_usage_seconds_total]
     end
 
     with_them do

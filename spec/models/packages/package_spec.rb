@@ -1196,7 +1196,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to eq([]) }
 
     context 'with tags' do
-      let(:tags) { %w(tag1 tag2 tag3) }
+      let(:tags) { %w[tag1 tag2 tag3] }
 
       before do
         tags.each { |t| create(:packages_tag, name: t, package: package) }

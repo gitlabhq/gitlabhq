@@ -1280,7 +1280,7 @@ RSpec.describe User, feature_category: :user_profile do
         user = create(:user, username: 'CaMeLcAsEd')
         user2 = create(:user, username: 'UPPERCASE')
 
-        expect(described_class.by_username(%w(CAMELCASED uppercase)))
+        expect(described_class.by_username(%w[CAMELCASED uppercase]))
           .to contain_exactly(user, user2)
       end
 
@@ -5833,37 +5833,37 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'oauth user' do
       it 'returns true if name can be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(name location))
+        stub_omniauth_setting(sync_profile_attributes: %w[name location])
 
         expect(user.sync_attribute?(:name)).to be_truthy
       end
 
       it 'returns true if email can be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(name email))
+        stub_omniauth_setting(sync_profile_attributes: %w[name email])
 
         expect(user.sync_attribute?(:email)).to be_truthy
       end
 
       it 'returns true if location can be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        stub_omniauth_setting(sync_profile_attributes: %w[location email])
 
         expect(user.sync_attribute?(:email)).to be_truthy
       end
 
       it 'returns false if name can not be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        stub_omniauth_setting(sync_profile_attributes: %w[location email])
 
         expect(user.sync_attribute?(:name)).to be_falsey
       end
 
       it 'returns false if email can not be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(location name))
+        stub_omniauth_setting(sync_profile_attributes: %w[location name])
 
         expect(user.sync_attribute?(:email)).to be_falsey
       end
 
       it 'returns false if location can not be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(name email))
+        stub_omniauth_setting(sync_profile_attributes: %w[name email])
 
         expect(user.sync_attribute?(:location)).to be_falsey
       end
@@ -5894,7 +5894,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns true for email and location if ldap user and location declared as syncable' do
         allow(user).to receive(:ldap_user?).and_return(true)
-        stub_omniauth_setting(sync_profile_attributes: %w(location))
+        stub_omniauth_setting(sync_profile_attributes: %w[location])
 
         expect(user.sync_attribute?(:name)).to be_falsey
         expect(user.sync_attribute?(:email)).to be_truthy

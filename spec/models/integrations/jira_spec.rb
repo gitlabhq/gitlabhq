@@ -719,10 +719,10 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return(issue_key)
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
-        WebMock.stub_request(:get, issue_url).with(basic_auth: %w(jira-username jira-password))
-        WebMock.stub_request(:post, transitions_url).with(basic_auth: %w(jira-username jira-password))
-        WebMock.stub_request(:post, comment_url).with(basic_auth: %w(jira-username jira-password))
-        WebMock.stub_request(:post, remote_link_url).with(basic_auth: %w(jira-username jira-password))
+        WebMock.stub_request(:get, issue_url).with(basic_auth: %w[jira-username jira-password])
+        WebMock.stub_request(:post, transitions_url).with(basic_auth: %w[jira-username jira-password])
+        WebMock.stub_request(:post, comment_url).with(basic_auth: %w[jira-username jira-password])
+        WebMock.stub_request(:post, remote_link_url).with(basic_auth: %w[jira-username jira-password])
       end
 
       let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
@@ -864,7 +864,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       it 'logs exception when transition id is not valid' do
         allow(jira_integration).to receive(:log_exception)
-        WebMock.stub_request(:post, transitions_url).with(basic_auth: %w(jira-username jira-password)).and_raise("Bad Request")
+        WebMock.stub_request(:post, transitions_url).with(basic_auth: %w[jira-username jira-password]).and_raise("Bad Request")
 
         close_issue
 
@@ -973,7 +973,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
         context 'when a transition fails' do
           before do
-            WebMock.stub_request(:post, transitions_url).with(basic_auth: %w(jira-username jira-password)).to_return do |request|
+            WebMock.stub_request(:post, transitions_url).with(basic_auth: %w[jira-username jira-password]).to_return do |request|
               { status: request.body.include?('"id":"2"') ? 500 : 200 }
             end
           end

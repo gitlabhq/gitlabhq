@@ -597,7 +597,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
-            'severity' => %w(unknown low)
+            'severity' => %w[unknown low]
           ))
 
         issue.to_hook_data(user, old_associations: { severity: 'unknown' })
@@ -618,7 +618,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
-            'escalation_status' => %i(triggered acknowledged)
+            'escalation_status' => %i[triggered acknowledged]
           ))
 
         issue.to_hook_data(user, old_associations: { escalation_status: :triggered })

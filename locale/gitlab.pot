@@ -12322,6 +12322,15 @@ msgstr ""
 msgid "Compliance framework"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Associated Projects"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Default"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Edit framework"
+msgstr ""
+
 msgid "ComplianceFrameworks|Active compliance frameworks"
 msgstr ""
 
@@ -55802,6 +55811,9 @@ msgid "already shared with this group"
 msgstr ""
 
 msgid "and"
+msgstr ""
+
+msgid "any-approver for the group already exists"
 msgstr ""
 
 msgid "any-approver for the merge request already exists"

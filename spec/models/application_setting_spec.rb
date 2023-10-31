@@ -254,11 +254,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
-    it { is_expected.not_to allow_value(%w(project project)).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value(%w[project project]).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value([nil]).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(nil).for(:valid_runner_registrars) }
     it { is_expected.to allow_value([]).for(:valid_runner_registrars) }
-    it { is_expected.to allow_value(%w(project group)).for(:valid_runner_registrars) }
+    it { is_expected.to allow_value(%w[project group]).for(:valid_runner_registrars) }
 
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
@@ -878,9 +878,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
       describe 'inclusion' do
         it { is_expected.to allow_value('custom1').for(:repository_storages) }
-        it { is_expected.to allow_value(%w(custom2 custom3)).for(:repository_storages) }
+        it { is_expected.to allow_value(%w[custom2 custom3]).for(:repository_storages) }
         it { is_expected.not_to allow_value('alternative').for(:repository_storages) }
-        it { is_expected.not_to allow_value(%w(alternative custom1)).for(:repository_storages) }
+        it { is_expected.not_to allow_value(%w[alternative custom1]).for(:repository_storages) }
       end
 
       describe 'presence' do

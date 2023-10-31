@@ -28,5 +28,17 @@ RSpec.describe 'Update of an existing merge request', feature_category: :code_re
       let(:resource) { merge_request }
       let(:mutation_name) { 'mergeRequestUpdate' }
     end
+
+    context 'when required arguments are missing' do
+      let(:input_params) { {} }
+
+      it_behaves_like 'a mutation that returns top-level errors' do
+        let(:match_errors) do
+          include(end_with(
+            'invalid value for projectPath (Expected value to not be null), iid (Expected value to not be null)'
+          ))
+        end
+      end
+    end
   end
 end

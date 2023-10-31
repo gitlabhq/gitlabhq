@@ -207,7 +207,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
     subject { described_class.associated_file_types_for(file_type) }
 
     where(:file_type, :result) do
-      'codequality' | %w(codequality)
+      'codequality' | %w[codequality]
       'quality' | nil
     end
 

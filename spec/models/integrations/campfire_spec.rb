@@ -48,7 +48,7 @@ RSpec.describe Integrations::Campfire, feature_category: :integrations do
       )
       @sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       @rooms_url = 'https://project-name.campfirenow.com/rooms.json'
-      @auth = %w(verySecret X)
+      @auth = %w[verySecret X]
       @headers = { 'Content-Type' => 'application/json; charset=utf-8' }
     end
 

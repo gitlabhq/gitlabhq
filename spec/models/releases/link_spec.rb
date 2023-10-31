@@ -82,7 +82,7 @@ RSpec.describe Releases::Link do
 
   describe 'supported protocols' do
     where(:protocol) do
-      %w(http https ftp)
+      %w[http https ftp]
     end
 
     with_them do

@@ -1213,4 +1213,28 @@ describe('common_utils', () => {
       expect(cloned.ref === ref).toBe(false);
     });
   });
+
+  describe('isDefaultCiConfig', () => {
+    it('returns true when the path is the default CI config path', () => {
+      expect(commonUtils.isDefaultCiConfig('.gitlab-ci.yml')).toBe(true);
+    });
+
+    it('returns false when the path is not the default CI config path', () => {
+      expect(commonUtils.isDefaultCiConfig('some/other/path.yml')).toBe(false);
+    });
+  });
+
+  describe('hasCiConfigExtension', () => {
+    it('returns true when the path is the default CI config path', () => {
+      expect(commonUtils.hasCiConfigExtension('.gitlab-ci.yml')).toBe(true);
+    });
+
+    it('returns true when the path has a CI config extension', () => {
+      expect(commonUtils.hasCiConfigExtension('some/path.gitlab-ci.yml')).toBe(true);
+    });
+
+    it('returns false when the path does not have a CI config extension', () => {
+      expect(commonUtils.hasCiConfigExtension('some/other/path.yml')).toBe(false);
+    });
+  });
 });

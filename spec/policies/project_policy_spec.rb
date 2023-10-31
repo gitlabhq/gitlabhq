@@ -391,7 +391,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
 
     let(:maintainer_abilities) do
-      %w(create_build create_pipeline)
+      %w[create_build create_pipeline]
     end
 
     it 'does not allow pushing code' do
@@ -413,7 +413,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'importing members from another project' do
-    %w(maintainer owner).each do |role|
+    %w[maintainer owner].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
@@ -421,7 +421,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(guest reporter developer anonymous).each do |role|
+    %w[guest reporter developer anonymous].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
@@ -443,7 +443,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'importing work items' do
-    %w(reporter developer maintainer owner).each do |role|
+    %w[reporter developer maintainer owner].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
@@ -451,7 +451,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(guest anonymous).each do |role|
+    %w[guest anonymous].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
@@ -473,7 +473,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'reading usage quotas' do
-    %w(maintainer owner).each do |role|
+    %w[maintainer owner].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
@@ -481,7 +481,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(guest reporter developer anonymous).each do |role|
+    %w[guest reporter developer anonymous].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
@@ -692,7 +692,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         it { is_expected.to be_disallowed(:fork_project) }
       end
 
-      %w(reporter developer maintainer).each do |role|
+      %w[reporter developer maintainer].each do |role|
         context role do
           let(:current_user) { send(role) }
 
@@ -791,7 +791,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(guest reporter developer maintainer owner).each do |role|
+    %w[guest reporter developer maintainer owner].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -819,7 +819,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(guest reporter developer maintainer owner).each do |role|
+    %w[guest reporter developer maintainer owner].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -1439,7 +1439,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'security configuration feature' do
-    %w(guest reporter).each do |role|
+    %w[guest reporter].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -1449,7 +1449,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(developer maintainer owner).each do |role|
+    %w[developer maintainer owner].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -1461,7 +1461,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'infrastructure google cloud feature' do
-    %w(guest reporter developer).each do |role|
+    %w[guest reporter developer].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -1471,7 +1471,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(maintainer owner).each do |role|
+    %w[maintainer owner].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -1483,7 +1483,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'infrastructure aws feature' do
-    %w(guest reporter developer).each do |role|
+    %w[guest reporter developer].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -1493,7 +1493,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(maintainer owner).each do |role|
+    %w[maintainer owner].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -1974,7 +1974,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     context 'project member' do
       let(:project) { private_project }
 
-      %w(guest reporter developer maintainer).each do |role|
+      %w[guest reporter developer maintainer].each do |role|
         context role do
           let(:current_user) { send(role) }
 
@@ -2003,7 +2003,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         end
 
         context 'project member' do
-          %w(guest reporter developer maintainer).each do |role|
+          %w[guest reporter developer maintainer].each do |role|
             context role do
               before do
                 project.add_member(current_user, role.to_sym)
@@ -2037,7 +2037,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         end
 
         context 'project member' do
-          %w(guest reporter developer maintainer).each do |role|
+          %w[guest reporter developer maintainer].each do |role|
             context role do
               before do
                 project.add_member(current_user, role.to_sym)
@@ -2067,7 +2067,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:current_user) { create(:user) }
 
       context 'project member' do
-        %w(guest reporter developer maintainer).each do |role|
+        %w[guest reporter developer maintainer].each do |role|
           context role do
             before do
               project.add_member(current_user, role.to_sym)
@@ -2827,7 +2827,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(guest reporter developer).each do |role|
+    %w[guest reporter developer].each do |role|
       context role do
         let(:current_user) { send(role) }
 
@@ -2835,7 +2835,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    %w(maintainer owner).each do |role|
+    %w[maintainer owner].each do |role|
       context role do
         let(:current_user) { send(role) }
 

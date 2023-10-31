@@ -1,3 +1,6 @@
+// TODO: Remove this with the removal of the old navigation.
+// See https://gitlab.com/groups/gitlab-org/-/epics/11875.
+
 import Vue from 'vue';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import { highCountTrim } from '~/lib/utils/text_utility';

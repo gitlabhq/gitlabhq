@@ -42,7 +42,7 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner_fleet do
       let(:mutation_params) { {} }
 
       it 'raises an error' do
-        expect { response }.to raise_error(ArgumentError, "Arguments must be provided: id")
+        expect { response }.to raise_error(ArgumentError, "missing keyword: :id")
       end
     end
 

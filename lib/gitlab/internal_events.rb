@@ -23,8 +23,6 @@ module Gitlab
       private
 
       def increase_total_counter(event_name)
-        return unless ::ServicePing::ServicePingSettings.enabled?
-
         redis_counter_key =
           Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name)
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }

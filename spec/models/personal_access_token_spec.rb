@@ -365,7 +365,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
   describe '.simple_sorts' do
     it 'includes overridden keys' do
-      expect(described_class.simple_sorts.keys).to include(*%w(expires_at_asc_id_desc))
+      expect(described_class.simple_sorts.keys).to include(*%w[expires_at_asc_id_desc])
     end
   end
 

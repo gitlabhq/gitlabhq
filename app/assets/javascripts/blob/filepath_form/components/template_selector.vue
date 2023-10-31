@@ -2,6 +2,7 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import SuggestGitlabCiYml from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
 import { __ } from '~/locale';
+import { DEFAULT_CI_CONFIG_PATH, CI_CONFIG_PATH_EXTENSION } from '~/lib/utils/constants';
 
 const templateSelectors = [
   {
@@ -12,8 +13,8 @@ const templateSelectors = [
   },
   {
     key: 'gitlab_ci_ymls',
-    name: '.gitlab-ci.yml',
-    pattern: /(.gitlab-ci.yml)/,
+    name: DEFAULT_CI_CONFIG_PATH,
+    pattern: CI_CONFIG_PATH_EXTENSION,
     type: 'gitlab_ci_ymls',
   },
   {

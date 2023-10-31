@@ -87,7 +87,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe 'status' do
     context 'when transitioning to any state from running' do
       it 'removes runner_session' do
-        %w(success drop cancel).each do |event|
+        %w[success drop cancel].each do |event|
           build = FactoryBot.create(:ci_build, :running, :with_runner_session, pipeline: pipeline)
 
           build.fire_events!(event)
@@ -1090,7 +1090,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     let(:options_with_fallback_keys) do
       { cache: [
-        { key: "key", paths: ["public"], policy: "pull-push", fallback_keys: %w(key1 key2) }
+        { key: "key", paths: ["public"], policy: "pull-push", fallback_keys: %w[key1 key2] }
       ] }
     end
 
@@ -1111,8 +1111,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         let(:options_with_fallback_keys) do
           { cache: [
-            { key: "key", paths: ["public"], policy: "pull-push", fallback_keys: %w(key3 key4) },
-            { key: "key2", paths: ["public"], policy: "pull-push", fallback_keys: %w(key5 key6) }
+            { key: "key", paths: ["public"], policy: "pull-push", fallback_keys: %w[key3 key4] },
+            { key: "key2", paths: ["public"], policy: "pull-push", fallback_keys: %w[key5 key6] }
           ] }
         end
 
@@ -1214,11 +1214,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                 is_expected.to match([
                   a_hash_including({
                     key: 'key-1',
-                    fallback_keys: %w(key3-1 key4-1)
+                    fallback_keys: %w[key3-1 key4-1]
                   }),
                   a_hash_including({
                     key: 'key2-1',
-                    fallback_keys: %w(key5-1 key6-1)
+                    fallback_keys: %w[key5-1 key6-1]
                   })
                 ])
               end
@@ -1241,11 +1241,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                 is_expected.to match([
                   a_hash_including({
                     key: 'key-1',
-                    fallback_keys: %w(key3-1 key4-1)
+                    fallback_keys: %w[key3-1 key4-1]
                   }),
                   a_hash_including({
                     key: 'key2-1',
-                    fallback_keys: %w(key5-1 key6-1)
+                    fallback_keys: %w[key5-1 key6-1]
                   })
                 ])
               end
@@ -1320,7 +1320,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         allow(build).to receive(:options).and_return({
           cache: [{
             key: "key1",
-            fallback_keys: %w(key2)
+            fallback_keys: %w[key2]
           }]
         })
       end
@@ -2951,7 +2951,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when runner is assigned to build' do
-      let(:runner) { create(:ci_runner, description: 'description', tag_list: %w(docker linux)) }
+      let(:runner) { create(:ci_runner, description: 'description', tag_list: %w[docker linux]) }
 
       before do
         build.update!(runner: runner)
@@ -3952,8 +3952,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when have different tags' do
-      let(:build_tag_list) { %w(A B) }
-      let(:tag_list) { %w(C D) }
+      let(:build_tag_list) { %w[A B] }
+      let(:tag_list) { %w[C D] }
 
       it "does not match a build" do
         is_expected.not_to contain_exactly(build)
@@ -3961,8 +3961,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when have a subset of tags' do
-      let(:build_tag_list) { %w(A B) }
-      let(:tag_list) { %w(A B C D) }
+      let(:build_tag_list) { %w[A B] }
+      let(:tag_list) { %w[A B C D] }
 
       it "does match a build" do
         is_expected.to contain_exactly(build)
@@ -3971,7 +3971,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build does not have tags' do
       let(:build_tag_list) { [] }
-      let(:tag_list) { %w(C D) }
+      let(:tag_list) { %w[C D] }
 
       it "does match a build" do
         is_expected.to contain_exactly(build)
@@ -3979,8 +3979,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when does not have a subset of tags' do
-      let(:build_tag_list) { %w(A B C) }
-      let(:tag_list) { %w(C D) }
+      let(:build_tag_list) { %w[A B C] }
+      let(:tag_list) { %w[C D] }
 
       it "does not match a build" do
         is_expected.not_to contain_exactly(build)
@@ -3998,7 +3998,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when does have tags' do
-      let(:tag_list) { %w(A B) }
+      let(:tag_list) { %w[A B] }
 
       it "does match a build" do
         is_expected.to contain_exactly(build)
@@ -4676,7 +4676,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#invalid_dependencies' do
     let!(:pre_stage_job_valid) { create(:ci_build, :manual, pipeline: pipeline, name: 'test1', stage_idx: 0) }
     let!(:pre_stage_job_invalid) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
-    let!(:job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
+    let!(:job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w[test1 test2] }) }
 
     context 'when pipeline is locked' do
       before do

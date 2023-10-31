@@ -988,7 +988,7 @@ RSpec.describe Integration, feature_category: :integrations do
     subject { described_class.available_integration_names }
 
     before do
-      allow(described_class).to receive(:integration_names).and_return(%w(foo))
+      allow(described_class).to receive(:integration_names).and_return(%w[foo])
       allow(described_class).to receive(:project_specific_integration_names).and_return(['bar'])
       allow(described_class).to receive(:dev_integration_names).and_return(['baz'])
     end

@@ -1090,7 +1090,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     it 'returns affected file paths' do
-      expect(subject.modified_paths).to eq(%w{foo bar baz})
+      expect(subject.modified_paths).to eq(%w[foo bar baz])
     end
 
     context "when fallback_on_overflow is true" do

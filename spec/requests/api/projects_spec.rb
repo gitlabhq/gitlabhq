@@ -2783,10 +2783,20 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['shared_with_groups'][0]['expires_at']).to eq(expires_at.to_s)
       end
 
-      it 'returns a project by path name' do
-        get api(path, user)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['name']).to eq(project.name)
+      context 'when path name is specified' do
+        it 'returns a project' do
+          get api("/projects/#{CGI.escape(project.full_path)}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq(project.name)
+        end
+
+        it 'returns a project using case-insensitive search' do
+          get api("/projects/#{CGI.escape(project.full_path.swapcase)}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq(project.name)
+        end
       end
 
       context 'when a project is moved' do

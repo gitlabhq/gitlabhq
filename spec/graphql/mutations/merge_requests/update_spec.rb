@@ -153,20 +153,6 @@ RSpec.describe Mutations::MergeRequests::Update, feature_category: :team_plannin
 
     subject(:ready) { mutation.ready?(**arguments) }
 
-    context 'when required arguments are not provided' do
-      let(:arguments) { {} }
-
-      it 'raises an argument error' do
-        expect { subject }.to raise_error(ArgumentError, 'Arguments must be provided: projectPath, iid')
-      end
-    end
-
-    context 'when required arguments are provided' do
-      it 'returns true' do
-        expect(subject).to eq(true)
-      end
-    end
-
     context 'when timeEstimate is provided' do
       let(:extra_args) { { time_estimate: time_estimate } }
 

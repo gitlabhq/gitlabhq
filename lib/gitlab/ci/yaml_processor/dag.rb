@@ -24,6 +24,8 @@ module Gitlab
         def tsort_each_child(node, &block)
           return unless @nodes[node]
 
+          raise TSort::Cyclic, /topological sort failed/ if @nodes[node].include?(node)
+
           @nodes[node].each(&block)
         end
 

@@ -61,7 +61,7 @@ RSpec.describe Packages::Tag, type: :model, feature_category: :package_registry 
     end
 
     context 'with multiple names' do
-      let(:name) { %w(tag1 tag3) }
+      let(:name) { %w[tag1 tag3] }
 
       it { is_expected.to contain_exactly(tag1, tag3) }
     end

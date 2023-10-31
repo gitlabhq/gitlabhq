@@ -13,7 +13,7 @@ RSpec.describe DiffViewer::Base do
     Class.new(described_class) do
       include DiffViewer::ServerSide
 
-      self.extensions = %w(jpg)
+      self.extensions = %w[jpg]
       self.binary = true
       self.collapse_limit = 1.megabyte
       self.size_limit = 5.megabytes
@@ -55,7 +55,7 @@ RSpec.describe DiffViewer::Base do
 
       before do
         allow(diff_file).to receive(:renamed_file?).and_return(true)
-        viewer_class.extensions = %w(notjpg)
+        viewer_class.extensions = %w[notjpg]
       end
 
       it 'returns false' do

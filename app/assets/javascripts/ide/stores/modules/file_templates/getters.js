@@ -1,9 +1,10 @@
 import { __ } from '~/locale';
+import { DEFAULT_CI_CONFIG_PATH } from '~/lib/utils/constants';
 import { leftSidebarViews } from '../../../constants';
 
 export const templateTypes = () => [
   {
-    name: '.gitlab-ci.yml',
+    name: DEFAULT_CI_CONFIG_PATH,
     key: 'gitlab_ci_ymls',
   },
   {

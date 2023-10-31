@@ -3434,6 +3434,23 @@ module Gitlab
           end
 
           it_behaves_like 'returns errors', 'The pipeline has circular dependencies'
+
+          context 'when a job has a self-dependency' do
+            let(:config) do
+              <<~YAML
+              job_0:
+                stage: test
+                script: build
+
+              job:
+                stage: test
+                script: build
+                needs: [job_0, job]
+              YAML
+            end
+
+            it_behaves_like 'returns errors', 'The pipeline has circular dependencies'
+          end
         end
       end
 

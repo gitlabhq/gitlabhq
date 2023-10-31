@@ -8,17 +8,14 @@ import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
-import {
-  EDITOR_CODE_INSTANCE_FN,
-  EDITOR_DIFF_INSTANCE_FN,
-  EXTENSION_CI_SCHEMA_FILE_NAME_MATCH,
-} from '~/editor/constants';
+import { EDITOR_CODE_INSTANCE_FN, EDITOR_DIFF_INSTANCE_FN } from '~/editor/constants';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
 import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
 import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_ext';
 import SourceEditor from '~/editor/source_editor';
 import RepoEditor from '~/ide/components/repo_editor.vue';
 import { leftSidebarViews, FILE_VIEW_MODE_PREVIEW, viewerTypes } from '~/ide/constants';
+import { DEFAULT_CI_CONFIG_PATH } from '~/lib/utils/constants';
 import ModelManager from '~/ide/lib/common/model_manager';
 import service from '~/ide/services';
 import { createStoreOptions } from '~/ide/stores';
@@ -56,7 +53,7 @@ const dummyFile = {
     active: true,
   },
   ciConfig: {
-    ...file(EXTENSION_CI_SCHEMA_FILE_NAME_MATCH),
+    ...file(DEFAULT_CI_CONFIG_PATH),
     content: '',
     tempFile: true,
     active: true,

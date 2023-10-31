@@ -1136,24 +1136,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
 
     describe 'read project settings' do
-      %i(
+      %i[
         show_default_award_emojis
         show_default_award_emojis?
         warn_about_potentially_unwanted_characters
         warn_about_potentially_unwanted_characters?
         enforce_auth_checks_on_uploads
         enforce_auth_checks_on_uploads?
-      ).each do |method|
+      ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).allow_nil }
       end
     end
 
     describe 'write project settings' do
-      %i(
+      %i[
         show_default_award_emojis=
         warn_about_potentially_unwanted_characters=
         enforce_auth_checks_on_uploads=
-      ).each do |method|
+      ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(:args).allow_nil }
       end
     end
@@ -1177,12 +1177,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       let(:exclude_attributes) do
         # Skip attributes defined in EE code
-        %w(
+        %w[
           merge_pipelines_enabled
           merge_trains_enabled
           auto_rollback_enabled
           merge_trains_skip_train_allowed
-        )
+        ]
       end
     end
 
@@ -4287,7 +4287,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when project has a deployment platform' do
-        let(:platform_variables) { %w(platform variables) }
+        let(:platform_variables) { %w[platform variables] }
         let(:deployment_platform) { double }
 
         before do

@@ -44,8 +44,8 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
       context 'with valid JSON schema' do
         let(:attribute_mapping) do
           {
-            title: { path: %w(a b c), type: 'string', label: 'Title' },
-            description: { path: %w(a), type: 'string' }
+            title: { path: %w[a b c], type: 'string', label: 'Title' },
+            description: { path: %w[a], type: 'string' }
           }
         end
 
@@ -78,7 +78,7 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
 
         context 'when property has extra attributes' do
           let(:attribute_mapping) do
-            { title: { path: %w(a b c), type: 'string', extra: 'property' } }
+            { title: { path: %w[a b c], type: 'string', extra: 'property' } }
           end
 
           it_behaves_like 'is invalid record'

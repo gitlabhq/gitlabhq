@@ -743,7 +743,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe "#merged_branch_names", :clean_gitlab_redis_cache do
     subject { repository.merged_branch_names(branch_names) }
 
-    let(:branch_names) { %w(test beep boop definitely_merged) }
+    let(:branch_names) { %w[test beep boop definitely_merged] }
     let(:already_merged) { Set.new(["definitely_merged"]) }
 
     let(:write_hash) do
@@ -1621,16 +1621,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     where(:branch_names, :tag_names, :result) do
       nil | nil | false
-      %w() | %w() | false
-      %w(a b) | %w() | false
-      %w() | %w(c d) | false
-      %w(a b) | %w(c d) | false
-      %w(a/b) | %w(c/d) | false
-      %w(a b) | %w(c d a/z) | true
-      %w(a b c/z) | %w(c d) | true
-      %w(a/b/z) | %w(a/b) | false # we only consider refs ambiguous before the first slash
-      %w(a/b/z) | %w(a/b a) | true
-      %w(ab) | %w(abc/d a b) | false
+      %w[] | %w[] | false
+      %w[a b] | %w[] | false
+      %w[] | %w[c d] | false
+      %w[a b] | %w[c d] | false
+      %w[a/b] | %w[c/d] | false
+      %w[a b] | %w[c d a/z] | true
+      %w[a b c/z] | %w[c d] | true
+      %w[a/b/z] | %w[a/b] | false # we only consider refs ambiguous before the first slash
+      %w[a/b/z] | %w[a/b a] | true
+      %w[ab] | %w[abc/d a b] | false
     end
 
     with_them do
@@ -2596,7 +2596,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_branches_cache' do
     it 'expires the cache' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
+        .with(%i[branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?])
         .and_call_original
 
       expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
@@ -2630,7 +2630,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_tags_cache' do
     it 'expires the cache' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(tag_names tag_count has_ambiguous_refs?))
+        .with(%i[tag_names tag_count has_ambiguous_refs?])
         .and_call_original
 
       repository.expire_tags_cache
@@ -2889,7 +2889,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_statistics_caches' do
     it 'expires the caches' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(size recent_objects_size commit_count))
+        .with(%i[size recent_objects_size commit_count])
 
       repository.expire_statistics_caches
     end
@@ -3090,13 +3090,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(readme_path license_blob license_gitaly))
+        .with(%i[readme_path license_blob license_gitaly])
 
       expect(repository).to receive(:readme_path)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_gitaly)
 
-      repository.refresh_method_caches(%i(readme license))
+      repository.refresh_method_caches(%i[readme license])
     end
   end
 

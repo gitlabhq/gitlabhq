@@ -13204,8 +13204,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="abusereportpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="abusereportpermissionsreadabusereport"></a>`readAbuseReport` | [`Boolean!`](#boolean) | Indicates the user can perform `read_abuse_report` on this resource. |
+| <a id="abusereportpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="abusereportpermissionsreadabusereport"></a>`readAbuseReport` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_abuse_report` on this resource. |
 
 ### `AccessLevel`
 
@@ -15893,9 +15893,9 @@ A custom emoji uploaded by user.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="customemojipermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `create_custom_emoji` on this resource. |
-| <a id="customemojipermissionsdeletecustomemoji"></a>`deleteCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_custom_emoji` on this resource. |
-| <a id="customemojipermissionsreadcustomemoji"></a>`readCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `read_custom_emoji` on this resource. |
+| <a id="customemojipermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
+| <a id="customemojipermissionsdeletecustomemoji"></a>`deleteCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_custom_emoji` on this resource. |
+| <a id="customemojipermissionsreadcustomemoji"></a>`readCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_custom_emoji` on this resource. |
 
 ### `CustomerRelationsContact`
 
@@ -16132,7 +16132,7 @@ Check permissions for the current user on site profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="dastsiteprofilepermissionscreateondemanddastscan"></a>`createOnDemandDastScan` | [`Boolean!`](#boolean) | Indicates the user can perform `create_on_demand_dast_scan` on this resource. |
+| <a id="dastsiteprofilepermissionscreateondemanddastscan"></a>`createOnDemandDastScan` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_on_demand_dast_scan` on this resource. |
 
 ### `DastSiteValidation`
 
@@ -16357,8 +16357,8 @@ Approval summary of the deployment.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="deploymentpermissionsapprovedeployment"></a>`approveDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `approve_deployment` on this resource. This field can only be resolved for one environment in any single request. |
-| <a id="deploymentpermissionsdestroydeployment"></a>`destroyDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_deployment` on this resource. |
-| <a id="deploymentpermissionsupdatedeployment"></a>`updateDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `update_deployment` on this resource. |
+| <a id="deploymentpermissionsdestroydeployment"></a>`destroyDeployment` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_deployment` on this resource. |
+| <a id="deploymentpermissionsupdatedeployment"></a>`updateDeployment` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_deployment` on this resource. |
 
 ### `DeploymentTag`
 
@@ -17006,9 +17006,9 @@ Returns [`Deployment`](#deployment).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="environmentpermissionsdestroyenvironment"></a>`destroyEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_environment` on this resource. |
-| <a id="environmentpermissionsstopenvironment"></a>`stopEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `stop_environment` on this resource. |
-| <a id="environmentpermissionsupdateenvironment"></a>`updateEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `update_environment` on this resource. |
+| <a id="environmentpermissionsdestroyenvironment"></a>`destroyEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_environment` on this resource. |
+| <a id="environmentpermissionsstopenvironment"></a>`stopEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `stop_environment` on this resource. |
+| <a id="environmentpermissionsupdateenvironment"></a>`updateEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_environment` on this resource. |
 
 ### `Epic`
 
@@ -17483,14 +17483,14 @@ Check permissions for the current user on an epic.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicpermissionsadminepic"></a>`adminEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_epic` on this resource. |
-| <a id="epicpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
-| <a id="epicpermissionscreateepic"></a>`createEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `create_epic` on this resource. |
-| <a id="epicpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="epicpermissionsdestroyepic"></a>`destroyEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_epic` on this resource. |
-| <a id="epicpermissionsreadepic"></a>`readEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `read_epic` on this resource. |
-| <a id="epicpermissionsreadepiciid"></a>`readEpicIid` | [`Boolean!`](#boolean) | Indicates the user can perform `read_epic_iid` on this resource. |
-| <a id="epicpermissionsupdateepic"></a>`updateEpic` | [`Boolean!`](#boolean) | Indicates the user can perform `update_epic` on this resource. |
+| <a id="epicpermissionsadminepic"></a>`adminEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_epic` on this resource. |
+| <a id="epicpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `award_emoji` on this resource. |
+| <a id="epicpermissionscreateepic"></a>`createEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_epic` on this resource. |
+| <a id="epicpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="epicpermissionsdestroyepic"></a>`destroyEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_epic` on this resource. |
+| <a id="epicpermissionsreadepic"></a>`readEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic` on this resource. |
+| <a id="epicpermissionsreadepiciid"></a>`readEpicIid` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic_iid` on this resource. |
+| <a id="epicpermissionsupdateepic"></a>`updateEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_epic` on this resource. |
 
 ### `EscalationPolicyType`
 
@@ -19188,9 +19188,9 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `create_custom_emoji` on this resource. |
-| <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | Indicates the user can perform `create_projects` on this resource. |
-| <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | Indicates the user can perform `read_group` on this resource. |
+| <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
+| <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |
+| <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_group` on this resource. |
 
 ### `GroupReleaseStats`
 
@@ -19778,15 +19778,15 @@ Check permissions for the current user on a issue.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="issuepermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_issue` on this resource. |
-| <a id="issuepermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `create_design` on this resource. |
-| <a id="issuepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="issuepermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_design` on this resource. |
-| <a id="issuepermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource. |
-| <a id="issuepermissionsreadissue"></a>`readIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `read_issue` on this resource. |
-| <a id="issuepermissionsreopenissue"></a>`reopenIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `reopen_issue` on this resource. |
-| <a id="issuepermissionsupdatedesign"></a>`updateDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `update_design` on this resource. |
-| <a id="issuepermissionsupdateissue"></a>`updateIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `update_issue` on this resource. |
+| <a id="issuepermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
+| <a id="issuepermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_design` on this resource. |
+| <a id="issuepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="issuepermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_design` on this resource. |
+| <a id="issuepermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_design` on this resource. |
+| <a id="issuepermissionsreadissue"></a>`readIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_issue` on this resource. |
+| <a id="issuepermissionsreopenissue"></a>`reopenIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `reopen_issue` on this resource. |
+| <a id="issuepermissionsupdatedesign"></a>`updateDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_design` on this resource. |
+| <a id="issuepermissionsupdateissue"></a>`updateIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_issue` on this resource. |
 
 ### `IssueStatusCountsType`
 
@@ -19952,9 +19952,9 @@ Represents the Geo replication and verification state of a job_artifact.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="jobpermissionsreadbuild"></a>`readBuild` | [`Boolean!`](#boolean) | Indicates the user can perform `read_build` on this resource. |
-| <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | Indicates the user can perform `read_job_artifacts` on this resource. |
-| <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | Indicates the user can perform `update_build` on this resource. |
+| <a id="jobpermissionsreadbuild"></a>`readBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_build` on this resource. |
+| <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_job_artifacts` on this resource. |
+| <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_build` on this resource. |
 
 ### `Kas`
 
@@ -21246,16 +21246,16 @@ Check permissions for the current user on a merge request.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestpermissionsadminmergerequest"></a>`adminMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_merge_request` on this resource. |
-| <a id="mergerequestpermissionscanapprove"></a>`canApprove` | [`Boolean!`](#boolean) | Indicates the user can perform `can_approve` on this resource. |
-| <a id="mergerequestpermissionscanmerge"></a>`canMerge` | [`Boolean!`](#boolean) | Indicates the user can perform `can_merge` on this resource. |
-| <a id="mergerequestpermissionscherrypickoncurrentmergerequest"></a>`cherryPickOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `cherry_pick_on_current_merge_request` on this resource. |
-| <a id="mergerequestpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="mergerequestpermissionspushtosourcebranch"></a>`pushToSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `push_to_source_branch` on this resource. |
-| <a id="mergerequestpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource. |
-| <a id="mergerequestpermissionsremovesourcebranch"></a>`removeSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_source_branch` on this resource. |
-| <a id="mergerequestpermissionsrevertoncurrentmergerequest"></a>`revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `revert_on_current_merge_request` on this resource. |
-| <a id="mergerequestpermissionsupdatemergerequest"></a>`updateMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `update_merge_request` on this resource. |
+| <a id="mergerequestpermissionsadminmergerequest"></a>`adminMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_merge_request` on this resource. |
+| <a id="mergerequestpermissionscanapprove"></a>`canApprove` | [`Boolean!`](#boolean) | If `true`, the user can perform `can_approve` on this resource. |
+| <a id="mergerequestpermissionscanmerge"></a>`canMerge` | [`Boolean!`](#boolean) | If `true`, the user can perform `can_merge` on this resource. |
+| <a id="mergerequestpermissionscherrypickoncurrentmergerequest"></a>`cherryPickOnCurrentMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `cherry_pick_on_current_merge_request` on this resource. |
+| <a id="mergerequestpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="mergerequestpermissionspushtosourcebranch"></a>`pushToSourceBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_to_source_branch` on this resource. |
+| <a id="mergerequestpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_merge_request` on this resource. |
+| <a id="mergerequestpermissionsremovesourcebranch"></a>`removeSourceBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_source_branch` on this resource. |
+| <a id="mergerequestpermissionsrevertoncurrentmergerequest"></a>`revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `revert_on_current_merge_request` on this resource. |
+| <a id="mergerequestpermissionsupdatemergerequest"></a>`updateMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_merge_request` on this resource. |
 
 ### `MergeRequestReviewLlmSummary`
 
@@ -21901,12 +21901,12 @@ Represents the network policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="notepermissionsadminnote"></a>`adminNote` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_note` on this resource. |
-| <a id="notepermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
-| <a id="notepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="notepermissionsreadnote"></a>`readNote` | [`Boolean!`](#boolean) | Indicates the user can perform `read_note` on this resource. |
-| <a id="notepermissionsrepositionnote"></a>`repositionNote` | [`Boolean!`](#boolean) | Indicates the user can perform `reposition_note` on this resource. |
-| <a id="notepermissionsresolvenote"></a>`resolveNote` | [`Boolean!`](#boolean) | Indicates the user can perform `resolve_note` on this resource. |
+| <a id="notepermissionsadminnote"></a>`adminNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_note` on this resource. |
+| <a id="notepermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `award_emoji` on this resource. |
+| <a id="notepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="notepermissionsreadnote"></a>`readNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_note` on this resource. |
+| <a id="notepermissionsrepositionnote"></a>`repositionNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `reposition_note` on this resource. |
+| <a id="notepermissionsresolvenote"></a>`resolveNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `resolve_note` on this resource. |
 
 ### `NugetDependencyLinkMetadata`
 
@@ -22579,9 +22579,9 @@ Represents pipeline counts for the project.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinepermissionsadminpipeline"></a>`adminPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_pipeline` on this resource. |
-| <a id="pipelinepermissionsdestroypipeline"></a>`destroyPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pipeline` on this resource. |
-| <a id="pipelinepermissionsupdatepipeline"></a>`updatePipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline` on this resource. |
+| <a id="pipelinepermissionsadminpipeline"></a>`adminPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_pipeline` on this resource. |
+| <a id="pipelinepermissionsdestroypipeline"></a>`destroyPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_pipeline` on this resource. |
+| <a id="pipelinepermissionsupdatepipeline"></a>`updatePipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pipeline` on this resource. |
 
 ### `PipelineSchedule`
 
@@ -22617,10 +22617,10 @@ Represents a pipeline schedule.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelineschedulepermissionsadminpipelineschedule"></a>`adminPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_pipeline_schedule` on this resource. |
-| <a id="pipelineschedulepermissionsplaypipelineschedule"></a>`playPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `play_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionsadminpipelineschedule"></a>`adminPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionsplaypipelineschedule"></a>`playPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `play_pipeline_schedule` on this resource. |
 | <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 15.9. Use admin_pipeline_schedule permission to determine if the user can take ownership of a pipeline schedule. |
-| <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pipeline_schedule` on this resource. |
 
 ### `PipelineScheduleVariable`
 
@@ -24303,50 +24303,50 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectpermissionsadminoperations"></a>`adminOperations` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_operations` on this resource. |
-| <a id="projectpermissionsadminpathlocks"></a>`adminPathLocks` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_path_locks` on this resource. |
-| <a id="projectpermissionsadminproject"></a>`adminProject` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_project` on this resource. |
-| <a id="projectpermissionsadminremotemirror"></a>`adminRemoteMirror` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_remote_mirror` on this resource. |
-| <a id="projectpermissionsadminwiki"></a>`adminWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_wiki` on this resource. |
-| <a id="projectpermissionsarchiveproject"></a>`archiveProject` | [`Boolean!`](#boolean) | Indicates the user can perform `archive_project` on this resource. |
-| <a id="projectpermissionschangenamespace"></a>`changeNamespace` | [`Boolean!`](#boolean) | Indicates the user can perform `change_namespace` on this resource. |
-| <a id="projectpermissionschangevisibilitylevel"></a>`changeVisibilityLevel` | [`Boolean!`](#boolean) | Indicates the user can perform `change_visibility_level` on this resource. |
-| <a id="projectpermissionscreatedeployment"></a>`createDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `create_deployment` on this resource. |
-| <a id="projectpermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `create_design` on this resource. |
-| <a id="projectpermissionscreateissue"></a>`createIssue` | [`Boolean!`](#boolean) | Indicates the user can perform `create_issue` on this resource. |
-| <a id="projectpermissionscreatelabel"></a>`createLabel` | [`Boolean!`](#boolean) | Indicates the user can perform `create_label` on this resource. |
-| <a id="projectpermissionscreatemergerequestfrom"></a>`createMergeRequestFrom` | [`Boolean!`](#boolean) | Indicates the user can perform `create_merge_request_from` on this resource. |
-| <a id="projectpermissionscreatemergerequestin"></a>`createMergeRequestIn` | [`Boolean!`](#boolean) | Indicates the user can perform `create_merge_request_in` on this resource. |
-| <a id="projectpermissionscreatepages"></a>`createPages` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pages` on this resource. |
-| <a id="projectpermissionscreatepipeline"></a>`createPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pipeline` on this resource. |
-| <a id="projectpermissionscreatepipelineschedule"></a>`createPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `create_pipeline_schedule` on this resource. |
-| <a id="projectpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `create_snippet` on this resource. |
-| <a id="projectpermissionscreatewiki"></a>`createWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `create_wiki` on this resource. |
-| <a id="projectpermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_design` on this resource. |
-| <a id="projectpermissionsdestroypages"></a>`destroyPages` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pages` on this resource. |
-| <a id="projectpermissionsdestroywiki"></a>`destroyWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_wiki` on this resource. |
-| <a id="projectpermissionsdownloadcode"></a>`downloadCode` | [`Boolean!`](#boolean) | Indicates the user can perform `download_code` on this resource. |
-| <a id="projectpermissionsdownloadwikicode"></a>`downloadWikiCode` | [`Boolean!`](#boolean) | Indicates the user can perform `download_wiki_code` on this resource. |
-| <a id="projectpermissionsforkproject"></a>`forkProject` | [`Boolean!`](#boolean) | Indicates the user can perform `fork_project` on this resource. |
-| <a id="projectpermissionspushcode"></a>`pushCode` | [`Boolean!`](#boolean) | Indicates the user can perform `push_code` on this resource. |
-| <a id="projectpermissionspushtodeleteprotectedbranch"></a>`pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `push_to_delete_protected_branch` on this resource. |
-| <a id="projectpermissionsreadcommitstatus"></a>`readCommitStatus` | [`Boolean!`](#boolean) | Indicates the user can perform `read_commit_status` on this resource. |
-| <a id="projectpermissionsreadcycleanalytics"></a>`readCycleAnalytics` | [`Boolean!`](#boolean) | Indicates the user can perform `read_cycle_analytics` on this resource. |
-| <a id="projectpermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource. |
-| <a id="projectpermissionsreadenvironment"></a>`readEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `read_environment` on this resource. |
-| <a id="projectpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource. |
-| <a id="projectpermissionsreadpagescontent"></a>`readPagesContent` | [`Boolean!`](#boolean) | Indicates the user can perform `read_pages_content` on this resource. |
-| <a id="projectpermissionsreadproject"></a>`readProject` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project` on this resource. |
-| <a id="projectpermissionsreadprojectmember"></a>`readProjectMember` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project_member` on this resource. |
-| <a id="projectpermissionsreadwiki"></a>`readWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `read_wiki` on this resource. |
-| <a id="projectpermissionsremoveforkproject"></a>`removeForkProject` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_fork_project` on this resource. |
-| <a id="projectpermissionsremovepages"></a>`removePages` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_pages` on this resource. |
-| <a id="projectpermissionsremoveproject"></a>`removeProject` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_project` on this resource. |
-| <a id="projectpermissionsrenameproject"></a>`renameProject` | [`Boolean!`](#boolean) | Indicates the user can perform `rename_project` on this resource. |
-| <a id="projectpermissionsrequestaccess"></a>`requestAccess` | [`Boolean!`](#boolean) | Indicates the user can perform `request_access` on this resource. |
-| <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pages` on this resource. |
-| <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `update_wiki` on this resource. |
-| <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | Indicates the user can perform `upload_file` on this resource. |
+| <a id="projectpermissionsadminoperations"></a>`adminOperations` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_operations` on this resource. |
+| <a id="projectpermissionsadminpathlocks"></a>`adminPathLocks` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_path_locks` on this resource. |
+| <a id="projectpermissionsadminproject"></a>`adminProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_project` on this resource. |
+| <a id="projectpermissionsadminremotemirror"></a>`adminRemoteMirror` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_remote_mirror` on this resource. |
+| <a id="projectpermissionsadminwiki"></a>`adminWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_wiki` on this resource. |
+| <a id="projectpermissionsarchiveproject"></a>`archiveProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `archive_project` on this resource. |
+| <a id="projectpermissionschangenamespace"></a>`changeNamespace` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_namespace` on this resource. |
+| <a id="projectpermissionschangevisibilitylevel"></a>`changeVisibilityLevel` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_visibility_level` on this resource. |
+| <a id="projectpermissionscreatedeployment"></a>`createDeployment` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_deployment` on this resource. |
+| <a id="projectpermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_design` on this resource. |
+| <a id="projectpermissionscreateissue"></a>`createIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_issue` on this resource. |
+| <a id="projectpermissionscreatelabel"></a>`createLabel` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_label` on this resource. |
+| <a id="projectpermissionscreatemergerequestfrom"></a>`createMergeRequestFrom` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_merge_request_from` on this resource. |
+| <a id="projectpermissionscreatemergerequestin"></a>`createMergeRequestIn` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_merge_request_in` on this resource. |
+| <a id="projectpermissionscreatepages"></a>`createPages` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pages` on this resource. |
+| <a id="projectpermissionscreatepipeline"></a>`createPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pipeline` on this resource. |
+| <a id="projectpermissionscreatepipelineschedule"></a>`createPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pipeline_schedule` on this resource. |
+| <a id="projectpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_snippet` on this resource. |
+| <a id="projectpermissionscreatewiki"></a>`createWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_wiki` on this resource. |
+| <a id="projectpermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_design` on this resource. |
+| <a id="projectpermissionsdestroypages"></a>`destroyPages` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_pages` on this resource. |
+| <a id="projectpermissionsdestroywiki"></a>`destroyWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_wiki` on this resource. |
+| <a id="projectpermissionsdownloadcode"></a>`downloadCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_code` on this resource. |
+| <a id="projectpermissionsdownloadwikicode"></a>`downloadWikiCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_wiki_code` on this resource. |
+| <a id="projectpermissionsforkproject"></a>`forkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `fork_project` on this resource. |
+| <a id="projectpermissionspushcode"></a>`pushCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_code` on this resource. |
+| <a id="projectpermissionspushtodeleteprotectedbranch"></a>`pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_to_delete_protected_branch` on this resource. |
+| <a id="projectpermissionsreadcommitstatus"></a>`readCommitStatus` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_commit_status` on this resource. |
+| <a id="projectpermissionsreadcycleanalytics"></a>`readCycleAnalytics` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_cycle_analytics` on this resource. |
+| <a id="projectpermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_design` on this resource. |
+| <a id="projectpermissionsreadenvironment"></a>`readEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_environment` on this resource. |
+| <a id="projectpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_merge_request` on this resource. |
+| <a id="projectpermissionsreadpagescontent"></a>`readPagesContent` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_pages_content` on this resource. |
+| <a id="projectpermissionsreadproject"></a>`readProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project` on this resource. |
+| <a id="projectpermissionsreadprojectmember"></a>`readProjectMember` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project_member` on this resource. |
+| <a id="projectpermissionsreadwiki"></a>`readWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_wiki` on this resource. |
+| <a id="projectpermissionsremoveforkproject"></a>`removeForkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_fork_project` on this resource. |
+| <a id="projectpermissionsremovepages"></a>`removePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_pages` on this resource. |
+| <a id="projectpermissionsremoveproject"></a>`removeProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_project` on this resource. |
+| <a id="projectpermissionsrenameproject"></a>`renameProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `rename_project` on this resource. |
+| <a id="projectpermissionsrequestaccess"></a>`requestAccess` | [`Boolean!`](#boolean) | If `true`, the user can perform `request_access` on this resource. |
+| <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pages` on this resource. |
+| <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_wiki` on this resource. |
+| <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | If `true`, the user can perform `upload_file` on this resource. |
 
 ### `ProjectRepositoryRegistry`
 
@@ -25045,11 +25045,11 @@ Check permissions for the current user on a requirement.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="requirementpermissionsadminrequirement"></a>`adminRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_requirement` on this resource. |
-| <a id="requirementpermissionscreaterequirement"></a>`createRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `create_requirement` on this resource. |
-| <a id="requirementpermissionsdestroyrequirement"></a>`destroyRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_requirement` on this resource. |
-| <a id="requirementpermissionsreadrequirement"></a>`readRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `read_requirement` on this resource. |
-| <a id="requirementpermissionsupdaterequirement"></a>`updateRequirement` | [`Boolean!`](#boolean) | Indicates the user can perform `update_requirement` on this resource. |
+| <a id="requirementpermissionsadminrequirement"></a>`adminRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_requirement` on this resource. |
+| <a id="requirementpermissionscreaterequirement"></a>`createRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_requirement` on this resource. |
+| <a id="requirementpermissionsdestroyrequirement"></a>`destroyRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_requirement` on this resource. |
+| <a id="requirementpermissionsreadrequirement"></a>`readRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_requirement` on this resource. |
+| <a id="requirementpermissionsupdaterequirement"></a>`updateRequirement` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_requirement` on this resource. |
 
 ### `RequirementStatesCount`
 
@@ -25098,10 +25098,10 @@ Counts of requirements by their state.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="runnerpermissionsassignrunner"></a>`assignRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `assign_runner` on this resource. |
-| <a id="runnerpermissionsdeleterunner"></a>`deleteRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_runner` on this resource. |
-| <a id="runnerpermissionsreadrunner"></a>`readRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `read_runner` on this resource. |
-| <a id="runnerpermissionsupdaterunner"></a>`updateRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `update_runner` on this resource. |
+| <a id="runnerpermissionsassignrunner"></a>`assignRunner` | [`Boolean!`](#boolean) | If `true`, the user can perform `assign_runner` on this resource. |
+| <a id="runnerpermissionsdeleterunner"></a>`deleteRunner` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_runner` on this resource. |
+| <a id="runnerpermissionsreadrunner"></a>`readRunner` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_runner` on this resource. |
+| <a id="runnerpermissionsupdaterunner"></a>`updateRunner` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_runner` on this resource. |
 
 ### `RunnerPlatform`
 
@@ -25595,12 +25595,12 @@ Represents how the blob content should be displayed.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="snippetpermissionsadminsnippet"></a>`adminSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_snippet` on this resource. |
-| <a id="snippetpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `award_emoji` on this resource. |
-| <a id="snippetpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="snippetpermissionsreadsnippet"></a>`readSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `read_snippet` on this resource. |
-| <a id="snippetpermissionsreportsnippet"></a>`reportSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `report_snippet` on this resource. |
-| <a id="snippetpermissionsupdatesnippet"></a>`updateSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `update_snippet` on this resource. |
+| <a id="snippetpermissionsadminsnippet"></a>`adminSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_snippet` on this resource. |
+| <a id="snippetpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `award_emoji` on this resource. |
+| <a id="snippetpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="snippetpermissionsreadsnippet"></a>`readSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_snippet` on this resource. |
+| <a id="snippetpermissionsreportsnippet"></a>`reportSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `report_snippet` on this resource. |
+| <a id="snippetpermissionsupdatesnippet"></a>`updateSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_snippet` on this resource. |
 
 ### `SnippetRepositoryRegistry`
 
@@ -25985,7 +25985,7 @@ Describes an incident management timeline event.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="timelogpermissionsadmintimelog"></a>`adminTimelog` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_timelog` on this resource. |
+| <a id="timelogpermissionsadmintimelog"></a>`adminTimelog` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_timelog` on this resource. |
 
 ### `Todo`
 
@@ -26435,7 +26435,7 @@ fields relate to interactions between the two entities.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="userpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | Indicates the user can perform `create_snippet` on this resource. |
+| <a id="userpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_snippet` on this resource. |
 
 ### `UserPreferences`
 
@@ -27029,15 +27029,15 @@ Check permissions for the current user on a vulnerability.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabilitypermissionsadminvulnerability"></a>`adminVulnerability` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability` on this resource. |
-| <a id="vulnerabilitypermissionsadminvulnerabilityexternalissuelink"></a>`adminVulnerabilityExternalIssueLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability_external_issue_link` on this resource. |
-| <a id="vulnerabilitypermissionsadminvulnerabilityissuelink"></a>`adminVulnerabilityIssueLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_vulnerability_issue_link` on this resource. |
-| <a id="vulnerabilitypermissionscreatevulnerabilityexport"></a>`createVulnerabilityExport` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability_export` on this resource. |
-| <a id="vulnerabilitypermissionscreatevulnerabilityfeedback"></a>`createVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `create_vulnerability_feedback` on this resource. |
-| <a id="vulnerabilitypermissionsdestroyvulnerabilityfeedback"></a>`destroyVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_vulnerability_feedback` on this resource. |
-| <a id="vulnerabilitypermissionsreadvulnerability"></a>`readVulnerability` | [`Boolean!`](#boolean) | Indicates the user can perform `read_vulnerability` on this resource. |
-| <a id="vulnerabilitypermissionsreadvulnerabilityfeedback"></a>`readVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `read_vulnerability_feedback` on this resource. |
-| <a id="vulnerabilitypermissionsupdatevulnerabilityfeedback"></a>`updateVulnerabilityFeedback` | [`Boolean!`](#boolean) | Indicates the user can perform `update_vulnerability_feedback` on this resource. |
+| <a id="vulnerabilitypermissionsadminvulnerability"></a>`adminVulnerability` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_vulnerability` on this resource. |
+| <a id="vulnerabilitypermissionsadminvulnerabilityexternalissuelink"></a>`adminVulnerabilityExternalIssueLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_vulnerability_external_issue_link` on this resource. |
+| <a id="vulnerabilitypermissionsadminvulnerabilityissuelink"></a>`adminVulnerabilityIssueLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_vulnerability_issue_link` on this resource. |
+| <a id="vulnerabilitypermissionscreatevulnerabilityexport"></a>`createVulnerabilityExport` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_vulnerability_export` on this resource. |
+| <a id="vulnerabilitypermissionscreatevulnerabilityfeedback"></a>`createVulnerabilityFeedback` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_vulnerability_feedback` on this resource. |
+| <a id="vulnerabilitypermissionsdestroyvulnerabilityfeedback"></a>`destroyVulnerabilityFeedback` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_vulnerability_feedback` on this resource. |
+| <a id="vulnerabilitypermissionsreadvulnerability"></a>`readVulnerability` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_vulnerability` on this resource. |
+| <a id="vulnerabilitypermissionsreadvulnerabilityfeedback"></a>`readVulnerabilityFeedback` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_vulnerability_feedback` on this resource. |
+| <a id="vulnerabilitypermissionsupdatevulnerabilityfeedback"></a>`updateVulnerabilityFeedback` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_vulnerability_feedback` on this resource. |
 
 ### `VulnerabilityRemediationType`
 
@@ -27230,14 +27230,14 @@ Check permissions for the current user on a work item.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitempermissionsadminparentlink"></a>`adminParentLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_parent_link` on this resource. |
-| <a id="workitempermissionsadminworkitem"></a>`adminWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_work_item` on this resource. |
-| <a id="workitempermissionsadminworkitemlink"></a>`adminWorkItemLink` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_work_item_link` on this resource. |
-| <a id="workitempermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | Indicates the user can perform `create_note` on this resource. |
-| <a id="workitempermissionsdeleteworkitem"></a>`deleteWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_work_item` on this resource. |
-| <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `read_work_item` on this resource. |
-| <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | Indicates the user can perform `set_work_item_metadata` on this resource. |
-| <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `update_work_item` on this resource. |
+| <a id="workitempermissionsadminparentlink"></a>`adminParentLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_parent_link` on this resource. |
+| <a id="workitempermissionsadminworkitem"></a>`adminWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item` on this resource. |
+| <a id="workitempermissionsadminworkitemlink"></a>`adminWorkItemLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_link` on this resource. |
+| <a id="workitempermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="workitempermissionsdeleteworkitem"></a>`deleteWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_work_item` on this resource. |
+| <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_work_item` on this resource. |
+| <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |
+| <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_work_item` on this resource. |
 
 ### `WorkItemType`
 

@@ -1930,7 +1930,6 @@ RSpec/FeatureCategory:
     - 'spec/graphql/mutations/alert_management/prometheus_integration/reset_token_spec.rb'
     - 'spec/graphql/mutations/alert_management/prometheus_integration/update_spec.rb'
     - 'spec/graphql/mutations/alert_management/update_alert_status_spec.rb'
-    - 'spec/graphql/mutations/base_mutation_spec.rb'
     - 'spec/graphql/mutations/boards/issues/issue_move_list_spec.rb'
     - 'spec/graphql/mutations/boards/lists/create_spec.rb'
     - 'spec/graphql/mutations/boards/lists/update_spec.rb'

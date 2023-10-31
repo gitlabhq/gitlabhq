@@ -897,7 +897,7 @@ module API
     def project_moved?(id, project)
       return false unless Feature.enabled?(:api_redirect_moved_projects)
       return false unless id.is_a?(String) && id.include?('/')
-      return false if project.blank? || id == project.full_path
+      return false if project.blank? || project.full_path.casecmp?(id)
       return false unless params[:id] == id
 
       true

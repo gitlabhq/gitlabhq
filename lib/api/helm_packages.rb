@@ -75,6 +75,8 @@ module API
           requires :file_name, type: String, desc: 'Helm package file name', documentation: { example: 'mychart' }
         end
         get ":channel/charts/:file_name.tgz" do
+          not_found!("Format #{params[:format]}") unless params[:format].nil?
+
           project = authorized_user_project(action: :read_package)
           authorize_read_package!(project)
 

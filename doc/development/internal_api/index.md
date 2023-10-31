@@ -1215,7 +1215,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
 
-The group SCIM API implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). As this API is for
+The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.
 
 To use this API, enable [Group SSO](../../user/group/saml_sso/index.md) for the group.
@@ -1452,7 +1452,7 @@ Returns an empty response with a `204` status code if successful.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378599) in GitLab 15.8.
 
-The Instance SCIM API implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). As this API is for
+The instance SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/application/Users` and `/application/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.
 
 To use this API, enable [SAML SSO](../../integration/saml.md) for the instance.

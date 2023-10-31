@@ -21,7 +21,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
 
   describe 'scopes' do
     describe '.ordered_by_name' do
-      let(:names) { %w(agent-d agent-b agent-a agent-c) }
+      let(:names) { %w[agent-d agent-b agent-a agent-c] }
 
       subject { described_class.ordered_by_name }
 

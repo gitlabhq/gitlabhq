@@ -45,7 +45,7 @@ RSpec.describe WebIdeTerminal do
       end
 
       it 'returns services aliases' do
-        expect(subject.services).to eq %w(postgres docker)
+        expect(subject.services).to eq %w[postgres docker]
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe WebIdeTerminal do
       end
 
       it 'returns all aliases' do
-        expect(subject.services).to eq %w(postgres docker ruby)
+        expect(subject.services).to eq %w[postgres docker ruby]
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe WebIdeTerminal do
 
     context 'when no image nor services' do
       let(:config) do
-        { script: %w(echo) }
+        { script: %w[echo] }
       end
 
       it 'returns an empty array' do

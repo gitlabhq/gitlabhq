@@ -16,7 +16,7 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
 
   before do
     # Make sure we never actually spawn any new processes in a unit test.
-    %i(spawn fork detach).each { |m| allow(Process).to receive(m) }
+    %i[spawn fork detach].each { |m| allow(Process).to receive(m) }
     # We do not want this to have knock-on effects on the test process.
     allow(Gitlab::ProcessManagement).to receive(:modify_signals)
 
@@ -33,7 +33,7 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
     FileUtils.rm_rf(metrics_dir, secure: true)
   end
 
-  %w(puma sidekiq).each do |target|
+  %w[puma sidekiq].each do |target|
     context "when targeting #{target}" do
       describe '.fork' do
         context 'when in parent process' do

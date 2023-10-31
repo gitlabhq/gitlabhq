@@ -772,7 +772,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'when runner has tags' do
-      let(:tag_list) { %w(bb cc) }
+      let(:tag_list) { %w[bb cc] }
 
       shared_examples 'tagged build picker' do
         it 'can handle build with matching tags' do

@@ -176,7 +176,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
   describe '.reactive_cache_worker_finder' do
     context 'with default reactive_cache_worker_finder' do
-      let(:args) { %w(other args) }
+      let(:args) { %w[other args] }
 
       before do
         allow(instance.class).to receive(:find_by).with(id: instance.id)
@@ -192,7 +192,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
 
     context 'with custom reactive_cache_worker_finder' do
-      let(:args) { %w(arg1 arg2) }
+      let(:args) { %w[arg1 arg2] }
       let(:instance) { custom_finder_cache_test.new(666, &calculation) }
 
       let(:custom_finder_cache_test) do

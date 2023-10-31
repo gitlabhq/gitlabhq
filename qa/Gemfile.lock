@@ -246,7 +246,7 @@ GEM
     rails-html-sanitizer (1.5.0)
       loofah (~> 2.19, >= 2.19.1)
     rainbow (3.1.1)
-    rake (13.0.6)
+    rake (13.1.0)
     regexp_parser (2.1.1)
     representable (3.2.0)
       declarative (< 0.1.0)
@@ -362,7 +362,7 @@ DEPENDENCIES
   parallel_tests (~> 4.2, >= 4.2.1)
   pry-byebug (~> 3.10.1)
   rainbow (~> 3.1.1)
-  rake (~> 13, >= 13.0.6)
+  rake (~> 13, >= 13.1.0)
   rest-client (~> 2.1.0)
   rotp (~> 6.3.0)
   rspec (~> 3.12)
@@ -377,4 +377,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.8)
 
 BUNDLED WITH
-   2.4.20
+   2.4.21

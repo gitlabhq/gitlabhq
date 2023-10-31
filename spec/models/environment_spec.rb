@@ -1361,7 +1361,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     context 'reactive cache has pod data' do
-      let(:cache_data) { Hash(pods: %w(pod1 pod2)) }
+      let(:cache_data) { Hash(pods: %w[pod1 pod2]) }
 
       before do
         stub_reactive_cache(environment, cache_data)
@@ -1390,9 +1390,9 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
     it 'returns cache data from the deployment platform' do
       expect(environment.deployment_platform).to receive(:calculate_reactive_cache_for)
-        .with(environment).and_return(pods: %w(pod1 pod2))
+        .with(environment).and_return(pods: %w[pod1 pod2])
 
-      is_expected.to eq(pods: %w(pod1 pod2))
+      is_expected.to eq(pods: %w[pod1 pod2])
     end
 
     context 'environment does not have terminals available' do
@@ -1863,8 +1863,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     context 'cached rollout status is present' do
-      let(:pods) { %w(pod1 pod2) }
-      let(:deployments) { %w(deployment1 deployment2) }
+      let(:pods) { %w[pod1 pod2] }
+      let(:deployments) { %w[deployment1 deployment2] }
 
       before do
         stub_reactive_cache(environment, pods: pods, deployments: deployments)

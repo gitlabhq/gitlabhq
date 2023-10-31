@@ -102,7 +102,7 @@ RSpec.describe Awardable do
       end
 
       it "includes unused thumbs buttons by default" do
-        expect(note_without_downvote.grouped_awards.keys.sort).to eq %w(thumbsdown thumbsup)
+        expect(note_without_downvote.grouped_awards.keys.sort).to eq %w[thumbsdown thumbsup]
       end
 
       it "doesn't include unused thumbs buttons when disabled in project" do
@@ -114,7 +114,7 @@ RSpec.describe Awardable do
       it "includes unused thumbs buttons when enabled in project" do
         note_without_downvote.project.show_default_award_emojis = true
 
-        expect(note_without_downvote.grouped_awards.keys.sort).to eq %w(thumbsdown thumbsup)
+        expect(note_without_downvote.grouped_awards.keys.sort).to eq %w[thumbsdown thumbsup]
       end
 
       it "doesn't include unused thumbs buttons in summary" do
@@ -124,11 +124,11 @@ RSpec.describe Awardable do
       it "includes used thumbs buttons when disabled in project" do
         note_with_downvote.project.show_default_award_emojis = false
 
-        expect(note_with_downvote.grouped_awards.keys).to eq %w(thumbsdown)
+        expect(note_with_downvote.grouped_awards.keys).to eq %w[thumbsdown]
       end
 
       it "includes used thumbs buttons in summary" do
-        expect(note_with_downvote.grouped_awards(with_thumbs: false).keys).to eq %w(thumbsdown)
+        expect(note_with_downvote.grouped_awards(with_thumbs: false).keys).to eq %w[thumbsdown]
       end
     end
   end

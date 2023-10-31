@@ -76,7 +76,7 @@ RSpec.describe Projects::Topic do
 
   describe '#find_by_name_case_insensitive' do
     it 'returns topic with case insensitive name' do
-      %w(topic TOPIC Topic).each do |name|
+      %w[topic TOPIC Topic].each do |name|
         expect(described_class.find_by_name_case_insensitive(name)).to eq(topic)
       end
     end

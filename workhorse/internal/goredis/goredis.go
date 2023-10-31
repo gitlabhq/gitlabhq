@@ -150,17 +150,12 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 }
 
 func configureSentinel(cfg *config.RedisConfig) *redis.Client {
-	sentinels := make([]string, len(cfg.Sentinel))
-	for i := range cfg.Sentinel {
-		sentinelDetails := cfg.Sentinel[i]
-		sentinels[i] = fmt.Sprintf("%s:%s", sentinelDetails.Hostname(), sentinelDetails.Port())
-	}
-
+	sentinelPassword, sentinels := sentinelOptions(cfg)
 	client := redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:       cfg.SentinelMaster,
 		SentinelAddrs:    sentinels,
 		Password:         cfg.Password,
-		SentinelPassword: cfg.SentinelPassword,
+		SentinelPassword: sentinelPassword,
 		DB:               getOrDefault(cfg.DB, 0),
 
 		PoolSize:        getOrDefault(cfg.MaxActive, defaultMaxActive),
@@ -176,6 +171,25 @@ func configureSentinel(cfg *config.RedisConfig) *redis.Client {
 	client.AddHook(sentinelInstrumentationHook{})
 
 	return client
+}
+
+// sentinelOptions extracts the sentinel password and addresses in <host>:<port> format
+// the order of priority for the passwords is: SentinelPassword -> first password-in-url
+func sentinelOptions(cfg *config.RedisConfig) (string, []string) {
+	sentinels := make([]string, len(cfg.Sentinel))
+	sentinelPassword := cfg.SentinelPassword
+
+	for i := range cfg.Sentinel {
+		sentinelDetails := cfg.Sentinel[i]
+		sentinels[i] = fmt.Sprintf("%s:%s", sentinelDetails.Hostname(), sentinelDetails.Port())
+
+		if pw, exist := sentinelDetails.User.Password(); exist && len(sentinelPassword) == 0 {
+			// sets password using the first non-empty password
+			sentinelPassword = pw
+		}
+	}
+
+	return sentinelPassword, sentinels
 }
 
 func getOrDefault(ptr *int, val int) int {
