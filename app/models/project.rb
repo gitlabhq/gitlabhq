@@ -1444,12 +1444,10 @@ class Project < ApplicationRecord
   end
 
   def build_or_assign_import_data(data: nil, credentials: nil)
-    return if data.nil? && credentials.nil?
-
     project_import_data = import_data || build_import_data
 
-    project_import_data.merge_data(data.to_h)
-    project_import_data.merge_credentials(credentials.to_h)
+    project_import_data.merge_data(data.to_h) if data
+    project_import_data.merge_credentials(credentials.to_h) if credentials
 
     project_import_data
   end

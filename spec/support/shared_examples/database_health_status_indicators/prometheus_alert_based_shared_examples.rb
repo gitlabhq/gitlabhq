@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'Prometheus Alert based health indicator' do
   let(:schema) { :main }
-  let(:connection) { Gitlab::Database.database_base_models[schema].connection }
+  let(:connection) { Gitlab::Database.database_base_models_with_gitlab_shared[schema].connection }
 
   around do |example|
     Gitlab::Database::SharedModel.using_connection(connection) do
@@ -124,7 +124,7 @@ RSpec.shared_examples 'Prometheus Alert based health indicator' do
       end
     end
 
-    Gitlab::Database.database_base_models.each do |database_base_model, connection|
+    Gitlab::Database.database_base_models_with_gitlab_shared.each do |database_base_model, connection|
       next unless connection.present?
 
       it_behaves_like 'Patroni Apdex Evaluator', database_base_model.to_sym

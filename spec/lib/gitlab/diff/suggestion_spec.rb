@@ -5,10 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Diff::Suggestion do
   shared_examples 'correct suggestion raw content' do
     it 'returns correct raw data' do
-      expect(suggestion.to_hash).to include(from_content: expected_lines.join,
-                                            to_content: "#{text}\n",
-                                            lines_above: above,
-                                            lines_below: below)
+      expect(suggestion.to_hash).to include(
+        from_content: expected_lines.join,
+        to_content: "#{text}\n",
+        lines_above: above,
+        lines_below: below
+      )
     end
 
     it 'returns diff lines with correct line numbers' do
@@ -25,11 +27,13 @@ RSpec.describe Gitlab::Diff::Suggestion do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:position) do
-    Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                               new_path: "files/ruby/popen.rb",
-                               old_line: nil,
-                               new_line: 9,
-                               diff_refs: merge_request.diff_refs)
+    Gitlab::Diff::Position.new(
+      old_path: "files/ruby/popen.rb",
+      new_path: "files/ruby/popen.rb",
+      old_line: nil,
+      new_line: 9,
+      diff_refs: merge_request.diff_refs
+    )
   end
 
   let(:diff_file) do

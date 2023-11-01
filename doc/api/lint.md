@@ -20,7 +20,7 @@ POST /projects/:id/ci/lint
 | `content`      | string  | Yes      | The CI/CD configuration content. |
 | `dry_run`      | boolean | No       | Run [pipeline creation simulation](../ci/lint.md#simulate-a-pipeline), or only do static check. Default: `false`. |
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
-| `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
+| `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 
 Example request:
 
@@ -71,7 +71,7 @@ GET /projects/:id/ci/lint
 |----------------|---------|----------|-------------|
 | `dry_run`      | boolean | No       | Run pipeline creation simulation, or only do static check. |
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
-| `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
+| `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 | `sha`          | string  | No       | The commit SHA of a branch or tag. Defaults to the SHA of the head of the project's default branch when not set. |
 
 Example request:

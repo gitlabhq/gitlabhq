@@ -470,6 +470,7 @@ module API
         optional :description, type: String, desc: 'The description that will be assigned to the fork', documentation: { example: 'Description' }
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the fork'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
+        optional :branches, type: String, desc: 'Branches to fork'
       end
       post ':id/fork', feature_category: :source_code_management do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20759')
@@ -489,6 +490,7 @@ module API
 
         service = ::Projects::ForkService.new(user_project, current_user, fork_params)
 
+        not_found!('Source Branch') if fork_params[:branches].present? && !service.valid_fork_branch?(fork_params[:branches])
         not_found!('Target Namespace') unless service.valid_fork_target?
 
         forked_project = service.execute

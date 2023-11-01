@@ -6023,12 +6023,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         allow(merge_request_diff).to receive(:patch_id_sha).and_return(nil)
         allow(merge_request).to receive(:diff_refs).and_return(diff_refs)
 
-        allow_next_instance_of(Repository) do |repo|
-          allow(repo)
-            .to receive(:get_patch_id)
-            .with(diff_refs.base_sha, diff_refs.head_sha)
-            .and_return(patch_id)
-        end
+        allow(merge_request.project.repository)
+          .to receive(:get_patch_id)
+          .with(diff_refs.base_sha, diff_refs.head_sha)
+          .and_return(patch_id)
       end
 
       it { is_expected.to eq(patch_id) }

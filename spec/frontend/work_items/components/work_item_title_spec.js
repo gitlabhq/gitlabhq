@@ -131,5 +131,25 @@ describe('WorkItemTitle component', () => {
         property: 'type_Task',
       });
     });
+
+    describe('when title has more than 255 characters', () => {
+      const title = new Array(257).join('a');
+
+      it('does not call a mutation', () => {
+        createComponent();
+
+        findItemTitle().vm.$emit('title-changed', title);
+
+        expect(mutationSuccessHandler).not.toHaveBeenCalled();
+      });
+
+      it('emits an error message', () => {
+        createComponent();
+
+        findItemTitle().vm.$emit('title-changed', title);
+
+        expect(wrapper.emitted('error')).toEqual([['Title cannot have more than 255 characters.']]);
+      });
+    });
   });
 });

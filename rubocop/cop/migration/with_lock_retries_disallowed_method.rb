@@ -35,6 +35,8 @@ module RuboCop
           swap_foreign_keys
           swap_indexes
           reset_trigger_function
+          cleanup_conversion_of_integer_to_bigint
+          revert_initialize_conversion_of_integer_to_bigint
         ].sort.freeze
 
         MSG = "The method is not allowed to be called within the `with_lock_retries` block, the only allowed methods are: #{ALLOWED_MIGRATION_METHODS.join(', ')}".freeze

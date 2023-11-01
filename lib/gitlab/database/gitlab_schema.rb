@@ -31,6 +31,7 @@ module Gitlab
         '_test_gitlab_main_cell_' => :gitlab_main_cell,
         '_test_gitlab_main_' => :gitlab_main,
         '_test_gitlab_ci_' => :gitlab_ci,
+        '_test_gitlab_jh_' => :gitlab_jh,
         '_test_gitlab_embedding_' => :gitlab_embedding,
         '_test_gitlab_geo_' => :gitlab_geo,
         '_test_gitlab_pm_' => :gitlab_pm,

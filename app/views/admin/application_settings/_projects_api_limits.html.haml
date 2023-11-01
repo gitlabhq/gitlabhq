@@ -16,6 +16,6 @@
           = f.label :projects_api_rate_limit_unauthenticated, _('Maximum requests per 10 minutes per IP address'), class: 'label-bold'
           = f.number_field :projects_api_rate_limit_unauthenticated, class: 'form-control gl-form-input'
           .form-text.gl-text-gray-600
-            = _("Set this number to 0 to disable the limit.")
+            = _("Set to 0 to disable the limit.")
 
       = f.submit _('Save changes'), data: { qa_selector: 'save_changes_button' }, pajamas_button: true

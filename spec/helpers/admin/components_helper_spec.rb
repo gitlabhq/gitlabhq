@@ -11,6 +11,7 @@ RSpec.describe Admin::ComponentsHelper, feature_category: :database do
       }
       main[:ci] = { adapter_name: 'PostgreSQL', version: expected_version } if Gitlab::Database.has_config?(:ci)
       main[:geo] = { adapter_name: 'PostgreSQL', version: expected_version } if Gitlab::Database.has_config?(:geo)
+      main[:jh] = { adapter_name: 'PostgreSQL', version: expected_version } if Gitlab::Database.has_config?(:jh)
 
       main
     end

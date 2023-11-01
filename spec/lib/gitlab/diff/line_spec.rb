@@ -11,10 +11,16 @@ RSpec.describe Gitlab::Diff::Line do
   end
 
   let(:line) do
-    described_class.new('<input>', 'match', 0, 0, 1,
-                        parent_file: double(:file),
-                        line_code: double(:line_code),
-                        rich_text: rich_text)
+    described_class.new(
+      '<input>',
+      'match',
+      0,
+      0,
+      1,
+      parent_file: double(:file),
+      line_code: double(:line_code),
+      rich_text: rich_text
+    )
   end
 
   let(:rich_text) { nil }

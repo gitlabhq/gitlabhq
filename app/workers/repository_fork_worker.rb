@@ -2,6 +2,7 @@
 
 class RepositoryForkWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+  include Gitlab::Utils::StrongMemoize
 
   data_consistency :always
 
@@ -12,10 +13,8 @@ class RepositoryForkWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :source_code_management
 
   def perform(*args)
-    target_project_id = args.shift
-    target_project = Project.find(target_project_id)
+    @target_project_id = args.shift
 
-    source_project = target_project.forked_from_project
     unless source_project
       return target_project.import_state.mark_as_failed(_('Source project cannot be found.'))
     end
@@ -24,6 +23,21 @@ class RepositoryForkWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   private
+
+  def target_project
+    Project.find(@target_project_id)
+  end
+  strong_memoize_attr :target_project
+
+  def source_project
+    @source_project ||= target_project.forked_from_project
+  end
+
+  def branch
+    return unless target_project.import_data&.data
+
+    target_project.import_data.data['fork_branch']
+  end
 
   def fork_repository(target_project, source_project)
     return unless start_fork(target_project)
@@ -46,7 +60,7 @@ class RepositoryForkWorker # rubocop:disable Scalability/IdempotentWorker
     source_repo = source_project.repository.raw
     target_repo = target_project.repository.raw
 
-    ::Gitlab::GitalyClient::RepositoryService.new(target_repo).fork_repository(source_repo)
+    ::Gitlab::GitalyClient::RepositoryService.new(target_repo).fork_repository(source_repo, branch)
   rescue GRPC::BadStatus => e
     Gitlab::ErrorTracking.track_exception(e, source_project_id: source_project.id, target_project_id: target_project.id)
 

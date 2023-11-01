@@ -1794,6 +1794,7 @@ POST /projects/:id/fork
 | `namespace`      | integer or string | No | _(Deprecated)_ The ID or path of the namespace that the project is forked to.    |
 | `path`           | string         | No | The path assigned to the resultant project after forking.                        |
 | `visibility`     | string         | No | The [visibility level](#project-visibility-level) assigned to the resultant project after forking. |
+| `branches`       |  string         | No | Branches to fork (empty for all branches). |
 
 ## List forks of a project
 

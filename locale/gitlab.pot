@@ -20861,7 +20861,13 @@ msgstr ""
 msgid "ForkProject|A fork is a copy of a project."
 msgstr ""
 
+msgid "ForkProject|All branches"
+msgstr ""
+
 msgid "ForkProject|An error occurred while forking the project. Please try again."
+msgstr ""
+
+msgid "ForkProject|Branches to include"
 msgstr ""
 
 msgid "ForkProject|Cancel"
@@ -20877,6 +20883,9 @@ msgid "ForkProject|Forking a repository allows you to make changes without affec
 msgstr ""
 
 msgid "ForkProject|Internal"
+msgstr ""
+
+msgid "ForkProject|Only the default branch %{defaultBranch}"
 msgstr ""
 
 msgid "ForkProject|Please select a namespace"
@@ -29147,10 +29156,10 @@ msgstr ""
 msgid "Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
-msgid "Maximum number of changes (branches or tags) in a single push above which a bulk push event is created (default is `3`). Setting to `0` does not disable throttling."
+msgid "Maximum number of changes (branches or tags) in a single push above which a bulk push event is created (default is 3). Setting to 0 does not disable throttling."
 msgstr ""
 
-msgid "Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered (default is `3`). Setting to `0` does not disable throttling."
+msgid "Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered (default is 3). Setting to 0 does not disable throttling."
 msgstr ""
 
 msgid "Maximum number of comments exceeded"
@@ -29171,7 +29180,7 @@ msgstr ""
 msgid "Maximum number of requests per minute for an unauthenticated IP address"
 msgstr ""
 
-msgid "Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling."
+msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
 msgstr ""
 
 msgid "Maximum number of stages per value stream exceeded"
@@ -44247,9 +44256,6 @@ msgstr ""
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 
-msgid "Set any rate limit to %{code_open}0%{code_close} to disable the limit."
-msgstr ""
-
 msgid "Set due date"
 msgstr ""
 
@@ -44353,6 +44359,12 @@ msgid "Set time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Set to 0 for no size limit."
+msgstr ""
+
+msgid "Set to 0 to disable the limit."
+msgstr ""
+
+msgid "Set to 0 to disable the limits."
 msgstr ""
 
 msgid "Set to 0 to disable timeout."
@@ -54394,6 +54406,9 @@ msgstr ""
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."
 msgstr ""
 
+msgid "WorkItem|Title cannot have more than %{WORK_ITEM_TITLE_MAX_LENGTH} characters."
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr ""
 
@@ -55920,6 +55935,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "branch name"
+msgstr ""
+
+msgid "branches"
 msgstr ""
 
 msgid "builds"

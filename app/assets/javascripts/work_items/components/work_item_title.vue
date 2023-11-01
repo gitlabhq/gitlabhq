@@ -5,6 +5,8 @@ import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_UPDATING,
   TRACKING_CATEGORY_SHOW,
+  WORK_ITEM_TITLE_MAX_LENGTH,
+  I18N_MAX_CHARS_IN_WORK_ITEM_TITLE_MESSAGE,
 } from '../constants';
 import { getUpdateWorkItemMutation } from './update_work_item';
 import ItemTitle from './item_title.vue';
@@ -53,6 +55,11 @@ export default {
   methods: {
     async updateTitle(updatedTitle) {
       if (updatedTitle === this.workItemTitle) {
+        return;
+      }
+
+      if (updatedTitle.length > WORK_ITEM_TITLE_MAX_LENGTH) {
+        this.$emit('error', sprintfWorkItem(I18N_MAX_CHARS_IN_WORK_ITEM_TITLE_MESSAGE));
         return;
       }
 

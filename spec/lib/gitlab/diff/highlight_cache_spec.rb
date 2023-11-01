@@ -49,10 +49,12 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache, feature_
     let(:diff_file) do
       diffs = merge_request.diffs
       raw_diff = diffs.diffable.raw_diffs(diffs.diff_options.merge(paths: ['CHANGELOG'])).first
-      Gitlab::Diff::File.new(raw_diff,
-                             repository: diffs.project.repository,
-                             diff_refs: diffs.diff_refs,
-                             fallback_diff_refs: diffs.fallback_diff_refs)
+      Gitlab::Diff::File.new(
+        raw_diff,
+        repository: diffs.project.repository,
+        diff_refs: diffs.diff_refs,
+        fallback_diff_refs: diffs.fallback_diff_refs
+      )
     end
 
     before do
@@ -227,10 +229,12 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache, feature_
     let(:diff_file) do
       diffs = merge_request.diffs
       raw_diff = diffs.diffable.raw_diffs(diffs.diff_options.merge(paths: ['CHANGELOG'])).first
-      Gitlab::Diff::File.new(raw_diff,
-                             repository: diffs.project.repository,
-                             diff_refs: diffs.diff_refs,
-                             fallback_diff_refs: diffs.fallback_diff_refs)
+      Gitlab::Diff::File.new(
+        raw_diff,
+        repository: diffs.project.repository,
+        diff_refs: diffs.diff_refs,
+        fallback_diff_refs: diffs.fallback_diff_refs
+      )
     end
 
     it "uses ActiveSupport::Gzip when reading from the cache" do

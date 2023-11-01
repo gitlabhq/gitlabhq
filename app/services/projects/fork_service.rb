@@ -17,6 +17,10 @@ module Projects
       @valid_fork_targets ||= ForkTargetsFinder.new(@project, current_user).execute(options)
     end
 
+    def valid_fork_branch?(branch)
+      @project.repository.branch_exists?(branch)
+    end
+
     def valid_fork_target?(namespace = target_namespace)
       return true if current_user.admin?
 
@@ -68,7 +72,8 @@ module Projects
         external_authorization_classification_label: @project.external_authorization_classification_label,
         suggestion_commit_message: @project.suggestion_commit_message,
         merge_commit_template: @project.merge_commit_template,
-        squash_commit_template: @project.squash_commit_template
+        squash_commit_template: @project.squash_commit_template,
+        import_data: { data: { fork_branch: branch } }
       }
 
       if @project.avatar.present? && @project.avatar.image?
@@ -144,6 +149,12 @@ module Projects
 
     def stream_audit_event(forked_project)
       # Defined in EE
+    end
+
+    def branch
+      # We extract branch name from @params[:branches] because the front end
+      # insists on sending it as 'branches'.
+      @params[:branches]
     end
   end
 end

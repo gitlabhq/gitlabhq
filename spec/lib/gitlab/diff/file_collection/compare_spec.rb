@@ -10,9 +10,11 @@ RSpec.describe Gitlab::Diff::FileCollection::Compare do
   let(:start_commit) { sample_image_commit }
   let(:head_commit) { sample_commit }
   let(:raw_compare) do
-    Gitlab::Git::Compare.new(project.repository.raw_repository,
-                             start_commit.id,
-                             head_commit.id)
+    Gitlab::Git::Compare.new(
+      project.repository.raw_repository,
+      start_commit.id,
+      head_commit.id
+    )
   end
 
   let(:diffable) { Compare.new(raw_compare, project) }

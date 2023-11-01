@@ -7,6 +7,7 @@ import {
   GlFormGroup,
   GlFormTextarea,
   GlButton,
+  GlSprintf,
   GlFormRadio,
   GlFormRadioGroup,
 } from '@gitlab/ui';
@@ -56,6 +57,7 @@ export default {
     GlIcon,
     GlLink,
     GlButton,
+    GlSprintf,
     GlFormInput,
     GlFormTextarea,
     GlFormGroup,
@@ -91,6 +93,9 @@ export default {
     projectDescription: {
       default: '',
     },
+    projectDefaultBranch: {
+      default: '',
+    },
     projectVisibility: {
       default: '',
     },
@@ -116,6 +121,7 @@ export default {
           required: false,
           skipValidation: true,
         }),
+        branches: initFormField({ value: '', required: true, skipValidation: true }),
         visibility: initFormField({ value: null }),
       },
     };
@@ -167,6 +173,18 @@ export default {
       }
 
       return allowedLevels;
+    },
+    branchesOptions() {
+      return [
+        {
+          text: s__('ForkProject|All branches'),
+          value: '',
+        },
+        {
+          text: s__(`ForkProject|Only the default branch %{defaultBranch}`),
+          value: this.projectDefaultBranch,
+        },
+      ];
     },
     visibilityLevels() {
       return [
@@ -245,7 +263,7 @@ export default {
       this.form.showValidation = false;
 
       const { projectId } = this;
-      const { name, slug, description, visibility, namespace } = this.form.fields;
+      const { name, slug, description, branches, visibility, namespace } = this.form.fields;
 
       const postParams = {
         id: projectId,
@@ -253,6 +271,7 @@ export default {
         namespace_id: namespace.value.id,
         path: slug.value,
         description: description.value,
+        branches: branches.value,
         visibility: visibility.value,
       };
 
@@ -263,6 +282,7 @@ export default {
         const { data } = await axios.post(url, postParams);
         redirectTo(data.web_url); // eslint-disable-line import/no-deprecated
       } catch (error) {
+        this.isSaving = false;
         createAlert({
           message: s__(
             'ForkProject|An error occurred while forking the project. Please try again.',
@@ -346,6 +366,34 @@ export default {
         name="description"
         :state="form.fields.description.state"
       />
+    </gl-form-group>
+
+    <gl-form-group>
+      <label>
+        {{ s__('ForkProject|Branches to include') }}
+      </label>
+      <gl-form-radio-group
+        v-model="form.fields.branches.value"
+        data-testid="fork-branches-radio-group"
+        name="branches"
+        :aria-label="__('branches')"
+        required
+      >
+        <gl-form-radio
+          v-for="{ text, value } in branchesOptions"
+          :key="value"
+          :value="value"
+          :data-testid="`radio-${value}`"
+        >
+          <div>
+            <gl-sprintf :message="text">
+              <template #defaultBranch>
+                <code class="gl-ml-2">{{ projectDefaultBranch }}</code>
+              </template>
+            </gl-sprintf>
+          </div>
+        </gl-form-radio>
+      </gl-form-radio-group>
     </gl-form-group>
 
     <gl-form-group

@@ -1,4 +1,11 @@
-import { GlFormInputGroup, GlFormInput, GlForm, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import {
+  GlFormInputGroup,
+  GlFormInput,
+  GlForm,
+  GlFormRadioGroup,
+  GlFormRadio,
+  GlSprintf,
+} from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
@@ -41,6 +48,7 @@ describe('ForkForm component', () => {
     projectPath: 'project-name',
     projectDescription: 'some project description',
     projectVisibility: 'private',
+    projectDefaultBranch: 'main',
     restrictedVisibilityLevels: [],
   };
 
@@ -96,6 +104,7 @@ describe('ForkForm component', () => {
         GlFormInput,
         GlFormRadioGroup,
         GlFormRadio,
+        GlSprintf,
       },
     });
   };
@@ -118,13 +127,13 @@ describe('ForkForm component', () => {
   const findInternalRadio = () => wrapper.find('[data-testid="radio-internal"]');
   const findPublicRadio = () => wrapper.find('[data-testid="radio-public"]');
   const findForkNameInput = () => wrapper.find('[data-testid="fork-name-input"]');
-  const findGlFormRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findForkUrlInput = () => wrapper.findComponent(ProjectNamespace);
   const findForkSlugInput = () => wrapper.find('[data-testid="fork-slug-input"]');
   const findForkDescriptionTextarea = () =>
     wrapper.find('[data-testid="fork-description-textarea"]');
   const findVisibilityRadioGroup = () =>
     wrapper.find('[data-testid="fork-visibility-radio-group"]');
+  const findBranchesRadioGroup = () => wrapper.find('[data-testid="fork-branches-radio-group"]');
 
   it('will go to cancelPath when click cancel button', () => {
     createComponent();
@@ -203,11 +212,25 @@ describe('ForkForm component', () => {
     });
   });
 
+  describe('branches options', () => {
+    const formRadios = () => findBranchesRadioGroup().findAllComponents(GlFormRadio);
+    it('displays 2 branches options', () => {
+      createComponent();
+      expect(formRadios()).toHaveLength(2);
+    });
+
+    it('displays the correct description for each option', () => {
+      createComponent();
+      expect(formRadios().at(0).text()).toBe('All branches');
+      expect(formRadios().at(1).text()).toMatchInterpolatedText('Only the default branch main');
+    });
+  });
+
   describe('visibility level', () => {
     it('displays the correct description', () => {
       createComponent();
 
-      const formRadios = wrapper.findAllComponents(GlFormRadio);
+      const formRadios = findVisibilityRadioGroup().findAllComponents(GlFormRadio);
 
       Object.keys(PROJECT_VISIBILITY_TYPE).forEach((visibilityType, index) => {
         expect(formRadios.at(index).text()).toBe(PROJECT_VISIBILITY_TYPE[visibilityType]);
@@ -217,7 +240,7 @@ describe('ForkForm component', () => {
     it('displays all 3 visibility levels', () => {
       createComponent();
 
-      expect(wrapper.findAllComponents(GlFormRadio)).toHaveLength(3);
+      expect(findVisibilityRadioGroup().findAllComponents(GlFormRadio)).toHaveLength(3);
     });
 
     describe('when the namespace is changed', () => {
@@ -236,7 +259,7 @@ describe('ForkForm component', () => {
       it('resets the visibility to max allowed below current level', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(findGlFormRadioGroup().vm.$attrs.checked).toBe('public');
+        expect(findVisibilityRadioGroup().vm.$attrs.checked).toBe('public');
 
         fillForm({
           name: 'one',
@@ -251,7 +274,7 @@ describe('ForkForm component', () => {
       it('does not reset the visibility when current level is allowed', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(findGlFormRadioGroup().vm.$attrs.checked).toBe('public');
+        expect(findVisibilityRadioGroup().vm.$attrs.checked).toBe('public');
 
         fillForm({
           name: 'two',
@@ -266,7 +289,7 @@ describe('ForkForm component', () => {
       it('does not reset the visibility when visibility cap is increased', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(findGlFormRadioGroup().vm.$attrs.checked).toBe('public');
+        expect(findVisibilityRadioGroup().vm.$attrs.checked).toBe('public');
 
         fillForm({
           name: 'three',
@@ -291,7 +314,7 @@ describe('ForkForm component', () => {
           { namespaces },
         );
 
-        await findGlFormRadioGroup().vm.$emit('input', 'internal');
+        await findVisibilityRadioGroup().vm.$emit('input', 'internal');
         fillForm({
           name: 'five',
           id: 5,
@@ -469,7 +492,7 @@ describe('ForkForm component', () => {
         jest.spyOn(axios, 'post');
 
         setupComponent();
-        await findGlFormRadioGroup().vm.$emit('input', null);
+        await findVisibilityRadioGroup().vm.$emit('input', null);
 
         await nextTick();
 
@@ -533,6 +556,7 @@ describe('ForkForm component', () => {
 
         const url = `/api/${GON_API_VERSION}/projects/${projectId}/fork`;
         const project = {
+          branches: '',
           description: projectDescription,
           id: projectId,
           name: projectName,

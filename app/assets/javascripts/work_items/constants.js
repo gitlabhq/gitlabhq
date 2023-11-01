@@ -45,6 +45,8 @@ export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
 export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
+export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
+
 export const i18n = {
   fetchErrorTitle: s__('WorkItem|Work item not found'),
   fetchError: s__(
@@ -106,6 +108,11 @@ export const I18N_WORK_ITEM_ERROR_COPY_REFERENCE = s__(
 );
 export const I18N_WORK_ITEM_ERROR_COPY_EMAIL = s__(
   'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
+);
+
+export const I18N_MAX_CHARS_IN_WORK_ITEM_TITLE_MESSAGE = sprintf(
+  s__('WorkItem|Title cannot have more than %{WORK_ITEM_TITLE_MAX_LENGTH} characters.'),
+  { WORK_ITEM_TITLE_MAX_LENGTH },
 );
 
 export const I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL = s__(

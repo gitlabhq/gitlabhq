@@ -140,6 +140,44 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
     end
   end
 
+  describe '#fork_repository' do
+    let(:source_repository) { Gitlab::Git::Repository.new('default', 'repo/path', '', 'group/project') }
+
+    context 'when branch is not provided' do
+      it 'sends a create_fork message' do
+        expected_request = gitaly_request_with_params(
+          source_repository: source_repository.gitaly_repository,
+          revision: ""
+        )
+
+        expect_any_instance_of(Gitaly::RepositoryService::Stub)
+          .to receive(:create_fork)
+          .with(expected_request, kind_of(Hash))
+          .and_return(double(value: true))
+
+        client.fork_repository(source_repository)
+      end
+    end
+
+    context 'when branch is provided' do
+      it 'sends a create_fork message including revision' do
+        branch = 'wip'
+
+        expected_request = gitaly_request_with_params(
+          source_repository: source_repository.gitaly_repository,
+          revision: "refs/heads/#{branch}"
+        )
+
+        expect_any_instance_of(Gitaly::RepositoryService::Stub)
+          .to receive(:create_fork)
+          .with(expected_request, kind_of(Hash))
+          .and_return(double(value: true))
+
+        client.fork_repository(source_repository, branch)
+      end
+    end
+  end
+
   describe '#import_repository' do
     let(:source) { 'https://example.com/git/repo.git' }
 
