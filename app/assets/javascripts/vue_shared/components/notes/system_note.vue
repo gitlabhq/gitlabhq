@@ -143,7 +143,7 @@ export default {
       <gl-icon
         v-if="isAllowedIcon"
         :name="note.system_note_icon_name"
-        size="12"
+        :size="12"
         data-testid="timeline-icon"
       />
     </div>

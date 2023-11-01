@@ -111,6 +111,10 @@ module Releases
 
     # overridden in EE
     def project_group_id; end
+
+    def audit(release, action:)
+      # overridden in EE
+    end
   end
 end
 

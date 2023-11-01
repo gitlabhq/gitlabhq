@@ -121,4 +121,8 @@ export default {
     text: s__('ProjectTemplates|Laravel Framework'),
     icon: '.template-option .icon-laravel',
   },
+  astro_tailwind: {
+    text: s__('ProjectTemplates|Astro Tailwind'),
+    icon: '.template-option .icon-gitlab_logo',
+  },
 };

@@ -1,7 +1,9 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
+import { logError } from '~/lib/logger';
 
 function reportErrorAndThrow(e) {
+  logError(e);
   Sentry.captureException(e);
   throw e;
 }

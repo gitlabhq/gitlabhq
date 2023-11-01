@@ -9,7 +9,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   let_it_be_with_reload(:project) { create(:project, name: 'A') }
   let_it_be(:project_2) { build(:project, name: 'Z') }
-  let_it_be(:project_3) { build(:project, name: 'L') }
+  let_it_be(:project_3) { build(:project, name: 'L', description: 'Z') }
   let_it_be_with_reload(:resource) { create(:ci_catalog_resource, project: project, latest_released_at: tomorrow) }
   let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2, latest_released_at: today) }
   let_it_be(:resource_3) { create(:ci_catalog_resource, project: project_3, latest_released_at: nil) }
@@ -33,6 +33,14 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       resources_for_projects = described_class.for_projects(project.id)
 
       expect(resources_for_projects).to contain_exactly(resource)
+    end
+  end
+
+  describe '.search' do
+    it 'returns catalog resources whose name or description match the search term' do
+      resources = described_class.search('Z')
+
+      expect(resources).to contain_exactly(resource_2, resource_3)
     end
   end
 

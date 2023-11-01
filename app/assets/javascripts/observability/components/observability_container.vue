@@ -1,4 +1,6 @@
 <script>
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { logError } from '~/lib/logger';
 import { buildClient } from '../client';
 import ObservabilityLoader from './loader/index.vue';
 import { CONTENT_STATE } from './loader/constants';
@@ -72,8 +74,9 @@ export default {
           this.$emit('observability-client-ready', this.observabilityClient);
           this.loaderContentState = CONTENT_STATE.LOADED;
         } else if (status === 'error') {
-          // eslint-disable-next-line @gitlab/require-i18n-strings,no-console
-          console.error('GOB auth failed with error:', message, statusCode);
+          const error = new Error(`GOB auth failed with error: ${message} - status: ${statusCode}`);
+          Sentry.captureException(error);
+          logError(error);
           this.loaderContentState = CONTENT_STATE.ERROR;
         }
         this.authCompleted = true;

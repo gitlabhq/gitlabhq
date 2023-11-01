@@ -81,7 +81,8 @@ module Gitlab
           ProjectTemplate.new('cluster_management', 'GitLab Cluster Management', _('An example project for managing Kubernetes clusters integrated with GitLab'), 'https://gitlab.com/gitlab-org/project-templates/cluster-management'),
           ProjectTemplate.new('kotlin_native_linux', 'Kotlin Native Linux', _('A basic template for developing Linux programs using Kotlin Native'), 'https://gitlab.com/gitlab-org/project-templates/kotlin-native-linux'),
           ProjectTemplate.new('typo3_distribution', 'TYPO3 Distribution', _('A template for starting a new TYPO3 project'), 'https://gitlab.com/gitlab-org/project-templates/typo3-distribution', 'illustrations/logos/typo3.svg'),
-          ProjectTemplate.new('laravel', 'Laravel Framework', _('A basic folder structure of a Laravel application, to help you get started.'), 'https://gitlab.com/gitlab-org/project-templates/laravel', 'illustrations/logos/laravel.svg')
+          ProjectTemplate.new('laravel', 'Laravel Framework', _('A basic folder structure of a Laravel application, to help you get started.'), 'https://gitlab.com/gitlab-org/project-templates/laravel', 'illustrations/logos/laravel.svg'),
+          ProjectTemplate.new('astro_tailwind', 'Astro Tailwind', _('A basic folder structure of Astro Starter Kit, to help you get started.'), 'https://gitlab.com/gitlab-org/project-templates/astro-tailwind')
         ]
       end
       # rubocop:enable Metrics/AbcSize

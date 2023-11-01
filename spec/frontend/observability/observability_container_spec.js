@@ -3,10 +3,13 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ObservabilityContainer from '~/observability/components/observability_container.vue';
 import ObservabilityLoader from '~/observability/components/loader/index.vue';
 import { CONTENT_STATE } from '~/observability/components/loader/constants';
-
 import { buildClient } from '~/observability/client';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { logError } from '~/lib/logger';
 
 jest.mock('~/observability/client');
+jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/logger');
 
 describe('ObservabilityContainer', () => {
   let wrapper;
@@ -49,6 +52,8 @@ describe('ObservabilityContainer', () => {
         data: {
           type: 'AUTH_COMPLETION',
           status,
+          message: 'test-message',
+          statusCode: 'test-code',
         },
         origin: origin ?? new URL(OAUTH_URL).origin,
       }),
@@ -129,6 +134,12 @@ describe('ObservabilityContainer', () => {
 
     it('does not emit observability-client-ready', () => {
       expect(wrapper.emitted('observability-client-ready')).toBeUndefined();
+    });
+
+    it('reports the error', () => {
+      const e = new Error('GOB auth failed with error: test-message - status: test-code');
+      expect(Sentry.captureException).toHaveBeenCalledWith(e);
+      expect(logError).toHaveBeenCalledWith(e);
     });
   });
 

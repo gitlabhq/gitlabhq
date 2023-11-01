@@ -1765,6 +1765,9 @@ msgstr ""
 msgid "A Work Item can be a parent or a child, but not both."
 msgstr ""
 
+msgid "A basic folder structure of Astro Starter Kit, to help you get started."
+msgstr ""
+
 msgid "A basic folder structure of a Laravel application, to help you get started."
 msgstr ""
 
@@ -37845,6 +37848,9 @@ msgstr ""
 msgid "ProjectTemplates|Android"
 msgstr ""
 
+msgid "ProjectTemplates|Astro Tailwind"
+msgstr ""
+
 msgid "ProjectTemplates|GitLab Cluster Management"
 msgstr ""
 
@@ -43462,6 +43468,12 @@ msgstr ""
 msgid "SecurityReports|Investigate this vulnerability by creating an issue"
 msgstr ""
 
+msgid "SecurityReports|Is available"
+msgstr ""
+
+msgid "SecurityReports|Is not available"
+msgstr ""
+
 msgid "SecurityReports|Issue"
 msgstr ""
 
@@ -43577,6 +43589,9 @@ msgid "SecurityReports|Show %d item"
 msgid_plural "SecurityReports|Show %d items"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecurityReports|Solution available"
+msgstr ""
 
 msgid "SecurityReports|Sometimes a scanner can't determine a finding's severity. Those findings may still be a potential source of risk though. Please review these manually."
 msgstr ""

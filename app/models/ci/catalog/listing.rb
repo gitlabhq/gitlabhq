@@ -14,8 +14,9 @@ module Ci
       end
 
       def resources(namespace: nil, sort: nil, search: nil)
-        relation = all_resources(search)
+        relation = all_resources
         relation = by_namespace(relation, namespace)
+        relation = by_search(relation, search)
 
         case sort.to_s
         when 'name_desc' then relation.order_by_name_desc
@@ -32,9 +33,9 @@ module Ci
 
       attr_reader :current_user
 
-      def all_resources(search)
+      def all_resources
         Ci::Catalog::Resource.joins(:project).includes(:project)
-          .merge(find_projects(search))
+          .merge(Project.public_or_visible_to_user(current_user))
       end
 
       def by_namespace(relation, namespace)
@@ -44,13 +45,11 @@ module Ci
         relation.merge(Project.in_namespace(namespace.self_and_descendant_ids))
       end
 
-      def find_projects(search)
-        finder_params = {
-          minimum_search_length: MIN_SEARCH_LENGTH,
-          search: search
-        }
+      def by_search(relation, search)
+        return relation unless search
+        return relation.none if search.length < MIN_SEARCH_LENGTH
 
-        ProjectsFinder.new(params: finder_params, current_user: current_user).execute
+        relation.search(search)
       end
     end
   end

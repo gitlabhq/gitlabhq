@@ -8,6 +8,8 @@ module Ci
     # dependency on the Project model and its need to join with that table
     # in order to generate the CI/CD catalog.
     class Resource < ::ApplicationRecord
+      include Gitlab::SQL::Pattern
+
       self.table_name = 'catalog_resources'
 
       belongs_to :project
@@ -15,6 +17,8 @@ module Ci
       has_many :versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :catalog_resource
 
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
+      scope :search, ->(query) { fuzzy_search(query, [:name, :description], use_minimum_char_limit: false) }
+
       scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
       scope :order_by_created_at_asc, -> { reorder(created_at: :asc) }
       scope :order_by_name_desc, -> { reorder(arel_table[:name].desc.nulls_last) }

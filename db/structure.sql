@@ -341,15 +341,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_bfad0e2b9c86() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION unset_has_issues_on_vulnerability_reads() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13196,6 +13187,8 @@ CREATE TABLE catalog_resource_components (
     resource_type smallint DEFAULT 1 NOT NULL,
     inputs jsonb DEFAULT '{}'::jsonb NOT NULL,
     name text NOT NULL,
+    path text,
+    CONSTRAINT check_a76bfd47fe CHECK ((char_length(path) <= 255)),
     CONSTRAINT check_ddca729980 CHECK ((char_length(name) <= 255))
 );
 
@@ -13919,7 +13912,6 @@ ALTER SEQUENCE ci_pipeline_chat_data_id_seq OWNED BY ci_pipeline_chat_data.id;
 CREATE TABLE ci_pipeline_messages (
     id bigint NOT NULL,
     severity smallint DEFAULT 0 NOT NULL,
-    pipeline_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     content text NOT NULL,
     pipeline_id bigint NOT NULL,
     CONSTRAINT check_58ca2981b2 CHECK ((char_length(content) <= 10000))
@@ -31934,8 +31926,6 @@ CREATE UNIQUE INDEX index_ci_pipeline_chat_data_on_pipeline_id ON ci_pipeline_ch
 
 CREATE INDEX index_ci_pipeline_messages_on_pipeline_id ON ci_pipeline_messages USING btree (pipeline_id);
 
-CREATE INDEX index_ci_pipeline_messages_on_pipeline_id_convert_to_bigint ON ci_pipeline_messages USING btree (pipeline_id_convert_to_bigint);
-
 CREATE INDEX index_ci_pipeline_metadata_on_project_id ON ci_pipeline_metadata USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_schedule_variables_on_schedule_id_and_key ON ci_pipeline_schedule_variables USING btree (pipeline_schedule_id, key);
@@ -36832,8 +36822,6 @@ CREATE TRIGGER trigger_7f3d66a7d7f5 BEFORE INSERT OR UPDATE ON ci_pipeline_varia
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
-CREATE TRIGGER trigger_bfad0e2b9c86 BEFORE INSERT OR UPDATE ON ci_pipeline_messages FOR EACH ROW EXECUTE FUNCTION trigger_bfad0e2b9c86();
-
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
@@ -36923,9 +36911,6 @@ ALTER TABLE ONLY user_interacted_projects
 
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_08f7602bfd FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_pipeline_messages
-    ADD CONSTRAINT fk_0946fea681 FOREIGN KEY (pipeline_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY remote_development_agent_configs
     ADD CONSTRAINT fk_0a3c0ada56 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

@@ -2,9 +2,11 @@ import MockAdapter from 'axios-mock-adapter';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { buildClient } from '~/observability/client';
 import axios from '~/lib/utils/axios_utils';
+import { logError } from '~/lib/logger';
 
 jest.mock('~/lib/utils/axios_utils');
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/logger');
 
 describe('buildClient', () => {
   let client;
@@ -31,6 +33,11 @@ describe('buildClient', () => {
   afterEach(() => {
     axiosMock.restore();
   });
+
+  const expectErrorToBeReported = (e) => {
+    expect(Sentry.captureException).toHaveBeenCalledWith(e);
+    expect(logError).toHaveBeenCalledWith(e);
+  };
 
   describe('buildClient', () => {
     it('rejects if params are missing', () => {
@@ -89,7 +96,7 @@ describe('buildClient', () => {
 
       const e = 'Request failed with status code 500';
       await expect(client.isObservabilityEnabled()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
 
     it('throws in case of unexpected response', async () => {
@@ -97,7 +104,7 @@ describe('buildClient', () => {
 
       const e = 'Failed to check provisioning';
       await expect(client.isObservabilityEnabled()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
   });
 
@@ -120,7 +127,7 @@ describe('buildClient', () => {
       const e = 'Request failed with status code 401';
 
       await expect(client.enableObservability()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
   });
 
@@ -156,14 +163,14 @@ describe('buildClient', () => {
       axiosMock.onGet(tracingUrl).reply(200, { traces: [] });
 
       await expect(client.fetchTrace('trace-1')).rejects.toThrow(FETCHING_TRACES_ERROR);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
+      expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
 
     it('rejects if traces are invalid', async () => {
       axiosMock.onGet(tracingUrl).reply(200, { traces: 'invalid' });
 
       await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
+      expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
   });
 
@@ -196,14 +203,14 @@ describe('buildClient', () => {
       axiosMock.onGet(tracingUrl).reply(200, {});
 
       await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
+      expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
 
     it('rejects if traces are invalid', async () => {
       axiosMock.onGet(tracingUrl).reply(200, { traces: 'invalid' });
 
       await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
+      expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
 
     describe('query filter', () => {
@@ -348,7 +355,7 @@ describe('buildClient', () => {
 
       const e = 'failed to fetch services. invalid response';
       await expect(client.fetchServices()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
   });
 
@@ -375,7 +382,7 @@ describe('buildClient', () => {
     it('rejects if serviceName is missing', async () => {
       const e = 'fetchOperations() - serviceName is required.';
       await expect(client.fetchOperations()).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
 
     it('rejects if operationUrl does not contain $SERVICE_NAME$', async () => {
@@ -387,7 +394,7 @@ describe('buildClient', () => {
       });
       const e = 'fetchOperations() - operationsUrl must contain $SERVICE_NAME$';
       await expect(client.fetchOperations(serviceName)).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
 
     it('rejects if operations are missing', async () => {
@@ -395,7 +402,7 @@ describe('buildClient', () => {
 
       const e = 'failed to fetch operations. invalid response';
       await expect(client.fetchOperations(serviceName)).rejects.toThrow(e);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+      expectErrorToBeReported(new Error(e));
     });
   });
 });

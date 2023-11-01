@@ -64,6 +64,8 @@ module Releases
 
       create_evidence!(release, evidence_pipeline)
 
+      audit(release, action: :created)
+
       success(tag: tag, release: release)
     rescue StandardError => e
       error(e.message, 400)

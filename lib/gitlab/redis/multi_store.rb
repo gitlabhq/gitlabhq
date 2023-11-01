@@ -380,7 +380,7 @@ module Gitlab
       end
 
       def redis_store?(store)
-        store.is_a?(::Redis) || store.is_a?(::Redis::Namespace)
+        store.is_a?(::Redis)
       end
 
       def validate_stores!
