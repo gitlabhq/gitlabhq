@@ -22,14 +22,6 @@ FactoryBot.define do
       locked { :unlocked }
     end
 
-    trait :checksummed do
-      verification_checksum { 'abc' }
-    end
-
-    trait :checksum_failure do
-      verification_failure { 'Could not calculate the checksum' }
-    end
-
     trait :expired do
       expire_at { Date.yesterday }
     end

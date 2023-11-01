@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::BulkImports::EntityFailure do
+RSpec.describe API::Entities::BulkImports::EntityFailure, feature_category: :importers do
   let_it_be(:failure) { create(:bulk_import_failure) }
 
   subject { described_class.new(failure).as_json }
@@ -10,11 +10,11 @@ RSpec.describe API::Entities::BulkImports::EntityFailure do
   it 'has the correct attributes' do
     expect(subject).to include(
       :relation,
-      :step,
-      :exception_class,
       :exception_message,
+      :exception_class,
       :correlation_id_value,
-      :created_at
+      :source_url,
+      :source_title
     )
   end
 

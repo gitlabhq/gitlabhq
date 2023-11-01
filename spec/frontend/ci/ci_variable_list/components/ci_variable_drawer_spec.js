@@ -67,9 +67,9 @@ describe('CI Variable Drawer', () => {
     });
   };
 
-  const findConfirmBtn = () => wrapper.findByTestId('ci-variable-confirm-btn');
+  const findConfirmBtn = () => wrapper.findByTestId('ci-variable-confirm-button');
   const findConfirmDeleteModal = () => wrapper.findComponent(GlModal);
-  const findDeleteBtn = () => wrapper.findByTestId('ci-variable-delete-btn');
+  const findDeleteBtn = () => wrapper.findByTestId('ci-variable-delete-button');
   const findDisabledEnvironmentScopeDropdown = () => wrapper.findComponent(GlFormInput);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findEnvironmentScopeDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);

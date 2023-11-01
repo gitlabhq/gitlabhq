@@ -192,7 +192,7 @@ To add an internal note:
 1. Below the comment, select the **Make this an internal note** checkbox.
 1. Select **Add internal note**.
 
-![Internal notes](img/add_internal_note_v15_0.png)
+![Internal notes](img/add_internal_note_v16_6.png)
 
 You can also mark an [issue as confidential](../project/issues/confidential_issues.md).
 
@@ -233,7 +233,7 @@ You can assign an issue to a user who made a comment.
 
 1. In the comment, select the **More Actions** (**{ellipsis_v}**) menu.
 1. Select **Assign to commenting user**:
-   ![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)
+   ![Assign to commenting user](img/quickly_assign_commenter_v16_6.png)
 1. To unassign the commenter, select the button again.
 
 ## Create a thread by replying to a standard comment
@@ -272,9 +272,9 @@ To create a thread:
 1. From the list, select **Start thread**.
 1. Select **Start thread** again.
 
-A threaded comment is created.
+![Create a thread](img/create_thread_v16_6.png)
 
-![Thread comment](img/discussion_comment.png)
+A threaded comment is created.
 
 ## Resolve a thread
 

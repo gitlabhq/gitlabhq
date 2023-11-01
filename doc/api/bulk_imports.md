@@ -257,3 +257,24 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
   "updated_at": "2021-06-18T09:46:27.003Z"
 }
 ```
+
+## Get list of failed import records for group or project migration entity
+
+```plaintext
+GET /bulk_imports/:id/entities/:entity_id/failures
+```
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports/1/entities/2/failures"
+```
+
+```json
+{
+  "relation": "issues",
+  "exception_message": "Error!",
+  "exception_class": "StandardError",
+  "correlation_id_value": "06289e4b064329a69de7bb2d7a1b5a97",
+  "source_url": "https://gitlab.example/project/full/path/-/issues/1",
+  "source_title": "Issue title"
+}
+```

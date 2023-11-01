@@ -485,9 +485,18 @@ That's all of the required database changes.
       end
 
       trait :verification_succeeded do
+        synced
         verification_checksum { 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef' }
         verification_state { Geo::CoolWidgetRegistry.verification_state_value(:verification_succeeded) }
         verified_at { 5.days.ago }
+      end
+
+      trait :verification_failed do
+        synced
+        verification_failure { 'Could not calculate the checksum' }
+        verification_state { Geo::CoolWidgetRegistry.verification_state_value(:verification_failed) }
+        verification_retry_count { 1 }
+        verification_retry_at { 2.hours.from_now }
       end
     end
   end
@@ -519,15 +528,15 @@ That's all of the required database changes.
   FactoryBot.modify do
     factory :cool_widget do
       trait :verification_succeeded do
-          repository
-          verification_checksum { 'abc' }
-          verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
+        repository
+        verification_checksum { 'abc' }
+        verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
       end
 
       trait :verification_failed do
-          repository
-          verification_failure { 'Could not calculate the checksum' }
-          verification_state { CoolWidget.verification_state_value(:verification_failed) }
+        repository
+        verification_failure { 'Could not calculate the checksum' }
+        verification_state { CoolWidget.verification_state_value(:verification_failed) }
       end
     end
   end

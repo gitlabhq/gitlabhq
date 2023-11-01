@@ -214,6 +214,23 @@ module API
       get ':import_id/entities/:entity_id' do
         present bulk_import_entity, with: Entities::BulkImports::Entity
       end
+
+      desc 'Get GitLab Migration entity failures' do
+        detail 'This feature was introduced in GitLab 16.6'
+        success code: 200, model: Entities::BulkImports::EntityFailure
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+      end
+      params do
+        requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
+        requires :entity_id, type: Integer, desc: "The ID of GitLab Migration entity"
+      end
+      get ':import_id/entities/:entity_id/failures' do
+        present paginate(bulk_import_entity.failures), with: Entities::BulkImports::EntityFailure
+      end
     end
   end
 end

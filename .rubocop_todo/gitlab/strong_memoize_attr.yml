@@ -217,7 +217,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/quick_actions/interpret_service.rb'
     - 'app/services/releases/base_service.rb'
     - 'app/services/resource_access_tokens/revoke_service.rb'
-    - 'app/services/resource_events/base_synthetic_notes_builder_service.rb'
     - 'app/services/search/global_service.rb'
     - 'app/services/search/project_service.rb'
     - 'app/services/search_service.rb'

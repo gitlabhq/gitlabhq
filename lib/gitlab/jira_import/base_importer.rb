@@ -5,7 +5,7 @@ module Gitlab
     class BaseImporter
       attr_reader :project, :client, :formatter, :jira_project_key, :running_import
 
-      def initialize(project)
+      def initialize(project, client = nil)
         Gitlab::JiraImport.validate_project_settings!(project)
 
         @running_import = project.latest_jira_import
@@ -14,7 +14,7 @@ module Gitlab
         raise Projects::ImportService::Error, _('Unable to find Jira project to import data from.') unless @jira_project_key
 
         @project = project
-        @client = project.jira_integration.client
+        @client = client || project.jira_integration.client
         @formatter = Gitlab::ImportFormatter.new
       end
 

@@ -123,7 +123,12 @@ module QA
           access_token: ENV['QA_LARGE_IMPORT_GH_TOKEN'] || Runtime::Env.github_access_token,
           per_page: 100,
           middleware: Faraday::RackBuilder.new do |builder|
-            builder.use(Faraday::Retry::Middleware, exceptions: [Octokit::InternalServerError, Octokit::ServerError])
+            builder.use(Faraday::Retry::Middleware,
+              max: 3,
+              interval: 1,
+              retry_block: ->(exception:, **) { logger.warn("Request to GitHub failed: '#{exception}', retrying") },
+              exceptions: [Octokit::InternalServerError, Octokit::ServerError]
+            )
             builder.use(Faraday::Response::RaiseError) # faraday retry swallows errors, so it needs to be re-raised
           end
         )
@@ -161,51 +166,32 @@ module QA
       end
 
       let(:gh_issues) do
-        issues = gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
+        gh_all_issues.reject(&:pull_request).each_with_object({}) do |issue, hash|
           id = issue.number
+          logger.debug("- Fetching comments and events for issue #{id} -")
           hash[id] = {
             url: issue.html_url,
             title: issue.title,
             body: issue.body || '',
-            comments: gh_issue_comments[id]
+            comments: fetch_issuable_comments(id, "issue"),
+            events: fetch_issuable_events(id)
           }
         end
-
-        fetch_github_events(issues, "issue")
       end
 
       let(:gh_prs) do
-        prs = gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
+        gh_all_issues.select(&:pull_request).each_with_object({}) do |pr, hash|
           id = pr.number
+          logger.debug("- Fetching comments and events for pr #{id} -")
           hash[id] = {
             url: pr.html_url,
             title: pr.title,
             body: pr.body || '',
-            comments: [*gh_pr_comments[id], *gh_issue_comments[id]].compact
+            comments: fetch_issuable_comments(id, "pr"),
+            events: fetch_issuable_events(id)
           }
         end
-
-        fetch_github_events(prs, "pr")
       end
-
-      # rubocop:disable Layout/LineLength
-      let(:gh_issue_comments) do
-        logger.info("- Fetching issue comments -")
-        with_paginated_request { github_client.issues_comments(github_repo) }.each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
-          hash[id_from_url(c.html_url)] << c.body&.gsub(gh_link_pattern, dummy_url)
-        end
-      end
-
-      let(:gh_pr_comments) do
-        logger.info("- Fetching pr comments -")
-        with_paginated_request { github_client.pull_requests_comments(github_repo) }.each_with_object(Hash.new { |h, k| h[k] = [] }) do |c, hash|
-          hash[id_from_url(c.html_url)] << c.body
-            # some suggestions can contain extra whitespaces which gitlab will remove
-            &.gsub(/suggestion\s+\r/, "suggestion\r")
-            &.gsub(gh_link_pattern, dummy_url)
-        end
-      end
-      # rubocop:enable Layout/LineLength
 
       let(:imported_project) do
         Resource::ProjectImportedFromGithub.fabricate_via_api! do |project|
@@ -282,7 +268,7 @@ module QA
               issue_events: gl_issues.sum { |_k, v| v[:events].length }
             }
           },
-          not_imported: {
+          diff: {
             mrs: @mr_diff,
             issues: @issue_diff
           }
@@ -415,24 +401,35 @@ module QA
       #
       private
 
-      # Fetch github events and add to issue object
+      # Fetch issuable object comments
       #
-      # @param [Hash] issuables
+      # @param [Integer] id
       # @param [String] type
-      # @return [Hash]
-      def fetch_github_events(issuables, type)
-        logger.info("- Fetching #{type} events -")
-        issuables.to_h do |id, issuable|
-          logger.debug("Fetching events for #{type} !#{id}")
-          events = with_paginated_request { github_client.issue_events(github_repo, id) }
-            .map { |event| event[:event] }
-            .reject { |event| unsupported_events.include?(event) }
+      # @return [Array]
+      def fetch_issuable_comments(id, type)
+        pr = type == "pr"
+        comments = []
+        # every pr is also an issue, so when fetching pr comments, issue endpoint has to be used as well
+        comments.push(*with_paginated_request { github_client.issue_comments(github_repo, id) })
+        comments.push(*with_paginated_request { github_client.pull_request_comments(github_repo, id) }) if pr
+        comments.map! { |comment| comment.body&.gsub(gh_link_pattern, dummy_url) }
+        return comments unless pr
 
-          [id, issuable.merge({ events: events })]
-        end
+        # some suggestions can contain extra whitespaces which gitlab will remove
+        comments.map { |comment| comment.gsub(/suggestion\s+\r/, "suggestion\r") }
       end
 
-      # Verify imported mrs or issues and return missing items
+      # Fetch issuable object events
+      #
+      # @param [Integer] id
+      # @return [Array]
+      def fetch_issuable_events(id)
+        with_paginated_request { github_client.issue_events(github_repo, id) }
+          .map { |event| event[:event] }
+          .reject { |event| unsupported_events.include?(event) }
+      end
+
+      # Verify imported mrs or issues and return content diff
       #
       # @param [String] type verification object, 'mrs' or 'issues'
       # @return [Hash]
@@ -443,18 +440,20 @@ module QA
         actual = type == 'mr' ? mrs : gl_issues
 
         missing_objects = (expected.keys - actual.keys).map { |it| expected[it].slice(:title, :url) }
+        extra_objects = (actual.keys - expected.keys).map { |it| actual[it].slice(:title, :url) }
         count_msg = <<~MSG
           Expected to contain all of GitHub's #{type}s. Gitlab: #{actual.length}, Github: #{expected.length}.
           Missing: #{missing_objects.map { |it| it[:url] }}
         MSG
         expect(expected.length <= actual.length).to be_truthy, count_msg
 
-        missing_content = verify_comments_and_events(type, actual, expected)
+        content_diff = verify_comments_and_events(type, actual, expected)
 
         {
-          "#{type}s": missing_objects.empty? ? nil : missing_objects,
-          "#{type}_content": missing_content.empty? ? nil : missing_content
-        }.compact
+          "extra_#{type}s": extra_objects,
+          "missing_#{type}s": missing_objects,
+          "#{type}_content_diff": content_diff
+        }.compact_blank
       end
 
       # Verify imported comments and events
@@ -464,7 +463,7 @@ module QA
       # @param [Hash] expected
       # @return [Hash]
       def verify_comments_and_events(type, actual, expected)
-        actual.each_with_object([]) do |(key, actual_item), missing_content|
+        actual.each_with_object([]) do |(key, actual_item), content_diff|
           expected_item = expected[key]
           title = actual_item[:title]
           msg = "expected #{type} with iid '#{key}' to have"
@@ -498,19 +497,23 @@ module QA
           MSG
           expect(actual_events).to include(*expected_events), event_count_msg
 
-          # Save missing comments and events
+          # Save comment and event diff
           #
-          comment_diff = expected_comments - actual_comments
-          event_diff = expected_events - actual_events
-          next if comment_diff.empty? && event_diff.empty?
+          missing_comments = expected_comments - actual_comments
+          extra_comments = actual_comments - expected_comments
+          missing_events = expected_events - actual_events
+          extra_events = actual_events - expected_events
+          next if [missing_comments, missing_events, extra_comments, extra_events].all?(&:empty?)
 
-          missing_content << {
+          content_diff << {
             title: title,
             github_url: expected_item[:url],
             gitlab_url: actual_item[:url],
-            missing_comments: comment_diff.empty? ? nil : comment_diff,
-            missing_events: event_diff.empty? ? nil : event_diff
-          }.compact
+            missing_comments: missing_comments,
+            extra_comments: extra_comments,
+            missing_events: missing_events,
+            extra_events: extra_events
+          }.compact_blank
         end
       end
 
@@ -669,16 +672,6 @@ module QA
       # @return [void]
       def save_data_json(json)
         File.open("tmp/github-import-data.json", "w") { |file| file.write(JSON.pretty_generate(json)) }
-      end
-
-      # Extract id number from web url of issue or pull request
-      #
-      # Some endpoints don't return object id as separate parameter so web url can be used as a workaround
-      #
-      # @param [String] url
-      # @return [Integer]
-      def id_from_url(url)
-        url.match(%r{(?<type>issues|pull)/(?<id>\d+)})&.named_captures&.fetch("id", nil).to_i
       end
 
       # Custom pagination for github requests

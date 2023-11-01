@@ -43,7 +43,9 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
     stub_const('BulkImports::MyPipeline', pipeline)
   end
 
-  let_it_be_with_reload(:entity) { create(:bulk_import_entity) }
+  let_it_be(:bulk_import) { create(:bulk_import) }
+  let_it_be(:configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
+  let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
 
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let(:context) { BulkImports::Pipeline::Context.new(tracker, extra: :data) }
@@ -117,6 +119,56 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
 
         expect(tracker.failed?).to eq(false)
         expect(entity.failed?).to eq(false)
+      end
+    end
+
+    context 'when failure happens during loader' do
+      before do
+        allow(tracker).to receive(:pipeline_class).and_return(BulkImports::MyPipeline)
+        allow(BulkImports::MyPipeline).to receive(:relation).and_return(relation)
+
+        allow_next_instance_of(BulkImports::Extractor) do |extractor|
+          allow(extractor).to receive(:extract).with(context).and_return(extracted_data)
+        end
+
+        allow_next_instance_of(BulkImports::Transformer) do |transformer|
+          allow(transformer).to receive(:transform).with(context, extracted_data.data.first).and_return(entry)
+        end
+
+        allow_next_instance_of(BulkImports::Loader) do |loader|
+          allow(loader).to receive(:load).with(context, entry).and_raise(StandardError, 'Error!')
+        end
+      end
+
+      context 'when entry has title' do
+        let(:relation) { 'issues' }
+        let(:entry) { Issue.new(iid: 1, title: 'hello world') }
+
+        it 'creates failure record with source url and title' do
+          subject.run
+
+          failure = entity.failures.first
+          expected_source_url = File.join(configuration.url, 'groups', entity.source_full_path, '-', 'issues', '1')
+
+          expect(failure).to be_present
+          expect(failure.source_url).to eq(expected_source_url)
+          expect(failure.source_title).to eq('hello world')
+        end
+      end
+
+      context 'when entry has name' do
+        let(:relation) { 'boards' }
+        let(:entry) { Board.new(name: 'hello world') }
+
+        it 'creates failure record with name' do
+          subject.run
+
+          failure = entity.failures.first
+
+          expect(failure).to be_present
+          expect(failure.source_url).to be_nil
+          expect(failure.source_title).to eq('hello world')
+        end
       end
     end
   end
@@ -363,7 +415,11 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
 
     def extracted_data(has_next_page: false)
       BulkImports::Pipeline::ExtractedData.new(
-        data: { foo: :bar },
+        data: {
+          'foo' => 'bar',
+          'title' => 'hello world',
+          'iid' => 1
+        },
         page_info: {
           'has_next_page' => has_next_page,
           'next_page' => has_next_page ? 'cursor' : nil

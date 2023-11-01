@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:bulk_import) { create(:bulk_import) }
   let_it_be(:entity) { create(:bulk_import_entity, :project_entity, project: project, bulk_import: bulk_import) }
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity, pipeline_name: described_class) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
   let(:attributes) { {} }

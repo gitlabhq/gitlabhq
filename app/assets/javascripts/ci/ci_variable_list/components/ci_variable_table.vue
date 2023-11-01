@@ -243,7 +243,6 @@ export default {
           <gl-button
             size="small"
             :disabled="exceedsVariableLimit"
-            data-qa-selector="add_ci_variable_button"
             data-testid="add-ci-variable-button"
             @click="setSelectedVariable()"
             >{{ $options.i18n.addButton }}</gl-button
@@ -376,7 +375,7 @@ export default {
               size="small"
               class="gl-mr-3"
               :aria-label="$options.i18n.editButton"
-              data-qa-selector="edit_ci_variable_button"
+              data-testid="edit-ci-variable-button"
               @click="setSelectedVariable(item.index)"
             />
             <gl-button

@@ -34,6 +34,17 @@ module Gitlab
         request_params[:headers][:Cookie] = get_cookies if options[:use_cookies]
         request_params[:base_uri] = uri.to_s
         request_params.merge!(auth_params)
+        # Setting defaults here so we can also set `timeout` which prevents setting defaults in the HTTP gem's code
+        request_params[:open_timeout] = options[:open_timeout] || default_timeout_for(:open_timeout)
+        request_params[:read_timeout] = options[:read_timeout] || default_timeout_for(:read_timeout)
+        request_params[:write_timeout] = options[:write_timeout] || default_timeout_for(:write_timeout)
+        # Global timeout. Needs to be at least as high as the maximum defined in other timeouts
+        request_params[:timeout] = [
+          Gitlab::HTTP::DEFAULT_READ_TOTAL_TIMEOUT,
+          request_params[:open_timeout],
+          request_params[:read_timeout],
+          request_params[:write_timeout]
+        ].max
 
         result = Gitlab::HTTP.public_send(http_method, path, **request_params) # rubocop:disable GitlabSecurity/PublicSend
         @authenticated = result.response.is_a?(Net::HTTPOK)
@@ -51,6 +62,10 @@ module Gitlab
       end
 
       private
+
+      def default_timeout_for(param)
+        Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS[param]
+      end
 
       def auth_params
         return {} unless @options[:username] && @options[:password]

@@ -603,6 +603,17 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       jira_integration.client.get('/foo')
     end
 
+    context 'when a custom read_timeout option is passed as an argument' do
+      it 'uses the default GitLab::HTTP timeouts plus a custom read_timeout' do
+        expected_timeouts = Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS.merge(read_timeout: 2.minutes, timeout: 2.minutes)
+
+        expect(Gitlab::HTTP_V2::Client).to receive(:httparty_perform_request)
+          .with(Net::HTTP::Get, '/foo', hash_including(expected_timeouts)).and_call_original
+
+        jira_integration.client(read_timeout: 2.minutes).get('/foo')
+      end
+    end
+
     context 'with basic auth' do
       before do
         jira_integration.jira_auth_type = 0

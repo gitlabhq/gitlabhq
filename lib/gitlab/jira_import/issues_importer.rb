@@ -10,7 +10,7 @@ module Gitlab
 
       attr_reader :imported_items_cache_key, :start_at, :job_waiter
 
-      def initialize(project)
+      def initialize(project, client = nil)
         super
         # get cached start_at value, or zero if not cached yet
         @start_at = Gitlab::JiraImport.get_issues_next_start_at(project.id)

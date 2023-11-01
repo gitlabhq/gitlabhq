@@ -71,7 +71,10 @@ module QA
       end
     end
 
-    describe 'OIDC' do
+    describe 'OIDC', quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/429723',
+      type: :flaky
+    } do
       let(:consumer_name) { 'gitlab-oidc-consumer' }
       let(:redirect_uri) { "#{consumer_host}/users/auth/openid_connect/callback" }
       let(:scopes) { %w[openid profile email] }

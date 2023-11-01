@@ -88,7 +88,8 @@ Create a deploy token to automate deployment tasks that can run independently of
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project or group.
+- To create a group deploy token, you must have the Owner role for the group.
+- To create a project deploy token, you must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > Repository**.
@@ -106,7 +107,8 @@ Revoke a token when it's no longer required.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project or group.
+- To revoke a group deploy token, you must have the Owner role for the group.
+- To revoke a project deploy token, you must have at least the Maintainer role for the project.
 
 To revoke a deploy token:
 

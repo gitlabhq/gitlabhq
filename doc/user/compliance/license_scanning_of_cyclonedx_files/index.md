@@ -22,16 +22,11 @@ Licenses not in the SPDX list are reported as "Unknown". License information can
 
 ## Configuration
 
-Prerequisites:
+To enable License scanning of CycloneDX files:
 
-- On GitLab self-managed only, enable [Synchronization with the GitLab License Database](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin Area for the GitLab instance. On GitLab SaaS this step has already been completed.
 - Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#enabling-the-analyzer)
   and ensure that its prerequisites are met.
-
-From the `.gitlab-ci.yml` file, remove the deprecated line `Jobs/License-Scanning.gitlab-ci.yml`, if
-it's present.
-
-On GitLab self-managed only, you can [choose package registry metadata to sync](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin Area for the GitLab instance.
+- On GitLab self-managed only, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin Area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then please refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 
 ## Supported languages and package managers
 

@@ -25,7 +25,7 @@ module BulkImports
               end
             end
 
-            run_pipeline_step(:loader, loader.class.name) do
+            run_pipeline_step(:loader, loader.class.name, entry) do
               loader.load(context, entry)
             end
 
@@ -49,7 +49,7 @@ module BulkImports
 
       private # rubocop:disable Lint/UselessAccessModifier
 
-      def run_pipeline_step(step, class_name = nil)
+      def run_pipeline_step(step, class_name = nil, entry = nil)
         raise MarkedAsFailedError if context.entity.failed?
 
         info(pipeline_step: step, step_class: class_name)
@@ -65,11 +65,11 @@ module BulkImports
       rescue BulkImports::NetworkError => e
         raise BulkImports::RetryPipelineError.new(e.message, e.retry_delay) if e.retriable?(context.tracker)
 
-        log_and_fail(e, step)
+        log_and_fail(e, step, entry)
       rescue BulkImports::RetryPipelineError
         raise
       rescue StandardError => e
-        log_and_fail(e, step)
+        log_and_fail(e, step, entry)
       end
 
       def extracted_data_from
@@ -95,8 +95,8 @@ module BulkImports
         run if extracted_data.has_next_page?
       end
 
-      def log_and_fail(exception, step)
-        log_import_failure(exception, step)
+      def log_and_fail(exception, step, entry = nil)
+        log_import_failure(exception, step, entry)
 
         if abort_on_failure?
           tracker.fail_op!
@@ -114,7 +114,7 @@ module BulkImports
         tracker.skip!
       end
 
-      def log_import_failure(exception, step)
+      def log_import_failure(exception, step, entry)
         failure_attributes = {
           bulk_import_entity_id: context.entity.id,
           pipeline_class: pipeline,
@@ -123,6 +123,11 @@ module BulkImports
           exception_message: exception.message,
           correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
         }
+
+        if entry
+          failure_attributes[:source_url] = BulkImports::SourceUrlBuilder.new(context, entry).url
+          failure_attributes[:source_title] = entry.try(:title) || entry.try(:name)
+        end
 
         log_exception(
           exception,

@@ -44,10 +44,9 @@ module ResourceEvents
     end
 
     def resource_parent
-      strong_memoize(:resource_parent) do
-        resource.project || resource.group
-      end
+      resource.try(:resource_parent) || resource.project || resource.group
     end
+    strong_memoize_attr :resource_parent
 
     def table_name
       raise NotImplementedError

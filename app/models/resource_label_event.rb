@@ -112,7 +112,7 @@ class ResourceLabelEvent < ResourceEvent
   end
 
   def resource_parent
-    issuable.project || issuable.group
+    issuable.try(:resource_parent) || issuable.project || issuable.group
   end
 
   def discussion_id_key
