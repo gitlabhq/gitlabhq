@@ -19,7 +19,6 @@ module Gitlab
           validations do
             validates :config, type: Hash, allowed_keys: ALLOWED_KEYS
             validates :key, alphanumeric: true
-            validates :input_default, alphanumeric: true, allow_nil: true
             validates :input_description, alphanumeric: true, allow_nil: true
             validates :input_regex, type: String, allow_nil: true
             validates :input_type, allow_nil: true, allowed_values: Interpolation::Inputs.input_types

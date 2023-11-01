@@ -13,6 +13,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
     { before: 'oldrev', after: 'newrev', ref: 'ref' }
   end
 
+  let(:serialized_data) { data.deep_stringify_keys }
+
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
   describe '#initialize' do
@@ -426,7 +428,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(default_log_data),
+              hash_including(default_log_data.deep_stringify_keys),
               :ok,
               nil
             )
@@ -456,7 +458,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
                 default_log_data.merge(
                   response_body: 'Bad request',
                   response_status: 400
-                )
+                ).deep_stringify_keys
               ),
               :failed,
               nil
@@ -480,7 +482,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
                   response_body: '',
                   response_status: 'internal error',
                   internal_error_message: 'Some HTTP Post error'
-                )
+                ).deep_stringify_keys
               ),
               :error,
               nil
@@ -499,7 +501,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(default_log_data.merge(response_body: '')),
+              hash_including(default_log_data.merge(response_body: '').deep_stringify_keys),
               :ok,
               nil
             )
@@ -520,7 +522,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(default_log_data.merge(response_body: stripped_body)),
+              hash_including(default_log_data.merge(response_body: stripped_body).deep_stringify_keys),
               :ok,
               nil
             )
@@ -553,7 +555,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(default_log_data.merge(response_headers: expected_response_headers)),
+              hash_including(default_log_data.merge(response_headers: expected_response_headers).deep_stringify_keys),
               :ok,
               nil
             )
@@ -578,7 +580,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(default_log_data.merge(response_headers: expected_response_headers)),
+              hash_including(default_log_data.merge(response_headers: expected_response_headers).deep_stringify_keys),
               :ok,
               nil
             )
@@ -596,7 +598,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(default_log_data),
+              hash_including(default_log_data.deep_stringify_keys),
               :ok,
               nil
             )
@@ -607,7 +609,9 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(default_log_data.merge(request_data: WebHookLog::OVERSIZE_REQUEST_DATA)),
+              hash_including(default_log_data.merge(
+                request_data: WebHookLog::OVERSIZE_REQUEST_DATA
+              ).deep_stringify_keys),
               :ok,
               nil
             )
@@ -636,7 +640,9 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
   describe '#async_execute' do
     def expect_to_perform_worker(hook)
-      expect(WebHookWorker).to receive(:perform_async).with(hook.id, data, 'push_hooks', an_instance_of(Hash))
+      expect(WebHookWorker).to receive(:perform_async).with(
+        hook.id, serialized_data, 'push_hooks', an_instance_of(Hash)
+      )
     end
 
     def expect_to_rate_limit(hook, threshold:, throttled: false)

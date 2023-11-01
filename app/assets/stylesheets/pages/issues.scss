@@ -251,6 +251,14 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
+.issue-sticky-header-text {
+  padding: 0 $container-margin;
+
+  @include media-breakpoint-up(xl) {
+    padding: 0 $container-margin-xl;
+  }
+}
+
 .issuable-header-slide-enter-active,
 .issuable-header-slide-leave-active {
   @include gl-transition-medium;

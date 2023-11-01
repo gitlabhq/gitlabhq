@@ -110,10 +110,10 @@ class WebHookService
       break log_recursion_blocked if recursion_blocked?
 
       params = {
-        recursion_detection_request_uuid: Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid
+        "recursion_detection_request_uuid" => Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid
       }.compact
 
-      WebHookWorker.perform_async(hook.id, data, hook_name, params)
+      WebHookWorker.perform_async(hook.id, data.deep_stringify_keys, hook_name, params)
     end
   end
 
@@ -170,7 +170,7 @@ class WebHookService
   def queue_log_execution_with_retry(log_data, category)
     retried = false
     begin
-      ::WebHooks::LogExecutionWorker.perform_async(hook.id, log_data, category, uniqueness_token)
+      ::WebHooks::LogExecutionWorker.perform_async(hook.id, log_data.deep_stringify_keys, category, uniqueness_token)
     rescue Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError
       raise if retried
 

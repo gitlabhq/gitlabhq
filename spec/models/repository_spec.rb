@@ -3822,6 +3822,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it 'returns nil' do
         expect(repository.get_patch_id('HEAD', 'HEAD')).to be_nil
       end
+
+      it 'does not report the exception' do
+        expect(Gitlab::ErrorTracking)
+          .not_to receive(:track_exception)
+
+        repository.get_patch_id('HEAD', 'HEAD')
+      end
     end
 
     context 'when a Gitlab::Git::CommandError is raised' do
@@ -3831,7 +3838,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it 'returns nil' do
-        expect(repository.get_patch_id('HEAD', 'HEAD')).to be_nil
+        expect(repository.get_patch_id('HEAD~', 'HEAD')).to be_nil
       end
 
       it 'reports the exception' do
@@ -3840,11 +3847,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
           .with(
             instance_of(Gitlab::Git::CommandError),
             project_id: repository.project.id,
-            old_revision: 'HEAD',
+            old_revision: 'HEAD~',
             new_revision: 'HEAD'
           )
 
-        repository.get_patch_id('HEAD', 'HEAD')
+        repository.get_patch_id('HEAD~', 'HEAD')
       end
     end
 

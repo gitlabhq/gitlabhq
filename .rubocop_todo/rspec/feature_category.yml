@@ -2655,7 +2655,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/bitbucket/representation/issue_spec.rb'
     - 'spec/lib/bitbucket/representation/pull_request_comment_spec.rb'
     - 'spec/lib/bitbucket/representation/pull_request_spec.rb'
-    - 'spec/lib/bitbucket/representation/repo_spec.rb'
     - 'spec/lib/bitbucket/representation/user_spec.rb'
     - 'spec/lib/bitbucket_server/client_spec.rb'
     - 'spec/lib/bitbucket_server/collection_spec.rb'

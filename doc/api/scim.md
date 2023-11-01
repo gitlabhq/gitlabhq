@@ -53,7 +53,7 @@ Example response:
 ```json
 [
     {
-        "extern_uid": "4",
+        "extern_uid": "be20d8dcc028677c931e04f387",
         "user_id": 48,
         "active": true
     }
@@ -85,14 +85,14 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
+curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/be20d8dcc028677c931e04f387" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
 ```
 
 Example response:
 
 ```json
 {
-    "extern_uid": "4",
+    "extern_uid": "be20d8dcc028677c931e04f387",
     "user_id": 48,
     "active": true
 }
@@ -122,9 +122,9 @@ Parameters:
 Example request:
 
 ```shell
-curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones" \
+curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/scim/be20d8dcc028677c931e04f387" \
 --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
---form "extern_uid=sydney_jones_new"
+--form "extern_uid=yrnZW46BrtBFqM7xDzE7dddd"
 ```
 
 ## Delete a single SCIM identity
@@ -145,7 +145,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones"
+curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/33/scim/yrnZW46BrtBFqM7xDzE7dddd"
 
 ```
 

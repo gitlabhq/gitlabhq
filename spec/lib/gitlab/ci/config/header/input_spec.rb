@@ -40,8 +40,20 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
     end
   end
 
-  context 'when has a default value' do
+  context 'when has a string default value' do
     let(:input_hash) { { default: 'bar' } }
+
+    it_behaves_like 'a valid input'
+  end
+
+  context 'when has a numeric default value' do
+    let(:input_hash) { { default: 6.66 } }
+
+    it_behaves_like 'a valid input'
+  end
+
+  context 'when has a boolean default value' do
+    let(:input_hash) { { default: true } }
 
     it_behaves_like 'a valid input'
   end

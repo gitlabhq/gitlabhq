@@ -506,6 +506,22 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, `last: Int`.
 
+### `Query.memberRole`
+
+Finds a single custom role.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MemberRole`](#memberrole).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymemberroleid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+
 ### `Query.memberRolePermissions`
 
 List of all customizable permissions.
@@ -18106,7 +18122,6 @@ GPG signature for a signed commit.
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
-| <a id="groupmemberroles"></a>`memberRoles` **{warning-solid}** | [`MemberRoleConnection`](#memberroleconnection) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Member roles available for the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -18723,6 +18738,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouplabelsincludedescendantgroups"></a>`includeDescendantGroups` | [`Boolean`](#boolean) | Include labels from descendant groups. |
 | <a id="grouplabelsonlygrouplabels"></a>`onlyGroupLabels` | [`Boolean`](#boolean) | Include only group level labels. |
 | <a id="grouplabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
+
+##### `Group.memberRoles`
+
+Member roles available for the group.
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MemberRoleConnection`](#memberroleconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
 
 ##### `Group.mergeRequestViolations`
 
@@ -22768,7 +22803,6 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectlanguages"></a>`languages` | [`[RepositoryLanguage!]`](#repositorylanguage) | Programming languages used in the project. |
 | <a id="projectlastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
 | <a id="projectlfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if the project has Large File Storage (LFS) enabled. |
-| <a id="projectmemberroles"></a>`memberRoles` **{warning-solid}** | [`MemberRoleConnection`](#memberroleconnection) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Member roles available for the group. |
 | <a id="projectmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
 | <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge Requests are enabled for the current user. |
@@ -23644,6 +23678,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectlabelsincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="projectlabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
+
+##### `Project.memberRoles`
+
+Member roles available for the group.
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MemberRoleConnection`](#memberroleconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
 
 ##### `Project.mergeRequest`
 

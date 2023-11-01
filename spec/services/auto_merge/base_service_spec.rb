@@ -309,26 +309,18 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
 
     let(:merge_request) { create(:merge_request) }
 
-    where(:can_be_merged, :open, :broken, :discussions, :blocked, :draft, :skip_draft, :skip_blocked,
-      :skip_discussions, :result) do
-      true | true | false | true | false | false | false | false | false | true
-      true | true | false | true | false | false | true | true | false | true
-      true | true | false | true | false | true | true | false | false | true
-      true | true | false | true | true | false | false | true | false | true
-      true | true | false | false | false | false | false | false | true | true
-      true | true | false | true | false | true | false | false | false | false
-      false | true | false | true | false | false | false | false | false | false
-      true | false | false | true | false | false | false | false | false | false
-      true | true | true | true | false | false | false | false | false | false
-      true | true | false | false | false | false | false | false | false | false
-      true | true | false | true | true | false | false | false | false | false
+    where(:can_be_merged, :open, :broken, :discussions, :blocked, :draft, :result) do
+      true | true | false | true | false | false | true
+      false | true | false | true | false | false | false
+      true | false | false | true | false | false | false
+      true | true | true | true | false | false | false
+      true | true | false | false | false | false | false
+      true | true | false | true | true | false | false
+      true | true | false | true | false | true | false
     end
 
     with_them do
       before do
-        allow(service).to receive(:skip_draft_check).and_return(skip_draft)
-        allow(service).to receive(:skip_blocked_check).and_return(skip_blocked)
-        allow(service).to receive(:skip_discussions_check).and_return(skip_discussions)
         allow(merge_request).to receive(:can_be_merged_by?).and_return(can_be_merged)
         allow(merge_request).to receive(:open?).and_return(open)
         allow(merge_request).to receive(:broken?).and_return(broken)

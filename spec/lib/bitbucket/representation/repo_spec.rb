@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Bitbucket::Representation::Repo do
+RSpec.describe Bitbucket::Representation::Repo, feature_category: :importers do
   describe '#has_wiki?' do
     it { expect(described_class.new({ 'has_wiki' => false }).has_wiki?).to be_falsey }
     it { expect(described_class.new({ 'has_wiki' => true }).has_wiki?).to be_truthy }
@@ -40,6 +40,11 @@ RSpec.describe Bitbucket::Representation::Repo do
 
   describe '#slug' do
     it { expect(described_class.new({ 'full_name' => 'ben/test' }).slug).to eq('test') }
+  end
+
+  describe '#default_branch' do
+    it { expect(described_class.new({ 'mainbranch' => { 'name' => 'master' } }).default_branch).to eq('master') }
+    it { expect(described_class.new({}).default_branch).to eq(nil) }
   end
 
   describe '#clone_url' do

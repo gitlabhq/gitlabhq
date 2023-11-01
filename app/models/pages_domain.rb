@@ -11,6 +11,8 @@ class PagesDomain < ApplicationRecord
 
   MAX_CERTIFICATE_KEY_LENGTH = 8192
 
+  X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN = 19
+
   enum certificate_source: { user_provided: 0, gitlab_provided: 1 }, _prefix: :certificate
   enum scope: { instance: 0, group: 1, project: 2 }, _prefix: :scope, _default: :project
   enum usage: { pages: 0, serverless: 1 }, _prefix: :usage, _default: :pages
@@ -122,14 +124,22 @@ class PagesDomain < ApplicationRecord
     x509.check_private_key(pkey)
   end
 
-  def has_intermediates?
+  def has_valid_intermediates?
     return false unless x509
 
-    # self-signed certificates doesn't have the certificate chain
+    # self-signed certificates don't have the certificate chain
     return true if x509.verify(x509.public_key)
 
     store = OpenSSL::X509::Store.new
     store.set_default_paths
+
+    store.verify_callback = ->(is_valid, store_ctx) {
+      # allow self signed certs, see https://gitlab.com/gitlab-org/gitlab/-/issues/356447
+      return true if store_ctx.error == X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN
+
+      self.errors.add(:certificate, store_ctx.error_string) unless is_valid
+      is_valid
+    }
 
     store.verify(x509, untrusted_ca_certs_bundle)
   rescue OpenSSL::X509::StoreError
@@ -260,9 +270,7 @@ class PagesDomain < ApplicationRecord
   end
 
   def validate_intermediates
-    unless has_intermediates?
-      self.errors.add(:certificate, 'misses intermediates')
-    end
+    self.errors.add(:certificate, 'misses intermediates') unless has_valid_intermediates?
   end
 
   def validate_pages_domain

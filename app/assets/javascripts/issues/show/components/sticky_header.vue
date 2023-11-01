@@ -84,7 +84,7 @@ export default {
         data-testid="issue-sticky-header"
       >
         <div
-          class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-gap-2 gl-mx-auto gl-px-5"
+          class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-gap-2 gl-mx-auto"
         >
           <gl-badge :variant="statusVariant">
             <gl-icon :name="statusIcon" />

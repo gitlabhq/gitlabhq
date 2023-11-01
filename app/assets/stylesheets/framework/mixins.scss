@@ -30,15 +30,6 @@
   max-width: $max-width;
 }
 
-/**
- * Mixin for fixed width container
- */
-@mixin fixed-width-container {
-  max-width: $limited-layout-width - ($gl-padding * 2);
-  margin-left: auto;
-  margin-right: auto;
-}
-
 /*
  * Base mixin for lists in GitLab
  */

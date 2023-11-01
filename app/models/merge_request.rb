@@ -1234,17 +1234,14 @@ class MergeRequest < ApplicationRecord
     }
   end
 
-  def mergeable?(
-    skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false,
-    skip_draft_check: false, skip_rebase_check: false, skip_blocked_check: false)
-
-    return false unless mergeable_state?(
-      skip_ci_check: skip_ci_check,
-      skip_discussions_check: skip_discussions_check,
-      skip_draft_check: skip_draft_check,
-      skip_approved_check: skip_approved_check,
-      skip_blocked_check: skip_blocked_check
-    )
+  # mergeable_state_check_params allows a hash of merge checks to skip or not
+  # skip_ci_check
+  # skip_discussions_check
+  # skip_draft_check
+  # skip_approved_check
+  # skip_blocked_check
+  def mergeable?(check_mergeability_retry_lease: false, skip_rebase_check: false, **mergeable_state_check_params)
+    return false unless mergeable_state?(**mergeable_state_check_params)
 
     check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
     mergeable_git_state?(skip_rebase_check: skip_rebase_check)
@@ -1274,18 +1271,16 @@ class MergeRequest < ApplicationRecord
     mergeable_state_checks + mergeable_git_state_checks
   end
 
-  def mergeable_state?(
-    skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false,
-    skip_draft_check: false, skip_blocked_check: false)
+  # mergeable_state_check_params allows a hash of merge checks to skip or not
+  # skip_ci_check
+  # skip_discussions_check
+  # skip_draft_check
+  # skip_approved_check
+  # skip_blocked_check
+  def mergeable_state?(**mergeable_state_check_params)
     additional_checks = execute_merge_checks(
       self.class.mergeable_state_checks,
-      params: {
-        skip_ci_check: skip_ci_check,
-        skip_discussions_check: skip_discussions_check,
-        skip_approved_check: skip_approved_check,
-        skip_draft_check: skip_draft_check,
-        skip_blocked_check: skip_blocked_check
-      }
+      params: mergeable_state_check_params
     )
     additional_checks.success?
   end

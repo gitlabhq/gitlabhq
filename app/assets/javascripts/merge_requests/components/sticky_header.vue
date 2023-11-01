@@ -122,8 +122,8 @@ export default {
       :class="{ 'gl-visibility-hidden': !isStickyHeaderVisible }"
     >
       <div
-        class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5 gl-w-full"
-        :class="{ 'gl-max-w-container-xl': !isFluidLayout }"
+        class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-w-full"
+        :class="{ 'container-limited': !isFluidLayout }"
       >
         <div class="gl-w-full gl-display-flex gl-align-items-baseline">
           <status-badge

@@ -343,7 +343,7 @@ Now you're ready to push changes from the community fork to the main GitLab repo
 1. If you're happy with this merge request and want to start the review process, type
    `@gitlab-bot ready` in a comment and then select **Comment**.
 
-   ![GitLab bot ready comment](img/bot_ready.png)
+   ![GitLab bot ready comment](img/bot_ready_v16_6.png)
 
 Someone from GitLab will look at your request and let you know what the next steps are.
 

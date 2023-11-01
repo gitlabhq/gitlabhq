@@ -988,7 +988,7 @@ $tabs-holder-z-index: 250;
   .merge-request-tabs-container {
     &.is-merge-request {
       @include gl-mx-auto;
-      max-width: $fixed-layout-width - ($gl-padding * 2);
+      max-width: $fixed-layout-width - ($container-margin-xl * 2);
     }
   }
 }
@@ -1131,7 +1131,7 @@ $tabs-holder-z-index: 250;
 
 .review-bar-content {
   max-width: $limited-layout-width;
-  padding: 0 $gl-padding;
+  padding: 0 $container-margin;
   width: 100%;
   margin: 0 auto;
 }

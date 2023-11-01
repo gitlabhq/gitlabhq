@@ -372,7 +372,11 @@ end
 ### Unleash Proxy example
 
 As of [Unleash Proxy](https://docs.getunleash.io/reference/unleash-proxy) version
-0.2, the proxy is compatible with feature flags. To run a Docker container to
+0.2, the proxy is compatible with feature flags.
+
+You should use Unleash Proxy for production on GitLab.com. See the [performance note](#maximum-supported-clients-in-application-nodes) for details.
+
+To run a Docker container to
 connect to your project's feature flags, run the following command:
 
 ```shell
@@ -418,10 +422,8 @@ Read [How it works](#how-it-works) section before diving into the details.
 
 ### Maximum supported clients in application nodes
 
-GitLab accepts client requests as much as possible until it hits the [rate limiting](../security/rate_limits.md).
-At the moment, the feature flag API falls into **Unauthenticated traffic (from a given IP address)**
-in the [GitLab.com specific limits](../user/gitlab_com/index.md),
-so it's **500 requests per minute**.
+GitLab accepts as many client requests as possible until it hits the [rate limit](../security/rate_limits.md).
+The feature flag API is considered **Unauthenticated traffic (from a given IP address)**. For GitLab.com, see the [GitLab.com specific limits](../user/gitlab_com/index.md).
 
 The polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:
 
@@ -429,7 +431,8 @@ The polling rate is configurable in SDKs. Provided that all clients are requesti
 - Request once per 15 sec ... 125 clients can be supported.
 
 For applications looking for more scalable solution, you should use [Unleash Proxy](#unleash-proxy-example).
-This proxy server sits between the server and clients. It requests to the server as a behalf of the client groups,
+On GitLab.com, you should use Unleash Proxy to reduce the chance of being rate limited across endpoints.
+This proxy server sits between the server and clients. It makes requests to the server on behalf of the client groups,
 so the number of outbound requests can be greatly reduced.
 
 There is also an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more

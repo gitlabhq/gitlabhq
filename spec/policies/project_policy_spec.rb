@@ -2564,72 +2564,153 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'when user is authenticated via CI_JOB_TOKEN', :request_store do
     using RSpec::Parameterized::TableSyntax
 
-    where(:project_visibility, :user_role, :external_user, :scope_project_type, :token_scope_enabled, :result) do
-      :private  | :reporter | false | :same      | true  | true
-      :private  | :reporter | false | :same      | false | true
-      :private  | :reporter | false | :different | true  | false
-      :private  | :reporter | false | :different | false | true
-      :private  | :guest    | false | :same      | true  | true
-      :private  | :guest    | false | :same      | false | true
-      :private  | :guest    | false | :different | true  | false
-      :private  | :guest    | false | :different | false | true
+    RSpec.shared_examples 'CI_JOB_TOKEN enforces the expected permissions' do
+      with_them do
+        let(:current_user) { public_send(user_role) }
+        let(:project) { public_send("#{project_visibility}_project") }
+        let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
 
-      :internal | :reporter | false | :same      | true  | true
-      :internal | :reporter | true  | :same      | true  | true
-      :internal | :reporter | false | :same      | false | true
-      :internal | :reporter | false | :different | true  | true
-      :internal | :reporter | true  | :different | true  | false
-      :internal | :reporter | false | :different | false | true
-      :internal | :guest    | false | :same      | true  | true
-      :internal | :guest    | true  | :same      | true  | true
-      :internal | :guest    | false | :same      | false | true
-      :internal | :guest    | false | :different | true  | true
-      :internal | :guest    | true  | :different | true  | false
-      :internal | :guest    | false | :different | false | true
+        let(:scope_project) do
+          if scope_project_type == :same
+            project
+          else
+            create(:project, :private)
+          end
+        end
 
-      :public   | :reporter | false | :same      | true  | true
-      :public   | :reporter | false | :same      | false | true
-      :public   | :reporter | false | :different | true  | true
-      :public   | :reporter | false | :different | false | true
-      :public   | :guest    | false | :same      | true  | true
-      :public   | :guest    | false | :same      | false | true
-      :public   | :guest    | false | :different | true  | true
-      :public   | :guest    | false | :different | false | true
+        before do
+          current_user.set_ci_job_token_scope!(job)
+          current_user.external = external_user
+          project.update!(
+            ci_outbound_job_token_scope_enabled: token_scope_enabled,
+            ci_inbound_job_token_scope_enabled: token_scope_enabled
+          )
+          scope_project.update!(
+            ci_outbound_job_token_scope_enabled: token_scope_enabled,
+            ci_inbound_job_token_scope_enabled: token_scope_enabled
+          )
+        end
+
+        it "enforces the expected permissions" do
+          if result
+            is_expected.to be_allowed("#{user_role}_access".to_sym)
+          else
+            is_expected.to be_disallowed("#{user_role}_access".to_sym)
+          end
+        end
+      end
     end
 
-    with_them do
-      let(:current_user) { public_send(user_role) }
-      let(:project) { public_send("#{project_visibility}_project") }
-      let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
+    # Remove project_visibility on FF restrict_ci_job_token_for_public_and_internal_projects cleanup
+    where(:project_visibility, :user_role, :external_user, :scope_project_type, :token_scope_enabled, :result) do
+      :public | :reporter | false | :same      | true  | true
+      :public | :reporter | true  | :same      | true  | true
+      :public | :reporter | false | :same      | false | true
+      :public | :reporter | false | :different | true  | false
+      :public | :reporter | true  | :different | true  | false
+      :public | :reporter | false | :different | false | true
+      :public | :guest    | false | :same      | true  | true
+      :public | :guest    | true  | :same      | true  | true
+      :public | :guest    | false | :same      | false | true
+      :public | :guest    | false | :different | true  | false
+      :public | :guest    | true  | :different | true  | false
+      :public | :guest    | false | :different | false | true
+    end
 
-      let(:scope_project) do
-        if scope_project_type == :same
-          project
-        else
-          create(:project, :private)
-        end
+    include_examples "CI_JOB_TOKEN enforces the expected permissions"
+
+    context "when the project is public or internal and not on the allowlist" do
+      where(:feature, :permissions) do
+        :container_registry | [:build_read_container_image, :read_container_image]
+        :package_registry   | [:read_package, :read_project]
+        :builds             | [:read_commit_status]
+        :releases           | [:read_release]
+        :environments       | [:read_environment]
       end
 
+      with_them do
+        let(:current_user) { developer }
+        let(:project) { public_project }
+        let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
+        let_it_be(:scope_project) { create(:project, :private) }
+
+        before do
+          current_user.set_ci_job_token_scope!(job)
+
+          scope_project.update!(ci_inbound_job_token_scope_enabled: true)
+        end
+
+        it 'allows the permissions based on the feature access level' do
+          project.project_feature.update!("#{feature}_access_level": ProjectFeature::ENABLED)
+
+          permissions.each { |p| expect_allowed(p) }
+        end
+
+        it 'disallows the permissions if feature access level is restricted' do
+          project.project_feature.update!("#{feature}_access_level": ProjectFeature::PRIVATE)
+
+          permissions.each { |p| expect_disallowed(p) }
+        end
+
+        it 'disallows the permissions if feature access level is disabled' do
+          project.project_feature.update!("#{feature}_access_level": ProjectFeature::DISABLED)
+
+          permissions.each { |p| expect_disallowed(p) }
+        end
+
+        context "with restrict_ci_job_token_for_public_and_internal_projects disabled" do
+          before do
+            stub_feature_flags(restrict_ci_job_token_for_public_and_internal_projects: false)
+          end
+
+          it 'allows all permissions for private' do
+            project.project_feature.update!("#{feature}_access_level": ProjectFeature::PRIVATE)
+
+            permissions.each { |p| expect_allowed(p) }
+          end
+        end
+      end
+    end
+
+    context "with FF restrict_ci_job_token_for_public_and_internal_projects disabled" do
       before do
-        current_user.set_ci_job_token_scope!(job)
-        current_user.external = external_user
-        project.update!(
-          ci_outbound_job_token_scope_enabled: token_scope_enabled,
-          ci_inbound_job_token_scope_enabled: token_scope_enabled
-        )
-        scope_project.update!(
-          ci_outbound_job_token_scope_enabled: token_scope_enabled,
-          ci_inbound_job_token_scope_enabled: token_scope_enabled
-        )
+        stub_feature_flags(restrict_ci_job_token_for_public_and_internal_projects: false)
       end
 
-      it "enforces the expected permissions" do
-        if result
-          is_expected.to be_allowed("#{user_role}_access".to_sym)
-        else
-          is_expected.to be_disallowed("#{user_role}_access".to_sym)
-        end
+      where(:project_visibility, :user_role, :external_user, :scope_project_type, :token_scope_enabled, :result) do
+        :private  | :reporter | false | :same      | true  | true
+        :private  | :reporter | false | :same      | false | true
+        :private  | :reporter | false | :different | true  | false
+        :private  | :reporter | false | :different | false | true
+        :private  | :guest    | false | :same      | true  | true
+        :private  | :guest    | false | :same      | false | true
+        :private  | :guest    | false | :different | true  | false
+        :private  | :guest    | false | :different | false | true
+
+        :internal | :reporter | false | :same      | true  | true
+        :internal | :reporter | true  | :same      | true  | true
+        :internal | :reporter | false | :same      | false | true
+        :internal | :reporter | false | :different | true  | true
+        :internal | :reporter | true  | :different | true  | false
+        :internal | :reporter | false | :different | false | true
+        :internal | :guest    | false | :same      | true  | true
+        :internal | :guest    | true  | :same      | true  | true
+        :internal | :guest    | false | :same      | false | true
+        :internal | :guest    | false | :different | true  | true
+        :internal | :guest    | true  | :different | true  | false
+        :internal | :guest    | false | :different | false | true
+
+        :public   | :reporter | false | :same      | true  | true
+        :public   | :reporter | false | :same      | false | true
+        :public   | :reporter | false | :different | true  | true
+        :public   | :reporter | false | :different | false | true
+        :public   | :guest    | false | :same      | true  | true
+        :public   | :guest    | false | :same      | false | true
+        :public   | :guest    | false | :different | true  | true
+        :public   | :guest    | false | :different | false | true
       end
+
+      include_examples "CI_JOB_TOKEN enforces the expected permissions"
     end
   end
 

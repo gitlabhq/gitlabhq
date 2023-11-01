@@ -288,8 +288,8 @@ RSpec.describe PagesDomain, feature_category: :pages do
     end
   end
 
-  describe '#has_intermediates?' do
-    subject { domain.has_intermediates? }
+  describe '#has_valid_intermediates?' do
+    subject { domain.has_valid_intermediates? }
 
     context 'for self signed' do
       let(:domain) { build(:pages_domain) }
@@ -309,6 +309,14 @@ RSpec.describe PagesDomain, feature_category: :pages do
       # It will be if ca-certificates is installed on Debian/Ubuntu/Alpine
 
       let(:domain) { build(:pages_domain, :with_trusted_chain) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'for chain with unknown root CA' do
+      # In cases where users use an origin certificate the CA does not necessarily need to be in
+      # the trust store, eg. in the case of Cloudflare Origin Certs.
+      let(:domain) { build(:pages_domain, :with_untrusted_root_ca_in_chain) }
 
       it { is_expected.to be_truthy }
     end

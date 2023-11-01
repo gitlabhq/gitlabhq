@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'forwardable'
 require_relative 'suggestor'
 
 module Tooling
@@ -14,10 +13,7 @@ module Tooling
     #
     # @see Suggestor
     class Suggestion
-      extend Forwardable
       include ::Tooling::Danger::Suggestor
-
-      def_delegators :@context, :helper, :project_helper, :markdown
 
       attr_reader :filename
 
@@ -33,6 +29,22 @@ module Tooling
           replacement: self.class::REPLACEMENT,
           comment_text: self.class::SUGGESTION
         )
+      end
+
+      private
+
+      def helper(...)
+        # Previously, we were using `forwardable` but it emitted a mysterious warning:
+        #   forwarding to private method Danger::Rubocop#helper
+        @context.helper(...)
+      end
+
+      def project_helper(...)
+        @context.project_helper(...)
+      end
+
+      def markdown(...)
+        @context.markdown(...)
       end
     end
   end

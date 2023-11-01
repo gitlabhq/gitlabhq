@@ -5596,6 +5596,9 @@ msgstr ""
 msgid "Analytics|Event counts update hourly"
 msgstr ""
 
+msgid "Analytics|Events"
+msgstr ""
+
 msgid "Analytics|Failed to fetch data"
 msgstr ""
 
@@ -5642,6 +5645,9 @@ msgid "Analytics|Pages"
 msgstr ""
 
 msgid "Analytics|Previous month"
+msgstr ""
+
+msgid "Analytics|Projects"
 msgstr ""
 
 msgid "Analytics|Referer"

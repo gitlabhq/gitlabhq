@@ -599,7 +599,7 @@ class Integration < ApplicationRecord
     return if ::Gitlab::SilentMode.enabled?
     return unless supported_events.include?(data[:object_kind])
 
-    Integrations::ExecuteWorker.perform_async(id, data)
+    Integrations::ExecuteWorker.perform_async(id, data.deep_stringify_keys)
   end
 
   # override if needed

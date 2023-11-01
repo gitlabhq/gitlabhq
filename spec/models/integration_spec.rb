@@ -1327,6 +1327,7 @@ RSpec.describe Integration, feature_category: :integrations do
   describe '#async_execute' do
     let(:integration) { described_class.new(id: 123) }
     let(:data) { { object_kind: 'build' } }
+    let(:serialized_data) { data.deep_stringify_keys }
     let(:supported_events) { %w[push build] }
 
     subject(:async_execute) { integration.async_execute(data) }
@@ -1336,7 +1337,7 @@ RSpec.describe Integration, feature_category: :integrations do
     end
 
     it 'queues a Integrations::ExecuteWorker' do
-      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, data)
+      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, serialized_data)
 
       async_execute
     end

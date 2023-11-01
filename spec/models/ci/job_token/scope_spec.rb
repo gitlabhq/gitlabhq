@@ -88,24 +88,6 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     end
   end
 
-  RSpec.shared_examples 'enforces outbound scope only' do
-    include_context 'with accessible and inaccessible projects'
-
-    where(:accessed_project, :result) do
-      ref(:current_project)            | true
-      ref(:inbound_allowlist_project)  | false
-      ref(:unscoped_project1)          | false
-      ref(:unscoped_project2)          | false
-      ref(:outbound_allowlist_project) | true
-      ref(:inbound_accessible_project) | false
-      ref(:fully_accessible_project)   | true
-    end
-
-    with_them do
-      it { is_expected.to eq(result) }
-    end
-  end
-
   describe 'accessible?' do
     subject { scope.accessible?(accessed_project) }
 
@@ -121,6 +103,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
           ref(:outbound_allowlist_project) | false
           ref(:inbound_accessible_project) | false
           ref(:fully_accessible_project)   | true
+          ref(:unscoped_public_project)    | false
         end
 
         with_them do
@@ -147,6 +130,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         ref(:outbound_allowlist_project) | false
         ref(:inbound_accessible_project) | true
         ref(:fully_accessible_project)   | true
+        ref(:unscoped_public_project)    | false
       end
 
       with_them do
@@ -160,7 +144,34 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         current_project.update!(ci_outbound_job_token_scope_enabled: true)
       end
 
-      include_examples 'enforces outbound scope only'
+      include_context 'with accessible and inaccessible projects'
+
+      where(:accessed_project, :result) do
+        ref(:current_project)            | true
+        ref(:inbound_allowlist_project)  | false
+        ref(:unscoped_project1)          | false
+        ref(:unscoped_project2)          | false
+        ref(:outbound_allowlist_project) | true
+        ref(:inbound_accessible_project) | false
+        ref(:fully_accessible_project)   | true
+        ref(:unscoped_public_project)    | true
+      end
+
+      with_them do
+        it { is_expected.to eq(result) }
+      end
+
+      context "with FF restrict_ci_job_token_for_public_and_internal_projects disabled" do
+        before do
+          stub_feature_flags(restrict_ci_job_token_for_public_and_internal_projects: false)
+        end
+
+        let(:accessed_project) { unscoped_public_project }
+
+        it "restricts public and internal outbound projects not in allowlist" do
+          is_expected.to eq(false)
+        end
+      end
     end
   end
 end

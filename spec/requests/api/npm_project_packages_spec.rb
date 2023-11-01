@@ -196,7 +196,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
       context 'with a job token for a different user' do
         let_it_be(:other_user) { create(:user) }
-        let_it_be_with_reload(:other_job) { create(:ci_build, :running, user: other_user) }
+        let_it_be_with_reload(:other_job) { create(:ci_build, :running, user: other_user, project: project) }
 
         let(:headers) { build_token_auth_header(other_job.token) }
 
@@ -245,7 +245,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
       context 'with a job token for a different user' do
         let_it_be(:other_user) { create(:user) }
-        let_it_be_with_reload(:other_job) { create(:ci_build, :running, user: other_user) }
+        let_it_be_with_reload(:other_job) { create(:ci_build, :running, user: other_user, project: project) }
 
         let(:headers) { build_token_auth_header(other_job.token) }
 

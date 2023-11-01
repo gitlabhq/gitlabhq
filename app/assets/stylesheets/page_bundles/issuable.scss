@@ -1,34 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-.limit-container-width {
-  .flash-container,
-  .detail-page-header,
-  .page-content-header,
-  .commit-box,
-  .info-well,
-  .commit-ci-menu,
-  .files-changed-inner,
-  .limited-header-width,
-  .limited-width-notes {
-    @include fixed-width-container;
-  }
-
-  .issuable-details {
-    .detail-page-description,
-    .mr-source-target,
-    .mr-state-widget,
-    .merge-manually {
-      @include fixed-width-container;
-    }
-  }
-
-  .merge-request-details {
-    .emoji-list-container {
-      @include fixed-width-container;
-    }
-  }
-}
-
 .issuable-details {
   section {
     .issuable-discussion {
