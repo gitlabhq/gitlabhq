@@ -12,7 +12,7 @@ let wrapper;
 let apolloProvider;
 
 function factory({
-  result = 'passed',
+  status = 'success',
   canMerge = true,
   pushToSourceBranch = true,
   shouldBeRebased = false,
@@ -42,7 +42,7 @@ function factory({
     apolloProvider,
     propsData: {
       mr,
-      check: { result, identifier: 'conflict' },
+      check: { status, identifier: 'CONFLICT' },
     },
   });
 }

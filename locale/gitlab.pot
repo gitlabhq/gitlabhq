@@ -4824,6 +4824,9 @@ msgstr ""
 msgid "All protected branches"
 msgstr ""
 
+msgid "All required approvals must be given."
+msgstr ""
+
 msgid "All threads resolved!"
 msgstr ""
 
@@ -16220,6 +16223,9 @@ msgstr ""
 msgid "Denied authorization of chat nickname %{user_name}."
 msgstr ""
 
+msgid "Denied licenses must be removed or approved."
+msgstr ""
+
 msgid "Deny"
 msgstr ""
 
@@ -24730,6 +24736,9 @@ msgstr ""
 msgid "Import|GitHub import details"
 msgstr ""
 
+msgid "Import|GitLab Migration details"
+msgstr ""
+
 msgid "Import|Maximum decompressed file size for archives from imports (MiB)"
 msgstr ""
 
@@ -29739,6 +29748,9 @@ msgid "Merge request dependencies"
 msgstr ""
 
 msgid "Merge request events"
+msgstr ""
+
+msgid "Merge request is blocked by another merge request."
 msgstr ""
 
 msgid "Merge request must be open."
@@ -46028,6 +46040,9 @@ msgid "Status"
 msgstr ""
 
 msgid "Status (optional)"
+msgstr ""
+
+msgid "Status checks must pass."
 msgstr ""
 
 msgid "Status was retried."

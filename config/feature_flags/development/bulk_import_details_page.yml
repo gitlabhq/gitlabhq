@@ -1,0 +1,8 @@
+---
+name: bulk_import_details_page
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135004
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429109
+milestone: '16.6'
+type: development
+group: group::import and integrate
+default_enabled: false

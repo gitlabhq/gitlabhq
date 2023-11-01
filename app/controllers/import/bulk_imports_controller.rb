@@ -49,6 +49,10 @@ class Import::BulkImportsController < ApplicationController
     end
   end
 
+  def details
+    render_404 unless Feature.enabled?(:bulk_import_details_page)
+  end
+
   def create
     return render json: { success: false }, status: :too_many_requests if throttled_request?
     return render json: { success: false }, status: :unprocessable_entity unless valid_create_params?

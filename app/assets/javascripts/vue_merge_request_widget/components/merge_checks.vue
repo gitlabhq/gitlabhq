@@ -68,10 +68,10 @@ export default {
       );
     },
     checks() {
-      return this.state.mergeChecks || [];
+      return this.state.mergeabilityChecks || [];
     },
     failedChecks() {
-      return this.checks.filter((c) => c.result === 'failed');
+      return this.checks.filter((c) => c.status.toLowerCase() === 'failed');
     },
   },
   methods: {
@@ -79,7 +79,7 @@ export default {
       this.collapsed = !this.collapsed;
     },
     checkComponent(check) {
-      return COMPONENTS[check.identifier] || COMPONENTS.default;
+      return COMPONENTS[check.identifier.toLowerCase()] || COMPONENTS.default;
     },
   },
 };

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > Project owner creates a license file', :js, feature_category: :groups_and_projects do
-  let_it_be(:project_maintainer) { create(:user, :no_super_sidebar) }
+  let_it_be(:project_maintainer) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: project_maintainer.namespace) }
 
   before do
@@ -59,7 +59,7 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js, f
   end
 
   def select_template(template)
-    page.within('.gl-new-dropdown') do
+    within_testid('template-selector') do
       click_button 'Apply a template'
       find('.gl-new-dropdown-contents li', text: template).click
       wait_for_requests

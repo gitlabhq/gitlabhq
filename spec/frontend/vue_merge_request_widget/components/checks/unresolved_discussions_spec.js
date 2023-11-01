@@ -7,7 +7,13 @@ describe('MergeChecksUnresolvedDiscussions component', () => {
   let wrapper;
 
   function createComponent(
-    propsData = { check: { result: 'failed', failureReason: 'Failed message' } },
+    propsData = {
+      check: {
+        status: 'FAILED',
+        failureReason: 'Failed message',
+        identifier: 'discussions_not_resolved',
+      },
+    },
   ) {
     wrapper = mountExtended(MergeChecksUnresolvedDiscussions, {
       propsData,
@@ -15,14 +21,18 @@ describe('MergeChecksUnresolvedDiscussions component', () => {
   }
 
   it('passes check down to the MergeChecksMessage', () => {
-    const check = { result: 'failed', failureReason: 'Unresolved discussions' };
+    const check = {
+      status: 'failed',
+      failureReason: 'Unresolved discussions',
+      identifier: 'discussions_not_resolved',
+    };
     createComponent({ check });
 
     expect(wrapper.findComponent(MergeChecksMessage).props('check')).toEqual(check);
   });
 
   it('does not show go to first unresolved discussion button with passed state', () => {
-    createComponent({ check: { result: 'passed' } });
+    createComponent({ check: { status: 'success', identifier: 'discussions_not_resolved' } });
     const button = wrapper.findByRole('button', { name: 'Go to first unresolved thread' });
     expect(button.exists()).toBe(false);
   });

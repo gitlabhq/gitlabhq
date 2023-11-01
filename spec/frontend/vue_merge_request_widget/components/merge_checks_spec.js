@@ -16,7 +16,7 @@ Vue.use(VueApollo);
 let wrapper;
 let apolloProvider;
 
-function factory(mountFn, { canMerge = true, mergeChecks = [] } = {}) {
+function factory(mountFn, { canMerge = true, mergeabilityChecks = [] } = {}) {
   apolloProvider = createMockApollo([
     [
       mergeChecksQuery,
@@ -24,7 +24,7 @@ function factory(mountFn, { canMerge = true, mergeChecks = [] } = {}) {
         data: {
           project: {
             id: 1,
-            mergeRequest: { id: 1, userPermissions: { canMerge }, mergeChecks },
+            mergeRequest: { id: 1, userPermissions: { canMerge }, mergeabilityChecks },
           },
         },
       }),
@@ -112,11 +112,11 @@ describe('Merge request merge checks component', () => {
   });
 
   it.each`
-    mergeChecks                                                                                      | text
-    ${[{ identifier: 'discussions', result: 'failed' }]}                                             | ${'Merge blocked: 1 check failed'}
-    ${[{ identifier: 'discussions', result: 'failed' }, { identifier: 'rebase', result: 'failed' }]} | ${'Merge blocked: 2 checks failed'}
-  `('renders $text for $mergeChecks', async ({ mergeChecks, text }) => {
-    mountComponent({ mergeChecks });
+    mergeabilityChecks                                                                               | text
+    ${[{ identifier: 'discussions', status: 'failed' }]}                                             | ${'Merge blocked: 1 check failed'}
+    ${[{ identifier: 'discussions', status: 'failed' }, { identifier: 'rebase', status: 'failed' }]} | ${'Merge blocked: 2 checks failed'}
+  `('renders $text for $mergeabilityChecks', async ({ mergeabilityChecks, text }) => {
+    mountComponent({ mergeabilityChecks });
 
     await waitForPromises();
 
@@ -124,11 +124,11 @@ describe('Merge request merge checks component', () => {
   });
 
   it.each`
-    result      | statusIcon
+    status      | statusIcon
     ${'failed'} | ${'failed'}
     ${'passed'} | ${'success'}
-  `('renders $statusIcon for $result result', async ({ result, statusIcon }) => {
-    mountComponent({ mergeChecks: [{ result, identifier: 'discussions' }] });
+  `('renders $statusIcon for $status result', async ({ status, statusIcon }) => {
+    mountComponent({ mergeabilityChecks: [{ status, identifier: 'discussions' }] });
 
     await waitForPromises();
 
@@ -137,12 +137,12 @@ describe('Merge request merge checks component', () => {
 
   it.each`
     identifier
-    ${'conflicts'}
+    ${'conflict'}
     ${'unresolved_discussions'}
-    ${'rebase'}
+    ${'need_rebase'}
     ${'default'}
   `('renders $identifier merge check', async ({ identifier }) => {
-    shallowMountComponent({ mergeChecks: [{ result: 'failed', identifier }] });
+    shallowMountComponent({ mergeabilityChecks: [{ status: 'failed', identifier }] });
 
     wrapper.findComponent(StateContainer).vm.$emit('toggle');
 

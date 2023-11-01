@@ -48,7 +48,7 @@ the configuration.
 
 Runners are the agents that run your jobs. These agents can run on physical machines or virtual instances.
 In your `.gitlab-ci.yml` file, you can specify a container image you want to use when running the job.
-The runner loads the image and runs the job either locally or in the container.
+The runner loads the image, clones your project and runs the job either locally or in the container.
 
 If you use GitLab.com, SaaS runners on Linux, Windows, and macOS are already available for use. And you can register your own
 runners on GitLab.com if you'd like.

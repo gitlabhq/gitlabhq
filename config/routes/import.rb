@@ -74,6 +74,7 @@ namespace :import do
     get :status
     get :realtime_changes
     get :history
+    get :details
   end
 
   resource :manifest, only: [:create, :new], controller: :manifest do

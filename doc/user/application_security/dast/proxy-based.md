@@ -11,6 +11,9 @@ The DAST proxy-based analyzer can be added to your [GitLab CI/CD](../../../ci/in
 This helps you discover vulnerabilities in web applications that do not use JavaScript heavily. For applications that do,
 see the [DAST browser-based analyzer](browser_based.md).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video walkthrough, see [How to set up Dynamic Application Security Testing (DAST) with GitLab](https://youtu.be/EiFE1QrUQfk?si=6rpgwgUpalw3ByiV).
+
 WARNING:
 Do not run DAST scans against a production server. Not only can it perform *any* function that
 a user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data. Only run DAST scans against a test server.

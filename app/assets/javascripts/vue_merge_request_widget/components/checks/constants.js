@@ -1,6 +1,6 @@
 export const COMPONENTS = {
-  conflicts: () => import('./conflicts.vue'),
+  conflict: () => import('./conflicts.vue'),
   unresolved_discussions: () => import('./unresolved_discussions.vue'),
-  rebase: () => import('./rebase.vue'),
+  need_rebase: () => import('./rebase.vue'),
   default: () => import('./message.vue'),
 };

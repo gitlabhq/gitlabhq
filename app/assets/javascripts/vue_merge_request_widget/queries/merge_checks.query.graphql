@@ -6,7 +6,10 @@ query mergeChecks($projectPath: ID!, $iid: String!) {
       userPermissions {
         canMerge
       }
-      mergeChecks @client
+      mergeabilityChecks {
+        identifier
+        status
+      }
     }
   }
 }

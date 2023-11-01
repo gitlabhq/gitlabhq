@@ -12,7 +12,7 @@ describe('Import details app', () => {
     it('renders heading', () => {
       createComponent();
 
-      expect(wrapper.find('h1').text()).toBe(ImportDetailsApp.i18n.pageTitle);
+      expect(wrapper.find('h1').text()).toBe('GitHub import details');
     });
   });
 });

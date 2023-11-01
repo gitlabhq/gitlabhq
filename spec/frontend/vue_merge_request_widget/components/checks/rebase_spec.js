@@ -67,7 +67,7 @@ function createWrapper({ propsData = {}, provideData = {}, handler = mockQueryHa
       service: {},
       check: {
         identifier: 'need_rebase',
-        result: 'failed',
+        status: 'failed',
       },
       ...propsData,
     },

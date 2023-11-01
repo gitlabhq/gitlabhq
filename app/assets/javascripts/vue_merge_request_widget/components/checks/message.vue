@@ -4,8 +4,8 @@ import StatusIcon from '../widget/status_icon.vue';
 
 const ICON_NAMES = {
   failed: 'failed',
-  allowed_to_fail: 'neutral',
-  passed: 'success',
+  inactive: 'neutral',
+  success: 'success',
 };
 
 const FAILURE_REASONS = {
@@ -16,6 +16,10 @@ const FAILURE_REASONS = {
   draft_status: __('Merge request must not be draft.'),
   not_open: __('Merge request must be open.'),
   need_rebase: __('Merge request must be rebased, because a fast-forward merge is not possible.'),
+  not_approved: __('All required approvals must be given.'),
+  policies_denied: __('Denied licenses must be removed or approved.'),
+  merge_request_blocked: __('Merge request is blocked by another merge request.'),
+  status_checks_must_pass: __('Status checks must pass.'),
 };
 
 export default {
@@ -36,11 +40,11 @@ export default {
   },
   computed: {
     iconName() {
-      return ICON_NAMES[this.check.result];
+      return ICON_NAMES[this.check.status.toLowerCase()];
     },
-  },
-  i18n: {
-    FAILURE_REASONS,
+    failureReason() {
+      return FAILURE_REASONS[this.check.identifier.toLowerCase()];
+    },
   },
 };
 </script>
@@ -50,7 +54,7 @@ export default {
     <div class="gl-display-flex">
       <status-icon :icon-name="iconName" :level="2" />
       <div class="gl-w-full gl-min-w-0">
-        <div class="gl-display-flex">{{ $options.i18n.FAILURE_REASONS[check.identifier] }}</div>
+        <div class="gl-display-flex">{{ failureReason }}</div>
       </div>
       <slot></slot>
     </div>
