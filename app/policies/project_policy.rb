@@ -491,6 +491,7 @@ class ProjectPolicy < BasePolicy
     enable :update_commit_status
     enable :create_build
     enable :update_build
+    enable :cancel_build
     enable :read_resource_group
     enable :update_resource_group
     enable :create_merge_request_from
@@ -663,6 +664,7 @@ class ProjectPolicy < BasePolicy
 
   rule { builds_disabled | repository_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:build))
+    prevent :cancel_build
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
     prevent(*create_read_update_admin_destroy(:deployment))

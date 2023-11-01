@@ -190,6 +190,11 @@ export default {
       deep: true,
     },
   },
+  beforeMount() {
+    // reset to default environments list every time we open the drawer
+    // and re-render the environments scope dropdown
+    this.$emit('search-environment-scope', '');
+  },
   mounted() {
     if (this.isProtectedByDefault && !this.isEditing) {
       this.variable = { ...this.variable, protected: true };

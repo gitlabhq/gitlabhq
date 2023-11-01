@@ -23,6 +23,7 @@ RSpec.describe 'Creating the packages protection rule', :aggregate_failures, fea
     graphql_mutation(:create_packages_protection_rule, kwargs,
       <<~QUERY
       packageProtectionRule {
+        id
         packageNamePattern
         packageType
         pushProtectedUpToAccessLevel
@@ -52,6 +53,7 @@ RSpec.describe 'Creating the packages protection rule', :aggregate_failures, fea
       subject
 
       expect(mutation_response_package_protection_rule).to include(
+        'id' => be_present,
         'packageNamePattern' => kwargs[:package_name_pattern],
         'packageType' => kwargs[:package_type],
         'pushProtectedUpToAccessLevel' => kwargs[:push_protected_up_to_access_level]

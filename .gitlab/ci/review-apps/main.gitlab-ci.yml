@@ -6,7 +6,7 @@ stages:
   - deploy
   - post-deploy
   - qa
-  - post-qa
+  - report
   - dast
 
 include:

@@ -350,6 +350,13 @@ describe('CI Variable Drawer', () => {
   });
 
   describe('drawer events', () => {
+    it('emits `search-environment-scope` before mounting', () => {
+      createComponent();
+
+      expect(wrapper.emitted('search-environment-scope')).toHaveLength(1);
+      expect(wrapper.emitted('search-environment-scope')).toEqual([['']]);
+    });
+
     it('emits `close-form` when closing the drawer', async () => {
       createComponent();
 
@@ -477,7 +484,7 @@ describe('CI Variable Drawer', () => {
       it('bubbles up the search event', async () => {
         await findEnvironmentScopeDropdown().vm.$emit('search-environment-scope', 'staging');
 
-        expect(wrapper.emitted('search-environment-scope')).toEqual([['staging']]);
+        expect(wrapper.emitted('search-environment-scope')[1]).toEqual(['staging']);
       });
     });
   });

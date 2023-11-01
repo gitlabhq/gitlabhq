@@ -3,24 +3,6 @@ include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.3.0"
-    inputs:
-      job_name: "e2e-test-report"
-      job_stage: "report"
-      aws_access_key_id_variable_name: "QA_ALLURE_AWS_ACCESS_KEY_ID"
-      aws_secret_access_key_variable_name: "QA_ALLURE_AWS_SECRET_ACCESS_KEY"
-      gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
-      allure_results_glob: "qa/tmp/allure-results"
-      allure_ref_slug: "${CI_COMMIT_REF_SLUG}"
-      allure_project_path: "${CI_PROJECT_PATH}"
-      allure_merge_request_iid: "${CI_MERGE_REQUEST_IID}"
-      allure_job_name: "${QA_RUN_TYPE}"
-
-variables:
-  COLORIZED_LOGS: "true"
-  GIT_DEPTH: "20"
-  GIT_STRATEGY: "clone" # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
-  GIT_SUBMODULE_STRATEGY: "none"
 
 .gdk-qa-base:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
@@ -202,6 +184,8 @@ gdk-qa-non-blocking:
 # ==========================================
 e2e-test-report:
   extends: .rules:report:allure-report
+  variables:
+    ALLURE_REPORT_RESULTS_GLOB: "qa/tmp/allure-results"
 
 upload-knapsack-report:
   extends:

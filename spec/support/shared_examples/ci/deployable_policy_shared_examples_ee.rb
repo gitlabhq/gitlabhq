@@ -20,6 +20,12 @@ RSpec.shared_examples 'a deployable job policy in EE' do |factory_type|
     it_behaves_like 'protected environments access', direct_access: true
   end
 
+  describe '#cancel_build?' do
+    subject { user.can?(:cancel_build, job) }
+
+    it_behaves_like 'protected environments access', direct_access: true
+  end
+
   describe '#update_commit_status?' do
     subject { user.can?(:update_commit_status, job) }
 

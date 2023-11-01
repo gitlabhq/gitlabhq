@@ -122,10 +122,10 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
         end
         post ':id/jobs/:job_id/cancel', urgency: :low, feature_category: :continuous_integration do
-          authorize_update_builds!
+          authorize_cancel_builds!
 
           build = find_build!(params[:job_id])
-          authorize!(:update_build, build)
+          authorize!(:cancel_build, build)
 
           build.cancel
 

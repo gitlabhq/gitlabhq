@@ -20000,6 +20000,7 @@ Represents the Geo replication and verification state of a job_artifact.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="jobpermissionscancelbuild"></a>`cancelBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `cancel_build` on this resource. |
 | <a id="jobpermissionsreadbuild"></a>`readBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_build` on this resource. |
 | <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_job_artifacts` on this resource. |
 | <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_build` on this resource. |
@@ -22356,6 +22357,7 @@ A packages protection rule designed to protect packages from being pushed by use
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="packagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | ID of the package protection rule. |
 | <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="packagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
 | <a id="packagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Max GitLab access level unable to push a package. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
@@ -24472,7 +24474,13 @@ Represents the source of a security policy belonging to a project.
 | <a id="projectstatisticsbuildartifactssize"></a>`buildArtifactsSize` | [`Float!`](#float) | Build artifacts size of the project in bytes. |
 | <a id="projectstatisticscommitcount"></a>`commitCount` | [`Float!`](#float) | Commit count of the project. |
 | <a id="projectstatisticscontainerregistrysize"></a>`containerRegistrySize` | [`Float`](#float) | Container Registry size of the project in bytes. |
+| <a id="projectstatisticscostfactoredbuildartifactssize"></a>`costFactoredBuildArtifactsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Build artifacts size in bytes with any applicable cost factor for forks applied. This will equal build_artifacts_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredlfsobjectssize"></a>`costFactoredLfsObjectsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. LFS objects size in bytes with any applicable cost factor for forks applied. This will equal lfs_objects_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredpackagessize"></a>`costFactoredPackagesSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Packages size in bytes with any applicable cost factor for forks applied. This will equal packages_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredrepositorysize"></a>`costFactoredRepositorySize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Repository size in bytes with any applicable cost factor for forks applied. This will equal repository_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredsnippetssize"></a>`costFactoredSnippetsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Snippets size in bytes with any applicable cost factor for forks applied. This will equal snippets_size if there is no applicable cost factor. |
 | <a id="projectstatisticscostfactoredstoragesize"></a>`costFactoredStorageSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.2. This feature is an Experiment. It can be changed or removed at any time. Storage size in bytes with any applicable cost factor for forks applied. This will equal storage_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredwikisize"></a>`costFactoredWikiSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Wiki size in bytes with any applicable cost factor for forks applied. This will equal wiki_size if there is no applicable cost factor. |
 | <a id="projectstatisticslfsobjectssize"></a>`lfsObjectsSize` | [`Float!`](#float) | Large File Storage (LFS) object size of the project in bytes. |
 | <a id="projectstatisticspackagessize"></a>`packagesSize` | [`Float!`](#float) | Packages size of the project in bytes. |
 | <a id="projectstatisticspipelineartifactssize"></a>`pipelineArtifactsSize` | [`Float`](#float) | CI Pipeline artifacts size in bytes. |

@@ -34,6 +34,30 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 - Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 
+### Geo installations
+
+Specific information applies to installations using Geo:
+
+- A number of Prometheus metrics were incorrectly removed in 16.3.0, which can break dashboards and alerting:
+
+  | Affected metric                          | Metric restored in 16.5.2 and later  | Replacement available in 16.3+                 |
+  | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
+  | `geo_repositories_synced`                | Yes                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | Yes                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | Yes                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | Yes                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | Yes                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | Yes                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_checksum_mismatch`     | No                                   | None available                                 |
+  | `geo_repositories_retrying_verification` | No                                   | None available                                 |
+
+  - Impacted versions:
+    - 16.3.0 to 16.5.1
+  - Versions containing fix:
+    - 16.5.2 and later
+
+  For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
+
 ## 16.4.0
 
 - Updating a group path [received a bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/419289) that uses a database index introduced in 16.3.
@@ -85,6 +109,30 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to [configure the path](../../administration/gitaly/reference.md#custom-hooks) to
      server-side custom hooks.
   1. Remove the `[gitlab-shell] dir` configuration.
+
+### Geo installations
+
+Specific information applies to installations using Geo:
+
+- A number of Prometheus metrics were incorrectly removed in 16.3.0, which can break dashboards and alerting:
+
+  | Affected metric                          | Metric restored in 16.5.2 and later  | Replacement available in 16.3+                 |
+  | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
+  | `geo_repositories_synced`                | Yes                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | Yes                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | Yes                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | Yes                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | Yes                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | Yes                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_checksum_mismatch`     | No                                   | None available                                 |
+  | `geo_repositories_retrying_verification` | No                                   | None available                                 |
+
+  - Impacted versions:
+    - 16.3.0 to 16.5.1
+  - Versions containing fix:
+    - 16.5.2 and later
+
+  For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
 ## 16.3.0
 
@@ -152,6 +200,26 @@ Specific information applies to installations using Geo:
     - 16.3.4 and later
 
   For more information, see [issue 425224](https://gitlab.com/gitlab-org/gitlab/-/issues/425224).
+
+- A number of Prometheus metrics were incorrectly removed in 16.3.0, which can break dashboards and alerting:
+
+  | Affected metric                          | Metric restored in 16.5.2 and later  | Replacement available in 16.3+                 |
+  | ---------------------------------------- | ------------------------------------ | ---------------------------------------------- |
+  | `geo_repositories_synced`                | Yes                                  | `geo_project_repositories_synced`              |
+  | `geo_repositories_failed`                | Yes                                  | `geo_project_repositories_failed`              |
+  | `geo_repositories_checksummed`           | Yes                                  | `geo_project_repositories_checksummed`         |
+  | `geo_repositories_checksum_failed`       | Yes                                  | `geo_project_repositories_checksum_failed`     |
+  | `geo_repositories_verified`              | Yes                                  | `geo_project_repositories_verified`            |
+  | `geo_repositories_verification_failed`   | Yes                                  | `geo_project_repositories_verification_failed` |
+  | `geo_repositories_checksum_mismatch`     | No                                   | None available                                 |
+  | `geo_repositories_retrying_verification` | No                                   | None available                                 |
+
+  - Impacted versions:
+    - 16.3.0 to 16.5.1
+  - Versions containing fix:
+    - 16.5.2 and later
+
+  For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
 ## 16.2.0
 

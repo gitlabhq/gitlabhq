@@ -26,11 +26,13 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
     subject
 
     expect(mutation_response).to include(
+      'errors' => be_blank,
       'packageProtectionRule' => {
+        'id' => package_protection_rule.to_global_id.to_s,
         'packageNamePattern' => package_protection_rule.package_name_pattern,
         'packageType' => package_protection_rule.package_type.upcase,
         'pushProtectedUpToAccessLevel' => package_protection_rule.push_protected_up_to_access_level.upcase
-      }, 'errors' => be_blank
+      }
     )
   end
 

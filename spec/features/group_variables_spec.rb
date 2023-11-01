@@ -18,6 +18,7 @@ RSpec.describe 'Group variables', :js, feature_category: :secrets_management do
 
   context 'when ci_variables_pages FF is enabled' do
     it_behaves_like 'variable list drawer'
+    it_behaves_like 'variable list env scope'
     it_behaves_like 'variable list pagination', :ci_group_variable
   end
 
@@ -27,5 +28,6 @@ RSpec.describe 'Group variables', :js, feature_category: :secrets_management do
     end
 
     it_behaves_like 'variable list drawer'
+    it_behaves_like 'variable list env scope'
   end
 end

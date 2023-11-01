@@ -137,33 +137,39 @@ then
   MD_DOC_PATH="$@"
   # shellcheck disable=2059
   printf "${COLOR_GREEN}INFO: List of files specified on command line. Running Markdownlint and Vale for only those files...${COLOR_RESET}\n"
-elif [ -z "${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}" ]
+elif [ -n "${CI_MERGE_REQUEST_IID}" ]
 then
-  MD_DOC_PATH=${MD_DOC_PATH:-doc}
-  # shellcheck disable=2059
-  printf "${COLOR_GREEN}INFO: Merge request pipeline (detached) detected. Running Markdownlint and Vale on all files...${COLOR_RESET}\n"
-else
-  MERGE_BASE=$(git merge-base "${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}" "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}")
-  if git diff --diff-filter=d --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" | grep -E "\.vale|\.markdownlint|lint-doc\.sh|docs\.gitlab-ci\.yml"
+  DOC_CHANGES_FILE=$(mktemp)
+  ruby -r './tooling/lib/tooling/find_changes' -e "Tooling::FindChanges.new(
+      from: :api,
+      changed_files_pathname: '${DOC_CHANGES_FILE}',
+      file_filter: ->(file) { !file['deleted_file'] && file['new_path'] =~ %r{doc/.*|lint-doc\.sh|docs\.gitlab-ci\.yml} }
+    ).execute"
+  if grep -E "\.vale|\.markdownlint|lint-doc\.sh|docs\.gitlab-ci\.yml" < $DOC_CHANGES_FILE
   then
     MD_DOC_PATH=${MD_DOC_PATH:-doc}
     # shellcheck disable=2059
     printf "${COLOR_GREEN}INFO: Vale, Markdownlint, lint-doc.sh, or pipeline configuration changed. Testing all files.${COLOR_RESET}\n"
   else
-    MD_DOC_PATH=$(git diff --diff-filter=d --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" -- 'doc/*.md')
+    MD_DOC_PATH=$(cat $DOC_CHANGES_FILE)
     if [ -n "${MD_DOC_PATH}" ]
     then
       # shellcheck disable=2059
-      printf "${COLOR_GREEN}INFO: Merged results pipeline detected. Testing only the following files:${COLOR_RESET}\n${MD_DOC_PATH}\n"
+      printf "${COLOR_GREEN}INFO: Merge request pipeline detected. Testing only the following files:${COLOR_RESET}\n${MD_DOC_PATH}\n"
     fi
   fi
+  rm $DOC_CHANGES_FILE
+else
+  MD_DOC_PATH=${MD_DOC_PATH:-doc}
+  # shellcheck disable=2059
+  printf "${COLOR_GREEN}INFO: No merge request pipeline detected. Running Markdownlint and Vale on all files...${COLOR_RESET}\n"
 fi
 
 function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
   local files=$3
-  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.16-vale-2.22.0-markdownlint-0.32.2-markdownlint2-0.6.0"
+  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.18-vale-2.29.6-markdownlint-0.37.0-markdownlint2-0.10.0"
 
   if hash "${cmd}" 2>/dev/null
   then
@@ -201,7 +207,7 @@ printf "${COLOR_GREEN}INFO: Linting markdown style...${COLOR_RESET}\n"
 if [ -z "${MD_DOC_PATH}" ]
 then
   # shellcheck disable=2059
-  printf "${COLOR_GREEN}INFO: Merged results pipeline detected, but no markdown files found. Skipping.${COLOR_RESET}\n"
+  printf "${COLOR_GREEN}INFO: Merge request pipeline detected, but no markdown files found. Skipping.${COLOR_RESET}\n"
 else
   if ! yarn markdownlint --rules doc/.markdownlint/rules ${MD_DOC_PATH};
   then

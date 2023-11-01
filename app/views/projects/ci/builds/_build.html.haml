@@ -105,7 +105,7 @@
         - if can?(current_user, :read_job_artifacts, job) && job.artifacts?
           = link_button_to nil, download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), icon: 'download'
         - if can?(current_user, :update_build, job)
-          - if job.active?
+          - if job.active? && can?(current_user, :cancel_build, job)
             = link_button_to nil, cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), icon: 'cancel'
           - elsif job.scheduled?
             = render Pajamas::ButtonComponent.new(disabled: true, icon: 'planning') do

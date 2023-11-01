@@ -11,7 +11,10 @@ module Ci
         @subject.outdated_deployment?
       end
 
-      rule { outdated_deployment }.prevent :update_build
+      rule { outdated_deployment }.policy do
+        prevent :cancel_build
+        prevent :update_build
+      end
     end
   end
 end

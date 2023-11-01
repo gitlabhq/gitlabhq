@@ -21,7 +21,7 @@ module Ci
     attr_reader :build, :user
 
     def allowed?
-      user.can?(:update_build, build)
+      user.can?(:cancel_build, build)
     end
 
     def forbidden
