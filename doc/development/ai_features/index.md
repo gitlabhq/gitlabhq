@@ -58,7 +58,7 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. Enable the required general feature flags:
 
    ```ruby
-   Feature.enable(:openai_experimentation)
+   Feature.enable(:ai_global_switch, type: :ops)
    ```
 
 1. Ensure you have followed [the process to obtain an EE license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance
@@ -409,7 +409,7 @@ module EE
     prepended do
       with_scope :subject
       condition(:ai_available) do
-        ::Feature.enabled?(:openai_experimentation)
+        ::Feature.enabled?(:ai_global_switch, type: :ops)
       end
 
       with_scope :subject

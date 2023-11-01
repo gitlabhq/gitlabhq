@@ -14,12 +14,23 @@ export const calculateBlameOffset = (lineNumber) => {
   return `${lineContentOffset - blobViewerOffset}px`;
 };
 
+export const shouldRender = (data, index) => {
+  const prevBlame = data[index - 1];
+  const currBlame = data[index];
+  const identicalSha = currBlame.commit.sha === prevBlame?.commit?.sha;
+  const lineNumberSmaller = currBlame.lineno < prevBlame?.lineno;
+
+  return !identicalSha || lineNumberSmaller;
+};
+
 export const toggleBlameClasses = (blameData, isVisible) => {
   /**
    * Adds/removes classes to line number/content elements to match the line with the blame info
    * */
   const method = isVisible ? 'add' : 'remove';
-  blameData.forEach(({ lineno, span }) => {
+  blameData.forEach(({ lineno, span }, index) => {
+    if (!shouldRender(blameData, index)) return;
+
     const lineNumberEl = findLineNumberElement(lineno)?.parentElement;
     const lineContentEl = findLineContentElement(lineno);
     const lineNumberSpanEl = findLineNumberElement(lineno + span - 1)?.parentElement;

@@ -1194,63 +1194,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.mr-system-note-icon {
-  width: 20px;
-  height: 20px;
-  margin-left: 6px;
-
-  &.gl-bg-green-100 {
-    --bg-color: var(--green-100, #{$green-100});
-  }
-
-  &.gl-bg-red-100 {
-    --bg-color: var(--red-100, #{$red-100});
-  }
-
-  &.gl-bg-blue-100 {
-    --bg-color: var(--blue-100, #{$blue-100});
-  }
-}
-
-.mr-system-note-icon:not(.mr-system-note-empty)::before {
-  content: '';
-  display: block;
-  position: absolute;
-  left: calc(50% - 1px);
-  bottom: 100%;
-  width: 2px;
-  height: 20px;
-  background: linear-gradient(to bottom, transparent, var(--bg-color));
-
-  .system-note:first-child & {
-    display: none;
-  }
-}
-
-.mr-system-note-icon:not(.mr-system-note-empty)::after {
-  content: '';
-  display: block;
-  position: absolute;
-  left: calc(50% - 1px);
-  top: 100%;
-  width: 2px;
-  height: 20px;
-  background: linear-gradient(to bottom, var(--bg-color), transparent);
-
-  .system-note:last-child & {
-    display: none;
-  }
-}
-
-.mr-system-note-empty {
-  width: 8px;
-  height: 8px;
-  margin-top: 6px;
-  margin-left: 12px;
-  margin-right: 8px;
-  border: 2px solid var(--gray-50, $gray-50);
-}
-
 .diff-file-discussions-wrapper {
   @include gl-w-full;
 

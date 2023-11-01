@@ -9,7 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 With the GitLab Container Registry, every project can have its
 own space to store Docker images.
 
-Read more about the Docker Registry in [the Docker documentation](https://docs.docker.com/registry/introduction/).
+For more details about the Distribution Registry:
+
+- [Configuration](https://distribution.github.io/distribution/about/configuration/)
+- [Storage drivers](https://distribution.github.io/distribution/storage-drivers/)
+- [Deploy a registry server](https://distribution.github.io/distribution/about/deploying/)
 
 This document is the administrator's guide. To learn how to use the GitLab Container
 Registry, see the [user documentation](../../user/packages/container_registry/index.md).
@@ -33,14 +37,12 @@ Otherwise, the Container Registry is not enabled. To enable it:
 
 The Container Registry works under HTTPS by default. You can use HTTP
 but it's not recommended and is beyond the scope of this document.
-Read the [insecure Registry documentation](https://docs.docker.com/registry/insecure/)
-if you want to implement this.
 
 ### Self-compiled installations
 
 If you self-compiled your GitLab installation:
 
-1. You must [deploy a registry](https://docs.docker.com/registry/deploying/) using the image corresponding to the
+1. You must deploy a registry using the image corresponding to the
    version of GitLab you are installing
    (for example: `registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v3.15.0-gitlab`)
 1. After the installation is complete, to enable it, you must configure the Registry's
@@ -70,15 +72,15 @@ Where:
 | `host`    | The host URL under which the Registry runs and users can use. |
 | `port`    | The port the external Registry domain listens on. |
 | `api_url` | The internal API URL under which the Registry is exposed. It defaults to `http://localhost:5000`. Do not change this unless you are setting up an [external Docker registry](#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint). |
-| `key`     | The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
-| `path`    | This should be the same directory like specified in Registry's `rootdirectory`. Read the [storage configuration documentation](https://docs.docker.com/registry/configuration/#storage). This path needs to be readable by the GitLab user, the web-server user and the Registry user. Read more in [#configure-storage-for-the-container-registry](#configure-storage-for-the-container-registry). |
-| `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
+| `key`     | The private key location that is a pair of Registry's `rootcertbundle`. |
+| `path`    | This should be the same directory like specified in Registry's `rootdirectory`. This path needs to be readable by the GitLab user, the web-server user and the Registry user. |
+| `issuer`  | This should be the same value as configured in Registry's `issuer`. |
 
 A Registry init file is not shipped with GitLab if you install it from source.
 Hence, [restarting GitLab](../restart_gitlab.md#self-compiled-installations) does not restart the Registry should
 you modify its settings. Read the upstream documentation on how to achieve that.
 
-At the **absolute** minimum, make sure your [Registry configuration](https://docs.docker.com/registry/configuration/#auth)
+At the **absolute** minimum, make sure your Registry configuration
 has `container_registry` as the service and `https://gitlab.example.com/jwt/auth`
 as the realm:
 
@@ -383,9 +385,6 @@ The different supported drivers are:
 
 Although most S3 compatible services (like [MinIO](https://min.io/)) should work with the Container Registry, we only guarantee support for AWS S3. Because we cannot assert the correctness of third-party S3 implementations, we can debug issues, but we cannot patch the registry unless an issue is reproducible against an AWS S3 bucket.
 
-Read more about the individual driver's configuration options in the
-[Docker Registry docs](https://docs.docker.com/registry/configuration/#storage).
-
 ### Use file system
 
 If you want to store your images on the file system, you can change the storage
@@ -532,14 +531,14 @@ To configure the `gcs` storage driver for a Linux package installation:
     }
    ```
 
-   GitLab supports all [available parameters](https://docs.docker.com/registry/storage-drivers/gcs/).
+   GitLab supports all available parameters.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Self-compiled installations
 
 Configuring the storage driver is done in the registry configuration YAML file created
-when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
+when you deployed your Docker registry.
 
 `s3` storage driver example:
 
@@ -675,7 +674,7 @@ storage:
 
 ::EndTabs
 
-By default, Azure Storage Driver uses the `core.windows.net` realm. You can set another value for `realm` in the `azure` section (for example, `core.usgovcloudapi.net` for Azure Government Cloud). For more information, see the [Docker documentation](https://docs.docker.com/registry/storage-drivers/azure/).
+By default, Azure Storage Driver uses the `core.windows.net` realm. You can set another value for `realm` in the `azure` section (for example, `core.usgovcloudapi.net` for Azure Government Cloud).
 
 ### Disable redirect for storage driver
 
@@ -876,8 +875,7 @@ You can use GitLab as an auth endpoint with an external container registry.
    - `gitlab_rails['registry_api_url'] = "http://<external_registry_host>:5000"`
      must be changed to match the host where Registry is installed.
      It must also specify `https` if the external registry is
-     configured to use TLS. Read more on the
-     [Docker registry documentation](https://docs.docker.com/registry/deploying/).
+     configured to use TLS.
 
 1. A certificate-key pair is required for GitLab and the external container
    registry to communicate securely. You need to create a certificate-key
@@ -972,7 +970,7 @@ To configure a notification endpoint for a Linux package installation:
 :::TabTitle Self-compiled (source)
 
 Configuring the notification endpoint is done in your registry configuration YAML file created
-when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
+when you deployed your Docker registry.
 
 Example:
 
@@ -1580,7 +1578,7 @@ You can add a configuration option for backwards compatibility.
 
 :::TabTitle Self-compiled (source)
 
-1. Edit the YAML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
+1. Edit the YAML configuration file you created when you deployed the registry. Add the following snippet:
 
    ```yaml
    compatibility:
@@ -1632,7 +1630,7 @@ and a simple solution would be to enable relative URLs in the Registry.
 
 :::TabTitle Self-compiled (source)
 
-1. Edit the YAML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
+1. Edit the YAML configuration file you created when you deployed the registry. Add the following snippet:
 
    ```yaml
    http:

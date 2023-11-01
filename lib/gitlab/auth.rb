@@ -156,7 +156,7 @@ module Gitlab
           # This returns true when the failures are over the threshold and the IP
           # is banned.
 
-          message = "Rack_Attack: Git auth failures has exceeded the threshold." \
+          message = "Rack_Attack: Git auth failures has exceeded the threshold. " \
             "IP has been temporarily banned from Git auth."
 
           Gitlab::AuthLogger.error(

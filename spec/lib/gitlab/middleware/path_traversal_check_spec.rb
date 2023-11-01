@@ -70,7 +70,8 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                   class_name: described_class.name,
                   duration_ms: instance_of(Float),
                   message: described_class::PATH_TRAVERSAL_MESSAGE,
-                  fullpath: fullpath
+                  fullpath: fullpath,
+                  method: method.upcase
                 }).and_call_original
 
         expect(subject).to eq(fake_response)
@@ -94,7 +95,8 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                   .with({
                     class_name: described_class.name,
                     message: described_class::PATH_TRAVERSAL_MESSAGE,
-                    fullpath: fullpath
+                    fullpath: fullpath,
+                    method: method.upcase
                   }).and_call_original
 
           expect(subject).to eq(fake_response)

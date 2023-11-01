@@ -425,7 +425,7 @@ curl --request DELETE --data-urlencode 'name_regex_delete=dev-.+' \
 Beside the group- and project-specific GitLab APIs explained above,
 the Container Registry has its own endpoints.
 To query those, follow the Registry's built-in mechanism to obtain and use an
-[authentication token](https://docs.docker.com/registry/spec/auth/token/).
+[authentication token](https://distribution.github.io/distribution/spec/auth/token/).
 
 NOTE:
 These are different from project or personal access tokens in the GitLab application.
@@ -436,7 +436,7 @@ These are different from project or personal access tokens in the GitLab applica
 GET ${CI_SERVER_URL}/jwt/auth?service=container_registry&scope=*
 ```
 
-You must specify the correct [scopes and actions](https://docs.docker.com/registry/spec/auth/scope/) to retrieve a valid token:
+You must specify the correct [scopes and actions](https://distribution.github.io/distribution/spec/auth/scope/) to retrieve a valid token:
 
 ```shell
 $ SCOPE="repository:${CI_REGISTRY_IMAGE}:delete" #or push,pull

@@ -38,12 +38,13 @@ module Gitlab
       end
 
       def check(env, log_params)
-        request = ::Rack::Request.new(env)
+        request = ::Rack::Request.new(env.dup)
         fullpath = request.fullpath
         decoded_fullpath = CGI.unescape(fullpath)
         ::Gitlab::PathTraversal.check_path_traversal!(decoded_fullpath, skip_decoding: true)
 
       rescue ::Gitlab::PathTraversal::PathTraversalAttackError
+        log_params[:method] = request.request_method
         log_params[:fullpath] = fullpath
         log_params[:message] = PATH_TRAVERSAL_MESSAGE
       end

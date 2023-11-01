@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { setHTMLFixture } from 'helpers/fixtures';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer_new.vue';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk_new.vue';
 import { EVENT_ACTION, EVENT_LABEL_VIEWER } from '~/vue_shared/components/source_viewer/constants';
@@ -11,6 +12,7 @@ import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import waitForPromises from 'helpers/wait_for_promises';
 import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
 import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
+import * as utils from '~/vue_shared/components/source_viewer/utils';
 
 import {
   BLOB_DATA_MOCK,
@@ -18,6 +20,7 @@ import {
   CHUNK_2,
   LANGUAGE_MOCK,
   BLAME_DATA_QUERY_RESPONSE_MOCK,
+  SOURCE_CODE_CONTENT_MOCK,
 } from './mock_data';
 
 Vue.use(VueApollo);
@@ -37,6 +40,8 @@ describe('Source Viewer component', () => {
   const hash = '#L142';
 
   const blameDataQueryHandlerSuccess = jest.fn().mockResolvedValue(BLAME_DATA_QUERY_RESPONSE_MOCK);
+  const blameInfo =
+    BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
   const createComponent = ({ showBlame = true } = {}) => {
     fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
@@ -55,6 +60,10 @@ describe('Source Viewer component', () => {
 
   const findChunks = () => wrapper.findAllComponents(Chunk);
   const findBlameComponents = () => wrapper.findAllComponents(Blame);
+  const triggerChunkAppear = async (chunkIndex = 0) => {
+    findChunks().at(chunkIndex).vm.$emit('appear');
+    await waitForPromises();
+  };
 
   beforeEach(() => {
     jest.spyOn(Tracking, 'event');
@@ -82,20 +91,23 @@ describe('Source Viewer component', () => {
       expect(findBlameComponents()).toHaveLength(0);
     });
 
-    describe('Blame information', () => {
-      const triggerChunkAppear = async () => {
-        findChunks().at(0).vm.$emit('appear');
-        await waitForPromises();
-      };
-      beforeEach(async () => {});
+    describe('DOM updates', () => {
+      it('adds the necessary classes to the DOM', async () => {
+        setHTMLFixture(SOURCE_CODE_CONTENT_MOCK);
+        jest.spyOn(utils, 'toggleBlameClasses');
+        createComponent();
+        await triggerChunkAppear();
 
+        expect(utils.toggleBlameClasses).toHaveBeenCalledWith(blameInfo, true);
+      });
+    });
+
+    describe('Blame information', () => {
       it('renders a Blame component when a chunk appears', async () => {
         await triggerChunkAppear();
-        const blameData =
-          BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
         expect(findBlameComponents().at(0).exists()).toBe(true);
-        expect(findBlameComponents().at(0).props()).toMatchObject({ blameData });
+        expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
       });
 
       it('calls the query only once per chunk', async () => {
@@ -107,6 +119,20 @@ describe('Source Viewer component', () => {
         await triggerChunkAppear();
 
         expect(wrapper.vm.$apollo.query).toHaveBeenCalledTimes(1);
+      });
+
+      it('requests blame information for overlapping chunk', async () => {
+        jest.spyOn(wrapper.vm.$apollo, 'query');
+
+        await triggerChunkAppear(1);
+
+        expect(wrapper.vm.$apollo.query).toHaveBeenCalledTimes(2);
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ fromLine: 71, toLine: 110 }),
+        );
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ fromLine: 1, toLine: 70 }),
+        );
       });
 
       it('does not render a Blame component when `showBlame: false`', async () => {
@@ -125,8 +151,7 @@ describe('Source Viewer component', () => {
 
   describe('hash highlighting', () => {
     it('calls highlightHash with expected parameter', () => {
-      const scrollEnabled = false;
-      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash, scrollEnabled);
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
     });
   });
 });

@@ -19,7 +19,9 @@ import {
 import { i18n, TESTS_FAILED_STATUS, ERROR_STATUS } from './constants';
 
 export default {
-  name: 'WidgetTestReport',
+  // widget name does not match file path because widget name must match telemetry event names
+  // see https://gitlab.com/gitlab-org/gitlab/-/issues/427061
+  name: 'WidgetTestSummary',
   components: {
     MrWidget,
     MrWidgetRow,

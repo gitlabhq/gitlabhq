@@ -202,5 +202,22 @@ you can set it to any string - it will be ignored when `runner-token` is present
 
 ## Known issues
 
-- When you use the new registration workflow to register your runners with the Helm chart, the pod name is not visible
-  in the runner details page. For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).
+### Pod name is not visible in runner details page
+
+When you use the new registration workflow to register your runners with the Helm chart, the pod name is not visible
+in the runner details page.
+For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).
+
+### Runner authentication token does not update when rotated
+
+When you use the new registration workflow to register your runners with the GitLab Operator,
+the runner authentication token referenced by the Custom Resource Definition does not update when the token is rotated.
+This occurs when:
+
+- You're using a runner authentication token (prefixed with `glrt-`) in a secret
+  [referenced by a Custom Resource Definition](https://docs.gitlab.com/runner/install/operator.html#install-gitlab-runner).
+- The runner authentication token is due to expire.
+  For more information about runner authentication token expiration,
+  see [Authentication token security](configure_runners.md#authentication-token-security).
+
+For more information, see [issue 186](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/issues/186).

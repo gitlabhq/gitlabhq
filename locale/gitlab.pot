@@ -29684,7 +29684,7 @@ msgstr ""
 msgid "Merge automatically (%{strategy})"
 msgstr ""
 
-msgid "Merge blocked: all merge request dependencies must be merged."
+msgid "Merge blocked: Merge all open dependent merge requests, and remove all closed dependencies."
 msgstr ""
 
 msgid "Merge blocked: pipeline must succeed. It's waiting for a manual job to continue."

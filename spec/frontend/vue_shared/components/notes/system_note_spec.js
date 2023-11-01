@@ -61,10 +61,16 @@ describe('system note component', () => {
     expect(vm.classes()).toContain('target');
   });
 
-  it('should render svg icon', () => {
+  it('should render svg icon only for certain icons', () => {
+    const ALLOWED_ICONS = ['check', 'merge', 'merge-request-close', 'issue-close'];
     createComponent(props);
 
-    expect(vm.find('[data-testid="timeline-icon"]').exists()).toBe(true);
+    expect(vm.find('[data-testid="timeline-icon"]').exists()).toBe(false);
+
+    ALLOWED_ICONS.forEach((icon) => {
+      createComponent({ note: { ...props.note, system_note_icon_name: icon } });
+      expect(vm.find('[data-testid="timeline-icon"]').exists()).toBe(true);
+    });
   });
 
   // Redcarpet Markdown renderer wraps text in `<p>` tags

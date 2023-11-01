@@ -1,0 +1,28 @@
+diff --git a/node_modules/leaflet/dist/leaflet.css b/node_modules/leaflet/dist/leaflet.css
+index 2961b76..50d36dc 100644
+--- a/node_modules/leaflet/dist/leaflet.css
++++ b/node_modules/leaflet/dist/leaflet.css
+@@ -356,12 +356,12 @@ svg.leaflet-image-layer.leaflet-interactive path {
+ 	border-radius: 5px;
+ 	}
+ .leaflet-control-layers-toggle {
+-	background-image: url(images/layers.png);
++	background-image: url(./images/layers.png);
+ 	width: 36px;
+ 	height: 36px;
+ 	}
+ .leaflet-retina .leaflet-control-layers-toggle {
+-	background-image: url(images/layers-2x.png);
++	background-image: url(./images/layers-2x.png);
+ 	background-size: 26px 26px;
+ 	}
+ .leaflet-touch .leaflet-control-layers-toggle {
+@@ -404,7 +404,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
+ 
+ /* Default icon URLs */
+ .leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
+-	background-image: url(images/marker-icon.png);
++	background-image: url(./images/marker-icon.png);
+ 	}
+ 
+ 
