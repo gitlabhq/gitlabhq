@@ -171,13 +171,15 @@
 
         - if profile_tab?(:activity)
           #activity.tab-pane
-            .flash-container
-            - if can?(current_user, :read_cross_project)
-              %h4.prepend-top-20
-                = s_('UserProfile|Most Recent Activity')
-              .content_list{ data: { href: user_activity_path } }
-              .loading
-                = gl_loading_icon(size: 'md')
+            .row
+              .col-12
+                .flash-container
+                - if can?(current_user, :read_cross_project)
+                  %h4.prepend-top-20
+                    = s_('UserProfile|Most Recent Activity')
+                  .content_list.user-activity-content{ data: { href: user_activity_path } }
+                  .loading
+                    = gl_loading_icon(size: 'md')
         - unless @user.bot?
           - if profile_tab?(:groups)
             #groups.tab-pane

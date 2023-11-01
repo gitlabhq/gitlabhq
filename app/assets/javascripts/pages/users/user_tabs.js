@@ -194,7 +194,7 @@ export default class UserTabs {
     this.loadActivityCalendar();
 
     UserTabs.renderMostRecentBlocks('#js-overview .activities-block', {
-      requestParams: { limit: 10 },
+      requestParams: { limit: 15 },
     });
     UserTabs.renderMostRecentBlocks('#js-overview .projects-block', {
       requestParams: { limit: 10, skip_pagination: true, skip_namespace: true, compact_mode: true },

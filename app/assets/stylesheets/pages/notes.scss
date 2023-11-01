@@ -10,16 +10,13 @@ $icon-size-diff: $avatar-icon-size - $system-note-icon-size;
 $system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 1.3rem;
 $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
-@mixin vertical-line($left) {
-  &::before {
-    content: '';
-    border-left: 2px solid var(--gray-50, $gray-50);
-    position: absolute;
-    top: 16px;
-    bottom: 0;
-    left: calc(#{$left} - 1px);
-    height: calc(100% + 20px);
-  }
+@mixin vertical-line($top, $left) {
+  content: '';
+  position: absolute;
+  width: 2px;
+  left: $left;
+  top: $top;
+  height: calc(100% - #{$top});
 }
 
 @mixin outline-comment() {
@@ -32,12 +29,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 .limited-width-notes {
   .main-notes-list::before,
   .timeline-entry:last-child::before {
-    content: '';
-    position: absolute;
-    width: 2px;
-    left: 15px;
-    top: 15px;
-    height: calc(100% - 15px);
+    @include vertical-line(15px, 15px);
   }
 
   .main-notes-list::before {
@@ -1140,6 +1132,24 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 .discussion-filter-container {
   .dropdown-menu {
     margin-bottom: $gl-padding-4;
+  }
+}
+
+.user-activity-content {
+  &::before {
+    @include vertical-line(80px, 25px);
+    background: var(--gray-50, $gray-50);
+  }
+
+  .system-note-image {
+    @include gl--flex-center;
+    top: 14px;
+    width: 22px;
+    height: 22px;
+
+    svg {
+      fill: $gray-600 !important;
+    }
   }
 }
 

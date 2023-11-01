@@ -60,15 +60,15 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
     end
 
-    describe 'user has 11 activities' do
+    describe 'user has 15 activities' do
       before do
-        11.times { push_code_contribution }
+        16.times { push_code_contribution }
       end
 
       include_context 'visit overview tab'
 
-      it 'displays 10 entries in the list of activities' do
-        expect(find('#js-overview')).to have_selector('.event-item', count: 10)
+      it 'displays 15 entries in the list of activities' do
+        expect(find('#js-overview')).to have_selector('.event-item', count: 15)
       end
 
       it 'shows a link to the activity list' do

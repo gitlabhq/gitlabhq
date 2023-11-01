@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Detect user based on identifier like
+# Detect user or keys based on identifier like
 # key-13 or user-36
 module Gitlab
   module Identifier
@@ -33,6 +33,13 @@ module Gitlab
       identify_with_cache(:ssh_key, key_id) do
         User.find_by_ssh_key_id(key_id)
       end
+    end
+
+    # Tries to identify a deploy key using a SSH key identifier (e.g. "key-123").
+    def identify_using_deploy_key(identifier)
+      key_id = identifier.gsub("key-", "")
+
+      DeployKey.find_by_id(key_id)
     end
 
     def identify_with_cache(category, key)

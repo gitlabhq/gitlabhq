@@ -35,7 +35,10 @@ to community resources (such as IRC or forums) to seek help from other users.
 
 ## Prerequisites
 
-Docker is required. See the [official installation documentation](https://docs.docker.com/get-docker/).
+To use the GitLab Docker images:
+
+- You must install Docker.
+- You must use a valid externally-accessible hostname. Do not use `localhost`.
 
 ## Set up the volumes location
 

@@ -11,6 +11,8 @@ module Gitlab
         include GithubImport::Queue
         include StageMethods
 
+        resumes_work_when_interrupted!
+
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)

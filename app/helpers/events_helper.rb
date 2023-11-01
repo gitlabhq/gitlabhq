@@ -13,7 +13,10 @@ module EventsHelper
     'deleted' => 'remove',
     'destroyed' => 'remove',
     'imported' => 'import',
-    'joined' => 'users'
+    'joined' => 'users',
+    'approved' => 'check',
+    'added' => 'upload',
+    'removed' => 'remove'
   }.freeze
 
   def localized_action_name_map
@@ -242,7 +245,7 @@ module EventsHelper
 
   def event_wiki_title_html(event)
     capture do
-      concat content_tag(:span, _('wiki page'), class: "event-target-type gl-mr-2")
+      concat content_tag(:span, _('wiki page'), class: "event-target-type gl-mr-2 #{user_profile_activity_classes}")
       concat link_to(
         event.target_title,
         event_wiki_page_target_url(event),
@@ -254,7 +257,7 @@ module EventsHelper
 
   def event_design_title_html(event)
     capture do
-      concat content_tag(:span, _('design'), class: "event-target-type gl-mr-2")
+      concat content_tag(:span, _('design'), class: "event-target-type gl-mr-2 #{user_profile_activity_classes}")
       concat link_to(
         event.design.reference_link_text,
         design_url(event.design),
@@ -271,7 +274,7 @@ module EventsHelper
   def event_note_title_html(event)
     if event.note_target
       capture do
-        concat content_tag(:span, event.note_target_type_name, class: "event-target-type gl-mr-2")
+        concat content_tag(:span, event.note_target_type_name, class: "event-target-type gl-mr-2 #{user_profile_activity_classes}")
         concat link_to(event.note_target_reference, event_note_target_url(event), title: event.target_title, class: 'has-tooltip event-target-link gl-mr-2')
       end
     else
@@ -303,19 +306,16 @@ module EventsHelper
   end
 
   def icon_for_profile_event(event)
-    if current_path?('users#show')
-      content_tag :div, class: "system-note-image #{event.action_name.parameterize}-icon" do
-        icon_for_event(event.action_name)
-      end
-    else
-      content_tag :div, class: 'system-note-image user-avatar' do
-        author_avatar(event, size: 32)
-      end
-    end
+    base_class = 'system-note-image'
+
+    classes = current_path?('users#activity') ? "#{event.action_name.parameterize}-icon gl-rounded-full gl-bg-gray-50 gl-line-height-0" : "user-avatar"
+    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32)
+
+    tag.div(class: "#{base_class} #{classes}") { content }
   end
 
   def inline_event_icon(event)
-    unless current_path?('users#show')
+    unless current_path?('users#activity')
       content_tag :span, class: "system-note-image-inline d-none d-sm-flex gl-mr-2 #{event.action_name.parameterize}-icon align-self-center" do
         next design_event_icon(event.action, size: 14) if event.design?
 
@@ -325,11 +325,17 @@ module EventsHelper
   end
 
   def event_user_info(event)
-    content_tag(:div, class: "event-user-info") do
-      concat content_tag(:span, link_to_author(event), class: "author-name")
-      concat "&nbsp;".html_safe
-      concat content_tag(:span, event.author.to_reference, class: "username")
+    return if current_path?('users#activity')
+
+    tag.div(class: 'event-user-info') do
+      concat tag.span(link_to_author(event), class: 'author-name')
+      concat '&nbsp;'.html_safe
+      concat tag.span(event.author.to_reference, class: 'username')
     end
+  end
+
+  def user_profile_activity_classes
+    current_path?('users#activity') ? ' gl-font-weight-semibold gl-text-black-normal' : ''
   end
 
   private

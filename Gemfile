@@ -47,7 +47,7 @@ gem 'responders', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'sprockets', '~> 3.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'view_component', '~> 3.6.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'view_component', '~> 3.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Supported DBs
 gem 'pg', '~> 1.5.4' # rubocop:todo Gemfile/MissingFeatureCategory

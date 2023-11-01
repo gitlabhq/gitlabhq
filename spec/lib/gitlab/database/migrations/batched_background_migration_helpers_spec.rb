@@ -443,10 +443,10 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
   describe '#ensure_batched_background_migration_is_finished' do
     let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
-    let(:table_name) { 'events' }
+    let(:table_name) { '_test_table' }
     let(:column_name) { :id }
     let(:job_arguments) { [["id"], ["id_convert_to_bigint"], nil] }
-    let(:gitlab_schema) { Gitlab::Database::GitlabSchema.table_schema!(table_name) }
+    let(:gitlab_schema) { :gitlab_main }
 
     let(:configuration) do
       {
@@ -484,7 +484,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
             "\n\n" \
             "Finalize it manually by running the following command in a `bash` or `sh` shell:" \
             "\n\n" \
-            "\tsudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"id\"]\\,[\"id_convert_to_bigint\"]\\,null]']" \
+            "\tsudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,_test_table,id,'[[\"id\"]\\,[\"id_convert_to_bigint\"]\\,null]']" \
             "\n\n" \
             "For more information, check the documentation" \
             "\n\n" \

@@ -76,6 +76,19 @@ describe Sidekiq::BaseReliableFetch do
       expect(queue2.size).to eq 1
       expect(Sidekiq::InterruptedSet.new.size).to eq 0
     end
+
+    it 'does not put jobs into interrupted queue if it is disabled on the worker' do
+      stub_const('Bob', double(sidekiq_options: { 'max_retries_after_interruption' => -1 }))
+
+      uow = described_class::UnitOfWork
+      interrupted_job = Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo'], interrupted_count: 3)
+      jobs = [ uow.new('queue:foo', interrupted_job), uow.new('queue:foo', job), uow.new('queue:bar', job) ]
+      described_class.new(options).bulk_requeue(jobs, nil)
+
+      expect(queue1.size).to eq 2
+      expect(queue2.size).to eq 1
+      expect(Sidekiq::InterruptedSet.new.size).to eq 0
+    end
   end
 
   it 'sets heartbeat' do

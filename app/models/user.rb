@@ -48,7 +48,7 @@ class User < MainClusterwide::ApplicationRecord
 
   # Associations with dependent: option
   cross_database_ignore_tables(
-    %w[namespaces projects project_authorizations issues merge_requests merge_requests issues issues merge_requests],
+    %w[namespaces projects project_authorizations issues merge_requests merge_requests issues issues merge_requests events],
     url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424285',
     on: :destroy
   )

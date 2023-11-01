@@ -2,7 +2,9 @@
 
 module Gitlab
   module Database
-    module SchemaCacheWithRenamedTable
+    # This is a legacy extension targeted at Rails versions prior to 7.1
+    # In Rails 7.1, the method parameters have been changed to (connection, table_name)
+    module SchemaCacheWithRenamedTableLegacy
       # Override methods in ActiveRecord::ConnectionAdapters::SchemaCache
 
       def clear!
@@ -17,20 +19,20 @@ module Gitlab
         clear_renamed_tables_cache!
       end
 
-      def primary_keys(connection, table_name)
-        super(connection, underlying_table(table_name))
+      def primary_keys(table_name)
+        super(underlying_table(table_name))
       end
 
-      def columns(connection, table_name)
-        super(connection, underlying_table(table_name))
+      def columns(table_name)
+        super(underlying_table(table_name))
       end
 
-      def columns_hash(connection, table_name)
-        super(connection, underlying_table(table_name))
+      def columns_hash(table_name)
+        super(underlying_table(table_name))
       end
 
-      def indexes(connection, table_name)
-        super(connection, underlying_table(table_name))
+      def indexes(table_name)
+        super(underlying_table(table_name))
       end
 
       private

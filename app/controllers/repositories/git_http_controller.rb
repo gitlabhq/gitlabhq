@@ -106,7 +106,8 @@ module Repositories
 
     def access_actor
       return user if user
-      return :ci if ci?
+
+      :ci if ci?
     end
 
     def access_check

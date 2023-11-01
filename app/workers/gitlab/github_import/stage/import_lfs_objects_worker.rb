@@ -11,6 +11,11 @@ module Gitlab
         include GithubImport::Queue
         include StageMethods
 
+        # Importer::LfsObjectsImporter can resume work when interrupted as
+        # it uses Projects::LfsPointers::LfsObjectDownloadListService which excludes LFS objects that already exist.
+        # https://gitlab.com/gitlab-org/gitlab/-/blob/eabf0800/app/services/projects/lfs_pointers/lfs_object_download_list_service.rb#L69-71
+        resumes_work_when_interrupted!
+
         def perform(project_id)
           return unless (project = find_project(project_id))
 
