@@ -173,7 +173,6 @@ export default {
           variant: 'confirm',
           disabled: this.submitDisabled,
           loading: this.isLoading,
-          'data-qa-selector': 'invite_button',
         },
       };
     },
@@ -311,7 +310,7 @@ export default {
           <gl-form-select
             :id="dropdownId"
             v-model="selectedAccessLevel"
-            data-qa-selector="access_level_dropdown"
+            data-testid="access-level-dropdown"
             :options="accessLevelsOptions"
           />
         </gl-form-group>

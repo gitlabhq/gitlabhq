@@ -228,6 +228,6 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
   end
 
   def invite_group_selector
-    'button[data-test-id="invite-group-button"]'
+    'button[data-testid="invite-a-group-button"]'
   end
 end

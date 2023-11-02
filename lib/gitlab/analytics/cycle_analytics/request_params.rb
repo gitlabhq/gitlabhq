@@ -203,7 +203,8 @@ module Gitlab
         def validate_date_range
           return if created_after.nil? || created_before.nil?
 
-          if (created_before - created_after) > MAX_RANGE_DAYS
+          time_period = created_before.at_beginning_of_day - created_after.at_beginning_of_day
+          if time_period > MAX_RANGE_DAYS
             errors.add(:created_after, s_('CycleAnalytics|The given date range is larger than 180 days'))
           end
         end

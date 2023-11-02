@@ -47,13 +47,13 @@ module AuthHelper
     provider_has_builtin_icon?(name) || provider_has_custom_icon?(name)
   end
 
-  def qa_selector_for_provider(provider)
+  def test_id_for_provider(provider)
     {
-      saml: 'saml_login_button',
-      openid_connect: 'oidc_login_button',
-      github: 'github_login_button',
-      gitlab: 'gitlab_oauth_login_button',
-      facebook: 'facebook_login_button'
+      saml: 'saml-login-button',
+      openid_connect: 'oidc-login-button',
+      github: 'github-login-button',
+      gitlab: 'gitlab-oauth-login-button',
+      facebook: 'facebook-login-button'
     }[provider.to_sym]
   end
 

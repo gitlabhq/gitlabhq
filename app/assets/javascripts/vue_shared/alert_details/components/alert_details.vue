@@ -30,7 +30,7 @@ import AlertSidebar from './alert_sidebar.vue';
 import AlertSummaryRow from './alert_summary_row.vue';
 import SystemNote from './system_notes/system_note.vue';
 
-const containerEl = document.querySelector('.page-with-contextual-sidebar');
+const containerEl = document.querySelector('.layout-page');
 
 export default {
   i18n: {

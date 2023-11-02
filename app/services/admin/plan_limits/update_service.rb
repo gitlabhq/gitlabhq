@@ -51,34 +51,62 @@ module Admin
 
       def validate_notification_limit
         return unless parsed_params.include?(:notification_limit)
-        return if notification_limit >= storage_size_limit && notification_limit <= enforcement_limit
+        return if unlimited_value?(:notification_limit)
 
-        plan_limits.errors.add(:notification_limit, "must be greater than or equal to " \
-                                                    "storage_size_limit (Dashboard limit): #{storage_size_limit} " \
-                                                    "and less than or equal to enforcement_limit: #{enforcement_limit}")
+        if storage_size_limit > 0 && notification_limit < storage_size_limit
+          plan_limits.errors.add(
+            :notification_limit, "must be greater than or equal to the dashboard limit (#{storage_size_limit})"
+          )
+        end
+
+        return unless enforcement_limit > 0 && notification_limit > enforcement_limit
+
+        plan_limits.errors.add(
+          :notification_limit, "must be less than or equal to the enforcement limit (#{enforcement_limit})"
+        )
       end
 
       def validate_enforcement_limit
         return unless parsed_params.include?(:enforcement_limit)
-        return if enforcement_limit >= storage_size_limit && enforcement_limit >= notification_limit
+        return if unlimited_value?(:enforcement_limit)
 
-        plan_limits.errors.add(:enforcement_limit, "must be greater than or equal to " \
-                                                   "storage_size_limit (Dashboard limit): #{storage_size_limit} and " \
-                                                   "greater than or equal to notification_limit: #{notification_limit}")
+        if storage_size_limit > 0 && enforcement_limit < storage_size_limit
+          plan_limits.errors.add(
+            :enforcement_limit, "must be greater than or equal to the dashboard limit (#{storage_size_limit})"
+          )
+        end
+
+        return unless notification_limit > 0 && enforcement_limit < notification_limit
+
+        plan_limits.errors.add(
+          :enforcement_limit, "must be greater than or equal to the notification limit (#{notification_limit})"
+        )
       end
 
       def validate_storage_size_limit
         return unless parsed_params.include?(:storage_size_limit)
-        return if storage_size_limit <= enforcement_limit && storage_size_limit <= notification_limit
+        return if unlimited_value?(:storage_size_limit)
 
-        plan_limits.errors.add(:storage_size_limit, "(Dashboard limit) must be less than or equal to " \
-                                                    "enforcement_limit: #{enforcement_limit} " \
-                                                    "and notification_limit: #{notification_limit}")
+        if enforcement_limit > 0 && storage_size_limit > enforcement_limit
+          plan_limits.errors.add(
+            :dashboard_limit, "must be less than or equal to the enforcement limit (#{enforcement_limit})"
+          )
+        end
+
+        return unless notification_limit > 0 && storage_size_limit > notification_limit
+
+        plan_limits.errors.add(
+          :dashboard_limit, "must be less than or equal to the notification limit (#{notification_limit})"
+        )
       end
 
       # Overridden in EE
       def parsed_params
         params
+      end
+
+      def unlimited_value?(limit)
+        parsed_params[limit] == 0
       end
     end
   end

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Alert Management index', :js, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user, :no_super_sidebar) }
+  let_it_be(:developer) { create(:user) }
 
   before_all do
     project.add_developer(developer)
@@ -22,7 +22,7 @@ RSpec.describe 'Alert Management index', :js, feature_category: :incident_manage
       expect(page).to have_content('Alerts')
       expect(page).to have_content('Surface alerts in GitLab')
       expect(page).not_to have_selector('.gl-table')
-      page.within('.layout-page') do
+      page.within('.content-wrapper') do
         expect(page).not_to have_css('[data-testid="search-icon"]')
       end
     end
@@ -31,7 +31,7 @@ RSpec.describe 'Alert Management index', :js, feature_category: :incident_manage
       it 'renders correctly' do
         expect(page).to have_content('Alerts')
         expect(page).to have_selector('.gl-table')
-        page.within('.layout-page') do
+        page.within('.content-wrapper') do
           expect(page).to have_css('[data-testid="search-icon"]')
         end
       end

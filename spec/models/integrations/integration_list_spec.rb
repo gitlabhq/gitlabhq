@@ -12,10 +12,10 @@ RSpec.describe Integrations::IntegrationList, feature_category: :integrations do
 
   describe '#to_array' do
     it 'returns array of Integration, columns, and values' do
-      expect(subject.to_array).to eq([
+      expect(subject.to_array).to match_array([
         Integration,
         %w[active category project_id],
-        [['true', 'common', projects.first.id], ['true', 'common', projects.second.id]]
+        contain_exactly(['true', 'common', projects.first.id], ['true', 'common', projects.second.id])
       ])
     end
   end

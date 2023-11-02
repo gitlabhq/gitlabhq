@@ -15,12 +15,12 @@ module QA
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/expires_at_field.vue' do
-            element :expiry_date_field
+            element 'expiry-date-field'
           end
 
           base.view 'app/views/shared/access_tokens/_form.html.haml' do
-            element :access_token_name_field
-            element :create_token_button
+            element 'access-token-name-field'
+            element 'create-token-button'
           end
 
           base.view 'app/views/shared/tokens/_scopes_form.html.haml' do
@@ -28,16 +28,16 @@ module QA
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/new_access_token_app.vue' do
-            element :access_token_section
-            element :created_access_token_field
+            element 'access-token-section'
+            element 'created-access-token-field'
           end
 
           base.view 'app/assets/javascripts/vue_shared/components/form/input_copy_toggle_visibility.vue' do
-            element :toggle_visibility_button
+            element 'toggle-visibility-button'
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/access_token_table_app.vue' do
-            element :revoke_button
+            element 'revoke-button'
           end
 
           base.view 'app/views/profiles/personal_access_tokens/index.html.haml' do
@@ -62,7 +62,7 @@ module QA
         end
 
         def fill_token_name(name)
-          fill_element(:access_token_name_field, name)
+          fill_element('access-token-name-field', name)
         end
 
         def check_api
@@ -70,12 +70,12 @@ module QA
         end
 
         def click_create_token_button
-          click_element(:create_token_button)
+          click_element('create-token-button')
         end
 
         def created_access_token
-          within_element(:access_token_section) do
-            find_element(:created_access_token_field).value
+          within_element('access-token-section') do
+            find_element('created-access-token-field').value
           end
         end
 
@@ -87,7 +87,7 @@ module QA
             raise "Expiry date must be in YYYY-MM-DD format"
           end
 
-          fill_element(:expiry_date_field, date)
+          fill_element('expiry-date-field', date)
         end
 
         def has_token_row_for_name?(token_name)
@@ -100,7 +100,7 @@ module QA
 
         def revoke_first_token_with_name(token_name)
           within first_token_row_for_name(token_name) do
-            click_element(:revoke_button)
+            click_element('revoke-button')
           end
 
           click_confirmation_ok_button

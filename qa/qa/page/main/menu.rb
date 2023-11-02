@@ -16,9 +16,9 @@ module QA
 
         view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
           element 'user-dropdown', required: !Runtime::Env.phone_layout?
-          element :user_avatar_content, required: !Runtime::Env.phone_layout?
+          element 'user-avatar-content', required: !Runtime::Env.phone_layout?
           element :sign_out_link
-          element :edit_profile_link
+          element 'edit-profile-link'
         end
 
         view 'app/assets/javascripts/super_sidebar/components/user_menu_profile_item.vue' do
@@ -118,7 +118,7 @@ module QA
             has_element?('user-profile-link', text: /#{user.username}/)
           end
           # we need to close user menu because plain user link check will leave it open
-          click_element :user_avatar_content if has_element?('user-profile-link', wait: 0)
+          click_element 'user-avatar-content' if has_element?('user-profile-link', wait: 0)
         end
 
         def not_signed_in?
@@ -150,7 +150,7 @@ module QA
         def click_edit_profile_link
           retry_until(reload: false) do
             within_user_menu do
-              click_element(:edit_profile_link)
+              click_element('edit-profile-link')
             end
 
             has_text?('User Settings')
@@ -164,11 +164,11 @@ module QA
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
-          has_element?(:user_avatar_content, wait: wait)
+          has_element?('user-avatar-content', wait: wait)
         end
 
         def has_no_personal_area?(wait: Capybara.default_max_wait_time)
-          has_no_element?(:user_avatar_content, wait: wait)
+          has_no_element?('user-avatar-content', wait: wait)
         end
 
         def click_stop_impersonation_link
@@ -189,7 +189,7 @@ module QA
 
         def within_user_menu(&block)
           within_element(:navbar) do
-            click_element :user_avatar_content unless has_element?('user-profile-link', wait: 1)
+            click_element 'user-avatar-content' unless has_element?('user-profile-link', wait: 1)
 
             within_element('user-dropdown', &block)
           end

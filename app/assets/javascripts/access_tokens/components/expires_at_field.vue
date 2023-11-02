@@ -68,7 +68,7 @@ export default {
       :input-name="inputAttrs.name"
       :input-id="inputAttrs.id"
       :placeholder="inputAttrs.placeholder"
-      data-qa-selector="expiry_date_field"
+      data-testid="expiry-date-field"
     />
     <template #description>
       <template v-if="description">

@@ -25,6 +25,6 @@
                     .gl-text-right.gl-line-height-normal
                       .gl-font-weight-bold= current_user.name
                       .gl-text-gray-700 @#{current_user.username}
-                    = render Pajamas::AvatarComponent.new(current_user, size: 32, avatar_options: { data: { qa_selector: 'user_avatar_content' } })
+                    = render Pajamas::AvatarComponent.new(current_user, size: 32, avatar_options: { data: { testid: 'user-avatar-content' } })
               - c.with_body do
                 = yield

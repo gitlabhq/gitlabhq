@@ -11,7 +11,7 @@ exports[`~/access_tokens/components/expires_at_field should render datepicker wi
     arialabel=""
     autocomplete=""
     container=""
-    data-qa-selector="expiry_date_field"
+    data-testid="expiry-date-field"
     defaultdate="Wed Aug 05 2020 00:00:00 GMT+0000 (Greenwich Mean Time)"
     displayfield="true"
     firstday="0"
