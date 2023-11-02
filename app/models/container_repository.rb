@@ -482,6 +482,24 @@ class ContainerRepository < ApplicationRecord
     raise 'too many pages requested' if page_count >= MAX_TAGS_PAGES
   end
 
+  def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100)
+    raise ArgumentError, 'not a migrated repository' unless migrated?
+
+    page = gitlab_api_client.tags(
+      self.path,
+      page_size: page_size,
+      before: before,
+      last: last,
+      sort: sort,
+      name: name
+    )
+
+    {
+      tags: transform_tags_page(page[:response_body]),
+      pagination: page[:pagination]
+    }
+  end
+
   def tags_count
     return 0 unless manifest && manifest['tags']
 
@@ -636,6 +654,9 @@ class ContainerRepository < ApplicationRecord
       tag = ContainerRegistry::Tag.new(self, raw_tag['name'])
       tag.force_created_at_from_iso8601(raw_tag['created_at'])
       tag.updated_at = raw_tag['updated_at']
+      tag.total_size = raw_tag['size_bytes']
+      tag.manifest_digest = raw_tag['digest']
+      tag.revision = raw_tag['config_digest'].to_s.split(':')[1]
       tag
     end
   end

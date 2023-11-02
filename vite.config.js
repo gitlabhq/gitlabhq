@@ -68,6 +68,10 @@ export default defineConfig({
         find: '~/',
         replacement: javascriptsPath,
       },
+      {
+        find: '~katex',
+        replacement: 'katex',
+      },
     ],
   },
   plugins: [

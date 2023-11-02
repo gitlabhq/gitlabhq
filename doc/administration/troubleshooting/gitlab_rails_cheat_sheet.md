@@ -46,11 +46,11 @@ This content has been moved to [Troubleshooting Repository mirroring](../../user
 
 ## CI
 
-This content has been moved to [Troubleshooting CI/CD](../../ci/troubleshooting.md).
+This content has been moved to [Troubleshooting CI/CD](../cicd.md#cicd-troubleshooting-rails-console-commands).
 
 ## License
 
-This content has been moved to [Activate GitLab EE with a license file or key](../../administration/license_file.md).
+This content has been moved to [Activate GitLab EE with a license file or key](../license_file.md).
 
 ## Registry
 

@@ -102,6 +102,7 @@ export default {
     textInputAttrs() {
       return {
         'data-testid': 'members-token-select-input',
+        'data-qa-selector': 'members_token_select_input',
         id: this.inputId,
       };
     },

@@ -65,7 +65,7 @@
 .if-merge-request-labels-run-in-ruby3_1: &if-merge-request-labels-run-in-ruby3_1
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
 
-.if-merge-request-labels-run-in-non-default-ruby: &if-merge-request-labels-run-in-non-default-ruby
+.if-merge-request-labels-run-in-ruby3_2: &if-merge-request-labels-run-in-ruby3_2
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/'
 
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
@@ -2117,20 +2117,14 @@
       when: never
     - if: '$ANTHROPIC_API_KEY == null'
       when: never
-    - <<: *if-merge-request
-      changes: *ai-patterns
-      when: manual
-      allow_failure: true
-
-.rails:rules:ee-gitlab-duo-chat-vertex-ai:
-  rules:
-    - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
     - if: '$VERTEX_AI_PROJECT == null'
       when: never
     - if: '$VERTEX_AI_CREDENTIALS == null'
       when: never
-    - if: '$VERTEX_AI_EMBEDDINGS == null'
-      when: never
+    - <<: *if-merge-request
+      changes: *ai-patterns
+      when: manual
+      allow_failure: true
 
 .rails:rules:as-if-foss-migration:
   rules:
@@ -2746,7 +2740,7 @@
 
 .setup:rules:verify-default-ruby:
   rules:
-    - <<: *if-merge-request-labels-run-in-non-default-ruby
+    - <<: *if-merge-request-labels-run-in-ruby3_2
 
 .setup:rules:verify-tests-yml:
   rules:

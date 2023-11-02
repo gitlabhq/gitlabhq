@@ -178,7 +178,7 @@ module ContainerRegistry
           req.params['n'] = limited_page_size
           req.params['last'] = last if last
           req.params['before'] = before if before
-          req.params['name'] = name if name
+          req.params['name'] = name if name.present?
           req.params['sort'] = sort if sort
         end
 

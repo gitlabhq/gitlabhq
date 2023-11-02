@@ -14557,6 +14557,9 @@ msgstr ""
 msgid "Credit card required to be on file in order to create a pipeline"
 msgstr ""
 
+msgid "Credit card validation record saved"
+msgstr ""
+
 msgid "Credit card:"
 msgstr ""
 
@@ -19196,6 +19199,9 @@ msgid "Error promoting the note to timeline event: %{error}"
 msgstr ""
 
 msgid "Error rendering Markdown preview"
+msgstr ""
+
+msgid "Error saving credit card validation record"
 msgstr ""
 
 msgid "Error saving label update."

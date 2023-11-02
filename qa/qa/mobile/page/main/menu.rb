@@ -22,10 +22,10 @@ module QA
           end
 
           def open_mobile_menu
-            if has_no_element?('user-avatar-content')
+            if has_no_element?(:user_avatar_content)
               Support::Retrier.retry_until do
                 click_element(:mobile_navbar_button)
-                has_element?('user-avatar-content')
+                has_element?(:user_avatar_content)
               end
             end
           end

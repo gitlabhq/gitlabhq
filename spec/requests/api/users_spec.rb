@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile do
   include WorkhorseHelpers
   include KeysetPaginationHelpers
+  include CryptoHelpers
 
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user, reload: true) { create(:user, username: 'user.withdot') }
@@ -1983,17 +1984,23 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
   end
 
   describe "PUT /user/:id/credit_card_validation" do
-    let(:credit_card_validated_time) { Time.utc(2020, 1, 1) }
+    let(:network) { 'American Express' }
+    let(:holder_name) {  'John Smith' }
+    let(:last_digits) {  '1111' }
     let(:expiration_year) { Date.today.year + 10 }
+    let(:expiration_month) { 1 }
+    let(:expiration_date) { Date.new(expiration_year, expiration_month, -1) }
+    let(:credit_card_validated_at) { Time.utc(2020, 1, 1) }
+
     let(:path) { "/user/#{user.id}/credit_card_validation" }
     let(:params) do
       {
-        credit_card_validated_at: credit_card_validated_time,
+        credit_card_validated_at: credit_card_validated_at,
         credit_card_expiration_year: expiration_year,
-        credit_card_expiration_month: 1,
-        credit_card_holder_name: 'John Smith',
-        credit_card_type: 'AmericanExpress',
-        credit_card_mask_number: '1111'
+        credit_card_expiration_month: expiration_month,
+        credit_card_holder_name: holder_name,
+        credit_card_type: network,
+        credit_card_mask_number: last_digits
       }
     end
 
@@ -2023,11 +2030,11 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(user.credit_card_validation).to have_attributes(
-          credit_card_validated_at: credit_card_validated_time,
-          expiration_date: Date.new(expiration_year, 1, 31),
-          last_digits: 1111,
-          network: 'AmericanExpress',
-          holder_name: 'John Smith'
+          credit_card_validated_at: credit_card_validated_at,
+          network_hash: sha256(network.downcase),
+          holder_name_hash: sha256(holder_name.downcase),
+          last_digits_hash: sha256(last_digits),
+          expiration_date_hash: sha256(expiration_date.to_s)
         )
       end
 

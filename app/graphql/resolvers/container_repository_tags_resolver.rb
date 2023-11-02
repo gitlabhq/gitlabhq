@@ -14,20 +14,60 @@ module Resolvers
         required: false,
         default_value: nil
 
+    alias_method :container_repository, :object
+
     def resolve(sort:, **filters)
-      result = tags
+      if container_repository.migrated? && Feature.enabled?(:use_repository_list_tags_on_graphql, container_repository.project)
+        page_size = [filters[:first], filters[:last]].map(&:to_i).max
 
-      if filters[:name]
-        result = tags.filter do |tag|
-          tag.name.include?(filters[:name])
+        result = container_repository.tags_page(
+          before: filters[:before],
+          last: filters[:after],
+          sort: map_sort_field(sort),
+          name: filters[:name],
+          page_size: page_size
+        )
+
+        Gitlab::Graphql::ExternallyPaginatedArray.new(
+          parse_pagination_cursor(result, :previous),
+          parse_pagination_cursor(result, :next),
+          *result[:tags]
+        )
+      else
+        result = tags
+
+        if filters[:name]
+          result = tags.filter do |tag|
+            tag.name.include?(filters[:name])
+          end
         end
-      end
 
-      result = sort_tags(result, sort) if sort
-      result
+        result = sort_tags(result, sort) if sort
+        result
+      end
     end
 
     private
+
+    def parse_pagination_cursor(result, direction)
+      pagination_uri = result.dig(:pagination, direction, :uri)
+
+      return unless pagination_uri
+
+      query_params =  CGI.parse(pagination_uri.query)
+      key = direction == :previous ? 'before' : 'last'
+
+      query_params[key]&.first
+    end
+
+    def map_sort_field(sort)
+      return unless sort
+
+      sort_field, direction = sort.to_s.split('_')
+      return sort_field if direction == 'asc'
+
+      "-#{sort_field}"
+    end
 
     def sort_tags(to_be_sorted, sort)
       raise StandardError unless Types::ContainerRepositoryTagsSortEnum.enum.include?(sort)
@@ -41,7 +81,7 @@ module Resolvers
     end
 
     def tags
-      object.tags
+      container_repository.tags
     rescue Faraday::Error
       raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, "Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation."
     end

@@ -45,7 +45,7 @@ export default {
     formInputGroupProps() {
       return {
         id: this.$options.tokenInputId,
-        'data-testid': 'created-access-token-field',
+        'data-qa-selector': 'created_access_token_field',
         name: this.$options.tokenInputId,
       };
     },
@@ -110,7 +110,7 @@ export default {
     @[$options.EVENT_ERROR]="onError"
     @[$options.EVENT_SUCCESS]="onSuccess"
   >
-    <div ref="container" data-testid="access-token-section">
+    <div ref="container" data-testid="access-token-section" data-qa-selector="access_token_section">
       <gl-alert
         v-if="newToken"
         variant="success"

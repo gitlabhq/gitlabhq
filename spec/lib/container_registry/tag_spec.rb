@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::Tag do
+RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
   let(:group) { create(:group, name: 'group') }
   let(:project) { create(:project, path: 'test', group: group) }
 
@@ -71,6 +71,77 @@ RSpec.describe ContainerRegistry::Tag do
         expect(tag).not_to receive(:config)
 
         expect(subject).to eq(value)
+      end
+    end
+
+    describe '#total_size' do
+      context 'when total_size is set' do
+        before do
+          tag.total_size = 1000
+        end
+
+        it 'returns the set size' do
+          expect(tag.total_size).to eq(1000)
+        end
+      end
+    end
+
+    describe '#revision' do
+      context 'when revision is set' do
+        before do
+          tag.revision = 'xyz789'
+        end
+
+        it 'returns the set revision' do
+          expect(tag.revision).to eq('xyz789')
+        end
+      end
+
+      context 'when revision is not set' do
+        context 'when config_blob is not nil' do
+          let(:blob) { ContainerRegistry::Blob.new(repository, {}) }
+
+          before do
+            allow(tag).to receive(:config_blob).and_return(blob)
+            allow(blob).to receive(:revision).and_return('abc123')
+          end
+
+          it 'returns the revision from config_blob' do
+            expect(tag.revision).to eq('abc123')
+          end
+        end
+
+        context 'when config_blob is nil' do
+          before do
+            allow(tag).to receive(:config_blob).and_return(nil)
+          end
+
+          it 'returns nil' do
+            expect(tag.revision).to be_nil
+          end
+        end
+      end
+    end
+
+    describe '#short_revision' do
+      context 'when revision is not nil' do
+        before do
+          allow(tag).to receive(:revision).and_return('abcdef1234567890')
+        end
+
+        it 'returns the first 9 characters of the revision' do
+          expect(tag.short_revision).to eq('abcdef123')
+        end
+      end
+
+      context 'when revision is nil' do
+        before do
+          allow(tag).to receive(:revision).and_return(nil)
+        end
+
+        it 'returns nil' do
+          expect(tag.short_revision).to be_nil
+        end
       end
     end
 
@@ -277,6 +348,16 @@ RSpec.describe ContainerRegistry::Tag do
     end
 
     describe '#digest' do
+      context 'when manifest_digest is set' do
+        before do
+          tag.manifest_digest = 'sha256:manifestdigest'
+        end
+
+        it 'returns the set manifest_digest' do
+          expect(tag.digest).to eq('sha256:manifestdigest')
+        end
+      end
+
       it 'returns a correct tag digest' do
         expect(tag.digest).to eq 'sha256:digest'
       end

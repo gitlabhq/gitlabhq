@@ -91,6 +91,7 @@ describe('InviteModalBase', () => {
       const actionButton = findActionButton();
 
       expect(actionButton.text()).toBe(INVITE_BUTTON_TEXT);
+      expect(actionButton.attributes('data-qa-selector')).toBe('invite_button');
 
       expect(actionButton.props()).toMatchObject({
         variant: 'confirm',

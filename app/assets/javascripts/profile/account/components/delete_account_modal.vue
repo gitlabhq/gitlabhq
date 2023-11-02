@@ -42,7 +42,7 @@ export default {
         text: __('Delete account'),
         attributes: {
           variant: 'danger',
-          'data-testid': 'confirm-delete-account-button',
+          'data-qa-selector': 'confirm_delete_account_button',
           category: 'primary',
           disabled: !this.canSubmit,
         },
@@ -128,7 +128,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
         name="password"
         class="form-control"
         type="password"
-        data-testid="password-confirmation-field"
+        data-qa-selector="password_confirmation_field"
         aria-labelledby="input-label"
       />
       <input

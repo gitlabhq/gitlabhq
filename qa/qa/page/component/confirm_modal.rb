@@ -15,24 +15,24 @@ module QA
           end
 
           base.view 'app/assets/javascripts/vue_shared/components/confirm_danger/confirm_danger_modal.vue' do
-            element 'confirm-danger-modal-button'
-            element 'confirm-danger-field'
+            element :confirm_danger_modal_button
+            element :confirm_danger_field
           end
         end
 
         def fill_confirmation_text(text)
-          fill_element('confirm-danger-field', text)
+          fill_element(:confirm_danger_field, text)
         end
 
         def wait_for_confirm_button_enabled
           wait_until(reload: false) do
-            !find_element('confirm-danger-modal-button').disabled?
+            !find_element(:confirm_danger_modal_button).disabled?
           end
         end
 
         def confirm_transfer
           wait_for_confirm_button_enabled
-          click_element('confirm-danger-modal-button')
+          click_element(:confirm_danger_modal_button)
         end
 
         def click_confirmation_ok_button

@@ -13,7 +13,8 @@ module Types
           null: true,
           description: 'Tags of the container repository.',
           max_page_size: 20,
-          resolver: Resolvers::ContainerRepositoryTagsResolver
+          resolver: Resolvers::ContainerRepositoryTagsResolver,
+          connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
     field :size,
           GraphQL::Types::Float,

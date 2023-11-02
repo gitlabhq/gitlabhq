@@ -2305,68 +2305,139 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
 
       context 'highlight preloading' do
-        context 'with commit diff notes' do
-          let!(:commit_diff_note) do
-            create(:diff_note_on_commit, project: merge_request.project)
+        context 'when only_highlight_discussions_requested is false' do
+          before do
+            stub_feature_flags(only_highlight_discussions_requested: false)
           end
 
-          it 'preloads notes diffs highlights' do
-            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-              note_diff_file = commit_diff_note.note_diff_file
-
-              expect(collection).to receive(:load_highlight).and_call_original
-              expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
+          context 'with commit diff notes' do
+            let!(:first_commit_diff_note) do
+              create(:diff_note_on_commit, project: merge_request.project)
             end
 
-            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
+            let!(:second_commit_diff_note) do
+              create(:diff_note_on_commit, project: merge_request.project)
+            end
+
+            it 'preloads all of the notes diffs highlights' do
+              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+                first_note_diff_file = first_commit_diff_note.note_diff_file
+                second_note_diff_file = second_commit_diff_note.note_diff_file
+
+                expect(collection).to receive(:load_highlight).and_call_original
+                expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
+                expect(collection).to receive(:find_by_id).with(second_note_diff_file.id).and_call_original
+              end
+
+              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
+                                          per_page: 2 }
+            end
+
+            it 'preloads all of the notes diffs highlights when per_page is 1' do
+              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+                first_note_diff_file = first_commit_diff_note.note_diff_file
+                second_note_diff_file = second_commit_diff_note.note_diff_file
+
+                expect(collection).to receive(:load_highlight).and_call_original
+                expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
+                expect(collection).not_to receive(:find_by_id).with(second_note_diff_file.id)
+              end
+
+              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
+                                          per_page: 1 }
+            end
+          end
+
+          context 'with diff notes' do
+            let!(:diff_note) do
+              create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+            end
+
+            it 'preloads notes diffs highlights' do
+              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+                note_diff_file = diff_note.note_diff_file
+
+                expect(collection).to receive(:load_highlight).and_call_original
+                expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
+              end
+
+              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
+            end
           end
         end
 
-        context 'with diff notes' do
-          let!(:diff_note) do
-            create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
-          end
-
-          it 'preloads notes diffs highlights' do
-            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-              note_diff_file = diff_note.note_diff_file
-
-              expect(collection).to receive(:load_highlight).and_call_original
-              expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
+        context 'when only_highlight_discussions_requested is true' do
+          context 'with commit diff notes' do
+            let!(:first_commit_diff_note) do
+              create(:diff_note_on_commit, project: merge_request.project)
             end
 
-            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
-          end
-
-          it 'does not preload highlights when diff note is resolved' do
-            Notes::ResolveService.new(diff_note.project, user).execute(diff_note)
-
-            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-              note_diff_file = diff_note.note_diff_file
-
-              expect(collection).to receive(:load_highlight).and_call_original
-              expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
+            let!(:second_commit_diff_note) do
+              create(:diff_note_on_commit, project: merge_request.project)
             end
 
-            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
+            it 'preloads all of the notes diffs highlights' do
+              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+                first_note_diff_file = first_commit_diff_note.note_diff_file
+                second_note_diff_file = second_commit_diff_note.note_diff_file
+
+                expect(collection).to receive(:load_highlight).with(diff_note_ids: [first_commit_diff_note.id, second_commit_diff_note.id]).and_call_original
+                expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
+                expect(collection).to receive(:find_by_id).with(second_note_diff_file.id).and_call_original
+              end
+
+              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
+                                          per_page: 2 }
+            end
+
+            it 'preloads all of the notes diffs highlights when per_page is 1' do
+              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+                first_note_diff_file = first_commit_diff_note.note_diff_file
+                second_note_diff_file = second_commit_diff_note.note_diff_file
+
+                expect(collection).to receive(:load_highlight).with(diff_note_ids: [first_commit_diff_note.id]).and_call_original
+                expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
+                expect(collection).not_to receive(:find_by_id).with(second_note_diff_file.id)
+              end
+
+              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
+                                          per_page: 1 }
+            end
+          end
+
+          context 'with diff notes' do
+            let!(:diff_note) do
+              create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+            end
+
+            it 'preloads notes diffs highlights' do
+              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+                note_diff_file = diff_note.note_diff_file
+
+                expect(collection).to receive(:load_highlight).with(diff_note_ids: [diff_note.id]).and_call_original
+                expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
+              end
+
+              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
+            end
           end
         end
       end
-    end
 
-    context do
-      it_behaves_like 'discussions provider' do
-        let!(:author) { create(:user) }
-        let!(:project) { create(:project) }
+      context do
+        it_behaves_like 'discussions provider' do
+          let!(:author) { create(:user) }
+          let_it_be_with_refind(:project) { create(:project) }
 
-        let!(:merge_request) { create(:merge_request, source_project: project) }
+          let!(:merge_request) { create(:merge_request, source_project: project) }
 
-        let!(:mr_note1) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
-        let!(:mr_note2) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+          let!(:mr_note1) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+          let!(:mr_note2) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 
-        let(:requested_iid) { merge_request.iid }
-        let(:expected_discussion_count) { 2 }
-        let(:expected_discussion_ids) { [mr_note1.discussion_id, mr_note2.discussion_id] }
+          let(:requested_iid) { merge_request.iid }
+          let(:expected_discussion_count) { 2 }
+          let(:expected_discussion_ids) { [mr_note1.discussion_id, mr_note2.discussion_id] }
+        end
       end
     end
   end

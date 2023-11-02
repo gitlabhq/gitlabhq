@@ -61,19 +61,6 @@ Upgrade to 13.8 or later, or make sure the `:merge_ref_auto_sync`
 [feature flag is enabled](../../administration/feature_flags.md#check-if-a-feature-flag-is-enabled)
 on your GitLab instance.
 
-### Pipelines fail intermittently with a `fatal: reference is not a tree:` error
-
-Merged results pipelines run on a merge ref for a merge request
-(`refs/merge-requests/<iid>/merge`), so the Git reference could be overwritten at an
-unexpected time.
-
-For example, when a source or target branch is advanced, the pipeline fails with
-the `fatal: reference is not a tree:` error, which indicates that the checkout-SHA
-is not found in the merge ref.
-
-This behavior was improved in GitLab 12.4 by introducing [persistent pipeline refs](../troubleshooting.md#fatal-reference-is-not-a-tree-error).
-Upgrade to GitLab 12.4 or later to resolve the problem.
-
 ### Successful merged results pipeline overrides a failed branch pipeline
 
 A failed branch pipeline is sometimes ignored when the

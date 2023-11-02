@@ -754,13 +754,38 @@ rspec system pg14-as-if-foss clusterwide-db:
 rspec-ee unit gitlab-duo-chat pg14:
   variables:
     REAL_AI_REQUEST: "true"
-    VERTEX_AI_EMBEDDINGS: "true"
+    RSPEC_RETRY_RETRY_COUNT: 0
   extends:
     - .rspec-ee-base-pg14
-    - .rails:rules:ee-gitlab-duo-chat-vertex-ai
+    - .rails:rules:ee-gitlab-duo-chat-base
+  parallel:
+    matrix:
+      - DUO_RSPEC: ["lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb", "support_specs/helpers/chat_qa_evaluation_helpers_spec.rb"]
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag real_ai_request"
+    - bundle exec rspec -Ispec -rspec_helper --failure-exit-code 0 --tag real_ai_request --color -- ee/spec/${DUO_RSPEC}
+
+rspec-ee unit gitlab-duo-chat-qa pg14:
+  variables:
+    REAL_AI_REQUEST: "true"
+    RSPEC_RETRY_RETRY_COUNT: 0
+  extends:
+    - .rspec-ee-base-pg14
+    - .rails:rules:ee-gitlab-duo-chat-base
+  parallel:
+    matrix:
+      - DUO_RSPEC: ["qa_epic_spec.rb", "qa_issue_spec.rb"]
+  script:
+    - !reference [.base-script, script]
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+    - bundle exec rspec -Ispec -rspec_helper --failure-exit-code 0 --tag real_ai_request --color -- ee/spec/lib/gitlab/llm/chain/agents/zero_shot/${DUO_RSPEC}
+    - ./scripts/duo_chat/reporter.rb
+  artifacts:
+    expire_in: 5d
+    paths:
+      - tmp/duo_chat/qa*.json
+      - "${DUO_RSPEC}.md"
 
 rspec-ee migration pg14:
   extends:

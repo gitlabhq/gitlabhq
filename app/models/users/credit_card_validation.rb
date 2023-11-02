@@ -2,9 +2,15 @@
 
 module Users
   class CreditCardValidation < ApplicationRecord
+    include IgnorableColumns
+
     RELEASE_DAY = Date.new(2021, 5, 17)
 
     self.table_name = 'user_credit_card_validations'
+
+    ignore_columns %i[last_digits network holder_name expiration_date], remove_with: '16.8', remove_after: '2023-12-22'
+
+    attr_accessor :last_digits, :network, :holder_name, :expiration_date
 
     belongs_to :user
     belongs_to :banned_user, class_name: '::Users::BannedUser', foreign_key: :user_id,

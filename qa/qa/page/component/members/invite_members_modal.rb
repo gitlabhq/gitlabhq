@@ -12,37 +12,37 @@ module QA
             super
 
             base.view 'app/assets/javascripts/invite_members/components/invite_modal_base.vue' do
-              element 'invite-modal-submit'
-              element 'access-level-dropdown'
+              element :invite_button
+              element :access_level_dropdown
               element 'invite-modal'
             end
 
             base.view 'app/assets/javascripts/invite_members/components/members_token_select.vue' do
-              element 'members-token-select-input'
+              element :members_token_select_input
             end
 
             base.view 'app/assets/javascripts/invite_members/components/invite_group_trigger.vue' do
-              element 'invite-a-group-button'
+              element :invite_a_group_button
             end
 
-            base.view 'app/assets/javascripts/invite_members/components/invite_members_trigger.vue' do
-              element 'invite-members-button'
+            base.view 'app/assets/javascripts/invite_members/constants.js' do
+              element :invite_members_button
             end
           end
 
           def open_invite_members_modal
-            click_element 'invite-members-button'
+            click_element :invite_members_button
           end
 
           def open_invite_group_modal
-            click_element 'invite-a-group-button'
+            click_element :invite_a_group_button
           end
 
           def add_member(username, access_level = 'Developer', refresh_page: true)
             open_invite_members_modal
 
             within_element('invite-modal') do
-              fill_element('members-token-select-input', username)
+              fill_element(:members_token_select_input, username)
               Support::WaitForRequests.wait_for_requests
               click_button(username, match: :prefer_exact)
               set_access_level(access_level)
@@ -68,7 +68,7 @@ module QA
           end
 
           def send_invite(refresh = false)
-            click_element 'invite-modal-submit'
+            click_element :invite_button
             Support::WaitForRequests.wait_for_requests
             page.refresh if refresh
           end
@@ -77,7 +77,7 @@ module QA
 
           def set_access_level(access_level)
             # Guest option is selected by default, skipping these steps if desired option is 'Guest'
-            select_element('access-level-dropdown', access_level) unless access_level == 'Guest'
+            select_element(:access_level_dropdown, access_level) unless access_level == 'Guest'
           end
         end
       end

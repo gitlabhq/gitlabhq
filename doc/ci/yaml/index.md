@@ -2026,7 +2026,7 @@ Use `hooks:pre_get_sources_script` to specify a list of commands to execute on t
 before cloning the Git repository and any submodules.
 You can use it for example to:
 
-- Adjust the [Git configuration](../troubleshooting.md#get_sources-job-section-fails-because-of-an-http2-problem).
+- Adjust the [Git configuration](../jobs/index.md#get_sources-job-section-fails-because-of-an-http2-problem).
 - Export [tracing variables](../../topics/git/useful_git_commands.md).
 
 **Possible inputs**: An array including:

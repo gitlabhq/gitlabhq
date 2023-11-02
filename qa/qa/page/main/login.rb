@@ -7,55 +7,55 @@ module QA
         include Layout::Flash
 
         view 'app/views/devise/passwords/edit.html.haml' do
-          element 'password-field'
-          element 'password-confirmation-field'
-          element 'change-password-button'
+          element :password_field
+          element :password_confirmation_field
+          element :change_password_button
         end
 
         view 'app/views/devise/sessions/new.html.haml' do
-          element 'register-link'
+          element :register_link
         end
 
         view 'app/views/devise/sessions/_new_base.html.haml' do
-          element 'username-field'
-          element 'password-field'
-          element 'sign-in-button'
+          element :login_field
+          element :password_field
+          element :sign_in_button
         end
 
         view 'app/views/devise/sessions/_new_ldap.html.haml' do
-          element 'username-field'
-          element 'password-field'
-          element 'sign-in-button'
+          element :username_field
+          element :password_field
+          element :sign_in_button
         end
 
         view 'app/views/devise/shared/_tabs_ldap.html.haml' do
-          element 'ldap-tab'
-          element 'standard-tab'
-          element 'register-tab'
+          element :ldap_tab
+          element :standard_tab
+          element :register_tab
         end
 
         view 'app/views/devise/shared/_tab_single.html.haml' do
-          element 'sign-in-tab'
+          element :sign_in_tab
         end
 
         view 'app/helpers/auth_helper.rb' do
-          element 'saml-login-button'
-          element 'github-login-button'
-          element 'oidc-login-button'
-          element 'gitlab-oauth-login-button'
-          element 'facebook-login-button'
+          element :saml_login_button
+          element :github_login_button
+          element :oidc_login_button
+          element :gitlab_oauth_login_button
+          element :facebook_login_button
         end
 
         view 'app/views/layouts/devise.html.haml' do
-          element 'login-page', required: true
+          element :login_page, required: true
         end
 
         def can_sign_in?
-          has_element?('sign-in-button')
+          has_element?(:sign_in_button)
         end
 
         def on_login_page?
-          has_element?('login-page', wait: 0)
+          has_element?(:login_page, wait: 0)
         end
 
         def sign_in_using_credentials(user: nil, skip_page_validation: false)
@@ -98,9 +98,9 @@ module QA
 
             switch_to_ldap_tab
 
-            fill_element 'username-field', user.ldap_username
-            fill_element 'password-field', user.ldap_password
-            click_element 'sign-in-button'
+            fill_element :username_field, user.ldap_username
+            fill_element :password_field, user.ldap_password
+            click_element :sign_in_button
           end
 
           Page::Main::Menu.perform(&:signed_in?)
@@ -130,15 +130,15 @@ module QA
         end
 
         def has_sign_in_tab?(wait: Capybara.default_max_wait_time)
-          has_element?('sign-in-tab', wait: wait)
+          has_element?(:sign_in_tab, wait: wait)
         end
 
         def has_ldap_tab?
-          has_element?('ldap-tab')
+          has_element?(:ldap_tab)
         end
 
         def has_standard_tab?
-          has_element?('standard-tab')
+          has_element?(:standard_tab)
         end
 
         def sign_in_tab?
@@ -162,45 +162,45 @@ module QA
         end
 
         def switch_to_sign_in_tab
-          click_element 'sign-in-tab'
+          click_element :sign_in_tab
         end
 
         def switch_to_register_page
           set_initial_password_if_present
-          click_element 'register-link'
+          click_element :register_link
         end
 
         def switch_to_ldap_tab
-          click_element 'ldap-tab'
+          click_element :ldap_tab
         end
 
         def switch_to_standard_tab
-          click_element 'standard-tab'
+          click_element :standard_tab
         end
 
         def sign_in_with_github
           set_initial_password_if_present
-          click_element 'github-login-button'
+          click_element :github_login_button
         end
 
         def sign_in_with_facebook
           set_initial_password_if_present
-          click_element 'facebook-login-button'
+          click_element :facebook_login_button
         end
 
         def sign_in_with_saml
           set_initial_password_if_present
-          click_element 'saml-login-button'
+          click_element :saml_login_button
         end
 
         def sign_in_with_gitlab_oidc
           set_initial_password_if_present
-          click_element 'oidc-login-button'
+          click_element :oidc_login_button
         end
 
         def sign_in_with_gitlab_oauth
           set_initial_password_if_present
-          click_element 'gitlab-oauth-login-button'
+          click_element :gitlab_oauth_login_button
         end
 
         def sign_out_and_sign_in_as(user:)
@@ -233,7 +233,7 @@ module QA
 
           click_accept_all_cookies if Runtime::Env.running_on_dot_com? && has_accept_all_cookies_button?
 
-          click_element 'sign-in-button'
+          click_element :sign_in_button
 
           Support::WaitForRequests.wait_for_requests
 
@@ -254,16 +254,16 @@ module QA
         end
 
         def fill_in_credential(user)
-          fill_element 'username-field', user.username
-          fill_element 'password-field', user.password
+          fill_element :login_field, user.username
+          fill_element :password_field, user.password
         end
 
         def set_initial_password_if_present
           return unless has_content?('Change your password')
 
-          fill_element 'password-field', Runtime::User.password
-          fill_element 'password-confirmation-field', Runtime::User.password
-          click_element 'change-password-button'
+          fill_element :password_field, Runtime::User.password
+          fill_element :password_confirmation_field, Runtime::User.password
+          click_element :change_password_button
         end
       end
     end

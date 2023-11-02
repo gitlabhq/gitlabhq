@@ -7,13 +7,13 @@
       = f.hidden_field :reset_password_token
       .form-group.gl-px-5
         = f.label _('New password'), for: "user_password"
-        = f.password_field :password, autocomplete: 'new-password', class: "form-control gl-form-input top js-password-complexity-validation", required: true, title: _('This field is required.'), data: { testid: 'password-field'}
+        = f.password_field :password, autocomplete: 'new-password', class: "form-control gl-form-input top js-password-complexity-validation", required: true, title: _('This field is required.'), data: { qa_selector: 'password_field'}
         = render_if_exists 'shared/password_requirements_list'
       .form-group.gl-px-5
         = f.label _('Confirm new password'), for: "user_password_confirmation"
-        = f.password_field :password_confirmation, autocomplete: 'new-password', class: "form-control gl-form-input bottom", title: _('This field is required.'), data: { testid: 'password-confirmation-field' }, required: true
+        = f.password_field :password_confirmation, autocomplete: 'new-password', class: "form-control gl-form-input bottom", title: _('This field is required.'), data: { qa_selector: 'password_confirmation_field' }, required: true
       .clearfix.gl-px-5.gl-pb-5
-        = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'change-password-button' } }) do
+        = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { qa_selector: 'change_password_button' } }) do
           = _('Change your password')
 
 .clearfix.prepend-top-20

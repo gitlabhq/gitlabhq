@@ -220,6 +220,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         {
           name: '0.1.0',
           digest: 'sha256:1234567890',
+          config_digest: 'sha256:13828381121',
           media_type: 'application/vnd.oci.image.manifest.v1+json',
           size_bytes: 1234567890,
           created_at: 5.minutes.ago
@@ -227,6 +228,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         {
           name: 'latest',
           digest: 'sha256:1234567892',
+          config_digest: 'sha256:33139438113',
           media_type: 'application/vnd.oci.image.manifest.v1+json',
           size_bytes: 1234567892,
           created_at: 10.minutes.ago

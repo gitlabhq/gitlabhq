@@ -94,6 +94,8 @@ FactoryBot.define do
         visibility_level: evaluator.visibility_level
       }
 
+      project_namespace_hash[:id] = evaluator.project_namespace_id.presence
+
       project.build_project_namespace(project_namespace_hash)
       project.build_project_feature(project_feature_hash)
 

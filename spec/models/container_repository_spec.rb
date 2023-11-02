@@ -675,6 +675,101 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
+  describe '#tags_page' do
+    let_it_be(:page_size) { 100 }
+    let_it_be(:before) { 'before' }
+    let_it_be(:last) { 'last' }
+    let_it_be(:sort) { '-name' }
+    let_it_be(:name) { 'repo' }
+
+    subject do
+      repository.tags_page(before: before, last: last, sort: sort, name: name, page_size: page_size)
+    end
+
+    before do
+      allow(repository).to receive(:migrated?).and_return(true)
+    end
+
+    it 'calls GitlabApiClient#tags and passes parameters' do
+      allow(repository.gitlab_api_client).to receive(:tags).and_return({})
+      expect(repository.gitlab_api_client).to receive(:tags).with(
+        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name)
+
+      subject
+    end
+
+    context 'with a call to tags' do
+      let_it_be(:tags_response) do
+        [
+          {
+            name: '0.1.0',
+            digest: 'sha256:6c3c624b58dbbcd3c0dd82b4c53f04194d1247c6eebdaab7c610cf7d6670',
+            config_digest: 'sha256:66b1132a0173910b01ee69583bbf2f7f1e4462c99efbe1b9ab5bf',
+            media_type: 'application/vnd.oci.image.manifest.v1+json',
+            size_bytes: 1234567890,
+            created_at: 5.minutes.ago,
+            updated_at: 5.minutes.ago
+          },
+          {
+            name: 'latest',
+            digest: 'sha256:6c3c624b58dbbcd3c0dd82b4c53f04191247c6eebdaab7c610cf7d66709b3',
+            config_digest: 'sha256:66b1132a0173910b01ee694462c99efbe1b9ab5bf8083231232312',
+            media_type: 'application/vnd.oci.image.manifest.v1+json',
+            size_bytes: 1234567892,
+            created_at: 10.minutes.ago,
+            updated_at: 10.minutes.ago
+          }
+        ]
+      end
+
+      let_it_be(:response_body) do
+        {
+          pagination: {
+            previous: { uri: URI('/test?before=prev-cursor') },
+            next: { uri: URI('/test?last=next-cursor') }
+          },
+          response_body: ::Gitlab::Json.parse(tags_response.to_json)
+        }
+      end
+
+      before do
+        allow(repository.gitlab_api_client).to receive(:tags).and_return(response_body)
+      end
+
+      it 'returns tags and parses the previous and next cursors' do
+        return_value = subject
+
+        expect(return_value[:pagination]).to eq(response_body[:pagination])
+
+        return_value[:tags].each_with_index do |tag, index|
+          expected_revision = tags_response[index][:config_digest].to_s.split(':')[1]
+
+          expect(tag.is_a?(ContainerRegistry::Tag)).to eq(true)
+          expect(tag).to have_attributes(
+            repository: repository,
+            name: tags_response[index][:name],
+            digest: tags_response[index][:digest],
+            total_size: tags_response[index][:size_bytes],
+            revision: expected_revision,
+            short_revision: expected_revision[0..8],
+            created_at: DateTime.rfc3339(tags_response[index][:created_at].rfc3339),
+            updated_at: DateTime.rfc3339(tags_response[index][:updated_at].rfc3339)
+          )
+        end
+      end
+    end
+
+    context 'calling on a non migrated repository' do
+      before do
+        allow(repository).to receive(:migrated?).and_return(false)
+      end
+
+      it 'raises an Argument error' do
+        expect { repository.tags_page }.to raise_error(ArgumentError, 'not a migrated repository')
+      end
+    end
+  end
+
   describe '#tags_count' do
     it 'returns the count of tags' do
       expect(repository.tags_count).to eq(1)

@@ -191,12 +191,21 @@ Before implementing a reference architecture, refer to the following requirement
 These reference architectures were built and tested on Google Cloud Platform (GCP) using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
 CPU platform as a lowest common denominator baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
+Newer, similarly-sized CPUs are supported and may have improved performance as a result.
 
-Newer, similarly-sized CPUs are supported and may have improved performance as a result. For Linux package environments,
-ARM-based equivalents are also supported.
+ARM CPUs are supported for Linux package environments as well as for any [Cloud Provider services](#cloud-provider-services) where applicable.
 
 NOTE:
 Any "burstable" instance types are not recommended due to inconsistent performance.
+
+### Supported disk types
+
+As a general guidance, most standard disk types are expected to work for GitLab, but be aware of the following specific call outs:
+
+- [Gitaly](../gitaly/index.md#disk-requirements) requires at least 8,000 input/output operations per second (IOPS) for read operations, and 2,000 IOPS for write operations.
+- We don't recommend the use of any disk types that are "burstable" due to inconsistent performance.
+
+Outside the above standard, disk types are expected to work for GitLab and the choice of each depends on your specific requirements around areas, such as durability or costs.
 
 ### Supported infrastructure
 
@@ -355,6 +364,12 @@ If you choose to use a third party external service:
 [When selecting to use an external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider), it should run a standard, performant, and supported version.
 
 Redis is primarily single threaded. For the 10,000 user and above Reference Architectures, separate out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
+
+### Recommendation notes for Object Storage
+
+GitLab has been tested against [various Object Storage providers](../object_storage.md#supported-object-storage-providers) that are expected to work.
+
+As a general guidance, it's recommended to use a reputable solution that has full S3 compatibility.
 
 #### Unsupported database services
 
@@ -663,8 +678,8 @@ Most setups would only need vertical scaling, but there are some specific areas 
 Conversely, if you have robust metrics in place that show the environment is over-provisioned, you can apply the same process for
 scaling downwards. You should take an iterative approach when scaling downwards, however, to ensure there are no issues.
 
-### How to monitor your environment
+### Monitoring
 
-To monitor your GitLab environment, you can use the tools
-[bundled with GitLab](../monitoring/index.md), but it's also possible to use third-party
-options if desired.
+There are numerous options available to monitor your infrastructure, as well as [GitLab itself](../monitoring/index.md), and you should refer to your chosen monitoring solution's documentation for more information.
+
+Of note, the GitLab application is bundled with [Prometheus as well as various Prometheus compatible exporters](../monitoring/prometheus/index.md) that could be hooked into your solution.

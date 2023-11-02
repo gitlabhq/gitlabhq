@@ -88,7 +88,7 @@ export default {
         text: this.$options.i18n.editProfile,
         href: this.data.settings.profile_path,
         extraAttrs: {
-          'data-testid': 'edit-profile-link',
+          'data-testid': 'edit_profile_link',
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_edit_profile',
         },
@@ -235,7 +235,7 @@ export default {
             :entity-name="data.name"
             :src="data.avatar_url"
             aria-hidden="true"
-            data-testid="user-avatar-content"
+            data-testid="user_avatar_content"
           />
           <span
             v-if="showNotificationDot"

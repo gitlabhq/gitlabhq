@@ -15,7 +15,7 @@
 
   .form-group
     = f.label :name, s_('AccessTokens|Token name'), class: 'label-bold'
-    = f.text_field :name, class: 'form-control gl-form-input gl-form-input-xl', required: true, data: { testid: 'access-token-name-field' }, :'aria-describedby' => 'access_token_help_text'
+    = f.text_field :name, class: 'form-control gl-form-input gl-form-input-xl', required: true, data: { qa_selector: 'access_token_name_field' }, :'aria-describedby' => 'access_token_help_text'
     %span.form-text.text-muted#access_token_help_text
       - if resource
         - resource_type = resource.is_a?(Group) ? "group" : "project"
@@ -42,6 +42,6 @@
     = render 'shared/tokens/scopes_form', prefix: prefix, description_prefix: description_prefix, token: token, scopes: scopes, f: f
 
   .gl-mt-3
-    = f.submit s_('AccessTokens|Create %{type}') % { type: type }, data: { testid: 'create-token-button' }, pajamas_button: true
+    = f.submit s_('AccessTokens|Create %{type}') % { type: type }, data: { qa_selector: 'create_token_button' }, pajamas_button: true
     = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
       = _('Cancel')

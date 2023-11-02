@@ -174,8 +174,7 @@ multiple pipelines. You don't have to explicitly configure rules for multiple ty
 of pipeline to trigger them accidentally.
 
 Some configurations that have the potential to cause duplicate pipelines cause a
-[pipeline warning](../troubleshooting.md#pipeline-warnings) to be displayed.
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219431) in GitLab 13.3.
+[pipeline warning](../debugging.md#pipeline-warnings) to be displayed.
 
 For example:
 
@@ -209,7 +208,7 @@ To avoid duplicate pipelines, you can:
 
 You can also avoid duplicate pipelines by changing the job rules to avoid either push (branch)
 pipelines or merge request pipelines. However, if you use a `- when: always` rule without
-`workflow: rules`, GitLab still displays a [pipeline warning](../troubleshooting.md#pipeline-warnings).
+`workflow: rules`, GitLab still displays a [pipeline warning](../debugging.md#pipeline-warnings).
 
 For example, the following does not trigger double pipelines, but is not recommended
 without `workflow: rules`:
@@ -1194,3 +1193,20 @@ To run protected manual jobs:
 - Add the administrator as a direct member of the private project (any role)
 - [Impersonate a user](../../administration/admin_area.md#user-impersonation) who is a
   direct member of the project.
+
+### A CI/CD job does not use newer configuration when run again
+
+The configuration for a pipeline is only fetched when the pipeline is created.
+When you rerun a job, uses the same configuration each time. If you update configuration files,
+including separate files added with [`include`](../yaml/index.md#include), you must
+start a new pipeline to use the new configuration.
+
+### `Job may allow multiple pipelines to run for a single action` warning
+
+When you use [`rules`](../yaml/index.md#rules) with a `when` clause without an `if`
+clause, multiple pipelines may run. Usually this occurs when you push a commit to
+a branch that has an open merge request associated with it.
+
+To [prevent duplicate pipelines](#avoid-duplicate-pipelines), use
+[`workflow: rules`](../yaml/index.md#workflow) or rewrite your rules to control
+which pipelines can run.

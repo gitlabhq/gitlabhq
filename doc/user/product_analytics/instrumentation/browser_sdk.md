@@ -161,6 +161,15 @@ glClient.page(eventAttributes);
 | :---------------- | :-------------------------- | :---------------------------------------------------------------- |
 | `eventAttributes` | `Object`/`Null`/`undefined` | The event attributes that need to be added to the pageview event. |
 
+The `eventAttributes` object supports the following optional properties:
+
+| Property         | Type                        | Description                                                                   |
+| :--------------- | :-------------------------- | :---------------------------------------------------------------------------- |
+| `title`          | `String`                    | Override the default page title. |
+| `contextCallback` | `Function` | A callback that fires on the page view. |
+| `context` | `Object` | Add context (additional information) on the page view. |
+| `timestamp` | `timestamp` | Set the true timestamp or overwrite the device-sent timestamp on an event. |
+
 ### `track`
 
 Used to trigger a custom event.

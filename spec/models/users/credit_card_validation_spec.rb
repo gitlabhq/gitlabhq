@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
+  include CryptoHelpers
+
   it { is_expected.to belong_to(:user) }
 
   it { is_expected.to validate_length_of(:holder_name).is_at_most(50) }
@@ -206,12 +208,12 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
       context 'when last_digits has a blank value' do
         let(:last_digits) { ' ' }
 
-        it { expect { save_credit_card_validation }.not_to change { credit_card_validation.last_digits_hash } }
+        it { expect(credit_card_validation).to be_invalid }
       end
 
       context 'when last_digits has a value' do
         let(:last_digits) { 1111 }
-        let(:expected_last_digits_hash) { Gitlab::CryptoHelper.sha256(last_digits) }
+        let(:expected_last_digits_hash) { sha256(last_digits) }
 
         it 'assigns correct last_digits_hash value' do
           expect { save_credit_card_validation }.to change {
@@ -240,7 +242,7 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
 
       context 'when holder_name has a value' do
         let(:holder_name) { 'John Smith' }
-        let(:expected_holder_name_hash) { Gitlab::CryptoHelper.sha256(holder_name.downcase) }
+        let(:expected_holder_name_hash) { sha256(holder_name.downcase) }
 
         it 'lowercases holder_name and assigns correct holder_name_hash value' do
           expect { save_credit_card_validation }.to change {
@@ -269,7 +271,7 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
 
       context 'when network has a value' do
         let(:network) { 'Visa' }
-        let(:expected_network_hash) { Gitlab::CryptoHelper.sha256(network.downcase) }
+        let(:expected_network_hash) { sha256(network.downcase) }
 
         it 'lowercases network and assigns correct network_hash value' do
           expect { save_credit_card_validation }.to change {
@@ -298,7 +300,7 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
 
       context 'when expiration_date has a value' do
         let(:expiration_date) { 1.year.from_now.to_date }
-        let(:expected_expiration_date_hash) { Gitlab::CryptoHelper.sha256(expiration_date.to_s) }
+        let(:expected_expiration_date_hash) { sha256(expiration_date.to_s) }
 
         it 'assigns correct expiration_date_hash value' do
           expect { save_credit_card_validation }.to change {

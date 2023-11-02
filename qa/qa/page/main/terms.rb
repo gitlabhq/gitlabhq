@@ -5,17 +5,17 @@ module QA
     module Main
       class Terms < Page::Base
         view 'app/views/layouts/terms.html.haml' do
-          element 'user-avatar-content', required: true
+          element :user_avatar_content, required: true
         end
 
         view 'app/assets/javascripts/terms/components/app.vue' do
-          element 'terms-content', required: true
+          element :terms_content, required: true
 
-          element 'accept-terms-button'
+          element :accept_terms_button
         end
 
         def accept_terms
-          click_element 'accept-terms-button', Page::Main::Menu
+          click_element :accept_terms_button, Page::Main::Menu
         end
       end
     end

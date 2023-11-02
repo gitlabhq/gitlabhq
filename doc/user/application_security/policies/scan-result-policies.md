@@ -322,3 +322,35 @@ We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/
 - When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency). We currently use `main tip` of the target branch for comparison. In the future, we plan to use `merge base` for `newly_detected` policies (see [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518)).
 - Findings or errors that cause approval to be required on a scan result policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
 - Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
+
+## Troubleshooting
+
+### Merge request rules widget shows a scan result policy is invalid or duplicated **(ULTIMATE SELF)**
+
+On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a
+group and imported into another, and had scan result policy rules. These rules are stored in a
+separate project to the one that was exported. As a result, the project contains policy rules that
+reference entities that don't exist in the imported project's group. The result is policy rules that
+are invalid, duplicated, or both.
+
+To remove all invalid scan result policy rules from a GitLab instance, an administrator can run
+the following script in the [Rails console](../../../administration/operations/rails_console.md).
+
+```ruby
+Project.joins(:approval_rules).where(approval_rules: { report_type: %i[scan_finding license_scanning] }).where.not(approval_rules: { security_orchestration_policy_configuration_id: nil }).find_in_batches.flat_map do |batch|
+  batch.map do |project|
+    # Get projects and their configuration_ids for applicable project rules
+    [project, project.approval_rules.where(report_type: %i[scan_finding license_scanning]).pluck(:security_orchestration_policy_configuration_id).uniq]
+  end.uniq.map do |project, configuration_ids| # We take only unique combinations of project + configuration_ids
+    # If we find more configurations than what is available for the project, we take records with the extra configurations
+    [project, configuration_ids - project.all_security_orchestration_policy_configurations.pluck(:id)]
+  end.select { |_project, configuration_ids| configuration_ids.any? }
+end.each do |project, configuration_ids|
+  # For each found pair project + ghost configuration, we remove these rules for a given project
+  Security::OrchestrationPolicyConfiguration.where(id: configuration_ids).each do |configuration|
+    configuration.delete_scan_finding_rules_for_project(project.id)
+  end
+  # Ensure we sync any potential rules from new group's policy
+  Security::ScanResultPolicies::SyncProjectWorker.perform_async(project.id)
+end
+```

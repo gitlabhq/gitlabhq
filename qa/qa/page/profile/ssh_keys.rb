@@ -11,7 +11,7 @@ module QA
         end
 
         view 'app/assets/javascripts/access_tokens/components/expires_at_field.vue' do
-          element 'expiry-date-field'
+          element :expiry_date_field
         end
 
         view 'app/helpers/ssh_keys_helper.rb' do
@@ -31,7 +31,7 @@ module QA
           # Expire in 2 days just in case the key is created just before midnight
           fill_expiry_date(Date.today + 2)
           # Close the datepicker
-          find_element('expiry-date-field').find('input').send_keys(:enter)
+          find_element(:expiry_date_field).find('input').send_keys(:enter)
 
           click_element(:add_key_button)
         end
@@ -44,7 +44,7 @@ module QA
             raise "Expiry date must be in YYYY-MM-DD format"
           end
 
-          fill_element('expiry-date-field', date)
+          fill_element(:expiry_date_field, date)
         end
 
         def remove_key(title)
