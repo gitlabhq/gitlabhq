@@ -105,6 +105,7 @@ identifying abstract concepts and are subject to changes as we refine the design
   allows components to be pinned to a specific revision.
 - **Step** is a type of component that contains a collection of instructions for job execution.
 - **Template** is a type of component that contains a snippet of CI/CD configuration that can be [included](../../../ci/yaml/includes.md) in a project's pipeline configuration.
+- **Publishing** is the act of listing a version of the resource (for example, a project release) on the Catalog.
 
 ## Definition of pipeline component
 
@@ -524,17 +525,26 @@ spec:
 
 The CI Catalog is an index of resources that users can leverage in CI/CD. It initially
 contains a list of components repositories that users can discover and use in their pipelines.
+The user sees only resources based on their permissions and project visibility level.
+Unauthenticated users will only see public resources.
+
+Project admins are responsible for setting the project private or public.
+The CI Catalog should not provide security functionalities like prevent projects from appearing in the Community Catalog.
+If the project is public it's visible to the world anyway.
+
+The Catalog page can provide different filters to refine the user search including
+predefined filters such as resources from groups the user is member of.
 
 In the future, the Catalog could contain also other types of resources (for example:
-integrations, project templates, etc.).
+integrations, project templates, container images, etc.).
 
 To list a components repository in the Catalog we need to mark the project as being a
-catalog resource. We do that initially with an API endpoint, similar to changing a project setting.
+catalog resource. We do that initially with a project setting.
 
-Once a project is marked as a "catalog resource" it can be displayed in the Catalog.
+Once a project is marked as a "catalog resource" it can eventually be displayed in the Catalog.
 
-We could create a database record when the API endpoint is used and remove the record when
-the same is disabled/removed.
+We could create a database record when the setting is enabled and modify the record's state when
+the same is disabled.
 
 ## Catalog resource
 
@@ -552,9 +562,6 @@ Other properties of a catalog resource:
 - indicators of popularity (stars, forks).
 - categorization: user should select a category and or define search tags
 
-As soon as a components repository is marked as being a "catalog resource"
-we should be seeing the resource listed in the Catalog.
-
 Initially for the resource, the project may not have any released tags.
 Users would be able to use the components repository by specifying a branch name or
 commit SHA for the version. However, these types of version qualifiers should not
@@ -564,10 +571,14 @@ be listed in the catalog resource's page for various reasons:
 - Branches and tags may not be meaningful for the end-user.
 - Branches and tags don't communicate versioning thoroughly.
 
+To list a catalog resource in the Catalog we first need to create a release for
+the project.
+
 ## Releasing new resource versions to the Catalog
 
-The versions that should be displayed for the resource should be the project [releases](../../../user/project/releases/index.md).
-Creating project releases is an official act of versioning a resource.
+The versions that will be published for the resource should be the project
+[releases](../../../user/project/releases/index.md). Creating project releases is an official
+act of versioning a resource.
 
 A resource page would have:
 
@@ -598,29 +609,6 @@ being released and index their data and metadata.
 For example: index the content of `spec:` section for CI components.
 
 See an [example of development workflow](dev_workflow.md) for a components repository.
-
-## Availability of CI catalog as a feature
-
-We plan to introduce 2 features of CI catalog as separate views:
-
-1. **Namespace Catalog (GitLab Ultimate):** allows organizations to share and discover catalog resources
-   created inside the top-level namespace.
-   Users will be able to access the Namespace Catalog from a project or subgroup inside the top-level
-   namespace.
-1. **Community Catalog (GitLab free):** allows anyone in a GitLab instance to share and discover catalog
-   resources. The Community Catalog presents only resources/projects that are public.
-
-If a resource in a Namespace Catalog is made public (changing the project's visibility) the resource is
-available in both Namespace Catalog (because it comes from there) as well as the Community Catalog
-(because it's public).
-
-![Namespace and Community Catalogs](img/catalogs.png)
-
-There is only 1 CI catalog. The Namespace and Community Catalogs are different views of the CI catalog.
-
-Project admins are responsible for setting the project private or public.
-The CI Catalog should not provide security functionalities like prevent projects from appearing in the Community Catalog.
-If the project is public it's visible to the world anyway.
 
 ## Note about future resource types
 
@@ -673,6 +661,8 @@ metadata:
 
 ## Iterations
 
+The first plan of iterations constisted in:
+
 1. Experimentation phase
     - Build an MVC behind a feature flag with `namespace` actor.
     - Enable the feature flag only for `gitlab-com` and `gitlab-org` namespaces to initiate the dogfooding.
@@ -690,6 +680,9 @@ metadata:
     - Allow self-managed administrators to populate their self-managed catalog by importing/updating
       components from GitLab.com or from repository exports.
     - Iterate on feedback.
+
+In October 2023, after releasing the namespace-view (previously called private catalog view) as Experiment we changed
+focus moving away from 2 separate views (namespace view and global view) and combining the UX in a single global view.
 
 ## Limits
 

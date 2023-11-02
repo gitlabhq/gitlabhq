@@ -14,7 +14,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
 
     context 'when emails are disabled' do
       it 'returns false if group disabled' do
-        expect(project.namespace).to receive(:emails_disabled?).and_return(true)
+        expect(project.namespace).to receive(:emails_enabled?).and_return(false)
         expect(recipient).to receive(:emails_disabled?).and_call_original
         expect(recipient.notifiable?).to eq false
       end
@@ -28,7 +28,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
 
     context 'when emails are enabled' do
       it 'returns true if group enabled' do
-        expect(project.namespace).to receive(:emails_disabled?).and_return(false)
+        expect(project.namespace).to receive(:emails_enabled?).and_return(true)
         expect(recipient).to receive(:emails_disabled?).and_call_original
         expect(recipient.notifiable?).to eq true
       end

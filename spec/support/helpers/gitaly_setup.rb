@@ -72,7 +72,9 @@ module GitalySetup
   end
 
   def repos_path(storage = REPOS_STORAGE)
-    Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
+    end
   end
 
   def service_cmd(service, toml = nil)

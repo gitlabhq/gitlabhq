@@ -164,7 +164,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'lib/gitlab/ci/parsers/security/validators/schema_validator.rb'
     - 'lib/gitlab/ci/pipeline/chain/populate.rb'
     - 'lib/gitlab/ci/pipeline/seed/build.rb'
-    - 'lib/gitlab/config_checker/puma_rugged_checker.rb'
     - 'lib/gitlab/database/load_balancing/sidekiq_server_middleware.rb'
     - 'lib/gitlab/database/migration_helpers.rb'
     - 'lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb'

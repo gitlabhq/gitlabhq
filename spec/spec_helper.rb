@@ -301,13 +301,6 @@ RSpec.configure do |config|
       # https://gitlab.com/gitlab-org/gitlab/-/issues/385453
       stub_feature_flags(vscode_web_ide: false)
 
-      enable_rugged = example.metadata[:enable_rugged].present?
-
-      # Disable Rugged features by default
-      Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.each do |flag|
-        stub_feature_flags(flag => enable_rugged)
-      end
-
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.
       # It's done in order to preserve the concistency in tests
@@ -335,8 +328,6 @@ RSpec.configure do |config|
       stub_feature_flags(clickhouse_data_collection: false)
 
       stub_feature_flags(vite: false)
-
-      allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags
     end
@@ -391,11 +382,6 @@ RSpec.configure do |config|
 
   config.around(:example, :request_store) do |example|
     ::Gitlab::SafeRequestStore.ensure_request_store { example.run }
-  end
-
-  config.around(:example, :enable_rugged) do |example|
-    # Skip tests that need rugged when using praefect DB.
-    example.run unless GitalySetup.praefect_with_db?
   end
 
   config.around(:example, :yaml_processor_feature_flag_corectness) do |example|

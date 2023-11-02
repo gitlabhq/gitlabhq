@@ -504,7 +504,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/git/blob_spec.rb'
     - 'spec/lib/gitlab/git/commit_spec.rb'
     - 'spec/lib/gitlab/git/repository_spec.rb'
-    - 'spec/lib/gitlab/git/rugged_impl/use_rugged_spec.rb'
     - 'spec/lib/gitlab/git/tag_spec.rb'
     - 'spec/lib/gitlab/git_access_snippet_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/commit_service_spec.rb'

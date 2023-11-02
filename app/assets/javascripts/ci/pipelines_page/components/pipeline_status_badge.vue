@@ -32,7 +32,7 @@ export default {
 <template>
   <div>
     <ci-icon
-      class="gl-mb-3"
+      class="gl-mb-2"
       :status="pipelineStatus"
       show-status-text
       @ciStatusBadgeClick="trackClick"

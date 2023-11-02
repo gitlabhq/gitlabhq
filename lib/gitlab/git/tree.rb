@@ -12,9 +12,6 @@ module Gitlab
       class << self
         # Get list of tree objects
         # for repository based on commit sha and path
-        # Uses rugged for raw objects
-        #
-        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/320
         def where(
           repository, sha, path = nil, recursive = false, skip_flat_paths = true, rescue_not_found = true,
           pagination_params = nil)
@@ -110,5 +107,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Git::Tree.singleton_class.prepend Gitlab::Git::RuggedImpl::Tree::ClassMethods

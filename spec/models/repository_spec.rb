@@ -3001,10 +3001,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   it_behaves_like '#tree'
 
-  describe '#tree? with Rugged enabled', :enable_rugged do
-    it_behaves_like '#tree'
-  end
-
   describe '#size' do
     context 'with a non-existing repository' do
       it 'returns 0' do
@@ -3214,16 +3210,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect(repository.ancestor?(ancestor.id, commit.id)).to eq("it's apparent")
       end
     end
-  end
-
-  describe '#ancestor? with Rugged enabled', :enable_rugged do
-    it 'calls out to the Rugged implementation' do
-      allow_any_instance_of(Rugged).to receive(:merge_base).with(repository.commit.id, Gitlab::Git::BLANK_SHA).and_call_original
-
-      repository.ancestor?(repository.commit.id, Gitlab::Git::BLANK_SHA)
-    end
-
-    it_behaves_like '#ancestor?'
   end
 
   describe '#archive_metadata' do

@@ -59,6 +59,7 @@ GET /groups
     "auto_devops_enabled": null,
     "subgroup_creation_level": "owner",
     "emails_disabled": null,
+    "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
     "default_branch_protection": 2,
@@ -97,6 +98,7 @@ GET /groups?statistics=true
     "auto_devops_enabled": null,
     "subgroup_creation_level": "owner",
     "emails_disabled": null,
+    "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
     "default_branch_protection": 2,
@@ -181,6 +183,7 @@ GET /groups/:id/subgroups
     "auto_devops_enabled": null,
     "subgroup_creation_level": "owner",
     "emails_disabled": null,
+    "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
     "default_branch_protection": 2,
@@ -242,6 +245,7 @@ GET /groups/:id/descendant_groups
     "auto_devops_enabled": null,
     "subgroup_creation_level": "owner",
     "emails_disabled": null,
+    "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
     "default_branch_protection": 2,
@@ -267,6 +271,7 @@ GET /groups/:id/descendant_groups
     "auto_devops_enabled": null,
     "subgroup_creation_level": "owner",
     "emails_disabled": null,
+    "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
     "default_branch_protection": 2,
@@ -467,6 +472,7 @@ Example response:
       "pages_access_level":"enabled",
       "security_and_compliance_access_level":"enabled",
       "emails_disabled":null,
+      "emails_enabled": null,
       "shared_runners_enabled":true,
       "lfs_enabled":true,
       "creator_id":1,
@@ -818,7 +824,8 @@ Parameters:
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting. |
 | `description`                                           | string  | no       | The group's description. |
-| `emails_disabled`                                       | boolean | no       | Disable email notifications. |
+| `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead. |
+| `emails_enabled`                                        | boolean | no       | Enable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
 | `parent_id`                                             | integer | no       | The parent group ID for creating nested group. |
@@ -975,7 +982,8 @@ PUT /groups/:id
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `description`                                           | string  | no       | The description of the group. |
-| `emails_disabled`                                       | boolean | no       | Disable email notifications. |
+| `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead. |
+| `emails_enabled`                                        | boolean | no       | Enable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
 | `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |

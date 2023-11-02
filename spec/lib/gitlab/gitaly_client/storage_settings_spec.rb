@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::StorageSettings do
+RSpec.describe Gitlab::GitalyClient::StorageSettings, feature_category: :gitaly do
   describe "#initialize" do
     context 'when the storage contains no path' do
       it 'raises an error' do
@@ -62,16 +62,16 @@ RSpec.describe Gitlab::GitalyClient::StorageSettings do
   end
 
   describe '.disk_access_denied?' do
-    context 'when Rugged is enabled', :enable_rugged do
-      it 'returns false' do
-        expect(described_class.disk_access_denied?).to be_falsey
-      end
-    end
+    subject { described_class.disk_access_denied? }
 
-    context 'when Rugged is disabled' do
-      it 'returns true' do
-        expect(described_class.disk_access_denied?).to be_truthy
+    it { is_expected.to be_truthy }
+
+    context 'in case of an exception' do
+      before do
+        allow(described_class).to receive(:temporarily_allowed?).and_raise('boom')
       end
+
+      it { is_expected.to be_falsey }
     end
   end
 end

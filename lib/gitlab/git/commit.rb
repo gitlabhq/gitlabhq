@@ -5,7 +5,6 @@ module Gitlab
   module Git
     class Commit
       include Gitlab::EncodingHelper
-      prepend Gitlab::Git::RuggedImpl::Commit
       extend Gitlab::Git::WrapsGitalyErrors
       include Gitlab::Utils::StrongMemoize
 
@@ -502,5 +501,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Git::Commit.singleton_class.prepend Gitlab::Git::RuggedImpl::Commit::ClassMethods

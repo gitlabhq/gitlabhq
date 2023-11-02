@@ -1,7 +1,9 @@
 <script>
 import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
-import User from './user.vue';
+import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
+import UserItem from './user_item.vue';
+import GroupItem from './group_item.vue';
 import { CONFIG } from './constants';
 
 export default {
@@ -11,7 +13,6 @@ export default {
     GlIcon,
     GlSearchBoxByType,
     GlCollapsibleListbox,
-    User,
   },
   props: {
     title: {
@@ -46,24 +47,23 @@ export default {
       return CONFIG[this.type];
     },
     searchItems() {
-      return (
-        this.items?.map((item) => ({
-          value: item.username,
-          text: item.name,
-          ...item,
-        })) || []
-      );
+      return this.items;
+    },
+    isUserVariant() {
+      return this.type === 'users';
     },
     component() {
-      // Note, we can extend this for the component to support other contexts
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/428865
-      return User;
+      return this.isUserVariant ? UserItem : GroupItem;
     },
   },
   methods: {
     async handleSearchInput(search) {
       this.$refs.results.open();
-      this.items = await this.fetchUsersBySearchTerm(search);
+      if (this.isUserVariant) {
+        this.items = await this.fetchUsersBySearchTerm(search);
+      } else {
+        this.items = await this.fetchGroupsBySearchTerm(search);
+      }
     },
     fetchUsersBySearchTerm(search) {
       const namespace = this.isProject ? 'project' : 'group';
@@ -72,7 +72,27 @@ export default {
           query: usersAutocompleteQuery,
           variables: { fullPath: this.projectPath, search, isProject: this.isProject },
         })
-        .then(({ data }) => data[namespace]?.autocompleteUsers);
+        .then(({ data }) =>
+          data[namespace]?.autocompleteUsers.map((user) => ({
+            text: user.name,
+            value: user.username,
+            ...user,
+          })),
+        );
+    },
+    fetchGroupsBySearchTerm(search) {
+      return this.$apollo
+        .query({
+          query: groupsAutocompleteQuery,
+          variables: { search },
+        })
+        .then(({ data }) =>
+          data?.groups.nodes.map((group) => ({
+            text: group.fullName,
+            value: group.name,
+            ...group,
+          })),
+        );
     },
     getItemByKey(key) {
       return this.searchItems.find((item) => item[this.config.filterKey] === key);
@@ -90,9 +110,9 @@ export default {
 <template>
   <gl-card header-class="gl-new-card-header gl-border-none" body-class="gl-card-footer">
     <template #header
-      ><strong
+      ><strong data-testid="list-selector-title"
         >{{ title }}
-        <span class="gl-text-gray-500"
+        <span class="gl-text-gray-700 gl-ml-3"
           ><gl-icon :name="config.icon" /> {{ selectedItems.length }}</span
         ></strong
       ></template

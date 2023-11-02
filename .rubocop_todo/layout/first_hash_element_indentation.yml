@@ -195,7 +195,6 @@ Layout/FirstHashElementIndentation:
     - 'spec/lib/gitlab/ci/pipeline/chain/populate_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/build/cache_spec.rb'
     - 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
-    - 'spec/lib/gitlab/config_checker/puma_rugged_checker_spec.rb'
     - 'spec/lib/gitlab/data_builder/build_spec.rb'
     - 'spec/lib/gitlab/data_builder/issuable_spec.rb'
     - 'spec/lib/gitlab/data_builder/pipeline_spec.rb'

@@ -487,7 +487,7 @@ $performance-bar-height: 2.5rem;
 $system-header-height: 16px;
 $system-footer-height: $system-header-height;
 $mr-sticky-header-height: 72px;
-$mr-review-bar-height: calc(2rem + 13px);
+$mr-review-bar-height: calc(2rem + 16px);
 $flash-height: 52px;
 $context-header-height: 60px;
 $top-bar-height: 48px;
@@ -717,10 +717,10 @@ $blame-blue: #254e77;
 */
 $builds-log-bg: #111;
 $job-log-highlight-height: 18px;
-$job-log-line-padding: 55px;
+$job-log-line-padding: 63px;
 $job-line-number-width: 50px;
-$job-line-number-margin: 43px;
-$job-arrow-margin: 55px;
+$job-line-number-margin: 51px;
+$job-arrow-margin: 63px;
 
 /*
  * Calendar

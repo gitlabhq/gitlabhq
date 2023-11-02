@@ -32,13 +32,13 @@ _What [personas](https://about.gitlab.com/handbook/product/personas/#list-of-use
 ### Success
 _How will you measure whether this experiment is a success?_
 
-**UX maturity requirements** _[Experiment to Beta](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#criteria-and-requirements)_
+**UX maturity requirements** _[Experiment to Beta](https://about.gitlab.com/handbook/product/ai/ux-maturity/#criteria-and-requirements)_
 | Criteria | Minimum Requirement | Assessment for Beta |
 | -------- | ------------------- | ------------------- |
-| [Problem validation](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#validation-problem-validation)<br>How well do we understand the problem? | [Mix of evidence and assumptions](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#questions-to-ask) | <!-- Acceptable answers: Yes, Somewhat or Somewhat, Somewhat --> |
-| [Solution validation](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#validation-solution-validation)<br>How usable is the solution? | [Heuristic Eval](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-a-conduct-a-heuristic-evaluation), Grade C | <!-- Acceptable grade: C --> |
-| [Improve](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#build-improve)<br>How successful is the solution? | [Success metrics defined by the team.](https://about.gitlab.com/handbook/product/ux/ux-research/usability-testing/#usability-at-gitlab) | <!-- Acceptable answers: :white_check_mark: All success metrics defined for this phase have been met. --> |
-| [Design standards](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#design-standards) adherence<br>How compliant is the solution with our design standards? |  Should adhere to ([PJs](https://design.gitlab.com/), [Design](https://docs.gitlab.com/ee/development/contributing/design.html#checklist)) | <!-- Acceptable: Mostly adheres to PJs and design standards --> |
+| [Problem validation](https://about.gitlab.com/handbook/product/ai/ux-maturity/#validation-problem-validation)<br>How well do we understand the problem? | [Mix of evidence and assumptions](https://about.gitlab.com/handbook/product/ai/ux-maturity/#questions-to-ask) | <!-- Acceptable answers: Yes, Somewhat or Somewhat, Somewhat --> |
+| [Solution validation](https://about.gitlab.com/handbook/product/ai/ux-maturity/#validation-solution-validation)<br>How usable is the solution? | [Usability testing](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-b-perform-a-formative-evaluation), Grade C | <!-- Acceptable: >80% and grade C --> |
+| [Improve](https://about.gitlab.com/handbook/product/ai/ux-maturity/#build-improve)<br>How successful is the solution? | Quality goals set by the team are reached. | <!-- Acceptable answers: :white_check_mark: Reached all quality goals for this phase. --> |
+| [Design standards](https://about.gitlab.com/handbook/product/ai/ux-maturity/#design-standards) adherence<br>How compliant is the solution with our design standards? |  Should adhere to ([Pajamas](https://design.gitlab.com/), [checklist](https://docs.gitlab.com/ee/development/contributing/design.html#checklist)) | <!-- Acceptable: Mostly adheres to design standards --> |
 
 # [Beta](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#beta)
 _This section should be completed prior to beginning work on the Beta experience._
@@ -61,7 +61,7 @@ _What assumptions are you making about this problem and the solution?_
 
 ### Problem validation
 _What validation exists that customers have this problem?_
-<!-- Refer to https://about.gitlab.com/handbook/product/ux/ux-research/research-in-the-AI-space/#guideline-1-problem-validation --- to help identify and understand user needs -->
+<!-- Refer to https://about.gitlab.com/handbook/product/ux/ux-research/research-in-the-AI-space/#guideline-1-problem-validation---identify-and-understand-user-needs --- to help identify and understand user needs -->
 
 ### Business objective
 _What business objective will be achieved with this proposal?_
@@ -80,13 +80,13 @@ _What tasks or actions should the user be capable of performing with this featur
 _How will you measure whether this Beta is a success?_
 <!-- Consider how successful the solution is by looking beyond feature usage as the success metric. Instead consider how useful, efficient, effective, satisfying, and learnable was the feature. The Product Development Flow recommends outcomes and potential activities to create a combined and ongoing quantitative and qualitative feedback loop to evaluate feature success. -->
 
-**UX maturity requirements** _[Beta to GA](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#criteria-and-requirements)_
+**UX maturity requirements** _[Beta to GA](https://about.gitlab.com/handbook/product/ai/ux-maturity/#criteria-and-requirements)_
 | Criteria | Minimum Requirement | Assessment for GA |
 | -------- | ------------------- | ------------------- |
-| [Problem validation](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#validation-problem-validation)<br>How well do we understand the problem? | [Mix of evidence and assumptions](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#questions-to-ask) | <!-- Acceptable answers: Yes, Yes --> |
-| [Solution validation](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#validation-solution-validation)<br>How usable is the solution? | [Usability Testing](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-b-perform-a-formative-evaluation) and/or [Heuristic Eval](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-a-conduct-a-heuristic-evaluation), Avg. task pass rate >80%, Grade B | <!-- Acceptable: >80% and B --> |
-| [Improve](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#build-improve)<br>How successful is the solution? | [Success metrics defined by the team.](https://about.gitlab.com/handbook/product/ux/ux-research/usability-testing/#usability-at-gitlab) | <!-- Acceptable answers: :white_check_mark: All success metrics defined for this phase have been met. -->  |
-| [Design standards](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/#design-standards) adherence<br>How compliant is the solution with our design standards? |  Should adhere to ([PJs](https://design.gitlab.com/), [Design](https://docs.gitlab.com/ee/development/contributing/design.html#checklist)) | <!-- Acceptable: Completely adheres to PJs and design standards --> |
+| [Problem validation](https://about.gitlab.com/handbook/product/ai/ux-maturity/#validation-problem-validation)<br>How well do we understand the problem? | [Mix of evidence and assumptions](https://about.gitlab.com/handbook/product/ai/ux-maturity/#questions-to-ask) | <!-- Acceptable answers: Yes, Yes --> |
+| [Solution validation](https://about.gitlab.com/handbook/product/ai/ux-maturity/#validation-solution-validation)<br>How usable is the solution? | [Usability testing](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-b-perform-a-formative-evaluation) and [Heuristic evaluation](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-a-conduct-a-heuristic-evaluation), Avg. task pass rate >80%, Grade B | <!-- Acceptable: >80% and grade B --> |
+| [Improve](https://about.gitlab.com/handbook/product/ai/ux-maturity/#build-improve)<br>How successful is the solution? | Quality goals set by the team are reached. | <!-- Acceptable answers: :white_check_mark: Reached all quality goals for this phase. -->  |
+| [Design standards](https://about.gitlab.com/handbook/product/ai/ux-maturity/#design-standards) adherence<br>How compliant is the solution with our design standards? |  Should adhere to ([Pajamas](https://design.gitlab.com/), [checklist](https://docs.gitlab.com/ee/development/contributing/design.html#checklist)) | <!-- Acceptable: Completely adheres to design standards --> |
 
 # [Generally Available](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#generally-available-ga)
 <!-- DO NOT REMOVE THIS SECTION
@@ -202,7 +202,7 @@ _What tasks or actions should the user be capable of performing with this featur
 - Read about our [AI Integration strategy](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/)
 - [AI-human interaction guidelines](https://design.gitlab.com/usability/ai-human-interaction)
 - [Highlighting feature versions guidelines](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions)
-- [UX maturity requirements](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/ux_maturity/)
+- [UX maturity requirements](https://about.gitlab.com/handbook/product/ai/ux-maturity/)
 - **Slack channels**
     - `#wg_ai_integration` - Slack channel for the working group and the high-level alignment on getting AI ready for Production (Development, Product, UX, Legal, etc.) But from the other channels feel free to reach out and post progress here
     - `#ai_integration_dev_lobby` - Channel for all implementation-related topics and discussions of actual AI features (e.g. explain the code)

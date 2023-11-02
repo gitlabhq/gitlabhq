@@ -300,14 +300,15 @@ class Group < Namespace
       groups.drop(1).each { |group| group.root_ancestor = root }
     end
 
-    # Returns the ids of the passed group models where the `emails_disabled`
-    # column is set to true anywhere in the ancestor hierarchy.
+    # Returns the ids of the passed group models where the `emails_enabled`
+    # column is set to false anywhere in the ancestor hierarchy.
     def ids_with_disabled_email(groups)
       inner_groups = Group.where('id = namespaces_with_emails_disabled.id')
 
       inner_query = inner_groups
         .self_and_ancestors
-        .where(emails_disabled: true)
+        .joins(:namespace_settings)
+        .where(namespace_settings: { emails_enabled: false })
         .select('1')
         .limit(1)
 

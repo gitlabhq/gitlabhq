@@ -4,7 +4,6 @@ module Gitlab
   module Git
     class Ref
       include Gitlab::EncodingHelper
-      include Gitlab::Git::RuggedImpl::Ref
 
       # Branch or tag name
       # without "refs/tags|heads" prefix

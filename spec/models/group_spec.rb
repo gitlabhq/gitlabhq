@@ -2930,18 +2930,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '.ids_with_disabled_email' do
-    let_it_be(:parent_1) { create(:group, emails_disabled: true) }
+    let_it_be(:parent_1) { create(:group) }
     let_it_be(:child_1) { create(:group, parent: parent_1) }
 
-    let_it_be(:parent_2) { create(:group, emails_disabled: false) }
+    let_it_be(:parent_2) { create(:group) }
     let_it_be(:child_2) { create(:group, parent: parent_2) }
 
-    let_it_be(:other_group) { create(:group, emails_disabled: false) }
+    let_it_be(:other_group) { create(:group) }
 
     shared_examples 'returns namespaces with disabled email' do
       subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
 
-      it { is_expected.to eq(Set.new([child_1.id])) }
+      it do
+        parent_1.update_attribute(:emails_enabled, false)
+        is_expected.to eq(Set.new([child_1.id]))
+      end
     end
 
     it_behaves_like 'returns namespaces with disabled email'

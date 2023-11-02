@@ -817,7 +817,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/git/merge_base.rb'
     - 'lib/gitlab/git/push.rb'
     - 'lib/gitlab/git/repository.rb'
-    - 'lib/gitlab/git/rugged_impl/tree.rb'
     - 'lib/gitlab/git_access.rb'
     - 'lib/gitlab/git_access_project.rb'
     - 'lib/gitlab/git_access_snippet.rb'

@@ -24,8 +24,7 @@ To contribute to the development of the GitLab product, view
 
 ## How it works
 
-GitLab uses [Unleash](https://github.com/Unleash/unleash), a feature
-toggle service.
+GitLab offers an [Unleash](https://github.com/Unleash/unleash)-compatible API for feature flags.
 
 By enabling or disabling a flag in GitLab, your application
 can determine which features to enable or disable.
@@ -76,10 +75,9 @@ is 200. For GitLab SaaS, the maximum number is determined by [tier](https://abou
 You can apply a feature flag strategy across multiple environments, without defining
 the strategy multiple times.
 
-GitLab feature flags use [Unleash](https://docs.getunleash.io/) as the feature flag
-engine. In Unleash, there are [strategies](https://docs.getunleash.io/reference/activation-strategies)
-for granular feature flag controls. GitLab feature flags can have multiple strategies,
-and the supported strategies are:
+GitLab feature flags are based on [Unleash](https://docs.getunleash.io/). In Unleash, there are
+[strategies](https://docs.getunleash.io/reference/activation-strategies) for granular feature
+flag controls. GitLab feature flags can have multiple strategies, and the supported strategies are:
 
 - [All users](#all-users)
 - [Percent of Users](#percent-of-users)

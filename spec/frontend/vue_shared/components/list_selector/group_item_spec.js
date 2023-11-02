@@ -1,37 +1,37 @@
 import { GlAvatar } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import User from '~/vue_shared/components/list_selector/user.vue';
+import GroupItem from '~/vue_shared/components/list_selector/group_item.vue';
 
-describe('User spec', () => {
+describe('GroupItem spec', () => {
   let wrapper;
 
-  const MOCK_USER = { name: 'Admin', username: 'root', avatarUrl: 'some/avatar.jpg' };
+  const MOCK_GROUP = { fullName: 'Group 1', name: 'group1', avatarUrl: 'some/avatar.jpg' };
 
   const createComponent = (props) => {
-    wrapper = mountExtended(User, {
+    wrapper = mountExtended(GroupItem, {
       propsData: {
-        data: MOCK_USER,
+        data: MOCK_GROUP,
         ...props,
       },
     });
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findDeleteButton = () => wrapper.findByRole('button', { name: 'Delete Admin' });
+  const findDeleteButton = () => wrapper.findByRole('button', { fullName: 'Delete Group 1' });
 
   beforeEach(() => createComponent());
 
   it('renders an Avatar component', () => {
     expect(findAvatar().props('size')).toBe(32);
     expect(findAvatar().attributes()).toMatchObject({
-      src: MOCK_USER.avatarUrl,
-      alt: MOCK_USER.name,
+      src: MOCK_GROUP.avatarUrl,
+      alt: MOCK_GROUP.fullName,
     });
   });
 
-  it('renders a name and username', () => {
-    expect(wrapper.text()).toContain('Admin');
-    expect(wrapper.text()).toContain('@root');
+  it('renders a fullName and name', () => {
+    expect(wrapper.text()).toContain('Group 1');
+    expect(wrapper.text()).toContain('@group1');
   });
 
   it('does not render a delete button by default', () => {
@@ -49,7 +49,7 @@ describe('User spec', () => {
     it('emits a delete event if the delete button is clicked', () => {
       findDeleteButton().trigger('click');
 
-      expect(wrapper.emitted('delete')).toEqual([[MOCK_USER.username]]);
+      expect(wrapper.emitted('delete')).toEqual([[MOCK_GROUP.name]]);
     });
   });
 });

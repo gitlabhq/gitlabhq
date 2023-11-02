@@ -276,7 +276,7 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
     end
 
     it 'is disabled if emails are disabled' do
-      group.update!(emails_disabled: true)
+      group.update!(emails_enabled: false)
 
       visit path
 

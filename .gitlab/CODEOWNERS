@@ -325,9 +325,9 @@ Dangerfile
 /ee/app/assets/javascripts/analytics/analytics_dashboards/index.js
 /ee/app/assets/javascripts/analytics/analytics_dashboards/router.js
 /ee/app/assets/javascripts/analytics/analytics_dashboards/constants.js
-/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_product_analytics_dashboards.query.graphql
-/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_product_analytics_dashboard.query.graphql
-/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_product_analytics_visualizations.query.graphql
+/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_customizable_dashboards.query.graphql
+/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_customizable_dashboard.query.graphql
+/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_customizable_visualizations.query.graphql
 /ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/customizable_dashboard.vue
 /ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue
 /ee/app/assets/javascripts/product_analytics/

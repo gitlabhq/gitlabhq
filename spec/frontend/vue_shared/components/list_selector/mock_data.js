@@ -23,3 +23,27 @@ export const USERS_RESPONSE_MOCK = {
     },
   },
 };
+
+export const GROUPS_RESPONSE_MOCK = {
+  data: {
+    groups: {
+      nodes: [
+        {
+          id: 'gid://gitlab/Group/33',
+          name: 'Flightjs',
+          fullName: 'Flightjs',
+          avatarUrl: null,
+          __typename: 'Group',
+        },
+        {
+          id: 'gid://gitlab/Group/34',
+          name: 'Flight 2',
+          fullName: 'Flight2',
+          avatarUrl: null,
+          __typename: 'Group',
+        },
+      ],
+      __typename: 'GroupConnection',
+    },
+  },
+};

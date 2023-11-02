@@ -1863,20 +1863,22 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '#emails_disabled?' do
     context 'when not a subgroup' do
+      let(:group) { create(:group) }
+
       it 'returns false' do
-        group = create(:group, emails_disabled: false)
+        group.update_attribute(:emails_enabled, true)
 
         expect(group.emails_disabled?).to be_falsey
       end
 
       it 'returns true' do
-        group = create(:group, emails_disabled: true)
+        group.update_attribute(:emails_enabled, false)
 
         expect(group.emails_disabled?).to be_truthy
       end
 
       it 'does not query the db when there is no parent group' do
-        group = create(:group, emails_disabled: true)
+        group.update_attribute(:emails_enabled, false)
 
         expect { group.emails_disabled? }.not_to exceed_query_limit(0)
       end
@@ -1903,7 +1905,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '#emails_enabled?' do
     context 'without a persisted namespace_setting object' do
-      let(:group) { build(:group, emails_disabled: false) }
+      let(:group_settings) { create(:namespace_settings) }
+      let(:group) { build(:group, emails_disabled: false, namespace_settings: group_settings) }
 
       it "is the opposite of emails_disabled" do
         expect(group.emails_enabled?).to be_truthy

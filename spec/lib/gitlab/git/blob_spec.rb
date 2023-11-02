@@ -154,18 +154,6 @@ RSpec.describe Gitlab::Git::Blob do
     it_behaves_like '.find'
   end
 
-  describe '.find with Rugged enabled', :enable_rugged do
-    it 'calls out to the Rugged implementation' do
-      allow_next_instance_of(Rugged) do |instance|
-        allow(instance).to receive(:rev_parse).with(TestEnv::BRANCH_SHA['master']).and_call_original
-      end
-
-      described_class.find(repository, TestEnv::BRANCH_SHA['master'], 'files/images/6049019_460s.jpg')
-    end
-
-    it_behaves_like '.find'
-  end
-
   describe '.raw' do
     let(:raw_blob) { described_class.raw(repository, SeedRepo::RubyBlob::ID) }
     let(:bad_blob) { described_class.raw(repository, SeedRepo::BigCommit::ID) }

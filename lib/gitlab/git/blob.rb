@@ -230,5 +230,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Git::Blob.singleton_class.prepend Gitlab::Git::RuggedImpl::Blob::ClassMethods

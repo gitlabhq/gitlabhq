@@ -174,6 +174,8 @@ RSpec.shared_examples 'multiple issue boards' do
   end
 
   def assert_boards_nav_active
-    expect(find('.nav-sidebar .active .active')).to have_selector('a', text: 'Boards')
+    within_testid('super-sidebar') do
+      expect(page).to have_selector('[aria-current="page"]', text: 'Issue boards')
+    end
   end
 end

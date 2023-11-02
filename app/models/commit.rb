@@ -372,9 +372,7 @@ class Commit
     strong_memoize(:raw_signature_type) do
       next unless @raw.instance_of?(Gitlab::Git::Commit)
 
-      if raw_commit_from_rugged? && gpg_commit.signature_text.present?
-        :PGP
-      elsif defined? @raw.raw_commit.signature_type
+      if defined? @raw.raw_commit.signature_type
         @raw.raw_commit.signature_type
       end
     end
@@ -395,10 +393,6 @@ class Commit
         Gitlab::Ssh::Commit.new(self).signature
       end
     end
-  end
-
-  def raw_commit_from_rugged?
-    @raw.raw_commit.is_a?(Rugged::Commit)
   end
 
   def gpg_commit

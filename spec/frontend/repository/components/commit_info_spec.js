@@ -35,6 +35,7 @@ describe('Repository last commit component', () => {
 
     expect(findUserLink().exists()).toBe(true);
     expect(findUserAvatarLink().exists()).toBe(true);
+    expect(findUserAvatarLink().props('imgAlt')).toBe("Test authorName's avatar");
   });
 
   it('hides author component when author does not exist', () => {

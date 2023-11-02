@@ -38905,9 +38905,6 @@ msgstr ""
 msgid "Pull requests from fork are not supported"
 msgstr ""
 
-msgid "Puma is running with a thread count above 1 and the Rugged service is enabled. This may decrease performance in some environments. See our %{link_start}documentation%{link_end} for details of this issue."
-msgstr ""
-
 msgid "PumbleIntegration|Send notifications about project events to Pumble."
 msgstr ""
 

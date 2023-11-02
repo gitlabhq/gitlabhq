@@ -102,7 +102,6 @@ Performance/MapCompact:
     - 'lib/gitlab/database/load_balancing/service_discovery.rb'
     - 'lib/gitlab/git/commit.rb'
     - 'lib/gitlab/git/conflict/file.rb'
-    - 'lib/gitlab/git/rugged_impl/commit.rb'
     - 'lib/gitlab/sql/pattern.rb'
     - 'lib/gitlab/url_blocker.rb'
     - 'qa/qa/page/component/issuable/sidebar.rb'

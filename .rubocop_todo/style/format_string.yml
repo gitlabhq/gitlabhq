@@ -243,7 +243,6 @@ Style/FormatString:
     - 'lib/gitlab/ci/parsers/sbom/cyclonedx.rb'
     - 'lib/gitlab/ci/status/build/waiting_for_approval.rb'
     - 'lib/gitlab/config_checker/external_database_checker.rb'
-    - 'lib/gitlab/config_checker/puma_rugged_checker.rb'
     - 'lib/gitlab/console.rb'
     - 'lib/gitlab/database/async_indexes/index_creator.rb'
     - 'lib/gitlab/database/background_migration/batched_migration.rb'

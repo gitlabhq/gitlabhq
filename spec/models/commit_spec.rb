@@ -707,16 +707,6 @@ eos
     it_behaves_like "#uri_type"
   end
 
-  describe '#uri_type with Rugged enabled', :enable_rugged do
-    it 'calls out to the Rugged implementation' do
-      allow_any_instance_of(Rugged::Tree).to receive(:path).with('files/html').and_call_original
-
-      commit.uri_type('files/html')
-    end
-
-    it_behaves_like '#uri_type'
-  end
-
   describe '.diff_max_files' do
     subject(:diff_max_files) { described_class.diff_max_files }
 

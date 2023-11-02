@@ -3221,7 +3221,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/config/entry/validator_spec.rb'
     - 'spec/lib/gitlab/config/entry/validators/nested_array_helpers_spec.rb'
     - 'spec/lib/gitlab/config_checker/external_database_checker_spec.rb'
-    - 'spec/lib/gitlab/config_checker/puma_rugged_checker_spec.rb'
     - 'spec/lib/gitlab/conflict/file_collection_spec.rb'
     - 'spec/lib/gitlab/conflict/file_spec.rb'
     - 'spec/lib/gitlab/consul/internal_spec.rb'

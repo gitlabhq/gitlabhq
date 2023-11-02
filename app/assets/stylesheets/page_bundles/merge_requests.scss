@@ -258,15 +258,15 @@ $tabs-holder-z-index: 250;
 
   position: sticky;
   top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
+  // height calc is fully delegated to the tree_list_height.vue component
+  height: 0;
   min-height: 300px;
-  height: calc(#{$calc-application-viewport-height} - (#{$mr-tabs-height} + #{$diff-file-header-top}));
 
   .drag-handle {
     bottom: 16px;
   }
 
   &.is-sidebar-moved {
-    height: calc(#{$calc-application-viewport-height} - (#{$mr-sticky-header-height} + #{$diff-file-header-top}));
     top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
   }
 }
@@ -1108,7 +1108,7 @@ $tabs-holder-z-index: 250;
   display: flex;
   align-items: center;
   width: 100%;
-  height: $toggle-sidebar-height;
+  height: var(--mr-review-bar-height);
   padding-left: $contextual-sidebar-width;
   padding-right: $right-sidebar-collapsed-width;
   background: var(--white, $white);

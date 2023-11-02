@@ -71,7 +71,7 @@ describe('EntitySelect', () => {
     fetchItemsMock = jest.fn().mockImplementation(() => ({ items: [itemMock], totalPages: 1 }));
   });
 
-  describe('GlCollapsableListbox props', () => {
+  describe('GlCollapsibleListbox props', () => {
     beforeEach(() => {
       createComponent();
     });
@@ -81,7 +81,7 @@ describe('EntitySelect', () => {
       ${'block'}       | ${block}
       ${'toggleClass'} | ${toggleClass}
       ${'headerText'}  | ${headerText}
-    `('passes the $prop prop to GlCollapsableListbox', ({ prop, expectedValue }) => {
+    `('passes the $prop prop to GlCollapsibleListbox', ({ prop, expectedValue }) => {
       expect(findListbox().props(prop)).toBe(expectedValue);
     });
   });

@@ -214,7 +214,7 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
 
       context 'when emails are enabled in parent group' do
         before do
-          allow(project.namespace).to receive(:emails_disabled?).and_return(false)
+          allow(project.namespace).to receive(:emails_enabled?).and_return(true)
         end
 
         it 'returns true' do

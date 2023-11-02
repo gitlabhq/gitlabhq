@@ -63,6 +63,12 @@ class NamespaceSetting < ApplicationRecord
     namespace.root_ancestor.prevent_sharing_groups_outside_hierarchy
   end
 
+  def emails_enabled?
+    return emails_enabled unless namespace.has_parent?
+
+    all_ancestors_have_emails_enabled?
+  end
+
   def show_diff_preview_in_email?
     return show_diff_preview_in_email unless namespace.has_parent?
 
@@ -88,6 +94,10 @@ class NamespaceSetting < ApplicationRecord
   end
 
   private
+
+  def all_ancestors_have_emails_enabled?
+    self.class.where(namespace_id: namespace.self_and_ancestors, emails_enabled: false).none?
+  end
 
   def all_ancestors_allow_diff_preview_in_email?
     !self.class.where(namespace_id: namespace.self_and_ancestors, show_diff_preview_in_email: false).exists?

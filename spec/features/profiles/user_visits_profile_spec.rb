@@ -3,18 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'User visits their profile', feature_category: :user_profile do
-  let_it_be_with_refind(:user) { create(:user, :no_super_sidebar) }
+  let_it_be_with_refind(:user) { create(:user) }
 
   before do
     stub_feature_flags(profile_tabs_vue: false)
     stub_feature_flags(edit_user_profile_vue: false)
     sign_in(user)
-  end
-
-  it 'shows correct menu item' do
-    visit(profile_path)
-
-    expect(page).to have_active_navigation('Profile')
   end
 
   it 'shows profile info' do
@@ -59,7 +53,7 @@ RSpec.describe 'User visits their profile', feature_category: :user_profile do
           expect(page).to have_content user.username
         end
 
-        page.within ".content" do
+        within_testid('super-sidebar') do
           click_link link
         end
 

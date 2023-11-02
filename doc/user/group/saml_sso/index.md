@@ -54,7 +54,8 @@ To set up SSO with Azure as your identity provider:
 1. You should set the following attributes:
    - **Unique User Identifier (Name identifier)** to `user.objectID`.
    - **nameid-format** to `persistent`. For more information, see how to [manage user SAML identity](#manage-user-saml-identity).
-   - **Additional claims** to [supported attributes](#user-attributes).
+   - **email** to `user.mail` or similar.
+   - **Additional claims** to [supported attributes](#configure-assertions).
 
 1. Make sure the identity provider is set to have provider-initiated calls
    to link existing GitLab accounts.
@@ -98,7 +99,7 @@ To set up Google Workspace as your identity provider:
    - For **Last name**: `last_name`.
    - For **Name ID format**: `EMAIL`.
    - For **NameID**: `Basic Information > Primary email`.
-     For more information, see [manage user SAML identity](#manage-user-saml-identity).
+     For more information, see [supported attributes](#configure-assertions).
 
 1. Make sure the identity provider is set to have provider-initiated calls
    to link existing GitLab accounts.
@@ -134,6 +135,8 @@ To set up SSO with Okta as your identity provider:
 1. Set these values:
    - For **Application username (NameID)**: **Custom** `user.getInternalProperty("id")`.
    - For **Name ID Format**: `Persistent`. For more information, see [manage user SAML identity](#manage-user-saml-identity).
+   - For **email**: `user.email` or similar.
+   - For additional **Attribute Statements**, see [supported attributes](#configure-assertions).
 
 1. Make sure the identity provider is set to have provider-initiated calls
    to link existing GitLab accounts.
@@ -170,9 +173,27 @@ To set up OneLogin as your identity provider:
    | **Identity provider single sign-on URL**             | **SAML 2.0 Endpoint**            |
 
 1. For **NameID**, use `OneLogin ID`. For more information, see [manage user SAML identity](#manage-user-saml-identity).
-
+1. Configure [required and supported attributes](#configure-assertions).
 1. Make sure the identity provider is set to have provider-initiated calls
    to link existing GitLab accounts.
+
+### Configure assertions
+
+At minimum, you must configure the following assertions:
+
+1. [NameID](#manage-user-saml-identity).
+1. Email.
+
+Optionally, you can pass user information to GitLab as attributes in the SAML assertion.
+
+- The user's email address can be an **email** or **mail** attribute.
+- The username can be either a **username** or **nickname** attribute. You should specify only
+  one of these.
+
+For more information, see the [attributes available for self-managed GitLab instances](../../../integration/saml.md#configure-assertions).
+
+NOTE:
+Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are not supported. For more information on configuring required attribute names in the SAML identity provider's settings, see [example group SAML and SCIM configurations](../../../user/group/saml_sso/example_saml_config.md).
 
 ### Use metadata
 
@@ -252,19 +273,6 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 - If there is a conflicting user with the same email address, redirect the user to the sign-in page to:
   - Create a new account with another email address.
   - Sign-in to their existing account to link the SAML identity.
-
-### User attributes
-
-You can pass user information to GitLab as attributes in the SAML assertion.
-
-- The user's email address can be an **email** or **mail** attribute.
-- The username can be either a **username** or **nickname** attribute. You should specify only
-  one of these.
-
-For more information, see the [attributes available for self-managed GitLab instances](../../../integration/saml.md#configure-assertions).
-
-NOTE:
-Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are not supported. For more information on configuring required attribute names in the SAML identity provider's settings, see [example group SAML and SCIM configurations](../../../user/group/saml_sso/example_saml_config.md).
 
 ### Link SAML to your existing GitLab.com account
 

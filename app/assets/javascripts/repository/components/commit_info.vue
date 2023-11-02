@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -35,6 +35,9 @@ export default {
       // Strip the newline at the beginning
       return this.commit?.descriptionHtml?.replace(/^&#x000A;/, '');
     },
+    avatarLinkAltText() {
+      return sprintf(__(`%{username}'s avatar`), { username: this.commit.authorName });
+    },
   },
   methods: {
     toggleShowDescription() {
@@ -58,6 +61,7 @@ export default {
       v-if="commit.author"
       :link-href="commit.author.webPath"
       :img-src="commit.author.avatarUrl"
+      :img-alt="avatarLinkAltText"
       :img-size="32"
       class="gl-my-2 gl-mr-4"
     />

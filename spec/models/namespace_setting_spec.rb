@@ -216,36 +216,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       end
     end
 
-    describe '#emails_enabled?' do
-      context 'when a group has no parent'
-      let(:settings) { create(:namespace_settings, emails_enabled: true) }
-      let(:grandparent) { create(:group) }
-      let(:parent)      { create(:group, parent: grandparent) }
-      let(:group)       { create(:group, parent: parent, namespace_settings: settings) }
-
-      context 'when the groups setting is changed' do
-        it 'returns false when the attribute is false' do
-          group.update_attribute(:emails_disabled, true)
-
-          expect(group.emails_enabled?).to be_falsey
-        end
-      end
-
-      context 'when a group has a parent' do
-        it 'returns true when no parent has disabled emails' do
-          expect(group.emails_enabled?).to be_truthy
-        end
-
-        context 'when ancestor emails are disabled' do
-          it 'returns false' do
-            grandparent.update_attribute(:emails_disabled, true)
-
-            expect(group.emails_enabled?).to be_falsey
-          end
-        end
-      end
-    end
-
     context 'when a group has parent groups' do
       let(:grandparent) { create(:group, namespace_settings: settings) }
       let(:parent)      { create(:group, parent: grandparent) }
@@ -264,6 +234,58 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
 
         it 'returns true' do
           expect(group.show_diff_preview_in_email?).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe '#emails_enabled?' do
+    context 'when a group has no parent'
+    let(:settings) { create(:namespace_settings, emails_enabled: true) }
+    let(:grandparent) { create(:group) }
+    let(:parent)      { create(:group, parent: grandparent) }
+    let(:group)       { create(:group, parent: parent, namespace_settings: settings) }
+
+    context 'when the groups setting is changed' do
+      it 'returns false when the attribute is false' do
+        group.update_attribute(:emails_enabled, false)
+
+        expect(group.emails_enabled?).to be_falsey
+      end
+    end
+
+    context 'when a group has a parent' do
+      it 'returns true when no parent has disabled emails' do
+        expect(group.emails_enabled?).to be_truthy
+      end
+
+      context 'when ancestor emails are disabled' do
+        it 'returns false' do
+          grandparent.update_attribute(:emails_enabled, false)
+
+          expect(group.emails_enabled?).to be_falsey
+        end
+      end
+    end
+
+    context 'when a group has parent groups' do
+      let(:grandparent) { create(:group, namespace_settings: settings) }
+      let(:parent)      { create(:group, parent: grandparent) }
+      let!(:group)      { create(:group, parent: parent) }
+
+      context "when a parent group has emails disabled" do
+        let(:settings) { create(:namespace_settings, emails_enabled: false) }
+
+        it 'returns false' do
+          expect(group.emails_enabled?).to be_falsey
+        end
+      end
+
+      context 'when all parent groups have emails enabled' do
+        let(:settings) { create(:namespace_settings, emails_enabled: true) }
+
+        it 'returns true' do
+          expect(group.emails_enabled?).to be_truthy
         end
       end
     end
