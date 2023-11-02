@@ -154,7 +154,11 @@ developers must familiarize themselves with our [Deprecation and Removal process
 Breaking changes are:
 
 - Removing or renaming a field, argument, enum value, or mutation.
-- Changing the type of a field, argument or enum value.
+- Changing the type or type name of an argument. This is because the type of an argument
+  is declared by the client when [using variables](https://graphql.org/learn/queries/#variables),
+  and queries with the old type name would be rejected by the API.
+- Changing the _scalar type_ of a field or enum value. Object types can be changed so long as all
+  scalar type fields of the object remain the same.
 - Raising the [complexity](#max-complexity) of a field or complexity multipliers in a resolver.
 - Changing a field from being _not_ nullable (`null: false`) to nullable (`null: true`), as
 discussed in [Nullable fields](#nullable-fields).

@@ -70,7 +70,7 @@ module Emails
       setup_issue_mail(issue_id, recipient_id)
 
       @label_names = label_names
-      @labels_url = project_labels_url(@project)
+      @labels_url = project_labels_url(@project, subscribed: true)
       mail_answer_thread(
         @issue,
         issue_thread_options(

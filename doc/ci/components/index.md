@@ -169,19 +169,34 @@ Nesting of components is not possible. For example:
 
 ## Release a component
 
-To create a release for a CI/CD component, use either:
+To create a release for a CI/CD component, use the [`release`](../yaml/index.md#release)
+keyword in a CI/CD pipeline.
 
-- The [`release`](../yaml/index.md#release) keyword in a CI/CD pipeline. Like in the
-  [component testing example](#test-the-component), you can set a component to automatically
-  be released after all tests pass in pipelines for new tags.
-- The [UI for creating a release](../../user/project/releases/index.md#create-a-release).
+For example:
 
-All released versions of the components are displayed in the [CI/CD Catalog](catalog.md)
-page for the given resource, providing users with information about official releases.
+```yaml
+create-release:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+/
+  script: echo "Creating release $CI_COMMIT_TAG"
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: "Release $CI_COMMIT_TAG of components repository $CI_PROJECT_PATH"
+```
+
+In this example, the job runs only for tags formatted as `v` + version number.
+If all previous jobs succeed, the release is created.
+
+Like in the [component testing example](#test-the-component), you can set a component to automatically
+be released after all tests pass in pipelines for new tags.
+
+All released versions of the components repositories are displayed in the [CI/CD Catalog](catalog.md),
+providing users with information about official releases.
 
 Components [can be used](#use-a-component-in-a-cicd-configuration) without being released,
-but only with a commit SHA or a branch name. To enable the use of tags or the `~latest` version keyword,
-you must create a release.
+by using the commit SHA or ref. However, the `~latest` version keyword can only be used with released tags.
 
 ## Use a component in a CI/CD configuration
 

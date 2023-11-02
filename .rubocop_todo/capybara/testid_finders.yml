@@ -96,8 +96,6 @@ Capybara/TestidFinders:
     - 'spec/features/nav/new_nav_callout_spec.rb'
     - 'spec/features/nav/new_nav_toggle_spec.rb'
     - 'spec/features/nav/pinned_nav_items_spec.rb'
-    - 'spec/features/nav/top_nav_responsive_spec.rb'
-    - 'spec/features/nav/top_nav_spec.rb'
     - 'spec/features/populate_new_pipeline_vars_with_params_spec.rb'
     - 'spec/features/profile_spec.rb'
     - 'spec/features/profiles/account_spec.rb'

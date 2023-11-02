@@ -117,6 +117,9 @@ For example, use any of these trigger words to close the Jira issue `PROJECT-1`:
 The commit or merge request must target your project's [default branch](../../user/project/repository/branches/default.md).
 You can change your project's default branch in [project settings](../../user/project/settings/index.md).
 
+When your branch name matches the Jira issue ID, `Closes <JIRA-ID>` is automatically appended to your existing merge request template.
+If you do not want to close the issue, [disable automatic issue closing](../../user/project/issues/managing_issues.md#disable-automatic-issue-closing).
+
 ### Use case for closing issues
 
 Consider this example:

@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state, feature_category: :system_access do
   include SessionHelpers
 
+  before do
+    expire_session
+  end
+
   it 'creates a session with a short TTL when login fails' do
     visit new_user_session_path
     # The session key only gets created after a post
@@ -18,10 +22,10 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state, feature_categor
   end
 
   it 'increases the TTL when the login succeeds' do
-    user = create(:user, :no_super_sidebar)
+    user = create(:user)
     gitlab_sign_in(user)
 
-    expect(page).to have_content(user.name)
+    expect(find('.js-super-sidebar')['data-sidebar']).to include(user.name)
 
     expect_single_session_with_authenticated_ttl
   end

@@ -12,8 +12,8 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
 
   context "issuable common quick actions" do
     let(:new_url_opts) { {} }
-    let(:maintainer) { create(:user, :no_super_sidebar) }
-    let(:project) { create(:project, :public) }
+    let(:maintainer) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
     let!(:label_bug) { create(:label, project: project, title: 'bug') }
     let!(:label_feature) { create(:label, project: project, title: 'feature') }
     let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
@@ -25,7 +25,7 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
   end
 
   describe 'issue-only commands' do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
     let(:project) { create(:project, :public, :repository) }
     let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
 
