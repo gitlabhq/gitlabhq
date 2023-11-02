@@ -190,6 +190,12 @@ export default {
     eventHub.$off('updatePillValue', this.updatePillValue);
   },
   methods: {
+    pinAdd() {
+      this.$emit('pin-add', this.item.id, this.item.title);
+    },
+    pinRemove() {
+      this.$emit('pin-remove', this.item.id, this.item.title);
+    },
     togglePointerEvents() {
       this.canClickPinButton = this.isMouseIn;
     },
@@ -278,7 +284,7 @@ export default {
         data-testid="nav-item-unpin"
         icon="thumbtack-solid"
         size="small"
-        @click="$emit('pin-remove', item.id)"
+        @click="pinRemove"
         @transitionend="togglePointerEvents"
       />
       <gl-button
@@ -291,7 +297,7 @@ export default {
         data-testid="nav-item-pin"
         icon="thumbtack"
         size="small"
-        @click="$emit('pin-add', item.id)"
+        @click="pinAdd"
         @transitionend="togglePointerEvents"
       />
     </template>

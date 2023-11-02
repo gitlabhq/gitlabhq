@@ -1,5 +1,6 @@
 <script>
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
+import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -16,7 +17,10 @@ export default {
     PinnedSection,
   },
   mixins: [glFeatureFlagsMixin()],
-
+  i18n: {
+    pinAdded: s__('Navigation|%{title} added to pinned items'),
+    pinRemoved: s__('Navigation|%{title} removed from pinned items'),
+  },
   provide() {
     return {
       pinnedItemIds: this.changedPinnedItemIds,
@@ -111,12 +115,22 @@ export default {
     window.removeEventListener('resize', this.decideFlyoutState);
   },
   methods: {
-    createPin(itemId) {
+    createPin(itemId, itemTitle) {
       this.changedPinnedItemIds.ids.push(itemId);
+      this.$toast.show(
+        sprintf(this.$options.i18n.pinAdded, {
+          title: itemTitle,
+        }),
+      );
       this.updatePins();
     },
-    destroyPin(itemId) {
+    destroyPin(itemId, itemTitle) {
       this.changedPinnedItemIds.ids = this.changedPinnedItemIds.ids.filter((id) => id !== itemId);
+      this.$toast.show(
+        sprintf(this.$options.i18n.pinRemoved, {
+          title: itemTitle,
+        }),
+      );
       this.updatePins();
     },
     movePin(fromId, toId, isDownwards) {

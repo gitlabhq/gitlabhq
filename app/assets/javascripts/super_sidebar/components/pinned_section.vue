@@ -84,8 +84,8 @@ export default {
         return { ...i, title };
       });
     },
-    onPinRemove(itemId) {
-      this.$emit('pin-remove', itemId);
+    onPinRemove(itemId, itemTitle) {
+      this.$emit('pin-remove', itemId, itemTitle);
     },
   },
 };
@@ -113,7 +113,7 @@ export default {
         :key="item.id"
         :item="item"
         is-in-pinned-section
-        @pin-remove="onPinRemove"
+        @pin-remove="onPinRemove(item.id, item.title)"
       />
     </draggable>
     <li v-else class="gl-text-secondary gl-font-sm gl-py-3" style="margin-left: 2.5rem">

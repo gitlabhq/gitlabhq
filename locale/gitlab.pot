@@ -31269,6 +31269,12 @@ msgstr ""
 msgid "NavigationTheme|Red"
 msgstr ""
 
+msgid "Navigation|%{title} added to pinned items"
+msgstr ""
+
+msgid "Navigation|%{title} removed from pinned items"
+msgstr ""
+
 msgid "Navigation|Admin Area"
 msgstr ""
 

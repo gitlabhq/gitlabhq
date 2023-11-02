@@ -139,8 +139,8 @@ export default {
         :key="item.id"
         :item="item"
         :is-flyout="true"
-        @pin-add="(itemId) => $emit('pin-add', itemId)"
-        @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+        @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
+        @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
       />
     </ul>
     <svg

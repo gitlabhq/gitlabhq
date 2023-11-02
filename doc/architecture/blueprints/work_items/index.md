@@ -64,7 +64,7 @@ You can also refer to fields of [Work Item](../../../api/graphql/reference/index
 
 All Work Item types share the same pool of predefined widgets and are customized by which widgets are active on a specific type. The list of widgets for any certain Work Item type is currently predefined and is not customizable. However, in the future we plan to allow users to create new Work Item types and define a set of widgets for them.
 
-### Work Item widget types (updating)
+### Widget types (updating)
 
 | Widget  | Description | Feature flag | Write permission | GraphQL Subscription Support |
 |---|---|---|---|---|
@@ -85,6 +85,36 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | Status of a work item when type is Requirement, with possible status types being `unverified`, `satisfied`, or `failed` | | |No|
 | [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | Test reports associated with a work item | | | |
 | [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | Set weight of a work item | |`Reporter`|No|
+
+#### Widget availability (updating)
+
+| Widget | Epic | Issue | Task | Objective | Key Result |
+|---|---|---|---|---|---|
+| [WorkItemWidgetAssignees](../../../api/graphql/reference/index.md#workitemwidgetassignees) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | ✅ | ✔️ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | ✔ | ✔️ | ❌ | ✅ | ❌ |
+| [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | ❌ | ✅ | ✅ | ❌ | ❌ |
+| [WorkItemWidgetLabels](../../../api/graphql/reference/index.md#workitemwidgetlabels) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetLinkedItems](../../../api/graphql/reference/index.md#workitemwidgetlinkeditems) | ✔️ | ✔️ | ✔️ | ✅ | ✅ |
+| [WorkItemWidgetMilestone](../../../api/graphql/reference/index.md#workitemwidgetmilestone) | 🔍 | ✅ | ✅ | ✅ | ❌ |
+| [WorkItemWidgetNotes](../../../api/graphql/reference/index.md#workitemwidgetnotes) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetNotifications](../../../api/graphql/reference/index.md#workitemwidgetnotifications) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetProgress](../../../api/graphql/reference/index.md#workitemwidgetprogress) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| [WorkItemWidgetStartAndDueDate](../../../api/graphql/reference/index.md#workitemwidgetstartandduedate) | 🔍 | ✅ | ✅ | ❌ | ✅ |
+| [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | ❓ | ❓ | ❓ | ❓ | ❓ |
+| [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | 🔍 | ✅ | ✅ | ❌ | ❌ |
+
+##### Legend
+
+- ✅ - Widget available
+- ✔️ - Widget planned to be available
+- ❌ - Widget not available
+- ❓ - Widget pending for consideration
+- 🔍 - Alternative widget planned
 
 ### Work item relationships
 

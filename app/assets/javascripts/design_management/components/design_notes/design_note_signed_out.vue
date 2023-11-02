@@ -37,7 +37,7 @@ export default {
 </script>
 
 <template>
-  <div class="disabled-comment text-center">
+  <div class="disabled-comment gl-text-center gl-text-secondary">
     <gl-sprintf :message="signedOutText">
       <template #registerLink="{ content }">
         <gl-link :href="registerPath">{{ content }}</gl-link>
