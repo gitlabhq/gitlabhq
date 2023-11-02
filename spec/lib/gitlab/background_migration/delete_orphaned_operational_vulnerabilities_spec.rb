@@ -87,13 +87,15 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
   end
 
   subject(:background_migration) do
-    described_class.new(start_id: vulnerabilities.minimum(:id),
-                        end_id: vulnerabilities.maximum(:id),
-                        batch_table: :vulnerabilities,
-                        batch_column: :id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ActiveRecord::Base.connection)
+    described_class.new(
+      start_id: vulnerabilities.minimum(:id),
+      end_id: vulnerabilities.maximum(:id),
+      batch_table: :vulnerabilities,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    )
   end
 
   it 'drops Cluster Image Scanning and Custom Vulnerabilities without any Findings' do

@@ -55,6 +55,9 @@ export default {
     projectKey: {
       default: '',
     },
+    addExternalParticipantsFromCc: {
+      default: false,
+    },
     templates: {
       default: [],
     },
@@ -109,13 +112,20 @@ export default {
         });
     },
 
-    onSaveTemplate({ selectedTemplate, fileTemplateProjectId, outgoingName, projectKey }) {
+    onSaveTemplate({
+      selectedTemplate,
+      fileTemplateProjectId,
+      outgoingName,
+      projectKey,
+      addExternalParticipantsFromCc,
+    }) {
       this.isTemplateSaving = true;
 
       const body = {
         issue_template_key: selectedTemplate,
         outgoing_name: outgoingName,
         project_key: projectKey,
+        add_external_participants_from_cc: addExternalParticipantsFromCc,
         service_desk_enabled: this.isEnabled,
         file_template_project_id: fileTemplateProjectId,
       };
@@ -187,6 +197,7 @@ export default {
       :initial-selected-file-template-project-id="selectedFileTemplateProjectId"
       :initial-outgoing-name="outgoingName"
       :initial-project-key="projectKey"
+      :initial-add-external-participants-from-cc="addExternalParticipantsFromCc"
       :templates="templates"
       :is-template-saving="isTemplateSaving"
       @save="onSaveTemplate"

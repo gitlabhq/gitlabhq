@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects > Settings > For a forked project', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
 
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, create_templates: :issue, namespace: user.namespace) }
 
   before do
@@ -15,13 +15,10 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
   describe 'Sidebar > Monitor' do
     it 'renders the menu in the sidebar' do
       visit project_path(project)
-      wait_for_requests
 
-      expect(page).to have_selector(
-        '.sidebar-sub-level-items a[aria-label="Error Tracking"]',
-        text: 'Error Tracking',
-        visible: :hidden
-      )
+      within_testid('super-sidebar') do
+        expect(page).to have_link('Error Tracking', visible: :hidden)
+      end
     end
   end
 

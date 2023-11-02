@@ -165,26 +165,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
     end
   end
 
-  describe '.show_pages_menu_callout?' do
-    subject { helper.show_pages_menu_callout? }
-
-    before do
-      allow(helper).to receive(:user_dismissed?).with(described_class::PAGES_MOVED_CALLOUT) { dismissed }
-    end
-
-    context 'when user has not dismissed' do
-      let(:dismissed) { false }
-
-      it { is_expected.to be true }
-    end
-
-    context 'when user dismissed' do
-      let(:dismissed) { true }
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe '#web_hook_disabled_dismissed?', feature_category: :webhooks do
     context 'without a project' do
       it 'is false' do

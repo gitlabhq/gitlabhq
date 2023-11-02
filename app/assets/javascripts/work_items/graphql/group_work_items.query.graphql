@@ -1,0 +1,19 @@
+query groupWorkItems(
+  $searchTerm: String
+  $fullPath: ID!
+  $types: [IssueType!]
+  $in: [IssuableSearchableField!]
+) {
+  workspace: group(fullPath: $fullPath) {
+    id
+    workItems(search: $searchTerm, types: $types, in: $in) {
+      nodes {
+        id
+        iid
+        title
+        state
+        confidential
+      }
+    }
+  }
+}

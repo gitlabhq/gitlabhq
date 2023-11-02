@@ -4,6 +4,7 @@ import { GlFormGroup, GlForm, GlFormRadioGroup, GlButton, GlAlert } from '@gitla
 import { __, s__ } from '~/locale';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
+import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import {
   LINK_ITEM_FORM_HEADER_LABEL,
@@ -23,6 +24,7 @@ export default {
     GlAlert,
     WorkItemTokenInput,
   },
+  inject: ['isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -121,7 +123,7 @@ export default {
             },
           ) => {
             const queryArgs = {
-              query: workItemByIidQuery,
+              query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
               variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
             };
             const sourceData = cache.readQuery(queryArgs);

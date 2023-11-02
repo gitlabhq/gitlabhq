@@ -18,14 +18,16 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
 
     let(:job_arguments) { %w[name name_convert_to_text] }
     let(:copy_job) do
-      described_class.new(start_id: 12,
-                          end_id: 20,
-                          batch_table: table_name,
-                          batch_column: 'id',
-                          sub_batch_size: sub_batch_size,
-                          pause_ms: pause_ms,
-                          job_arguments: job_arguments,
-                          connection: connection)
+      described_class.new(
+        start_id: 12,
+        end_id: 20,
+        batch_table: table_name,
+        batch_column: 'id',
+        sub_batch_size: sub_batch_size,
+        pause_ms: pause_ms,
+        job_arguments: job_arguments,
+        connection: connection
+      )
     end
 
     before do

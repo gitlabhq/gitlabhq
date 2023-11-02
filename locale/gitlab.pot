@@ -41508,10 +41508,10 @@ msgstr ""
 msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure shared runners only handle the jobs they are equipped to run."
 msgstr ""
 
-msgid "Runners|The %{boldStart}runner token%{boldEnd} %{token} displays %{boldStart}only for a short time%{boldEnd}, and is stored in the %{codeStart}config.toml%{codeEnd} after you register the runner. It will not be visible once the runner is registered."
+msgid "Runners|The %{boldStart}runner authentication token%{boldEnd} %{token} displays here %{boldStart}for a short time only%{boldEnd}. After you register the runner, this token is stored in the %{codeStart}config.toml%{codeEnd} and cannot be accessed again from the UI."
 msgstr ""
 
-msgid "Runners|The %{boldStart}runner token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner."
+msgid "Runners|The %{boldStart}runner authentication token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner."
 msgstr ""
 
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
@@ -44082,6 +44082,12 @@ msgstr ""
 msgid "ServiceDesk|A verification email has been sent to a sub-address of your custom email address. This can take up to 30 minutes. The screen refreshes automatically."
 msgstr ""
 
+msgid "ServiceDesk|Add email addresses in the %{codeStart}Cc%{codeEnd} header of Service Desk emails to the issue."
+msgstr ""
+
+msgid "ServiceDesk|Add external participants from the %{codeStart}Cc%{codeEnd} header"
+msgstr ""
+
 msgid "ServiceDesk|Cannot create custom email"
 msgstr ""
 
@@ -44155,6 +44161,9 @@ msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Eac
 msgstr ""
 
 msgid "ServiceDesk|Keep custom email"
+msgstr ""
+
+msgid "ServiceDesk|Like the author, external participants receive Service Desk emails and can participate in the discussion."
 msgstr ""
 
 msgid "ServiceDesk|Minimum 8 characters long."
@@ -45557,9 +45566,6 @@ msgid "Something went wrong. Please try again later"
 msgstr ""
 
 msgid "Something went wrong. Please try again."
-msgstr ""
-
-msgid "Something went wrong. Try again later."
 msgstr ""
 
 msgid "Something went wrong. Unable to create identity verification exemption."
@@ -50286,6 +50292,9 @@ msgstr ""
 msgid "Tracing|%{ms} ms"
 msgstr ""
 
+msgid "Tracing|Attribute"
+msgstr ""
+
 msgid "Tracing|Check again"
 msgstr ""
 
@@ -50379,7 +50388,13 @@ msgstr ""
 msgid "Tracing|longer than"
 msgstr ""
 
+msgid "Tracing|name"
+msgstr ""
+
 msgid "Tracing|shorter than"
+msgstr ""
+
+msgid "Tracing|value"
 msgstr ""
 
 msgid "Track groups of issues that share a theme, across projects and milestones"

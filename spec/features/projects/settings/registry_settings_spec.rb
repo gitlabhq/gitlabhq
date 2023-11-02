@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Project > Settings > Packages and registries > Container registry tag expiration policy',
   feature_category: :groups_and_projects do
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
 
   let(:container_registry_enabled) { true }
@@ -27,15 +27,16 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       wait_for_requests
 
       expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]')
-                                  .skipping :'link-in-text-block'
+                                  .skipping :'link-in-text-block', :'heading-order'
     end
 
     it 'shows active tab on sidebar' do
       subject
 
-      expect(find('.sidebar-top-level-items > li.active')).to have_content('Settings')
-      expect(find('.sidebar-sub-level-items > li.active:not(.fly-out-top-item)'))
-        .to have_content('Packages and registries')
+      within_testid('super-sidebar') do
+        expect(page).to have_selector('button[aria-expanded="true"]', text: 'Settings')
+        expect(page).to have_selector('[aria-current="page"]', text: 'Packages and registries')
+      end
     end
 
     it 'shows available section' do

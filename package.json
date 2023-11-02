@@ -286,7 +286,6 @@
     "timezone-mock": "^1.0.8",
     "vite": "^4.4.9",
     "vite-plugin-ruby": "^3.2.2",
-    "vite-svg-loader": "^3.6.0",
     "vue-loader-vue3": "npm:vue-loader@17",
     "vue-test-utils-compat": "0.0.14",
     "vuex-mock-store": "^0.1.0",

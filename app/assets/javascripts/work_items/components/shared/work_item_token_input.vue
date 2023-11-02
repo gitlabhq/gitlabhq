@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
+import groupWorkItemsQuery from '../../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import {
   WORK_ITEMS_TYPE_MAP,
@@ -15,6 +16,7 @@ export default {
   components: {
     GlTokenSelector,
   },
+  inject: ['isGroup'],
   props: {
     value: {
       type: Array,
@@ -47,7 +49,9 @@ export default {
   },
   apollo: {
     availableWorkItems: {
-      query: projectWorkItemsQuery,
+      query() {
+        return this.isGroup ? groupWorkItemsQuery : projectWorkItemsQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

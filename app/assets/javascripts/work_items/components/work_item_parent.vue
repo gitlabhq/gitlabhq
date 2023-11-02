@@ -9,6 +9,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 
 import { removeHierarchyChild } from '../graphql/cache_utils';
+import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
@@ -97,7 +98,9 @@ export default {
   },
   apollo: {
     availableWorkItems: {
-      query: projectWorkItemsQuery,
+      query() {
+        return this.isGroup ? groupWorkItemsQuery : projectWorkItemsQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

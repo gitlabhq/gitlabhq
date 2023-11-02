@@ -147,7 +147,7 @@ export default {
               return;
             }
             const queryArgs = {
-              query: workItemByIidQuery,
+              query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
               variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
             };
             const sourceData = cache.readQuery(queryArgs);

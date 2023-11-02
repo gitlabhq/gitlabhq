@@ -12,24 +12,8 @@ export default {
     GlLoadingIcon,
   },
   props: {
-    oauthUrl: {
-      type: String,
-      required: true,
-    },
-    tracingUrl: {
-      type: String,
-      required: true,
-    },
-    servicesUrl: {
-      type: String,
-      required: true,
-    },
-    provisioningUrl: {
-      type: String,
-      required: true,
-    },
-    operationsUrl: {
-      type: String,
+    apiConfig: {
+      type: Object,
       required: true,
     },
   },
@@ -91,11 +75,7 @@ export default {
 
 <template>
   <observability-container
-    :oauth-url="oauthUrl"
-    :tracing-url="tracingUrl"
-    :provisioning-url="provisioningUrl"
-    :services-url="servicesUrl"
-    :operations-url="operationsUrl"
+    :api-config="apiConfig"
     @observability-client-ready="onObservabilityClientReady"
   >
     <div v-if="loading" class="gl-py-5">

@@ -22,9 +22,12 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphansApprovalMergeRequestRul
 
     let(:namespace_2) { namespaces.create!(name: 'name_2', path: 'path_2') }
     let(:security_project) do
-      projects
-        .create!(name: "security_project", path: "security_project", namespace_id: namespace_2.id,
-                 project_namespace_id: namespace_2.id)
+      projects.create!(
+        name: "security_project",
+        path: "security_project",
+        namespace_id: namespace_2.id,
+        project_namespace_id: namespace_2.id
+      )
     end
 
     let!(:security_orchestration_policy_configuration) do

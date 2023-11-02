@@ -70,10 +70,6 @@ module Users
       !user_dismissed?(MERGE_REQUEST_SETTINGS_MOVED_CALLOUT) && project.merge_requests_enabled?
     end
 
-    def show_pages_menu_callout?
-      !user_dismissed?(PAGES_MOVED_CALLOUT)
-    end
-
     def show_branch_rules_info?
       !user_dismissed?(BRANCH_RULES_INFO_CALLOUT)
     end

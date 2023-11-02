@@ -31,13 +31,16 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
     end
 
     subject(:job_instance) do
-      job_class.new(start_id: 1, end_id: 10,
-                    batch_table: '_test_table',
-                    batch_column: 'id',
-                    sub_batch_size: 2,
-                    pause_ms: 1000,
-                    job_arguments: %w[a b],
-                    connection: connection)
+      job_class.new(
+        start_id: 1,
+        end_id: 10,
+        batch_table: '_test_table',
+        batch_column: 'id',
+        sub_batch_size: 2,
+        pause_ms: 1000,
+        job_arguments: %w[a b],
+        connection: connection
+      )
     end
 
     it 'defines methods' do
@@ -61,13 +64,16 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
     subject(:perform_job) { job_instance.perform }
 
     let(:job_instance) do
-      job_class.new(start_id: 1, end_id: 10,
-                    batch_table: '_test_table',
-                    batch_column: 'id',
-                    sub_batch_size: 2,
-                    pause_ms: 1000,
-                    job_arguments: %w[a b],
-                    connection: connection)
+      job_class.new(
+        start_id: 1,
+        end_id: 10,
+        batch_table: '_test_table',
+        batch_column: 'id',
+        sub_batch_size: 2,
+        pause_ms: 1000,
+        job_arguments: %w[a b],
+        connection: connection
+      )
     end
 
     let(:job_class) do
@@ -124,13 +130,16 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
 
   describe '.scope_to' do
     subject(:job_instance) do
-      job_class.new(start_id: 1, end_id: 10,
-                    batch_table: '_test_table',
-                    batch_column: 'id',
-                    sub_batch_size: 2,
-                    pause_ms: 1000,
-                    job_arguments: %w[a b],
-                    connection: connection)
+      job_class.new(
+        start_id: 1,
+        end_id: 10,
+        batch_table: '_test_table',
+        batch_column: 'id',
+        sub_batch_size: 2,
+        pause_ms: 1000,
+        job_arguments: %w[a b],
+        connection: connection
+      )
     end
 
     context 'when additional scoping is defined' do
@@ -203,12 +212,15 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
     let(:job_class) { Class.new(described_class) }
 
     let(:job_instance) do
-      job_class.new(start_id: 1, end_id: 10,
-                    batch_table: '_test_table',
-                    batch_column: 'id',
-                    sub_batch_size: 2,
-                    pause_ms: 1000,
-                    connection: connection)
+      job_class.new(
+        start_id: 1,
+        end_id: 10,
+        batch_table: '_test_table',
+        batch_column: 'id',
+        sub_batch_size: 2,
+        pause_ms: 1000,
+        connection: connection
+      )
     end
 
     subject(:perform_job) { job_instance.perform }
@@ -313,9 +325,16 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
         end
 
         let(:job_instance) do
-          job_class.new(start_id: 1, end_id: 10, batch_table: '_test_table', batch_column: 'id',
-                        sub_batch_size: 2, pause_ms: 1000, connection: connection,
-                        sub_batch_exception: StandardError)
+          job_class.new(
+            start_id: 1,
+            end_id: 10,
+            batch_table: '_test_table',
+            batch_column: 'id',
+            sub_batch_size: 2,
+            pause_ms: 1000,
+            connection: connection,
+            sub_batch_exception: StandardError
+          )
         end
 
         it 'raises the expected error type' do
@@ -336,13 +355,15 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
 
     context 'when the subclass uses distinct each batch' do
       let(:job_instance) do
-        job_class.new(start_id: 1,
-                      end_id: 100,
-                      batch_table: '_test_table',
-                      batch_column: 'from_column',
-                      sub_batch_size: 2,
-                      pause_ms: 10,
-                      connection: connection)
+        job_class.new(
+          start_id: 1,
+          end_id: 100,
+          batch_table: '_test_table',
+          batch_column: 'from_column',
+          sub_batch_size: 2,
+          pause_ms: 10,
+          connection: connection
+        )
       end
 
       let(:job_class) do

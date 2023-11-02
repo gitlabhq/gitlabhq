@@ -34,6 +34,9 @@ describe('WorkItemAddRelationshipForm', () => {
 
     wrapper = shallowMountExtended(WorkItemAddRelationshipForm, {
       apolloProvider: mockApolloProvider,
+      provide: {
+        isGroup: false,
+      },
       propsData: {
         workItemId,
         workItemIid,

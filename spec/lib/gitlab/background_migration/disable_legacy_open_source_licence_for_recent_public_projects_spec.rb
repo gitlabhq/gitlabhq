@@ -73,14 +73,15 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenceForRec
   let(:project_settings_table) { table(:project_settings) }
 
   subject(:perform_migration) do
-    described_class.new(start_id: projects_table.minimum(:id),
-                        end_id: projects_table.maximum(:id),
-                        batch_table: :projects,
-                        batch_column: :id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ActiveRecord::Base.connection)
-                   .perform
+    described_class.new(
+      start_id: projects_table.minimum(:id),
+      end_id: projects_table.maximum(:id),
+      batch_table: :projects,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    ).perform
   end
 
   before do
@@ -94,7 +95,7 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenceForRec
   end
 
   it 'sets `legacy_open_source_license_available` attribute to false for public projects created after threshold time',
-     :aggregate_failures do
+    :aggregate_failures do
     record = ActiveRecord::QueryRecorder.new do
       expect { perform_migration }
         .to not_change { migrated_attribute(project_1.id) }.from(true)

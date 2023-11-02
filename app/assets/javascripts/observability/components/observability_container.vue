@@ -10,24 +10,8 @@ export default {
     ObservabilityLoader,
   },
   props: {
-    oauthUrl: {
-      type: String,
-      required: true,
-    },
-    provisioningUrl: {
-      type: String,
-      required: true,
-    },
-    tracingUrl: {
-      type: String,
-      required: true,
-    },
-    servicesUrl: {
-      type: String,
-      required: true,
-    },
-    operationsUrl: {
-      type: String,
+    apiConfig: {
+      type: Object,
       required: true,
     },
   },
@@ -55,7 +39,7 @@ export default {
   },
   methods: {
     messageHandler(e) {
-      const isExpectedOrigin = e.origin === new URL(this.oauthUrl).origin;
+      const isExpectedOrigin = e.origin === new URL(this.apiConfig.oauthUrl).origin;
       if (!isExpectedOrigin) return;
 
       const { data } = e;
@@ -65,12 +49,7 @@ export default {
 
         const { status, message, statusCode } = data;
         if (status === 'success') {
-          this.observabilityClient = buildClient({
-            provisioningUrl: this.provisioningUrl,
-            tracingUrl: this.tracingUrl,
-            servicesUrl: this.servicesUrl,
-            operationsUrl: this.operationsUrl,
-          });
+          this.observabilityClient = buildClient(this.apiConfig);
           this.$emit('observability-client-ready', this.observabilityClient);
           this.loaderContentState = CONTENT_STATE.LOADED;
         } else if (status === 'error') {
@@ -92,7 +71,7 @@ export default {
       v-if="!authCompleted"
       sandbox="allow-same-origin allow-forms allow-scripts"
       hidden
-      :src="oauthUrl"
+      :src="apiConfig.oauthUrl"
       data-testid="observability-oauth-iframe"
     ></iframe>
 

@@ -8,7 +8,7 @@
     - c.with_actions do
       - send_service_data_path = admin_application_settings_path(application_setting: { version_check_enabled: 1, usage_ping_enabled: 1 })
       - not_now_path = admin_application_settings_path(application_setting: { version_check_enabled: 0, usage_ping_enabled: 0 })
-      = render Pajamas::ButtonComponent.new(href: send_service_data_path, method: :put, variant: :confirm, button_options: { 'data-url' => admin_application_settings_path, 'data-check-enabled': true, 'data-service-ping-enabled': true, class: 'js-service-ping-consent-action alert-link' }) do
+      = render Pajamas::ButtonComponent.new(href: send_service_data_path, method: :put, variant: :confirm, button_options: { class: 'alert-link' }) do
         = _('Send service data')
-      = render Pajamas::ButtonComponent.new(href: not_now_path, method: :put, button_options: { 'data-url' => admin_application_settings_path, 'data-check-enabled': false, 'data-service-ping-enabled': false, class: 'js-service-ping-consent-action alert-link gl-ml-3' }) do
+      = render Pajamas::ButtonComponent.new(href: not_now_path, method: :put, button_options: { class: 'alert-link gl-ml-3' }) do
         = _("Don't send service data")

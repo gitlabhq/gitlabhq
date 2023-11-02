@@ -31,11 +31,14 @@ describe('ProvisionedObservabilityContainer', () => {
   const findSlotComponent = () => wrapper.findComponent({ name: 'MockComponent' });
 
   const props = {
-    oauthUrl: 'https://example.com/oauth',
-    tracingUrl: 'https://example.com/tracing',
-    servicesUrl: 'https://example.com/services',
-    provisioningUrl: 'https://example.com/provisioning',
-    operationsUrl: 'https://example.com/operations',
+    apiConfig: {
+      oauthUrl: 'https://example.com/oauth',
+      tracingUrl: 'https://example.com/tracing',
+      servicesUrl: 'https://example.com/services',
+      provisioningUrl: 'https://example.com/provisioning',
+      operationsUrl: 'https://example.com/operations',
+      metricsUrl: 'https://example.com/metrics',
+    },
   };
 
   beforeEach(() => {
@@ -59,7 +62,7 @@ describe('ProvisionedObservabilityContainer', () => {
   it('renders the observability-container', () => {
     const observabilityContainer = wrapper.findComponent(ObservabilityContainer);
     expect(observabilityContainer.exists()).toBe(true);
-    expect(observabilityContainer.props()).toMatchObject(props);
+    expect(observabilityContainer.props('apiConfig')).toStrictEqual(props.apiConfig);
   });
 
   describe('when the client is ready', () => {

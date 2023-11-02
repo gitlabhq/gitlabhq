@@ -16,18 +16,22 @@ describe('buildClient', () => {
   const provisioningUrl = 'https://example.com/provisioning';
   const servicesUrl = 'https://example.com/services';
   const operationsUrl = 'https://example.com/services/$SERVICE_NAME$/operations';
+  const metricsUrl = 'https://example.com/metrics';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
+
+  const apiConfig = {
+    tracingUrl,
+    provisioningUrl,
+    servicesUrl,
+    operationsUrl,
+    metricsUrl,
+  };
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
     jest.spyOn(axios, 'get');
 
-    client = buildClient({
-      tracingUrl,
-      provisioningUrl,
-      servicesUrl,
-      operationsUrl,
-    });
+    client = buildClient(apiConfig);
   });
 
   afterEach(() => {
@@ -40,23 +44,18 @@ describe('buildClient', () => {
   };
 
   describe('buildClient', () => {
-    it('rejects if params are missing', () => {
-      const e = new Error(
-        'missing required params. provisioningUrl, tracingUrl, servicesUrl, operationsUrl are required',
-      );
+    it('throws is option is missing', () => {
+      expect(() => buildClient()).toThrow(new Error('No options object provided'));
+    });
+    it.each(Object.keys(apiConfig))('throws if %s is missing', (param) => {
+      const e = new Error(`${param} param must be a string`);
+
       expect(() =>
-        buildClient({ tracingUrl: 'test', servicesUrl: 'test', operationsUrl: 'test' }),
+        buildClient({
+          ...apiConfig,
+          [param]: undefined,
+        }),
       ).toThrow(e);
-      expect(() =>
-        buildClient({ provisioningUrl: 'test', servicesUrl: 'test', operationsUrl: 'test' }),
-      ).toThrow(e);
-      expect(() =>
-        buildClient({ provisioningUrl: 'test', tracingUrl: 'test', operationsUrl: 'test' }),
-      ).toThrow(e);
-      expect(() =>
-        buildClient({ provisioningUrl: 'test', tracingUrl: 'test', servicesUrl: 'test' }),
-      ).toThrow(e);
-      expect(() => buildClient({})).toThrow(e);
     });
   });
 
@@ -260,6 +259,7 @@ describe('buildClient', () => {
               { operator: '=', value: 'trace-id' },
               { operator: '!=', value: 'not-trace-id' },
             ],
+            attribute: [{ operator: '=', value: 'name1=value1' }],
           },
         });
         expect(getQueryParam()).toBe(
@@ -267,7 +267,8 @@ describe('buildClient', () => {
             '&operation=op&not[operation]=not-op' +
             '&service_name=service&not[service_name]=not-service' +
             '&period=5m' +
-            '&trace_id=trace-id&not[trace_id]=not-trace-id',
+            '&trace_id=trace-id&not[trace_id]=not-trace-id' +
+            '&attr_name=name1&attr_value=value1',
         );
       });
 
@@ -387,9 +388,7 @@ describe('buildClient', () => {
 
     it('rejects if operationUrl does not contain $SERVICE_NAME$', async () => {
       client = buildClient({
-        tracingUrl,
-        provisioningUrl,
-        servicesUrl,
+        ...apiConfig,
         operationsUrl: 'something',
       });
       const e = 'fetchOperations() - operationsUrl must contain $SERVICE_NAME$';

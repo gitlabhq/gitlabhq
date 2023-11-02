@@ -109,8 +109,11 @@ export default {
     async syncHeaderAvatars() {
       const dataURL = await readFileAsDataURL(this.avatarBlob);
 
-      // TODO: implement sync for super sidebar
-      ['.header-user-avatar', '.js-sidebar-user-avatar'].forEach((selector) => {
+      const elements = gon?.use_new_navigation
+        ? ['[data-testid="user-dropdown"] .gl-avatar']
+        : ['.header-user-avatar', '.js-sidebar-user-avatar'];
+
+      elements.forEach((selector) => {
         const node = document.querySelector(selector);
         if (!node) return;
 

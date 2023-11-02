@@ -33,23 +33,39 @@ RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, s
   let!(:group1) { namespaces_table.create!(name: 'marvellous group 1', path: 'group-path-1', type: 'Group') }
   let!(:group2) { namespaces_table.create!(name: 'outstanding group 2', path: 'group-path-2', type: 'Group') }
   let!(:project_namespace1) do
-    namespaces_table.create!(name: 'fabulous project', path: 'project-path-1',
-                             type: 'ProjectNamespace', parent_id: group1.id)
+    namespaces_table.create!(
+      name: 'fabulous project',
+      path: 'project-path-1',
+      type: 'ProjectNamespace',
+      parent_id: group1.id
+    )
   end
 
   let!(:project1) do
-    projects_table.create!(name: 'fabulous project', path: 'project-path-1',
-                           project_namespace_id: project_namespace1.id, namespace_id: group1.id)
+    projects_table.create!(
+      name: 'fabulous project',
+      path: 'project-path-1',
+      project_namespace_id: project_namespace1.id,
+      namespace_id: group1.id
+    )
   end
 
   let!(:project_namespace2) do
-    namespaces_table.create!(name: 'splendiferous project', path: 'project-path-2',
-                             type: 'ProjectNamespace', parent_id: group1.id)
+    namespaces_table.create!(
+      name: 'splendiferous project',
+      path: 'project-path-2',
+      type: 'ProjectNamespace',
+      parent_id: group1.id
+    )
   end
 
   let!(:project2) do
-    projects_table.create!(name: 'splendiferous project', path: 'project-path-2',
-                           project_namespace_id: project_namespace2.id, namespace_id: group1.id)
+    projects_table.create!(
+      name: 'splendiferous project',
+      path: 'project-path-2',
+      project_namespace_id: project_namespace2.id,
+      namespace_id: group1.id
+    )
   end
 
   # create valid project member records
@@ -115,27 +131,55 @@ RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, s
   end
 
   def create_invalid_project_member(id:, user_id:)
-    members_table.create!(id: id, user_id: user_id, source_id: non_existing_record_id,
-                          access_level: Gitlab::Access::MAINTAINER, type: "ProjectMember",
-                          source_type: "Project", notification_level: 3, member_namespace_id: nil)
+    members_table.create!(
+      id: id,
+      user_id: user_id,
+      source_id: non_existing_record_id,
+      access_level: Gitlab::Access::MAINTAINER,
+      type: "ProjectMember",
+      source_type: "Project",
+      notification_level: 3,
+      member_namespace_id: nil
+    )
   end
 
   def create_valid_project_member(id:, user_id:, project:)
-    members_table.create!(id: id, user_id: user_id, source_id: project.id,
-                          access_level: Gitlab::Access::MAINTAINER, type: "ProjectMember", source_type: "Project",
-                          member_namespace_id: project.project_namespace_id, notification_level: 3)
+    members_table.create!(
+      id: id,
+      user_id: user_id,
+      source_id: project.id,
+      access_level: Gitlab::Access::MAINTAINER,
+      type: "ProjectMember",
+      source_type: "Project",
+      member_namespace_id: project.project_namespace_id,
+      notification_level: 3
+    )
   end
 
   def create_invalid_group_member(id:, user_id:)
-    members_table.create!(id: id, user_id: user_id, source_id: non_existing_record_id,
-                          access_level: Gitlab::Access::MAINTAINER, type: "GroupMember",
-                          source_type: "Namespace", notification_level: 3, member_namespace_id: nil)
+    members_table.create!(
+      id: id,
+      user_id: user_id,
+      source_id: non_existing_record_id,
+      access_level: Gitlab::Access::MAINTAINER,
+      type: "GroupMember",
+      source_type: "Namespace",
+      notification_level: 3,
+      member_namespace_id: nil
+    )
   end
 
   def create_valid_group_member(id:, user_id:, group_id:)
-    members_table.create!(id: id, user_id: user_id, source_id: group_id,
-                          access_level: Gitlab::Access::MAINTAINER, type: "GroupMember",
-                          source_type: "Namespace", member_namespace_id: group_id, notification_level: 3)
+    members_table.create!(
+      id: id,
+      user_id: user_id,
+      source_id: group_id,
+      access_level: Gitlab::Access::MAINTAINER,
+      type: "GroupMember",
+      source_type: "Namespace",
+      member_namespace_id: group_id,
+      notification_level: 3
+    )
   end
 end
 # rubocop: enable RSpec/MultipleMemoizedHelpers

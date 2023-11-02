@@ -9,6 +9,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import { removeHierarchyChild } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
 
@@ -34,6 +35,7 @@ describe('WorkItemParent component', () => {
   const workItemType = 'Objective';
   const mockFullPath = 'full-path';
 
+  const groupWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const availableWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const availableWorkItemsFailureHandler = jest.fn().mockRejectedValue(new Error());
 
@@ -51,6 +53,7 @@ describe('WorkItemParent component', () => {
     wrapper = shallowMountExtended(WorkItemParent, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, searchQueryHandler],
+        [groupWorkItemsQuery, groupWorkItemsSuccessHandler],
         [updateWorkItemMutation, mutationHandler],
       ]),
       provide: {
@@ -250,6 +253,36 @@ describe('WorkItemParent component', () => {
         ['Something went wrong while updating the objective. Please try again.'],
       ]);
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('when project context', () => {
+    beforeEach(() => {
+      createComponent();
+      findCollapsibleListbox().vm.$emit('shown');
+    });
+
+    it('calls the project work items query', () => {
+      expect(availableWorkItemsSuccessHandler).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work items query', () => {
+      expect(groupWorkItemsSuccessHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when group context', () => {
+    beforeEach(() => {
+      createComponent({ isGroup: true });
+      findCollapsibleListbox().vm.$emit('shown');
+    });
+
+    it('skips calling the project work items query', () => {
+      expect(availableWorkItemsSuccessHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls the group work items query', () => {
+      expect(groupWorkItemsSuccessHandler).toHaveBeenCalled();
     });
   });
 });

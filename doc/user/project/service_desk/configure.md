@@ -191,6 +191,8 @@ The custom email address you want to use must meet all of the following requirem
   by any text to the local part. Given the email address `support@example.com`, check whether sub-addressing is supported by
   sending an email to `support+1@example.com`. This email should appear in your mailbox.
 - You have SMTP credentials (ideally, you should use an app password).
+  The username and password are stored in the database using the Advanced Encryption Standard (AES)
+  with a 256-bit key.
 - You must have at least the Maintainer role for the project.
 - Service Desk must be configured for the project.
 

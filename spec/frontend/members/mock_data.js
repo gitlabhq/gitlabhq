@@ -41,7 +41,7 @@ export const member = {
   usingLicense: false,
   groupSso: false,
   groupManagedAccount: false,
-  provisionedByThisGroup: false,
+  enterpriseUserOfThisGroup: false,
   validRoles: {
     Guest: 10,
     Reporter: 20,

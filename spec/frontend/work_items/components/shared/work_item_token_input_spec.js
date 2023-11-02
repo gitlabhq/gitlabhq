@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
 import { WORK_ITEM_TYPE_ENUM_TASK } from '~/work_items/constants';
+import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import { availableWorkItemsResponse, searchedWorkItemsResponse } from '../../mock_data';
 
@@ -15,6 +16,7 @@ describe('WorkItemTokenInput', () => {
   let wrapper;
 
   const availableWorkItemsResolver = jest.fn().mockResolvedValue(availableWorkItemsResponse);
+  const groupSearchedWorkItemResolver = jest.fn().mockResolvedValue(searchedWorkItemsResponse);
   const searchedWorkItemResolver = jest.fn().mockResolvedValue(searchedWorkItemsResponse);
 
   const createComponent = async ({
@@ -23,9 +25,16 @@ describe('WorkItemTokenInput', () => {
     childrenType = WORK_ITEM_TYPE_ENUM_TASK,
     areWorkItemsToAddValid = true,
     workItemsResolver = searchedWorkItemResolver,
+    isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTokenInput, {
-      apolloProvider: createMockApollo([[projectWorkItemsQuery, workItemsResolver]]),
+      apolloProvider: createMockApollo([
+        [projectWorkItemsQuery, workItemsResolver],
+        [groupWorkItemsQuery, groupSearchedWorkItemResolver],
+      ]),
+      provide: {
+        isGroup,
+      },
       propsData: {
         value: workItemsToAdd,
         childrenType,
@@ -77,5 +86,35 @@ describe('WorkItemTokenInput', () => {
     });
 
     expect(findTokenSelector().props('containerClass')).toBe('gl-inset-border-1-red-500!');
+  });
+
+  describe('when project context', () => {
+    beforeEach(() => {
+      createComponent();
+      findTokenSelector().vm.$emit('focus');
+    });
+
+    it('calls the project work items query', () => {
+      expect(searchedWorkItemResolver).toHaveBeenCalled();
+    });
+
+    it('skips calling the group work items query', () => {
+      expect(groupSearchedWorkItemResolver).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when group context', () => {
+    beforeEach(() => {
+      createComponent({ isGroup: true });
+      findTokenSelector().vm.$emit('focus');
+    });
+
+    it('skips calling the project work items query', () => {
+      expect(searchedWorkItemResolver).not.toHaveBeenCalled();
+    });
+
+    it('calls the group work items query', () => {
+      expect(groupSearchedWorkItemResolver).toHaveBeenCalled();
+    });
   });
 });

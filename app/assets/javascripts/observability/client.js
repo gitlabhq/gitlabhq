@@ -70,6 +70,7 @@ const SUPPORTED_FILTERS = {
   serviceName: ['=', '!='],
   period: ['='],
   traceId: ['=', '!='],
+  attribute: ['='],
   // free-text 'search' temporarily ignored https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2309
 };
 
@@ -82,6 +83,7 @@ const FILTER_TO_QUERY_PARAM = {
   serviceName: 'service_name',
   period: 'period',
   traceId: 'trace_id',
+  attribute: 'attribute',
 };
 
 const FILTER_OPERATORS_PREFIX = {
@@ -114,6 +116,25 @@ function getFilterParamName(filterName, operator) {
 }
 
 /**
+ * Process `filterValue` and append the proper query params to the  `searchParams` arg
+ *
+ * It mutates `searchParams`
+ *
+ * @param {String} filterValue The filter value, in the format `attribute_name=attribute_value`
+ * @param {String} filterOperator The filter operator
+ * @param {URLSearchParams} searchParams The URLSearchParams object where to append the proper query params
+ */
+function handleAttributeFilter(filterValue, filterOperator, searchParams) {
+  const [attrName, attrValue] = filterValue.split('=');
+  if (attrName && attrValue) {
+    if (filterOperator === '=') {
+      searchParams.append('attr_name', attrName);
+      searchParams.append('attr_value', attrValue);
+    }
+  }
+}
+
+/**
  * Builds URLSearchParams from a filter object of type { [filterName]: undefined | null | Array<{operator: String, value: any} }
  *  e.g:
  *
@@ -133,20 +154,22 @@ function filterObjToQueryParams(filterObj) {
 
   Object.keys(SUPPORTED_FILTERS).forEach((filterName) => {
     const filterValues = filterObj[filterName] || [];
-    const supportedFilters = filterValues.filter((f) =>
+    const validFilters = filterValues.filter((f) =>
       SUPPORTED_FILTERS[filterName].includes(f.operator),
     );
-    supportedFilters.forEach(({ operator, value: rawValue }) => {
-      const paramName = getFilterParamName(filterName, operator);
-
-      let value = rawValue;
-      if (filterName === 'durationMs') {
-        // converting durationMs to duration_nano
-        value *= 1000000;
-      }
-
-      if (paramName && value) {
-        filterParams.append(paramName, value);
+    validFilters.forEach(({ operator, value: rawValue }) => {
+      if (filterName === 'attribute') {
+        handleAttributeFilter(rawValue, operator, filterParams);
+      } else {
+        const paramName = getFilterParamName(filterName, operator);
+        let value = rawValue;
+        if (filterName === 'durationMs') {
+          // converting durationMs to duration_nano
+          value *= 1000000;
+        }
+        if (paramName && value) {
+          filterParams.append(paramName, value);
+        }
       }
     });
   });
@@ -248,12 +271,33 @@ async function fetchMetrics() {
   /* eslint-enable @gitlab/require-i18n-strings */
 }
 
-export function buildClient({ provisioningUrl, tracingUrl, servicesUrl, operationsUrl } = {}) {
-  if (!provisioningUrl || !tracingUrl || !servicesUrl || !operationsUrl) {
-    throw new Error(
-      'missing required params. provisioningUrl, tracingUrl, servicesUrl, operationsUrl are required',
-    );
+export function buildClient(options) {
+  if (!options) {
+    throw new Error('No options object provided'); // eslint-disable-line @gitlab/require-i18n-strings
   }
+
+  const { provisioningUrl, tracingUrl, servicesUrl, operationsUrl, metricsUrl } = options;
+
+  if (typeof provisioningUrl !== 'string') {
+    throw new Error('provisioningUrl param must be a string');
+  }
+
+  if (typeof tracingUrl !== 'string') {
+    throw new Error('tracingUrl param must be a string');
+  }
+
+  if (typeof servicesUrl !== 'string') {
+    throw new Error('servicesUrl param must be a string');
+  }
+
+  if (typeof operationsUrl !== 'string') {
+    throw new Error('operationsUrl param must be a string');
+  }
+
+  if (typeof metricsUrl !== 'string') {
+    throw new Error('metricsUrl param must be a string');
+  }
+
   return {
     enableObservability: () => enableObservability(provisioningUrl),
     isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
@@ -261,6 +305,6 @@ export function buildClient({ provisioningUrl, tracingUrl, servicesUrl, operatio
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
-    fetchMetrics: () => fetchMetrics(),
+    fetchMetrics: () => fetchMetrics(metricsUrl),
   };
 }

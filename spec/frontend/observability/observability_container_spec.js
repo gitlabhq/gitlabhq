@@ -19,6 +19,7 @@ describe('ObservabilityContainer', () => {
   const PROVISIONING_URL = 'https://example.com/provisioning';
   const SERVICES_URL = 'https://example.com/services';
   const OPERATIONS_URL = 'https://example.com/operations';
+  const METRICS_URL = 'https://example.com/metrics';
 
   const mockClient = { mock: 'client' };
 
@@ -29,11 +30,14 @@ describe('ObservabilityContainer', () => {
 
     wrapper = shallowMountExtended(ObservabilityContainer, {
       propsData: {
-        oauthUrl: OAUTH_URL,
-        tracingUrl: TRACING_URL,
-        provisioningUrl: PROVISIONING_URL,
-        servicesUrl: SERVICES_URL,
-        operationsUrl: OPERATIONS_URL,
+        apiConfig: {
+          oauthUrl: OAUTH_URL,
+          tracingUrl: TRACING_URL,
+          provisioningUrl: PROVISIONING_URL,
+          servicesUrl: SERVICES_URL,
+          operationsUrl: OPERATIONS_URL,
+          metricssUrl: METRICS_URL,
+        },
       },
       slots: {
         default: {
@@ -100,12 +104,7 @@ describe('ObservabilityContainer', () => {
     });
 
     it('build the observability client', () => {
-      expect(buildClient).toHaveBeenCalledWith({
-        provisioningUrl: PROVISIONING_URL,
-        tracingUrl: TRACING_URL,
-        servicesUrl: SERVICES_URL,
-        operationsUrl: OPERATIONS_URL,
-      });
+      expect(buildClient).toHaveBeenCalledWith(wrapper.props('apiConfig'));
     });
 
     it('emits observability-client-ready', () => {

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # rubocop: disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Gitlab::BackgroundMigration::FixIncoherentPackagesSizeOnProjectStatistics,
-               feature_category: :package_registry do
+  feature_category: :package_registry do
   let(:project_statistics_table) { table(:project_statistics) }
   let(:packages_table) { table(:packages_packages) }
   let(:package_files_table) { table(:packages_package_files) }
@@ -197,8 +197,8 @@ RSpec.describe Gitlab::BackgroundMigration::FixIncoherentPackagesSizeOnProjectSt
 
     context 'with incoherent packages_size' do
       it_behaves_like 'enqueuing a buffered updates',
-                      incoherent_non_zero_statistics: 195,
-                      incoherent_zero_statistics: 200
+        incoherent_non_zero_statistics: 195,
+        incoherent_zero_statistics: 200
 
       context 'with updates waiting on redis' do
         before do
@@ -207,8 +207,8 @@ RSpec.describe Gitlab::BackgroundMigration::FixIncoherentPackagesSizeOnProjectSt
         end
 
         it_behaves_like 'enqueuing a buffered updates',
-                      incoherent_non_zero_statistics: 195,
-                      incoherent_zero_statistics: 200
+          incoherent_non_zero_statistics: 195,
+          incoherent_zero_statistics: 200
       end
     end
 
