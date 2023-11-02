@@ -25,7 +25,7 @@ With comment templates, create and reuse text for any text area in:
 Comment templates can be small, like approving a merge request and unassigning yourself from it,
 or large, like chunks of boilerplate text you use frequently:
 
-![Comment templates dropdown list](img/saved_replies_dropdown_v16_0.png)
+![Comment templates dropdown list](img/comment_template_v16_6.png)
 
 ## Use comment templates in a text area
 
@@ -65,4 +65,4 @@ To edit or delete a previously comment template:
 1. On the left sidebar, select **Comment templates** (**{comment-lines}**).
 1. Scroll to **My comment templates**, and identify the comment template you want to edit.
 1. To edit, select **Edit** (**{pencil}**).
-1. To delete, select **Delete** (**{remove}**), then select **Delete** again from the modal window.
+1. To delete, select **Delete** (**{remove}**), then select **Delete** again on the dialog.

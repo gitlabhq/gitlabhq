@@ -1,0 +1,9 @@
+query getOrganization($id: ID!) {
+  organization(id: $id) @client {
+    id
+    name
+    descriptionHtml
+    avatarUrl
+    webUrl
+  }
+}

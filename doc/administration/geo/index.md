@@ -19,8 +19,6 @@ Fetching large repositories can take a long time for teams located far from a si
 Geo provides local, read-only sites of your GitLab instances. This can reduce the time it takes
 to clone and fetch large repositories, speeding up development.
 
-For a video introduction to Geo, see [Introduction to GitLab Geo - GitLab Features](https://www.youtube.com/watch?v=-HDLxSjEh6w).
-
 To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v13.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.7.6-ee/doc/administration/geo/index.md).
 
 Geo uses a set of defined terms that are described in the [Geo Glossary](glossary.md).

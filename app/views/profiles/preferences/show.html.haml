@@ -78,6 +78,9 @@
       = f.gitlab_ui_radio_component :layout, layout_choices[0][1], layout_choices[0][0], help_text: fixed_help_text
       = f.gitlab_ui_radio_component :layout, layout_choices[1][1], layout_choices[1][0], help_text: fluid_help_text
 
+    - if Feature.enabled?(:ui_for_organizations, current_user)
+      #js-home-organization-setting{ data: { app_data: home_organization_setting_app_data } }
+
     .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
 
     = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific

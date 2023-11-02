@@ -7,7 +7,11 @@ import Api from '~/api';
 import Tracking from '~/tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { n__, s__, sprintf } from '~/locale';
-import { memberName, triggerExternalAlert } from 'ee_else_ce/invite_members/utils/member_utils';
+import {
+  memberName,
+  triggerExternalAlert,
+  inviteMembersTrackingOptions,
+} from 'ee_else_ce/invite_members/utils/member_utils';
 import { captureException } from '~/ci/runner/sentry_utils';
 import {
   USERS_FILTER_ALL,
@@ -135,6 +139,9 @@ export default {
     isCelebration() {
       return this.mode === 'celebrate';
     },
+    baseTrackingDetails() {
+      return { label: this.source, celebrate: this.isCelebration };
+    },
     isTextForAdmin() {
       return this.isCurrentUserAdmin && Boolean(this.newUsersUrl);
     },
@@ -252,7 +259,7 @@ export default {
       this.source = source;
 
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
-      this.track('render', { label: this.source });
+      this.track('render', inviteMembersTrackingOptions(this.baseTrackingDetails));
     },
     closeModal() {
       this.$root.$emit(BV_HIDE_MODAL, this.modalId);
@@ -321,10 +328,10 @@ export default {
       return this.newUsersToInvite.find((member) => memberName(member) === username)?.name;
     },
     onCancel() {
-      this.track('click_cancel', { label: this.source });
+      this.track('click_cancel', inviteMembersTrackingOptions(this.baseTrackingDetails));
     },
     onClose() {
-      this.track('click_x', { label: this.source });
+      this.track('click_x', inviteMembersTrackingOptions(this.baseTrackingDetails));
     },
     resetFields() {
       this.clearValidation();
@@ -333,7 +340,7 @@ export default {
       this.newUsersToInvite = [];
     },
     onInviteSuccess() {
-      this.track('invite_successful', { label: this.source });
+      this.track('invite_successful', inviteMembersTrackingOptions(this.baseTrackingDetails));
 
       if (this.reloadPageOnSubmit) {
         reloadOnInvitationSuccess();

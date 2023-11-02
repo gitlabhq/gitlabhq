@@ -48,6 +48,13 @@ module Organizations
       }
     end
 
+    def home_organization_setting_app_data
+      {
+        # TODO: use real setting - https://gitlab.com/gitlab-org/gitlab/-/issues/428668
+        initial_selection: 1
+      }.to_json
+    end
+
     private
 
     def shared_groups_and_projects_app_data

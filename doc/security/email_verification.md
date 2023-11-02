@@ -18,6 +18,8 @@ you must verify your identity or reset your password to sign in to GitLab.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo, see [Require email verification - demo](https://www.youtube.com/watch?v=wU6BVEGB3Y0).
 
+On GitLab.com, if you don't receive a verification email, select **Resend Code** before you contact the support team.
+
 ## Accounts without two-factor authentication (2FA)
 
 An account is locked when either:

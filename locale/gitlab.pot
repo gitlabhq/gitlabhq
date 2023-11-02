@@ -21623,9 +21623,6 @@ msgstr ""
 msgid "Geo|URL must be a valid url (ex: https://gitlab.com)"
 msgstr ""
 
-msgid "Geo|Undefined"
-msgstr ""
-
 msgid "Geo|Unhealthy"
 msgstr ""
 
@@ -33394,6 +33391,9 @@ msgstr ""
 msgid "Organization|An error occurred updating your organization. Please try again."
 msgstr ""
 
+msgid "Organization|Choose what organization you want to see by default."
+msgstr ""
+
 msgid "Organization|Copy organization ID"
 msgstr ""
 
@@ -33410,6 +33410,9 @@ msgid "Organization|Frequently visited projects"
 msgstr ""
 
 msgid "Organization|Get started with organizations"
+msgstr ""
+
+msgid "Organization|Home organization"
 msgstr ""
 
 msgid "Organization|Manage"
@@ -33463,7 +33466,16 @@ msgstr ""
 msgid "Organization|Public - The organization can be accessed without any authentication."
 msgstr ""
 
+msgid "Organization|Search for an organization"
+msgstr ""
+
 msgid "Organization|Search or filter list"
+msgstr ""
+
+msgid "Organization|Select an organization"
+msgstr ""
+
+msgid "Organization|Unable to fetch organizations. Reload the page to try again."
 msgstr ""
 
 msgid "Organization|Update your organization name, description, and avatar."
@@ -57807,6 +57819,9 @@ msgid "show less"
 msgstr ""
 
 msgid "sign in"
+msgstr ""
+
+msgid "site"
 msgstr ""
 
 msgid "smartcn custom analyzer"

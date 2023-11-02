@@ -22,6 +22,11 @@ export default {
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
     inputName: {
       type: String,
       required: true,
@@ -31,7 +36,7 @@ export default {
       required: true,
     },
     initialSelection: {
-      type: String,
+      type: [String, Number],
       required: false,
       default: null,
     },
@@ -56,6 +61,11 @@ export default {
       type: Function,
       required: false,
       default: null,
+    },
+    toggleClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -152,6 +162,7 @@ export default {
 
       this.searching = true;
       const name = await this.fetchInitialSelectionText(this.initialSelection);
+
       this.selectedValue = this.initialSelection;
       this.selectedText = name;
       this.pristine = false;
@@ -178,7 +189,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="label">
+  <gl-form-group :label="label" :description="description">
     <slot name="error"></slot>
     <template v-if="Boolean($scopedSlots.label)" #label>
       <slot name="label"></slot>
@@ -196,6 +207,7 @@ export default {
       :no-results-text="noResultsText"
       :infinite-scroll="hasMoreItems"
       :infinite-scroll-loading="infiniteScrollLoading"
+      :toggle-class="toggleClass"
       searchable
       @shown="onShown"
       @search="search"

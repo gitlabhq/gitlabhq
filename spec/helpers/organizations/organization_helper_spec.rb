@@ -92,6 +92,16 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     end
   end
 
+  describe '#home_organization_setting_app_data' do
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.home_organization_setting_app_data)).to eq(
+        {
+          'initial_selection' => 1
+        }
+      )
+    end
+  end
+
   describe '#organization_settings_general_app_data' do
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_settings_general_app_data(organization))).to eq(
