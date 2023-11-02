@@ -55,6 +55,17 @@ Prerequisites:
 
 ## View a dashboard
 
+> Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `k8s_watch_api`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the Kubernetes watch API integration is not available.
+To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `k8s_watch_api`.
+On GitLab.com, this feature is not available.
+
+View a dashboard to see the status of any connected clusters.
+If the `k8s_watch_api` feature flag is enabled, the status of your
+pods updates in real time.
+
 To view a configured dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
