@@ -48,6 +48,19 @@ module QA
         create(:sandbox, api_client: admin_api_client, path: "qa-sandbox-#{SecureRandom.hex(4)}")
       end
 
+      let!(:api_client) do
+        Runtime::API::Client.new(
+          user: user,
+          is_new_session: false,
+          personal_access_token: Resource::PersonalAccessToken.fabricate_via_api! do |pat|
+            pat.user = user
+            # importing very large project can take multiple days
+            # token must not expire while we still poll for import result
+            pat.expires_at = (Time.now.to_date + 5)
+          end.token
+        )
+      end
+
       # Source objects
       #
       let(:source_project) { source_group.projects(auto_paginate: true).find { |project| project.name == gitlab_source_project }.reload! }

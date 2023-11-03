@@ -56920,6 +56920,9 @@ msgstr ""
 msgid "is not in the group enforcing Group Managed Account"
 msgstr ""
 
+msgid "is not linked to a SAML account or has an inactive SCIM identity. For information on how to resolve this error, see the %{troubleshoot_link_start}troubleshooting SCIM documentation%{troubleshoot_link_end}."
+msgstr ""
+
 msgid "is not one of"
 msgstr ""
 

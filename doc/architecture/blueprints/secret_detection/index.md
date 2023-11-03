@@ -26,28 +26,22 @@ job logs, and project management features such as issues, epics, and MRs.
 
 ### Goals
 
-- Support asynchronous secret detection for the following scan targets:
-  - push events
-  - issuable creation
-  - issuable updates
-  - issuable comments
+- Support platform-wide detection of tokens to avoid secret leaks
+- Prevent exposure by rejecting detected secrets
+- Provide scalable means of detection without harming end user experience
+
+See [target types](#target-types) for scan target priorities.
 
 ### Non-Goals
 
-The current proposal is limited to asynchronous detection and alerting only.
-
-**Blocking** secrets on push events is high-risk to a critical path and
-would require extensive performance profiling before implementing. See
-[a recent example](https://gitlab.com/gitlab-org/gitlab/-/issues/246819#note_1164411983)
-of a customer incident where this was attempted.
+Initial proposal is limited to detection and alerting across plaform, with rejection only
+during preceive Git interactions.
 
 Secret revocation and rotation is also beyond the scope of this new capability.
 
 Scanned object types beyond the scope of this MVC include:
 
-- Media types (JPEGs, PDFs,...)
-- Snippets
-- Wikis
+See [target types](#target-types) for scan target priorities.
 
 #### Management UI
 
@@ -69,7 +63,13 @@ which remain focused on active detection.
 
 ## Proposal
 
-To achieve scalable secret detection for a variety of domain objects a dedicated
+The first iteration of the experimental capability will feature a blocking
+pre-receive hook implemented within the Rails application. This iteration
+will be released in an experimental state to select users and provide
+opportunity for the team to profile the capability before considering extraction
+into a dedicated service.
+
+In the future state, to achieve scalable secret detection for a variety of domain objects a dedicated
 scanning service must be created and deployed alongside the GitLab distribution.
 This is referred to as the `SecretScanningService`.
 
@@ -94,10 +94,10 @@ as self-managed instances.
 The critical paths as outlined under [goals above](#goals) cover two major object
 types: Git blobs (corresponding to push events) and arbitrary text blobs.
 
-The detection flow for push events relies on subscribing to the PostReceive hook
-to enqueue Sidekiq requests to the `SecretScanningService`. The `SecretScanningService`
-service fetches enqueued refs, queries Gitaly for the ref blob contents, scans
-the commit contents, and notifies the Rails application when a secret is detected.
+The detection flow for push events relies on subscribing to the PreReceive hook
+to scan commit data using the [PushCheck interface](https://gitlab.com/gitlab-org/gitlab/blob/3f1653f5706cd0e7bbd60ed7155010c0a32c681d/lib/gitlab/checks/push_check.rb). This `SecretScanningService`
+service fetches the specified blob contents from Gitaly, scans
+the commit contents, and rejects the push when a secret is detected.
 See [Push event detection flow](#push-event-detection-flow) for sequence.
 
 The detection flow for arbitrary text blobs, such as issue comments, relies on
@@ -112,12 +112,32 @@ storage. See discussion [in this issue](https://gitlab.com/groups/gitlab-org/-/e
 around scanning during streaming and the added complexity in buffering lookbacks
 for arbitrary trace chunks.
 
-In any case of detection, the Rails application manually creates a vulnerability
+In the case of a push detection, the commit is rejected and error returned to the end user.
+In any other case of detection, the Rails application manually creates a vulnerability
 using the `Vulnerabilities::ManuallyCreateService` to surface the finding in the
 existing Vulnerability Management UI.
 
 See [technical discovery](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
 for further background exploration.
+
+### Target types
+
+Target object types refer to the scanning targets prioritized for detection of leaked secrets.
+
+In order of priority this includes:
+
+1. non-binary Git blobs
+1. job logs
+1. issuable creation (issues, MRs, epics)
+1. issuable updates (issues, MRs, epics)
+1. issuable comments (issues, MRs, epics)
+
+Targets out of scope for the initial phases include:
+
+- Media types (JPEGs, PDFs,...)
+- Snippets
+- Wikis
+- Container images
 
 ### Token types
 
@@ -140,9 +160,10 @@ for all secret scanning in pipeline contexts. By using its `--no-git` configurat
 we can scan arbitrary text blobs outside of a repository context and continue to
 utilize it for non-pipeline scanning.
 
-Given our existing familiarity with the tool and its extensibility, it should
-remain our engine of choice. Changes to the detection engine are out of scope
-unless benchmarking unveils performance concerns.
+In the case of prereceive detection, we rely on a combination of keyword/substring matches
+for prefiltering and `re2` for regex detections. See [spike issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423832) for initial benchmarks
+
+Changes to the detection engine are out of scope until benchmarking unveils performance concerns.
 
 Notable alternatives include high-performance regex engines such as [hyperscan](https://github.com/intel/hyperscan) or it's portable fork [vectorscan](https://github.com/VectorCamp/vectorscan).
 
@@ -167,37 +188,42 @@ for past discussion around scaling approaches.
 sequenceDiagram
     autonumber
     actor User
-    User->>+Workhorse: git push
+    User->>+Workhorse: git push with-secret
     Workhorse->>+Gitaly: tcp
-    Gitaly->>+Rails: grpc
-    Sidekiq->>+Rails: poll job
-    Rails->>-Sidekiq: PostReceive worker
-    Sidekiq-->>+Sidekiq: enqueue PostReceiveSecretScanWorker
+    Gitaly->>+Rails: PreReceive
+    Rails->>-Gitaly: ListAllBlobs
+    Gitaly->>-Rails: ListAllBlobsResponse
 
-    Sidekiq->>+Rails: poll job
-    loop PostReceiveSecretScanWorker
-      Rails->>-Sidekiq: PostReceiveSecretScanWorker
-      Sidekiq->>+SecretScanningSvc: ScanBlob(ref)
-      SecretScanningSvc->>+Sidekiq: accepted
-      Note right of SecretScanningSvc: Scanning job enqueued
-      Sidekiq-->>+Rails: done
-      SecretScanningSvc->>+Gitaly: retrieve blob
-      SecretScanningSvc->>+SecretScanningSvc: scan blob
-      SecretScanningSvc->>+Rails: secret found
-    end
+    Rails->>+GitLabSecretDetection: Scan(blob)
+    GitLabSecretDetection->>-Rails: found
+
+    Rails->>User: rejected: secret found
+
+    User->>+Workhorse: git push without-secret
+    Workhorse->>+Gitaly: tcp
+    Gitaly->>+Rails: PreReceive
+    Rails->>-Gitaly: ListAllBlobs
+    Gitaly->>-Rails: ListAllBlobsResponse
+
+    Rails->>+GitLabSecretDetection: Scan(blob)
+    GitLabSecretDetection->>-Rails: not_found
+
+    Rails->>User: OK
 ```
 
 ## Iterations
 
 - ✓ Define [requirements for detection coverage and actions](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
-- ✓ Implement [Clientside detection of GitLab tokens in comments/issues](https://gitlab.com/gitlab-org/gitlab/-/issues/368434)
-- PoC of secret scanning service
-  - Benchmarking of issuables, comments, job logs and blobs to gain confidence that the total costs will be viable
-  - Capacity planning for addition of service component to Reference Architectures headroom
-  - Service capabilities
+- ✓ Implement [Browser-based detection of GitLab tokens in comments/issues](https://gitlab.com/gitlab-org/gitlab/-/issues/368434)
+- ✓ [PoC of secret scanning service](https://gitlab.com/gitlab-org/secure/pocs/secret-detection-go-poc/)
+- ✓ [PoC of secret scanning gem](https://gitlab.com/gitlab-org/gitlab/-/issues/426823)
+- [Pre Production Performance Profiling for pre-receive PoCs](https://gitlab.com/gitlab-org/gitlab/-/issues/428499)
+  - Profiling service capabilities
+    - ✓ [Benchmarking regex performance between Ruby and Go approaches](https://gitlab.com/gitlab-org/gitlab/-/issues/423832)
     - gRPC commit retrieval from Gitaly
-    - blob scanning
+    - transfer latency, CPU, and memory footprint
 - Implementation of secret scanning service MVC (targeting individual commits)
+- Capacity planning for addition of service component to Reference Architectures headroom
 - Security and readiness review
 - Deployment and monitoring
 - Implementation of secret scanning service MVC (targeting arbitrary text blobs)

@@ -104,7 +104,13 @@ When dismissing a vulnerability, one of the following reasons must be chosen to 
 - **Used in tests**: The finding is not a vulnerability because it is part of a test or is test data.
 - **Not applicable**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated.
 
-## Change status of a vulnerability
+## Change the status of a vulnerability
+
+> In GitLab 16.4 the ability for `Developers` to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](../../../update/deprecations.md#deprecate-change-vulnerability-status-from-the-developer-role). The `admin_vulnerability` permission will be removed, by default, from all `Developer` roles in GitLab 17.0.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
 
 To change a vulnerability's status from its Vulnerability Page:
 
