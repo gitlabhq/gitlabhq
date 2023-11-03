@@ -3188,7 +3188,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/ci/variables/collection/item_spec.rb'
     - 'spec/lib/gitlab/ci/variables/collection/sort_spec.rb'
     - 'spec/lib/gitlab/ci/variables/helpers_spec.rb'
-    - 'spec/lib/gitlab/ci/yaml_processor/dag_spec.rb'
     - 'spec/lib/gitlab/ci/yaml_processor/feature_flags_spec.rb'
     - 'spec/lib/gitlab/ci_access_spec.rb'
     - 'spec/lib/gitlab/class_attributes_spec.rb'

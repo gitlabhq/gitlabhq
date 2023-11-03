@@ -158,10 +158,9 @@ To enable the Dangerfile on another existing GitLab project, complete the follow
          - if: $CI_SERVER_HOST == "gitlab.com"
    ```
 
-1. If your project is in the `gitlab-org` group, you don't need to set up any token as the `DANGER_GITLAB_API_TOKEN`
-  variable is available at the group level. If not, follow these last steps:
-   1. Create a [Project access tokens](../user/project/settings/project_access_tokens.md).
-   1. Add the token as a CI/CD project variable named `DANGER_GITLAB_API_TOKEN`.
+1. Create a [Project access tokens](../user/project/settings/project_access_tokens.md) with the `api` scope,
+   `Reporter` permission (so that it can add labels), and no expiration date (which actually means one year).
+1. Add the token as a CI/CD project variable named `DANGER_GITLAB_API_TOKEN`.
 
 You should add the ~"Danger bot" label to the merge request before sending it
 for review.

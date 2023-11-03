@@ -63,9 +63,41 @@
         "properties": {
           "instrumentation_class": {
             "const": "TotalCountMetric"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "events"
+            ],
+            "additionalProperties": false
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
           }
         },
         "required": [
+          "events",
+          "options",
           "instrumentation_class"
         ]
       }

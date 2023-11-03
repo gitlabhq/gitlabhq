@@ -12,8 +12,7 @@
 
   .nav-controls.pb-md-3.pb-lg-0
     = render 'shared/wikis/main_links'
-    - if Feature.enabled?(:print_wiki, current_user)
-      #js-export-actions{ data: { options: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [stylesheet_path('application')] }.to_json } }
+    #js-export-actions{ data: { options: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [stylesheet_path('application')] }.to_json } }
 
 - if @page.historical?
   = render Pajamas::AlertComponent.new(variant: :warning,

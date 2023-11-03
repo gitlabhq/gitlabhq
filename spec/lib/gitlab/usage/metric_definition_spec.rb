@@ -223,19 +223,26 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         end
 
         where(:instrumentation_class, :options, :events, :is_valid) do
-          'TotalCountMetric' | {} | [] | true
-          'AnotherClass'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
-          nil              | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric' | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | true
-          'RedisHLLMetric' | { events: ['a'] } | nil | false
-          'RedisHLLMetric' | nil               | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric' | { events: ['a'] } | [{ name: 'a', unique: 'a' }] | false
-          'RedisHLLMetric' | { events: 'a' } | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric' | { events: [2] } | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric' | { events: ['a'], a: 'b' } | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric' | { events: ['a'] } | [{ name: 'a', unique: 'user.id', b: 'c' }] | false
-          'RedisHLLMetric' | { events: ['a'] } | [{ name: 'a' }] | false
-          'RedisHLLMetric' | { events: ['a'] } | [{ unique: 'user.id' }] | false
+          'AnotherClass'     | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
+          nil                | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | true
+          'RedisHLLMetric'   | { events: ['a'] } | nil | false
+          'RedisHLLMetric'   | nil               | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'a' }] | false
+          'RedisHLLMetric'   | { events: 'a' }   | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric'   | { events: [2] }   | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric'   | { events: ['a'], a: 'b' } | [{ name: 'a', unique: 'user.id' }] | false
+          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id', b: 'c' }] | false
+          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a' }] | false
+          'RedisHLLMetric'   | { events: ['a'] } | [{ unique: 'user.id' }] | false
+          'TotalCountMetric' | { events: ['a'] } | [{ name: 'a' }] | true
+          'TotalCountMetric' | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
+          'TotalCountMetric' | { events: ['a'] } | nil | false
+          'TotalCountMetric' | nil               | [{ name: 'a' }] | false
+          'TotalCountMetric' | { events: [2] }   | [{ name: 'a' }] | false
+          'TotalCountMetric' | { events: ['a'] } | [{}] | false
+          'TotalCountMetric' | 'a'               | [{ name: 'a' }] | false
+          'TotalCountMetric' | { events: ['a'], a: 'b' } | [{ name: 'a' }] | false
         end
 
         with_them do
@@ -300,11 +307,26 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         where(:instrumentation_class, :options, :is_valid) do
           'AnotherClass'     | { events: ['a'] } | false
           'RedisHLLMetric'   | { events: ['a'] } | true
+          'RedisHLLMetric'   | nil | false
+          'RedisHLLMetric'   | {} | false
           'RedisHLLMetric'   | { events: ['a'], b: 'c' } | false
           'RedisHLLMetric'   | { events: [2] } | false
           'RedisHLLMetric'   | { events: 'a' } | false
           'RedisHLLMetric'   | { event: ['a'] } | false
-          'AggregatedMetric' | {} | true
+          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id' }, events: ['a'] } | true
+          'AggregatedMetric' | { aggregate: { operator: 'AND', attribute: 'project_id' }, events: %w[b c] } | true
+          'AggregatedMetric' | nil | false
+          'AggregatedMetric' | {} | false
+          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id' }, events: ['a'], event: 'a' } | false
+          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id' } } | false
+          'AggregatedMetric' | { events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id' }, events: 'a' } | false
+          'AggregatedMetric' | { aggregate: 'a', events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: { operator: 'OR' }, events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: { attribute: 'user_id' }, events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id', a: 'b' }, events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: { operator: '???', attribute: 'user_id' }, events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: ['user_id'] }, events: ['a'] } | false
         end
 
         with_them do

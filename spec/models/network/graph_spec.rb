@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Network::Graph, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
-  let!(:note_on_commit) { create(:note_on_commit, project: project) }
 
   describe '#initialize' do
     let(:graph) do
@@ -13,16 +12,6 @@ RSpec.describe Network::Graph, feature_category: :source_code_management do
 
     it 'has initialized' do
       expect(graph).to be_a(described_class)
-    end
-
-    context 'when disable_network_graph_note_counts is disabled' do
-      before do
-        stub_feature_flags(disable_network_graph_notes_count: false)
-      end
-
-      it 'initializes the notes hash' do
-        expect(graph.notes).to eq({ note_on_commit.commit_id => 1 })
-      end
     end
   end
 

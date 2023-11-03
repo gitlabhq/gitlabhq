@@ -3433,7 +3433,7 @@ module Gitlab
             YAML
           end
 
-          it_behaves_like 'returns errors', 'The pipeline has circular dependencies'
+          it_behaves_like 'returns errors', 'The pipeline has circular dependencies: topological sort failed: ["job_a", "job_c", "job_b"]'
 
           context 'when a job has a self-dependency' do
             let(:config) do
@@ -3449,7 +3449,7 @@ module Gitlab
               YAML
             end
 
-            it_behaves_like 'returns errors', 'The pipeline has circular dependencies'
+            it_behaves_like 'returns errors', 'The pipeline has circular dependencies: self-dependency: job'
           end
         end
       end

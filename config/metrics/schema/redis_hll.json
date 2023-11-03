@@ -38,10 +38,46 @@
         "properties": {
           "instrumentation_class": {
             "const": "AggregatedMetric"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "aggregate": {
+                "type": "object",
+                "properties": {
+                  "operator": {
+                    "enum": [
+                      "OR",
+                      "AND"
+                    ]
+                  },
+                  "attribute": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operator",
+                  "attribute"
+                ],
+                "additionalProperties": false
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "aggregate",
+              "events"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
-          "instrumentation_class"
+          "instrumentation_class",
+          "options"
         ]
       },
       {

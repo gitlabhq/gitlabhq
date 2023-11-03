@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'tsort'
 
-RSpec.describe Gitlab::Ci::YamlProcessor::Dag do
+RSpec.describe Gitlab::Ci::YamlProcessor::Dag, feature_category: :pipeline_composition do
   let(:nodes) { {} }
 
   subject(:result) { described_class.new(nodes).tsort }
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Ci::YamlProcessor::Dag do
       end
 
       it 'raises TSort::Cyclic error' do
-        expect { result }.to raise_error(TSort::Cyclic, /topological sort failed/)
+        expect { result }.to raise_error(TSort::Cyclic, "self-dependency: job_a")
       end
     end
   end

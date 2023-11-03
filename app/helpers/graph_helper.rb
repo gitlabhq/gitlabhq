@@ -4,12 +4,6 @@ module GraphHelper
   def refs(repo, commit)
     refs = [commit.ref_names(repo).join(' ')]
 
-    # append note count
-    unless Feature.enabled?(:disable_network_graph_notes_count, @project, type: :experiment)
-      notes_count = @graph.notes[commit.id]
-      refs << "[#{pluralize(notes_count, 'note')}]" if notes_count > 0
-    end
-
     refs.join
   end
 

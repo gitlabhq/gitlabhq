@@ -10,6 +10,7 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.
 level: suggestion
 ignorecase: true
 swap:
+  a number of: "Specify the number or remove the phrase."
   as well as: "Use 'and' instead of 'as well as'."
   note that: "Remove the phrase 'note that'."
   please: "Use 'please' only if we've inconvenienced the user."
