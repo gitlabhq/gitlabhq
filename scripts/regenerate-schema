@@ -34,12 +34,28 @@ class SchemaRegenerator
 
   def execute
     Dir.chdir(File.expand_path('..', __dir__)) do
+      # Note: `db:drop` must run prior to hiding migrations.
+      #
+      # Executing a Rails DB command e.g., `reset`, `drop`, etc. triggers running the initializers.
+      # During the initialization, the default values for `application_settings` need to be set.
+      # Depending on the presence of migrations, the default values are either faked or inserted.
+      #
+      # 1. If no migration is detected, all the necessary columns are in place from `db/structure.sql`.
+      # The default values can be inserted into `application_settings` table.
+      #
+      # 2. If a migration is detected, at least one column may be missing from `db/structure.sql`
+      # and needs to be added through the detected migration. In this case, the default values are faked.
+      # If not, an error would be raised e.g., "NoMethodError: undefined method `some_setting`"
+      #
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135085#note_1628210334 for more info.
+      #
+      drop_db
       checkout_ref
       checkout_clean_schema
       hide_migrations
       remove_schema_migration_files
       stop_spring
-      reset_db
+      setup_db
       unhide_migrations
       migrate
       rollback if @rollback_testing
@@ -162,9 +178,15 @@ class SchemaRegenerator
   end
 
   ##
-  # Run rake task to reset the database.
-  def reset_db
-    run %q(bin/rails db:reset RAILS_ENV=test)
+  # Run rake task to drop the database.
+  def drop_db
+    run %q(bin/rails db:drop RAILS_ENV=test)
+  end
+
+  ##
+  # Run rake task to setup the database.
+  def setup_db
+    run %q(bin/rails db:setup RAILS_ENV=test)
   end
 
   ##

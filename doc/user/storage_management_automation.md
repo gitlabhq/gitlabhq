@@ -780,7 +780,7 @@ default:
 
 ## Manage Container Registries storage
 
-Container registries are available [in a project](../api/container_registry.md#within-a-project) or [in a group](../api/container_registry.md#within-a-group). You can analyze both locations to implement a cleanup strategy.
+Container registries are available [for projects](../api/container_registry.md#within-a-project) or [for groups](../api/container_registry.md#within-a-group). You can analyze both locations to implement a cleanup strategy.
 
 ### List container registries
 
@@ -894,7 +894,7 @@ You can optimize container images to reduce the image size and overall storage c
 
 ## Manage Package Registry storage
 
-Package registries are available [in a project](../api/packages.md#within-a-project) or [in a group](../api/packages.md#within-a-group).
+Package registries are available [for projects](../api/packages.md#for-a-project) or [for groups](../api/packages.md#for-a-group).
 
 ### List packages and files
 
