@@ -54,6 +54,7 @@ RSpec.describe 'Query.project.mergeRequest.codequalityReportsComparer', feature_
   let(:codequality_reports_comparer_fields) do
     <<~QUERY
       codequalityReportsComparer {
+        status
         report {
           status
           newErrors {
@@ -138,6 +139,7 @@ RSpec.describe 'Query.project.mergeRequest.codequalityReportsComparer', feature_
       expect(result).to match(
         a_hash_including(
           {
+            status: 'PARSED',
             report: {
               status: 'FAILED',
               newErrors: [

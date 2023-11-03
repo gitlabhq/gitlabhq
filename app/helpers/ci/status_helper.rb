@@ -15,7 +15,7 @@ module Ci
     end
 
     # rubocop:disable Metrics/CyclomaticComplexity
-    def ci_icon_for_status(status, size: 16)
+    def ci_icon_for_status(status, size: 24)
       icon_name =
         if detailed_status?(status)
           status.icon
@@ -50,15 +50,11 @@ module Ci
           end
         end
 
+      icon_name = icon_name == 'play' ? icon_name : "#{icon_name}_borderless"
+
       sprite_icon(icon_name, size: size, css_class: 'gl-icon')
     end
     # rubocop:enable Metrics/CyclomaticComplexity
-
-    def ci_icon_class_for_status(status)
-      group = detailed_status?(status) ? status.group : status.dasherize
-
-      "ci-status-icon-#{group}"
-    end
 
     def pipeline_status_cache_key(pipeline_status)
       "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
@@ -85,16 +81,17 @@ module Ci
       show_status_text: false
     )
       variant = badge_variant(status)
-      klass = "js-ci-status-badge-legacy ci-status-icon #{ci_icon_class_for_status(status)} gl-rounded-full gl-justify-content-center gl-line-height-0"
+      badge_classes = "ci-icon ci-icon-variant-#{variant} gl-p-2 #{option_css_classes}"
       title = "#{_('Pipeline')}: #{ci_label_for_status(status)}"
       data = { toggle: 'tooltip', placement: tooltip_placement, container: container, testid: 'ci-icon' }
-      badge_classes = "ci-icon gl-p-2 #{option_css_classes}"
+
+      icon_wrapper_class = "js-ci-status-badge-legacy ci-icon-gl-icon-wrapper"
 
       gl_badge_tag(variant: variant, size: :md, href: path, class: badge_classes, title: title, data: data) do
         if show_status_text
-          content_tag(:span, ci_icon_for_status(status), { class: klass }) + content_tag(:span, status.label, { class: 'gl-mx-2 gl-white-space-nowrap' })
+          content_tag(:span, ci_icon_for_status(status), { class: icon_wrapper_class }) + content_tag(:span, status.label, { class: 'gl-mx-2 gl-white-space-nowrap', data: { testid: 'ci-icon-text' } })
         else
-          content_tag(:span, ci_icon_for_status(status), { class: klass })
+          content_tag(:span, ci_icon_for_status(status), { class: icon_wrapper_class })
         end
       end
     end
@@ -135,16 +132,18 @@ module Ci
       case variant
       when 'success'
         :success
-      when 'success-with-warnings', 'pending'
+      when 'success-with-warnings'
+        :warning
+      when 'pending'
+        :warning
+      when 'waiting-for-resource'
         :warning
       when 'failed'
         :danger
       when 'running'
         :info
-      when 'canceled', 'manual'
-        :neutral
       else
-        :muted
+        :neutral
       end
     end
   end

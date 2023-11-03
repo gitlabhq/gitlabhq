@@ -81,11 +81,6 @@ export default {
       // detailedStatus is graphQL, details.status is REST
       return pipeline?.detailedStatus || pipeline?.details?.status;
     },
-    triggerButtonClass(pipeline) {
-      const { group } = accessValue(pipeline, this.dataMethod, 'detailedStatus');
-
-      return `ci-status-icon-${group}`;
-    },
   },
 };
 </script>
@@ -105,7 +100,6 @@ export default {
       v-gl-tooltip="{ title: pipelineTooltipText(pipeline) }"
       :status="pipelineStatus(pipeline)"
       :show-tooltip="false"
-      :class="triggerButtonClass(pipeline)"
       class="linked-pipeline-mini-item gl-mb-0!"
       data-testid="linked-pipeline-mini-item"
     />

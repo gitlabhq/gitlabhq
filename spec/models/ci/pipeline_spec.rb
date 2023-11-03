@@ -157,6 +157,106 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe 'unlocking pipelines based on state transition' do
+    let(:ci_ref) { create(:ci_ref) }
+    let(:unlock_previous_pipelines_worker_spy) { class_spy(::Ci::Refs::UnlockPreviousPipelinesWorker) }
+
+    before do
+      stub_const('Ci::Refs::UnlockPreviousPipelinesWorker', unlock_previous_pipelines_worker_spy)
+      stub_feature_flags(ci_stop_unlock_pipelines: false)
+    end
+
+    shared_examples 'not unlocking pipelines' do |event:|
+      context "on #{event}" do
+        let(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :artifacts_locked) }
+
+        it 'does not unlock previous pipelines' do
+          pipeline.fire_events!(event)
+
+          expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
+        end
+      end
+    end
+
+    shared_examples 'unlocking pipelines' do |event:|
+      context "on #{event}" do
+        before do
+          pipeline.fire_events!(event)
+        end
+
+        let(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :artifacts_locked) }
+
+        it 'unlocks previous pipelines' do
+          expect(unlock_previous_pipelines_worker_spy).to have_received(:perform_async).with(ci_ref.id)
+        end
+      end
+    end
+
+    context 'when transitioning to unlockable states' do
+      before do
+        pipeline.run
+      end
+
+      it_behaves_like 'unlocking pipelines', event: :succeed
+      it_behaves_like 'unlocking pipelines', event: :drop
+      it_behaves_like 'unlocking pipelines', event: :skip
+      it_behaves_like 'unlocking pipelines', event: :cancel
+      it_behaves_like 'unlocking pipelines', event: :block
+
+      context 'and ci_stop_unlock_pipelines is enabled' do
+        before do
+          stub_feature_flags(ci_stop_unlock_pipelines: true)
+        end
+
+        it_behaves_like 'not unlocking pipelines', event: :succeed
+        it_behaves_like 'not unlocking pipelines', event: :drop
+        it_behaves_like 'not unlocking pipelines', event: :skip
+        it_behaves_like 'not unlocking pipelines', event: :cancel
+        it_behaves_like 'not unlocking pipelines', event: :block
+      end
+
+      context 'and ci_unlock_non_successful_pipelines is disabled' do
+        before do
+          stub_feature_flags(ci_unlock_non_successful_pipelines: false)
+        end
+
+        it_behaves_like 'unlocking pipelines', event: :succeed
+        it_behaves_like 'not unlocking pipelines', event: :drop
+        it_behaves_like 'not unlocking pipelines', event: :skip
+        it_behaves_like 'not unlocking pipelines', event: :cancel
+        it_behaves_like 'not unlocking pipelines', event: :block
+
+        context 'and ci_stop_unlock_pipelines is enabled' do
+          before do
+            stub_feature_flags(ci_stop_unlock_pipelines: true)
+          end
+
+          it_behaves_like 'not unlocking pipelines', event: :succeed
+          it_behaves_like 'not unlocking pipelines', event: :drop
+          it_behaves_like 'not unlocking pipelines', event: :skip
+          it_behaves_like 'not unlocking pipelines', event: :cancel
+          it_behaves_like 'not unlocking pipelines', event: :block
+        end
+      end
+    end
+
+    context 'when transitioning to a non-unlockable state' do
+      before do
+        pipeline.enqueue
+      end
+
+      it_behaves_like 'not unlocking pipelines', event: :run
+
+      context 'and ci_unlock_non_successful_pipelines is disabled' do
+        before do
+          stub_feature_flags(ci_unlock_non_successful_pipelines: false)
+        end
+
+        it_behaves_like 'not unlocking pipelines', event: :run
+      end
+    end
+  end
+
   describe 'pipeline age metric' do
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
 
@@ -216,6 +316,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       def success_to_success?
         from_status == :success && to_status == :success
+      end
+    end
+  end
+
+  describe '.with_unlockable_status' do
+    let_it_be(:project) { create(:project) }
+
+    let!(:pipeline) { create(:ci_pipeline, project: project, status: status) }
+
+    subject(:result) { described_class.with_unlockable_status }
+
+    described_class::UNLOCKABLE_STATUSES.map(&:to_s).each do |s|
+      context "when pipeline status is #{s}" do
+        let(:status) { s }
+
+        it 'includes the pipeline in the result' do
+          expect(result).to include(pipeline)
+        end
+      end
+    end
+
+    (Ci::HasStatus::AVAILABLE_STATUSES - described_class::UNLOCKABLE_STATUSES.map(&:to_s)).each do |s|
+      context "when pipeline status is #{s}" do
+        let(:status) { s }
+
+        it 'does excludes the pipeline in the result' do
+          expect(result).not_to include(pipeline)
+        end
       end
     end
   end

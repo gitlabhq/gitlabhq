@@ -18,7 +18,7 @@ describe('IDE jobs item', () => {
   });
 
   it('renders CI icon', () => {
-    expect(wrapper.find('[data-testid="status_success-icon"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="ci-icon"]').exists()).toBe(true);
   });
 
   it('does not render view logs button if not started', async () => {

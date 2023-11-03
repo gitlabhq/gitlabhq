@@ -165,7 +165,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows a running icon and a cancel action for the running build' do
           page.within('#ci-badge-deploy') do
-            expect(page).to have_selector('[data-testid="status_running-icon"]')
+            expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
             expect(page).to have_selector('.js-icon-cancel')
             expect(page).to have_content('deploy')
           end
@@ -187,7 +187,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows a preparing icon and a cancel action' do
           page.within('#ci-badge-prepare') do
-            expect(page).to have_selector('[data-testid="status_preparing-icon"]')
+            expect(page).to have_selector('[data-testid="status_preparing_borderless-icon"]')
             expect(page).to have_selector('.js-icon-cancel')
             expect(page).to have_content('prepare')
           end
@@ -209,7 +209,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows the success icon and a retry action for the successful build' do
           page.within('#ci-badge-build') do
-            expect(page).to have_selector('[data-testid="status_success-icon"]')
+            expect(page).to have_selector('[data-testid="status_success_borderless-icon"]')
             expect(page).to have_content('build')
           end
 
@@ -238,7 +238,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows the scheduled icon and an unschedule action for the delayed job' do
           page.within('#ci-badge-delayed-job') do
-            expect(page).to have_selector('[data-testid="status_scheduled-icon"]')
+            expect(page).to have_selector('[data-testid="status_scheduled_borderless-icon"]')
             expect(page).to have_content('delayed-job')
           end
 
@@ -263,7 +263,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows the failed icon and a retry action for the failed build' do
           page.within('#ci-badge-test') do
-            expect(page).to have_selector('[data-testid="status_failed-icon"]')
+            expect(page).to have_selector('[data-testid="status_failed_borderless-icon"]')
             expect(page).to have_content('test')
           end
 
@@ -297,7 +297,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows the skipped icon and a play action for the manual build' do
           page.within('#ci-badge-manual-build') do
-            expect(page).to have_selector('[data-testid="status_manual-icon"]')
+            expect(page).to have_selector('[data-testid="status_manual_borderless-icon"]')
             expect(page).to have_content('manual')
           end
 
@@ -323,7 +323,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         end
 
         it 'shows the success icon and the generic comit status build' do
-          expect(page).to have_selector('[data-testid="status_success-icon"]')
+          expect(page).to have_selector('[data-testid="status_success_borderless-icon"]')
           expect(page).to have_content('jenkins')
           expect(page).to have_link('jenkins', href: 'http://gitlab.com/status')
         end
@@ -358,7 +358,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
             let(:status) { :success }
 
             it 'does not show the cancel or retry action' do
-              expect(page).to have_selector('.ci-status-icon-success')
+              expect(page).to have_selector('[data-testid="status_success_borderless-icon"]')
               expect(page).not_to have_selector('button[aria-label="Retry downstream pipeline"]')
               expect(page).not_to have_selector('button[aria-label="Cancel downstream pipeline"]')
             end
@@ -379,7 +379,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
               it 'shows the pipeline as canceled with the retry action' do
                 expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
-                expect(page).to have_selector('.ci-status-icon-canceled')
+                expect(page).to have_selector('[data-testid="status_canceled_borderless-icon"]')
               end
             end
           end
@@ -398,7 +398,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
               end
 
               it 'shows running pipeline with the cancel action' do
-                expect(page).to have_selector('.ci-status-icon-running')
+                expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
                 expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
               end
             end
@@ -418,7 +418,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
               end
 
               it 'shows running pipeline with the cancel action' do
-                expect(page).to have_selector('.ci-status-icon-running')
+                expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
                 expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
               end
             end
@@ -438,7 +438,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           end
 
           it 'does not show the retry button' do
-            expect(page).to have_selector('.ci-status-icon-failed')
+            expect(page).to have_selector('[data-testid="status_failed_borderless-icon"]')
             expect(page).not_to have_selector('button[aria-label="Retry downstream pipeline"]')
           end
         end
@@ -782,8 +782,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         expect(page).to have_content('Cancel pipeline')
       end
 
-      it 'does not link to job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408215' do
-        expect(page).not_to have_selector('.js-pipeline-graph-job-link')
+      it 'does link to job' do
+        expect(page).to have_selector('.js-pipeline-graph-job-link')
       end
     end
   end
@@ -906,12 +906,12 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         within('.js-pipeline-graph') do
           within(all('[data-testid="stage-column"]')[0]) do
             expect(page).to have_content('test')
-            expect(page).to have_css('.ci-status-icon-pending')
+            expect(page).to have_css('[data-testid="status_pending_borderless-icon"]')
           end
 
           within(all('[data-testid="stage-column"]')[1]) do
             expect(page).to have_content('deploy')
-            expect(page).to have_css('.ci-status-icon-created')
+            expect(page).to have_css('[data-testid="status_created_borderless-icon"]')
           end
         end
       end
@@ -931,12 +931,12 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           within('.js-pipeline-graph') do
             within(all('[data-testid="stage-column"]')[0]) do
               expect(page).to have_content('test')
-              expect(page).to have_css('.ci-status-icon-success')
+              expect(page).to have_css('[data-testid="status_success_borderless-icon"]')
             end
 
             within(all('[data-testid="stage-column"]')[1]) do
               expect(page).to have_content('deploy')
-              expect(page).to have_css('.ci-status-icon-pending')
+              expect(page).to have_css('[data-testid="status_pending_borderless-icon"]')
             end
           end
         end
@@ -960,7 +960,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           within('.js-pipeline-graph') do
             within(all('[data-testid="stage-column"]')[1]) do
               expect(page).to have_content('deploy')
-              expect(page).to have_css('.ci-status-icon-waiting-for-resource')
+              expect(page).to have_css('[data-testid="status_pending_borderless-icon"]')
             end
           end
         end
@@ -980,7 +980,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
             within('.js-pipeline-graph') do
               within(all('[data-testid="stage-column"]')[1]) do
                 expect(page).to have_content('deploy')
-                expect(page).to have_css('.ci-status-icon-pending')
+                expect(page).to have_css('[data-testid="status_pending_borderless-icon"]')
               end
             end
           end
@@ -1008,7 +1008,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
             within('.js-pipeline-graph') do
               within(all('[data-testid="stage-column"]')[1]) do
                 expect(page).to have_content('deploy')
-                expect(page).to have_css('.ci-status-icon-waiting-for-resource')
+                expect(page).to have_css('[data-testid="status_pending_borderless-icon"]')
               end
             end
           end

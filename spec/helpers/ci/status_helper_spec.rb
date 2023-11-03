@@ -29,7 +29,7 @@ RSpec.describe Ci::StatusHelper do
     end
 
     it "has the success status icon" do
-      is_expected.to include("ci-status-icon-success")
+      is_expected.to include("ci-icon-variant-success")
     end
 
     context "when pipeline has commit path" do
@@ -44,7 +44,19 @@ RSpec.describe Ci::StatusHelper do
       end
 
       it "has the correct status icon" do
-        is_expected.to include("ci-status-icon-success")
+        is_expected.to include("ci-icon-variant-success")
+      end
+    end
+
+    context "when showing status text" do
+      subject do
+        detailed_status = Gitlab::Ci::Status::Success.new(build(:ci_build, :success), build(:user))
+        helper.render_ci_icon(detailed_status, show_status_text: true)
+      end
+
+      it "contains status text" do
+        is_expected.to include("data-testid=\"ci-icon-text\"")
+        is_expected.to include("passed")
       end
     end
 
@@ -79,56 +91,35 @@ RSpec.describe Ci::StatusHelper do
         is_expected.to include('gl-badge badge badge-pill badge-neutral')
       end
     end
-  end
 
-  describe '#badge_variant' do
-    using RSpec::Parameterized::TableSyntax
+    describe 'badge and icon appearance' do
+      using RSpec::Parameterized::TableSyntax
 
-    where(:status, :expected_badge_variant_class) do
-      'success'               | 'badge-success'
-      'success-with-warnings' | 'badge-warning'
-      'pending'               | 'badge-warning'
-      'failed'                | 'badge-danger'
-      'running'               | 'badge-info'
-      'canceled'              | 'badge-neutral'
-      'manual'                | 'badge-neutral'
-      'other-status'          | 'badge-muted'
-    end
-
-    with_them do
-      subject { helper.render_ci_icon(status) }
-
-      it 'uses the correct badge variant classes for gl-badge' do
-        is_expected.to include("gl-badge badge badge-pill #{expected_badge_variant_class}")
+      where(:status, :icon, :badge_variant) do
+        'success'               | 'status_success_borderless'   | 'success'
+        'success-with-warnings' | 'status_warning_borderless'   | 'warning'
+        'pending'               | 'status_pending_borderless'   | 'warning'
+        'waiting-for-resource'  | 'status_pending_borderless'   | 'warning'
+        'failed'                | 'status_failed_borderless'    | 'danger'
+        'running'               | 'status_running_borderless'   | 'info'
+        'preparing'             | 'status_preparing_borderless' | 'neutral'
+        'canceled'              | 'status_canceled_borderless'  | 'neutral'
+        'created'               | 'status_created_borderless'   | 'neutral'
+        'scheduled'             | 'status_scheduled_borderless' | 'neutral'
+        'play'                  | 'play'                        | 'neutral'
+        'skipped'               | 'status_skipped_borderless'   | 'neutral'
+        'manual'                | 'status_manual_borderless'    | 'neutral'
+        'other-status'          | 'status_canceled_borderless'  | 'neutral'
       end
-    end
-  end
 
-  describe '#ci_icon_for_status' do
-    using RSpec::Parameterized::TableSyntax
+      with_them do
+        subject { helper.render_ci_icon(status) }
 
-    where(:status, :icon_variant) do
-      'success'               | 'status_success'
-      'success-with-warnings' | 'status_warning'
-      'preparing'             | 'status_preparing'
-      'pending'               | 'status_pending'
-      'waiting-for-resource'  | 'status_pending'
-      'failed'                | 'status_failed'
-      'running'               | 'status_running'
-      'canceled'              | 'status_canceled'
-      'created'               | 'status_created'
-      'scheduled'             | 'status_scheduled'
-      'play'                  | 'play'
-      'skipped'               | 'status_skipped'
-      'manual'                | 'status_manual'
-    end
-
-    with_them do
-      subject { helper.render_ci_icon(status).to_s }
-
-      it 'uses the correct icon variant for status' do
-        is_expected.to include("ci-status-icon-#{status}")
-        is_expected.to include(icon_variant)
+        it 'uses the correct variant and icon for status' do
+          is_expected.to include("gl-badge badge badge-pill badge-#{badge_variant}")
+          is_expected.to include("ci-icon-variant-#{badge_variant}")
+          is_expected.to include("data-testid=\"#{icon}-icon\"")
+        end
       end
     end
   end

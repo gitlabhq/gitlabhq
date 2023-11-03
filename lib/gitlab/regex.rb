@@ -5,6 +5,7 @@ module Gitlab
     extend self
     extend MergeRequests
     extend Packages
+    extend Packages::Protection::Rules
 
     def project_name_regex
       # The character range \p{Alnum} overlaps with \u{00A9}-\u{1f9ff}

@@ -14,7 +14,9 @@ module Ci
 
       def perform(ref_id)
         ::Ci::Ref.find_by_id(ref_id).try do |ref|
-          pipeline = ref.last_finished_pipeline
+          next unless ref.artifacts_locked?
+
+          pipeline = ref.last_unlockable_ci_source_pipeline
           result = ::Ci::Refs::EnqueuePipelinesToUnlockService.new.execute(ref, before_pipeline: pipeline)
 
           log_extra_metadata_on_done(:total_pending_entries, result[:total_pending_entries])

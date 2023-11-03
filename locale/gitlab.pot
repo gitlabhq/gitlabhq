@@ -44313,6 +44313,9 @@ msgstr ""
 msgid "Session duration (minutes)"
 msgstr ""
 
+msgid "Session|There was a error loading the user verification challenge. Refresh to try again."
+msgstr ""
+
 msgid "Set %{epic_ref} as the parent epic."
 msgstr ""
 
@@ -57828,6 +57831,9 @@ msgid "severity|None"
 msgstr ""
 
 msgid "severity|Unknown"
+msgstr ""
+
+msgid "should be a valid NPM package name with optional wildcard characters."
 msgstr ""
 
 msgid "should be an array of %{object_name} objects"

@@ -11,6 +11,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
     let(:with_can_create_project) { false }
     let(:with_can_create_group) { false }
     let(:with_can_create_snippet) { false }
+    let(:with_can_create_organization) { false }
     let(:title) { 'Create new...' }
 
     subject(:view_model) do
@@ -24,6 +25,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
       allow(user).to receive(:can_create_group?) { with_can_create_group }
       allow(user).to receive(:can?).and_call_original
       allow(user).to receive(:can?).with(:create_snippet) { with_can_create_snippet }
+      allow(user).to receive(:can?).with(:create_organization) { with_can_create_organization }
     end
 
     shared_examples 'invite member item' do |partial|
@@ -133,6 +135,39 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               )
             )
           )
+        end
+      end
+
+      context 'when can create organization' do
+        let(:with_can_create_organization) { true }
+
+        it 'has new organization menu item' do
+          expect(view_model[:menu_sections]).to eq(
+            expected_menu_section(
+              title: _('In GitLab'),
+              menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+                id: 'general_new_organization',
+                title: s_('Organization|New organization'),
+                href: '/-/organizations/new',
+                data: {
+                  track_action: 'click_link_new_organization_parent',
+                  track_label: 'plus_menu_dropdown',
+                  track_property: 'navigation_top',
+                  testid: 'global_new_organization_link'
+                }
+              )
+            )
+          )
+        end
+
+        context 'when ui_for_organizations feature flag is disabled' do
+          before do
+            stub_feature_flags(ui_for_organizations: false)
+          end
+
+          it 'does not have new organization menu item' do
+            expect(view_model[:menu_sections]).to match_array([])
+          end
         end
       end
     end

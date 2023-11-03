@@ -43,7 +43,7 @@ module QA
           def has_build?(name, status: :success, wait: nil)
             if status
               within_element('job-item-container', text: name) do
-                has_selector?(".ci-status-icon-#{status}", **{ wait: wait }.compact)
+                has_selector?("[data-testid='status_#{status}_borderless-icon']", **{ wait: wait }.compact)
               end
             else
               has_element?('job-item-container', text: name)

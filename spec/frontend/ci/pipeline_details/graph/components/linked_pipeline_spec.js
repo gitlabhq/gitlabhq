@@ -93,7 +93,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should render the pipeline status icon svg', () => {
-      expect(wrapper.find('.ci-status-icon-success svg').exists()).toBe(true);
+      expect(wrapper.findByTestId('status_success_borderless-icon').exists()).toBe(true);
     });
 
     it('should have a ci-status child component', () => {

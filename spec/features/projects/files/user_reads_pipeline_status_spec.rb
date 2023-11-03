@@ -25,7 +25,7 @@ RSpec.describe 'user reads pipeline status', :js, feature_category: :groups_and_
 
       page.within('.commit-detail') do
         expect(page).to have_link('', href: project_pipeline_path(project, expected_pipeline))
-        expect(page).to have_selector(".ci-status-icon-#{expected_pipeline.status}")
+        expect(page).to have_selector("[data-testid='status_#{expected_pipeline.status}_borderless-icon']")
       end
     end
   end

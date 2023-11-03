@@ -34,6 +34,7 @@ module Ci
     DEFAULT_CONFIG_PATH = '.gitlab-ci.yml'
 
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
+    UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
 
     paginates_per 15
 
@@ -272,6 +273,32 @@ module Ci
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
+      after_transition any => UNLOCKABLE_STATUSES do |pipeline|
+        # This is a temporary flag that we added just in case we need to totally
+        # stop unlocking pipelines due to unexpected issues during rollout.
+        next if Feature.enabled?(:ci_stop_unlock_pipelines, pipeline.project)
+
+        next unless Feature.enabled?(:ci_unlock_non_successful_pipelines, pipeline.project)
+
+        pipeline.run_after_commit do
+          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
+        end
+      end
+
+      # TODO: Remove this block once we've completed roll-out of ci_unlock_non_successful_pipelines
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/428408
+      after_transition any => :success do |pipeline|
+        # This is a temporary flag that we added just in case we need to totally
+        # stop unlocking pipelines due to unexpected issues during rollout.
+        next if Feature.enabled?(:ci_stop_unlock_pipelines, pipeline.project)
+
+        next unless Feature.disabled?(:ci_unlock_non_successful_pipelines, pipeline.project)
+
+        pipeline.run_after_commit do
+          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
+        end
+      end
+
       after_transition [:created, :waiting_for_resource, :preparing, :pending, :running] => :success do |pipeline|
         # We wait a little bit to ensure that all Ci::BuildFinishedWorkers finish first
         # because this is where some metrics like code coverage is parsed and stored
@@ -395,6 +422,7 @@ module Ci
       end
     end
 
+    scope :with_unlockable_status, -> { with_status(*UNLOCKABLE_STATUSES) }
     scope :internal, -> { where(source: internal_sources) }
     scope :no_child, -> { where.not(source: :parent_pipeline) }
     scope :ci_sources, -> { where(source: Enums::Ci::Pipeline.ci_sources.values) }

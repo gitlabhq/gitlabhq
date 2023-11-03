@@ -176,7 +176,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       expect(page).to have_content("Merge blocked")
       expect(page).to have_content(
         "pipeline must succeed. It's waiting for a manual action to continue.")
-      expect(page).to have_css('.ci-status-icon-manual')
+      expect(page).to have_css('[data-testid="status_manual_borderless-icon"]')
     end
   end
 

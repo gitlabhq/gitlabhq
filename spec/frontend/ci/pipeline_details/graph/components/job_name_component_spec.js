@@ -25,6 +25,6 @@ describe('job name component', () => {
 
   it('should render an icon with the provided status', () => {
     expect(wrapper.findComponent(CiIcon).exists()).toBe(true);
-    expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="status_success_borderless-icon"]').exists()).toBe(true);
   });
 });

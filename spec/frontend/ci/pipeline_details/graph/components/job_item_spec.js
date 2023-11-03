@@ -87,7 +87,9 @@ describe('pipeline graph job item', () => {
       expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
 
       expect(findJobCiIcon().exists()).toBe(true);
-      expect(findJobCiIcon().find('.ci-status-icon-success').exists()).toBe(true);
+      expect(findJobCiIcon().find('[data-testid="status_success_borderless-icon"]').exists()).toBe(
+        true,
+      );
 
       expect(wrapper.text()).toBe(mockJob.name);
     });
@@ -106,7 +108,9 @@ describe('pipeline graph job item', () => {
 
     it('should render status and name', () => {
       expect(findJobCiIcon().exists()).toBe(true);
-      expect(findJobCiIcon().find('.ci-status-icon-success').exists()).toBe(true);
+      expect(findJobCiIcon().find('[data-testid="status_success_borderless-icon"]').exists()).toBe(
+        true,
+      );
       expect(findJobLink().exists()).toBe(false);
 
       expect(wrapper.text()).toBe(mockJobWithoutDetails.name);

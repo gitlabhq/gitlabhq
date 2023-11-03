@@ -6,6 +6,6 @@ RSpec.describe GitlabSchema.types['CodequalityReportsComparer'], feature_categor
   specify { expect(described_class.graphql_name).to eq('CodequalityReportsComparer') }
 
   it 'has expected fields' do
-    expect(described_class).to have_graphql_fields(:report)
+    expect(described_class).to have_graphql_fields(:status, :report)
   end
 end

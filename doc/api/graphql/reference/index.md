@@ -15393,6 +15393,7 @@ Represents reports comparison for code quality.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="codequalityreportscomparerreport"></a>`report` | [`CodequalityReportsComparerReport`](#codequalityreportscomparerreport) | Compared codequality report. |
+| <a id="codequalityreportscomparerstatus"></a>`status` | [`CodequalityReportsComparerReportGenerationStatus`](#codequalityreportscomparerreportgenerationstatus) | Compared codequality report generation status. |
 
 ### `CodequalityReportsComparerReport`
 
@@ -15405,7 +15406,7 @@ Represents compared code quality report.
 | <a id="codequalityreportscomparerreportexistingerrors"></a>`existingErrors` | [`[CodequalityReportsComparerReportDegradation!]`](#codequalityreportscomparerreportdegradation) | All code quality degradations. |
 | <a id="codequalityreportscomparerreportnewerrors"></a>`newErrors` | [`[CodequalityReportsComparerReportDegradation!]!`](#codequalityreportscomparerreportdegradation) | New code quality degradations. |
 | <a id="codequalityreportscomparerreportresolvederrors"></a>`resolvedErrors` | [`[CodequalityReportsComparerReportDegradation!]`](#codequalityreportscomparerreportdegradation) | Resolved code quality degradations. |
-| <a id="codequalityreportscomparerreportstatus"></a>`status` | [`CodequalityReportsComparerReportStatus!`](#codequalityreportscomparerreportstatus) | Status of report. |
+| <a id="codequalityreportscomparerreportstatus"></a>`status` | [`CodequalityReportsComparerStatus!`](#codequalityreportscomparerstatus) | Status of report. |
 | <a id="codequalityreportscomparerreportsummary"></a>`summary` | [`CodequalityReportsComparerReportSummary!`](#codequalityreportscomparerreportsummary) | Codequality report summary. |
 
 ### `CodequalityReportsComparerReportDegradation`
@@ -28124,15 +28125,25 @@ Values for sorting variables.
 | <a id="codequalitydegradationseverityminor"></a>`MINOR` | Code Quality degradation has a status of minor. |
 | <a id="codequalitydegradationseverityunknown"></a>`UNKNOWN` | Code Quality degradation has a status of unknown. |
 
-### `CodequalityReportsComparerReportStatus`
+### `CodequalityReportsComparerReportGenerationStatus`
 
-Report comparison status.
+Represents the generation status of the compared codequality report.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="codequalityreportscomparerreportstatusfailed"></a>`FAILED` | Report failed to generate. |
-| <a id="codequalityreportscomparerreportstatusnot_found"></a>`NOT_FOUND` | Head report or base report not found. |
-| <a id="codequalityreportscomparerreportstatussuccess"></a>`SUCCESS` | Report successfully generated. |
+| <a id="codequalityreportscomparerreportgenerationstatuserror"></a>`ERROR` | An error happened while generating the report. |
+| <a id="codequalityreportscomparerreportgenerationstatusparsed"></a>`PARSED` | Report was generated. |
+| <a id="codequalityreportscomparerreportgenerationstatusparsing"></a>`PARSING` | Report is being generated. |
+
+### `CodequalityReportsComparerStatus`
+
+Represents the state of the code quality report.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="codequalityreportscomparerstatusfailed"></a>`FAILED` | Report generated and there are new code quality degradations. |
+| <a id="codequalityreportscomparerstatusnot_found"></a>`NOT_FOUND` | Head report or base report not found. |
+| <a id="codequalityreportscomparerstatussuccess"></a>`SUCCESS` | No degradations found in the head pipeline report. |
 
 ### `CommitActionMode`
 

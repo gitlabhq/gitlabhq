@@ -7,61 +7,6 @@ RSpec.describe Ci::Ref, feature_category: :continuous_integration do
 
   it { is_expected.to belong_to(:project) }
 
-  describe 'state machine transitions' do
-    context 'unlock artifacts transition' do
-      let(:ci_ref) { create(:ci_ref) }
-      let(:unlock_previous_pipelines_worker_spy) { class_spy(::Ci::Refs::UnlockPreviousPipelinesWorker) }
-
-      before do
-        stub_const('Ci::Refs::UnlockPreviousPipelinesWorker', unlock_previous_pipelines_worker_spy)
-      end
-
-      context 'pipeline is locked' do
-        let!(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :artifacts_locked) }
-
-        where(:initial_state, :action, :count) do
-          :unknown | :succeed! | 1
-          :unknown | :do_fail! | 0
-          :success | :succeed! | 1
-          :success | :do_fail! | 0
-          :failed | :succeed! | 1
-          :failed | :do_fail! | 0
-          :fixed | :succeed! | 1
-          :fixed | :do_fail! | 0
-          :broken | :succeed! | 1
-          :broken | :do_fail! | 0
-          :still_failing | :succeed | 1
-          :still_failing | :do_fail | 0
-        end
-
-        with_them do
-          context "when transitioning states" do
-            before do
-              status_value = Ci::Ref.state_machines[:status].states[initial_state].value
-              ci_ref.update!(status: status_value)
-            end
-
-            it 'calls pipeline complete unlock artifacts service' do
-              ci_ref.send(action)
-
-              expect(unlock_previous_pipelines_worker_spy).to have_received(:perform_async).exactly(count).times
-            end
-          end
-        end
-      end
-
-      context 'pipeline is unlocked' do
-        let!(:pipeline) { create(:ci_pipeline, ci_ref_id: ci_ref.id, locked: :unlocked) }
-
-        it 'does not unlock pipelines' do
-          ci_ref.succeed!
-
-          expect(unlock_previous_pipelines_worker_spy).not_to have_received(:perform_async)
-        end
-      end
-    end
-  end
-
   describe '.ensure_for' do
     let_it_be(:project) { create(:project, :repository) }
 
@@ -239,6 +184,119 @@ RSpec.describe Ci::Ref, feature_category: :continuous_integration do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }
       let!(:model) { create(:ci_ref, project: parent) }
+    end
+  end
+
+  describe '#last_successful_ci_source_pipeline' do
+    let_it_be(:ci_ref) { create(:ci_ref) }
+
+    let(:ci_source) { Enums::Ci::Pipeline.sources[:push] }
+    let(:dangling_source) { Enums::Ci::Pipeline.sources[:parent_pipeline] }
+
+    subject(:result) { ci_ref.last_successful_ci_source_pipeline }
+
+    context 'when there are no successful CI source pipelines' do
+      let!(:running_ci_source) { create(:ci_pipeline, :running, ci_ref: ci_ref, source: ci_source) }
+      let!(:successful_dangling_source) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: dangling_source) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there are successful CI source pipelines' do
+      context 'and the latest pipeline is a successful CI source pipeline' do
+        let!(:failed_ci_source) { create(:ci_pipeline, :failed, ci_ref: ci_ref, source: ci_source) }
+        let!(:successful_dangling_source) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: dangling_source, child_of: failed_ci_source) }
+        let!(:successful_ci_source) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: ci_source) }
+
+        it 'returns the last successful CI source pipeline' do
+          expect(result).to eq(successful_ci_source)
+        end
+      end
+
+      context 'and there is a newer successful dangling source pipeline than the successful CI source pipelines' do
+        let!(:successful_ci_source_1) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: ci_source) }
+        let!(:successful_ci_source_2) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: ci_source) }
+        let!(:failed_ci_source) { create(:ci_pipeline, :failed, ci_ref: ci_ref, source: ci_source) }
+        let!(:successful_dangling_source) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: dangling_source, child_of: failed_ci_source) }
+
+        it 'returns the last successful CI source pipeline' do
+          expect(result).to eq(successful_ci_source_2)
+        end
+
+        context 'and the newer successful dangling source is a child of a successful CI source pipeline' do
+          let!(:parent_ci_source) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: ci_source) }
+          let!(:successful_child_source) { create(:ci_pipeline, :success, ci_ref: ci_ref, source: dangling_source, child_of: parent_ci_source) }
+
+          it 'returns the parent pipeline instead' do
+            expect(result).to eq(parent_ci_source)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#last_unlockable_ci_source_pipeline' do
+    let(:ci_source) { Enums::Ci::Pipeline.sources[:push] }
+    let(:dangling_source) { Enums::Ci::Pipeline.sources[:parent_pipeline] }
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:ci_ref) { create(:ci_ref, project: project) }
+
+    subject(:result) { ci_ref.last_unlockable_ci_source_pipeline }
+
+    context 'when there are unlockable pipelines in the ref' do
+      context 'and the last CI source pipeline in the ref is unlockable' do
+        let!(:unlockable_ci_source_1) { create(:ci_pipeline, :success, project: project, ci_ref: ci_ref, source: ci_source) }
+        let!(:unlockable_ci_source_2) { create(:ci_pipeline, :blocked, project: project, ci_ref: ci_ref, source: ci_source) }
+
+        it 'returns the CI source pipeline' do
+          expect(result).to eq(unlockable_ci_source_2)
+        end
+
+        context 'and it has unlockable child pipelines' do
+          let!(:child) { create(:ci_pipeline, :success, project: project, ci_ref: ci_ref, source: dangling_source, child_of: unlockable_ci_source_2) }
+          let!(:child_2) { create(:ci_pipeline, :success, project: project, ci_ref: ci_ref, source: dangling_source, child_of: unlockable_ci_source_2) }
+
+          it 'returns the parent CI source pipeline' do
+            expect(result).to eq(unlockable_ci_source_2)
+          end
+        end
+
+        context 'and it has a non-unlockable child pipeline' do
+          let!(:child) { create(:ci_pipeline, :running, project: project, ci_ref: ci_ref, source: dangling_source, child_of: unlockable_ci_source_2) }
+
+          it 'returns the parent CI source pipeline' do
+            expect(result).to eq(unlockable_ci_source_2)
+          end
+        end
+      end
+
+      context 'and the last CI source pipeline in the ref is not unlockable' do
+        let!(:unlockable_ci_source) { create(:ci_pipeline, :skipped, project: project, ci_ref: ci_ref, source: ci_source) }
+        let!(:unlockable_dangling_source) { create(:ci_pipeline, :success, project: project, ci_ref: ci_ref, source: dangling_source, child_of: unlockable_ci_source) }
+        let!(:non_unlockable_ci_source) { create(:ci_pipeline, :running, project: project, ci_ref: ci_ref, source: ci_source) }
+        let!(:non_unlockable_ci_source_2) { create(:ci_pipeline, :running, project: project, ci_ref: ci_ref, source: ci_source) }
+
+        it 'returns the last unlockable CI source pipeline before it' do
+          expect(result).to eq(unlockable_ci_source)
+        end
+
+        context 'and it has unlockable child pipelines' do
+          let!(:child) { create(:ci_pipeline, :success, project: project, ci_ref: ci_ref, source: dangling_source, child_of: non_unlockable_ci_source) }
+          let!(:child_2) { create(:ci_pipeline, :success, project: project, ci_ref: ci_ref, source: dangling_source, child_of: non_unlockable_ci_source) }
+
+          it 'returns the last unlockable CI source pipeline before it' do
+            expect(result).to eq(unlockable_ci_source)
+          end
+        end
+      end
+    end
+
+    context 'when there are no unlockable pipelines in the ref' do
+      let!(:non_unlockable_pipeline) { create(:ci_pipeline, :running, project: project, ci_ref: ci_ref, source: ci_source) }
+      let!(:pipeline_from_another_ref) { create(:ci_pipeline, :success, source: ci_source) }
+
+      it { is_expected.to be_nil }
     end
   end
 end

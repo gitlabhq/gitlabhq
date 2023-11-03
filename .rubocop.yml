@@ -925,6 +925,9 @@ Cop/UserAdmin:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Style/InlineDisableAnnotation:
+  Enabled: true
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/327495
 Style/RegexpLiteral:
   Enabled: false

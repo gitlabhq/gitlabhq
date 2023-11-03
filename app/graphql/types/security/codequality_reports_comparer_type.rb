@@ -8,6 +8,11 @@ module Types
 
       description 'Represents reports comparison for code quality.'
 
+      field :status,
+        type: CodequalityReportsComparer::ReportGenerationStatusEnum,
+        null: true,
+        description: 'Compared codequality report generation status.'
+
       field :report,
         type: CodequalityReportsComparer::ReportType,
         null: true,

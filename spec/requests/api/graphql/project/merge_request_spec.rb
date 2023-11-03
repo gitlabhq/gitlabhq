@@ -22,7 +22,7 @@ RSpec.describe 'getting merge request information nested in a project', feature_
 
   it_behaves_like 'a working graphql query' do
     # we exclude Project.pipeline because it needs arguments,
-    # codequalityReportsComparer because no pipeline exist yet
+    # codequalityReportsComparer because it is behind a feature flag
     # and runners because the user is not an admin and therefore has no access
     let(:excluded) { %w[jobs pipeline runners codequalityReportsComparer] }
     let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: excluded) }

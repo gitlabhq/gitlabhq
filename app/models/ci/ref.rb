@@ -30,15 +30,6 @@ module Ci
       state :fixed, value: 3
       state :broken, value: 4
       state :still_failing, value: 5
-
-      after_transition any => [:fixed, :success] do |ci_ref|
-        # Do not try to unlock if no artifacts are locked
-        next unless ci_ref.artifacts_locked?
-
-        ci_ref.run_after_commit do
-          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(ci_ref.id)
-        end
-      end
     end
 
     class << self
@@ -74,6 +65,14 @@ module Ci
 
         self.status_name
       end
+    end
+
+    def last_successful_ci_source_pipeline
+      pipelines.ci_sources.success.order(id: :desc).first
+    end
+
+    def last_unlockable_ci_source_pipeline
+      pipelines.ci_sources.with_unlockable_status.order(id: :desc).first
     end
   end
 end

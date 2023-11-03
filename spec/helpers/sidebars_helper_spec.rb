@@ -287,6 +287,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
             { href: "/groups/new", text: "New group",
               component: nil,
               extraAttrs: extra_attrs.call("general_new_group") },
+            { href: "/-/organizations/new", text: s_('Organization|New organization'),
+              component: nil,
+              extraAttrs: extra_attrs.call("general_new_organization") },
             { href: "/-/snippets/new", text: "New snippet",
               component: nil,
               extraAttrs: extra_attrs.call("general_new_snippet") }

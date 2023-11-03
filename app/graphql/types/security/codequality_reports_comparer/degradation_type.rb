@@ -6,7 +6,6 @@ module Types
       # rubocop: disable Graphql/AuthorizeTypes -- The resolver authorizes the request
       class DegradationType < BaseObject
         graphql_name 'CodequalityReportsComparerReportDegradation'
-
         description 'Represents a degradation on the compared codequality report.'
 
         field :description, GraphQL::Types::String,

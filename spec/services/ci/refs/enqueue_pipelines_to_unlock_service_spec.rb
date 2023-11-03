@@ -26,34 +26,40 @@ RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :cl
     shared_examples_for 'unlocking pipelines' do
       let(:is_tag) { target_ref.ref_path.include?(::Gitlab::Git::TAG_REF_PREFIX) }
 
-      let!(:other_ref_pipeline) { create_pipeline(:locked, other_ref, tag: false) }
-      let!(:old_unlocked_pipeline) { create_pipeline(:unlocked, ref) }
-      let!(:older_locked_pipeline_1) { create_pipeline(:locked, ref) }
-      let!(:older_locked_pipeline_2) { create_pipeline(:locked, ref) }
-      let!(:older_locked_pipeline_3) { create_pipeline(:locked, ref) }
-      let!(:older_child_pipeline) { create_pipeline(:locked, ref, child_of: older_locked_pipeline_3) }
-      let!(:pipeline) { create_pipeline(:locked, ref) }
-      let!(:child_pipeline) { create_pipeline(:locked, ref, child_of: pipeline) }
-      let!(:newer_pipeline) { create_pipeline(:locked, ref) }
+      let!(:other_ref_pipeline) { create_pipeline(:locked, other_ref, :failed, tag: false) }
+      let!(:old_unlocked_pipeline) { create_pipeline(:unlocked, ref, :failed) }
+      let!(:old_locked_pipeline_1) { create_pipeline(:locked, ref, :failed) }
+      let!(:old_locked_pipeline_2) { create_pipeline(:locked, ref, :success) }
+      let!(:old_locked_pipeline_3) { create_pipeline(:locked, ref, :success) }
+      let!(:old_locked_pipeline_3_child) { create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_3) }
+      let!(:old_locked_pipeline_4) { create_pipeline(:locked, ref, :success) }
+      let!(:old_locked_pipeline_4_child) { create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_4) }
+      let!(:old_locked_pipeline_5) { create_pipeline(:locked, ref, :failed) }
+      let!(:old_locked_pipeline_5_child) { create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_5) }
+      let!(:pipeline) { create_pipeline(:locked, ref, :failed) }
+      let!(:child_pipeline) { create_pipeline(:locked, ref, :failed, child_of: pipeline) }
+      let!(:newer_pipeline) { create_pipeline(:locked, ref, :failed) }
 
       context 'when before_pipeline is given' do
         let(:before_pipeline) { pipeline }
 
-        it 'only enqueues older locked pipelines within the ref' do
+        it 'only enqueues old locked pipelines within the ref, excluding the last successful CI source pipeline' do
           expect { execute }
             .to change { pipeline_ids_waiting_to_be_unlocked }
             .from([])
             .to([
-              older_locked_pipeline_1.id,
-              older_locked_pipeline_2.id,
-              older_locked_pipeline_3.id,
-              older_child_pipeline.id
+              old_locked_pipeline_1.id,
+              old_locked_pipeline_2.id,
+              old_locked_pipeline_3.id,
+              old_locked_pipeline_3_child.id,
+              old_locked_pipeline_5.id,
+              old_locked_pipeline_5_child.id
             ])
 
           expect(execute).to include(
             status: :success,
-            total_pending_entries: 4,
-            total_new_entries: 4
+            total_pending_entries: 6,
+            total_new_entries: 6
           )
         end
       end
@@ -66,10 +72,14 @@ RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :cl
             .to change { pipeline_ids_waiting_to_be_unlocked }
             .from([])
             .to([
-              older_locked_pipeline_1.id,
-              older_locked_pipeline_2.id,
-              older_locked_pipeline_3.id,
-              older_child_pipeline.id,
+              old_locked_pipeline_1.id,
+              old_locked_pipeline_2.id,
+              old_locked_pipeline_3.id,
+              old_locked_pipeline_3_child.id,
+              old_locked_pipeline_4.id,
+              old_locked_pipeline_4_child.id,
+              old_locked_pipeline_5.id,
+              old_locked_pipeline_5_child.id,
               pipeline.id,
               child_pipeline.id,
               newer_pipeline.id
@@ -77,8 +87,8 @@ RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :cl
 
           expect(execute).to include(
             status: :success,
-            total_pending_entries: 7,
-            total_new_entries: 7
+            total_pending_entries: 11,
+            total_new_entries: 11
           )
         end
       end
@@ -96,9 +106,9 @@ RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :cl
       it_behaves_like 'unlocking pipelines'
     end
 
-    def create_pipeline(type, ref, tag: is_tag, child_of: nil)
+    def create_pipeline(type, ref, status, tag: is_tag, child_of: nil)
       trait = type == :locked ? :artifacts_locked : :unlocked
-      create(:ci_pipeline, trait, ref: ref, tag: tag, project: project, child_of: child_of).tap do |p|
+      create(:ci_pipeline, trait, status: status, ref: ref, tag: tag, project: project, child_of: child_of).tap do |p|
         if child_of
           build = create(:ci_build, pipeline: child_of)
           create(:ci_sources_pipeline, source_job: build, source_project: project, pipeline: p, project: project)

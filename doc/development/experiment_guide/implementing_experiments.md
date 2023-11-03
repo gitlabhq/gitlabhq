@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Implementing an experiment
 
-[Examples](https://gitlab.com/gitlab-org/growth/growth/-/wikis/GLEX-Framework-code-examples)
+[Examples](https://gitlab.com/groups/gitlab-org/growth/-/wikis/GLEX-How-Tos)
 
 Start by generating a feature flag using the `bin/feature-flag` command as you
 usually would for a development feature flag, making sure to use `experiment` for
