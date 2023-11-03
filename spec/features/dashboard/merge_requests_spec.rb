@@ -53,7 +53,7 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
       click_button 'Select project to create merge request'
       wait_for_requests
 
-      page.within('[data-testid="new-resource-dropdown"]') do
+      within_testid('new-resource-dropdown') do
         expect(page).to have_content(project.full_name)
         expect(page).not_to have_content(project_with_disabled_merge_requests.full_name)
 

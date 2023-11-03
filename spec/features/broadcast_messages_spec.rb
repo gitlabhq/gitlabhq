@@ -125,8 +125,8 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
 
       visit admin_broadcast_messages_path
 
-      page.within('[data-testid="message-row"]', match: :first) do
-        find("[data-testid='delete-message-#{message.id}']").click
+      within_testid('message-row', match: :first) do
+        find_by_testid("delete-message-#{message.id}").click
       end
 
       accept_gl_confirm(button_text: 'Delete message')
@@ -145,7 +145,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
   end
 
   def expect_broadcast_message(text)
-    page.within('[data-testid="banner-broadcast-message"]') do
+    within_testid('banner-broadcast-message') do
       expect(page).to have_content text
     end
   end
@@ -157,7 +157,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
   end
 
   def expect_to_be_on_explore_projects_page
-    page.within('[data-testid="explore-projects-title"]') do
+    within_testid('explore-projects-title') do
       expect(page).to have_content 'Explore projects'
     end
   end

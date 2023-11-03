@@ -43,7 +43,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
     end
 
     it 'clicking edit user takes us to edit page', :aggregate_failures do
-      page.within("[data-testid='user-actions-#{user.id}']") do
+      within_testid("user-actions-#{user.id}") do
         click_link 'Edit'
       end
 
@@ -71,7 +71,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
       it 'displays count of users projects' do
         visit admin_users_path
 
-        expect(page.find("[data-testid='user-project-count-#{current_user.id}']").text).to eq("1")
+        expect(find_by_testid("user-project-count-#{current_user.id}").text).to eq("1")
       end
     end
 
@@ -321,7 +321,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
         click_user_dropdown_toggle(user.id)
 
-        find('[data-testid="approve"]').click
+        find_by_testid('approve').click
 
         expect(page).to have_content("Approve user #{user.name}?")
 
@@ -378,7 +378,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
         wait_for_requests
 
-        expect(page.find("[data-testid='user-group-count-#{current_user.id}']").text).to eq("2")
+        expect(find_by_testid("user-group-count-#{current_user.id}").text).to eq("2")
       end
     end
   end
@@ -542,7 +542,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
     it 'allows group membership to be revoked', :js do
       page.within(first('.group_member')) do
-        find('.btn[data-testid="remove-user"]').click
+        find_by_testid('remove-user').click
       end
 
       accept_gl_confirm(button_text: 'Remove')
@@ -587,7 +587,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
     end
 
     def check_breadcrumb(content)
-      expect(find('[data-testid="breadcrumb-current-link"]')).to have_content(content)
+      expect(find_by_testid('breadcrumb-current-link')).to have_content(content)
     end
   end
 

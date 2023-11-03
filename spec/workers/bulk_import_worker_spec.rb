@@ -28,5 +28,7 @@ RSpec.describe BulkImportWorker, feature_category: :importers do
         end
       end
     end
+
+    it_behaves_like 'an idempotent worker'
   end
 end

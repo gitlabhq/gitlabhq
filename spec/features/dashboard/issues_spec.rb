@@ -62,9 +62,11 @@ RSpec.describe 'Dashboard Issues', :js, feature_category: :team_planning do
     it 'shows projects only with issues feature enabled' do
       click_button _('Select project to create issue')
 
-      page.within('[data-testid="new-resource-dropdown"] [role="menu"]') do
-        expect(page).to have_content(project.full_name)
-        expect(page).not_to have_content(project_with_issues_disabled.full_name)
+      within_testid('new-resource-dropdown') do
+        within('[role="menu"]') do
+          expect(page).to have_content(project.full_name)
+          expect(page).not_to have_content(project_with_issues_disabled.full_name)
+        end
       end
     end
 
@@ -75,7 +77,7 @@ RSpec.describe 'Dashboard Issues', :js, feature_category: :team_planning do
 
       project_path = "/#{project.full_path}"
 
-      page.within('[data-testid="new-resource-dropdown"]') do
+      within_testid('new-resource-dropdown') do
         find_button(project.full_name).click
       end
 

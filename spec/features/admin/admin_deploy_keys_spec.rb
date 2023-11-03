@@ -18,7 +18,7 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
   it 'show all public deploy keys' do
     visit admin_deploy_keys_path
 
-    page.within(find('[data-testid="deploy-keys-list"]', match: :first)) do
+    within_testid('deploy-keys-list', match: :first) do
       expect(page).to have_content(deploy_key.title)
       expect(page).to have_content(another_deploy_key.title)
     end
@@ -29,7 +29,7 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
 
     visit admin_deploy_keys_path
 
-    page.within(find('[data-testid="deploy-keys-list"]', match: :first)) do
+    within_testid('deploy-keys-list', match: :first) do
       expect(page).to have_content(write_key.project.full_name)
     end
   end
@@ -49,7 +49,7 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
 
       expect(page).to have_current_path admin_deploy_keys_path, ignore_query: true
 
-      page.within(find('[data-testid="deploy-keys-list"]', match: :first)) do
+      within_testid('deploy-keys-list', match: :first) do
         expect(page).to have_content('laptop')
       end
     end
@@ -69,7 +69,7 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
 
       expect(page).to have_current_path admin_deploy_keys_path, ignore_query: true
 
-      page.within(find('[data-testid="deploy-keys-list"]', match: :first)) do
+      within_testid('deploy-keys-list', match: :first) do
         expect(page).to have_content('new-title')
       end
     end
@@ -88,7 +88,7 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
       end
 
       expect(page).to have_current_path admin_deploy_keys_path, ignore_query: true
-      page.within(find('[data-testid="deploy-keys-list"]', match: :first)) do
+      within_testid('deploy-keys-list', match: :first) do
         expect(page).not_to have_content(deploy_key.title)
       end
     end

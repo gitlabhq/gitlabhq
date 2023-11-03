@@ -27,7 +27,7 @@ RSpec.describe 'Cluster agent registration', :js, feature_category: :deployment_
   end
 
   it 'allows the user to select an agent to install, and displays the resulting agent token' do
-    find('[data-testid="clusters-default-action-button"]').click
+    find_by_testid('clusters-default-action-button').click
 
     expect(page).to have_content('Register')
 

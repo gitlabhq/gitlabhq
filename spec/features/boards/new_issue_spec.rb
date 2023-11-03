@@ -11,7 +11,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
   let_it_be(:existing_issue) { create(:issue, project: project, title: 'other issue', relative_position: 50) }
 
   let(:board_list_header) { first('[data-testid="board-list-header"]') }
-  let(:project_select_dropdown) { find('[data-testid="project-select-dropdown"]') }
+  let(:project_select_dropdown) { find_by_testid('project-select-dropdown') }
 
   before do
     stub_feature_flags(apollo_boards: false)
@@ -100,7 +100,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
 
       wait_for_requests
 
-      page.within('[data-testid="sidebar-labels"]') do
+      within_testid('sidebar-labels') do
         click_button 'Edit'
 
         wait_for_requests

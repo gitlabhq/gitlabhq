@@ -358,7 +358,9 @@ module SidebarsHelper
   def context_switcher_links
     links = [
       ({ title: s_('Navigation|Your work'), link: root_path, icon: 'work' } if current_user),
-      { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' }
+      { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' },
+      ({ title: s_('Navigation|Profile'), link: profile_path, icon: 'profile' } if current_user),
+      ({ title: s_('Navigation|Preferences'), link: profile_preferences_path, icon: 'preferences' } if current_user)
     ]
 
     # Usually, using current_user.admin? is discouraged because it does not

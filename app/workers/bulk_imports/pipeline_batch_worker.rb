@@ -1,26 +1,41 @@
 # frozen_string_literal: true
 
 module BulkImports
-  class PipelineBatchWorker # rubocop:disable Scalability/IdempotentWorker
+  class PipelineBatchWorker
     include ApplicationWorker
     include ExclusiveLeaseGuard
 
     data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
     feature_category :importers
-    sidekiq_options retry: false, dead: false
+    sidekiq_options dead: false, retry: 3
     worker_has_external_dependencies!
     worker_resource_boundary :memory
+    idempotent!
+
+    sidekiq_retries_exhausted do |msg, exception|
+      new.perform_failure(msg['args'].first, exception)
+    end
 
     def perform(batch_id)
       @batch = ::BulkImports::BatchTracker.find(batch_id)
+
       @tracker = @batch.tracker
       @pending_retry = false
+
+      return unless process_batch?
 
       log_extra_metadata_on_done(:pipeline_class, @tracker.pipeline_name)
 
       try_obtain_lease { run }
     ensure
       ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id) unless pending_retry
+    end
+
+    def perform_failure(batch_id, exception)
+      @batch = ::BulkImports::BatchTracker.find(batch_id)
+      @tracker = @batch.tracker
+
+      fail_batch(exception)
     end
 
     private
@@ -36,8 +51,6 @@ module BulkImports
     rescue BulkImports::RetryPipelineError => e
       @pending_retry = true
       retry_batch(e)
-    rescue StandardError => e
-      fail_batch(e)
     end
 
     def fail_batch(exception)
@@ -59,6 +72,8 @@ module BulkImports
         exception_message: exception.message,
         correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
       )
+
+      ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id)
     end
 
     def context
@@ -83,6 +98,10 @@ module BulkImports
       log_extra_metadata_on_done(:re_enqueue, true)
 
       self.class.perform_in(delay, batch.id)
+    end
+
+    def process_batch?
+      batch.created? || batch.started?
     end
   end
 end

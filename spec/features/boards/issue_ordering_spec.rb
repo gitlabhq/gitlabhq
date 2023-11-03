@@ -131,7 +131,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :team_planning do
   end
 
   context 'ordering in list using move to position' do
-    let(:move_to_position) { find('[data-testid="board-move-to-position"]') }
+    let(:move_to_position) { find_by_testid('board-move-to-position') }
 
     before do
       visit project_board_path(project, board)

@@ -2,6 +2,14 @@
 
 module ServiceDesk
   class CustomEmailCredential < ApplicationRecord
+    # Used to explicitly set the SMTP AUTH method.
+    # If nil Net::SMTP will choose one of methods listed by the SMTP server.
+    enum smtp_authentication: {
+      plain: 0,
+      login: 1,
+      cram_md5: 2
+    }
+
     attr_encrypted :smtp_username,
       mode: :per_attribute_iv,
       algorithm: 'aes-256-gcm',
@@ -44,7 +52,8 @@ module ServiceDesk
         password: smtp_password,
         address: smtp_address,
         domain: Mail::Address.new(service_desk_setting.custom_email).domain,
-        port: smtp_port || 587
+        port: smtp_port || 587,
+        authentication: smtp_authentication
       }
     end
 

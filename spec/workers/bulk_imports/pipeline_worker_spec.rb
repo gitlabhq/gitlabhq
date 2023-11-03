@@ -28,6 +28,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     )
   end
 
+  let(:worker) { described_class.new }
+
   before do
     stub_const('FakePipeline', pipeline_class)
 
@@ -35,6 +37,21 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
       allow(instance).to receive(:pipelines)
         .and_return([{ stage: 0, pipeline: pipeline_class }])
+    end
+  end
+
+  include_examples 'an idempotent worker' do
+    let(:job_args) { [pipeline_tracker.id, pipeline_tracker.stage, entity.id] }
+
+    it 'runs the pipeline and sets tracker to finished' do
+      allow(worker).to receive(:jid).and_return('jid')
+
+      perform_multiple(job_args, worker: worker)
+
+      pipeline_tracker.reload
+
+      expect(pipeline_tracker.status_name).to eq(:finished)
+      expect(pipeline_tracker.jid).to eq('jid')
     end
   end
 
@@ -53,9 +70,9 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         )
     end
 
-    allow(subject).to receive(:jid).and_return('jid')
+    allow(worker).to receive(:jid).and_return('jid')
 
-    subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+    worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
     pipeline_tracker.reload
 
@@ -65,29 +82,16 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
   context 'when exclusive lease cannot be obtained' do
     it 'does not run the pipeline' do
-      expect(subject).to receive(:try_obtain_lease).and_return(false)
-      expect(subject).not_to receive(:run)
+      expect(worker).to receive(:try_obtain_lease).and_return(false)
+      expect(worker).not_to receive(:run)
 
-      subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
     end
   end
 
-  context 'when the pipeline raises an exception' do
-    it 'logs the error' do
-      pipeline_tracker = create(
-        :bulk_import_tracker,
-        entity: entity,
-        pipeline_name: 'FakePipeline',
-        status_event: 'enqueue'
-      )
-
-      allow(subject).to receive(:jid).and_return('jid')
-
-      expect_next_instance_of(pipeline_class) do |pipeline|
-        expect(pipeline)
-          .to receive(:run)
-          .and_raise(StandardError, 'Error!')
-      end
+  describe '.sidekiq_retries_exhausted' do
+    it 'logs and sets status as failed' do
+      job = { 'args' => [pipeline_tracker.id, pipeline_tracker.stage, entity.id] }
 
       expect_next_instance_of(Gitlab::Import::Logger) do |logger|
         expect(logger)
@@ -100,7 +104,6 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
               'bulk_import_entity_type' => entity.source_type,
               'source_full_path' => entity.source_full_path,
               'class' => 'BulkImports::PipelineWorker',
-              'exception.backtrace' => anything,
               'exception.message' => 'Error!',
               'message' => 'Pipeline failed',
               'source_version' => entity.bulk_import.source_version_info.to_s,
@@ -137,84 +140,71 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           )
         )
 
-      subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+      expect_next_instance_of(described_class) do |worker|
+        expect(worker).to receive(:perform_failure).with(pipeline_tracker.id, entity.id, StandardError)
+          .and_call_original
+        allow(worker).to receive(:jid).and_return('jid')
+      end
+
+      described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('Error!'))
 
       pipeline_tracker.reload
 
       expect(pipeline_tracker.status_name).to eq(:failed)
       expect(pipeline_tracker.jid).to eq('jid')
     end
+  end
 
-    context 'when enqueued pipeline cannot be found' do
-      shared_examples 'logs the error' do
-        it 'logs the error' do
-          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-            status = pipeline_tracker.human_status_name
-
-            expect(logger)
-              .to receive(:error)
-              .with(
-                hash_including(
-                  'bulk_import_entity_id' => entity.id,
-                  'bulk_import_id' => entity.bulk_import_id,
-                  'bulk_import_entity_type' => entity.source_type,
-                  'pipeline_tracker_id' => pipeline_tracker.id,
-                  'pipeline_tracker_state' => status,
-                  'pipeline_class' => pipeline_tracker.pipeline_name,
-                  'source_full_path' => entity.source_full_path,
-                  'source_version' => entity.bulk_import.source_version_info.to_s,
-                  'importer' => 'gitlab_migration',
-                  'message' => "Pipeline in #{status} state instead of expected enqueued state"
-                )
-              )
-          end
-
-          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-        end
-      end
-
-      context 'when pipeline is finished' do
-        let(:pipeline_tracker) do
-          create(
-            :bulk_import_tracker,
-            :finished,
-            entity: entity,
-            pipeline_name: 'FakePipeline'
-          )
-        end
-
-        include_examples 'logs the error'
-      end
-
-      context 'when pipeline is skipped' do
-        let(:pipeline_tracker) do
-          create(
-            :bulk_import_tracker,
-            :skipped,
-            entity: entity,
-            pipeline_name: 'FakePipeline'
-          )
-        end
-
-        include_examples 'logs the error'
-      end
-
-      context 'when tracker is started' do
-        it 'marks tracker as failed' do
-          pipeline_tracker = create(
-            :bulk_import_tracker,
-            :started,
-            entity: entity,
-            pipeline_name: 'FakePipeline'
-          )
-
-          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-          expect(pipeline_tracker.reload.failed?).to eq(true)
-        end
-      end
+  context 'when pipeline is finished' do
+    let(:pipeline_tracker) do
+      create(
+        :bulk_import_tracker,
+        :finished,
+        entity: entity,
+        pipeline_name: 'FakePipeline'
+      )
     end
 
+    it 'no-ops and returns' do
+      expect(described_class).not_to receive(:run)
+
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+    end
+  end
+
+  context 'when pipeline is skipped' do
+    let(:pipeline_tracker) do
+      create(
+        :bulk_import_tracker,
+        :skipped,
+        entity: entity,
+        pipeline_name: 'FakePipeline'
+      )
+    end
+
+    it 'no-ops and returns' do
+      expect(described_class).not_to receive(:run)
+
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+    end
+  end
+
+  context 'when tracker is started' do
+    it 'runs the pipeline' do
+      pipeline_tracker = create(
+        :bulk_import_tracker,
+        :started,
+        entity: entity,
+        pipeline_name: 'FakePipeline'
+      )
+
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+      expect(pipeline_tracker.reload.finished?).to eq(true)
+    end
+  end
+
+  describe '#perform' do
     context 'when entity is failed' do
       it 'marks tracker as skipped and logs the skip' do
         pipeline_tracker = create(
@@ -243,7 +233,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             )
         end
 
-        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
         expect(pipeline_tracker.reload.status_name).to eq(:skipped)
       end
@@ -264,7 +254,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       end
 
       before do
-        allow(subject).to receive(:jid).and_return('jid')
+        allow(worker).to receive(:jid).and_return('jid')
 
         expect_next_instance_of(pipeline_class) do |pipeline|
           expect(pipeline)
@@ -301,7 +291,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             pipeline_tracker.entity.id
           )
 
-        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
         pipeline_tracker.reload
 
@@ -354,7 +344,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         allow(status).to receive(:batched?).and_return(false)
       end
 
-      subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
       expect(pipeline_tracker.reload.status_name).to eq(:finished)
     end
@@ -377,7 +367,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             entity.id
           )
 
-        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
       end
     end
 
@@ -406,7 +396,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
               entity.id
             )
 
-          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
           expect(pipeline_tracker.reload.status_name).to eq(:enqueued)
         end
@@ -415,31 +405,9 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       context 'when empty export timeout is reached' do
         let(:created_at) { 10.minutes.ago }
 
-        it 'marks as failed and logs the error' do
-          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-            expect(logger)
-              .to receive(:error)
-              .with(
-                hash_including(
-                  'pipeline_class' => 'NdjsonPipeline',
-                  'bulk_import_entity_id' => entity.id,
-                  'bulk_import_id' => entity.bulk_import_id,
-                  'bulk_import_entity_type' => entity.source_type,
-                  'source_full_path' => entity.source_full_path,
-                  'class' => 'BulkImports::PipelineWorker',
-                  'exception.backtrace' => anything,
-                  'exception.class' => 'BulkImports::Pipeline::ExpiredError',
-                  'exception.message' => 'Empty export status on source instance',
-                  'importer' => 'gitlab_migration',
-                  'message' => 'Pipeline failed',
-                  'source_version' => entity.bulk_import.source_version_info.to_s
-                )
-              )
-          end
-
-          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-          expect(pipeline_tracker.reload.status_name).to eq(:failed)
+        it 'raises sidekiq error' do
+          expect { worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id) }
+            .to raise_exception(BulkImports::Pipeline::ExpiredError)
         end
       end
 
@@ -449,17 +417,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         it 'falls back to entity created_at' do
           entity.update!(created_at: 10.minutes.ago)
 
-          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-            expect(logger)
-              .to receive(:error)
-              .with(
-                hash_including('exception.message' => 'Empty export status on source instance')
-              )
-          end
-
-          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-          expect(pipeline_tracker.reload.status_name).to eq(:failed)
+          expect { worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id) }
+            .to raise_exception(BulkImports::Pipeline::ExpiredError)
         end
       end
     end
@@ -471,28 +430,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           allow(status).to receive(:error).and_return('Error!')
         end
 
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-          expect(logger)
-            .to receive(:error)
-            .with(
-              hash_including(
-                'pipeline_class' => 'NdjsonPipeline',
-                'bulk_import_entity_id' => entity.id,
-                'bulk_import_id' => entity.bulk_import_id,
-                'bulk_import_entity_type' => entity.source_type,
-                'source_full_path' => entity.source_full_path,
-                'exception.backtrace' => anything,
-                'exception.class' => 'BulkImports::Pipeline::FailedError',
-                'exception.message' => 'Export from source instance failed: Error!',
-                'importer' => 'gitlab_migration',
-                'source_version' => entity.bulk_import.source_version_info.to_s
-              )
-            )
-        end
-
-        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-        expect(pipeline_tracker.reload.status_name).to eq(:failed)
+        expect { worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id) }
+          .to raise_exception(BulkImports::Pipeline::FailedError)
       end
     end
 
@@ -512,7 +451,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       it 'enqueues pipeline batches' do
         expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
 
-        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
         pipeline_tracker.reload
 
@@ -525,9 +464,9 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         let(:batches_count) { 0 }
 
         it 'marks tracker as finished' do
-          expect(subject).not_to receive(:enqueue_batches)
+          expect(worker).not_to receive(:enqueue_batches)
 
-          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
           expect(pipeline_tracker.reload.status_name).to eq(:finished)
         end

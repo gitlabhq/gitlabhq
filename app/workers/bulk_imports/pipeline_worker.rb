@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BulkImports
-  class PipelineWorker # rubocop:disable Scalability/IdempotentWorker
+  class PipelineWorker
     include ApplicationWorker
     include ExclusiveLeaseGuard
 
@@ -9,12 +9,17 @@ module BulkImports
 
     data_consistency :always
     feature_category :importers
-    sidekiq_options retry: false, dead: false
+    sidekiq_options dead: false, retry: 3
     worker_has_external_dependencies!
     deduplicate :until_executing
     worker_resource_boundary :memory
+    idempotent!
 
     version 2
+
+    sidekiq_retries_exhausted do |msg, exception|
+      new.perform_failure(msg['args'][0], msg['args'][2], exception)
+    end
 
     # Keep _stage parameter for backwards compatibility.
     def perform(pipeline_tracker_id, _stage, entity_id)
@@ -24,18 +29,19 @@ module BulkImports
       log_extra_metadata_on_done(:pipeline_class, @pipeline_tracker.pipeline_name)
 
       try_obtain_lease do
-        if pipeline_tracker.enqueued?
+        if pipeline_tracker.enqueued? || pipeline_tracker.started?
           logger.info(log_attributes(message: 'Pipeline starting'))
 
           run
-        else
-          message = "Pipeline in #{pipeline_tracker.human_status_name} state instead of expected enqueued state"
-
-          logger.error(log_attributes(message: message))
-
-          fail_tracker(StandardError.new(message)) unless pipeline_tracker.finished? || pipeline_tracker.skipped?
         end
       end
+    end
+
+    def perform_failure(pipeline_tracker_id, entity_id, exception)
+      @entity = ::BulkImports::Entity.find(entity_id)
+      @pipeline_tracker = ::BulkImports::Tracker.find(pipeline_tracker_id)
+
+      fail_tracker(exception)
     end
 
     private
@@ -67,8 +73,6 @@ module BulkImports
       end
     rescue BulkImports::RetryPipelineError => e
       retry_tracker(e)
-    rescue StandardError => e
-      fail_tracker(e)
     end
 
     def source_version

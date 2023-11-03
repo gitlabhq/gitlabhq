@@ -23217,6 +23217,7 @@ CREATE TABLE service_desk_custom_email_credentials (
     encrypted_smtp_username_iv bytea,
     encrypted_smtp_password bytea,
     encrypted_smtp_password_iv bytea,
+    smtp_authentication smallint,
     CONSTRAINT check_6dd11e956a CHECK ((char_length(smtp_address) <= 255))
 );
 
@@ -35019,8 +35020,6 @@ CREATE UNIQUE INDEX partial_index_bulk_import_exports_on_group_id_and_relation O
 CREATE UNIQUE INDEX partial_index_bulk_import_exports_on_project_id_and_relation ON bulk_import_exports USING btree (project_id, relation) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON ci_builds USING btree (scheduled_at) WHERE ((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text));
-
-CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON deployments USING btree (id) WHERE ((finished_at IS NULL) AND (status = 2));
 
 CREATE INDEX partial_index_slack_integrations_with_bot_user_id ON slack_integrations USING btree (id) WHERE (bot_user_id IS NOT NULL);
 

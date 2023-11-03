@@ -39,7 +39,7 @@ RSpec.describe 'Dashboard > Milestones', :js, feature_category: :team_planning d
       it 'takes user to a new milestone page' do
         click_button 'Select project to create milestone'
 
-        page.within('[data-testid="new-resource-dropdown"]') do
+        within_testid('new-resource-dropdown') do
           click_button group.name
           click_link "New milestone in #{group.name}"
         end

@@ -22,7 +22,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change visibility settings' do
-        page.within('[data-testid="admin-visibility-access-settings"]') do
+        within_testid('admin-visibility-access-settings') do
           choose "application_setting_default_project_visibility_20"
           click_button 'Save changes'
         end
@@ -31,19 +31,19 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'uncheck all restricted visibility levels' do
-        page.within('[data-testid="restricted-visibility-levels"]') do
+        within_testid('restricted-visibility-levels') do
           uncheck s_('VisibilityLevel|Public')
           uncheck s_('VisibilityLevel|Internal')
           uncheck s_('VisibilityLevel|Private')
         end
 
-        page.within('[data-testid="admin-visibility-access-settings"]') do
+        within_testid('admin-visibility-access-settings') do
           click_button 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
 
-        page.within('[data-testid="restricted-visibility-levels"]') do
+        within_testid('restricted-visibility-levels') do
           expect(find_field(s_('VisibilityLevel|Public'))).not_to be_checked
           expect(find_field(s_('VisibilityLevel|Internal'))).not_to be_checked
           expect(find_field(s_('VisibilityLevel|Private'))).not_to be_checked
@@ -53,7 +53,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'modify import sources' do
         expect(current_settings.import_sources).to be_empty
 
-        page.within('[data-testid="admin-import-export-settings"]') do
+        within_testid('admin-import-export-settings') do
           check "Repository by URL"
           click_button 'Save changes'
         end
@@ -63,12 +63,12 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Visibility and Access Controls' do
-        page.within('[data-testid="admin-import-export-settings"]') do
-          page.within('[data-testid="project-export"]') do
+        within_testid('admin-import-export-settings') do
+          within_testid('project-export') do
             uncheck 'Enabled'
           end
 
-          page.within('[data-testid="bulk-import"]') do
+          within_testid('bulk-import') do
             check 'Enabled'
           end
 
@@ -81,7 +81,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Keys settings' do
-        page.within('[data-testid="admin-visibility-access-settings"]') do
+        within_testid('admin-visibility-access-settings') do
           select 'Are forbidden', from: 'RSA SSH keys'
           select 'Are allowed', from: 'DSA SSH keys'
           select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
@@ -103,7 +103,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Account and Limit Settings' do
-        page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+        within_testid('account-and-limit-settings-content') do
           uncheck 'Gravatar enabled'
           click_button 'Save changes'
         end
@@ -113,7 +113,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Maximum export size' do
-        page.within(find('[data-testid="admin-import-export-settings"]')) do
+        within_testid('admin-import-export-settings') do
           fill_in 'Maximum export size (MiB)', with: 25
           click_button 'Save changes'
         end
@@ -123,7 +123,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Maximum import size' do
-        page.within(find('[data-testid="admin-import-export-settings"]')) do
+        within_testid('admin-import-export-settings') do
           fill_in 'Maximum import size (MiB)', with: 15
           click_button 'Save changes'
         end
@@ -169,7 +169,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
-            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+            within_testid('account-and-limit-settings-content') do
               check _('Deactivate dormant users after a period of inactivity')
               click_button _('Save changes')
             end
@@ -185,7 +185,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           it 'change dormant users period', :js do
             expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: true)
 
-            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+            within_testid('account-and-limit-settings-content') do
               check _('Deactivate dormant users after a period of inactivity')
               fill_in _('Days of inactivity before deactivation'), with: '180'
               click_button _('Save changes')
@@ -202,7 +202,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             selector = '#application_setting_deactivate_dormant_users_period_error'
             expect(page).not_to have_selector(selector, visible: :visible)
 
-            page.within(find('[data-testid="account-and-limit-settings-content"]')) do
+            within_testid('account-and-limit-settings-content') do
               check 'application_setting_deactivate_dormant_users'
               fill_in _('application_setting_deactivate_dormant_users_period'), with: '30'
               click_button 'Save changes'
@@ -818,7 +818,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes gitlab shell operation limits settings' do
         visit network_admin_application_settings_path
 
-        page.within('[data-testid="gitlab-shell-operation-limits"]') do
+        within_testid('gitlab-shell-operation-limits') do
           fill_in 'Maximum number of Git operations per minute', with: 100
           click_button 'Save changes'
         end

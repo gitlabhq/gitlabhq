@@ -202,7 +202,7 @@ glab cluster agent update-kubeconfig --agent '<agent-id>' --kubeconfig ~/gitlab.
 
 ### Configure local access manually using a personal access token
 
-You can configure access to a Kubernetes cluster using a long-lived personal access token following these steps:
+You can configure access to a Kubernetes cluster using a long-lived personal access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Kubernetes clusters** and retrieve the numerical ID of the agent you want to access. You need the ID to construct the full API token.

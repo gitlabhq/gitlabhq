@@ -95,7 +95,7 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
 
     context 'when project has open access requests' do
       it 'shows access requests with link to manage access' do
-        page.within '[data-testid="access-requests"]' do
+        within_testid('access-requests') do
           expect(page).to have_content access_request.user.name
           expect(page).to have_link 'Manage access', href: project_project_members_path(project, tab: 'access_requests')
         end

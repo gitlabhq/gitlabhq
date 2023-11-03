@@ -55,6 +55,39 @@ RSpec.describe ServiceDesk::CustomEmailCredential, feature_category: :service_de
     end
   end
 
+  describe '#delivery_options' do
+    let(:expected_attributes) do
+      {
+        address: 'smtp.example.com',
+        domain: 'example.com',
+        user_name: 'user@example.com',
+        port: 587,
+        password: 'supersecret',
+        authentication: nil
+      }
+    end
+
+    let(:setting) { build_stubbed(:service_desk_setting, project: project, custom_email: 'user@example.com') }
+
+    subject { credential.delivery_options }
+
+    before do
+      # credential.service_desk_setting is delegated to project and we only use build_stubbed
+      project.service_desk_setting = setting
+    end
+
+    it { is_expected.to include(expected_attributes) }
+
+    context 'when authentication is set' do
+      before do
+        credential.smtp_authentication = 'login'
+        expected_attributes[:authentication] = 'login'
+      end
+
+      it { is_expected.to include(expected_attributes) }
+    end
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
 
