@@ -246,8 +246,8 @@ GEM
       mize
       tins (~> 1.0)
     android_key_attestation (0.3.0)
-    apollo_upload_server (2.1.0)
-      actionpack (>= 4.2)
+    apollo_upload_server (2.1.5)
+      actionpack (>= 6.1.6)
       graphql (>= 1.8)
     app_store_connect (0.29.0)
       activesupport (>= 6.0.0)
@@ -273,7 +273,7 @@ GEM
     aws-sdk-cloudformation (1.41.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.185.2)
+    aws-sdk-core (3.186.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.5)
@@ -1746,7 +1746,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 10.0)
   addressable (~> 2.8)
   akismet (~> 3.0)
-  apollo_upload_server (~> 2.1.0)
+  apollo_upload_server (~> 2.1.5)
   app_store_connect
   arr-pm (~> 0.0.12)
   asciidoctor (~> 2.0.18)
@@ -1758,7 +1758,7 @@ DEPENDENCIES
   autoprefixer-rails (= 10.2.5.1)
   awesome_print
   aws-sdk-cloudformation (~> 1)
-  aws-sdk-core (~> 3.185.2)
+  aws-sdk-core (~> 3.186.0)
   aws-sdk-s3 (~> 1.136.0)
   axe-core-rspec
   babosa (~> 2.0)

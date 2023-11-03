@@ -180,7 +180,7 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
 1. Install and configure Tomcat 10:
 
    ```shell
-   wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.9/bin/apache-tomcat-10.1.9.tar.gz -P /tmp
+   wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.15/bin/apache-tomcat-10.1.15.tar.gz -P /tmp
    sudo tar xzvf /tmp/apache-tomcat-10*tar.gz -C /opt/tomcat --strip-components=1
    sudo chown -R tomcat:tomcat /opt/tomcat/
    sudo chmod -R u+x /opt/tomcat/bin
@@ -266,12 +266,11 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
 
 1. Install PlantUML and copy the `.war` file:
 
-   Use the [latest release](https://github.com/plantuml/plantuml-server/releases) of plantuml-jsp (example: plantuml-jsp-v1.2023.8.war). For context, see [this issue](https://github.com/plantuml/plantuml-server/issues/265).
+   Use the [latest release](https://github.com/plantuml/plantuml-server/releases) of plantuml-jsp (example: plantuml-jsp-v1.2023.12.war). For context, see [this issue](https://github.com/plantuml/plantuml-server/issues/265).
 
    ```shell
-   cd /
-   wget https://github.com/plantuml/plantuml-server/releases/download/v1.2023.8/plantuml-jsp-v1.2023.8.war
-   sudo cp plantuml-jsp-v1.2023.8.war /opt/tomcat/webapps/plantuml.war
+   wget -P /tmp https://github.com/plantuml/plantuml-server/releases/download/v1.2023.12/plantuml-jsp-v1.2023.12.war
+   sudo cp /tmp/plantuml-jsp-v1.2023.12.war /opt/tomcat/webapps/plantuml.war
    sudo chown tomcat:tomcat /opt/tomcat/webapps/plantuml.war
    sudo systemctl restart tomcat
    ```

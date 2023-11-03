@@ -125,14 +125,17 @@ To view when the data was most recently updated, in the right corner next to **E
 ### How value stream analytics measures stages
 
 Value stream analytics measures each stage from its start event to its end event.
+Only items that have reached their end event are included in the stage time calculation.
 
-For example, a stage might start when a user adds a label to an issue, and ends when they add another label.
-Items aren't included in the stage time calculation if they have not reached the end event.
+By default, blocked issues are not included in the life cycle overview.
+However, you can use custom labels (for example `workflow::blocked`) to track them.
 
-Value stream analytics allows you to customize your stages based on pre-defined events. To make the
-configuration easier, GitLab provides a pre-defined list of stages that can be used as a template
+You can customize stages in value stream analytics based on pre-defined events.
+To help you with the configuration, GitLab provides a pre-defined list of stages that you can use as a template.
+For example, you can define a stage that starts when you add a label to an issue,
+and ends when you add another label.
 
-Each pre-defined stages of value stream analytics is further described in the table below.
+The following table gives an overview of the pre-defined stages in value stream analytics.
 
 | Stage   | Measurement method   |
 | ------- | -------------------- |
@@ -156,7 +159,7 @@ If a stage does not include a start and a stop time, its data is not included in
 In this example, milestones have been created and CI/CD for testing and setting environments is configured.
 
 - 09:00: Create issue. **Issue** stage starts.
-- 11:00: Add issue to a milestone, start work on the issue, and create a branch locally.
+- 11:00: Add issue to a milestone (or backlog), start work on the issue, and create a branch locally.
   **Issue** stage stops and **Plan** stage starts.
 - 12:00: Make the first commit.
 - 12:30: Make the second commit to the branch that mentions the issue number.

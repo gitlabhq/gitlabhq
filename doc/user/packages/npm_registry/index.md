@@ -87,6 +87,10 @@ Your package should now publish to the Package Registry.
 
 When publishing by using a CI/CD pipeline, you can use the [predefined variables](../../../ci/variables/predefined_variables.md) `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}` to authenticate with your project's Package Registry. We use these variables to create a `.npmrc` file [for authentication](#authenticating-via-the-npmrc) during execution of your CI/CD job.
 
+WARNING:
+When generating the `.npmrc` file, do not specify the port after `${CI_SERVER_HOST}` if it is a default port,
+such as `80` for a URL starting with `http` or `443` for a URL starting with `https`.
+
 In the GitLab project containing your `package.json`, edit or create a `.gitlab-ci.yml` file. For example:
 
 ```yaml
@@ -98,8 +102,8 @@ stages:
 publish-npm:
   stage: deploy
   script:
-    - echo "@scope:registry=https://${CI_SERVER_HOST}:${CI_SERVER_PORT}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
-    - echo "//${CI_SERVER_HOST}:${CI_SERVER_PORT}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
+    - echo "@scope:registry=https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
+    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
     - npm publish
 ```
 

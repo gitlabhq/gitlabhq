@@ -360,6 +360,25 @@ To copy the task's email address:
 1. Select **Plan > Issues**, then select your issue to view it.
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy task email address**.
 
+## Set an issue as a parent
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.5.
+
+Prerequisite:
+
+- You must have at least the Reporter role for the project.
+- The issue and task must belong to the same project.
+
+To set an issue as a parent of a task:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. Next to **Parent**, from the dropdown list, select the parent to add.
+1. Select any area outside the dropdown list.
+
+To remove the parent item of the task,
+next to **Parent**, select the dropdown list and then select **Unassign**.
+
 ## Confidential tasks
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.

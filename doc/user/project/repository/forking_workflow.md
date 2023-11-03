@@ -24,17 +24,24 @@ can access the object pool connected to the source project.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15013) a new form in GitLab 13.11 [with a flag](../../../user/feature_flags.md) named `fork_project_form`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77181) in GitLab 14.8. Feature flag `fork_project_form` removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24894) in GitLab 16.6.
 
 To fork an existing project in GitLab:
 
 1. On the project's homepage, in the upper-right corner, select **Fork** (**{fork}**):
+
    ![Fork this project](img/forking_workflow_fork_button_v13_10.png)
+
 1. Optional. Edit the **Project name**.
 1. For **Project URL**, select the [namespace](../../namespace/index.md)
    your fork should belong to.
 1. Add a **Project slug**. This value becomes part of the URL to your fork.
    It must be unique in the namespace.
 1. Optional. Add a **Project description**.
+1. Select one of the **Branches to include** options:
+   - **All branches** (default).
+   - **Only the default branch**. Uses the `--single-branch` and `--no-tags`
+     [Git options](https://git-scm.com/docs/git-clone).
 1. Select the **Visibility level** for your fork. For more information about
    visibility levels, read [Project and group visibility](../../public_access.md).
 1. Select **Fork project**.
