@@ -45,6 +45,17 @@ To create an OAuth application on your self-managed instance:
 1. Paste the **Application ID** value into **Jira Connect Application ID**.
 1. Select **Save changes**.
 
+## Jira user requirements
+
+You must ensure that the Jira user that is used to setup the GitLab for Jira Cloud app is a member of the Site Administrators (`site-admins`) group in your
+[Atlassian organization](https://admin.atlassian.com):
+
+1. If you don't have a `site-admins` group in your Atlassian organization, [create the group](https://support.atlassian.com/user-management/docs/create-groups/).
+1. If not already a member, [add your Jira user as a member](https://support.atlassian.com/user-management/docs/edit-a-group/) of the `site-admins` group.
+
+If you have customized your global permissions in Jira, you might also need to grant the
+[`Browse users and groups` permission](https://confluence.atlassian.com/jirakb/unable-to-browse-for-users-and-groups-120521888.html) to the Jira user.
+
 ## Connect the GitLab for Jira Cloud app
 
 > Introduced in GitLab 15.7.
@@ -76,6 +87,7 @@ With this method:
   - Set up an internet-facing reverse proxy in front of your self-managed instance. To secure this proxy further, only allow inbound
     traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).
   - Add [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist of your firewall.
+- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](#jira-user-requirements).
 
 ### Set up your instance
 
@@ -144,6 +156,7 @@ To support your self-managed instance with Jira Cloud, do one of the following:
 
 - The instance must be publicly available.
 - You must set up [OAuth authentication](#set-up-oauth-authentication).
+- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](#jira-user-requirements).
 
 ### Install the app in development mode
 
@@ -349,9 +362,6 @@ When you check the browser console, you might see the following message:
 Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://gitlab.example.com/-/jira_connect/oauth_application_id. (Reason: CORS header 'Access-Control-Allow-Origin' missing). Status code: 403.
 ```
 
-`403` status code is returned if:
+`403` status code is returned if the user information cannot be fetched from Jira because of insufficient permissions.
 
-- The user information cannot be fetched from Jira.
-- The authenticated Jira user does not have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access.
-
-To resolve this issue, ensure the authenticated user is a Jira site administrator and try again.
+To resolve this issue, ensure that the Jira user that installs and configures the GitLab for Jira Cloud app meets certain [requirements](#jira-user-requirements).

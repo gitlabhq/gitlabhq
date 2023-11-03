@@ -22,6 +22,7 @@ module Packages
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
       packages = filter_by_status(packages)
+      packages = filter_by_package_version(packages)
       order_packages(packages)
     end
 

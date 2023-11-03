@@ -30,6 +30,7 @@ GET /projects/:id/packages
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, `terraform_module`, or `golang`. (_Introduced in GitLab 12.9_)
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
+| `package_version` | string | no | Filter the project packages by version. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6_)
 | `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
 | `status` | string | no | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. (_Introduced in GitLab 13.9_)
 
@@ -97,6 +98,7 @@ GET /groups/:id/packages
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, or `golang`. (_Introduced in GitLab 12.9_) |
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30980) in GitLab 13.0_)
+| `package_version` | string | no | Filter the returned packages by version. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6_)
 | `include_versionless` | boolean | no | When set to true, versionless packages are included in the response. (_Introduced in GitLab 13.8_)
 | `status` | string | no | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. (_Introduced in GitLab 13.9_)
 

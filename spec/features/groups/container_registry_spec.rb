@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Container Registry', :js, feature_category: :container_registry do
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
 
@@ -28,8 +28,8 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
   it 'sidebar menu is open' do
     visit_container_registry
 
-    sidebar = find('.nav-sidebar')
-    expect(sidebar).to have_link _('Container Registry')
+    expect(page).to have_active_navigation('Deploy')
+    expect(page).to have_active_sub_navigation('Container Registry')
   end
 
   context 'when there are no image repositories' do

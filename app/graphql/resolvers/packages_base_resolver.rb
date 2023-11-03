@@ -19,6 +19,11 @@ module Resolvers
         required: false,
         default_value: nil
 
+    argument :package_version, GraphQL::Types::String,
+        description: 'Filter a package by version.',
+        required: false,
+        default_value: nil
+
     argument :status, Types::Packages::PackageStatusEnum,
         description: 'Filter a package by status.',
         required: false,

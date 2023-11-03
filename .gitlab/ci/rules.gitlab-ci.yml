@@ -1624,6 +1624,10 @@
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
     - <<: *if-merge-request
+      changes: *code-patterns
+      variables:
+        MR_CODE_PATTERNS: "true"
+    - <<: *if-merge-request
       changes: *code-qa-patterns # Includes all CI changes
     - <<: *if-force-ci
       when: manual

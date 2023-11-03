@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Group Dependency Proxy', feature_category: :dependency_proxy do
-  let(:owner) { create(:user, :no_super_sidebar) }
-  let(:reporter) { create(:user, :no_super_sidebar) }
+  let(:owner) { create(:user) }
+  let(:reporter) { create(:user) }
   let(:group) { create(:group) }
   let(:path) { group_dependency_proxy_path(group) }
   let(:settings_path) { group_settings_packages_and_registries_path(group) }
@@ -36,8 +36,8 @@ RSpec.describe 'Group Dependency Proxy', feature_category: :dependency_proxy do
         it 'sidebar menu is open' do
           visit path
 
-          sidebar = find('.nav-sidebar')
-          expect(sidebar).to have_link _('Dependency Proxy')
+          expect(page).to have_active_navigation('Operate')
+          expect(page).to have_active_sub_navigation('Dependency Proxy')
         end
 
         it 'toggles defaults to enabled' do

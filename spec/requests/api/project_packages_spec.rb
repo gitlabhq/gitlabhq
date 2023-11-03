@@ -197,6 +197,18 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
       end
 
+      context 'filtering on package_version' do
+        include_context 'package filter context'
+
+        it 'returns the versioned package' do
+          url = package_filter_url(:version, '2.0.4')
+          get api(url, user)
+
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['version']).to eq(package2.version)
+        end
+      end
+
       it_behaves_like 'with versionless packages'
       it_behaves_like 'with status param'
       it_behaves_like 'does not cause n^2 queries'

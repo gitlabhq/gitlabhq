@@ -137,6 +137,20 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
 
     it_behaves_like 'filters on each package_type', is_project: false
 
+    context 'filtering on package_version' do
+      include_context 'package filter context'
+
+      let!(:package) { create(:nuget_package, project: project, version: '2.0.4') }
+
+      it 'returns the versioned package' do
+        url = group_filter_url(:version, '2.0.4')
+        get api(url, user)
+
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['version']).to eq(package.version)
+      end
+    end
+
     context 'does not accept non supported package_type value' do
       include_context 'package filter context'
 

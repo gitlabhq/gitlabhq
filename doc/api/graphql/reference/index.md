@@ -18884,6 +18884,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouppackagesincludeversionless"></a>`includeVersionless` | [`Boolean`](#boolean) | Include versionless packages. |
 | <a id="grouppackagespackagename"></a>`packageName` | [`String`](#string) | Search a package by name. |
 | <a id="grouppackagespackagetype"></a>`packageType` | [`PackageTypeEnum`](#packagetypeenum) | Filter a package by type. |
+| <a id="grouppackagespackageversion"></a>`packageVersion` | [`String`](#string) | Filter a package by version. |
 | <a id="grouppackagessort"></a>`sort` | [`PackageGroupSort`](#packagegroupsort) | Sort packages by this criteria. |
 | <a id="grouppackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
 
@@ -23826,6 +23827,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectpackagesincludeversionless"></a>`includeVersionless` | [`Boolean`](#boolean) | Include versionless packages. |
 | <a id="projectpackagespackagename"></a>`packageName` | [`String`](#string) | Search a package by name. |
 | <a id="projectpackagespackagetype"></a>`packageType` | [`PackageTypeEnum`](#packagetypeenum) | Filter a package by type. |
+| <a id="projectpackagespackageversion"></a>`packageVersion` | [`String`](#string) | Filter a package by version. |
 | <a id="projectpackagessort"></a>`sort` | [`PackageSort`](#packagesort) | Sort packages by this criteria. |
 | <a id="projectpackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
 
