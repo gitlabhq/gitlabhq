@@ -49,6 +49,10 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
     end
   end
 
+  it 'has the option to reschedule once if deduplicated' do
+    expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once })
+  end
+
   context 'when pipeline workers from a stage are running' do
     before do
       pipeline_tracker.enqueue!

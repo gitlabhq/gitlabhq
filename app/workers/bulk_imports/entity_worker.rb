@@ -5,13 +5,13 @@ module BulkImports
     include ApplicationWorker
 
     idempotent!
-    deduplicate :until_executed
+    deduplicate :until_executed, if_deduplicated: :reschedule_once
     data_consistency :always
     feature_category :importers
     sidekiq_options retry: false, dead: false
     worker_has_external_dependencies!
 
-    PERFORM_DELAY = 5.seconds
+    PERFORM_DELAY = 30.seconds
 
     # Keep `_current_stage` parameter for backwards compatibility.
     # The parameter will be remove in https://gitlab.com/gitlab-org/gitlab/-/issues/426311
