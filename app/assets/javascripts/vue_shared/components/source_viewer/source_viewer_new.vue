@@ -51,7 +51,6 @@ export default {
       lineHighlighter: new LineHighlighter(),
       blameData: [],
       renderedChunks: [],
-      overlappingBlameRequested: false,
     };
   },
   computed: {
@@ -72,6 +71,7 @@ export default {
     showBlame: {
       handler(shouldShow) {
         toggleBlameClasses(this.blameData, shouldShow);
+        this.requestBlameInfo(this.renderedChunks[0]);
       },
       immediate: true,
     },
@@ -92,31 +92,35 @@ export default {
     this.selectLine();
   },
   methods: {
-    async handleChunkAppear(chunkIndex) {
-      const chunk = this.chunks[chunkIndex];
-
+    async handleChunkAppear(chunkIndex, handleOverlappingChunk = true) {
       if (!this.renderedChunks.includes(chunkIndex)) {
         this.renderedChunks.push(chunkIndex);
+        await this.requestBlameInfo(chunkIndex);
 
-        const { data } = await this.$apollo.query({
-          query: blameDataQuery,
-          variables: {
-            fullPath: this.projectPath,
-            filePath: this.blob.path,
-            fromLine: chunk.startingFrom + 1,
-            toLine: chunk.startingFrom + chunk.totalLines,
-          },
-        });
-
-        const blob = data?.project?.repository?.blobs?.nodes[0];
-        const blameGroups = blob?.blame?.groups;
-        if (blameGroups) this.blameData.push(...blameGroups);
-        if (chunkIndex > 0 && !this.overlappingBlameRequested) {
+        if (chunkIndex > 0 && handleOverlappingChunk) {
           // request the blame information for overlapping chunk incase it is visible in the DOM
-          this.handleChunkAppear(chunkIndex - 1);
-          this.overlappingBlameRequested = true;
+          this.handleChunkAppear(chunkIndex - 1, false);
         }
       }
+    },
+    async requestBlameInfo(chunkIndex) {
+      const chunk = this.chunks[chunkIndex];
+      if (!this.showBlame || !chunk) return;
+
+      const { data } = await this.$apollo.query({
+        query: blameDataQuery,
+        variables: {
+          fullPath: this.projectPath,
+          filePath: this.blob.path,
+          fromLine: chunk.startingFrom + 1,
+          toLine: chunk.startingFrom + chunk.totalLines,
+        },
+      });
+
+      const blob = data?.project?.repository?.blobs?.nodes[0];
+      const blameGroups = blob?.blame?.groups;
+      const isDuplicate = this.blameData.includes(blameGroups[0]);
+      if (blameGroups && !isDuplicate) this.blameData.push(...blameGroups);
     },
     async selectLine() {
       await this.$nextTick();

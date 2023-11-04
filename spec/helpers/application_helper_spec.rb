@@ -755,14 +755,6 @@ RSpec.describe ApplicationHelper do
         it { is_expected.not_to include('with-top-bar') }
       end
     end
-
-    describe 'logged-out-marketing-header' do
-      before do
-        allow(helper).to receive(:current_user).and_return(nil)
-      end
-
-      it { is_expected.not_to include('logged-out-marketing-header') }
-    end
   end
 
   describe '#dispensable_render' do

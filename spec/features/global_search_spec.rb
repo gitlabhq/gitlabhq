@@ -3,9 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Global search', :js, feature_category: :global_search do
-  include AfterNextHelpers
-
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
 
   before do
@@ -18,17 +16,18 @@ RSpec.describe 'Global search', :js, feature_category: :global_search do
       visit dashboard_projects_path
     end
 
-    it 'renders updated search bar' do
-      expect(page).to have_no_selector('.search-form')
-      expect(page).to have_selector('#js-header-search')
+    it 'renders search button' do
+      expect(page).to have_button('Search or go to…')
     end
 
-    it 'focuses search input when shortcut "s" is pressed' do
-      expect(page).not_to have_selector('#search:focus')
+    it 'opens search modal when shortcut "s" is pressed' do
+      search_selector = 'input[type="search"]:focus'
+
+      expect(page).not_to have_selector(search_selector)
 
       find('body').native.send_key('s')
 
-      expect(page).to have_selector('#search:focus')
+      expect(page).to have_selector(search_selector)
     end
   end
 end

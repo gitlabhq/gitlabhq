@@ -10,7 +10,7 @@ const findLineContentElement = (lineNumber) => document.getElementById(`LC${line
 export const calculateBlameOffset = (lineNumber) => {
   if (lineNumber === 1) return '0px';
   const blobViewerOffset = document.querySelector(VIEWER_SELECTOR)?.getBoundingClientRect().top;
-  const lineContentOffset = findLineContentElement(lineNumber).getBoundingClientRect().top;
+  const lineContentOffset = findLineContentElement(lineNumber)?.getBoundingClientRect().top;
   return `${lineContentOffset - blobViewerOffset}px`;
 };
 

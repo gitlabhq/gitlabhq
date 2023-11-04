@@ -80,7 +80,6 @@ RSpec.describe 'layouts/application' do
     before do
       allow(view).to receive(:current_user).and_return(nil)
       allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(nil))
-      Feature.enable(:super_sidebar_logged_out)
     end
 
     it 'renders the new marketing header for logged-out users' do

@@ -2,10 +2,10 @@
 
 module SearchHelpers
   def fill_in_search(text)
-    page.within('.header-search') do
-      find('#search').click
-      fill_in 'search', with: text
+    within_testid('super-sidebar') do
+      click_button "Search or go to…"
     end
+    fill_in 'search', with: text
 
     wait_for_all_requests
   end

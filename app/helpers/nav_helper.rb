@@ -80,9 +80,7 @@ module NavHelper
 
   def show_super_sidebar?(user = current_user)
     # The new sidebar is not enabled for anonymous use
-    # Once we enable the new sidebar by default, this
-    # should return true
-    return Feature.enabled?(:super_sidebar_logged_out) unless user
+    return true unless user
 
     # Users who get the new nav unless they explicitly
     # opt-out via the toggle

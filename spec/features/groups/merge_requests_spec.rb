@@ -26,8 +26,10 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
       expect(page).not_to have_content(issuable_archived.title)
     end
 
-    it 'ignores archived merge request count badges in navbar' do
-      expect(first(:link, text: 'Merge requests').find('.badge').text).to eq("1")
+    it 'ignores archived merge request count badges in navbar', :js do
+      within_testid('super-sidebar') do
+        expect(find_link(text: 'Merge requests').find('.badge').text).to eq("1")
+      end
     end
 
     it 'ignores archived merge request count badges in state-filters' do

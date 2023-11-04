@@ -318,7 +318,6 @@ module ApplicationHelper
     class_names << 'with-header' if !show_super_sidebar? || !current_user
     class_names << 'with-top-bar' if show_super_sidebar? && !@hide_top_bar_padding
     class_names << system_message_class
-    class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com? && !show_super_sidebar?
 
     class_names
   end

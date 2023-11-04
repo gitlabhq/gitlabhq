@@ -11,7 +11,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
   let(:expected_detached_mr_tag) { 'merge request' }
 
   context 'when user is logged in' do
-    let(:user) { create(:user, :no_super_sidebar) }
+    let(:user) { create(:user) }
 
     before do
       sign_in(user)
@@ -650,7 +650,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         # header
         expect(page).to have_text("##{pipeline.id}")
-        expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
+        expect(page).to have_link(pipeline.user.name, href: /#{user_path(pipeline.user)}$/)
 
         # stages
         expect(page).to have_text('build')

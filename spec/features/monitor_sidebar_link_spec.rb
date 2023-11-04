@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category: :shared do
+RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
   let_it_be_with_reload(:project) { create(:project, :internal, :repository) }
-  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:user) { create(:user) }
 
   let(:role) { nil }
 
@@ -13,7 +13,7 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
     sign_in(user)
   end
 
-  shared_examples 'shows Monitor menu based on the access level' do
+  shared_examples 'shows common Monitor menu item based on the access level' do
     using RSpec::Parameterized::TableSyntax
 
     let(:enabled) { Featurable::PRIVATE }
@@ -30,10 +30,14 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
 
         visit project_issues_path(project)
 
-        if render
-          expect(page).to have_selector('a.shortcuts-monitor', text: 'Monitor')
-        else
-          expect(page).not_to have_selector('a.shortcuts-monitor')
+        click_button('Monitor')
+
+        within_testid('super-sidebar') do
+          if render
+            expect(page).to have_link('Incidents')
+          else
+            expect(page).not_to have_link('Incidents', visible: :all)
+          end
         end
       end
     end
@@ -44,32 +48,35 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
 
     before do
       project.project_feature.update_attribute(:monitor_access_level, access_level)
+      visit project_issues_path(project)
+      click_button('Monitor')
     end
 
-    it 'has the correct `Monitor` menu items', :aggregate_failures do
-      visit project_issues_path(project)
-      expect(page).to have_selector('a.shortcuts-monitor', text: 'Monitor')
+    it 'has the correct `Monitor` and `Operate` menu items' do
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
+
+      click_button('Operate')
+
       expect(page).to have_link('Environments', href: project_environments_path(project))
 
-      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
-      expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
+      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project), visible: :all)
+      expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project), visible: :all)
+      expect(page).not_to have_link('Kubernetes clusters', href: project_clusters_path(project), visible: :all)
     end
 
     context 'when monitor project feature is PRIVATE' do
       let(:access_level) { ProjectFeature::PRIVATE }
 
-      it 'does not show the `Monitor` menu' do
-        expect(page).not_to have_selector('a.shortcuts-monitor')
+      it 'does not show common items of the `Monitor` menu' do
+        expect(page).not_to have_link('Error Tracking', href: project_incidents_path(project), visible: :all)
       end
     end
 
     context 'when monitor project feature is DISABLED' do
       let(:access_level) { ProjectFeature::DISABLED }
 
-      it 'does not show the `Monitor` menu' do
-        expect(page).not_to have_selector('a.shortcuts-monitor')
+      it 'does not show the `Incidents` menu' do
+        expect(page).not_to have_link('Error Tracking', href: project_incidents_path(project), visible: :all)
       end
     end
   end
@@ -77,63 +84,86 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
   context 'when user has guest role' do
     let(:role) { :guest }
 
-    it 'has the correct `Monitor` menu items' do
+    it 'has the correct `Monitor` and `Operate` menu items' do
       visit project_issues_path(project)
-      expect(page).to have_selector('a.shortcuts-monitor', text: 'Monitor')
+
+      click_button('Monitor')
+
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
+
+      click_button('Operate')
+
       expect(page).to have_link('Environments', href: project_environments_path(project))
 
-      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
-      expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
+      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project), visible: :all)
+      expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project), visible: :all)
+      expect(page).not_to have_link('Kubernetes clusters', href: project_clusters_path(project), visible: :all)
     end
 
-    it_behaves_like 'shows Monitor menu based on the access level'
+    it_behaves_like 'shows common Monitor menu item based on the access level'
   end
 
   context 'when user has reporter role' do
     let(:role) { :reporter }
 
-    it 'has the correct `Monitor` menu items' do
+    it 'has the correct `Monitor` and `Operate` menu items' do
       visit project_issues_path(project)
+
+      click_button('Monitor')
+
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
-      expect(page).to have_link('Environments', href: project_environments_path(project))
       expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
 
-      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
-      expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
+      click_button('Operate')
+
+      expect(page).to have_link('Environments', href: project_environments_path(project))
+
+      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project), visible: :all)
+      expect(page).not_to have_link('Kubernetes clusters', href: project_clusters_path(project), visible: :all)
     end
 
-    it_behaves_like 'shows Monitor menu based on the access level'
+    it_behaves_like 'shows common Monitor menu item based on the access level'
   end
 
   context 'when user has developer role' do
     let(:role) { :developer }
 
-    it 'has the correct `Monitor` menu items' do
+    it 'has the correct `Monitor` and `Operate` menu items' do
       visit project_issues_path(project)
+
+      click_button('Monitor')
+
       expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
-      expect(page).to have_link('Environments', href: project_environments_path(project))
       expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).to have_link('Kubernetes', href: project_clusters_path(project))
+
+      click_button('Operate')
+
+      expect(page).to have_link('Environments', href: project_environments_path(project))
+      expect(page).to have_link('Kubernetes clusters', href: project_clusters_path(project))
     end
 
-    it_behaves_like 'shows Monitor menu based on the access level'
+    it_behaves_like 'shows common Monitor menu item based on the access level'
   end
 
   context 'when user has maintainer role' do
     let(:role) { :maintainer }
 
-    it 'has the correct `Monitor` menu items' do
+    it 'has the correct `Monitor` and `Operate` menu items' do
       visit project_issues_path(project)
+
+      click_button('Monitor')
+
       expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
-      expect(page).to have_link('Environments', href: project_environments_path(project))
       expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).to have_link('Kubernetes', href: project_clusters_path(project))
+
+      click_button('Operate')
+
+      expect(page).to have_link('Environments', href: project_environments_path(project))
+      expect(page).to have_link('Kubernetes clusters', href: project_clusters_path(project))
     end
 
-    it_behaves_like 'shows Monitor menu based on the access level'
+    it_behaves_like 'shows common Monitor menu item based on the access level'
   end
 end

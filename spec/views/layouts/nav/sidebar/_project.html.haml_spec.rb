@@ -23,7 +23,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
     it 'has a link to the project path' do
       render
 
-      expect(rendered).to have_link(project.name, href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+      expect(rendered).to have_link(project.name, href: project_path(project), class: 'shortcuts-project')
       expect(rendered).to have_selector("[aria-label=\"#{project.name}\"]")
     end
   end

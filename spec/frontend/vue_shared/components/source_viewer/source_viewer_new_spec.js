@@ -133,6 +133,8 @@ describe('Source Viewer component', () => {
         expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
           expect.objectContaining({ fromLine: 1, toLine: 70 }),
         );
+
+        expect(findChunks().at(0).props('isHighlighted')).toBe(true);
       });
 
       it('does not render a Blame component when `showBlame: false`', async () => {

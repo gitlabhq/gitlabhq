@@ -416,7 +416,7 @@ RSpec.shared_examples 'work items todos' do
 
     expect(page).to have_button s_('WorkItem|Mark as done')
 
-    page.within ".header-content span[aria-label='#{_('Todos count')}']" do
+    within_testid('todos-shortcut-button') do
       expect(page).to have_content '1'
     end
   end
@@ -426,7 +426,9 @@ RSpec.shared_examples 'work items todos' do
     click_button s_('WorkItem|Mark as done')
 
     expect(page).to have_button s_('WorkItem|Add a to do')
-    expect(page).to have_selector(".header-content span[aria-label='#{_('Todos count')}']", visible: :hidden)
+    within_testid('todos-shortcut-button') do
+      expect(page).to have_content("")
+    end
   end
 end
 

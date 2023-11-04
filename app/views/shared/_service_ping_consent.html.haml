@@ -1,7 +1,7 @@
 - if session[:ask_for_usage_stats_consent]
   = render Pajamas::AlertComponent.new(alert_options: { class: 'service-ping-consent-message' }) do |c|
     - c.with_body do
-      - docs_link = link_to '', help_page_path('administration/settings/usage_statistics.md'), class: 'gl-link'
+      - docs_link = link_to '', help_page_path('administration/settings/usage_statistics'), class: 'gl-link'
       - settings_link = link_to '', metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), class: 'gl-link'
       = safe_format s_('ServicePing|To help improve GitLab, we would like to periodically %{link_start}collect usage information%{link_end}.'), tag_pair(docs_link, :link_start, :link_end)
       = safe_format s_('ServicePing|This can be changed at any time in %{link_start}your settings%{link_end}.'), tag_pair(settings_link, :link_start, :link_end)

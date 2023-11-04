@@ -289,7 +289,7 @@ module Glfm
       wysiwyg_html_and_json_tempfile_path = Dir::Tmpname.create(WYSIWYG_HTML_AND_JSON_TEMPFILE_BASENAME) {}
       ENV['OUTPUT_WYSIWYG_HTML_AND_JSON_TEMPFILE_PATH'] = wysiwyg_html_and_json_tempfile_path
 
-      cmd = "yarn jest --testMatch '**/render_wysiwyg_html_and_json.js' #{__dir__}/render_wysiwyg_html_and_json.js"
+      cmd = "yarn jest:scripts #{__dir__}/render_wysiwyg_html_and_json.js"
       run_external_cmd(cmd)
 
       output("Reading generated WYSIWYG HTML and prosemirror JSON from tempfile " \

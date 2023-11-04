@@ -1,5 +1,5 @@
 %p
-  - link = link_to('', help_page_path('user/project/deploy_tokens/index.md'), target: '_blank', rel: 'noopener noreferrer')
+  - link = link_to('', help_page_path('user/project/deploy_tokens/index'), target: '_blank', rel: 'noopener noreferrer')
   = safe_format(s_('DeployTokens|Create a new deploy token for all projects in this group. %{link_start}What are deploy tokens?%{link_end}'), tag_pair(link, :link_start, :link_end))
 
 = gitlab_ui_form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post, remote: true do |f|

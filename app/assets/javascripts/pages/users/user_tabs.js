@@ -1,3 +1,6 @@
+// TODO: Remove this with the removal of the old navigation.
+// See https://gitlab.com/groups/gitlab-org/-/epics/11875.
+
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import Activities from '~/activities';

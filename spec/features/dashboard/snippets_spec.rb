@@ -55,7 +55,7 @@ RSpec.describe 'Dashboard snippets', :js, feature_category: :source_code_managem
 
     it 'shows documentation button in main comment area' do
       parent_element = page.find('.row.empty-state')
-      expect(parent_element).to have_link('Documentation', href: help_page_path('user/snippets.md'))
+      expect(parent_element).to have_link('Documentation', href: help_page_path('user/snippets'))
     end
   end
 

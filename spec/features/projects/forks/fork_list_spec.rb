@@ -8,7 +8,7 @@ RSpec.describe 'listing forks of a project', feature_category: :groups_and_proje
 
   let(:source) { create(:project, :public, :repository) }
   let!(:fork) { fork_project(source, nil, repository: true) }
-  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user) { create(:user) }
 
   before do
     source.add_maintainer(user)

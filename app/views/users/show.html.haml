@@ -114,6 +114,8 @@
                 %p.profile-user-bio.gl-mb-3
                   = @user.bio
 
+      -# TODO: Remove this with the removal of the old navigation.
+      -# See https://gitlab.com/groups/gitlab-org/-/epics/11875.
       - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
         .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
           %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
