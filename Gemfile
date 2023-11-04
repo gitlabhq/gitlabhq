@@ -119,7 +119,7 @@ gem 'acme-client', '~> 2.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'browser', '~> 5.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # OS detection for usage ping
-gem 'ohai', '~> 17.9' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'ohai', '~> 18.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GPG
 gem 'gpgme', '~> 2.0.23' # rubocop:todo Gemfile/MissingFeatureCategory

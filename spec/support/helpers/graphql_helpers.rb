@@ -2,6 +2,7 @@
 
 module GraphqlHelpers
   def self.included(base)
+    base.include(::ApiHelpers)
     base.include(::Gitlab::Graphql::Laziness)
   end
 
