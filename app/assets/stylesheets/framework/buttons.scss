@@ -191,25 +191,6 @@
     color: $gray-700;
   }
 
-  // deprecated class
-  &.btn-text-field {
-    width: 100%;
-    text-align: left;
-    padding: 6px 16px;
-    border-color: $border-color;
-    color: $gray-darkest;
-    background-color: $white;
-
-    &:hover,
-    &:active,
-    &:focus {
-      cursor: text;
-      box-shadow: none;
-      border-color: lighten($blue-300, 20%);
-      color: $gray-darkest;
-    }
-  }
-
   &.dot-highlight::after {
     content: '';
     background-color: $blue-500;

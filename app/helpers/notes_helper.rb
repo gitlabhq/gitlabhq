@@ -71,16 +71,20 @@ module NotesHelper
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = {
-      discussion_id: discussion.reply_id,
-      discussion_project_id: discussion.project&.id,
-      line_type: line_type
-    }
-
-    button_tag 'Reply...',
-      class: 'btn btn-text-field js-discussion-reply-button',
-      data: data,
-      title: 'Add a reply'
+    content_tag(
+      :textarea,
+      rows: 1,
+      placeholder: _('Reply...'),
+      'aria-label': _('Reply to comment'),
+      class: 'reply-placeholder-text-field js-discussion-reply-button',
+      data: {
+        discussion_id: discussion.reply_id,
+        discussion_project_id: discussion.project&.id,
+        line_type: line_type
+      }
+    ) do
+      # render empty textarea
+    end
   end
 
   def note_max_access_for_user(note)

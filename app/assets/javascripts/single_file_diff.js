@@ -40,8 +40,11 @@ export default class SingleFileDiff {
       this.$chevronDownIcon.removeClass('gl-display-none');
     }
 
-    $('.js-file-title, .click-to-expand', this.file).on('click', (e) => {
+    $('.js-file-title', this.file).on('click', (e) => {
       this.toggleDiff($(e.target));
+    });
+    $('.click-to-expand', this.file).on('click', (e) => {
+      this.toggleDiff($(e.currentTarget));
     });
   }
 

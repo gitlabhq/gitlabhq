@@ -12370,6 +12370,9 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Default"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Description"
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Edit framework"
 msgstr ""
 
@@ -39935,6 +39938,9 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
+msgid "Reply..."
+msgstr ""
+
 msgid "Reply…"
 msgstr ""
 
@@ -51395,6 +51401,9 @@ msgstr ""
 msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr ""
 
+msgid "UsageQuota|Any additional purchased storage will be displayed here."
+msgstr ""
+
 msgid "UsageQuota|Audio samples, videos, datasets, and graphics."
 msgstr ""
 
@@ -51507,6 +51516,9 @@ msgid "UsageQuota|Product analytics"
 msgstr ""
 
 msgid "UsageQuota|Projects under this namespace have %{planLimit} of storage."
+msgstr ""
+
+msgid "UsageQuota|Purchased storage"
 msgstr ""
 
 msgid "UsageQuota|Recalculate repository usage"
