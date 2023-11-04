@@ -26,6 +26,11 @@ export default {
       type: Object,
       required: true,
     },
+    prevBlameLink: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return { showDescription: false };
@@ -114,5 +119,6 @@ export default {
       <div class="gl-flex-grow-1"></div>
       <slot></slot>
     </div>
+    <div v-if="prevBlameLink" v-safe-html:[$options.safeHtmlConfig]="prevBlameLink"></div>
   </div>
 </template>

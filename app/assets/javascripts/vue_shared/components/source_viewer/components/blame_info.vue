@@ -30,6 +30,7 @@ export default {
         class="gl-display-flex gl-absolute gl-px-3"
         :style="{ top: blame.blameOffset }"
         :commit="blame.commit"
+        :prev-blame-link="blame.commitData && blame.commitData.projectBlameLink"
       />
     </div>
   </div>

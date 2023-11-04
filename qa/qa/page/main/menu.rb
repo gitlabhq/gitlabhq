@@ -14,6 +14,10 @@ module QA
           element :navbar, required: true # TODO: rename to sidebar once it's default implementation
         end
 
+        view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
+          element 'canary-badge-link'
+        end
+
         view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
           element 'user-dropdown', required: !Runtime::Env.phone_layout?
           element :user_avatar_content, required: !Runtime::Env.phone_layout?
@@ -176,13 +180,13 @@ module QA
         end
 
         # To verify whether the user has been directed to a canary web node
-        # @return [Boolean] result of checking existence of :canary_badge_link element
+        # @return [Boolean] result of checking existence of 'canary-badge-link' element
         # @example:
         #   Menu.perform do |menu|
         #     expect(menu.canary?).to be(true)
         #   end
         def canary?
-          has_element?(:canary_badge_link)
+          has_element?('canary-badge-link')
         end
 
         private

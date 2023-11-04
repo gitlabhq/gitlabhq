@@ -24,10 +24,11 @@ describe('BlameInfo component', () => {
 
   it.each(BLAME_DATA_MOCK)(
     'sets the correct data and positioning for the commitInfo',
-    ({ commit, index, blameOffset }) => {
+    ({ commit, commitData, index, blameOffset }) => {
       const commitInfoComponent = findCommitInfoComponents().at(index);
 
       expect(commitInfoComponent.props('commit')).toEqual(commit);
+      expect(commitInfoComponent.props('prevBlameLink')).toBe(commitData?.projectBlameLink || null);
       expect(commitInfoComponent.element.style.top).toBe(blameOffset);
     },
   );

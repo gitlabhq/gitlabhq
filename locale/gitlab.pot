@@ -42809,6 +42809,9 @@ msgstr ""
 msgid "SecurityOrchestration|Any merge request"
 msgstr ""
 
+msgid "SecurityOrchestration|Apply this policy to all projects %{projectScopeType} named %{exceptionType} %{projectSelector}"
+msgstr ""
+
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
 msgstr ""
 
@@ -43007,6 +43010,9 @@ msgid "SecurityOrchestration|Policy definition"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy editor"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy scope"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy status"
@@ -43231,6 +43237,9 @@ msgstr ""
 msgid "SecurityOrchestration|all namespaces"
 msgstr ""
 
+msgid "SecurityOrchestration|all projects in this group"
+msgstr ""
+
 msgid "SecurityOrchestration|any"
 msgstr ""
 
@@ -43279,10 +43288,16 @@ msgstr ""
 msgid "SecurityOrchestration|or from:"
 msgstr ""
 
+msgid "SecurityOrchestration|projects with compliance frameworks"
+msgstr ""
+
 msgid "SecurityOrchestration|scanner finds"
 msgstr ""
 
 msgid "SecurityOrchestration|scanners find"
+msgstr ""
+
+msgid "SecurityOrchestration|specific projects"
 msgstr ""
 
 msgid "SecurityOrchestration|targeting %{branchTypeText}"

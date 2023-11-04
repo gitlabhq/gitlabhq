@@ -24,6 +24,9 @@ query getBlameData($fullPath: ID!, $filePath: String!, $fromLine: Int, $toLine: 
                 }
                 sha
               }
+              commitData {
+                projectBlameLink
+              }
             }
           }
         }

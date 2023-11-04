@@ -1,5 +1,7 @@
 export const SNOWPLOW_JS_SOURCE = 'gitlab-javascript';
 
+export const MAX_LOCAL_STORAGE_QUEUE_SIZE = 100;
+
 export const DEFAULT_SNOWPLOW_OPTIONS = {
   namespace: 'gl',
   hostname: window.location.hostname,
@@ -15,6 +17,7 @@ export const DEFAULT_SNOWPLOW_OPTIONS = {
     forms: { allow: [] },
     fields: { allow: [] },
   },
+  maxLocalStorageQueueSize: MAX_LOCAL_STORAGE_QUEUE_SIZE,
 };
 
 export const ACTION_ATTR_SELECTOR = '[data-track-action]';

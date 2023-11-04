@@ -14,4 +14,10 @@ if (appId && host) {
       errorTracking: false,
     },
   });
+
+  const userId = window.gl?.snowplowStandardContext?.data?.user_id;
+
+  if (userId) {
+    window.glClient?.identify(userId);
+  }
 }
