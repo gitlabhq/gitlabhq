@@ -50,7 +50,8 @@ export default marks.map((name) =>
     },
 
     parseHTML() {
-      return [{ tag: name, priority: PARSE_HTML_PRIORITY_LOWEST }];
+      const tag = name === 'span' ? `${name}:not([data-escaped-char])` : name;
+      return [{ tag, priority: PARSE_HTML_PRIORITY_LOWEST }];
     },
 
     renderHTML({ HTMLAttributes }) {

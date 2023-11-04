@@ -61,6 +61,18 @@ describe('content_editor/extensions/code_block_highlight', () => {
 
       expect(editorHtmlOutput.classList.toString()).toContain('content-editor-code-block');
     });
+
+    it('includes the lowlight plugin', () => {
+      expect(tiptapEditor.state.plugins).toContainEqual(
+        expect.objectContaining({ key: expect.stringContaining('lowlight') }),
+      );
+    });
+
+    it('does not include the VSCode paste plugin', () => {
+      expect(tiptapEditor.state.plugins).not.toContainEqual(
+        expect.objectContaining({ key: expect.stringContaining('VSCode') }),
+      );
+    });
   });
 
   describe.each`

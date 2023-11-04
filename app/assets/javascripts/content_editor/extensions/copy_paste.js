@@ -11,6 +11,7 @@ import CodeBlockHighlight from './code_block_highlight';
 import CodeSuggestion from './code_suggestion';
 import Diagram from './diagram';
 import Frontmatter from './frontmatter';
+import { loadingPlugin, findLoader } from './loading';
 
 const TEXT_FORMAT = 'text/plain';
 const GFM_FORMAT = 'text/x-gfm';
@@ -30,21 +31,6 @@ function parseHTML(schema, html) {
   const { body } = parser.parseFromString(startTag + html + endTag, 'text/html');
   return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
 }
-
-const findLoader = (editor, loaderId) => {
-  let position;
-
-  editor.view.state.doc.descendants((descendant, pos) => {
-    if (descendant.type.name === 'loading' && descendant.attrs.id === loaderId) {
-      position = pos;
-      return false;
-    }
-
-    return true;
-  });
-
-  return position;
-};
 
 export default Extension.create({
   name: 'copyPaste',
@@ -74,13 +60,20 @@ export default Extension.create({
 
         Promise.resolve()
           .then(() => {
-            editor.commands.insertContent({ type: 'loading', attrs: { id: loaderId } });
+            editor
+              .chain()
+              .deleteSelection()
+              .setMeta(loadingPlugin, {
+                add: { loaderId, pos: editor.state.selection.from },
+              })
+              .run();
+
             return promise;
           })
           .then(async ({ document }) => {
             if (!document) return;
 
-            const pos = findLoader(editor, loaderId);
+            const pos = findLoader(editor.state, loaderId);
             if (!pos) return;
 
             const { firstChild, childCount } = document.content;
@@ -91,7 +84,7 @@ export default Extension.create({
 
             editor
               .chain()
-              .deleteRange({ from: pos, to: pos + 1 })
+              .setMeta(loadingPlugin, { remove: { loaderId } })
               .insertContentAt(pos, toPaste.toJSON(), {
                 updateSelection: false,
               })
@@ -114,6 +107,7 @@ export default Extension.create({
     const handleCutAndCopy = (view, event) => {
       const slice = view.state.selection.content();
       const gfmContent = this.options.serializer.serialize({ doc: slice.content });
+
       const documentFragment = DOMSerializer.fromSchema(view.state.schema).serializeFragment(
         slice.content,
       );

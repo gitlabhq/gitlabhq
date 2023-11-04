@@ -81,4 +81,13 @@ export default CodeBlockLowlight.extend({
   addNodeView() {
     return new VueNodeViewRenderer(CodeBlockWrapper);
   },
+
+  addProseMirrorPlugins() {
+    const parentPlugins = this.parent?.() ?? [];
+    // We don't want TipTap's VSCode paste plugin to be loaded since
+    // it conflicts with our CopyPaste plugin.
+    const i = parentPlugins.findIndex((plugin) => plugin.key.includes('VSCode'));
+    if (i >= 0) parentPlugins.splice(i, 1);
+    return parentPlugins;
+  },
 }).configure({ lowlight });

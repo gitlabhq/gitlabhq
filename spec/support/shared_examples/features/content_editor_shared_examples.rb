@@ -466,6 +466,15 @@ RSpec.shared_examples 'edits content using the content editor' do |params = {
       end
     end
 
+    it 'does not show a loading indicator after undo paste' do
+      type_in_content_editor [modifier_key, 'v']
+      type_in_content_editor [modifier_key, 'z']
+
+      page.within content_editor_testid do
+        expect(page).not_to have_css('.gl-dots-loader')
+      end
+    end
+
     it 'pastes raw text without formatting if shift + ctrl + v is pressed' do
       type_in_content_editor [modifier_key, :shift, 'v']
 
