@@ -78,6 +78,14 @@ RSpec.describe Ml::Model, feature_category: :mlops do
     end
   end
 
+  describe '.including_project' do
+    subject { described_class.including_project }
+
+    it 'loads latest version' do
+      expect(subject.first.association_cached?(:project)).to be(true)
+    end
+  end
+
   describe 'with_version_count' do
     let(:model) { existing_model }
 

@@ -35071,6 +35071,12 @@ CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_req
 
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
+CREATE INDEX tmp_idx_protected_branch_merge_access_levels_on_id_with_group ON protected_branch_merge_access_levels USING btree (id) WHERE (group_id IS NOT NULL);
+
+CREATE INDEX tmp_idx_protected_branch_push_access_levels_on_id_with_group ON protected_branch_push_access_levels USING btree (id) WHERE (group_id IS NOT NULL);
+
+CREATE INDEX tmp_idx_protected_tag_create_access_levels_on_id_with_group ON protected_tag_create_access_levels USING btree (id) WHERE (group_id IS NOT NULL);
+
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 
 CREATE INDEX tmp_index_cis_vulnerability_reads_on_id ON vulnerability_reads USING btree (id) WHERE (report_type = 7);

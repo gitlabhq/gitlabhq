@@ -43,17 +43,26 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
       index_request
     end
 
-    it 'fetches the correct models' do
+    it 'fetches the correct variables', :aggregate_failures do
+      stub_const("Projects::Ml::ModelsController::MAX_MODELS_PER_PAGE", 2)
+
       index_request
 
-      expect(assigns(:paginator).records).to match_array([model3, model2, model1])
+      page_models = [model3, model2]
+      all_models = [model3, model2, model1]
+
+      expect(assigns(:paginator).records).to match_array(page_models)
+      expect(assigns(:model_count)).to be all_models.count
     end
 
     it 'does not perform N+1 sql queries' do
+      list_models
+
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_models }
 
       create_list(:ml_model_versions, 2, model: model1)
       create_list(:ml_model_versions, 2, model: model2)
+      create_list(:ml_models, 4, project: project)
 
       expect { list_models }.not_to exceed_all_query_limit(control_count)
     end

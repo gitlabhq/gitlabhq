@@ -3,10 +3,11 @@
 module Projects
   module Ml
     class ModelsIndexComponent < ViewComponent::Base
-      attr_reader :paginator
+      attr_reader :paginator, :model_count
 
-      def initialize(paginator:)
+      def initialize(paginator:, model_count:)
         @paginator = paginator
+        @model_count = model_count
       end
 
       private
@@ -14,7 +15,8 @@ module Projects
       def view_model
         vm = {
           models: models_view_model,
-          page_info: page_info_view_model
+          page_info: page_info_view_model,
+          model_count: model_count
         }
 
         Gitlab::Json.generate(vm.deep_transform_keys { |k| k.to_s.camelize(:lower) })
@@ -26,7 +28,8 @@ module Projects
             name: m.name,
             version: m.latest_version_name,
             version_count: m.version_count,
-            path: m.latest_package_path
+            version_package_path: m.latest_package_path,
+            version_path: m.latest_version_path
           }
         end
       end

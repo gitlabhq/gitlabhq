@@ -23,7 +23,7 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
   end
 
   subject(:component) do
-    described_class.new(paginator: paginator)
+    described_class.new(model_count: 5, paginator: paginator)
   end
 
   describe 'rendered' do
@@ -43,13 +43,15 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
           {
             'name' => model1.name,
             'version' => model1.latest_version.version,
-            'path' => "/#{project.full_path}/-/packages/#{model1.latest_version.package_id}",
+            'versionPackagePath' => "/#{project.full_path}/-/packages/#{model1.latest_version.package_id}",
+            'versionPath' => "/#{project.full_path}/-/ml/models/#{model1.id}/versions/#{model1.latest_version.id}",
             'versionCount' => 1
           },
           {
             'name' => model2.name,
             'version' => nil,
-            'path' => nil,
+            'versionPackagePath' => nil,
+            'versionPath' => nil,
             'versionCount' => 0
           }
         ],
@@ -58,7 +60,8 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
           'hasPreviousPage' => false,
           'startCursor' => 'abcde',
           'endCursor' => 'defgh'
-        }
+        },
+        'modelCount' => 5
       })
     end
   end

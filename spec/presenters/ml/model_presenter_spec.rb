@@ -58,6 +58,22 @@ RSpec.describe Ml::ModelPresenter, feature_category: :mlops do
     end
   end
 
+  describe '#latest_version_path' do
+    subject { model.present.latest_version_path }
+
+    context 'when model version does not have package' do
+      let(:model) { model1 }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when latest model version has package' do
+      let(:model) { model2 }
+
+      it { is_expected.to eq("/#{project.full_path}/-/ml/models/#{model.id}/versions/#{model.latest_version.id}") }
+    end
+  end
+
   describe '#path' do
     subject { model1.present.path }
 

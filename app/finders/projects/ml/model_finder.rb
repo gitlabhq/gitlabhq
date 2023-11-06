@@ -3,6 +3,8 @@
 module Projects
   module Ml
     class ModelFinder
+      include Gitlab::Utils::StrongMemoize
+
       VALID_ORDER_BY = %w[name created_at id].freeze
       VALID_SORT = %w[asc desc].freeze
 
@@ -12,16 +14,26 @@ module Projects
       end
 
       def execute
+        relation
+      end
+
+      def count
+        relation.length
+      end
+
+      private
+
+      def relation
         @models = ::Ml::Model
-          .by_project(project)
-          .including_latest_version
-          .with_version_count
+            .by_project(project)
+            .including_latest_version
+            .including_project
+            .with_version_count
 
         @models = by_name
         ordered
       end
-
-      private
+      strong_memoize_attr :relation
 
       def by_name
         return models unless params[:name].present?

@@ -1,4 +1,4 @@
 - breadcrumb_title s_('ModelRegistry|Model registry')
 - page_title s_('ModelRegistry|Model registry')
 
-= render(Projects::Ml::ModelsIndexComponent.new(paginator: @paginator))
+= render(Projects::Ml::ModelsIndexComponent.new(paginator: @paginator, model_count: @model_count))

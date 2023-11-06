@@ -9,7 +9,12 @@ module MergeRequests
     def initialize(project:, current_user:, changes:, push_options:, params: {})
       super(project: project, current_user: current_user, params: params)
 
-      @target_project = @project.default_merge_request_target
+      @target_project = if push_options[:target_project]
+                          Project.find_by_full_path(push_options[:target_project])
+                        else
+                          @project.default_merge_request_target
+                        end
+
       @changes = Gitlab::ChangesList.new(changes)
       @push_options = push_options
       @errors = []
@@ -61,6 +66,10 @@ module MergeRequests
       unless current_user&.can?(:read_code, target_project)
         errors << 'User access was denied'
         return
+      end
+
+      unless project == target_project || project.in_fork_network_of?(target_project)
+        errors << "Projects #{project.full_path} and #{target_project.full_path} are not in the same network"
       end
 
       unless target_project.merge_requests_enabled?

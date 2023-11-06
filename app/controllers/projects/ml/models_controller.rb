@@ -15,9 +15,11 @@ module Projects
                         .transform_keys(&:underscore)
                         .permit(:name, :order_by, :sort)
 
-        @paginator = ::Projects::Ml::ModelFinder.new(@project, find_params)
-                                                .execute
-                                                .keyset_paginate(cursor: params[:cursor], per_page: MAX_MODELS_PER_PAGE)
+        finder = ::Projects::Ml::ModelFinder.new(@project, find_params)
+
+        @paginator = finder.execute.keyset_paginate(cursor: params[:cursor], per_page: MAX_MODELS_PER_PAGE)
+
+        @model_count = finder.count
       end
 
       def show; end

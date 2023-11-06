@@ -14,6 +14,7 @@ module Gitlab
           :milestone,
           :remove_source_branch,
           :target,
+          :target_project,
           :title,
           :unassign,
           :unlabel

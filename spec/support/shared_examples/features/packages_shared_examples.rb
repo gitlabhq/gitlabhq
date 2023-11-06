@@ -158,7 +158,7 @@ def click_sort_option(option, ascending)
   wait_for_requests
 
   # Reset the sort direction
-  if page.has_selector?('button[aria-label="Sorting Direction: Ascending"]', wait: 0) && !ascending
+  if page.has_selector?('button[aria-label="Sort direction: Ascending"]', wait: 0) && !ascending
     click_button 'Sort direction'
 
     wait_for_requests

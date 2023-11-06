@@ -22,6 +22,7 @@ module Ml
     has_one :latest_version, -> { latest_by_model }, class_name: 'Ml::ModelVersion', inverse_of: :model
 
     scope :including_latest_version, -> { includes(:latest_version) }
+    scope :including_project, -> { includes(:project) }
     scope :with_version_count, -> {
       left_outer_joins(:versions)
         .select("ml_models.*, count(ml_model_versions.id) as version_count")

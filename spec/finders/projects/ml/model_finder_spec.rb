@@ -19,9 +19,11 @@ RSpec.describe Projects::Ml::ModelFinder, feature_category: :mlops do
       is_expected.to eq([model3, model2, model1])
     end
 
-    it 'including the latest version', :aggregate_failures do
+    it 'including the latest version and project', :aggregate_failures do
       expect(models[0].association_cached?(:latest_version)).to be(true)
+      expect(models[0].association_cached?(:project)).to be(true)
       expect(models[1].association_cached?(:latest_version)).to be(true)
+      expect(models[1].association_cached?(:project)).to be(true)
     end
 
     it 'does not return models belonging to a different project' do
