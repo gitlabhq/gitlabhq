@@ -77,7 +77,7 @@ class ProjectsFinder < UnionFinder
 
   # EE would override this to add more filters
   def filter_projects(collection)
-    collection = collection.without_deleted
+    collection = by_deleted_status(collection)
     collection = by_ids(collection)
     collection = by_full_paths(collection)
     collection = by_personal(collection)
@@ -153,6 +153,12 @@ class ProjectsFinder < UnionFinder
 
   def min_access_level?
     params[:min_access_level].present?
+  end
+
+  def by_deleted_status(items)
+    return items.without_deleted unless current_user&.can?(:admin_all_resources)
+
+    params[:include_pending_delete].present? ? items : items.without_deleted
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -12,6 +12,10 @@ module API
           unauthorized! unless can?(current_user, :write_model_experiments, user_project)
         end
 
+        def check_api_model_registry_read!
+          not_found! unless can?(current_user, :read_model_registry, user_project)
+        end
+
         def resource_not_found!
           render_structured_api_error!({ error_code: 'RESOURCE_DOES_NOT_EXIST' }, 404)
         end

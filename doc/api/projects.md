@@ -57,6 +57,8 @@ GET /projects
 | `id_after`                                 | integer  | No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                | integer  | No | Limit results to projects with IDs less than the specified ID. |
 | `imported`                                 | boolean  | No | Limit results to projects which were imported from external systems by current user. |
+| `include_hidden` **(PREMIUM ALL)**         | boolean  | No | Include hidden projects.  _(administrators only)_ |
+| `include_pending_delete`                   | boolean  | No | Include projects pending deletion.  _(administrators only)_ |
 | `last_activity_after`                      | datetime | No | Limit results to projects with last activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `last_activity_before`                     | datetime | No | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                               | boolean  | No | Limit by projects that the current user is a member of. |

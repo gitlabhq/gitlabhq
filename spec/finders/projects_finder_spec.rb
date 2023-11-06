@@ -425,12 +425,29 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         it { is_expected.to match_array([internal_project]) }
       end
 
-      describe 'always filters by without_deleted' do
+      describe 'filters by without_deleted by default' do
         let_it_be(:pending_delete_project) { create(:project, :public, pending_delete: true) }
 
         it 'returns projects that are not pending_delete' do
           expect(subject).not_to include(pending_delete_project)
           expect(subject).to include(public_project, internal_project)
+        end
+
+        context 'when include_pending_delete param is provided' do
+          let(:params) { { include_pending_delete: true } }
+
+          it 'returns projects that are not pending_delete' do
+            expect(subject).not_to include(pending_delete_project)
+            expect(subject).to include(public_project, internal_project)
+          end
+
+          context 'when user is an admin', :enable_admin_mode do
+            let(:current_user) { create(:admin) }
+
+            it 'also return pending_delete projects' do
+              expect(subject).to include(public_project, internal_project, pending_delete_project)
+            end
+          end
         end
       end
 

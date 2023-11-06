@@ -159,6 +159,7 @@ module API
         optional :topic_id, type: Integer, desc: 'Limit results to projects with the assigned topic given by the topic ID'
         optional :updated_before, type: DateTime, desc: 'Return projects updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :updated_after, type: DateTime, desc: 'Return projects updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        optional :include_pending_delete, type: Boolean, desc: 'Include projects in pending delete state. Can only be set by admins'
 
         use :optional_filter_params_ee
       end

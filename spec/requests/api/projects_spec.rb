@@ -286,6 +286,32 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response.map { |p| p['id'] }).not_to include(project.id)
       end
 
+      context 'when user requests pending_delete projects' do
+        before do
+          project.update!(pending_delete: true)
+        end
+
+        let(:params) { { include_pending_delete: true } }
+
+        it 'does not return projects marked for deletion' do
+          get api(path, user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
+
+        context 'when user is an admin' do
+          it 'returns projects marked for deletion' do
+            get api(path, admin, admin_mode: true), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+            expect(json_response.map { |p| p['id'] }).to include(project.id)
+          end
+        end
+      end
+
       it 'does not include open_issues_count if issues are disabled' do
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 

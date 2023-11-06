@@ -227,6 +227,19 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           end
         end
 
+        context 'with search parameter' do
+          let_it_be(:first_user) { create(:user, username: 'a-user') }
+          let_it_be(:second_user) { create(:user, username: 'a-user2') }
+
+          it 'prioritizes username match' do
+            get api(path, user, admin_mode: true), params: { search: first_user.username }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.first['username']).to eq('a-user')
+            expect(json_response.second['username']).to eq('a-user2')
+          end
+        end
+
         context 'N+1 queries' do
           before do
             create_list(:user, 2)

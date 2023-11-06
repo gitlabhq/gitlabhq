@@ -36,6 +36,10 @@ module Ml
       def by_project_id_and_id(project_id, id)
         find_by(project_id: project_id, id: id)
       end
+
+      def by_project_id_name_and_version(project_id, name, version)
+        joins(:model).find_by(model: { name: name, project_id: project_id }, project_id: project_id, version: version)
+      end
     end
 
     private

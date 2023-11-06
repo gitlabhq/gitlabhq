@@ -141,7 +141,7 @@ module API
     def find_project(id)
       return unless id
 
-      projects = Project.without_deleted.not_hidden
+      projects = find_project_scopes
 
       if id.is_a?(Integer) || id =~ INTEGER_ID_REGEX
         projects.find_by(id: id)
@@ -150,6 +150,11 @@ module API
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    # Can be overriden by API endpoints
+    def find_project_scopes
+      Project.without_deleted.not_hidden
+    end
 
     def find_project!(id)
       project = find_project(id)
@@ -768,6 +773,7 @@ module API
       finder_params[:id_before] = sanitize_id_param(params[:id_before]) if params[:id_before]
       finder_params[:updated_after] = declared_params[:updated_after] if declared_params[:updated_after]
       finder_params[:updated_before] = declared_params[:updated_before] if declared_params[:updated_before]
+      finder_params[:include_pending_delete] = declared_params[:include_pending_delete] if declared_params[:include_pending_delete]
       finder_params
     end
 
