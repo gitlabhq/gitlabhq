@@ -792,7 +792,9 @@ Do not use **handy**. If the user doesn't find the feature or process to be hand
 
 ## high availability, HA
 
-Do not use **high availability** or **HA**. Instead, direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) for information about configuring GitLab for handling greater amounts of users.
+Do not use **high availability** or **HA**, except in the GitLab [reference architectures](../../../administration/reference_architectures/index.md#high-availability-ha). Instead, direct readers to the reference architectures for more information about configuring GitLab for handling greater amounts of users.
+
+Do not use phrases like **high availability setup** to mean a multiple node environment. Instead, use **multi-node setup** or similar.
 
 ## higher
 

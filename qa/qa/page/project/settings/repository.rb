@@ -64,14 +64,6 @@ module QA
           def expand_branch_rules
             expand_content('branch-rules-content')
           end
-
-          def expand_default_branch(&block)
-            within('#branch-defaults-settings') do
-              find('.btn-default').click do
-                DefaultBranch.perform(&block)
-              end
-            end
-          end
         end
       end
     end

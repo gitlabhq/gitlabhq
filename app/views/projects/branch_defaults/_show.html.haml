@@ -14,4 +14,4 @@
       %input{ name: 'update_section', type: 'hidden', value: 'js-issue-settings' }
         = render 'projects/branch_defaults/default_branch_fields', f: f
         = render 'projects/branch_defaults/branch_names_fields', f: f
-      = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }
+      = f.submit _('Save changes'), pajamas_button: true
