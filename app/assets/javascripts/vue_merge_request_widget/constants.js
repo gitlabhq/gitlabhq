@@ -6,7 +6,7 @@ import { stateToComponentMap as classStateMap, stateKey } from './stores/state_m
 export const FOUR_MINUTES_IN_MS = 1000 * 60 * 4;
 
 export const STATE_QUERY_POLLING_INTERVAL_DEFAULT = 5000;
-export const STATE_QUERY_POLLING_INTERVAL_BACKOFF = 2;
+export const STATE_QUERY_POLLING_INTERVAL_BACKOFF = 1.2;
 
 export const SUCCESS = 'success';
 export const WARNING = 'warning';

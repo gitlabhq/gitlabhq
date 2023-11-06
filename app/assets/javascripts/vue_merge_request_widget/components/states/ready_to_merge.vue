@@ -15,6 +15,7 @@ import { isEmpty, isNil } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import { createAlert } from '~/alert';
+import { fetchPolicies } from '~/lib/graphql';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
@@ -25,6 +26,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   AUTO_MERGE_STRATEGIES,
   MT_MERGE_STRATEGY,
@@ -148,7 +150,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [readyToMergeMixin, mergeRequestQueryVariablesMixin],
+  mixins: [readyToMergeMixin, mergeRequestQueryVariablesMixin, glFeatureFlagsMixin()],
   props: {
     mr: { type: Object, required: true },
     service: { type: Object, required: true },
@@ -329,6 +331,12 @@ export default {
     eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
     eventHub.$on('MRWidgetUpdateRequested', this.updateGraphqlState);
     eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
+
+    if (this.glFeatures.widgetPipelinePassSubscriptionUpdate) {
+      this.$apollo.queries.state.setOptions({
+        fetchPolicy: fetchPolicies.NO_CACHE,
+      });
+    }
   },
   beforeDestroy() {
     eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
