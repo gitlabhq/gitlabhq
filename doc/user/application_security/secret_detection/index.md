@@ -153,7 +153,7 @@ your GitLab CI/CD configuration file is complex.
 
    ```yaml
    include:
-     - template: Security/Secret-Detection.gitlab-ci.yml
+     - template: Jobs/Secret-Detection.gitlab-ci.yml
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
@@ -219,7 +219,7 @@ This example uses a specific minor version of the analyzer:
 
 ```yaml
 include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 secret_detection:
   variables:
@@ -249,7 +249,7 @@ In the following example _extract_ of a `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 secret_detection:
   variables:
@@ -309,7 +309,7 @@ variables:
   SECRET_DETECTION_IMAGE_SUFFIX: '-fips'
 
 include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 ```
 
 ## Full history Secret Detection
@@ -563,7 +563,7 @@ Prerequisites:
 
    ```yaml
    include:
-     - template: Security/Secret-Detection.gitlab-ci.yml
+     - template: Jobs/Secret-Detection.gitlab-ci.yml
 
    variables:
      SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
