@@ -273,6 +273,25 @@ POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
 
 If the request is successful, the returned JSON includes an array of rows of results.
 
+## View product analytics usage quota
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 with a [flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Product analytics usage quota is calculated from the number of events received from instrumented applications.
+The tab displays the monthly totals for the group, and a breakdown of usage per project. Current month shows events counted to date.
+
+To view product analytics usage quota:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage quota** and select the **Product analytics** tab.
+
+The usage quota excludes projects that are not onboarded with product analytics.
+
 ## Onboarding GitLab internal projects
 
 GitLab team members can enable Product Analytics on their own internal projects on GitLab.com during the experiment phase.

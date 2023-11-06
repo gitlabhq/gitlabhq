@@ -413,8 +413,6 @@
   - 1
 - - llm_namespace_access_cache_reset
   - 1
-- - llm_tanuki_bot_update
-  - 1
 - - llm_vertex_ai_access_token_refresh
   - 1
 - - mail_scheduler
@@ -472,6 +470,8 @@
 - - migrate_external_diffs
   - 1
 - - ml_experiment_tracking_associate_ml_candidate_to_package
+  - 1
+- - namespaces_free_user_cap_group_over_limit_notification
   - 1
 - - namespaces_process_sync_events
   - 1

@@ -44,11 +44,11 @@ describe('InputCopyToggleVisibility', () => {
   };
 
   function expectInputToBeMasked() {
-    expect(findFormInput().element.type).toBe('password');
+    expect(findFormInput().classes()).toContain('input-copy-show-disc');
   }
 
   function expectInputToBeRevealed() {
-    expect(findFormInput().element.type).toBe('text');
+    expect(findFormInput().classes()).not.toContain('input-copy-show-disc');
     expect(findFormInput().element.value).toBe(valueProp);
   }
 

@@ -20,10 +20,6 @@ module BulkImports
 
       process_bulk_import
       re_enqueue
-    rescue StandardError => e
-      Gitlab::ErrorTracking.track_exception(e, bulk_import_id: bulk_import.id)
-
-      bulk_import.fail_op
     end
 
     private

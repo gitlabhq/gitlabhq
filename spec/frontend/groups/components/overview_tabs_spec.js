@@ -362,9 +362,7 @@ describe('OverviewTabs', () => {
     describe('when sort direction is changed', () => {
       beforeEach(async () => {
         await setup();
-        await wrapper
-          .findByRole('button', { name: 'Sorting Direction: Ascending' })
-          .trigger('click');
+        await wrapper.findByRole('button', { name: 'Sort direction: Ascending' }).trigger('click');
       });
 
       it('updates query string with `sort` key', () => {

@@ -5,7 +5,11 @@ module QA
     module UserOnboarding
       extend self
 
-      def onboard_user(wait: Capybara.default_max_wait_time)
+      def onboard_user
+        # Implemented in EE only
+      end
+
+      def create_initial_project
         # Implemented in EE only
       end
     end

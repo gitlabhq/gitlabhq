@@ -118,29 +118,25 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
     end
   end
 
-  it 'logs and tracks the raised exceptions' do
-    exception = StandardError.new('Error!')
+  describe '#sidekiq_retries_exhausted' do
+    it 'logs export failure and marks entity as failed' do
+      exception = StandardError.new('Exhausted error!')
 
-    expect(BulkImports::PipelineWorker)
-      .to receive(:perform_async)
-      .and_raise(exception)
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_exception)
+        .with(exception, a_hash_including(
+          message: "Request to export #{entity.source_type} failed",
+          bulk_import_entity_id: entity.id,
+          bulk_import_id: entity.bulk_import_id,
+          bulk_import_entity_type: entity.source_type,
+          source_full_path: entity.source_full_path,
+          source_version: entity.bulk_import.source_version_info.to_s,
+          importer: 'gitlab_migration'
+        ))
 
-    expect(Gitlab::ErrorTracking)
-      .to receive(:track_exception)
-            .with(
-              exception,
-              hash_including(
-                bulk_import_entity_id: entity.id,
-                bulk_import_id: entity.bulk_import_id,
-                bulk_import_entity_type: entity.source_type,
-                source_full_path: entity.source_full_path,
-                source_version: entity.bulk_import.source_version_info.to_s,
-                importer: 'gitlab_migration'
-              )
-            )
+      described_class.sidekiq_retries_exhausted_block.call({ 'args' => [entity.id] }, exception)
 
-    worker.perform(entity.id)
-
-    expect(entity.reload.failed?).to eq(true)
+      expect(entity.reload.failed?).to eq(true)
+    end
   end
 end

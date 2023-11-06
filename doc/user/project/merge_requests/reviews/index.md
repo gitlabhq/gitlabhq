@@ -30,6 +30,9 @@ For an overview, see [Merge request review](https://www.youtube.com/watch?v=2May
 
 GitLab uses machine learning to suggest reviewers for your merge request.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [GitLab Duo Suggested Reviewers](https://www.youtube.com/embed/ivwZQgh4Rxw).
+
 To suggest reviewers, GitLab uses:
 
 - The changes in the merge request

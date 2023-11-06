@@ -56,6 +56,12 @@ When you choose the appropriate schema for tables, consider the following guidel
 - Default to `gitlab_main_cell`: We expect most tables to be assigned to the `gitlab_main_cell` schema by default. Choose this schema if the data in the table is related to `projects` or `namespaces`.
 - Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group This is crucial because it has scaling implications and may require reconsideration of the schema choice.
 
+After a schema has been assigned, the merge request pipeline might fail due to one or more of the following reasons, which can be rectified by following the linked guidelines:
+
+- [Cross-database joins](#suggestions-for-removing-cross-database-joins)
+- [Cross-database transactions](#fixing-cross-database-transactions)
+- [Cross-database foreign keys](#foreign-keys-that-cross-databases)
+
 ### The impact of `gitlab_schema`
 
 The usage of `gitlab_schema` has a significant impact on the application.

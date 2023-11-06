@@ -29,11 +29,11 @@ RSpec.shared_context 'with scan result policy preventing force pushing' do
 
   let(:policy_path) { Security::OrchestrationPolicyConfiguration::POLICY_PATH }
   let(:default_branch) { policy_project.default_branch }
-  let(:prevent_force_pushing) { true }
+  let(:prevent_pushing_and_force_pushing) { true }
 
   let(:scan_result_policy) do
     build(:scan_result_policy, branches: [branch_name],
-      approval_settings: { prevent_force_pushing: prevent_force_pushing })
+      approval_settings: { prevent_pushing_and_force_pushing: prevent_pushing_and_force_pushing })
   end
 
   let(:policy_yaml) do

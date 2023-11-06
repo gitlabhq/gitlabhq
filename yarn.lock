@@ -1274,10 +1274,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.69.0.tgz#bf76b8ffbe72a783807761a38abe8aaedcfe8c12"
   integrity sha512-Zu8Fcjhi3Bk26jZOptcD5F4SHWC7/KuAe00NULViCeswKdoda1k19B+9oCSbsbxY7vMoFuD20kiCJdBCpxb3HA==
 
-"@gitlab/ui@67.3.3":
-  version "67.3.3"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-67.3.3.tgz#11ce618a41288fd64ad0a5768dd517ac830fadc8"
-  integrity sha512-Gc+HYwB0MdEO0qDboNnDTROpItlWB1rFFqFqe7h/IuqJUHyr2NmUAvhrPINE6f56qa5GcMTDlFazmUUY4kcxCg==
+"@gitlab/ui@67.5.1":
+  version "67.5.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-67.5.1.tgz#e331b34fa920f8f26ab0635dc84d15cbd4ac29e3"
+  integrity sha512-nsIlkZlU9Sig/KyVMkiHUp2Mcg/H2h4U5wN7ROnTv5heLhCP5oCvRpzGuazzhR/oemPqnKv/53ySAosDokhlmA==
   dependencies:
     "@floating-ui/dom" "1.2.9"
     bootstrap-vue "2.23.1"
@@ -4513,10 +4513,10 @@ core-js-pure@^3.0.0:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.6.5.tgz#c79e75f5e38dbc85a662d91eea52b8256d53b813"
   integrity sha512-lacdXOimsiD0QyNf9BC/mxivNJ/ybBGJXQFKzRekp1WTHoVUWsUHEn+2T8GJAzzIhyOuXA+gOxCVN3l+5PLPUA==
 
-core-js@^3.29.1, core-js@^3.32.2, core-js@^3.6.5:
-  version "3.32.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.32.2.tgz#172fb5949ef468f93b4be7841af6ab1f21992db7"
-  integrity sha512-pxXSw1mYZPDGvTQqEc5vgIb83jGQKFGYWY76z4a7weZXUolw3G+OvpZqSRcfYOoOVUQJYEPsWeQK8pKEnUtWxQ==
+core-js@^3.29.1, core-js@^3.33.2, core-js@^3.6.5:
+  version "3.33.2"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.33.2.tgz#312bbf6996a3a517c04c99b9909cdd27138d1ceb"
+  integrity sha512-XeBzWI6QL3nJQiHmdzbAOiMYqjrb7hwU7A39Qhvd/POSa/t9E1AeZyEZx3fNvp/vtM8zXwhoL0FsiS0hD0pruQ==
 
 core-util-is@~1.0.0:
   version "1.0.3"

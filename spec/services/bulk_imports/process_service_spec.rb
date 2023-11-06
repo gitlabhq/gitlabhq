@@ -133,23 +133,6 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
           end
         end
       end
-
-      context 'when exception occurs' do
-        it 'tracks the exception & marks import as failed' do
-          create(:bulk_import_entity, :created, bulk_import: bulk_import)
-
-          allow(BulkImports::ExportRequestWorker).to receive(:perform_async).and_raise(StandardError)
-
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-            kind_of(StandardError),
-            bulk_import_id: bulk_import.id
-          )
-
-          subject.execute
-
-          expect(bulk_import.reload.failed?).to eq(true)
-        end
-      end
     end
 
     context 'when importing a group' do

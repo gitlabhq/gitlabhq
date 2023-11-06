@@ -44,6 +44,7 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
 
       before do # init redis connection with `test` env details
         redis_store_class.with(&:ping)
+        Gitlab::Redis::Queues.with(&:ping)
         RequestStore.clear!
       end
 

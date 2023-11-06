@@ -260,6 +260,8 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ## Get list of failed import records for group or project migration entity
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428016) in GitLab 16.6.
+
 ```plaintext
 GET /bulk_imports/:id/entities/:entity_id/failures
 ```

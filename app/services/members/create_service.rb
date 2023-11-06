@@ -29,6 +29,8 @@ module Members
       validate_invitable!
 
       add_members
+      after_add_hooks
+
       enqueue_onboarding_progress_action
 
       publish_event!
@@ -130,6 +132,10 @@ module Members
 
     def all_member_errors(member, existing_errors)
       existing_errors.concat(member.errors.full_messages).uniq
+    end
+
+    def after_add_hooks
+      # overridden in subclasses/ee
     end
 
     def after_execute(member:)

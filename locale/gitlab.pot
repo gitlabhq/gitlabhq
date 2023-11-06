@@ -5476,6 +5476,9 @@ msgstr ""
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
+msgid "Analytics|Analytics events by month"
+msgstr ""
+
 msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -5593,9 +5596,6 @@ msgstr ""
 msgid "Analytics|Event Props"
 msgstr ""
 
-msgid "Analytics|Event counts update hourly"
-msgstr ""
-
 msgid "Analytics|Events"
 msgstr ""
 
@@ -5615,6 +5615,9 @@ msgid "Analytics|Line chart"
 msgstr ""
 
 msgid "Analytics|Link clicks"
+msgstr ""
+
+msgid "Analytics|Month"
 msgstr ""
 
 msgid "Analytics|New dashboard"
@@ -5647,7 +5650,13 @@ msgstr ""
 msgid "Analytics|Previous month"
 msgstr ""
 
+msgid "Analytics|Product analytics usage is calculated based on the total number of events received from projects within the group. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "Analytics|Projects"
+msgstr ""
+
+msgid "Analytics|Projects (%{maxProjects} of %{totalProjects} shown)"
 msgstr ""
 
 msgid "Analytics|Referer"
@@ -5720,6 +5729,9 @@ msgid "Analytics|Updating dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Updating visualization %{visualizationName}"
+msgstr ""
+
+msgid "Analytics|Usage by month"
 msgstr ""
 
 msgid "Analytics|Usage by project"
@@ -21041,6 +21053,36 @@ msgid "Free top-level groups will soon be limited to %{free_users_limit} users a
 msgstr ""
 
 msgid "Free trial will expire in %{days}"
+msgstr ""
+
+msgid "FreeUserCap|Action required: %{namespace_name} group has been placed into a read-only state"
+msgstr ""
+
+msgid "FreeUserCap|Explore paid plans"
+msgstr ""
+
+msgid "FreeUserCap|Explore paid plans:"
+msgstr ""
+
+msgid "FreeUserCap|Manage members"
+msgstr ""
+
+msgid "FreeUserCap|Manage members:"
+msgstr ""
+
+msgid "FreeUserCap|Start a trial:"
+msgstr ""
+
+msgid "FreeUserCap|To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_user_limit} users or less. You can also %{upgrade_start}upgrade%{upgrade_end} to a paid tier, which do not have user limits. If you need additional time, you can %{trial_start}start a free 30-day trial%{trial_end} which includes unlimited users."
+msgstr ""
+
+msgid "FreeUserCap|Upgrade:"
+msgstr ""
+
+msgid "FreeUserCap|You have exceeded your limit of %{free_user_limit} users for %{namespace_name} group because users were added to a group inherited by a group or project in the %{namespace_name} group."
+msgstr ""
+
+msgid "FreeUserCap|You've exceeded your user limit"
 msgstr ""
 
 msgid "Freeze end"
@@ -50334,6 +50376,9 @@ msgstr ""
 msgid "Tracing|Attribute"
 msgstr ""
 
+msgid "Tracing|Attributes"
+msgstr ""
+
 msgid "Tracing|Check again"
 msgstr ""
 
@@ -50385,10 +50430,16 @@ msgstr ""
 msgid "Tracing|Last 7 days"
 msgstr ""
 
+msgid "Tracing|Metadata"
+msgstr ""
+
 msgid "Tracing|No traces to display."
 msgstr ""
 
 msgid "Tracing|Operation"
+msgstr ""
+
+msgid "Tracing|Resource attributes"
 msgstr ""
 
 msgid "Tracing|Select a service to load suggestions"
@@ -50401,15 +50452,6 @@ msgid "Tracing|Something went wrong while fetching the operations"
 msgstr ""
 
 msgid "Tracing|Something went wrong while fetching the services"
-msgstr ""
-
-msgid "Tracing|Span ID"
-msgstr ""
-
-msgid "Tracing|Span details"
-msgstr ""
-
-msgid "Tracing|Status code"
 msgstr ""
 
 msgid "Tracing|Time range"
