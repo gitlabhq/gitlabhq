@@ -381,6 +381,12 @@ export const PROJECT_FILES_GO_TO_PERMALINK = {
   defaultKeys: ['y'],
 };
 
+export const PROJECT_FILES_GO_TO_COMPARE = {
+  id: 'projectFiles.goToCompare',
+  description: __('Compare Branches'),
+  defaultKeys: ['shift+c'],
+};
+
 export const ISSUABLE_COMMENT_OR_REPLY = {
   id: 'issuables.commentReply',
   description: __('Comment/Reply (quoting selected text)'),
@@ -606,6 +612,7 @@ const PROJECT_FILES_SHORTCUTS_GROUP = {
     PROJECT_FILES_OPEN_SELECTION,
     PROJECT_FILES_GO_BACK,
     PROJECT_FILES_GO_TO_PERMALINK,
+    PROJECT_FILES_GO_TO_COMPARE,
   ],
 };
 

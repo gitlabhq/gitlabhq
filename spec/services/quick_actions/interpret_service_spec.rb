@@ -2422,6 +2422,17 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         expect(merge_request.approved_by_users).to be_empty
       end
 
+      it 'calls MergeRequests::UpdateReviewerStateService' do
+        expect_next_instance_of(
+          MergeRequests::UpdateReviewerStateService,
+          project: project, current_user: current_user
+        ) do |service|
+          expect(service).to receive(:execute).with(merge_request, "unreviewed")
+        end
+
+        service.execute(content, merge_request)
+      end
+
       context "when the user can't unapprove" do
         before do
           project.team.truncate

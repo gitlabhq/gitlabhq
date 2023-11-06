@@ -87,6 +87,28 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
 
         expect(response).to have_gitlab_http_status(:created)
       end
+
+      it 'calls MergeRequests::UpdateReviewerStateService' do
+        unapprover = create(:user)
+
+        project.add_developer(approver)
+        project.add_developer(unapprover)
+        project.add_developer(create(:user))
+
+        create(:approval, user: approver, merge_request: merge_request)
+        create(:approval, user: unapprover, merge_request: merge_request)
+
+        expect_next_instance_of(
+          MergeRequests::UpdateReviewerStateService,
+          project: project, current_user: unapprover
+        ) do |service|
+          expect(service).to receive(:execute).with(merge_request, "unreviewed")
+        end
+
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
     end
   end
 

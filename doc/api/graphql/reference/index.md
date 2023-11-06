@@ -29229,8 +29229,9 @@ State of a review of a GitLab merge request.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | The merge request is reviewed. |
-| <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | The merge request is unreviewed. |
+| <a id="mergerequestreviewstaterequested_changes"></a>`REQUESTED_CHANGES` | Merge request reviewer has requested changes. |
+| <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | Merge request reviewer has reviewed. |
+| <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | Awaiting review from merge request reviewer. |
 
 ### `MergeRequestSort`
 

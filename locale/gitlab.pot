@@ -12235,6 +12235,9 @@ msgstr ""
 msgid "Compare %{oldCommitId}...%{newCommitId}"
 msgstr ""
 
+msgid "Compare Branches"
+msgstr ""
+
 msgid "Compare GitLab editions"
 msgstr ""
 

@@ -228,21 +228,35 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
         let(:new_opts) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
 
-        it 'calls MergeRequests::MarkReviewerReviewedService service' do
-          expect_next_instance_of(
-            MergeRequests::MarkReviewerReviewedService,
-            project: project_with_repo, current_user: user
-          ) do |service|
-            expect(service).to receive(:execute).with(merge_request)
+        context 'when mr_request_changes feature flag is disabled' do
+          before do
+            stub_feature_flags(mr_request_changes: false)
           end
 
-          described_class.new(project_with_repo, user, new_opts).execute
+          it 'calls MergeRequests::UpdateReviewerStateService service' do
+            expect_next_instance_of(
+              MergeRequests::UpdateReviewerStateService,
+              project: project_with_repo, current_user: user
+            ) do |service|
+              expect(service).to receive(:execute).with(merge_request, "reviewed")
+            end
+
+            described_class.new(project_with_repo, user, new_opts).execute
+          end
+
+          it 'does not call MergeRequests::UpdateReviewerStateService service when skip_set_reviewed is true' do
+            expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
+
+            described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
+          end
         end
 
-        it 'does not call MergeRequests::MarkReviewerReviewedService service when skip_set_reviewed is true' do
-          expect(MergeRequests::MarkReviewerReviewedService).not_to receive(:new)
+        context 'when mr_request_changes feature flag is enabled' do
+          it 'does not call MergeRequests::UpdateReviewerStateService service when skip_set_reviewed is true' do
+            expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
 
-          described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
+            described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
+          end
         end
 
         context 'noteable highlight cache clearing' do

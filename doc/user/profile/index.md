@@ -62,6 +62,9 @@ To add new email to your account:
 1. Select **Add email address**.
 1. Verify your email address with the verification email received.
 
+NOTE:
+[Making your email non-public](#set-your-public-email) does not prevent it from being utilised for commit matching.
+
 ## Make your user profile page private
 
 You can make your user profile visible to only you and GitLab administrators.

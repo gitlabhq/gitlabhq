@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workflow do
   include RepoHelpers
 
-  let(:merge_request) { create(:merge_request) }
+  let_it_be(:merge_request) { create(:merge_request, reviewers: create_list(:user, 1)) }
   let(:project) { merge_request.target_project }
   let(:user) { merge_request.author }
   let(:commit) { project.commit(sample_commit.id) }
@@ -196,6 +196,29 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
         merge_request.notes.each do |note|
           expect(note.commit_id).to eq(commit_id)
         end
+      end
+    end
+
+    it 'does not call UpdateReviewerStateService' do
+      publish
+
+      expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
+    end
+
+    context 'when `mr_request_changes` feature flag is disabled' do
+      before do
+        stub_feature_flags(mr_request_changes: false)
+      end
+
+      it 'calls UpdateReviewerStateService' do
+        expect_next_instance_of(
+          MergeRequests::UpdateReviewerStateService,
+          project: project, current_user: user
+        ) do |service|
+          expect(service).to receive(:execute).with(merge_request, "reviewed")
+        end
+
+        publish
       end
     end
   end

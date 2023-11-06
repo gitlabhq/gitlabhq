@@ -135,6 +135,7 @@ These shortcuts are available when browsing the files in a project (go to
 | <kbd>Enter</kbd>  | Open selection. |
 | <kbd>Escape</kbd> | Go back to file list screen (only while searching for files, **Code > Repository**, then select **Find File**). |
 | <kbd>y</kbd>      | Go to file permalink (only while viewing a file). |
+| <kbd>Shift</kbd> + <kbd>c</kbd>  | Go to compare branches view. |
 | <kbd>.</kbd>      | Open the [Web IDE](project/web_ide/index.md). |
 
 ### Web IDE

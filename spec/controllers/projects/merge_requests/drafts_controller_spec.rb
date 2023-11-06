@@ -4,10 +4,10 @@ require 'spec_helper'
 RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :code_review_workflow do
   include RepoHelpers
 
-  let(:project)       { create(:project, :repository) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project, author: create(:user)) }
-  let(:user)          { project.first_owner }
-  let(:user2)         { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project, author: create(:user)) }
+  let(:user) { project.first_owner }
+  let_it_be(:user2) { create(:user) }
 
   let(:params) do
     {
@@ -18,6 +18,8 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
   end
 
   before do
+    create(:merge_request_reviewer, merge_request: merge_request, reviewer: user)
+
     sign_in(user)
     stub_licensed_features(multiple_merge_request_assignees: true)
     stub_commonmark_sourcepos_disabled
@@ -216,9 +218,12 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     end
 
     context 'without permissions' do
+      before_all do
+        project.add_developer(user2)
+      end
+
       before do
         sign_in(user2)
-        project.add_developer(user2)
       end
 
       it 'does not allow editing draft note belonging to someone else' do
@@ -282,7 +287,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       end
 
       context 'when note belongs to someone else' do
-        before do
+        before_all do
           project.add_developer(user2)
         end
 
@@ -465,6 +470,24 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       end
     end
 
+    context 'reviewer state' do
+      before do
+        create(:draft_note, merge_request: merge_request, author: user)
+      end
+
+      it 'updates reviewers state' do
+        post :publish, params: params.merge!(reviewer_state: 'requested_changes')
+
+        expect(merge_request.merge_request_reviewers.reload[0].state).to eq('requested_changes')
+      end
+
+      it 'approves merge request' do
+        post :publish, params: params.merge!(reviewer_state: 'approved')
+
+        expect(merge_request.approvals.reload.size).to eq(1)
+      end
+    end
+
     context 'approve merge request' do
       before do
         allow(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
@@ -517,9 +540,12 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     end
 
     context 'without permissions' do
+      before_all do
+        project.add_developer(user2)
+      end
+
       before do
         sign_in(user2)
-        project.add_developer(user2)
       end
 
       it 'does not allow destroying a draft note belonging to someone else' do
@@ -562,9 +588,12 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     end
 
     context 'without permissions' do
+      before_all do
+        project.add_developer(user2)
+      end
+
       before do
         sign_in(user2)
-        project.add_developer(user2)
       end
 
       it 'does not destroys a draft note belonging to someone else' do

@@ -79,7 +79,7 @@ For more information on running container images, see the [Docker documentation]
 Your container images must follow this naming convention:
 
 ```plaintext
-<registry URL>/<namespace>/<project>/<image>
+<registry server>/<namespace>/<project>[/<optional path>]
 ```
 
 For example, if your project is `gitlab.example.com/mynamespace/myproject`,
