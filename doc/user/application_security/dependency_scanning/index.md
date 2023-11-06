@@ -1097,6 +1097,17 @@ variables:
   GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
 ```
 
+## Using a proxy with Maven projects
+
+Maven does not read the `HTTP(S)_PROXY` environment variables.
+
+To make the Maven dependency scanner use a proxy, you can specify the options using the `MAVEN_CLI_OPTS` CI/CD variable:
+
+```yaml
+variables:
+  MAVEN_CLI_OPTS: "-DproxySet=true -Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3218"
+```
+
 ## Specific settings for languages and package managers
 
 See the following sections for configuring specific languages and package managers.

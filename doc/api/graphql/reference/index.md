@@ -5602,6 +5602,30 @@ Input type: `OncallScheduleUpdateInput`
 | <a id="mutationoncallscheduleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationoncallscheduleupdateoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | On-call schedule. |
 
+### `Mutation.organizationCreate`
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `OrganizationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationcreatename"></a>`name` | [`String!`](#string) | Name for the organization. |
+| <a id="mutationorganizationcreatepath"></a>`path` | [`String!`](#string) | Path for the organization. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationorganizationcreateorganization"></a>`organization` | [`Organization`](#organization) | Organization created. |
+
 ### `Mutation.pagesMarkOnboardingComplete`
 
 Input type: `PagesMarkOnboardingCompleteInput`

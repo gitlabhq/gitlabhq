@@ -20064,6 +20064,9 @@ msgstr ""
 msgid "Failed to create import label for jira import."
 msgstr ""
 
+msgid "Failed to create organization"
+msgstr ""
+
 msgid "Failed to create repository"
 msgstr ""
 
@@ -55218,6 +55221,9 @@ msgid "You have insufficient permissions to create an HTTP integration for this 
 msgstr ""
 
 msgid "You have insufficient permissions to create an on-call schedule for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to create organizations"
 msgstr ""
 
 msgid "You have insufficient permissions to delete a target branch rule"

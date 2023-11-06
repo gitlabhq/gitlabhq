@@ -34,8 +34,8 @@ See [target types](#target-types) for scan target priorities.
 
 ### Non-Goals
 
-Initial proposal is limited to detection and alerting across plaform, with rejection only
-during preceive Git interactions.
+Initial proposal is limited to detection and alerting across platform, with rejection only
+during [preceive Git interactions and browser-based detection](#iterations).
 
 Secret revocation and rotation is also beyond the scope of this new capability.
 
@@ -134,7 +134,7 @@ In order of priority this includes:
 
 Targets out of scope for the initial phases include:
 
-- Media types (JPEGs, PDFs,...)
+- Media types (JPEG, PDF, ...)
 - Snippets
 - Wikis
 - Container images
@@ -155,17 +155,17 @@ Token types to identify in order of importance:
 
 ### Detection engine
 
-Our current secret detection offering utilizes [Gitleaks](https://github.com/zricethezav/gitleaks/)
+Our current secret detection offering uses [Gitleaks](https://github.com/zricethezav/gitleaks/)
 for all secret scanning in pipeline contexts. By using its `--no-git` configuration
 we can scan arbitrary text blobs outside of a repository context and continue to
-utilize it for non-pipeline scanning.
+use it for non-pipeline scanning.
 
-In the case of prereceive detection, we rely on a combination of keyword/substring matches
-for prefiltering and `re2` for regex detections. See [spike issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423832) for initial benchmarks
+In the case of PreReceive detection, we rely on a combination of keyword/substring matches
+for pre-filtering and `re2` for regex detections. See [spike issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423832) for initial benchmarks
 
 Changes to the detection engine are out of scope until benchmarking unveils performance concerns.
 
-Notable alternatives include high-performance regex engines such as [hyperscan](https://github.com/intel/hyperscan) or it's portable fork [vectorscan](https://github.com/VectorCamp/vectorscan).
+Notable alternatives include high-performance regex engines such as [Hyperscan](https://github.com/intel/hyperscan) or it's portable fork [Vectorscan](https://github.com/VectorCamp/vectorscan).
 
 ### High-level architecture
 
@@ -217,7 +217,7 @@ sequenceDiagram
 - ✓ Implement [Browser-based detection of GitLab tokens in comments/issues](https://gitlab.com/gitlab-org/gitlab/-/issues/368434)
 - ✓ [PoC of secret scanning service](https://gitlab.com/gitlab-org/secure/pocs/secret-detection-go-poc/)
 - ✓ [PoC of secret scanning gem](https://gitlab.com/gitlab-org/gitlab/-/issues/426823)
-- [Pre Production Performance Profiling for pre-receive PoCs](https://gitlab.com/gitlab-org/gitlab/-/issues/428499)
+- [Pre-Production Performance Profiling for pre-receive PoCs](https://gitlab.com/gitlab-org/gitlab/-/issues/428499)
   - Profiling service capabilities
     - ✓ [Benchmarking regex performance between Ruby and Go approaches](https://gitlab.com/gitlab-org/gitlab/-/issues/423832)
     - gRPC commit retrieval from Gitaly

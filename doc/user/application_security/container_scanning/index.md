@@ -59,7 +59,7 @@ information directly in the merge request.
 
 ### Capabilities
 
-| Capability | In Free | In Ultimate |
+| Capability | In Free and Premium | In Ultimate |
 | --- | ------ | ------ |
 | [Configure Scanners](#configuration) | Yes | Yes |
 | Customize Settings ([Variables](#available-cicd-variables), [Overriding](#overriding-the-container-scanning-template), [offline environment support](#running-container-scanning-in-an-offline-environment), etc) | Yes | Yes |
