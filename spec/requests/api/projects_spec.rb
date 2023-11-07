@@ -325,7 +325,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       context 'filter by topic (column topic_list)' do
         before do
-          project.update!(topic_list: %w(ruby javascript))
+          project.update!(topic_list: %w[ruby javascript])
         end
 
         it 'returns no projects' do
@@ -894,7 +894,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     context 'sorting' do
       context 'by project statistics' do
-        %w(repository_size storage_size wiki_size packages_size).each do |order_by|
+        %w[repository_size storage_size wiki_size packages_size].each do |order_by|
           context "sorting by #{order_by}" do
             before do
               ProjectStatistics.update_all(order_by => 100)
@@ -2560,7 +2560,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       context 'and the project has a private repository' do
         let(:project) { create(:project, :repository, :public, :repository_private) }
-        let(:protected_attributes) { %w(default_branch ci_config_path) }
+        let(:protected_attributes) { %w[default_branch ci_config_path] }
 
         it 'hides protected attributes of private repositories if user is not a member' do
           get api(path, user)
@@ -3940,7 +3940,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(Project.find_by(path: project[:path]).analytics_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
-    %i(releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level model_experiments_access_level).each do |field|
+    %i[releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level model_experiments_access_level].each do |field|
       it "sets #{field}" do
         put api(path, user), params: { field => 'private' }
 

@@ -36,7 +36,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
       let(:path) { path_prefix }
 
       let(:release_fields) do
-        %{
+        %(
           tagName
           tagPath
           description
@@ -45,7 +45,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
           createdAt
           releasedAt
           upcomingRelease
-        }
+        )
       end
 
       before do
@@ -176,14 +176,14 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
       let(:path) { path_prefix + %w[links] }
 
       let(:release_fields) do
-        query_graphql_field(:links, nil, %{
+        query_graphql_field(:links, nil, %(
           selfUrl
           openedMergeRequestsUrl
           mergedMergeRequestsUrl
           closedMergeRequestsUrl
           openedIssuesUrl
           closedIssuesUrl
-        })
+        ))
       end
 
       it 'finds all release links' do
@@ -225,7 +225,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
       let(:path) { path_prefix }
 
       let(:release_fields) do
-        %{
+        %(
           tagName
           tagPath
           description
@@ -234,7 +234,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
           createdAt
           releasedAt
           upcomingRelease
-        }
+        )
       end
 
       before do
@@ -358,14 +358,14 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
       let(:path) { path_prefix + %w[links] }
 
       let(:release_fields) do
-        query_graphql_field(:links, nil, %{
+        query_graphql_field(:links, nil, %(
           selfUrl
           openedMergeRequestsUrl
           mergedMergeRequestsUrl
           closedMergeRequestsUrl
           openedIssuesUrl
           closedIssuesUrl
-        })
+        ))
       end
 
       it 'finds only selfUrl' do
@@ -547,10 +547,10 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
     let(:current_user) { developer }
 
     let(:release_fields) do
-      %{
+      %(
         releasedAt
         upcomingRelease
-      }
+      )
     end
 
     before do
@@ -588,13 +588,13 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
     let_it_be_with_reload(:release) { create(:release, project: project) }
 
     let(:release_fields) do
-      %{
+      %(
         milestones {
           nodes {
             title
           }
         }
-      }
+      )
     end
 
     let(:actual_milestone_title_order) do

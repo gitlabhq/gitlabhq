@@ -169,8 +169,8 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
       end
 
       it_behaves_like 'expected files argument', nil, nil
-      it_behaves_like 'expected files argument', %w(foo bar), %w(foo bar)
-      it_behaves_like 'expected files argument', 'foo', %w(foo)
+      it_behaves_like 'expected files argument', %w[foo bar], %w[foo bar]
+      it_behaves_like 'expected files argument', 'foo', %w[foo]
 
       context 'when files has an invalid value' do
         let(:uploaded_files) { [1] }

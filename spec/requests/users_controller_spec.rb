@@ -600,7 +600,7 @@ RSpec.describe UsersController, feature_category: :user_management do
       end
     end
 
-    %i(html json).each do |format|
+    %i[html json].each do |format|
       context "with format: #{format}" do
         let(:format) { format }
 
@@ -656,7 +656,7 @@ RSpec.describe UsersController, feature_category: :user_management do
       end
     end
 
-    %i(html json).each do |format|
+    %i[html json].each do |format|
       context "with format: #{format}" do
         let(:format) { format }
 

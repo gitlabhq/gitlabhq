@@ -21,6 +21,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         DEFAULT_DUPLICATE_KEY_TTL = 6.hours
+        SHORT_DUPLICATE_KEY_TTL = 10.minutes
         DEFAULT_STRATEGY = :until_executing
         STRATEGY_NONE = :none
 
@@ -134,7 +135,7 @@ module Gitlab
           jid != existing_jid
         end
 
-        def set_deduplicated_flag!(expiry = duplicate_key_ttl)
+        def set_deduplicated_flag!
           return unless reschedulable?
 
           with_redis { |redis| redis.eval(DEDUPLICATED_SCRIPT, keys: [cookie_key]) }
@@ -173,7 +174,7 @@ module Gitlab
         end
 
         def duplicate_key_ttl
-          options[:ttl] || DEFAULT_DUPLICATE_KEY_TTL
+          options[:ttl] || default_duplicate_key_ttl
         end
 
         private
@@ -181,6 +182,12 @@ module Gitlab
         attr_writer :existing_wal_locations
         attr_reader :queue_name, :job
         attr_writer :existing_jid
+
+        def default_duplicate_key_ttl
+          return SHORT_DUPLICATE_KEY_TTL if Feature.enabled?(:reduce_duplicate_job_key_ttl)
+
+          DEFAULT_DUPLICATE_KEY_TTL
+        end
 
         def worker_klass
           @worker_klass ||= worker_class_name.to_s.safe_constantize

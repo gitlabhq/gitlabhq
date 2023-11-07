@@ -96,7 +96,7 @@ RSpec.describe API::Unleash, feature_category: :feature_flags do
     end
   end
 
-  %w(/feature_flags/unleash/:project_id/features /feature_flags/unleash/:project_id/client/features).each do |features_endpoint|
+  %w[/feature_flags/unleash/:project_id/features /feature_flags/unleash/:project_id/client/features].each do |features_endpoint|
     describe "GET #{features_endpoint}", :use_clean_rails_redis_caching do
       let(:features_url) { features_endpoint.sub(':project_id', project_id.to_s) }
       let(:client) { create(:operations_feature_flags_client, project: project) }

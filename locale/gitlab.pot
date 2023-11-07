@@ -41701,6 +41701,9 @@ msgstr ""
 msgid "Runners|View metrics"
 msgstr ""
 
+msgid "Runners|View runners list"
+msgstr ""
+
 msgid "Runners|Wait time (secs)"
 msgstr ""
 

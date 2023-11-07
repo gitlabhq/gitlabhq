@@ -90,6 +90,6 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature
 
     variables_data = graphql_data.dig('project', 'pipelines', 'nodes').first
       .dig('jobs', 'nodes').flat_map { |job| job.dig('manualVariables', 'nodes') }
-    expect(variables_data.map { |var| var['key'] }).to match_array(%w(MANUAL_TEST_VAR_1 MANUAL_TEST_VAR_2))
+    expect(variables_data.map { |var| var['key'] }).to match_array(%w[MANUAL_TEST_VAR_1 MANUAL_TEST_VAR_2])
   end
 end

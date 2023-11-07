@@ -48,7 +48,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             description: 'server.hostname',
             maintenance_note: 'Some maintainer notes',
             run_untagged: false,
-            tag_list: %w(tag1 tag2),
+            tag_list: %w[tag1 tag2],
             locked: true,
             active: true,
             access_level: 'ref_protected',
@@ -167,7 +167,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
         end
 
-        %w(name version revision platform architecture).each do |param|
+        %w[name version revision platform architecture].each do |param|
           context "when info parameter '#{param}' info is present" do
             let(:value) { "#{param}_value" }
 

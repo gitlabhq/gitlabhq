@@ -14,7 +14,7 @@ RSpec.describe 'query terraform states', feature_category: :infrastructure_as_co
     graphql_query_for(
       :project,
       { fullPath: project.full_path },
-      %{
+      %(
         terraformStates {
           count
           nodes {
@@ -45,7 +45,7 @@ RSpec.describe 'query terraform states', feature_category: :infrastructure_as_co
             }
           }
         }
-      }
+      )
     )
   end
 

@@ -111,12 +111,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       it 'returns new recovery codes when the user exists' do
         allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
         allow_any_instance_of(User)
-          .to receive(:generate_otp_backup_codes!).and_return(%w(119135e5a3ebce8e 34bd7b74adbc8861))
+          .to receive(:generate_otp_backup_codes!).and_return(%w[119135e5a3ebce8e 34bd7b74adbc8861])
 
         subject
 
         expect(json_response['success']).to be_truthy
-        expect(json_response['recovery_codes']).to match_array(%w(119135e5a3ebce8e 34bd7b74adbc8861))
+        expect(json_response['recovery_codes']).to match_array(%w[119135e5a3ebce8e 34bd7b74adbc8861])
       end
     end
 
@@ -200,7 +200,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
            params: {
              key_id: key.id,
              name: 'newtoken',
-             scopes: %w(read_api badscope read_repository)
+             scopes: %w[read_api badscope read_repository]
            },
            headers: gitlab_shell_internal_api_request_header
 
@@ -216,14 +216,14 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           params: {
             key_id: key.id,
             name: 'newtoken',
-            scopes: %w(read_api read_repository),
+            scopes: %w[read_api read_repository],
             expires_at: max_pat_access_token_lifetime
           },
           headers: gitlab_shell_internal_api_request_header
 
         expect(json_response['success']).to be_truthy
         expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
-        expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+        expect(json_response['scopes']).to match_array(%w[read_api read_repository])
         expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
       end
     end
@@ -236,14 +236,14 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           params: {
             key_id: key.id,
             name: 'newtoken',
-            scopes: %w(read_api read_repository),
+            scopes: %w[read_api read_repository],
             expires_at: 365.days.from_now
           },
           headers: gitlab_shell_internal_api_request_header
 
         expect(json_response['success']).to be_truthy
         expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
-        expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+        expect(json_response['scopes']).to match_array(%w[read_api read_repository])
         expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
       end
     end
@@ -897,7 +897,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         {
           'action' => 'geo_proxy_to_primary',
           'data' => {
-            'api_endpoints' => %w{geo/proxy_git_ssh/info_refs_receive_pack geo/proxy_git_ssh/receive_pack},
+            'api_endpoints' => %w[geo/proxy_git_ssh/info_refs_receive_pack geo/proxy_git_ssh/receive_pack],
             'gl_username' => 'testuser',
             'primary_repo' => 'http://localhost:3000/testuser/repo.git'
           }

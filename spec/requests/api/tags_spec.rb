@@ -206,7 +206,7 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
             expect(response).to match_response_schema('public_api/v4/tags')
             expect(response.headers).to include('Link')
             tag_names = json_response.map { |x| x['name'] }
-            expect(tag_names).to match_array(%w(v1.1.0 v1.1.1))
+            expect(tag_names).to match_array(%w[v1.1.0 v1.1.1])
           end
         end
 

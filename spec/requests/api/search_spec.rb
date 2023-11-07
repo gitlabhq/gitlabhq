@@ -140,14 +140,14 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
 
     context 'when DB timeouts occur from global searches', :aggregate_failures do
-      %w(
+      %w[
         issues
         merge_requests
         milestones
         projects
         snippet_titles
         users
-      ).each do |scope|
+      ].each do |scope|
         it "returns a 408 error if search with scope: #{scope} times out" do
           allow(SearchService).to receive(:new).and_raise ActiveRecord::QueryCanceled
           get api(endpoint, user), params: { scope: scope, search: 'awesome' }

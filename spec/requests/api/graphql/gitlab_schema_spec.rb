@@ -113,7 +113,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
   context 'regular queries' do
     subject do
-      query = graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id name description))
+      query = graphql_query_for('project', { 'fullPath' => project.full_path }, %w[id name description])
       post_graphql(query)
     end
 
@@ -125,7 +125,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
     subject do
       queries = [
-        { query: graphql_query_for('project', { 'fullPath' => '$fullPath' }, %w(id name description)) }, # Complexity 4
+        { query: graphql_query_for('project', { 'fullPath' => '$fullPath' }, %w[id name description]) }, # Complexity 4
         { query: graphql_query_for('echo', { 'text' => "$test" }, []), variables: { "test" => "Hello world" } }, # Complexity 1
         { query: graphql_query_for('project', { 'fullPath' => project.full_path }, "userPermissions { createIssue }") } # Complexity 3
       ]
@@ -215,7 +215,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
   context "global id's" do
     it 'uses GlobalID to expose ids' do
-      post_graphql(graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id)),
+      post_graphql(graphql_query_for('project', { 'fullPath' => project.full_path }, %w[id]),
                    current_user: project.first_owner)
 
       parsed_id = GlobalID.parse(graphql_data['project']['id'])

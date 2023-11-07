@@ -121,6 +121,19 @@ module API
                 error!(response.message, 400)
               end
             end
+
+            desc 'Deletes all user vscode setting resources' do
+              success [{ code: 200, message: 'OK' }]
+              failure [
+                { code: 401, message: '401 Unauthorized' }
+              ]
+              tags %w[vscode]
+            end
+            delete '/v1/collection' do
+              DeleteService.new(current_user: current_user).execute
+
+              present "OK"
+            end
           end
         end
       end

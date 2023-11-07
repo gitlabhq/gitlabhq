@@ -49,7 +49,7 @@ RSpec.describe 'getting container repositories in a group', feature_category: :s
     group.add_owner(owner)
     stub_container_registry_config(enabled: true)
     container_repositories.each do |repository|
-      stub_container_registry_tags(repository: repository.path, tags: %w(tag1 tag2 tag3), with_manifest: false)
+      stub_container_registry_tags(repository: repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
     end
   end
 
@@ -142,7 +142,7 @@ RSpec.describe 'getting container repositories in a group', feature_category: :s
     end
 
     before do
-      stub_container_registry_tags(repository: container_repository.path, tags: %w(tag4 tag5 tag6), with_manifest: false)
+      stub_container_registry_tags(repository: container_repository.path, tags: %w[tag4 tag5 tag6], with_manifest: false)
     end
 
     it 'returns the searched container repository' do

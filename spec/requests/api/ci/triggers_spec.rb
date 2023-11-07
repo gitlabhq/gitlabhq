@@ -81,7 +81,7 @@ RSpec.describe API::Ci::Triggers, feature_category: :continuous_integration do
         end
 
         it 'validates variables needs to be a map of key-valued strings' do
-          post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(variables: { 'TRIGGER_KEY' => %w(1 2) }, ref: 'master')
+          post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(variables: { 'TRIGGER_KEY' => %w[1 2] }, ref: 'master')
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')

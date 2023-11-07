@@ -46,7 +46,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
   before do
     stub_container_registry_config(enabled: true)
     container_repositories.each do |repository|
-      stub_container_registry_tags(repository: repository.path, tags: %w(tag1 tag2 tag3), with_manifest: false)
+      stub_container_registry_tags(repository: repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
     end
   end
 
@@ -141,7 +141,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
     end
 
     before do
-      stub_container_registry_tags(repository: container_repository.path, tags: %w(tag4 tag5 tag6), with_manifest: false)
+      stub_container_registry_tags(repository: container_repository.path, tags: %w[tag4 tag5 tag6], with_manifest: false)
     end
 
     it 'returns the searched container repository' do
@@ -175,11 +175,11 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
     let_it_be(:container_repository5) { create(:container_repository, name: 'e', project: sort_project) }
 
     before do
-      stub_container_registry_tags(repository: container_repository1.path, tags: %w(tag1 tag1 tag3), with_manifest: false)
-      stub_container_registry_tags(repository: container_repository2.path, tags: %w(tag4 tag5 tag6), with_manifest: false)
-      stub_container_registry_tags(repository: container_repository3.path, tags: %w(tag7 tag8), with_manifest: false)
-      stub_container_registry_tags(repository: container_repository4.path, tags: %w(tag9), with_manifest: false)
-      stub_container_registry_tags(repository: container_repository5.path, tags: %w(tag10 tag11), with_manifest: false)
+      stub_container_registry_tags(repository: container_repository1.path, tags: %w[tag1 tag1 tag3], with_manifest: false)
+      stub_container_registry_tags(repository: container_repository2.path, tags: %w[tag4 tag5 tag6], with_manifest: false)
+      stub_container_registry_tags(repository: container_repository3.path, tags: %w[tag7 tag8], with_manifest: false)
+      stub_container_registry_tags(repository: container_repository4.path, tags: %w[tag9], with_manifest: false)
+      stub_container_registry_tags(repository: container_repository5.path, tags: %w[tag10 tag11], with_manifest: false)
     end
 
     def pagination_query(params)

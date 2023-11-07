@@ -104,23 +104,32 @@ RSpec.describe Gitlab::Ci::Build::Policy::Variables do
 
     context 'when using project ci variables in environment scope' do
       let(:ci_build) do
-        build(:ci_build, pipeline: pipeline,
-                         project: project,
-                         ref: 'master',
-                         stage: 'review',
-                         environment: 'test/$CI_JOB_STAGE/1',
-                         ci_stage: build(:ci_stage, name: 'review', project: project, pipeline: pipeline))
+        build(
+          :ci_build,
+          pipeline: pipeline,
+          project: project,
+          ref: 'master',
+          stage: 'review',
+          environment: 'test/$CI_JOB_STAGE/1',
+          ci_stage: build(:ci_stage, name: 'review', project: project, pipeline: pipeline)
+        )
       end
 
       before do
-        create(:ci_variable, project: project,
-                             key: 'SCOPED_VARIABLE',
-                             value: 'my-value-1')
+        create(
+          :ci_variable,
+          project: project,
+          key: 'SCOPED_VARIABLE',
+          value: 'my-value-1'
+        )
 
-        create(:ci_variable, project: project,
-                             key: 'SCOPED_VARIABLE',
-                             value: 'my-value-2',
-                             environment_scope: 'test/review/*')
+        create(
+          :ci_variable,
+          project: project,
+          key: 'SCOPED_VARIABLE',
+          value: 'my-value-2',
+          environment_scope: 'test/review/*'
+        )
       end
 
       it 'is satisfied by scoped variable match' do

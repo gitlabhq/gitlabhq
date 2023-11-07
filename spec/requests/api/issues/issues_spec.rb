@@ -638,7 +638,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
 
         it 'returns an empty array if no issue matches labels with labels param as array' do
-          get api('/issues', user), params: { labels: %w(foo bar) }
+          get api('/issues', user), params: { labels: %w[foo bar] }
 
           expect_paginated_array_response([])
         end
@@ -914,7 +914,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
 
         it 'fails to sort with non predefined options' do
-          %w(milestone abracadabra).each do |sort_opt|
+          %w[milestone abracadabra].each do |sort_opt|
             get api('/issues', user), params: { order_by: sort_opt, sort: 'asc' }
             expect(response).to have_gitlab_http_status(:bad_request)
           end

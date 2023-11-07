@@ -341,6 +341,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_eaec934fe6b2() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."id_convert_to_bigint" := NEW."id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION unset_has_issues_on_vulnerability_reads() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -16528,8 +16537,6 @@ CREATE TABLE geo_node_statuses (
     id integer NOT NULL,
     geo_node_id integer NOT NULL,
     db_replication_lag_seconds integer,
-    repositories_synced_count integer,
-    repositories_failed_count integer,
     lfs_objects_count integer,
     lfs_objects_synced_count integer,
     lfs_objects_failed_count integer,
@@ -16549,15 +16556,9 @@ CREATE TABLE geo_node_statuses (
     job_artifacts_failed_count integer,
     version character varying,
     revision character varying,
-    repositories_verified_count integer,
-    repositories_verification_failed_count integer,
     lfs_objects_synced_missing_on_primary_count integer,
     job_artifacts_synced_missing_on_primary_count integer,
-    repositories_checksummed_count integer,
-    repositories_checksum_failed_count integer,
-    repositories_checksum_mismatch_count integer,
     storage_configuration_digest bytea,
-    repositories_retrying_verification_count integer,
     projects_count integer,
     container_repositories_count integer,
     container_repositories_synced_count integer,
@@ -23747,7 +23748,8 @@ CREATE TABLE system_note_metadata (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     description_version_id bigint,
-    note_id bigint NOT NULL
+    note_id bigint NOT NULL,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE system_note_metadata_id_seq
@@ -36830,6 +36832,8 @@ CREATE TRIGGER trigger_7f3d66a7d7f5 BEFORE INSERT OR UPDATE ON ci_pipeline_varia
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
+
+CREATE TRIGGER trigger_eaec934fe6b2 BEFORE INSERT OR UPDATE ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION trigger_eaec934fe6b2();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 

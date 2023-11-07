@@ -55,8 +55,8 @@ RSpec.describe 'query Jira projects', feature_category: :integrations do
       project_ids = jira_projects.map { |jp| jp['projectId'] }
 
       expect(jira_projects.size).to eq(2)
-      expect(project_keys).to eq(%w(EX ABC))
-      expect(project_names).to eq(%w(Example Alphabetical))
+      expect(project_keys).to eq(%w[EX ABC])
+      expect(project_names).to eq(%w[Example Alphabetical])
       expect(project_ids).to eq([10000, 10001])
     end
 
@@ -69,8 +69,8 @@ RSpec.describe 'query Jira projects', feature_category: :integrations do
             project_ids = jira_projects.map { |jp| jp['projectId'] }
 
             expect(jira_projects.size).to eq(1)
-            expect(project_keys).to eq(%w(EX))
-            expect(project_names).to eq(%w(Example))
+            expect(project_keys).to eq(%w[EX])
+            expect(project_names).to eq(%w[Example])
             expect(project_ids).to eq([10000])
           end
         end

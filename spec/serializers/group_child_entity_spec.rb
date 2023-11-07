@@ -144,13 +144,13 @@ RSpec.describe GroupChildEntity do
       end
 
       it 'includes the counts' do
-        expect(json.keys).to include(*%i(project_count subgroup_count))
+        expect(json.keys).to include(*%i[project_count subgroup_count])
       end
     end
 
     describe 'user is not a member of the group' do
       it 'does not include the counts' do
-        expect(json.keys).not_to include(*%i(project_count subgroup_count))
+        expect(json.keys).not_to include(*%i[project_count subgroup_count])
       end
     end
 
@@ -162,7 +162,7 @@ RSpec.describe GroupChildEntity do
       end
 
       it 'does not include the counts' do
-        expect(json.keys).not_to include(*%i(project_count subgroup_count))
+        expect(json.keys).not_to include(*%i[project_count subgroup_count])
       end
     end
   end

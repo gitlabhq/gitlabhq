@@ -255,7 +255,7 @@ module QA
 
           Page::Main::Menu.validate_elements_present!
 
-          # validate_canary!
+          validate_canary!
         end
 
         def fill_in_credential(user)

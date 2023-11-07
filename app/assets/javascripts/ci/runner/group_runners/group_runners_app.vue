@@ -14,6 +14,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
 import groupRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners.query.graphql';
 
+import RunnerListHeader from '../components/runner_list_header.vue';
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
@@ -44,6 +45,7 @@ export default {
   components: {
     GlButton,
     GlLink,
+    RunnerListHeader,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
     RunnerList,
@@ -209,11 +211,9 @@ export default {
 
 <template>
   <div>
-    <header class="gl-my-5 gl-display-flex gl-justify-content-space-between">
-      <h2 class="gl-my-0 header-title">
-        {{ s__('Runners|Runners') }}
-      </h2>
-      <div class="gl-display-flex gl-gap-3">
+    <runner-list-header>
+      <template #title>{{ s__('Runners|Runners') }}</template>
+      <template #actions>
         <gl-button
           v-if="newRunnerPath"
           :href="newRunnerPath"
@@ -228,8 +228,9 @@ export default {
           :type="$options.GROUP_TYPE"
           placement="right"
         />
-      </div>
-    </header>
+      </template>
+    </runner-list-header>
+
     <div
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
     >

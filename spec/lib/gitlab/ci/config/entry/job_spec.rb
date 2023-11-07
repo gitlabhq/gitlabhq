@@ -790,19 +790,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         end
 
         it 'returns correct value' do
-          expect(entry.value)
-            .to eq(name: :rspec,
-                   before_script: %w[ls pwd],
-                   script: %w[rspec],
-                   stage: 'test',
-                   ignore: false,
-                   after_script: %w[cleanup],
-                   hooks: { pre_get_sources_script: ['echo hello'] },
-                   only: { refs: %w[branches tags] },
-                   job_variables: {},
-                   root_variables_inheritance: true,
-                   scheduling_type: :stage,
-                   id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
+          expect(entry.value).to eq(
+            name: :rspec,
+            before_script: %w[ls pwd],
+            script: %w[rspec],
+            stage: 'test',
+            ignore: false,
+            after_script: %w[cleanup],
+            hooks: { pre_get_sources_script: ['echo hello'] },
+            only: { refs: %w[branches tags] },
+            job_variables: {},
+            root_variables_inheritance: true,
+            scheduling_type: :stage,
+            id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } }
+          )
         end
       end
     end

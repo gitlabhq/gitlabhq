@@ -202,12 +202,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           let(:expected_steps) do
             [{ 'name' => 'script',
-               'script' => %w(echo),
+               'script' => %w[echo],
                'timeout' => job.metadata_timeout,
                'when' => 'on_success',
                'allow_failure' => false },
              { 'name' => 'after_script',
-               'script' => %w(ls date),
+               'script' => %w[ls date],
                'timeout' => job.metadata_timeout,
                'when' => 'always',
                'allow_failure' => true }]
@@ -226,7 +226,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           let(:expected_artifacts) do
             [{ 'name' => 'artifacts_file',
                'untracked' => false,
-               'paths' => %w(out/),
+               'paths' => %w[out/],
                'when' => 'always',
                'expire_in' => '7d',
                "artifact_type" => "archive",
@@ -461,7 +461,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect { request_job }.to change { runner.reload.contacted_at }
           end
 
-          %w(version revision platform architecture).each do |param|
+          %w[version revision platform architecture].each do |param|
             context "when info parameter '#{param}' is present" do
               let(:value) { "#{param}_value" }
 

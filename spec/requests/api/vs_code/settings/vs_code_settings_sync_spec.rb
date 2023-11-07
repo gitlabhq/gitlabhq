@@ -203,4 +203,28 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
       expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
+
+  describe 'DELETE /vscode/settings_sync/v1/collection' do
+    let(:path) { "/vscode/settings_sync/v1/collection" }
+
+    subject(:request) do
+      delete api(path, personal_access_token: user_token)
+    end
+
+    it 'returns unauthorized when not authenticated' do
+      delete api(path)
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    context 'when user has one or more setting resources' do
+      before do
+        create(:vscode_setting, setting_type: 'globalState')
+        create(:vscode_setting, setting_type: 'extensions')
+      end
+
+      it 'deletes all user setting resources' do
+        expect { request }.to change { User.find(user.id).vscode_settings.count }.from(2).to(0)
+      end
+    end
+  end
 end

@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Migration::SidekiqQueueMigrate do
       allow(cop).to receive(:in_post_deployment_migration?).and_return(false)
     end
 
-    %w(up down change any_other_method).each do |method_name|
+    %w[up down change any_other_method].each do |method_name|
       it "registers an offense when sidekiq_queue_migrate is used in ##{method_name}" do
         expect_offense(<<~RUBY)
           def #{method_name}

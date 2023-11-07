@@ -266,7 +266,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           expect(json_response.dig('project', 'groups')).to match_array([{ 'id' => group.id }])
           expect(json_response.dig('user', 'id')).to eq(api_user.id)
           expect(json_response.dig('user', 'username')).to eq(api_user.username)
-          expect(json_response.dig('user', 'roles_in_project')).to match_array %w(guest reporter developer)
+          expect(json_response.dig('user', 'roles_in_project')).to match_array %w[guest reporter developer]
           expect(json_response).not_to include('environment')
         end
 
@@ -450,7 +450,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
 
       context 'filter project with array of scope elements' do
-        let(:query) { { scope: %w(pending running) } }
+        let(:query) { { scope: %w[pending running] } }
 
         it do
           expect(response).to have_gitlab_http_status(:ok)
@@ -459,7 +459,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
 
       context 'respond 400 when scope contains invalid state' do
-        let(:query) { { scope: %w(unknown running) } }
+        let(:query) { { scope: %w[unknown running] } }
 
         it { expect(response).to have_gitlab_http_status(:bad_request) }
       end

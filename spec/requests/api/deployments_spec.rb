@@ -424,7 +424,7 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         )
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['status']).to include(%{cannot transition via \"run\"})
+        expect(json_response['message']['status']).to include(%(cannot transition via \"run\"))
       end
 
       it 'links merge requests when the deployment status changes to success', :sidekiq_inline do

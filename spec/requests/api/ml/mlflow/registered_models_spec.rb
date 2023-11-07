@@ -131,4 +131,37 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
       it_behaves_like 'MLflow|Requires api scope and write permission'
     end
   end
+
+  describe 'PATCH /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/update' do
+    let(:model_name) { model.name }
+    let(:model_description) { 'updated model description' }
+    let(:params) { { name: model_name, description: model_description } }
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/update" }
+    let(:request) { patch api(route), params: params, headers: headers }
+
+    it 'returns the updated model', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      is_expected.to match_response_schema('ml/update_model')
+      expect(json_response["registered_model"]["description"]).to eq(model_description)
+    end
+
+    describe 'Error States' do
+      context 'when has access' do
+        context 'and model does not exist' do
+          let(:model_name) { 'foo' }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+
+        context 'and name is not passed' do
+          let(:params) { { description: model_description } }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+      end
+
+      it_behaves_like 'MLflow|shared error cases'
+      it_behaves_like 'MLflow|Requires read_api scope'
+    end
+  end
 end

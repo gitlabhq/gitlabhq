@@ -20,7 +20,7 @@ RSpec.describe 'query a single terraform state', feature_category: :infrastructu
       query_graphql_field(
         :terraformState,
         { name: terraform_state.name },
-        %{
+        %(
           id
           name
           lockedAt
@@ -45,7 +45,7 @@ RSpec.describe 'query a single terraform state', feature_category: :infrastructu
           lockedByUser {
             id
           }
-        }
+        )
       )
     )
   end

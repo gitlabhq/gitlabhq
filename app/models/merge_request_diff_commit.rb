@@ -33,7 +33,6 @@ class MergeRequestDiffCommit < ApplicationRecord
   belongs_to :committer, class_name: 'MergeRequest::DiffCommitUser'
 
   sha_attribute :sha
-  alias_attribute :id, :sha
 
   attribute :trailers, :ind_jsonb
   validates :trailers, json_schema: { filename: 'git_trailers' }
@@ -128,5 +127,9 @@ class MergeRequestDiffCommit < ApplicationRecord
 
   def committer_email
     committer&.email
+  end
+
+  def to_hash
+    super.merge({ 'id' => sha })
   end
 end

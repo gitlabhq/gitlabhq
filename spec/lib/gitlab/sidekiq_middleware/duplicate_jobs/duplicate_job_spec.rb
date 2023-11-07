@@ -106,9 +106,21 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
         end
 
         context 'when TTL option is not set' do
-          let(:expected_ttl) { described_class::DEFAULT_DUPLICATE_KEY_TTL }
+          context 'when reduce_duplicate_job_key_ttl is enabled' do
+            let(:expected_ttl) { described_class::SHORT_DUPLICATE_KEY_TTL }
 
-          it_behaves_like 'sets Redis keys with correct TTL'
+            it_behaves_like 'sets Redis keys with correct TTL'
+          end
+
+          context 'when reduce_duplicate_job_key_ttl is disabled' do
+            before do
+              stub_feature_flags(reduce_duplicate_job_key_ttl: false)
+            end
+
+            let(:expected_ttl) { described_class::DEFAULT_DUPLICATE_KEY_TTL }
+
+            it_behaves_like 'sets Redis keys with correct TTL'
+          end
         end
 
         context 'when TTL option is set' do

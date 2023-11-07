@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Performance::ReadlinesEach do
   end
 
   context 'when reading all lines using IO.readlines.each' do
-    %w(IO File).each do |klass|
+    %w[IO File].each do |klass|
       it_behaves_like('class read', klass)
     end
 

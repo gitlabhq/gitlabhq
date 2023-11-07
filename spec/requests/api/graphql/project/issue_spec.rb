@@ -108,7 +108,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid)', feature_category: :team_pla
       let(:object_field_name) { :design }
 
       let(:no_argument_error) do
-        custom_graphql_error(path, a_string_matching(%r/id or filename/))
+        custom_graphql_error(path, a_string_matching(%r{id or filename}))
       end
 
       let_it_be(:object_on_other_issue) { create(:design, issue: issue_b) }
@@ -134,7 +134,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid)', feature_category: :team_pla
         it 'raises an error' do
           post_query
 
-          expect(graphql_errors).to include(custom_graphql_error(path, a_string_matching(%r/id or sha/)))
+          expect(graphql_errors).to include(custom_graphql_error(path, a_string_matching(%r{id or sha})))
         end
       end
 

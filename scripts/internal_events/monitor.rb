@@ -40,7 +40,9 @@ def metric_definitions_from_args
 end
 
 def red(text)
-  "\e[31m#{text}\e[0m"
+  @pastel ||= Pastel.new
+
+  @pastel.red(text)
 end
 
 def snowplow_data
@@ -142,15 +144,13 @@ rescue Errno::ECONNREFUSED
   exit 1
 end
 
-print "\e[?1049h" # Stores the original screen buffer
-print "\e[H" # Moves the cursor home
 begin
   loop do
     metrics_table = generate_metrics_table
     events_table = generate_snowplow_table
 
-    print "\e[H" # Moves the cursor home
-    print "\e[2J" # Clears the screen buffer
+    print TTY::Cursor.clear_screen
+    print TTY::Cursor.move_to(0, 0)
 
     puts "Updated at #{Time.current}"
     puts "Monitored events: #{ARGV.join(', ')}"
@@ -164,7 +164,4 @@ begin
   end
 rescue Interrupt
   # Quietly shut down
-ensure
-  print "\e[?1049l" # Restores the original screen buffer
-  print "\e[H" # Moves the cursor home
 end

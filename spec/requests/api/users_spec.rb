@@ -4539,7 +4539,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
   describe 'POST /users/:user_id/personal_access_tokens' do
     let(:name) { 'new pat' }
     let(:expires_at) { 3.days.from_now.to_date.to_s }
-    let(:scopes) { %w(api read_user) }
+    let(:scopes) { %w[api read_user] }
     let(:path) { "/users/#{user.id}/personal_access_tokens" }
     let(:params) { { name: name, scopes: scopes, expires_at: expires_at } }
 

@@ -363,7 +363,7 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
   end
 
   describe 'Endpoints' do
-    %w(project group).each do |source_type|
+    %w[project group].each do |source_type|
       it_behaves_like 'GET /:sources/:id/badges', source_type
       it_behaves_like 'GET /:sources/:id/badges/:badge_id', source_type
       it_behaves_like 'GET /:sources/:id/badges/render', source_type

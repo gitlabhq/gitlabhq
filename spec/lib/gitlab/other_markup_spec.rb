@@ -59,6 +59,31 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
     end
   end
 
+  context 'when mediawiki content' do
+    links = {
+      'p' => {
+        file: 'file.mediawiki',
+        input: 'Red Bridge (JRuby Embed)',
+        output: "\n<p>Red Bridge (JRuby Embed)</p>"
+      },
+      'h1' => {
+        file: 'file.mediawiki',
+        input: '= Red Bridge (JRuby Embed) =',
+        output: "\n\n<h1>\n<a name=\"Red_Bridge_JRuby_Embed\"></a><span>Red Bridge (JRuby Embed)</span>\n</h1>\n"
+      },
+      'h2' => {
+        file: 'file.mediawiki',
+        input: '== Red Bridge (JRuby Embed) ==',
+        output: "\n\n<h2>\n<a name=\"Red_Bridge_JRuby_Embed\"></a><span>Red Bridge (JRuby Embed)</span>\n</h2>\n"
+      }
+    }
+    links.each do |name, data|
+      it "does render into #{name} element" do
+        expect(render(data[:file], data[:input], context)).to eq(data[:output])
+      end
+    end
+  end
+
   context 'when rendering takes too long' do
     let_it_be(:file_name) { 'foo.bar' }
     let_it_be(:project) { create(:project, :repository) }

@@ -124,7 +124,7 @@ RSpec.describe JwtController, feature_category: :system_access do
           end
 
           it 'does not log a user' do
-            expect(log_data.keys).not_to include(%w(username user_id))
+            expect(log_data.keys).not_to include(%w[username user_id])
           end
         end
 
@@ -177,7 +177,7 @@ RSpec.describe JwtController, feature_category: :system_access do
           end
 
           let(:service_parameters) do
-            ActionController::Parameters.new({ service: service_name, scopes: %w(scope1 scope2) }).permit!
+            ActionController::Parameters.new({ service: service_name, scopes: %w[scope1 scope2] }).permit!
           end
 
           it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }
@@ -194,7 +194,7 @@ RSpec.describe JwtController, feature_category: :system_access do
           end
 
           let(:service_parameters) do
-            ActionController::Parameters.new({ service: service_name, scopes: %w(scope1 scope2) }).permit!
+            ActionController::Parameters.new({ service: service_name, scopes: %w[scope1 scope2] }).permit!
           end
 
           it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }

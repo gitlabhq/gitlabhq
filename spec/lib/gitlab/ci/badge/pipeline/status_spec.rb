@@ -117,10 +117,7 @@ RSpec.describe Gitlab::Ci::Badge::Pipeline::Status do
   end
 
   def create_pipeline(project, sha, branch)
-    pipeline = create(:ci_empty_pipeline,
-                      project: project,
-                      sha: sha,
-                      ref: branch)
+    pipeline = create(:ci_empty_pipeline, project: project, sha: sha, ref: branch)
 
     create(:ci_build, pipeline: pipeline, stage: 'notify')
   end

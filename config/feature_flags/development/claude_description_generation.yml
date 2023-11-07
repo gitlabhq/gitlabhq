@@ -1,0 +1,8 @@
+---
+name: claude_description_generation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135706
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430077
+milestone: '16.6'
+type: development
+group: group::project management
+default_enabled: false

@@ -4,8 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Hook, feature_category: :pipeline_composition do
   let_it_be(:build1) do
-    FactoryBot.build(:ci_build,
-                     options: { hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] } })
+    build(
+      :ci_build,
+      options: { hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] } }
+    )
   end
 
   describe '.from_hooks' do

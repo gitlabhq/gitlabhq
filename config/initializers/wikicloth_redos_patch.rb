@@ -94,7 +94,7 @@ module WikiCloth
       data << "\n" if data.last(1) != "\n"
       data << "garbage"
 
-      buffer = WikiBuffer.new("",options)
+      buffer = WikiBuffer.new(+'',options)
 
       begin
         if self.options[:fast]

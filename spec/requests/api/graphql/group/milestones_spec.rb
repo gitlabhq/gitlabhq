@@ -136,7 +136,7 @@ RSpec.describe 'Milestones through GroupQuery', feature_category: :team_planning
     let_it_be(:closed_issue) { create(:issue, :closed, project: project, milestone: milestone) }
 
     let(:milestone_query) do
-      %{
+      %(
         id
         title
         description
@@ -149,7 +149,7 @@ RSpec.describe 'Milestones through GroupQuery', feature_category: :team_planning
         projectMilestone
         groupMilestone
         subgroupMilestone
-      }
+      )
     end
 
     def post_query
@@ -180,12 +180,12 @@ RSpec.describe 'Milestones through GroupQuery', feature_category: :team_planning
 
     context 'milestone statistics' do
       let(:milestone_query) do
-        %{
+        %(
           stats {
             totalIssuesCount
             closedIssuesCount
           }
-        }
+        )
       end
 
       it 'returns the correct milestone statistics' do

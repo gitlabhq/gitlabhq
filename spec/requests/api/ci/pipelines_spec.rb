@@ -436,7 +436,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       context 'filter jobs with array of scope elements' do
-        let(:query) { { scope: %w(pending running) } }
+        let(:query) { { scope: %w[pending running] } }
 
         it :aggregate_failures do
           expect(response).to have_gitlab_http_status(:ok)
@@ -445,7 +445,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       context 'respond 400 when scope contains invalid state' do
-        let(:query) { { scope: %w(unknown running) } }
+        let(:query) { { scope: %w[unknown running] } }
 
         it { expect(response).to have_gitlab_http_status(:bad_request) }
       end
@@ -615,7 +615,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
 
         context 'with array of scope elements' do
-          let(:query) { { scope: %w(pending running) } }
+          let(:query) { { scope: %w[pending running] } }
 
           it :skip_before_request, :aggregate_failures do
             get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
@@ -623,14 +623,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to be_an Array
             expect(json_response.count).to eq 2
-            json_response.each { |r| expect(%w(pending running).include?(r['status'])).to be true }
+            json_response.each { |r| expect(%w[pending running].include?(r['status'])).to be true }
           end
         end
       end
 
       context 'respond 400 when scope contains invalid state' do
         context 'in an array' do
-          let(:query) { { scope: %w(unknown running) } }
+          let(:query) { { scope: %w[unknown running] } }
 
           it { expect(response).to have_gitlab_http_status(:bad_request) }
         end
