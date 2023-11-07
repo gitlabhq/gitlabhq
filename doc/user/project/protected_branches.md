@@ -27,12 +27,12 @@ The [default branch](repository/branches/default.md) for your repository is prot
 
 When a branch is protected, the default behavior enforces these restrictions on the branch.
 
-| Action                   | Who can do it                                                     |
-|:-------------------------|:------------------------------------------------------------------|
-| Protect a branch         | At least the Maintainer role.                                     |
+| Action                   | Who can do it                           |
+|:-------------------------|:----------------------------------------|
+| Protect a branch         | At least the Maintainer role.           |
 | Push to the branch       | Anyone with **Allowed** permission. (1) |
-| Force push to the branch | No one. (3)                                                       |
-| Delete the branch        | No one. (2)                                                       |
+| Force push to the branch | No one. (3)                             |
+| Delete the branch        | No one. (2)                             |
 
 1. Users with the Developer role can create a project in a group, but might not be allowed to
    initially push to the [default branch](repository/branches/default.md).
@@ -50,12 +50,12 @@ level of protection for the branch. For example, consider these rules, which inc
 [wildcards](#protect-multiple-branches-with-wildcard-rules):
 
 | Branch name pattern | Allowed to merge       | Allowed to push and merge |
-|---------------------|------------------------|-----------------|
-| `v1.x`              | Maintainer             | Maintainer      |
-| `v1.*`              | Maintainer + Developer | Maintainer      |
-| `v*`                | No one                 | No one          |
+|---------------------|------------------------|---------------------------|
+| `v1.x`              | Maintainer             | Maintainer                |
+| `v1.*`              | Maintainer + Developer | Maintainer                |
+| `v*`                | No one                 | No one                    |
 
-A branch named `v1.x` matches all three branch name patterns: `v1.x`, `v1.*`, and `v*`.
+A branch named `v1.x` is a case-sensitive match for all three branch name patterns: `v1.x`, `v1.*`, and `v*`.
 As the most permissive option determines the behavior, the resulting permissions for branch `v1.x` are:
 
 - **Allowed to merge:** Of the three settings, `Maintainer + Developer` is most permissive,
@@ -72,10 +72,10 @@ If you want to ensure that `No one` is allowed to push to branch `v1.x`, every p
 that matches `v1.x` must set `Allowed to push and merge` to `No one`, like this:
 
 | Branch name pattern | Allowed to merge       | Allowed to push and merge |
-|---------------------|------------------------|-----------------|
-| `v1.x`              | Maintainer             | No one          |
-| `v1.*`              | Maintainer + Developer | No one          |
-| `v*`                | No one                 | No one          |
+|---------------------|------------------------|---------------------------|
+| `v1.x`              | Maintainer             | No one                    |
+| `v1.*`              | Maintainer + Developer | No one                    |
+| `v*`                | No one                 | No one                    |
 
 ### Set the default branch protection level
 
@@ -139,6 +139,7 @@ To protect a branch for all the projects in a group:
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. In the **Branch** text box, type the branch name or a wildcard.
+   Branch names and wildcards [are case-sensitive](repository/branches/index.md#name-your-branch).
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
 1. Select **Protect**.
@@ -163,7 +164,7 @@ To protect multiple branches at the same time:
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, type the branch name and a wildcard.
-   For example:
+   Branch names and wildcards [are case-sensitive](repository/branches/index.md#name-your-branch). For example:
 
    | Wildcard protected branch | Matching branches                                      |
    |---------------------------|--------------------------------------------------------|
@@ -371,6 +372,7 @@ branches by using the GitLab web interface:
 1. Select **Code > Branches**.
 1. Next to the branch you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.
+   Branch names [are case-sensitive](repository/branches/index.md#name-your-branch).
 
 Protected branches can only be deleted by using GitLab either from the UI or API.
 This prevents accidentally deleting a branch through local Git commands or
@@ -382,14 +384,10 @@ third-party Git clients.
 - [Branches](repository/branches/index.md)
 - [Branches API](../../api/branches.md)
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Branch names are case-sensitive
 
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+Branch names in `git` are case-sensitive. When configuring your protected branch
+or [target branch rule](repository/branches/index.md#configure-rules-for-target-branches),
+`dev` is not the same `DEV` or `Dev`.

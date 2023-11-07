@@ -15,7 +15,7 @@ module BulkImports
       new.perform_failure(exception, msg['args'].first)
     end
 
-    PERFORM_DELAY = 30.seconds
+    PERFORM_DELAY = 5.seconds
 
     # Keep `_current_stage` parameter for backwards compatibility.
     # The parameter will be remove in https://gitlab.com/gitlab-org/gitlab/-/issues/426311

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Govern' do
     # TODO: `:reliable` should be added back once https://gitlab.com/gitlab-org/gitlab/-/issues/359278 is resolved
-    describe 'User', :requires_admin, product_group: :authentication_and_authorization do
+    describe 'User', :requires_admin, product_group: :authentication do
       # rubocop:disable RSpec/InstanceVariable
       before(:all) do
         admin_api_client = Runtime::API::Client.as_admin

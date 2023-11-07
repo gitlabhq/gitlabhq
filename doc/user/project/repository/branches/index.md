@@ -176,6 +176,7 @@ GitLab enforces these additional rules on all branches:
 
 - No spaces are allowed in branch names.
 - Branch names with 40 hexadecimal characters are prohibited, because they are similar to Git commit hashes.
+- Branch names are case-sensitive.
 
 Common software packages, like Docker, can enforce
 [additional branch naming restrictions](../../../../administration/packages/container_registry.md#docker-connection-error).

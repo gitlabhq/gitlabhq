@@ -32,7 +32,8 @@ module Packages
           package_id: @package.id,
           name: tag,
           created_at: now,
-          updated_at: now
+          updated_at: now,
+          project_id: @package.project_id
         }
       end
     end

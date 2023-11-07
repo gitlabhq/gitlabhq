@@ -1816,6 +1816,9 @@ msgstr ""
 msgid "A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system."
 msgstr ""
 
+msgid "A maximum of %{limit} projects can be searched for at one time."
+msgstr ""
+
 msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
@@ -8693,7 +8696,7 @@ msgstr ""
 msgid "Branches"
 msgstr ""
 
-msgid "Branches matching this string are retargeted. Wildcards are supported."
+msgid "Branches matching this string are retargeted. Wildcards are supported, and names are case-sensitive."
 msgstr ""
 
 msgid "Branches: %{source_branch} to %{target_branch}"
@@ -38565,7 +38568,7 @@ msgstr ""
 msgid "Protected tags"
 msgstr ""
 
-msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
+msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported. %{case_sensitive_link_start}Branch names are case-sensitive.%{case_sensitive_link_end}"
 msgstr ""
 
 msgid "ProtectedBranch|After you configure a protected branch, merge request approval, or status check, it appears here."
@@ -38649,7 +38652,7 @@ msgstr ""
 msgid "ProtectedBranch|No tags are protected."
 msgstr ""
 
-msgid "ProtectedBranch|Only %{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
+msgid "ProtectedBranch|Only %{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported. %{case_sensitive_link_start}Branch names are case-sensitive.%{case_sensitive_link_end}"
 msgstr ""
 
 msgid "ProtectedBranch|Protect"

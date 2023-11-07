@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Watchdog::SidekiqEventReporter, feature_category: :application_performance do
+RSpec.describe Gitlab::Memory::Watchdog::SidekiqEventReporter, feature_category: :cloud_connector do
   let(:counter) { instance_double(::Prometheus::Client::Counter) }
 
   before do

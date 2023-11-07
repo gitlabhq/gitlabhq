@@ -24,11 +24,7 @@ module Ci
     end
 
     def execute
-      unless can?(current_user, :cancel_pipeline, pipeline)
-        return ServiceResponse.error(
-          message: 'Insufficient permissions to cancel the pipeline',
-          reason: :insufficient_permissions)
-      end
+      return permission_error_response unless can?(current_user, :cancel_pipeline, pipeline)
 
       force_execute
     end
@@ -101,6 +97,13 @@ module Ci
       end
 
       job.cancel
+    end
+
+    def permission_error_response
+      ServiceResponse.error(
+        message: 'Insufficient permissions to cancel the pipeline',
+        reason: :insufficient_permissions
+      )
     end
 
     # For parent child-pipelines only (not multi-project)

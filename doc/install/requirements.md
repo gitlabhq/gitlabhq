@@ -46,7 +46,6 @@ Memory requirements are dependent on the number of users and expected workload. 
 The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
 
 - **4 GB RAM** is the **required** minimum memory size and supports up to 500 users
-  - Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/application_performance/) is working to reduce the memory requirement.
 - 8 GB RAM supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 

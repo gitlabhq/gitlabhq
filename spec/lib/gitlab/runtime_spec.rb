@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Runtime, feature_category: :application_performance do
+RSpec.describe Gitlab::Runtime, feature_category: :cloud_connector do
   shared_examples "valid runtime" do |runtime, max_threads|
     it "identifies itself" do
       expect(subject.identify).to eq(runtime)

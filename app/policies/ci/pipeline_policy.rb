@@ -27,10 +27,14 @@ module Ci
       prevent :read_pipeline
     end
 
-    rule { protected_ref }.prevent :update_pipeline
+    rule { protected_ref }.policy do
+      prevent :update_pipeline
+      prevent :cancel_pipeline
+    end
 
     rule { can?(:public_access) & branch_allows_collaboration }.policy do
       enable :update_pipeline
+      enable :cancel_pipeline
     end
 
     rule { can?(:owner_access) }.policy do
@@ -43,15 +47,6 @@ module Ci
 
     rule { can?(:update_pipeline) & triggerer_of_pipeline }.policy do
       enable :read_pipeline_variable
-    end
-
-    # TODO: splitting out cancel from update in Issue #20207
-    rule { can?(:update_pipeline) }.policy do
-      enable :cancel_pipeline
-    end
-
-    rule { ~can?(:update_pipeline) }.policy do
-      prevent :cancel_pipeline
     end
 
     rule { project_allows_read_dependency }.policy do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ai::ServiceAccessToken, type: :model, feature_category: :application_performance do
+RSpec.describe Ai::ServiceAccessToken, type: :model, feature_category: :cloud_connector do
   describe '.expired', :freeze_time do
     let_it_be(:expired_token) { create(:service_access_token, :expired) }
     let_it_be(:active_token) {  create(:service_access_token, :active) }

@@ -15,7 +15,7 @@ module QA
     end
   end
 
-  RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication_and_authorization do
+  RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication do
     describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
       testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934',
       quarantine: {

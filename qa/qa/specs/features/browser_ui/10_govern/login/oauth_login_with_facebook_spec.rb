@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern', :orchestrated, :oauth, product_group: :authentication_and_authorization do
+  RSpec.describe 'Govern', :orchestrated, :oauth, product_group: :authentication do
     describe 'OAuth' do
       it 'logs in with Facebook credentials',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/417115' do

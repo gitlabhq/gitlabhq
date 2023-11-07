@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Govern' do
-    describe 'Project access token', product_group: :authentication_and_authorization do
+    describe 'Project access token', product_group: :authentication do
       let!(:project) { create(:project, name: "project-to-test-project-access-token-#{SecureRandom.hex(4)}") }
       let!(:project_access_token) { create(:project_access_token, project: project) }
       let!(:user_api_client) { Runtime::API::Client.new(:gitlab, personal_access_token: project_access_token.token) }

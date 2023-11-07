@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'google cloud profiler', :aggregate_failures, feature_category: :application_performance do
+RSpec.describe 'google cloud profiler', :aggregate_failures, feature_category: :cloud_connector do
   subject(:load_initializer) do
     load rails_root_join('config/initializers/google_cloud_profiler.rb')
   end

@@ -1348,7 +1348,7 @@ This is how this would work with a Linux package PostgreSQL setup:
 1. Create the new user `praefect`, replacing `<praefect_postgresql_password>`:
 
    ```shell
-   CREATE ROLE praefect WITH LOGIN CREATEDB PASSWORD <praefect_postgresql_password>;
+   CREATE ROLE praefect WITH LOGIN CREATEDB PASSWORD '<praefect_postgresql_password>';
    ```
 
 1. Reconnect to the PostgreSQL server, this time as the `praefect` user:
