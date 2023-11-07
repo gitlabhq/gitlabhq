@@ -63,4 +63,20 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
       end
     end
   end
+
+  describe '.sidekiq_retries_exhausted' do
+    let(:job) { { 'args' => job_args } }
+    let!(:export) { create(:bulk_import_export, group: group, relation: relation) }
+
+    it 'sets export status to failed and tracks the exception' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_exception)
+        .with(kind_of(StandardError), portable_id: group.id, portable_type: group.class.name)
+
+      described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
+
+      expect(export.reload.failed?).to eq(true)
+      expect(export.error.size).to eq(255)
+    end
+  end
 end

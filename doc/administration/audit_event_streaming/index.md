@@ -261,7 +261,11 @@ To delete Google Cloud Logging streaming destinations to a top-level group:
 
 ### AWS S3 destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132603) in GitLab 16.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132603) in GitLab 16.6 [with a flag](../feature_flags.md) named `allow_streaming_audit_events_to_amazon_s3`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per group, an administrator can [disable the feature flag](../feature_flags.md) named `allow_streaming_audit_events_to_amazon_s3`.
+On GitLab.com, this feature is available.
 
 Manage AWS S3 destinations for top-level groups.
 

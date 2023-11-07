@@ -42,8 +42,6 @@ module BulkImports
       yield export
 
       finish_export!(export)
-    rescue StandardError => e
-      fail_export!(export, e)
     end
 
     def export_service
@@ -85,12 +83,6 @@ module BulkImports
 
     def finish_export!(export)
       export.update!(status_event: 'finish', batched: false, error: nil)
-    end
-
-    def fail_export!(export, exception)
-      Gitlab::ErrorTracking.track_exception(exception, portable_id: portable.id, portable_type: portable.class.name)
-
-      export&.update(status_event: 'fail_op', error: exception.class, batched: false)
     end
 
     def exported_filepath

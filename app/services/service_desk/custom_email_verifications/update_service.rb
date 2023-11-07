@@ -8,7 +8,7 @@ module ServiceDesk
       def execute
         return error_feature_flag_disabled unless Feature.enabled?(:service_desk_custom_email, project)
         return error_parameter_missing if settings.blank? || verification.blank?
-        return error_already_finished if already_finished_and_no_mail?
+        return error_already_finished if verification.finished?
         return error_already_failed if already_failed_and_no_mail?
 
         verification_error = verify
@@ -37,10 +37,6 @@ module ServiceDesk
 
       def verification
         @verification ||= settings.custom_email_verification
-      end
-
-      def already_finished_and_no_mail?
-        verification.finished? && mail.blank?
       end
 
       def already_failed_and_no_mail?

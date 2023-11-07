@@ -19,8 +19,6 @@ module BulkImports
       upload_compressed_file
 
       finish_batch!
-    rescue StandardError => e
-      fail_batch!(e)
     ensure
       FileUtils.remove_entry(export_path)
     end
@@ -70,12 +68,6 @@ module BulkImports
 
     def finish_batch!
       batch.update!(status_event: 'finish', objects_count: exported_objects_count, error: nil)
-    end
-
-    def fail_batch!(exception)
-      Gitlab::ErrorTracking.track_exception(exception, portable_id: portable.id, portable_type: portable.class.name)
-
-      batch.update!(status_event: 'fail_op', error: exception.message.truncate(255))
     end
 
     def exported_filepath

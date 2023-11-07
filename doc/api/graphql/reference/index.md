@@ -13951,6 +13951,18 @@ Represents the YAML definitions for audit events defined in `ee/config/audit_eve
 | <a id="auditeventdefinitionsavedtodatabase"></a>`savedToDatabase` | [`Boolean!`](#boolean) | Indicates if the event is saved to PostgreSQL database. |
 | <a id="auditeventdefinitionstreamed"></a>`streamed` | [`Boolean!`](#boolean) | Indicates if the event is streamed to an external destination. |
 
+### `AuditEventStreamingHTTPNamespaceFilter`
+
+Represents a subgroup or project filter that belongs to an external audit event streaming destination.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventstreaminghttpnamespacefilterexternalauditeventdestination"></a>`externalAuditEventDestination` | [`ExternalAuditEventDestination!`](#externalauditeventdestination) | Destination to which the filter belongs. |
+| <a id="auditeventstreaminghttpnamespacefilterid"></a>`id` | [`ID!`](#id) | ID of the filter. |
+| <a id="auditeventstreaminghttpnamespacefilternamespace"></a>`namespace` | [`Namespace!`](#namespace) | Group or project namespace the filter belongs to. |
+
 ### `AuditEventStreamingHeader`
 
 Represents a HTTP header key/value that belongs to an audit streaming destination.
@@ -17621,6 +17633,7 @@ Represents an external resource to send audit events to.
 | <a id="externalauditeventdestinationheaders"></a>`headers` | [`AuditEventStreamingHeaderConnection!`](#auditeventstreamingheaderconnection) | List of additional HTTP headers sent with each event. (see [Connections](#connections)) |
 | <a id="externalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="externalauditeventdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+| <a id="externalauditeventdestinationnamespacefilter"></a>`namespaceFilter` | [`AuditEventStreamingHTTPNamespaceFilter`](#auditeventstreaminghttpnamespacefilter) | List of subgroup or project filters for the destination. |
 | <a id="externalauditeventdestinationverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
 
 ### `ExternalIssue`

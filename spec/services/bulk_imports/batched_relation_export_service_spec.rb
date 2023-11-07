@@ -71,29 +71,6 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
         expect(export.batches.count).to eq(0)
       end
     end
-
-    context 'when exception occurs' do
-      it 'tracks exception and marks export as failed' do
-        allow_next_instance_of(BulkImports::Export) do |export|
-          allow(export).to receive(:update!).and_call_original
-
-          allow(export)
-            .to receive(:update!)
-            .with(status_event: 'finish', total_objects_count: 0, batched: true, batches_count: 0, jid: jid, error: nil)
-            .and_raise(StandardError, 'Error!')
-        end
-
-        expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception)
-          .with(StandardError, portable_id: portable.id, portable_type: portable.class.name)
-
-        service.execute
-
-        export = portable.bulk_import_exports.first
-
-        expect(export.reload.failed?).to eq(true)
-      end
-    end
   end
 
   describe '.cache_key' do
