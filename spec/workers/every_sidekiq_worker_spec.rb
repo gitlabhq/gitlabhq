@@ -390,6 +390,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Packages::Go::SyncPackagesWorker' => 3,
         'Packages::MarkPackageFilesForDestructionWorker' => 3,
         'Packages::Maven::Metadata::SyncWorker' => 3,
+        'Packages::Npm::CleanupStaleMetadataCacheWorker' => 0,
         'Packages::Nuget::ExtractionWorker' => 3,
         'Packages::Rubygems::ExtractionWorker' => 3,
         'PagesDomainSslRenewalWorker' => 3,

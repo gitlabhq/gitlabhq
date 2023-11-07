@@ -58,6 +58,28 @@ RSpec.describe Packages::CleanupPackageRegistryWorker, feature_category: :packag
       end
     end
 
+    context 'with npm metadata caches pending destruction' do
+      let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache, :stale) }
+
+      it_behaves_like 'an idempotent worker'
+
+      it 'queues the cleanup job' do
+        expect(Packages::Npm::CleanupStaleMetadataCacheWorker).to receive(:perform_with_capacity)
+
+        perform
+      end
+    end
+
+    context 'with no npm metadata caches pending destruction' do
+      it_behaves_like 'an idempotent worker'
+
+      it 'does not queue the cleanup job' do
+        expect(Packages::Npm::CleanupStaleMetadataCacheWorker).not_to receive(:perform_with_capacity)
+
+        perform
+      end
+    end
+
     describe 'counts logging' do
       let_it_be(:processing_package_file) { create(:package_file, status: :processing) }
 

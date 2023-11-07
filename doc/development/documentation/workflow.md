@@ -65,6 +65,11 @@ Remember:
 - The Technical Writer can also help decide that documentation can be merged without Technical
   writer review, with the review to occur soon after merge.
 
+## Pages with no tech writer review
+
+The documentation under `/doc/solutions` is created, maintained, copy edited,
+and merged by the Solutions Architect team.
+
 ## Do not use ChatGPT or AI-generated content for the docs
 
 GitLab documentation is distributed under the [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/), which presupposes that GitLab owns the documentation.

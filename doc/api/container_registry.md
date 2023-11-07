@@ -464,7 +464,7 @@ DELETE http(s)://${CI_REGISTRY}/v2/${CI_REGISTRY_IMAGE}/tags/reference/${CI_COMM
 ```
 
 You can use the token retrieved with the predefined `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` variables to delete container image tags by reference on your GitLab instance.
-The `tag_delete` [Container-Registry-Feature](https://gitlab.com/gitlab-org/container-registry/-/tree/v3.61.0-gitlab/docs-gitlab#api) must be enabled.
+The `tag_delete` [Container-Registry-Feature](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/docker/v2/api.md#delete-tag) must be enabled.
 
 ```shell
 $ curl  --request DELETE --header "Authorization: Bearer <token_from_above>" \

@@ -5,6 +5,7 @@ import MrSecurityWidgetCE from '~/vue_merge_request_widget/extensions/security_r
 import MrTestReportWidget from '~/vue_merge_request_widget/extensions/test_report/index.vue';
 import MrTerraformWidget from '~/vue_merge_request_widget/extensions/terraform/index.vue';
 import MrCodeQualityWidget from '~/vue_merge_request_widget/extensions/code_quality/index.vue';
+import MrAccessibilityWidget from '~/vue_merge_request_widget/extensions/accessibility/index.vue';
 
 describe('MR Widget App', () => {
   let wrapper;
@@ -38,10 +39,11 @@ describe('MR Widget App', () => {
   });
 
   describe.each`
-    widgetName                | widget                 | endpoint
-    ${'testReportWidget'}     | ${MrTestReportWidget}  | ${'testResultsPath'}
-    ${'terraformPlansWidget'} | ${MrTerraformWidget}   | ${'terraformReportsPath'}
-    ${'codeQualityWidget'}    | ${MrCodeQualityWidget} | ${'codequalityReportsPath'}
+    widgetName                | widget                   | endpoint
+    ${'testReportWidget'}     | ${MrTestReportWidget}    | ${'testResultsPath'}
+    ${'terraformPlansWidget'} | ${MrTerraformWidget}     | ${'terraformReportsPath'}
+    ${'codeQualityWidget'}    | ${MrCodeQualityWidget}   | ${'codequalityReportsPath'}
+    ${'accessibilityWidget'}  | ${MrAccessibilityWidget} | ${'accessibilityReportPath'}
   `('$widgetName', ({ widget, endpoint }) => {
     it(`is mounted when ${endpoint} is defined`, async () => {
       createComponent({ mr: { [endpoint]: `path/to/${endpoint}` } });

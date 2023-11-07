@@ -160,7 +160,7 @@ import which would lead to greater consistency across all storage driver impleme
 
 ### The Import Tool
 
-The [import tool](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/database-import-tool.md)
+The [import tool](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/database-import-tool.md)
 is a well-validated component of the Container Registry project that we have used
 from the beginning as a way to perform local testing. This tool is a thin wrapper
 over the core import functionality — the code which handles the import logic has

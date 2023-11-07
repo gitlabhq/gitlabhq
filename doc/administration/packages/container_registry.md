@@ -637,11 +637,11 @@ you can pull from the Container Registry, but you cannot push.
 
 <!--- start_remove The following content will be removed on remove_date: '2023-10-22' -->
 WARNING:
-The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0. The storage driver will use `/` as the default root directory. You can add `trimlegacyrootprefix: false` to your current configuration now to avoid any disruptions. For more information, see the [Container Registry configuration](https://gitlab.com/gitlab-org/container-registry/-/tree/master/docs-gitlab#azure-storage-driver) documentation.
+The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0. The storage driver will use `/` as the default root directory. You can add `trimlegacyrootprefix: false` to your current configuration now to avoid any disruptions. For more information, see the [Container Registry configuration](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/upstream-differences.md#azure-storage-driver) documentation.
 <!--- end_remove -->
 
 When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
-Configure it by setting [`trimlegacyrootprefix: true`](https://gitlab.com/gitlab-org/container-registry/-/blob/a3f64464c3ec1c5a599c0a2daa99ebcbc0100b9a/docs-gitlab/README.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
+Configure it by setting [`trimlegacyrootprefix: true`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/upstream-differences.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
 Without this configuration, the Azure storage driver uses `//` instead of `/` as the first section of the root path, rendering the migrated images inaccessible.
 
 ::Tabs
@@ -1372,7 +1372,7 @@ By default, the container registry uses object storage to persist metadata
 related to container images. This method to store metadata limits how efficiently
 the data can be accessed, especially data spanning multiple images, such as when listing tags.
 By using a database to store this data, many new features are possible, including
-[online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/db/online-garbage-collection.md)
+[online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/online-garbage-collection.md)
 which removes old data automatically with zero downtime.
 
 This database works in conjunction with the object storage already used by the registry, but does not replace object storage.

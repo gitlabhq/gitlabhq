@@ -1740,6 +1740,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: package_cleanup:packages_npm_cleanup_stale_metadata_cache
+  :worker_name: Packages::Npm::CleanupStaleMetadataCacheWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
   :feature_category: :package_registry

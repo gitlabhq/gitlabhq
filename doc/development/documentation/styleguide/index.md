@@ -1731,6 +1731,7 @@ Some pages won't have a tier badge, because no obvious tier badge applies. For e
 - Tutorials.
 - Pages that compare features from different tiers.
 - Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
+- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
 
 ##### Administrator documentation tier badges
 

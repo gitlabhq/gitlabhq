@@ -148,7 +148,8 @@
     margin: 0;
   }
 
-  ul.wiki-pages ul {
+  ul.wiki-pages ul,
+  ul.wiki-pages li:not(.wiki-directory){ 
     padding-left: 20px;
   }
 

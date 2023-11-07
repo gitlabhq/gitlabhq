@@ -1,24 +1,37 @@
+<script>
 import { uniqueId } from 'lodash';
 import { __, n__, s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import { EXTENSION_ICONS } from '../../constants';
 
 export default {
   name: 'WidgetAccessibility',
-  enablePolling: true,
   i18n: {
     loading: s__('Reports|Accessibility scanning results are being parsed'),
     error: s__('Reports|Accessibility scanning failed loading results'),
   },
-  props: ['accessibilityReportPath'],
+  components: {
+    MrWidget,
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      collapsedData: {},
+      content: [],
+    };
+  },
   computed: {
     statusIcon() {
-      return this.collapsedData.status === 'failed'
+      return this.collapsedData?.status === 'failed'
         ? EXTENSION_ICONS.warning
         : EXTENSION_ICONS.success;
     },
-  },
-  methods: {
     summary() {
       const numOfResults = this.collapsedData?.summary?.errored || 0;
 
@@ -37,13 +50,20 @@ export default {
         false,
       );
 
-      return numOfResults === 0 ? successText : warningText;
+      return numOfResults === 0 ? { title: successText } : { title: warningText };
     },
     shouldCollapse() {
       return this.collapsedData?.summary?.errored > 0;
     },
+  },
+  methods: {
     fetchCollapsedData() {
-      return axios.get(this.accessibilityReportPath);
+      return axios.get(this.mr.accessibilityReportPath).then((response) => {
+        this.collapsedData = response.data;
+        this.content = this.getContent(response.data);
+
+        return response;
+      });
     },
     fetchFullData() {
       return Promise.resolve(this.prepareReports());
@@ -74,9 +94,7 @@ export default {
     formatMessage(message) {
       return sprintf(s__('AccessibilityReport|Message: %{message}'), { message });
     },
-    prepareReports() {
-      const { collapsedData } = this;
-
+    getContent(collapsedData) {
       const newErrors = collapsedData.new_errors.map((error) => {
         return {
           header: __('New'),
@@ -121,3 +139,16 @@ export default {
     },
   },
 };
+</script>
+<template>
+  <mr-widget
+    :error-text="$options.i18n.error"
+    :status-icon-name="statusIcon"
+    :loading-text="$options.i18n.loading"
+    :widget-name="$options.name"
+    :summary="summary"
+    :content="content"
+    :is-collapsible="shouldCollapse"
+    :fetch-collapsed-data="fetchCollapsedData"
+  />
+</template>

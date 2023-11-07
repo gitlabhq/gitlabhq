@@ -3,29 +3,25 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
-import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
-import accessibilityExtension from '~/vue_merge_request_widget/extensions/accessibility';
+import AccessibilityWidget from '~/vue_merge_request_widget/extensions/accessibility/index.vue';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { accessibilityReportResponseErrors, accessibilityReportResponseSuccess } from './mock_data';
 
-describe('Accessibility extension', () => {
+describe('Accessibility widget', () => {
   let wrapper;
   let mock;
-
-  registerExtension(accessibilityExtension);
 
   const endpoint = '/root/repo/-/merge_requests/4/accessibility_reports.json';
 
   const mockApi = (statusCode, data) => {
-    mock.onGet(endpoint).reply(statusCode, data);
+    mock.onGet(endpoint).reply(statusCode, data, {});
   };
 
   const findToggleCollapsedButton = () => wrapper.findByTestId('toggle-button');
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
 
   const createComponent = () => {
-    wrapper = mountExtended(extensionsContainer, {
+    wrapper = mountExtended(AccessibilityWidget, {
       propsData: {
         mr: {
           accessibilityReportPath: endpoint,

@@ -103,7 +103,7 @@ module ContainerRegistry
       end
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#compliance-check
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#compliance-check
     def supports_gitlab_api?
       strong_memoize(:supports_gitlab_api) do
         registry_features = Gitlab::CurrentSettings.container_registry_features || []
@@ -116,19 +116,19 @@ module ContainerRegistry
       end
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#import-repository
+    # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
     def pre_import_repository(path)
       response = start_import_for(path, pre: true)
       IMPORT_RESPONSES.fetch(response.status, :error)
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#import-repository
+    # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
     def import_repository(path)
       response = start_import_for(path, pre: false)
       IMPORT_RESPONSES.fetch(response.status, :error)
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#cancel-repository-import
+    # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
     def cancel_repository_import(path, force: false)
       response = with_import_token_faraday do |faraday_client|
         faraday_client.delete(import_url_for(path)) do |req|
@@ -142,7 +142,7 @@ module ContainerRegistry
       { status: status, migration_state: actual_state }
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#get-repository-import-status
+    # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
     def import_status(path)
       with_import_token_faraday do |faraday_client|
         response = faraday_client.get(import_url_for(path))
@@ -156,7 +156,7 @@ module ContainerRegistry
       end
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#get-repository-details
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#get-repository-details
     def repository_details(path, sizing: nil)
       with_token_faraday do |faraday_client|
         req = faraday_client.get("#{GITLAB_REPOSITORIES_PATH}/#{path}/") do |req|
@@ -169,7 +169,7 @@ module ContainerRegistry
       end
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#list-repository-tags
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#list-repository-tags
     def tags(path, page_size: 100, last: nil, before: nil, name: nil, sort: nil)
       limited_page_size = [page_size, MAX_TAGS_PAGE_SIZE].min
       with_token_faraday do |faraday_client|
@@ -202,7 +202,7 @@ module ContainerRegistry
       end
     end
 
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#list-sub-repositories
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#list-sub-repositories
     def sub_repositories_with_tag(path, page_size: 100, last: nil)
       limited_page_size = [page_size, MAX_REPOSITORIES_PAGE_SIZE].min
 
@@ -235,7 +235,7 @@ module ContainerRegistry
 
     # Given a path 'group/subgroup/project' and name 'newname',
     # with a successful rename, it will be 'group/subgroup/newname'
-    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#rename-base-repository
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#rename-base-repository
     def rename_base_repository_path(path, name:, dry_run: false)
       with_token_faraday do |faraday_client|
         url = "#{GITLAB_REPOSITORIES_PATH}/#{path}/"

@@ -9,6 +9,8 @@ export default {
     MrTerraformWidget: () => import('~/vue_merge_request_widget/extensions/terraform/index.vue'),
     MrCodeQualityWidget: () =>
       import('~/vue_merge_request_widget/extensions/code_quality/index.vue'),
+    MrAccessibilityWidget: () =>
+      import('~/vue_merge_request_widget/extensions/accessibility/index.vue'),
   },
 
   props: {
@@ -31,12 +33,17 @@ export default {
       return this.mr.codequalityReportsPath ? 'MrCodeQualityWidget' : undefined;
     },
 
+    accessibilityWidget() {
+      return this.mr.accessibilityReportPath ? 'MrAccessibilityWidget' : undefined;
+    },
+
     widgets() {
       return [
         this.codeQualityWidget,
         this.testReportWidget,
         this.terraformPlansWidget,
         'MrSecurityWidget',
+        this.accessibilityWidget,
       ].filter((w) => w);
     },
   },

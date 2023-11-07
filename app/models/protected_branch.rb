@@ -5,6 +5,7 @@ class ProtectedBranch < ApplicationRecord
   include Gitlab::SQL::Pattern
   include FromUnion
   include EachBatch
+  include Presentable
 
   belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches
 

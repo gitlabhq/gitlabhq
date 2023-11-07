@@ -1,9 +1,6 @@
 <script>
 import { isEmpty, clamp } from 'lodash';
-import {
-  registerExtension,
-  registeredExtensions,
-} from '~/vue_merge_request_widget/components/extensions';
+import { registeredExtensions } from '~/vue_merge_request_widget/components/extensions';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
@@ -55,7 +52,6 @@ import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
 import getStateSubscription from './queries/get_state.subscription.graphql';
-import accessibilityExtension from './extensions/accessibility';
 import ReportWidgetContainer from './components/report_widget_container.vue';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 
@@ -235,9 +231,6 @@ export default {
         false,
       );
     },
-    shouldShowAccessibilityReport() {
-      return Boolean(this.mr?.accessibilityReportPath);
-    },
     formattedHumanAccess() {
       return (this.mr.humanAccess || '').toLowerCase();
     },
@@ -266,11 +259,6 @@ export default {
       if (newVal !== oldVal && this.shouldRenderMergedPipeline) {
         // init polling
         this.initPostMergeDeploymentsPolling();
-      }
-    },
-    shouldShowAccessibilityReport(newVal) {
-      if (newVal) {
-        this.registerAccessibilityExtension();
       }
     },
   },
@@ -506,11 +494,6 @@ export default {
     },
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;
-    },
-    registerAccessibilityExtension() {
-      if (this.shouldShowAccessibilityReport) {
-        registerExtension(accessibilityExtension);
-      }
     },
   },
 };
