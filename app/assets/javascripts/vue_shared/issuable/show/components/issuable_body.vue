@@ -74,6 +74,11 @@ export default {
       required: false,
       default: 0,
     },
+    workspaceType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     isUpdated() {
@@ -161,6 +166,7 @@ export default {
           :issuable="issuable"
           :status-icon="statusIcon"
           :enable-edit="enableEdit"
+          :workspace-type="workspaceType"
           @edit-issuable="$emit('edit-issuable', $event)"
         >
           <template #status-badge>

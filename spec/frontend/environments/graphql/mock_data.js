@@ -262,6 +262,7 @@ export const environmentsApp = {
   review_app: {
     can_setup_review_app: true,
     all_clusters_empty: true,
+    has_review_app: false,
     review_snippet:
       '{"deploy_review"=>{"stage"=>"deploy", "script"=>["echo \\"Deploy a review app\\""], "environment"=>{"name"=>"review/$CI_COMMIT_REF_NAME", "url"=>"https://$CI_ENVIRONMENT_SLUG.example.com"}, "only"=>["branches"]}}',
   },
@@ -471,6 +472,7 @@ export const resolvedEnvironmentsApp = {
   reviewApp: {
     canSetupReviewApp: true,
     allClustersEmpty: true,
+    hasReviewApp: false,
     reviewSnippet:
       '{"deploy_review"=>{"stage"=>"deploy", "script"=>["echo \\"Deploy a review app\\""], "environment"=>{"name"=>"review/$CI_COMMIT_REF_NAME", "url"=>"https://$CI_ENVIRONMENT_SLUG.example.com"}, "only"=>["branches"]}}',
     __typename: 'ReviewApp',

@@ -6,6 +6,8 @@ module Ci
       # This class represents a CI/CD Catalog resource component.
       # The data will be used as metadata of a component.
       class Component < ::ApplicationRecord
+        include BulkInsertSafe
+
         self.table_name = 'catalog_resource_components'
 
         belongs_to :project, inverse_of: :ci_components

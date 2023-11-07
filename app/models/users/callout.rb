@@ -76,7 +76,8 @@ module Users
       # 74 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132751
       vsd_feedback_banner: 75, # EE-only
       security_policy_protected_branch_modification: 76, # EE-only
-      vulnerability_report_grouping: 77 # EE-only
+      vulnerability_report_grouping: 77, # EE-only
+      new_nav_for_everyone_callout: 78
     }
 
     validates :feature_name,

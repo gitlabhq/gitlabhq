@@ -1,6 +1,6 @@
 [
 {"name":"CFPropertyList","version":"3.0.5","platform":"ruby","checksum":"a78551cd4768d78ebca98488c27e33652ef818be64697a54676d34e6434674a4"},
-{"name":"RedCloth","version":"4.3.2","platform":"ruby","checksum":"1ee7bc55c8dcec92cf7741a2132a9a6cd19e4b884fbc1b3aca23e1a4fcd92d55"},
+{"name":"RedCloth","version":"4.3.3","platform":"ruby","checksum":"d941b8ac96e2730d2d9326d97dda9fcf64cb73532b3f902d91c18970c5f4632d"},
 {"name":"acme-client","version":"2.0.11","platform":"ruby","checksum":"edf6da9f3c5dbe3ab0c6738eb3b97978b7a60e3500445480d2a72fcc610089de"},
 {"name":"actioncable","version":"7.0.8","platform":"ruby","checksum":"1f504ddb4ab6a34f7c52e9df924441a403e9f358bace330c36dcca6358ecfb84"},
 {"name":"actionmailbox","version":"7.0.8","platform":"ruby","checksum":"9420037b801e44aa4e36cf113f4bd6eb25c17eb1b84d9c8865e8abf8846c14e5"},
@@ -115,7 +115,7 @@
 {"name":"devfile","version":"0.0.24.pre.alpha1","platform":"ruby","checksum":"72bbfc26edb519902d5c68e07188e0a3d699a1866392fa1497e5b7f3abb36600"},
 {"name":"devfile","version":"0.0.24.pre.alpha1","platform":"x86_64-linux","checksum":"d121b1094aa3a24c29592a83c629ee640920e0196711dd06f27b6fa9b1ced609"},
 {"name":"device_detector","version":"1.0.0","platform":"ruby","checksum":"b800fb3150b00c23e87b6768011808ac1771fffaae74c3238ebaf2b782947a7d"},
-{"name":"devise","version":"4.8.1","platform":"ruby","checksum":"fdd48bbe79a89e7c1152236a70479842ede48bea4fa7f4f2d8da1f872559803e"},
+{"name":"devise","version":"4.9.3","platform":"ruby","checksum":"480638d6c51b97f56da6e28d4f3e2a1b8e606681b316aa594b87c6ab94923488"},
 {"name":"devise-two-factor","version":"4.1.1","platform":"ruby","checksum":"c95f5b07533e62217aaed3c386874d94e2d472fb5f2b6598afe8600fc17a8b95"},
 {"name":"diff-lcs","version":"1.5.0","platform":"ruby","checksum":"49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67"},
 {"name":"diff_match_patch","version":"0.1.0","platform":"ruby","checksum":"b36057bfcfeaedf19dcb7b2c28c19ee625bd6ec6d0d182717d3ef22b3879c40e"},

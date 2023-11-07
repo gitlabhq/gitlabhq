@@ -34,7 +34,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
 
   context 'signed in user' do
     before do
-      stub_feature_flags(apollo_boards: false)
       project.add_maintainer(user)
       project.add_maintainer(user2)
 
@@ -518,7 +517,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
 
   context 'signed out user' do
     before do
-      stub_feature_flags(apollo_boards: false)
       visit project_board_path(project, board)
       wait_for_requests
     end
@@ -540,7 +538,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
     let_it_be(:user_guest, reload: true) { create(:user) }
 
     before do
-      stub_feature_flags(apollo_boards: false)
       project.add_guest(user_guest)
       sign_in(user_guest)
       visit project_board_path(project, board)

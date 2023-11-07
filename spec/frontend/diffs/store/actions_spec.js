@@ -841,7 +841,7 @@ describe('DiffsStoreActions', () => {
       };
       const singleDiscussion = {
         id: '1',
-        file_hash: 'ABC',
+        diff_file: { file_hash: 'ABC' },
         line_code: 'ABC_1_1',
       };
 

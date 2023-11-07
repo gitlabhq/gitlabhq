@@ -12,7 +12,10 @@ export const MOCK_USERS = [
     user: { id: 'gid://gitlab/User/2' },
   },
   {
-    badges: ['Admin', "It's you!"],
+    badges: [
+      { text: 'Admin', variant: 'success' },
+      { text: "It's you!", variant: 'muted' },
+    ],
     id: 'gid://gitlab/Organizations::OrganizationUser/1',
     user: { id: 'gid://gitlab/User/1' },
   },

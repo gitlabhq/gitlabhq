@@ -2,11 +2,10 @@
 - add_page_specific_style 'page_bundles/terms'
 - @hide_top_bar = true
 - @hide_top_bar_padding = true
-- body_classes = [user_application_theme]
-%html{ lang: I18n.locale, class: page_class }
+%html{ lang: I18n.locale, class: [user_application_theme, page_class] }
   = render "layouts/head"
 
-  %body{ class: body_classes, data: { page: body_data_page } }
+  %body{ data: { page: body_data_page } }
     .layout-page.terms{ class: page_class }
       .content-wrapper.gl-pb-5
         .mobile-overlay

@@ -15,6 +15,7 @@ module Users
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     WEB_HOOK_DISABLED = 'web_hook_disabled'
     BRANCH_RULES_INFO_CALLOUT = 'branch_rules_info_callout'
+    NEW_NAV_FOR_EVERYONE_CALLOUT = 'new_nav_for_everyone_callout'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -72,6 +73,14 @@ module Users
 
     def show_branch_rules_info?
       !user_dismissed?(BRANCH_RULES_INFO_CALLOUT)
+    end
+
+    def show_new_nav_for_everyone_callout?
+      # The use_new_navigation user preference was controlled by the now removed "New navigation" toggle in the UI.
+      # We want to show this banner only to signed-in users who chose to disable the new nav (`false`).
+      # We don't want to show it for users who never touched the toggle and already had the new nav by default (`nil`)
+      user_had_new_nav_off = current_user && current_user.use_new_navigation == false
+      user_had_new_nav_off && !user_dismissed?(NEW_NAV_FOR_EVERYONE_CALLOUT)
     end
 
     private

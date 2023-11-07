@@ -403,12 +403,7 @@ export default {
           {{ commitTitle }}
         </h3>
         <div>
-          <ci-icon
-            :status="detailedStatus"
-            show-status-text
-            :show-link="false"
-            class="gl-display-inline-block gl-mb-3"
-          />
+          <ci-icon :status="detailedStatus" show-status-text :show-link="false" class="gl-mb-3" />
           <div class="gl-ml-2 gl-mb-3 gl-display-inline-block gl-h-6">
             <gl-link
               v-if="user"

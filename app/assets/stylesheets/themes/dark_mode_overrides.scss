@@ -105,7 +105,7 @@
   --svg-status-bg: #{$white};
 }
 
-body.gl-dark {
+:root.gl-dark {
   // redefine some colors and values to prevent sourcegraph conflicts
   color-scheme: dark;
   --gray-10: #{$gray-10};
@@ -239,7 +239,7 @@ aside.right-sidebar:not(.right-sidebar-merge-requests) {
   border-left-color: $gray-50;
 }
 
-body.gl-dark {
+:root.gl-dark {
   @include gitlab-theme($gray-900, $gray-400, $gray-500, $gray-900, $white);
 
   .terms {

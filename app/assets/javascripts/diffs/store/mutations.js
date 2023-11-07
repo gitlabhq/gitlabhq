@@ -198,9 +198,10 @@ export default {
       return {
         ...line,
         discussionsExpanded:
-          line.discussions && line.discussions.length
+          line.discussionsExpanded ||
+          (line.discussions && line.discussions.length
             ? line.discussions.some((disc) => !disc.resolved) || isLineNoteTargeted
-            : false,
+            : false),
       };
     };
 

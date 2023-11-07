@@ -248,7 +248,6 @@ export default {
         <template #downstream>
           <linked-pipelines-column
             v-if="showDownstreamPipelines"
-            class="gl-mr-5"
             :class="{ 'gl-sm-ml-3': isNewPipelineGraph }"
             :config-paths="configPaths"
             :linked-pipelines="downstreamPipelines"

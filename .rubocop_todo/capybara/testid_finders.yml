@@ -60,7 +60,6 @@ Capybara/TestidFinders:
     - 'spec/features/merge_request/user_views_open_merge_request_spec.rb'
     - 'spec/features/milestone_spec.rb'
     - 'spec/features/nav/new_nav_callout_spec.rb'
-    - 'spec/features/nav/new_nav_toggle_spec.rb'
     - 'spec/features/nav/pinned_nav_items_spec.rb'
     - 'spec/features/populate_new_pipeline_vars_with_params_spec.rb'
     - 'spec/features/profile_spec.rb'

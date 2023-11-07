@@ -9,8 +9,6 @@ RSpec.describe 'Ensure Boards do not show stale data on browser back', :js, feat
 
   context 'authorized user' do
     before do
-      stub_feature_flags(apollo_boards: false)
-
       project.add_maintainer(user)
 
       sign_in(user)

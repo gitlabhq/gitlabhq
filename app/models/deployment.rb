@@ -15,7 +15,7 @@ class Deployment < ApplicationRecord
 
   ARCHIVABLE_OFFSET = 50_000
 
-  ignore_column :cluster_id, remove_with: '16.8', remove_after: '2023-12-22'
+  ignore_column :cluster_id, remove_with: '16.8', remove_after: '2023-12-21'
 
   belongs_to :project, optional: false
   belongs_to :environment, optional: false

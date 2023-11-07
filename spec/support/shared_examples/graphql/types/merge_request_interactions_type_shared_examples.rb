@@ -50,6 +50,7 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       organization
       jobTitle
       createdAt
+      lastActivityOn
       pronouns
       ide
     ]

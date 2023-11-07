@@ -15,7 +15,6 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_plan
   let_it_be(:issue, reload: true) { create(:issue, project: project, relative_position: 1) }
 
   before do
-    stub_feature_flags(apollo_boards: false)
     project.add_maintainer(user)
 
     sign_in(user)

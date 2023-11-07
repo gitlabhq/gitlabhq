@@ -19,6 +19,13 @@ MSG
 
 docs_paths_to_review = helper.changes_by_category[:docs]
 
+# Some docs do not need a review from a technical writer
+SKIP_TW_REVIEW_PATHS = ['doc/solutions'].freeze
+
+docs_paths_to_review.delete_if do |item|
+  SKIP_TW_REVIEW_PATHS.any? { |skip_path| item.start_with?(skip_path) }
+end
+
 # Documentation should be updated for feature::addition and feature::enhancement
 if docs_paths_to_review.empty?
   warn(DOCUMENTATION_UPDATE_MISSING) if feature_mr?

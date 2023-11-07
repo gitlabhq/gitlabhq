@@ -22,6 +22,10 @@ RSpec.describe ReviewAppSetupEntity do
       expect(subject).to include(:can_setup_review_app)
     end
 
+    it 'contains has_review_app' do
+      expect(subject).to include(:has_review_app)
+    end
+
     context 'when the user can setup a review app' do
       before do
         allow(presenter).to receive(:can_setup_review_app?).and_return(true)

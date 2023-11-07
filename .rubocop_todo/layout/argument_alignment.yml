@@ -212,7 +212,6 @@ Layout/ArgumentAlignment:
     - 'app/graphql/resolvers/group_releases_resolver.rb'
     - 'app/graphql/resolvers/groups_resolver.rb'
     - 'app/graphql/resolvers/incident_management/timeline_events_resolver.rb'
-    - 'app/graphql/resolvers/issues/base_parent_resolver.rb'
     - 'app/graphql/resolvers/issues/base_resolver.rb'
     - 'app/graphql/resolvers/issues_resolver.rb'
     - 'app/graphql/resolvers/labels_resolver.rb'

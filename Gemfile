@@ -63,7 +63,7 @@ gem 'marginalia', '~> 1.11.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'declarative_policy', '~> 1.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Authentication libraries
-gem 'devise', '~> 4.8.1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'devise', '~> 4.9.3', feature_category: :system_access
 gem 'devise-pbkdf2-encryptable', '~> 0.0.0', path: 'vendor/gems/devise-pbkdf2-encryptable' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'bcrypt', '~> 3.1', '>= 3.1.14' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'doorkeeper', '~> 5.6', '>= 5.6.6' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -208,7 +208,7 @@ gem 'deckar01-task_list', '2.3.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'commonmarker', '~> 0.23.10' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'kramdown', '~> 2.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'RedCloth', '~> 4.3.2' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'RedCloth', '~> 4.3.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'org-ruby', '~> 0.9.12' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'creole', '~> 0.5.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'wikicloth', '0.8.1' # rubocop:todo Gemfile/MissingFeatureCategory

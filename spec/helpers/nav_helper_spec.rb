@@ -150,7 +150,7 @@ RSpec.describe NavHelper, feature_category: :navigation do
       context 'when user has new nav disabled' do
         let(:user_preference) { false }
 
-        specify { expect(subject).to eq false }
+        specify { expect(subject).to eq true }
       end
 
       context 'when user has new nav enabled' do

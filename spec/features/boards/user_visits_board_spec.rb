@@ -44,7 +44,6 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :team_planning
 
     with_them do
       before do
-        stub_feature_flags(apollo_boards: false)
         visit board_path
 
         wait_for_requests
@@ -60,7 +59,6 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :team_planning
   end
 
   context "project boards" do
-    stub_feature_flags(apollo_boards: false)
     let_it_be(:board) { create_default(:board, project: project) }
 
     let(:board_path) { project_boards_path(project, params) }
@@ -69,7 +67,6 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :team_planning
   end
 
   context "group boards" do
-    stub_feature_flags(apollo_boards: false)
     let_it_be(:board) { create_default(:board, group: group) }
 
     let(:board_path) { group_boards_path(group, params) }

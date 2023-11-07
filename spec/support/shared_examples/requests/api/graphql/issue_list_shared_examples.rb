@@ -26,6 +26,18 @@ RSpec.shared_examples 'graphql issue list request spec' do
       issue_b.assignee_ids = another_user.id
     end
 
+    context 'when filtering by state' do
+      context 'when filtering by locked state' do
+        let(:issue_filter_params) { { state: :locked } }
+
+        it 'returns an error message' do
+          post_query
+
+          expect_graphql_errors_to_include(Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE)
+        end
+      end
+    end
+
     context 'when filtering by assignees' do
       context 'when both assignee_username filters are provided' do
         let(:issue_filter_params) do

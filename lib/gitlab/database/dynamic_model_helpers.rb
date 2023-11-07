@@ -5,7 +5,7 @@ module Gitlab
     module DynamicModelHelpers
       BATCH_SIZE = 1_000
 
-      def define_batchable_model(table_name, connection:)
+      def define_batchable_model(table_name, connection:, primary_key: nil)
         klass = Class.new(ActiveRecord::Base) do
           include EachBatch
 
@@ -13,6 +13,7 @@ module Gitlab
           self.inheritance_column = :_type_disabled
         end
 
+        klass.primary_key = primary_key if connection.primary_keys(table_name).length > 1
         klass.connection = connection
         klass
       end

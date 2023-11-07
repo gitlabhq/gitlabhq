@@ -101,7 +101,19 @@ Prerequisites:
 1. Expand **Configure** and enter the configuration values.
 1. Select **Save changes**.
 
-## Instrument a GitLab project
+## Onboard a GitLab project
+
+Onboarding a GitLab project means preparing it to receive events that are used for product analytics.
+
+To onboard a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. Under **Product analytics**, select **Set up**.
+1. Select **Set up product analytics**.
+Your instance is being created, and the project onboarded.
+
+## Instrument your application
 
 To instrument code to collect data, use one or more of the existing SDKs:
 

@@ -330,7 +330,7 @@ describe('DiffsStoreUtils', () => {
       old_line: 5,
       new_line: 5,
       rich_text: '<p>rich</p>', // Note no leading space
-      discussionsExpanded: true,
+      discussionsExpanded: false,
       discussions: [],
       hasForm: false,
       text: undefined,

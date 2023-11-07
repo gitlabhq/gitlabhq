@@ -62,7 +62,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
     conditionally_expand_blob(blob)
 
     if blob.external_link?(build)
-      redirect_to external_file_project_job_artifacts_path(@project, @build, path: params[:path])
+      if Gitlab::CurrentSettings.enable_artifact_external_redirect_warning_page
+        redirect_to external_file_project_job_artifacts_path(@project, @build, path: params[:path])
+      else
+        redirect_to blob.external_url(build)
+      end
     else
       respond_to do |format|
         format.html do

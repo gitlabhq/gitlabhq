@@ -5,7 +5,6 @@ RSpec.shared_examples 'multiple issue boards' do
 
   context 'authorized user' do
     before do
-      stub_feature_flags(apollo_boards: false)
       parent.add_maintainer(user)
 
       login_as(user)
@@ -124,7 +123,6 @@ RSpec.shared_examples 'multiple issue boards' do
 
   context 'unauthorized user' do
     before do
-      stub_feature_flags(apollo_boards: false)
       visit boards_path
       wait_for_requests
     end

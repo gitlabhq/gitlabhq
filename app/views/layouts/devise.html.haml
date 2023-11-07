@@ -1,9 +1,9 @@
 - add_page_specific_style 'page_bundles/login'
 - custom_text = custom_sign_in_description
 !!! 5
-%html.html-devise-layout{ lang: I18n.locale }
+%html.html-devise-layout{ class: user_application_theme, lang: I18n.locale }
   = render "layouts/head", { startup_filename: 'signin' }
-  %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{user_application_theme} #{client_class_list}", data: { page: body_data_page, qa_selector: 'login_page' } }
+  %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{client_class_list}", data: { page: body_data_page, qa_selector: 'login_page' } }
     = header_message
     = render "layouts/init_client_detection_flags"
     - if Feature.enabled?(:restyle_login_page, @project)

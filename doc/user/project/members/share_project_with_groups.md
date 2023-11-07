@@ -77,7 +77,7 @@ In addition:
 - On the group's page, the project is listed on the **Shared projects** tab.
 - On the project's **Members** page, the group is listed on the **Groups** tab.
 - From [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134623),
-  the invited group's name and membership source will be hidden unless:
+  the invited group's name and membership source will be masked unless:
   - the group is public, or
   - the current user is a member of the group, or
   - the current user is a member of the project.

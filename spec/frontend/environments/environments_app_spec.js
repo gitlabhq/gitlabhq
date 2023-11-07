@@ -174,18 +174,25 @@ describe('~/environments/components/environments_app.vue', () => {
     expect(button.exists()).toBe(true);
   });
 
-  it('should not show a button to open the review app modal if review apps are configured', async () => {
-    await createWrapperWithMocked({
-      environmentsApp: {
-        ...resolvedEnvironmentsApp,
-        reviewApp: { canSetupReviewApp: false },
-      },
-      folder: resolvedFolder,
-    });
+  it.each`
+    canSetupReviewApp | hasReviewApp
+    ${false}          | ${true}
+    ${true}           | ${true}
+  `(
+    'should not show button to open the review app modal',
+    async ({ canSetupReviewApp, hasReviewApp }) => {
+      await createWrapperWithMocked({
+        environmentsApp: {
+          ...resolvedEnvironmentsApp,
+          reviewApp: { canSetupReviewApp, hasReviewApp },
+        },
+        folder: resolvedFolder,
+      });
 
-    const button = wrapper.findByRole('button', { name: s__('Environments|Enable review apps') });
-    expect(button.exists()).toBe(false);
-  });
+      const button = wrapper.findByRole('button', { name: s__('Environments|Enable review apps') });
+      expect(button.exists()).toBe(false);
+    },
+  );
 
   it('should not show a button to clean up environments if the user has no permissions', async () => {
     await createWrapperWithMocked({

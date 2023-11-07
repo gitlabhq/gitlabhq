@@ -1,6 +1,6 @@
 @import './theme_helper';
 
-body {
+:root {
   &.ui-light-indigo {
     @include gitlab-theme(
       $indigo-200,

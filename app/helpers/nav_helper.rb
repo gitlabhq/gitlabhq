@@ -78,15 +78,11 @@ module NavHelper
     %w[system_info background_migrations background_jobs health_check]
   end
 
-  def show_super_sidebar?(user = current_user)
-    # The new sidebar is not enabled for anonymous use
-    return true unless user
-
-    # Users who get the new nav unless they explicitly
-    # opt-out via the toggle
-    return true if user.use_new_navigation.nil?
-
-    !!user.use_new_navigation
+  def show_super_sidebar?(_user = current_user)
+    # The new navigation is now enabled for everyone.
+    # We are working on cleaning up the use of this helper and other related code.
+    # See https://gitlab.com/groups/gitlab-org/-/epics/11875
+    true
   end
 
   private

@@ -74,7 +74,7 @@ export default {
         left: 'gl-mx-6',
       };
       const positionValues = {
-        right: 'gl-ml-5',
+        right: 'gl-mx-5',
         left: 'gl-mx-4 gl-flex-basis-full',
       };
       const usePositionValues = this.isNewPipelineGraph ? positionValues : positionValuesOld;

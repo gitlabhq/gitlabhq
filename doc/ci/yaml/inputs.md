@@ -14,7 +14,8 @@ and subject to change without notice.
 
 ## Define input parameters with `spec:inputs`
 
-> `description` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
+> - `description` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
+> - `options` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393401) in GitLab 16.6.
 
 Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
 to a pipeline with `include`. Use [`include:inputs`](#set-input-parameter-values-with-includeinputs)
@@ -43,6 +44,8 @@ When using `spec:inputs`:
 
 - Defined inputs are mandatory by default.
 - Inputs can be made optional by specifying a `default`. Use `default: null` to have no default value.
+- Inputs can use `options` to specify a list of allowed values for an input. The limit is 50 options per input.
+- If an input uses both `default` and `options`, the default value must be one of the listed options. If not, the pipeline fails with a validation error.
 - You can optionally use `description` to give a description to a specific input.
 - A string containing an interpolation block must not exceed 1 MB.
 - The string inside an interpolation block must not exceed 1 KB.
@@ -55,6 +58,7 @@ spec:
     website:
     user:
       default: 'test-user'
+      options: ['test-user', 'admin-user']
     flags:
       default: null
       description: 'Sample description of the `flags` input detail.'
@@ -66,7 +70,7 @@ spec:
 In this example:
 
 - `website` is mandatory and must be defined.
-- `user` is optional. If not defined, the value is `test-user`.
+- `user` is optional. If not defined, the value is `test-user`, which is one of the values specified in `options`.
 - `flags` is optional. If not defined, it has no value. The optional description should give details about the input.
 
 ## Set input parameter values with `include:inputs`

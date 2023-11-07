@@ -3,7 +3,10 @@ query getOrganizationUsers($id: OrganizationsOrganizationID!) {
     id
     organizationUsers {
       nodes {
-        badges
+        badges {
+          text
+          variant
+        }
         id
         user {
           id

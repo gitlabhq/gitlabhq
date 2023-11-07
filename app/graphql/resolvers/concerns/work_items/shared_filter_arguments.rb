@@ -17,7 +17,12 @@ module WorkItems
       argument :state,
         Types::IssuableStateEnum,
         required: false,
-        description: 'Current state of the work item.'
+        description: 'Current state of the work item.',
+        prepare: ->(state, _ctx) {
+          return state unless state == 'locked'
+
+          raise Gitlab::Graphql::Errors::ArgumentError, Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE
+        }
       argument :types,
         [Types::IssueTypeEnum],
         as: :issue_types,

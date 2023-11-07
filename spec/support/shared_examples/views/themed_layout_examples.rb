@@ -8,7 +8,7 @@ RSpec.shared_examples "a layout which reflects the application theme setting" do
       it 'renders with the default theme' do
         render
 
-        expect(rendered).to have_selector("body.#{default_theme_class}")
+        expect(rendered).to have_selector("html.#{default_theme_class}")
       end
     end
 
@@ -24,10 +24,10 @@ RSpec.shared_examples "a layout which reflects the application theme setting" do
           render
 
           if chosen_theme.css_class != default_theme_class
-            expect(rendered).not_to have_selector("body.#{default_theme_class}")
+            expect(rendered).not_to have_selector("html.#{default_theme_class}")
           end
 
-          expect(rendered).to have_selector("body.#{chosen_theme.css_class}")
+          expect(rendered).to have_selector("html.#{chosen_theme.css_class}")
         end
       end
     end

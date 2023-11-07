@@ -36,12 +36,12 @@ describe('StickyHeader component', () => {
 
   it.each`
     issuableType     | issuableStatus   | statusIcon
-    ${TYPE_INCIDENT} | ${STATUS_OPEN}   | ${'issues'}
-    ${TYPE_INCIDENT} | ${STATUS_CLOSED} | ${'issue-closed'}
-    ${TYPE_ISSUE}    | ${STATUS_OPEN}   | ${'issues'}
-    ${TYPE_ISSUE}    | ${STATUS_CLOSED} | ${'issue-closed'}
-    ${TYPE_EPIC}     | ${STATUS_OPEN}   | ${'epic'}
-    ${TYPE_EPIC}     | ${STATUS_CLOSED} | ${'epic-closed'}
+    ${TYPE_INCIDENT} | ${STATUS_OPEN}   | ${'issue-open-m'}
+    ${TYPE_INCIDENT} | ${STATUS_CLOSED} | ${'issue-close'}
+    ${TYPE_ISSUE}    | ${STATUS_OPEN}   | ${'issue-open-m'}
+    ${TYPE_ISSUE}    | ${STATUS_CLOSED} | ${'issue-close'}
+    ${TYPE_EPIC}     | ${STATUS_OPEN}   | ${'issue-open-m'}
+    ${TYPE_EPIC}     | ${STATUS_CLOSED} | ${'issue-close'}
   `(
     'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
     ({ issuableType, issuableStatus, statusIcon }) => {

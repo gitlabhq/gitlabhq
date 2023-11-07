@@ -14,29 +14,29 @@ import {
 const badgePropertiesMap = {
   [TYPE_EPIC]: {
     [STATUS_OPEN]: {
-      icon: 'epic',
+      icon: 'issue-open-m',
       text: __('Open'),
       variant: 'success',
     },
     [STATUS_CLOSED]: {
-      icon: 'epic-closed',
+      icon: 'issue-close',
       text: __('Closed'),
       variant: 'info',
     },
   },
   [TYPE_ISSUE]: {
     [STATUS_OPEN]: {
-      icon: 'issues',
+      icon: 'issue-open-m',
       text: __('Open'),
       variant: 'success',
     },
     [STATUS_CLOSED]: {
-      icon: 'issue-closed',
+      icon: 'issue-close',
       text: __('Closed'),
       variant: 'info',
     },
     [STATUS_LOCKED]: {
-      icon: 'issues',
+      icon: 'issue-open-m',
       text: __('Open'),
       variant: 'success',
     },

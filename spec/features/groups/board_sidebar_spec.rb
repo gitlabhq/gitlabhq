@@ -19,7 +19,6 @@ RSpec.describe 'Group Issue Boards', :js, feature_category: :groups_and_projects
   let(:card)             { find('.board:nth-child(1)').first('.board-card') }
 
   before do
-    stub_feature_flags(apollo_boards: false)
     sign_in(user)
 
     visit group_board_path(group, board)

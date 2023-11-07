@@ -6,6 +6,8 @@ module Ci
       # This class represents a CI/CD Catalog resource version.
       # Only versions which contain valid CI components are included in this table.
       class Version < ::ApplicationRecord
+        include BulkInsertableAssociations
+
         self.table_name = 'catalog_resource_versions'
 
         belongs_to :release, inverse_of: :catalog_resource_version

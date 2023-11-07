@@ -1,13 +1,23 @@
 <script>
 import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
-import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { createAlert } from '~/alert';
+import { __ } from '~/locale';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
+import Api from '~/api';
 import UserItem from './user_item.vue';
 import GroupItem from './group_item.vue';
 import { CONFIG } from './constants';
 
+const I18N = {
+  allGroups: __('All groups'),
+  projectGroups: __('Project groups'),
+  apiErrorMessage: __('An error occurred while fetching. Please try again.'),
+};
+
 export default {
   name: 'ListSelector',
+  i18n: I18N,
   components: {
     GlCard,
     GlIcon,
@@ -33,11 +43,16 @@ export default {
       required: false,
       default: null,
     },
+    groupPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
       searchValue: '',
-      isProject: true, // TODO: implement a way to distinguish between project/group
+      isProjectNamespace: 'true',
       selected: [],
       items: [],
     };
@@ -46,39 +61,44 @@ export default {
     config() {
       return CONFIG[this.type];
     },
-    searchItems() {
-      return this.items;
-    },
     isUserVariant() {
       return this.type === 'users';
     },
     component() {
       return this.isUserVariant ? UserItem : GroupItem;
     },
+    namespaceDropdownText() {
+      return parseBoolean(this.isProjectNamespace)
+        ? this.$options.i18n.projectGroups
+        : this.$options.i18n.allGroups;
+    },
   },
   methods: {
     async handleSearchInput(search) {
       this.$refs.results.open();
-      if (this.isUserVariant) {
-        this.items = await this.fetchUsersBySearchTerm(search);
-      } else {
-        this.items = await this.fetchGroupsBySearchTerm(search);
+
+      try {
+        if (this.isUserVariant) {
+          this.items = await this.fetchUsersBySearchTerm(search);
+        } else {
+          this.items = await this.fetchGroupsBySearchTerm(search);
+        }
+      } catch (e) {
+        createAlert({
+          message: this.$options.i18n.apiErrorMessage,
+        });
       }
     },
-    fetchUsersBySearchTerm(search) {
-      const namespace = this.isProject ? 'project' : 'group';
-      return this.$apollo
-        .query({
-          query: usersAutocompleteQuery,
-          variables: { fullPath: this.projectPath, search, isProject: this.isProject },
-        })
-        .then(({ data }) =>
-          data[namespace]?.autocompleteUsers.map((user) => ({
-            text: user.name,
-            value: user.username,
-            ...user,
-          })),
-        );
+    async fetchUsersBySearchTerm(search) {
+      let users = [];
+      if (parseBoolean(this.isProjectNamespace)) {
+        users = await Api.projectUsers(this.projectPath, search);
+      } else {
+        const groupMembers = await Api.groupMembers(this.groupPath, { query: search });
+        users = groupMembers?.data || [];
+      }
+
+      return users?.map((user) => ({ text: user.name, value: user.username, ...user }));
     },
     fetchGroupsBySearchTerm(search) {
       return this.$apollo
@@ -95,7 +115,7 @@ export default {
         );
     },
     getItemByKey(key) {
-      return this.searchItems.find((item) => item[this.config.filterKey] === key);
+      return this.items.find((item) => item[this.config.filterKey] === key);
     },
     handleSelectItem(key) {
       this.$emit('select', this.getItemByKey(key));
@@ -103,7 +123,15 @@ export default {
     handleDeleteItem(key) {
       this.$emit('delete', key);
     },
+    handleSelectNamespace() {
+      this.items = [];
+      this.searchValue = '';
+    },
   },
+  namespaceOptions: [
+    { text: I18N.projectGroups, value: 'true' },
+    { text: I18N.allGroups, value: 'false' },
+  ],
 };
 </script>
 
@@ -118,28 +146,38 @@ export default {
       ></template
     >
 
-    <gl-collapsible-listbox
-      ref="results"
-      v-model="selected"
-      class="list-selector gl-mb-4 gl-display-block"
-      :items="searchItems"
-      multiple
-      @shown="$refs.search.focusInput()"
-    >
-      <template #toggle>
-        <gl-search-box-by-type
-          ref="search"
-          v-model="searchValue"
-          autofocus
-          debounce="500"
-          @input="handleSearchInput"
-        />
-      </template>
+    <div class="gl-display-flex gl-gap-3" :class="{ 'gl-mb-4': selectedItems.length }">
+      <gl-collapsible-listbox
+        ref="results"
+        v-model="selected"
+        class="list-selector gl-display-block gl-flex-grow-1"
+        :items="items"
+        multiple
+        @shown="$refs.search.focusInput()"
+      >
+        <template #toggle>
+          <gl-search-box-by-type
+            ref="search"
+            v-model="searchValue"
+            autofocus
+            debounce="500"
+            @input="handleSearchInput"
+          />
+        </template>
 
-      <template #list-item="{ item }">
-        <component :is="component" :data="item" @select="handleSelectItem" />
-      </template>
-    </gl-collapsible-listbox>
+        <template #list-item="{ item }">
+          <component :is="component" :data="item" @select="handleSelectItem" />
+        </template>
+      </gl-collapsible-listbox>
+
+      <gl-collapsible-listbox
+        v-if="config.showNamespaceDropdown"
+        v-model="isProjectNamespace"
+        :toggle-text="namespaceDropdownText"
+        :items="$options.namespaceOptions"
+        @select="handleSelectNamespace"
+      />
+    </div>
 
     <component
       :is="component"

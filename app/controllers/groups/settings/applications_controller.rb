@@ -5,7 +5,7 @@ module Groups
     class ApplicationsController < Groups::ApplicationController
       include OauthApplications
 
-      prepend_before_action :authorize_admin_group!
+      before_action :authorize_admin_group!
       before_action :set_application, only: [:show, :edit, :update, :renew, :destroy]
       before_action :load_scopes, only: [:index, :create, :edit, :update]
 

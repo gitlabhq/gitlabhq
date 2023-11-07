@@ -243,6 +243,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
         [:analytics_instrumentation]                      | '+data-track-action'                           | ['components/welcome.vue']
         [:analytics_instrumentation]                      | '+ data: { track_label:'                       | ['admin/groups/_form.html.haml']
         [:analytics_instrumentation]                      | '+ Gitlab::Tracking.event'                     | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
+        [:analytics_instrumentation]                      | '+ Gitlab::Tracking.event("c", "a")'           | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
         [:database, :backend, :analytics_instrumentation] | '+ count(User.active)'                         | ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
         [:database, :backend, :analytics_instrumentation] | '+ estimate_batch_distinct_count(User.active)' | ['usage_data.rb']
         [:backend, :analytics_instrumentation]            | '+ alt_usage_data(User.active)'                | ['lib/gitlab/usage_data.rb']

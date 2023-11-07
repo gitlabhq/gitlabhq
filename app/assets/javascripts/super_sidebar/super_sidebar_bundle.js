@@ -66,13 +66,7 @@ export const initSuperSidebar = () => {
 
   if (!el) return false;
 
-  const {
-    rootPath,
-    sidebar,
-    toggleNewNavEndpoint,
-    forceDesktopExpandedSidebar,
-    commandPalette,
-  } = el.dataset;
+  const { rootPath, sidebar, forceDesktopExpandedSidebar, commandPalette } = el.dataset;
 
   bindSuperSidebarCollapsedEvents(forceDesktopExpandedSidebar);
   initSuperSidebarCollapsedState(parseBoolean(forceDesktopExpandedSidebar));
@@ -98,7 +92,6 @@ export const initSuperSidebar = () => {
     name: 'SuperSidebarRoot',
     provide: {
       rootPath,
-      toggleNewNavEndpoint,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,

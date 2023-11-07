@@ -197,6 +197,11 @@ module Types
           null: true,
           description: 'Timestamp of when the user was created.'
 
+    field :last_activity_on,
+          type: Types::DateType,
+          null: true,
+          description: 'Date the user last performed any actions.'
+
     field :pronouns,
           type: ::GraphQL::Types::String,
           null: true,

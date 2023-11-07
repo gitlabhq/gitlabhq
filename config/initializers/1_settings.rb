@@ -183,6 +183,7 @@ Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_MAIN
 Settings.gitlab['default_project_deletion_protection'] ||= false
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
+Settings.gitlab['default_branch_protection_defaults'] ||= ::Gitlab::Access::BranchProtection.protected_fully
 # `default_can_create_group` is deprecated since GitLab 15.5 in favour of the `can_create_group` column on `ApplicationSetting`.
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?

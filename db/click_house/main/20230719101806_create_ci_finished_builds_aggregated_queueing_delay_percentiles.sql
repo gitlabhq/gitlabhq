@@ -8,4 +8,4 @@ CREATE TABLE ci_finished_builds_aggregated_queueing_delay_percentiles
     queueing_duration_quantile AggregateFunction(quantile, Int64)
 )
 ENGINE = AggregatingMergeTree()
-ORDER BY (started_at_bucket, status, runner_type)
+ORDER BY (started_at_bucket, status, runner_type);

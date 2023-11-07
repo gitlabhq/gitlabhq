@@ -22,6 +22,7 @@ export const initAccessDropdown = (el, options) => {
     data() {
       return { preselected };
     },
+    disabled,
     methods: {
       setPreselectedItems(items) {
         this.preselected = items;

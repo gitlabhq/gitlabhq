@@ -13,7 +13,8 @@ module Ci
       self.table_name = 'catalog_resources'
 
       belongs_to :project
-      has_many :components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :catalog_resource
+      has_many :components, class_name: 'Ci::Catalog::Resources::Component', foreign_key: :catalog_resource_id,
+        inverse_of: :catalog_resource
       has_many :versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :catalog_resource
 
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
@@ -42,6 +43,10 @@ module Ci
 
       def unpublish!
         update!(state: :draft)
+      end
+
+      def publish!
+        update!(state: :published)
       end
 
       def sync_with_project!

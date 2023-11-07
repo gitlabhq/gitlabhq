@@ -591,6 +591,22 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       it { is_expected.not_to include @member_with_minimal_access }
       it { is_expected.not_to include awaiting_group_member }
       it { is_expected.not_to include awaiting_project_member }
+
+      context 'when minimal_access is true' do
+        subject { described_class.without_invites_and_requests(minimal_access: true) }
+
+        it { is_expected.to include @owner }
+        it { is_expected.to include @maintainer }
+        it { is_expected.not_to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.not_to include @requested_member }
+        it { is_expected.to include @accepted_request_member }
+        it { is_expected.to include @blocked_maintainer }
+        it { is_expected.to include @blocked_developer }
+        it { is_expected.to include @member_with_minimal_access }
+        it { is_expected.not_to include awaiting_group_member }
+        it { is_expected.not_to include awaiting_project_member }
+      end
     end
 
     describe '.connected_to_user' do

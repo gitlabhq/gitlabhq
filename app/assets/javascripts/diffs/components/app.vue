@@ -366,22 +366,11 @@ export default {
       handleLocationHash();
       this.autoScrolled = true;
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-    this.unwatchDiscussions = this.$watch(
-      () => `${this.flatBlobsList.length}:${this.$store.state.notes.discussions.length}`,
-      () => {
-        this.setDiscussions();
-
-        if (this.$store.state.notes.doneFetchingBatchDiscussions) {
-          this.unwatchDiscussions();
-        }
-      },
-    );
-
-    this.unwatchRetrievingBatches = this.$watch(
-      () => `${this.retrievingBatches}:${this.$store.state.notes.discussions.length}`,
-      () => {
-        if (!this.retrievingBatches && this.$store.state.notes.discussions.length) {
-          this.unwatchRetrievingBatches();
+    this.$watch(
+      () => this.$store.state.notes.discussions.length,
+      (newVal, prevVal) => {
+        if (newVal > prevVal) {
+          this.setDiscussions();
         }
       },
     );

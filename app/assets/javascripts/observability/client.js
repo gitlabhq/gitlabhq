@@ -246,22 +246,18 @@ async function fetchOperations(operationsUrl, serviceName) {
   }
 }
 
-async function fetchMetrics() {
-  // TODO replace mocks with API calls https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2469
-  /* eslint-disable @gitlab/require-i18n-strings */
-  return {
-    metrics: [
-      { name: 'metric A', description: 'a counter metric called A', type: 'COUNTER' },
-      { name: 'metric B', description: 'a gauge metric called B', type: 'GAUGE' },
-      { name: 'metric C', description: 'a histogram metric called C', type: 'HISTOGRAM' },
-      {
-        name: 'metric D',
-        description: 'a exp histogram metric called D',
-        type: 'EXPONENTIAL HISTOGRAM',
-      },
-    ],
-  };
-  /* eslint-enable @gitlab/require-i18n-strings */
+async function fetchMetrics(metricsUrl) {
+  try {
+    const { data } = await axios.get(metricsUrl, {
+      withCredentials: true,
+    });
+    if (!Array.isArray(data.metrics)) {
+      throw new Error('metrics are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
+    return data;
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
 }
 
 export function buildClient(options) {

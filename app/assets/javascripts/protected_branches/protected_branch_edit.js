@@ -6,6 +6,10 @@ import { initToggle } from '~/toggles';
 import { initAccessDropdown } from '~/projects/settings/init_access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 
+const isDropdownDisabled = (dropdown) => {
+  return dropdown?.$options.disabled === '';
+};
+
 export default class ProtectedBranchEdit {
   constructor(options) {
     this.hasLicense = options.hasLicense;
@@ -104,6 +108,9 @@ export default class ProtectedBranchEdit {
   }
 
   initSelectedItems(dropdown, accessLevel) {
+    if (isDropdownDisabled(dropdown)) {
+      return;
+    }
     this.selectedItems[accessLevel] = dropdown.preselected.map((item) => {
       if (item.type === LEVEL_TYPES.USER) return { id: item.id, user_id: item.user_id };
       if (item.type === LEVEL_TYPES.ROLE) return { id: item.id, access_level: item.access_level };
@@ -183,7 +190,10 @@ export default class ProtectedBranchEdit {
       };
     });
 
-    this.selectedItems[accessLevel] = itemsToAdd;
-    this[`${accessLevel}_dropdown`]?.setPreselectedItems(itemsToAdd);
+    const dropdown = this[`${accessLevel}_dropdown`];
+    if (!isDropdownDisabled(dropdown)) {
+      this.selectedItems[accessLevel] = itemsToAdd;
+      dropdown?.setPreselectedItems(itemsToAdd);
+    }
   }
 }

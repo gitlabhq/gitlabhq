@@ -384,4 +384,41 @@ describe('buildClient', () => {
       expectErrorToBeReported(new Error(e));
     });
   });
+
+  describe('fetchMetrics', () => {
+    const FETCHING_METRICS_ERROR = 'metrics are missing/invalid in the response';
+
+    it('fetches metrics from the metrics URL', async () => {
+      const mockResponse = {
+        metrics: [
+          { name: 'metric A', description: 'a counter metric called A', type: 'COUNTER' },
+          { name: 'metric B', description: 'a gauge metric called B', type: 'GAUGE' },
+        ],
+      };
+
+      axiosMock.onGet(metricsUrl).reply(200, mockResponse);
+
+      const result = await client.fetchMetrics();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsUrl, {
+        withCredentials: true,
+      });
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('rejects if metrics are missing', async () => {
+      axiosMock.onGet(metricsUrl).reply(200, {});
+
+      await expect(client.fetchMetrics()).rejects.toThrow(FETCHING_METRICS_ERROR);
+      expectErrorToBeReported(new Error(FETCHING_METRICS_ERROR));
+    });
+
+    it('rejects if metrics are invalid', async () => {
+      axiosMock.onGet(metricsUrl).reply(200, { traces: 'invalid' });
+
+      await expect(client.fetchMetrics()).rejects.toThrow(FETCHING_METRICS_ERROR);
+      expectErrorToBeReported(new Error(FETCHING_METRICS_ERROR));
+    });
+  });
 });

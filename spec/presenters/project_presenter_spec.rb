@@ -872,4 +872,26 @@ RSpec.describe ProjectPresenter do
       end
     end
   end
+
+  describe '#has_review_app?' do
+    subject { presenter.has_review_app? }
+
+    let_it_be(:project) { create(:project, :repository) }
+
+    context 'when review apps exist' do
+      let!(:environment) do
+        create(:environment, :with_review_app, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when review apps do not exist' do
+      let!(:environment) do
+        create(:environment, project: project)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

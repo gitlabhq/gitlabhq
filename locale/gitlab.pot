@@ -3537,6 +3537,9 @@ msgstr ""
 msgid "AdminSettings|Enable smartcn custom analyzer: Search"
 msgstr ""
 
+msgid "AdminSettings|Enable the external redirect warning page for job artifacts"
+msgstr ""
+
 msgid "AdminSettings|Enabled"
 msgstr ""
 
@@ -3736,6 +3739,9 @@ msgid "AdminSettings|Set visibility of project contents and configure Git access
 msgstr ""
 
 msgid "AdminSettings|Setting must be greater than 0."
+msgstr ""
+
+msgid "AdminSettings|Show a redirect page that warns you about user-generated content in GitLab Pages."
 msgstr ""
 
 msgid "AdminSettings|Size and domain settings for Pages static sites."
@@ -4797,6 +4803,9 @@ msgstr ""
 msgid "All environments"
 msgstr ""
 
+msgid "All groups"
+msgstr ""
+
 msgid "All groups and projects"
 msgstr ""
 
@@ -5188,6 +5197,9 @@ msgid "An error occurred while fetching the template: %{err}"
 msgstr ""
 
 msgid "An error occurred while fetching this tab."
+msgstr ""
+
+msgid "An error occurred while fetching. Please try again."
 msgstr ""
 
 msgid "An error occurred while getting files for - %{branchId}"
@@ -21929,6 +21941,9 @@ msgstr ""
 msgid "GitLab group: %{source_link}"
 msgstr ""
 
+msgid "GitLab has redesigned the left sidebar to address customer feedback. View details in %{blog_link_start}this blog post%{link_end}. Here's how to %{issues_link_start}file an issue%{link_end} with the GitLab product team."
+msgstr ""
+
 msgid "GitLab informs you if a new version is available. %{link_start}What information does GitLab Inc. collect?%{link_end}"
 msgstr ""
 
@@ -36282,6 +36297,9 @@ msgstr ""
 msgid "ProductAnalytics|All Pages"
 msgstr ""
 
+msgid "ProductAnalytics|All Returning Users Compared"
+msgstr ""
+
 msgid "ProductAnalytics|All Sessions Compared"
 msgstr ""
 
@@ -36307,6 +36325,9 @@ msgid "ProductAnalytics|Back to dashboards"
 msgstr ""
 
 msgid "ProductAnalytics|Compares all events against each other"
+msgstr ""
+
+msgid "ProductAnalytics|Compares all returning users against each other"
 msgstr ""
 
 msgid "ProductAnalytics|Compares all user sessions against each other"
@@ -36351,7 +36372,7 @@ msgstr ""
 msgid "ProductAnalytics|How many sessions a user has"
 msgstr ""
 
-msgid "ProductAnalytics|How often sessions are repeated"
+msgid "ProductAnalytics|How often users returned compared to all sessions"
 msgstr ""
 
 msgid "ProductAnalytics|Instrument your application"
@@ -36372,6 +36393,9 @@ msgstr ""
 msgid "ProductAnalytics|Measure all or specific Page Views"
 msgstr ""
 
+msgid "ProductAnalytics|Measure all returning users"
+msgstr ""
+
 msgid "ProductAnalytics|Measure all sessions"
 msgstr ""
 
@@ -36387,10 +36411,13 @@ msgstr ""
 msgid "ProductAnalytics|Page Views"
 msgstr ""
 
+msgid "ProductAnalytics|Percentage of Users Returning"
+msgstr ""
+
 msgid "ProductAnalytics|Product analytics onboarding"
 msgstr ""
 
-msgid "ProductAnalytics|Repeat Visit Percentage"
+msgid "ProductAnalytics|Returning Users"
 msgstr ""
 
 msgid "ProductAnalytics|SDK application ID"
@@ -37069,6 +37096,9 @@ msgid "Project export requests"
 msgstr ""
 
 msgid "Project export started. A download link will be sent by email and made available on this page."
+msgstr ""
+
+msgid "Project groups"
 msgstr ""
 
 msgid "Project has too many %{label_for_message} to search"
@@ -43295,6 +43325,9 @@ msgid "SecurityOrchestration|YAML"
 msgstr ""
 
 msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} policies."
+msgstr ""
+
+msgid "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
 msgstr ""
 
 msgid "SecurityOrchestration|You don't have any security policies yet"
@@ -54359,6 +54392,9 @@ msgid "WorkItem|Discard changes"
 msgstr ""
 
 msgid "WorkItem|Due date"
+msgstr ""
+
+msgid "WorkItem|Epic"
 msgstr ""
 
 msgid "WorkItem|Existing task"

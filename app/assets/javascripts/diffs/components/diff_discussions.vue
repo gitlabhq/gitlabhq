@@ -39,12 +39,6 @@ export default {
   },
   methods: {
     ...mapActions(['toggleDiscussion']),
-    ...mapActions('diffs', ['removeDiscussionsFromDiff']),
-    deleteNoteHandler(discussion) {
-      if (discussion.notes.length <= 1) {
-        this.removeDiscussionsFromDiff(discussion);
-      }
-    },
     isExpanded(discussion) {
       return this.shouldCollapseDiscussions ? discussion.expanded : true;
     },
@@ -90,7 +84,6 @@ export default {
           :line="line"
           :help-page-path="helpPagePath"
           :should-scroll-to-note="false"
-          @noteDeleted="deleteNoteHandler"
         >
           <template v-if="renderAvatarBadge" #avatar-badge>
             <design-note-pin

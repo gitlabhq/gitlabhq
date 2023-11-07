@@ -82,7 +82,7 @@ export default {
       return this.issuableState === STATUS_OPEN || this.issuableState === STATUS_REOPENED;
     },
     statusIcon() {
-      return this.isOpen ? 'issues' : 'issue-closed';
+      return this.isOpen ? 'issue-open-m' : 'issue-close';
     },
     statusText() {
       if (this.isOpen) {

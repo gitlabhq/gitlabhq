@@ -321,7 +321,9 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     let(:params) { { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE } }
 
     it "updates default_branch_protection_defaults from the default_branch_protection param" do
-      expect { subject.execute }.to change { application_settings.default_branch_protection_defaults }.from({}).to(expected)
+      default_value = ::Gitlab::Access::BranchProtection.protected_fully.deep_stringify_keys
+
+      expect { subject.execute }.to change { application_settings.default_branch_protection_defaults }.from(default_value).to(expected)
     end
   end
 

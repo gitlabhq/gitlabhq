@@ -179,7 +179,7 @@ export default {
     <template #stages>
       <div
         data-testid="stage-column-title"
-        class="gl-display-flex gl-justify-content-space-between gl-relative"
+        class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative"
         :class="titleClasses"
       >
         <span :title="name" class="gl-text-truncate gl-pr-3 gl-w-85p">

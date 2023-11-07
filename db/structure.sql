@@ -11877,6 +11877,7 @@ CREATE TABLE application_settings (
     project_jobs_api_rate_limit integer DEFAULT 600 NOT NULL,
     math_rendering_limits_enabled boolean DEFAULT true NOT NULL,
     service_access_tokens_expiration_enforced boolean DEFAULT true NOT NULL,
+    enable_artifact_external_redirect_warning_page boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -22824,7 +22825,9 @@ CREATE TABLE sbom_components (
     component_type smallint NOT NULL,
     name text NOT NULL,
     purl_type smallint,
-    CONSTRAINT check_91a8f6ad53 CHECK ((char_length(name) <= 255))
+    source_package_name text,
+    CONSTRAINT check_91a8f6ad53 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_e2dcb53709 CHECK ((char_length(source_package_name) <= 255))
 );
 
 CREATE SEQUENCE sbom_components_id_seq
@@ -34395,6 +34398,8 @@ CREATE INDEX index_sop_configurations_project_id_policy_project_id ON security_o
 CREATE INDEX index_sop_schedules_on_sop_configuration_id ON security_orchestration_policy_rule_schedules USING btree (security_orchestration_policy_configuration_id);
 
 CREATE INDEX index_sop_schedules_on_user_id ON security_orchestration_policy_rule_schedules USING btree (user_id);
+
+CREATE UNIQUE INDEX index_source_package_names_on_component_and_purl ON sbom_components USING btree (component_type, source_package_name, purl_type);
 
 CREATE INDEX index_spam_logs_on_user_id ON spam_logs USING btree (user_id);
 

@@ -28,6 +28,7 @@ PATH
   specs:
     gitlab-http (0.1.0)
       activesupport (~> 7)
+      concurrent-ruby (~> 1.2)
       httparty (~> 0.21.0)
       ipaddress (~> 0.8.3)
       nokogiri (~> 1.15.4)
@@ -161,7 +162,7 @@ GEM
   specs:
     CFPropertyList (3.0.5)
       rexml
-    RedCloth (4.3.2)
+    RedCloth (4.3.3)
     acme-client (2.0.11)
       faraday (>= 1.0, < 3.0.0)
       faraday-retry (~> 1.0)
@@ -444,7 +445,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     devfile (0.0.24.pre.alpha1)
     device_detector (1.0.0)
-    devise (4.8.1)
+    devise (4.9.3)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 4.1.0)
@@ -1743,7 +1744,7 @@ PLATFORMS
 
 DEPENDENCIES
   CFPropertyList (~> 3.0.0)
-  RedCloth (~> 4.3.2)
+  RedCloth (~> 4.3.3)
   acme-client (~> 2.0)
   activerecord-explain-analyze (~> 0.1)
   activerecord-gitlab!
@@ -1799,7 +1800,7 @@ DEPENDENCIES
   derailed_benchmarks
   devfile (~> 0.0.24.pre.alpha1)
   device_detector
-  devise (~> 4.8.1)
+  devise (~> 4.9.3)
   devise-pbkdf2-encryptable (~> 0.0.0)!
   devise-two-factor (~> 4.1.1)
   diff_match_patch (~> 0.1.0)

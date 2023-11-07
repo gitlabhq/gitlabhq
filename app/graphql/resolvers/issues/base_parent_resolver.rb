@@ -7,8 +7,13 @@ module Resolvers
       include ::Issues::SortArguments
 
       argument :state, Types::IssuableStateEnum,
-                required: false,
-                description: 'Current state of this issue.'
+        required: false,
+        description: 'Current state of this issue.',
+        prepare: ->(state, _ctx) {
+          return state unless state == 'locked'
+
+          raise Gitlab::Graphql::Errors::ArgumentError, Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE
+        }
 
       # see app/graphql/types/issue_connection.rb
       type 'Types::IssueConnection', null: true

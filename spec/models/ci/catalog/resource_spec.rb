@@ -19,7 +19,13 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   let_it_be(:release3) { create(:release, project: project, released_at: tomorrow) }
 
   it { is_expected.to belong_to(:project) }
-  it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
+
+  it do
+    is_expected.to(
+      have_many(:components).class_name('Ci::Catalog::Resources::Component').with_foreign_key(:catalog_resource_id)
+    )
+  end
+
   it { is_expected.to have_many(:versions).class_name('Ci::Catalog::Resources::Version') }
 
   it { is_expected.to delegate_method(:avatar_path).to(:project) }
@@ -119,6 +125,28 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   describe '#state' do
     it 'defaults to draft' do
       expect(resource.state).to eq('draft')
+    end
+  end
+
+  describe '#publish!' do
+    context 'when the catalog resource is in draft state' do
+      it 'updates the state of the catalog resource to published' do
+        expect(resource.state).to eq('draft')
+
+        resource.publish!
+
+        expect(resource.reload.state).to eq('published')
+      end
+    end
+
+    context 'when a catalog resource already has a published state' do
+      it 'leaves the state as published' do
+        resource.update!(state: 'published')
+
+        resource.publish!
+
+        expect(resource.state).to eq('published')
+      end
     end
   end
 

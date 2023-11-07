@@ -1659,6 +1659,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    it 'returns true for a user in parent group' do
+      subgroup = create(:group, parent: group)
+
+      expect(subgroup.member?(user)).to be_truthy
+    end
+
     context 'in shared group' do
       let(:shared_group) { create(:group) }
       let(:member_shared) { create(:user) }

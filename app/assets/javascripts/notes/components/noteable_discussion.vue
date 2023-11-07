@@ -290,9 +290,6 @@ export default {
         parent: this.$el,
       });
     },
-    deleteNoteHandler(note) {
-      this.$emit('noteDeleted', this.discussion, note);
-    },
     onStartReplying(discussionId) {
       if (this.discussion.id === discussionId) {
         this.showReplyForm();
@@ -329,7 +326,6 @@ export default {
               :is-overview-tab="isOverviewTab"
               :should-scroll-to-note="shouldScrollToNote"
               @startReplying="showReplyForm"
-              @deleteNote="deleteNoteHandler"
             >
               <template #avatar-badge>
                 <slot name="avatar-badge"></slot>

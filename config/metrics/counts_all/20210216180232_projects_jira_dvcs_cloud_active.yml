@@ -6,7 +6,7 @@ product_section: dev
 product_stage: manage
 product_group: integrations
 value_type: number
-status: active
+status: removed
 time_frame: all
 data_source: database
 instrumentation_class: CountProjectsWithJiraDvcsIntegrationMetric
@@ -21,3 +21,5 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "<13.9"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135755
+milestone_removed: "<16.6"

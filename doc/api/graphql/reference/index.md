@@ -7666,7 +7666,7 @@ Input type: `ValueStreamCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvaluestreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvaluestreamcreatename"></a>`name` | [`String!`](#string) | Value stream description. |
+| <a id="mutationvaluestreamcreatename"></a>`name` | [`String!`](#string) | Value stream name. |
 | <a id="mutationvaluestreamcreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace(project or group) the value stream is created in. |
 
 #### Fields
@@ -7701,6 +7701,32 @@ Input type: `ValueStreamDestroyInput`
 | <a id="mutationvaluestreamdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvaluestreamdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvaluestreamdestroyvaluestream"></a>`valueStream` | [`ValueStream`](#valuestream) | Value stream deleted after mutation. |
+
+### `Mutation.valueStreamUpdate`
+
+Updates a value stream.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `ValueStreamUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamupdateid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | Global ID of the value stream to update. |
+| <a id="mutationvaluestreamupdatename"></a>`name` | [`String!`](#string) | Value stream name. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvaluestreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvaluestreamupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvaluestreamupdatevaluestream"></a>`valueStream` | [`ValueStream`](#valuestream) | Updated value stream. |
 
 ### `Mutation.vulnerabilitiesDismiss`
 
@@ -14012,6 +14038,7 @@ Core representation of a GitLab user.
 | <a id="autocompleteduserid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="autocompleteduseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="autocompleteduserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="autocompleteduserlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="autocompleteduserlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="autocompleteduserlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="autocompletedusername"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
@@ -20447,6 +20474,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneeid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestassigneeide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestassigneejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestassigneelastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="mergerequestassigneelinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestassigneelocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestassigneemergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
@@ -20727,6 +20755,7 @@ The author of the merge request.
 | <a id="mergerequestauthorid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestauthoride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestauthorjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestauthorlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="mergerequestauthorlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestauthorlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestauthormergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
@@ -21070,6 +21099,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestparticipantide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestparticipantjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestparticipantlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="mergerequestparticipantlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestparticipantlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestparticipantmergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
@@ -21386,6 +21416,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestrevieweride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestreviewerjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestreviewerlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="mergerequestreviewerlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestreviewerlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestreviewermergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
@@ -22099,9 +22130,20 @@ A user with access to the organization.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organizationuserbadges"></a>`badges` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Badges describing the user within the organization. |
+| <a id="organizationuserbadges"></a>`badges` **{warning-solid}** | [`[OrganizationUserBadge!]`](#organizationuserbadge) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Badges describing the user within the organization. |
 | <a id="organizationuserid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. ID of the organization user. |
 | <a id="organizationuseruser"></a>`user` **{warning-solid}** | [`UserCore!`](#usercore) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. User that is associated with the organization. |
+
+### `OrganizationUserBadge`
+
+An organization user badge.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationuserbadgetext"></a>`text` | [`String!`](#string) | Badge text. |
+| <a id="organizationuserbadgevariant"></a>`variant` | [`String!`](#string) | Badge variant. |
 
 ### `Package`
 
@@ -26271,6 +26313,7 @@ Core representation of a GitLab user.
 | <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="usercoreide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="usercorejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="usercorelastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="usercorelinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="usercorelocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="usercorename"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
@@ -30097,6 +30140,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_error_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_ERROR_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_error_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_warning_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_warning_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_pre_enforcement_banner"></a>`NAMESPACE_STORAGE_PRE_ENFORCEMENT_BANNER` | Callout feature name for namespace_storage_pre_enforcement_banner. |
+| <a id="usercalloutfeaturenameenumnew_nav_for_everyone_callout"></a>`NEW_NAV_FOR_EVERYONE_CALLOUT` | Callout feature name for new_nav_for_everyone_callout. |
 | <a id="usercalloutfeaturenameenumnew_top_level_group_alert"></a>`NEW_TOP_LEVEL_GROUP_ALERT` | Callout feature name for new_top_level_group_alert. |
 | <a id="usercalloutfeaturenameenumnew_user_signups_cap_reached"></a>`NEW_USER_SIGNUPS_CAP_REACHED` | Callout feature name for new_user_signups_cap_reached. |
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
@@ -31792,6 +31836,7 @@ Implementations:
 | <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="useride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="userjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="userlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="userlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="userlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="username"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |

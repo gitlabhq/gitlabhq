@@ -1,6 +1,6 @@
 - blob = file.blob
 - external_link = blob.external_link?(@build)
-- if external_link
+- if external_link && Gitlab::CurrentSettings.enable_artifact_external_redirect_warning_page
   - path_to_file = external_file_project_job_artifacts_path(@project, @build, path: file.path)
 - else
   - path_to_file = file_project_job_artifacts_path(@project, @build, path: file.path)

@@ -39,7 +39,7 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
     it 'does not fetch more paths than the limit' do
       paths = components_project.fetch_component_paths(project.default_branch, limit: 1)
 
-      expect(paths.size).to be(1)
+      expect(paths.size).to eq(1)
     end
   end
 
@@ -53,7 +53,11 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
     context 'with valid component paths' do
       where(:path, :name) do
         'templates/secret-detection.yml'         | 'secret-detection'
+        'templates/secret_detection.yml'         | 'secret_detection'
+        'templates/secret_detection123.yml'      | 'secret_detection123'
+        'templates/secret-detection-123.yml'     | 'secret-detection-123'
         'templates/dast/template.yml'            | 'dast'
+        'templates/d-a-s_t/template.yml'         | 'd-a-s_t'
         'templates/template.yml'                 | 'template'
         'templates/blank-yaml.yml'               | 'blank-yaml'
       end

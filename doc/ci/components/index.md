@@ -29,6 +29,8 @@ A components repository is a GitLab project with a repository that hosts one or 
 
 If a component requires different versioning from other components, the component should be migrated to its own components repository.
 
+One component repository can have a maximum of 10 components.
+
 ## Create a components repository
 
 To create a components repository, you must:
@@ -65,17 +67,17 @@ the file structure should be similar to:
 
 ```plaintext
 ├── templates/
-│   └── only_template.yml
+│   └── secret-detection.yml
 ├── README.md
 └── .gitlab-ci.yml
 ```
 
-This example component could be referenced with a path similar to `gitlab.com/my-username/my-component/only_template@<version>`,
+This example component could be referenced with a path similar to `gitlab.com/my-namespace/my-project/secret-detection@<version>`,
 if the project is:
 
 - On GitLab.com
-- Named `my-component`
-- In a personal namespace named `my-username`
+- Named `my-project`
+- In a personal namespace or group named `my-namespace`
 
 The templates directory and the suffix of the configuration file should be excluded from the referenced path.
 
@@ -85,25 +87,31 @@ If the project contains multiple components, then the file structure should be s
 ├── README.md
 ├── .gitlab-ci.yml
 └── templates/
-    └── all-scans.yml
+    ├── all-scans.yml
     └── secret-detection.yml
 ```
 
 These components would be referenced with these paths:
 
-- `gitlab.com/my-username/my-component/all-scans`
-- `gitlab.com/my-username/my-component/secret-detection`
+- `gitlab.com/my-namespace/my-project/all-scans@<version>`
+- `gitlab.com/my-namespace/my-project/secret-detection@<version>`
 
-You can omit the filename in the path if the configuration file is named `template.yml`.
-For example, the following component could be referenced with `gitlab.com/my-username/my-component/dast`:
+You can also have components defined as a directory if you want to bundle together multiple related files.
+In this case GitLab expects a `template.yml` file to be present:
+
+For example:
 
 ```plaintext
 ├── README.md
 ├── .gitlab-ci.yml
-├── templates/
-│   └── dast
-│       └── template.yml
+└── templates/
+    └── dast
+        ├── docs.md
+        ├── Dockerfile
+        └── template.yml
 ```
+
+In this example, the component could be referenced with `gitlab.com/my-namespace/my-project/dast@<version>`.
 
 #### Component configurations saved in any directory (deprecated)
 
@@ -117,8 +125,8 @@ Components configurations can be saved through the following directory structure
   components, each file must be in a separate subdirectory.
 - `README.md`: A documentation file explaining the details of all the components in the repository.
 
-For example, if the project is on GitLab.com, named `my-component`, and in a personal
-namespace named `my-username`:
+For example, if the project is on GitLab.com, named `my-project`, and in a personal
+namespace named `my-namespace`:
 
 - Containing a single component and a simple pipeline to test the component, then
   the file structure might be:
@@ -132,7 +140,7 @@ namespace named `my-username`:
   The `.gitlab-ci.yml` file is not required for a CI/CD component to work, but
   [testing the component](#test-the-component) in a pipeline in the project is recommended.
 
-  This component is referenced with the path `gitlab.com/my-username/my-component@<version>`.
+  This component is referenced with the path `gitlab.com/my-namespace/my-project@<version>`.
 
 - Containing one default component and multiple sub-components, then the file structure
   might be:
@@ -149,9 +157,9 @@ namespace named `my-username`:
 
   These components are identified by these paths:
 
-  - `gitlab.com/my-username/my-component`
-  - `gitlab.com/my-username/my-component/unit`
-  - `gitlab.com/my-username/my-component/integration`
+  - `gitlab.com/my-namespace/my-project`
+  - `gitlab.com/my-namespace/my-project/unit`
+  - `gitlab.com/my-namespace/my-project/integration`
 
 It is possible to have a components repository with no default component, by having
 no `template.yml` in the root directory.
@@ -205,7 +213,7 @@ For example:
 
 ```yaml
 include:
-  - component: gitlab.example.com/my-namespace/my-component@1.0
+  - component: gitlab.example.com/my-namespace/my-project@1.0
     inputs:
       stage: build
 ```
@@ -410,7 +418,7 @@ For example:
 ```yaml
 include:
   # include the component located in the current project from the current SHA
-  - component: gitlab.com/$CI_PROJECT_PATH/my-component@$CI_COMMIT_SHA
+  - component: gitlab.com/$CI_PROJECT_PATH/my-project@$CI_COMMIT_SHA
     inputs:
       stage: build
 

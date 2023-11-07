@@ -8,7 +8,6 @@ import {
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, __, sprintf } from '~/locale';
-import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import Tracking from '~/tracking';
 import PersistentUserCallout from '~/persistent_user_callout';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
@@ -39,14 +38,13 @@ export default {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     GlButton,
-    NewNavToggle,
     UserMenuProfileItem,
   },
   directives: {
     SafeHtml,
   },
   mixins: [Tracking.mixin()],
-  inject: ['toggleNewNavEndpoint', 'isImpersonating'],
+  inject: ['isImpersonating'],
   props: {
     data: {
       required: true,
@@ -299,13 +297,6 @@ export default {
           :item="gitlabNextItem"
           data-testid="gitlab-next-item"
         />
-      </gl-disclosure-dropdown-group>
-
-      <gl-disclosure-dropdown-group bordered>
-        <template #group-label>
-          <span class="gl-font-sm">{{ $options.i18n.newNavigation.sectionTitle }}</span>
-        </template>
-        <new-nav-toggle :endpoint="toggleNewNavEndpoint" enabled new-navigation />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group

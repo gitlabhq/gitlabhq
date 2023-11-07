@@ -36,7 +36,12 @@ module BulkImports
     def perform_failure(exception, entity_id)
       @entity = ::BulkImports::Entity.find(entity_id)
 
-      log_and_fail(exception)
+      Gitlab::ErrorTracking.track_exception(
+        exception,
+        log_params(message: "Request to export #{entity.source_type} failed")
+      )
+
+      entity.fail_op!
     end
 
     private
@@ -98,15 +103,6 @@ module BulkImports
       }
 
       defaults.merge(extra)
-    end
-
-    def log_and_fail(exception)
-      Gitlab::ErrorTracking.track_exception(
-        exception,
-        log_params(message: "Request to export #{entity.source_type} failed")
-      )
-
-      entity.fail_op!
     end
   end
 end

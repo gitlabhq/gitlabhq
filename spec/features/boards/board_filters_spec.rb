@@ -25,7 +25,6 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
     let_it_be(:board) { create(:board, project: project) }
 
     before do
-      stub_feature_flags(apollo_boards: false)
       project.add_maintainer(user)
       sign_in(user)
 

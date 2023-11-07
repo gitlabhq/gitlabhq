@@ -169,6 +169,10 @@
   }
 }
 
+.stage-column-title .gl-ci-action-icon-container {
+  right: 11px;
+}
+
 .split-report-section {
   border-bottom: 1px solid var(--gray-50, $gray-50);
 
@@ -269,7 +273,12 @@
 
   .stage-column,
   .stage-column.is-stage-view {
+    min-width: 1px;
+
     @media (min-width: $breakpoint-sm) {
+      min-width: inherit;
+      max-width: $gl-spacing-scale-48;
+
       &:first-of-type {
         margin-left: $gl-spacing-scale-6;
       }

@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlBadge, GlButton, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { STATUS_OPEN } from '~/issues/constants';
 import { __ } from '~/locale';
@@ -13,6 +14,7 @@ export default {
     GlBadge,
     GlButton,
     GlIntersectionObserver,
+    ConfidentialityBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -30,6 +32,11 @@ export default {
     enableEdit: {
       type: Boolean,
       required: true,
+    },
+    workspaceType: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -89,6 +96,12 @@ export default {
                 <slot name="status-badge"></slot>
               </span>
             </gl-badge>
+            <confidentiality-badge
+              v-if="issuable.confidential"
+              class="gl-white-space-nowrap gl-mr-3 gl-align-self-center"
+              :issuable-type="issuable.type"
+              :workspace-type="workspaceType"
+            />
             <p
               class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"
               :title="issuable.title"

@@ -36,11 +36,6 @@ export default {
       return this.workItemType.toUpperCase().split(' ').join('_');
     },
     iconName() {
-      // TODO Delete this conditional once we have an `issue-type-epic` icon
-      if (this.workItemIconName === 'issue-type-epic') {
-        return 'epic';
-      }
-
       return (
         this.workItemIconName ||
         WORK_ITEMS_TYPE_MAP[this.workItemTypeUppercase]?.icon ||

@@ -419,7 +419,11 @@ export const assignDiscussionsToDiff = (
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
-  const { file_hash: fileHash, line_code: lineCode, id } = removeDiscussion;
+  const {
+    diff_file: { file_hash: fileHash },
+    line_code: lineCode,
+    id,
+  } = removeDiscussion;
   commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode, id });
 };
 

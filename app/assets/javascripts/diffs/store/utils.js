@@ -338,7 +338,7 @@ function prepareLine(line, file) {
         problems.brokenSymlink || problems.fileOnlyMoved || problems.brokenLineCode,
       ),
       rich_text: cleanRichText(line.rich_text),
-      discussionsExpanded: true,
+      discussionsExpanded: false,
       discussions: [],
       hasForm: false,
       text: undefined,

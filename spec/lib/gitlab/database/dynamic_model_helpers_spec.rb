@@ -2,28 +2,83 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::DynamicModelHelpers do
+RSpec.describe Gitlab::Database::DynamicModelHelpers, feature_category: :database do
   let(:including_class) { Class.new.include(described_class) }
   let(:table_name) { Project.table_name }
   let(:connection) { Project.connection }
 
   describe '#define_batchable_model' do
-    subject { including_class.new.define_batchable_model(table_name, connection: connection) }
+    subject(:model) { including_class.new.define_batchable_model(table_name, connection: connection) }
 
     it 'is an ActiveRecord model' do
-      expect(subject.ancestors).to include(ActiveRecord::Base)
+      expect(model.ancestors).to include(ActiveRecord::Base)
     end
 
     it 'includes EachBatch' do
-      expect(subject.included_modules).to include(EachBatch)
+      expect(model.included_modules).to include(EachBatch)
     end
 
     it 'has the correct table name' do
-      expect(subject.table_name).to eq(table_name)
+      expect(model.table_name).to eq(table_name)
     end
 
     it 'has the inheritance type column disable' do
-      expect(subject.inheritance_column).to eq('_type_disabled')
+      expect(model.inheritance_column).to eq('_type_disabled')
+    end
+
+    context 'for primary key' do
+      subject(:model) do
+        including_class.new.define_batchable_model(table_name, connection: connection, primary_key: primary_key)
+      end
+
+      context 'when table primary key is a single column' do
+        let(:primary_key) { nil }
+
+        context 'when primary key is nil' do
+          it 'does not change the primary key from :id' do
+            expect(model.primary_key).to eq('id')
+          end
+        end
+
+        context 'when primary key is not nil' do
+          let(:primary_key) { 'other_column' }
+
+          it 'does not change the primary key from :id' do
+            expect(model.primary_key).to eq('id')
+          end
+        end
+      end
+
+      context 'when table has composite primary key' do
+        let(:primary_key) { nil }
+        let(:table_name) { :_test_composite_primary_key }
+
+        before do
+          connection.execute(<<~SQL)
+            DROP TABLE IF EXISTS #{table_name};
+
+            CREATE TABLE #{table_name} (
+              id integer NOT NULL,
+              partition_id integer NOT NULL,
+              PRIMARY KEY (id, partition_id)
+            );
+          SQL
+        end
+
+        context 'when primary key is nil' do
+          it 'does not change the primary key from nil' do
+            expect(model.primary_key).to be_nil
+          end
+        end
+
+        context 'when primary key is not nil' do
+          let(:primary_key) { 'id' }
+
+          it 'changes the primary key' do
+            expect(model.primary_key).to eq('id')
+          end
+        end
+      end
     end
   end
 

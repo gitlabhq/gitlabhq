@@ -29,8 +29,8 @@ module Gitlab
         validate_content_length
         validate_filepath
 
-        redirection_url = get_assets_download_redirection_url
-        file = download_from(redirection_url)
+        download_url = get_assets_download_redirection_url
+        file = download_from(download_url)
 
         validate_symlink
         file
@@ -60,16 +60,16 @@ module Gitlab
 
         options[:follow_redirects] = false
         response = Gitlab::HTTP.perform_request(Net::HTTP::Get, file_url, options)
-        raise_error("expected a redirect response, got #{response.code}") unless response.redirection?
 
-        redirection_url = response.headers[:location]
-        filename = URI.parse(redirection_url).path
+        download_url = if response.redirection?
+                         response.headers[:location]
+                       else
+                         file_url
+                       end
 
-        unless Gitlab::GithubImport::Markdown::Attachment::MEDIA_TYPES.any? { |type| filename.ends_with?(type) }
-          raise UnsupportedAttachmentError
-        end
+        file_type_valid?(URI.parse(download_url).path)
 
-        redirection_url
+        download_url
       end
 
       def github_assets_url_regex
@@ -88,6 +88,12 @@ module Gitlab
           mkdir_p dir
           File.join(dir, filename)
         end
+      end
+
+      def file_type_valid?(file_url)
+        return if Gitlab::GithubImport::Markdown::Attachment::MEDIA_TYPES.any? { |type| file_url.ends_with?(type) }
+
+        raise UnsupportedAttachmentError
       end
     end
   end

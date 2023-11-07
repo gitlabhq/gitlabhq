@@ -673,6 +673,33 @@ If you do access the internal container registry API and use the original tag de
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Legacy Geo Prometheus metrics
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430192).
+</div>
+
+Following the migration of projects to the [Geo self-service framework](https://docs.gitlab.com/ee/development/geo/framework.html) we have deprecated a number of [Prometheus](https://docs.gitlab.com/ee/administration/monitoring/prometheus/) metrics.
+The following Geo-related Prometheus metrics are deprecated and will be removed in 17.0.
+The table below lists the deprecated metrics and their respective replacements. The replacements are available in GitLab 16.3.0 and later.
+
+| Deprecated metric                        |  Replacement metric                            |
+| ---------------------------------------- | ---------------------------------------------- |
+| `geo_repositories_synced`                | `geo_project_repositories_synced`              |
+| `geo_repositories_failed`                | `geo_project_repositories_failed`              |
+| `geo_repositories_checksummed`           | `geo_project_repositories_checksummed`         |
+| `geo_repositories_checksum_failed`       | `geo_project_repositories_checksum_failed`     |
+| `geo_repositories_verified`              | `geo_project_repositories_verified`            |
+| `geo_repositories_verification_failed`   | `geo_project_repositories_verification_failed` |
+| `geo_repositories_checksum_mismatch`     |  None available                                |
+| `geo_repositories_retrying_verification` |  None available                                |
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Maintainer role providing the ability to change Package settings using GraphQL API
 
 <div class="deprecation-notes">

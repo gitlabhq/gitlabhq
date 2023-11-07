@@ -112,6 +112,9 @@ export default {
     canSetupReviewApp() {
       return this.environmentApp?.reviewApp?.canSetupReviewApp;
     },
+    hasReviewApp() {
+      return this.environmentApp?.reviewApp?.hasReviewApp;
+    },
     canCleanUpEnvs() {
       return this.environmentApp?.canStopStaleEnvironments;
     },
@@ -157,7 +160,10 @@ export default {
       };
     },
     openReviewAppModal() {
-      if (!this.canSetupReviewApp) {
+      // we don't show the Enable review apps button
+      // if a user cannot setup a review app or review
+      // apps are already configured
+      if (!this.canSetupReviewApp || this.hasReviewApp) {
         return null;
       }
 

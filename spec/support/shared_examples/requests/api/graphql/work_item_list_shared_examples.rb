@@ -46,6 +46,14 @@ RSpec.shared_examples 'graphql work item list request spec' do
           expect(work_item_ids).to include(closed_work_item.to_global_id.to_s)
         end
       end
+
+      context 'when filtering by state locked' do
+        let(:item_filter_params) { { state: :locked } }
+
+        it 'return an error message' do
+          expect_graphql_errors_to_include(Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE)
+        end
+      end
     end
 
     context 'when filtering by type' do

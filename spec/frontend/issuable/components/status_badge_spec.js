@@ -16,10 +16,10 @@ describe('StatusBadge component', () => {
     ${'merge_request'} | ${'Open'}   | ${'opened'} | ${'success'} | ${'merge-request-open'}
     ${'merge_request'} | ${'Closed'} | ${'closed'} | ${'danger'}  | ${'merge-request-close'}
     ${'merge_request'} | ${'Merged'} | ${'merged'} | ${'info'}    | ${'merge'}
-    ${'issue'}         | ${'Open'}   | ${'opened'} | ${'success'} | ${'issues'}
-    ${'issue'}         | ${'Closed'} | ${'closed'} | ${'info'}    | ${'issue-closed'}
-    ${'epic'}          | ${'Open'}   | ${'opened'} | ${'success'} | ${'epic'}
-    ${'epic'}          | ${'Closed'} | ${'closed'} | ${'info'}    | ${'epic-closed'}
+    ${'issue'}         | ${'Open'}   | ${'opened'} | ${'success'} | ${'issue-open-m'}
+    ${'issue'}         | ${'Closed'} | ${'closed'} | ${'info'}    | ${'issue-close'}
+    ${'epic'}          | ${'Open'}   | ${'opened'} | ${'success'} | ${'issue-open-m'}
+    ${'epic'}          | ${'Closed'} | ${'closed'} | ${'info'}    | ${'issue-close'}
   `(
     'when issuableType=$issuableType and state=$state',
     ({ issuableType, badgeText, state, badgeVariant, badgeIcon }) => {

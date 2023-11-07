@@ -130,7 +130,7 @@ module Gitlab
       end
 
       def base_relation
-        define_batchable_model(batch_table, connection: connection)
+        define_batchable_model(batch_table, connection: connection, primary_key: batch_column)
           .where(batch_column => start_id..end_id)
       end
 

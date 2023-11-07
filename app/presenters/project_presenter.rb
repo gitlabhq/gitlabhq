@@ -436,6 +436,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     count_of_extra_topics_not_shown > 0
   end
 
+  def has_review_app?
+    !project.environments_for_scope('review/*').empty?
+  end
+
   def can_setup_review_app?
     strong_memoize(:can_setup_review_app) do
       (can_instantiate_cluster? && all_clusters_empty?) || cicd_missing?

@@ -111,6 +111,22 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
     end
   end
 
+  context 'RedCloth markup' do
+    it 'renders textile correctly' do
+      test_text = '"This is *my* text."'
+      expected_res = "<p>&#8220;This is <strong>my</strong> text.&#8221;</p>"
+      expect(RedCloth.new(test_text).to_html).to eq(expected_res)
+    end
+
+    it 'protects against malicious backtracking' do
+      test_text = '<A' + ('A' * 54773)
+
+      expect do
+        Timeout.timeout(3.seconds) { RedCloth.new(test_text, [:sanitize_html]).to_html }
+      end.not_to raise_error
+    end
+  end
+
   def render(...)
     described_class.render(...)
   end

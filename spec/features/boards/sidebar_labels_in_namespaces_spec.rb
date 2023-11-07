@@ -14,8 +14,6 @@ RSpec.describe 'Issue boards sidebar labels select', :js, feature_category: :tea
       let_it_be(:group_board) { create(:board, group: group) }
 
       before do
-        stub_feature_flags(apollo_boards: false)
-
         load_board group_board_path(group, group_board)
       end
 

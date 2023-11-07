@@ -30,4 +30,4 @@ CREATE TABLE ci_finished_builds
 )
 ENGINE = ReplacingMergeTree -- Using ReplacingMergeTree just in case we accidentally insert the same data twice
 ORDER BY (status, runner_type, project_id, finished_at, id)
-PARTITION BY toYear(finished_at)
+PARTITION BY toYear(finished_at);

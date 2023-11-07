@@ -450,4 +450,101 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
       end
     end
   end
+
+  context 'when options[:async] is true' do
+    context 'when it is a valid request' do
+      before do
+        stub_full_request('http://example.org', method: :any).to_return(status: 200, body: 'hello world')
+      end
+
+      it 'returns a LazyResponse' do
+        result = described_class.get('http://example.org', async: true)
+
+        expect(result).to be_a(Gitlab::HTTP_V2::LazyResponse)
+        expect(result.state).to eq(:unscheduled)
+
+        expect(result.execute).to be_a(Gitlab::HTTP_V2::LazyResponse)
+        expect(result.wait).to be_a(Gitlab::HTTP_V2::LazyResponse)
+
+        expect(result.value).to be_a(HTTParty::Response)
+        expect(result.value.body).to eq('hello world')
+      end
+    end
+
+    context 'when the URL is denied' do
+      let(:url) { 'http://localhost:3003' }
+      let(:error_class) { Gitlab::HTTP_V2::BlockedUrlError }
+      let(:opts) { {} }
+
+      let(:result) do
+        described_class.get(url, allow_local_requests: false, async: true, **opts)
+      end
+
+      it 'returns a LazyResponse with error value' do
+        expect(result).to be_a(Gitlab::HTTP_V2::LazyResponse)
+
+        expect { result.execute.value }.to raise_error(error_class)
+      end
+
+      it 'logs the exception' do
+        expect(described_class.configuration)
+          .to receive(:log_exception)
+          .with(instance_of(error_class), {})
+
+        expect { result.execute.value }.to raise_error(error_class)
+      end
+
+      context 'with extra_log_info as hash' do
+        let(:opts) { { extra_log_info: { a: :b } } }
+
+        it 'handles the request' do
+          expect(described_class.configuration)
+            .to receive(:log_exception)
+            .with(instance_of(error_class), { a: :b })
+
+          expect { result.execute.value }.to raise_error(error_class)
+        end
+      end
+
+      context 'with extra_log_info as proc' do
+        let(:extra_log_info) do
+          proc do |error, url, options|
+            { klass: error.class, url: url, options: options }
+          end
+        end
+
+        let(:opts) { { extra_log_info: extra_log_info } }
+
+        it 'handles the request' do
+          expect(described_class.configuration)
+            .to receive(:log_exception)
+            .with(instance_of(error_class), { url: url, klass: error_class, options: { allow_local_requests: false } })
+
+          expect { result.execute.value }.to raise_error(error_class)
+        end
+      end
+    end
+  end
+
+  context 'when options[:async] and options[:stream_body] are true' do
+    before do
+      stub_full_request('http://example.org', method: :any)
+    end
+
+    it 'raises an ArgumentError' do
+      expect { described_class.get('http://example.org', async: true, stream_body: true) }
+        .to raise_error(ArgumentError, '`async` cannot be used with `stream_body` or `silent_mode_enabled`')
+    end
+  end
+
+  context 'when options[:async] and options[:silent_mode_enabled] are true' do
+    before do
+      stub_full_request('http://example.org', method: :any)
+    end
+
+    it 'raises an ArgumentError' do
+      expect { described_class.get('http://example.org', async: true, silent_mode_enabled: true) }
+        .to raise_error(ArgumentError, '`async` cannot be used with `stream_body` or `silent_mode_enabled`')
+    end
+  end
 end

@@ -1,15 +1,16 @@
 import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
   GlSprintf,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownText,
   GlSearchBoxByType,
+  GlIcon,
 } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { nextTick } from 'vue';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import DiffStatsDropdown, { i18n } from '~/vue_shared/components/diff_stats_dropdown.vue';
+import { ARROW_DOWN_KEY } from '~/lib/utils/keys';
 
 jest.mock('fuzzaldrin-plus', () => ({
   filter: jest.fn().mockReturnValue([]),
@@ -42,7 +43,7 @@ describe('Diff Stats Dropdown', () => {
   const focusInputMock = jest.fn();
 
   const createComponent = ({ changed = 0, added = 0, deleted = 0, files = [] } = {}) => {
-    wrapper = shallowMountExtended(DiffStatsDropdown, {
+    wrapper = mountExtended(DiffStatsDropdown, {
       propsData: {
         changed,
         added,
@@ -51,7 +52,6 @@ describe('Diff Stats Dropdown', () => {
       },
       stubs: {
         GlSprintf,
-        GlDropdown,
         GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
           methods: { focusInput: focusInputMock },
         }),
@@ -59,9 +59,8 @@ describe('Diff Stats Dropdown', () => {
     });
   };
 
-  const findChanged = () => wrapper.findComponent(GlDropdown);
-  const findChangedFiles = () => findChanged().findAllComponents(GlDropdownItem);
-  const findNoFilesText = () => findChanged().findComponent(GlDropdownText);
+  const findChanged = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findChangedFiles = () => findChanged().findAllComponents(GlDisclosureDropdownItem);
   const findCollapsed = () => wrapper.findByTestId('diff-stats-additions-deletions-expanded');
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
@@ -79,15 +78,14 @@ describe('Diff Stats Dropdown', () => {
       const fileText = findChangedFiles().at(1).text();
       expect(fileText).toContain(mockFiles[1].name);
       expect(fileText).toContain(mockFiles[1].path);
-      expect(fileData.props()).toMatchObject({
-        iconName: mockFiles[1].icon,
-        iconColor: mockFiles[1].iconColor,
-      });
+      expect(fileData.findComponent(GlIcon).props('name')).toEqual(mockFiles[1].icon);
+      expect(fileData.findComponent(GlIcon).classes()).toContain('gl-text-red-500');
+      expect(fileData.find('a').attributes('href')).toEqual(mockFiles[1].href);
     });
 
     it('when no files changed', () => {
       createComponent({ files: [] });
-      expect(findNoFilesText().text()).toContain(i18n.noFilesFound);
+      expect(findChanged().text()).toContain(i18n.noFilesFound);
     });
   });
 
@@ -108,7 +106,7 @@ describe('Diff Stats Dropdown', () => {
       });
 
       it(`dropdown header should be '${expectedDropdownHeader}'`, () => {
-        expect(findChanged().props('text')).toBe(expectedDropdownHeader);
+        expect(findChanged().props('toggleText')).toBe(expectedDropdownHeader);
       });
 
       it(`added and deleted count in collapsed section should be '${expectedAddedDeletedCollapsed}'`, () => {
@@ -137,19 +135,6 @@ describe('Diff Stats Dropdown', () => {
     });
   });
 
-  describe('selecting file dropdown item', () => {
-    beforeEach(() => {
-      createComponent({ files: mockFiles });
-    });
-
-    it('updates the URL', () => {
-      findChangedFiles().at(0).vm.$emit('click');
-      expect(window.location.hash).toBe(mockFiles[0].href);
-      findChangedFiles().at(1).vm.$emit('click');
-      expect(window.location.hash).toBe(mockFiles[1].href);
-    });
-  });
-
   describe('on dropdown open', () => {
     beforeEach(() => {
       createComponent();
@@ -158,6 +143,19 @@ describe('Diff Stats Dropdown', () => {
     it('should set the search input focus', () => {
       findChanged().vm.$emit('shown');
       expect(focusInputMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('keyboard nav', () => {
+    beforeEach(() => {
+      createComponent({ files: mockFiles });
+    });
+
+    it('focuses the first item when pressing the down key within the search box', () => {
+      const spy = jest.spyOn(wrapper.vm, 'focusFirstItem');
+      findSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ARROW_DOWN_KEY }));
+
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
+RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob, feature_category: :database do
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
 
   describe '.generic_instance' do

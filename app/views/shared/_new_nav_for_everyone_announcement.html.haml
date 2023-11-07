@@ -1,0 +1,18 @@
+- return unless show_new_nav_for_everyone_callout?
+
+- blog_url = 'https://about.gitlab.com/blog/2023/08/15/navigation-research-blog-post/'
+- issues_url = 'https://about.gitlab.com/submit-feedback/#product-feedback'
+
+- blog_link_tags = tag_pair(link_to('', blog_url, rel: 'noopener noreferrer', target: '_blank'), :blog_link_start, :link_end)
+- issues_link_tags = tag_pair(link_to('', issues_url, rel: 'noopener noreferrer', target: '_blank'), :issues_link_start, :link_end)
+
+- welcome_text = safe_format(_('GitLab has redesigned the left sidebar to address customer feedback. View details in %{blog_link_start}this blog post%{link_end}. Here\'s how to %{issues_link_start}file an issue%{link_end} with the GitLab product team.'), blog_link_tags, issues_link_tags)
+
+= render Pajamas::AlertComponent.new(dismissible: true,
+  alert_options: { class: 'js-new-nav-for-everyone-callout', data: { feature_id: "new_nav_for_everyone_callout", dismiss_endpoint: callouts_path }}) do |c|
+  - c.with_body do
+    %p
+      = welcome_text
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: blog_url, target: '_blank', button_options: { class: 'gl-alert-action' }) do |c|
+      = _('Learn more')

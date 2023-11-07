@@ -194,7 +194,7 @@ export default {
           <div
             class="item-attributes-area gl-display-flex gl-align-items-center gl-flex-wrap gl-gap-3"
           >
-            <span v-if="hasPipeline" class="mr-ci-status order-md-last">
+            <span v-if="hasPipeline" class="mr-ci-status order-md-last gl-md-ml-3 gl-mr-n2">
               <a :href="pipelinePath">
                 <ci-icon :status="pipelineStatus" :title="pipelineStatusTooltip" />
               </a>
@@ -203,7 +203,7 @@ export default {
             <issue-milestone
               v-if="hasMilestone"
               :milestone="milestone"
-              class="item-milestone gl-font-sm gl-display-flex gl-align-items-center order-md-first"
+              class="item-milestone gl-font-sm gl-display-flex gl-align-items-center order-md-first gl-ml-2"
             />
 
             <!-- Flex order for slots is defined in the parent component: e.g. related_issues_block.vue -->

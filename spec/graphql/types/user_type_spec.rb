@@ -55,6 +55,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       organization
       jobTitle
       createdAt
+      lastActivityOn
       pronouns
       ide
     ]

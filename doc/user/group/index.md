@@ -202,7 +202,7 @@ A table displays the member's:
 
 NOTE:
 The display of group members' **Source** might be inconsistent.
-For more information, see [issue 414557](https://gitlab.com/gitlab-org/gitlab/-/issues/414557).
+For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
 
 ## Filter and sort members in a group
 

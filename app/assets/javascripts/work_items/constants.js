@@ -35,6 +35,7 @@ export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
 export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
+export const WORK_ITEM_TYPE_ENUM_EPIC = 'EPIC';
 
 export const WORK_ITEM_TYPE_VALUE_EPIC = 'Epic';
 export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
@@ -184,6 +185,11 @@ export const WORK_ITEMS_TYPE_MAP = {
     icon: `issue-type-keyresult`,
     name: s__('WorkItem|Key result'),
     value: WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+  },
+  [WORK_ITEM_TYPE_ENUM_EPIC]: {
+    icon: `epic`,
+    name: s__('WorkItem|Epic'),
+    value: WORK_ITEM_TYPE_VALUE_EPIC,
   },
 };
 

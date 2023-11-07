@@ -488,6 +488,7 @@ module ApplicationSettingsHelper
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
       :suggest_pipeline_enabled,
+      :enable_artifact_external_redirect_warning_page,
       :search_rate_limit,
       :search_rate_limit_unauthenticated,
       :search_rate_limit_allowlist_raw,

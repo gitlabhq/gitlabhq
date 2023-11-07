@@ -133,6 +133,7 @@ describe('IssuableBody', () => {
         issuable: issuableBodyProps.issuable,
         statusIcon: issuableBodyProps.statusIcon,
         enableEdit: issuableBodyProps.enableEdit,
+        workspaceType: issuableBodyProps.workspaceType,
       });
     });
 

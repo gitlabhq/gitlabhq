@@ -46,5 +46,5 @@ export function darkModeEnabled() {
   if (isWebIde) {
     return ideDarkThemes.includes(window.gon?.user_color_scheme);
   }
-  return document.body.classList.contains('gl-dark');
+  return document.documentElement.classList.contains('gl-dark');
 }

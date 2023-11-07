@@ -324,12 +324,32 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
       end
 
       context 'when the file exists' do
-        it 'renders the file view' do
-          path = 'ci_artifacts.txt'
+        context 'when the external redirect page is enabled' do
+          before do
+            stub_application_setting(enable_artifact_external_redirect_warning_page: true)
+          end
 
-          get :file, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: path }
+          it 'redirects to the user-generated content warning page' do
+            path = 'ci_artifacts.txt'
 
-          expect(response).to redirect_to(external_file_project_job_artifacts_path(project, job, path: path))
+            get :file, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: path }
+
+            expect(response).to redirect_to(external_file_project_job_artifacts_path(project, job, path: path))
+          end
+        end
+
+        context 'when the external redirect page is disabled' do
+          before do
+            stub_application_setting(enable_artifact_external_redirect_warning_page: false)
+          end
+
+          it 'renders the file view' do
+            path = 'ci_artifacts.txt'
+
+            get :file, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: path }
+
+            expect(response).to have_gitlab_http_status(:found)
+          end
         end
       end
     end

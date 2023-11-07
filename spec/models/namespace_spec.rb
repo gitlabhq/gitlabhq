@@ -569,6 +569,48 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
       end
     end
+
+    describe "#default_branch_protection_settings" do
+      let(:default_branch_protection_defaults) { {} }
+      let(:namespace_setting) { create(:namespace_settings, default_branch_protection_defaults: default_branch_protection_defaults) }
+      let(:namespace) { create(:namespace, namespace_settings: namespace_setting) }
+      let(:group) { create(:group, namespace_settings: namespace_setting) }
+
+      before do
+        stub_application_setting(default_branch_protection_defaults: Gitlab::Access::BranchProtection.protected_against_developer_pushes)
+      end
+
+      context 'for a namespace' do
+        it 'returns the instance level setting' do
+          expected_settings = Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys
+          settings = namespace.default_branch_protection_settings.to_hash
+
+          expect(settings).to eq(expected_settings)
+        end
+      end
+
+      context 'for a group' do
+        context 'that has not altered the default value' do
+          it 'returns the instance level setting' do
+            expected_settings = Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys
+            settings = group.default_branch_protection_settings.to_hash
+
+            expect(settings).to eq(expected_settings)
+          end
+        end
+
+        context 'that has altered the default value' do
+          let(:default_branch_protection_defaults) { Gitlab::Access::BranchProtection.protected_fully.deep_stringify_keys }
+
+          it 'returns the group level setting' do
+            expected_settings = default_branch_protection_defaults
+            settings = group.default_branch_protection_settings.to_hash
+
+            expect(settings).to eq(expected_settings)
+          end
+        end
+      end
+    end
   end
 
   describe "Respond to" do

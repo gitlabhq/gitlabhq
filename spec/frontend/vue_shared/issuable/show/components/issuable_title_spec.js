@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import IssuableTitle from '~/vue_shared/issuable/show/components/issuable_title.vue';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 
@@ -86,19 +87,39 @@ describe('IssuableTitle', () => {
       expect(tooltip).toBeDefined();
     });
 
-    it('renders sticky header when `stickyTitleVisible` prop is true', async () => {
-      wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
-      await nextTick();
+    describe('sticky header', () => {
+      it('renders when `stickyTitleVisible` prop is true', async () => {
+        wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
+        await nextTick();
 
-      const stickyHeaderEl = findStickyHeader();
+        const stickyHeaderEl = findStickyHeader();
 
-      expect(stickyHeaderEl.exists()).toBe(true);
-      expect(stickyHeaderEl.findComponent(GlBadge).props('variant')).toBe('success');
-      expect(stickyHeaderEl.findComponent(GlIcon).props('name')).toBe(
-        issuableTitleProps.statusIcon,
-      );
-      expect(stickyHeaderEl.text()).toContain('Open');
-      expect(stickyHeaderEl.text()).toContain(issuableTitleProps.issuable.title);
+        expect(stickyHeaderEl.exists()).toBe(true);
+        expect(stickyHeaderEl.findComponent(GlBadge).props('variant')).toBe('success');
+        expect(stickyHeaderEl.findComponent(GlIcon).props('name')).toBe(
+          issuableTitleProps.statusIcon,
+        );
+        expect(stickyHeaderEl.text()).toContain('Open');
+        expect(stickyHeaderEl.findComponent(ConfidentialityBadge).exists()).toBe(false);
+        expect(stickyHeaderEl.text()).toContain(issuableTitleProps.issuable.title);
+      });
+
+      it('renders ConfidentialityBadge when issuable is confidential', async () => {
+        wrapper = createComponent({
+          ...mockIssuableShowProps,
+          issuable: {
+            ...mockIssuable,
+            confidential: true,
+          },
+        });
+
+        wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
+        await nextTick();
+
+        const stickyHeaderEl = findStickyHeader();
+
+        expect(stickyHeaderEl.findComponent(ConfidentialityBadge).exists()).toBe(true);
+      });
     });
   });
 });

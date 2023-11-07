@@ -190,7 +190,7 @@ To add a group to a project:
 1. Select **Invite**.
 
 The members of the group are not displayed on the **Members** tab.
-Private groups are masked from unauthenticated users.
+Private groups are masked from unauthorized users.
 The **Members** tab shows:
 
 - Members who are directly assigned to the project.
