@@ -1,9 +1,8 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
-import { __, sprintf } from '~/locale';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { __ } from '~/locale';
 import { getUpdateWorkItemMutation } from '~/work_items/components/update_work_item';
 import {
   sprintfWorkItem,
@@ -17,6 +16,8 @@ import {
 export default {
   components: {
     GlButton,
+    GlDisclosureDropdownItem,
+    GlLoadingIcon,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -37,6 +38,11 @@ export default {
       required: false,
       default: null,
     },
+    showAsDropdownItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -51,9 +57,7 @@ export default {
       const baseText = this.isWorkItemOpen
         ? __('Close %{workItemType}')
         : __('Reopen %{workItemType}');
-      return capitalizeFirstCharacter(
-        sprintf(baseText, { workItemType: this.workItemType.toLowerCase() }),
-      );
+      return sprintfWorkItem(baseText, this.workItemType);
     },
     tracking() {
       return {
@@ -61,6 +65,12 @@ export default {
         label: 'item_state',
         property: `type_${this.workItemType}`,
       };
+    },
+    toggleInProgressText() {
+      const baseText = this.isWorkItemOpen
+        ? __('Closing %{workItemType}')
+        : __('Reopening %{workItemType}');
+      return sprintfWorkItem(baseText, this.workItemType);
     },
   },
   methods: {
@@ -104,7 +114,18 @@ export default {
 </script>
 
 <template>
-  <gl-button :loading="updateInProgress" @click="updateWorkItem">{{
+  <gl-disclosure-dropdown-item v-if="showAsDropdownItem" @action="updateWorkItem">
+    <template #list-item>
+      <template v-if="updateInProgress">
+        <gl-loading-icon inline size="sm" />
+        {{ toggleInProgressText }}
+      </template>
+      <template v-else>
+        {{ toggleWorkItemStateText }}
+      </template>
+    </template>
+  </gl-disclosure-dropdown-item>
+  <gl-button v-else :loading="updateInProgress" @click="updateWorkItem">{{
     toggleWorkItemStateText
   }}</gl-button>
 </template>

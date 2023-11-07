@@ -665,6 +665,8 @@ Configure Gitaly with TLS in one of two ways:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Run `sudo gitlab-rake gitlab:gitaly:check` on the Gitaly client (for example, the
+   Rails application) to confirm it can connect to Gitaly servers.
 1. Verify Gitaly traffic is being served over TLS by
    [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
 1. Optional. Improve security by:
@@ -748,6 +750,43 @@ Configure Gitaly with TLS in one of two ways:
       `/home/git/gitaly/config.toml`.
    1. Saving the file.
    1. [Restarting GitLab](../restart_gitlab.md#self-compiled-installations).
+
+::EndTabs
+
+#### Update the certificates
+
+To update the Gitaly certificates after initial configuration:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, but no configuration changes have been made to
+`/etc/gitlab/gitlab.rb`, then reconfiguring GitLab doesn’t affect Gitaly. Instead, you must restart Gitaly manually for the certificates to be loaded
+by the Gitaly process:
+
+```shell
+sudo gitlab-ctl restart gitaly
+```
+
+If you change or update the certificates in `/etc/gitlab/trusted-certs` without making changes to the `/etc/gitlab/gitlab.rb` file, you must:
+
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) so the symlinks for the trusted certificates are updated.
+1. Restart Gitaly manually for the certificates to be loaded by the Gitaly process:
+
+   ```shell
+   sudo gitlab-ctl restart gitaly
+   ```
+
+:::TabTitle Self-compiled (source)
+
+If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, you must
+[restart GitLab](../restart_gitlab.md#self-compiled-installations) for the certificates to be loaded by the Gitaly process.
+
+If you change or update the certificates in `/usr/local/share/ca-certificates`, you must:
+
+1. Run `sudo update-ca-certificates` to update the system's trusted store.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations) for the certificates to be loaded by the Gitaly process.
 
 ::EndTabs
 

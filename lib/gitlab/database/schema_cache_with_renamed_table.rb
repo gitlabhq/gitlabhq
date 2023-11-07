@@ -11,8 +11,8 @@ module Gitlab
         clear_renamed_tables_cache!
       end
 
-      def clear_data_source_cache!(name)
-        super(name)
+      def clear_data_source_cache!(connection, table_name)
+        super(connection, table_name)
 
         clear_renamed_tables_cache!
       end

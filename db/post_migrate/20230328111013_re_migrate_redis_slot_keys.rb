@@ -3,6 +3,8 @@
 class ReMigrateRedisSlotKeys < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
   KEY_EXPIRY_LENGTH = 6.weeks
 
   DAILY_EVENTS =

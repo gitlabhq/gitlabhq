@@ -20,7 +20,7 @@ module DbCleaner
 
   def setup_database_cleaner
     all_connection_classes.each do |connection_class|
-      DatabaseCleaner[:active_record, { connection: connection_class }]
+      DatabaseCleaner[:active_record, db: connection_class]
     end
   end
 

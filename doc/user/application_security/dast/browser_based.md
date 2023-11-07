@@ -66,6 +66,8 @@ See [checks](checks/index.md) for more information about individual checks.
 Active scans check for vulnerabilities by injecting attack payloads into HTTP requests recorded during the crawl phase of the scan.
 Active scans are disabled by default due to the nature of their probing attacks.
 
+#### How active scans work
+
 DAST analyzes each recorded HTTP request for injection locations, such as query values, header values, cookie values, form posts, and JSON string values.
 Attack payloads are injected into the injection location, forming a new request.
 DAST sends the request to the target application and uses the HTTP response to determine attack success.
@@ -83,6 +85,12 @@ A simplified timing attack works as follows:
 1. DAST send a new HTTP request to the target application with the injected payload `https://example.com?search=sleep%2010`.
 1. The target application is vulnerable if it executes the query parameter value as a system command without validation, for example, `system(params[:search])`
 1. DAST creates a finding if the response time takes longer than 10 seconds.
+
+#### Known issues
+
+Active scans do not use a browser to send HTTP requests in an effort to minimize scan time.
+
+Anti-CSRF tokens are not regenerated for attacks that submit forms. Please disable anti-CSRF tokens when running an active scan.
 
 ## Getting started
 
@@ -209,7 +217,7 @@ For authentication CI/CD variables, see [Authentication](authentication.md).
 | `DAST_REQUEST_HEADERS`                      | string                                                   | `Cache-control:no-cache`               | Set to a comma-separated list of request header names and values.                                                                                                                                                                                                             |
 | `DAST_SKIP_TARGET_CHECK`                    | boolean                                                  | `true`                                 | Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`.                                                                                                                                                                   |
 | `DAST_TARGET_AVAILABILITY_TIMEOUT`          | number                                                   | `60`                                   | Time limit in seconds to wait for target availability.                                                                                                                                                                                                                        |
-| `DAST_WEBSITE`                              | URL                                                      | `https://example.com`                  | The URL of the website to scan.                                                                                                                                                                                                                                               |
+| `DAST_WEBSITE`                              | URL                                                      | `https://example.com`                  | The URL of the target application to scan.                                                                                                                                                                                                                                    |
 | `SECURE_ANALYZERS_PREFIX`                   | URL                                                      | `registry.organization.com`            | Set the Docker registry base address from which to download the analyzer.                                                                                                                                                                                                     |
 
 ## Managing scope
@@ -281,22 +289,17 @@ dast:
     DAST_EXCLUDE_URLS: "https://my.site.com/user/logout"  # don't visit this URL
 ```
 
-## Vulnerability detection
+## Vulnerability check migration
 
-Vulnerability detection is gradually being migrated from the default Zed Attack Proxy (ZAP) solution
-to the browser-based analyzer. For details of the vulnerability detection already migrated, see
-[browser-based vulnerability checks](checks/index.md).
+A migration is underway that changes the browser-based analyzer from using the proxy-based analyzer Zed Attack Proxy (ZAP) active vulnerability checks, to using GitLab-built active vulnerability checks.
 
-The crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This
-ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP. When
-running a full scan, active vulnerability checks executed by DAST/ZAP do not use a browser. This
-difference in how vulnerabilities are checked can cause issues that require certain features of the
-target website to be disabled to ensure the scan works as intended.
+The browser-based analyzer continues to use a combination of proxy-based analyzer and GitLab-built vulnerability checks until the migration is complete. See [browser-based vulnerability checks](checks/index.md) for details of which checks have been migrated.
 
-For example, for a target website that contains forms with Anti-CSRF tokens, a passive scan works as
-intended because the browser displays pages and forms as if a user is viewing the page. However,
-active vulnerability checks that run in a full scan cannot submit forms containing Anti-CSRF tokens.
-In such cases, we recommend you disable Anti-CSRF tokens when running a full scan.
+### Why browser-based scans produce different results to proxy-based scans
+
+Browser-based and proxy-based scans do not produce the same results because they use a different set of vulnerability checks.
+
+The browser-based analyzer does not have an equivalent for proxy-based checks that create too many false positives, are not worth running because modern browsers don't allow the vulnerability to be exploited, or are no longer considered relevant. The browser-based analyzer includes checks that proxy-based analyzer does not.
 
 ## Managing scan time
 

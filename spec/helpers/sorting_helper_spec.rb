@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe SortingHelper do
+RSpec.describe SortingHelper, feature_category: :shared do
   include ApplicationHelper
   include IconsHelper
   include ExploreHelper

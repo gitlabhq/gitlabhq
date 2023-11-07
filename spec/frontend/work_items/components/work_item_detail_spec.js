@@ -23,8 +23,6 @@ import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
-import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
@@ -54,10 +52,6 @@ describe('WorkItemDetail component', () => {
   const groupWorkItemQueryResponse = groupWorkItemByIidResponseFactory({
     canUpdate: true,
     canDelete: true,
-  });
-  const workItemQueryResponseWithCannotUpdate = workItemByIidResponseFactory({
-    canUpdate: false,
-    canDelete: false,
   });
   const workItemQueryResponseWithoutParent = workItemByIidResponseFactory({
     parent: null,
@@ -95,8 +89,6 @@ describe('WorkItemDetail component', () => {
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
   const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
-  const findWorkItemStateToggleButton = () => wrapper.findComponent(WorkItemStateToggleButton);
-  const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
   const createComponent = ({
     isGroup = false,
@@ -209,25 +201,6 @@ describe('WorkItemDetail component', () => {
 
     it('calls the work item updated subscription', () => {
       expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
-    });
-  });
-
-  describe('work item state toggle button', () => {
-    describe.each`
-      description                  | canUpdate
-      ${'when user cannot update'} | ${false}
-      ${'when user can update'}    | ${true}
-    `('$description', ({ canUpdate }) => {
-      it(`${canUpdate ? 'is rendered' : 'is not rendered'}`, async () => {
-        createComponent({
-          handler: canUpdate
-            ? jest.fn().mockResolvedValue(workItemQueryResponse)
-            : jest.fn().mockResolvedValue(workItemQueryResponseWithCannotUpdate),
-        });
-        await waitForPromises();
-
-        expect(findWorkItemStateToggleButton().exists()).toBe(canUpdate);
-      });
     });
   });
 
@@ -408,12 +381,11 @@ describe('WorkItemDetail component', () => {
       expect(findParent().exists()).toBe(false);
     });
 
-    it('shows work item type with reference when there is no a parent', async () => {
+    it('shows title in the header when there is no parent', async () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
-      expect(findWorkItemTypeIcon().props('showText')).toBe(true);
-      expect(findWorkItemType().text()).toBe('#1');
+      expect(findWorkItemType().classes()).toEqual(['gl-w-full']);
     });
 
     describe('with parent', () => {
@@ -426,10 +398,6 @@ describe('WorkItemDetail component', () => {
 
       it('shows secondary breadcrumbs if there is a parent', () => {
         expect(findParent().exists()).toBe(true);
-      });
-
-      it('does not show work item type', () => {
-        expect(findWorkItemType().exists()).toBe(false);
       });
 
       it('shows parent breadcrumb icon', () => {
@@ -467,6 +435,10 @@ describe('WorkItemDetail component', () => {
       it('shows work item type and iid', () => {
         const { iid } = workItemQueryResponse.data.workspace.workItems.nodes[0];
         expect(findParent().text()).toContain(`#${iid}`);
+      });
+
+      it('does not show title in the header when parent exists', () => {
+        expect(findWorkItemType().classes()).toEqual(['gl-sm-display-none!']);
       });
     });
   });

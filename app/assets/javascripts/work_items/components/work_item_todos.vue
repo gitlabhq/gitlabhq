@@ -177,7 +177,7 @@ export default {
     v-gl-tooltip.hover
     :loading="isLoading"
     :title="buttonLabel"
-    category="tertiary"
+    category="secondary"
     :aria-label="buttonLabel"
     @click="onToggle"
   >

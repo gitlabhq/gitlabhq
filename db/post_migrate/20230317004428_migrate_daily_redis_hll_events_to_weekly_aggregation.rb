@@ -3,6 +3,8 @@
 class MigrateDailyRedisHllEventsToWeeklyAggregation < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
   DAILY_EVENTS =
     %w[g_edit_by_web_ide
       g_edit_by_sfe

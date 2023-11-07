@@ -1,4 +1,10 @@
-import { GlDisclosureDropdown, GlDropdownDivider, GlModal, GlToggle } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDropdownDivider,
+  GlModal,
+  GlToggle,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
@@ -10,13 +16,16 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
+import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import {
+  STATE_OPEN,
   TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
   TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   TEST_ID_DELETE_ACTION,
   TEST_ID_PROMOTE_ACTION,
   TEST_ID_COPY_REFERENCE_ACTION,
   TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
+  TEST_ID_TOGGLE_ACTION,
 } from '~/work_items/constants';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
@@ -46,6 +55,7 @@ describe('WorkItemActions component', () => {
   const findDeleteButton = () => wrapper.findByTestId(TEST_ID_DELETE_ACTION);
   const findPromoteButton = () => wrapper.findByTestId(TEST_ID_PROMOTE_ACTION);
   const findCopyReferenceButton = () => wrapper.findByTestId(TEST_ID_COPY_REFERENCE_ACTION);
+  const findWorkItemToggleOption = () => wrapper.findComponent(WorkItemStateToggle);
   const findCopyCreateNoteEmailButton = () =>
     wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
   const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
@@ -105,6 +115,7 @@ describe('WorkItemActions component', () => {
         [updateWorkItemNotificationsMutation, notificationsMutationHandler],
       ]),
       propsData: {
+        workItemState: STATE_OPEN,
         fullPath: 'gitlab-org/gitlab-test',
         workItemId: 'gid://gitlab/WorkItem/1',
         canUpdate,
@@ -129,6 +140,7 @@ describe('WorkItemActions component', () => {
             show: jest.fn(),
           },
         }),
+        GlDisclosureDropdownItem,
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: {
             close: modalShowSpy,
@@ -162,6 +174,10 @@ describe('WorkItemActions component', () => {
       {
         testId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
         text: 'Turn on confidentiality',
+      },
+      {
+        testId: TEST_ID_TOGGLE_ACTION,
+        text: '',
       },
       {
         testId: TEST_ID_COPY_REFERENCE_ACTION,
@@ -362,5 +378,11 @@ describe('WorkItemActions component', () => {
 
       expect(toast).toHaveBeenCalledWith('Email address copied');
     });
+  });
+
+  it('renders the toggle status button', () => {
+    createComponent();
+
+    expect(findWorkItemToggleOption().exists()).toBe(true);
   });
 });

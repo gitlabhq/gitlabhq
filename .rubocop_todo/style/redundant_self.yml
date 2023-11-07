@@ -172,7 +172,6 @@ Style/RedundantSelf:
     - 'ee/app/models/concerns/ee/protected_ref.rb'
     - 'ee/app/models/concerns/ee/protected_ref_access.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
-    - 'ee/app/models/concerns/elastic/projects_search.rb'
     - 'ee/app/models/concerns/elasticsearch_indexed_container.rb'
     - 'ee/app/models/concerns/geo/replicable_model.rb'
     - 'ee/app/models/concerns/geo/repository_replicator_strategy.rb'

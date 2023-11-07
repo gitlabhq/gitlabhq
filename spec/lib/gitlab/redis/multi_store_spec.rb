@@ -222,7 +222,8 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
           it 'logs the exception and re-raises the error' do
             expect(Gitlab::ErrorTracking).to receive(:log_exception).with(an_instance_of(StandardError),
-              hash_including(:multi_store_error_message, instance_name: instance_name, command_name: name))
+              hash_including(:multi_store_error_message,
+                instance_name: instance_name, command_name: name))
 
             expect { subject }.to raise_error(an_instance_of(StandardError))
           end
@@ -559,7 +560,8 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
           it 'logs the exception and execute on default instance', :aggregate_failures do
             expect(Gitlab::ErrorTracking).to receive(:log_exception).with(an_instance_of(StandardError),
-              hash_including(:multi_store_error_message, command_name: name, instance_name: instance_name))
+              hash_including(:multi_store_error_message,
+                command_name: name, instance_name: instance_name))
             expect(multi_store.default_store).to receive(name).with(*expected_args).and_call_original
 
             subject
@@ -596,6 +598,88 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
+
+  context 'with mocked redis commands' do
+    let(:args) { [1, 2, 3] }
+    let(:kwargs) { { foo: 'bar' } }
+
+    subject do
+      multi_store.send(command, *args, **kwargs)
+    end
+
+    context 'for read commands' do
+      described_class::READ_COMMANDS.each do |command|
+        describe command.to_s do
+          let(:command) { command }
+
+          where(
+            :use_primary_and_secondary_stores_ff,
+            :use_primary_store_as_default_ff,
+            :executed_store,
+            :non_executed_store,
+            :executed_store_name
+          ) do
+            false | false | ref(:secondary_store) | ref(:primary_store)   | 'secondary_store'
+            true  | false | ref(:secondary_store) | ref(:primary_store)   | 'secondary_store'
+            true  | true  | ref(:primary_store)   | ref(:secondary_store) | 'primary_store'
+            false | true  | ref(:primary_store)   | ref(:secondary_store) | 'primary_store'
+          end
+
+          with_them do
+            before do
+              stub_feature_flags(
+                use_primary_and_secondary_stores_for_test_store: use_primary_and_secondary_stores_ff,
+                use_primary_store_as_default_for_test_store: use_primary_store_as_default_ff
+              )
+            end
+
+            it "executes on #{params[:executed_store_name]}" do
+              expect(executed_store).to receive(command).with(*args, **kwargs)
+              expect(non_executed_store).not_to receive(command)
+
+              subject
+            end
+          end
+        end
+      end
+    end
+
+    context 'for write commands' do
+      described_class::WRITE_COMMANDS.each do |command|
+        describe command.to_s do
+          let(:command) { command }
+
+          where(
+            :use_primary_and_secondary_stores_ff,
+            :use_primary_store_as_default_ff,
+            :executed_stores,
+            :non_executed_store
+          ) do
+            false | false | [ref(:secondary_store)]                      | ref(:primary_store)
+            true  | false | [ref(:secondary_store), ref(:primary_store)] | []
+            true  | true  | [ref(:primary_store), ref(:secondary_store)] | []
+            false | true  | [ref(:primary_store)]                        | ref(:secondary_store)
+          end
+
+          with_them do
+            before do
+              stub_feature_flags(
+                use_primary_and_secondary_stores_for_test_store: use_primary_and_secondary_stores_ff,
+                use_primary_store_as_default_for_test_store: use_primary_store_as_default_ff
+              )
+            end
+
+            it "executes on executed_stores" do
+              expect(executed_stores).to all(receive(command).with(*args, **kwargs).ordered)
+              expect(non_executed_store).not_to receive(command)
+
+              subject
+            end
+          end
+        end
+      end
+    end
+  end
 
   RSpec.shared_examples_for 'pipelined command' do |name|
     let_it_be(:key1) { "redis:{1}:key_a" }
@@ -973,6 +1057,61 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
   end
 
+  describe '#blpop' do
+    let_it_be(:key) { "mylist" }
+
+    subject { multi_store.blpop(key, timeout: 0.1) }
+
+    shared_examples 'calls blpop on default_store' do
+      it 'calls blpop on default_store' do
+        expect(multi_store.default_store).to receive(:blpop).with(key, { timeout: 0.1 })
+
+        subject
+      end
+    end
+
+    shared_examples 'does not call lpop on non_default_store' do
+      it 'does not call blpop on non_default_store' do
+        expect(multi_store.non_default_store).not_to receive(:blpop)
+
+        subject
+      end
+    end
+
+    context 'when using both stores' do
+      before do
+        allow(multi_store).to receive(:use_primary_and_secondary_stores?).and_return(true)
+      end
+
+      it_behaves_like 'calls blpop on default_store'
+
+      context "when an element exists in the default_store" do
+        before do
+          multi_store.default_store.lpush(key, 'abc')
+        end
+
+        it 'calls lpop on non_default_store' do
+          expect(multi_store.non_default_store).to receive(:blpop).with(key, { timeout: 1 })
+
+          subject
+        end
+      end
+
+      context 'when the list is empty in default_store' do
+        it_behaves_like 'does not call lpop on non_default_store'
+      end
+    end
+
+    context 'when using one store' do
+      before do
+        allow(multi_store).to receive(:use_primary_and_secondary_stores?).and_return(false)
+      end
+
+      it_behaves_like 'calls blpop on default_store'
+      it_behaves_like 'does not call lpop on non_default_store'
+    end
+  end
+
   context 'with unsupported command' do
     let(:counter) { Gitlab::Metrics::NullMetric.instance }
 
@@ -1253,6 +1392,21 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       it_behaves_like 'publishes to stores' do
         let(:stores) { [secondary_store] }
       end
+    end
+  end
+
+  describe '*_COMMANDS' do
+    it 'checks if every command is only defined once' do
+      commands = [
+        described_class::REDIS_CLIENT_COMMANDS,
+        described_class::PUBSUB_SUBSCRIBE_COMMANDS,
+        described_class::READ_COMMANDS,
+        described_class::WRITE_COMMANDS,
+        described_class::PIPELINED_COMMANDS
+      ].inject([], :concat)
+      duplicated_commands = commands.group_by { |c| c }.select { |k, v| v.size > 1 }.map(&:first)
+
+      expect(duplicated_commands).to be_empty, "commands #{duplicated_commands} defined more than once"
     end
   end
 end

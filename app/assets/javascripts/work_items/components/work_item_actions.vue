@@ -25,6 +25,7 @@ import {
   TEST_ID_PROMOTE_ACTION,
   TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   TEST_ID_COPY_REFERENCE_ACTION,
+  TEST_ID_TOGGLE_ACTION,
   I18N_WORK_ITEM_ERROR_CONVERTING,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
@@ -35,6 +36,7 @@ import {
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
+import WorkItemStateToggle from './work_item_state_toggle.vue';
 
 export default {
   i18n: {
@@ -53,6 +55,7 @@ export default {
     GlDropdownDivider,
     GlModal,
     GlToggle,
+    WorkItemStateToggle,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -65,9 +68,14 @@ export default {
   copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   deleteActionTestId: TEST_ID_DELETE_ACTION,
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
+  stateToggleTestId: TEST_ID_TOGGLE_ACTION,
   inject: ['isGroup'],
   props: {
     fullPath: {
+      type: String,
+      required: true,
+    },
+    workItemState: {
       type: String,
       required: true,
     },
@@ -125,6 +133,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    workItemParentId: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   apollo: {
@@ -309,6 +322,16 @@ export default {
       >
         <template #list-item>{{ confidentialItemText }}</template>
       </gl-disclosure-dropdown-item>
+
+      <work-item-state-toggle
+        v-if="canUpdate"
+        :data-testid="$options.stateToggleTestId"
+        :work-item-id="workItemId"
+        :work-item-state="workItemState"
+        :work-item-parent-id="workItemParentId"
+        :work-item-type="workItemType"
+        show-as-dropdown-item
+      />
 
       <gl-disclosure-dropdown-item
         :data-testid="$options.copyReferenceTestId"

@@ -10864,6 +10864,9 @@ msgstr ""
 msgid "Closing %{issuableType}..."
 msgstr ""
 
+msgid "Closing %{workItemType}"
+msgstr ""
+
 msgid "Cloud Run"
 msgstr ""
 
@@ -39933,6 +39936,9 @@ msgid "Reopened this %{quick_action_target}."
 msgstr ""
 
 msgid "Reopening %{issuableType}..."
+msgstr ""
+
+msgid "Reopening %{workItemType}"
 msgstr ""
 
 msgid "Reopening..."

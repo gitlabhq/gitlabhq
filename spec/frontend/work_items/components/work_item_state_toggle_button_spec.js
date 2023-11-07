@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
+import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import {
   STATE_OPEN,
   STATE_CLOSED,
@@ -33,7 +33,7 @@ describe('Work Item State toggle button component', () => {
     workItemState = STATE_OPEN,
     workItemType = 'Task',
   } = {}) => {
-    wrapper = shallowMount(WorkItemStateToggleButton, {
+    wrapper = shallowMount(WorkItemStateToggle, {
       apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
       propsData: {
         workItemId: id,

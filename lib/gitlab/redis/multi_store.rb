@@ -63,8 +63,12 @@ module Gitlab
         hlen
         hmget
         hscan_each
+        llen
+        lrange
         mapped_hmget
         mget
+        pfcount
+        pttl
         scan
         scan_each
         scard
@@ -72,20 +76,32 @@ module Gitlab
         smembers
         sscan
         sscan_each
+        strlen
         ttl
+        type
+        zcard
+        zcount
+        zrange
+        zrangebyscore
+        zrevrange
         zscan_each
+        zscore
       ].freeze
 
       WRITE_COMMANDS = %i[
+        decr
         del
         eval
         expire
         flushdb
         hdel
+        hincrby
         hset
         incr
         incrby
         mapped_hmset
+        pfadd
+        pfmerge
         publish
         rpush
         sadd
@@ -93,8 +109,15 @@ module Gitlab
         set
         setex
         setnx
+        spop
         srem
+        srem?
         unlink
+        zadd
+        zpopmin
+        zrem
+        zremrangebyrank
+        zremrangebyscore
 
         memory
       ].freeze
@@ -259,6 +282,19 @@ module Gitlab
         else
           default_store.close
         end
+      end
+
+      # blpop blocks until an element to be popped exist in the list or after a timeout.
+      def blpop(*args)
+        result = default_store.blpop(*args)
+        if !!result && use_primary_and_secondary_stores?
+          # special case to accommodate Gitlab::JobWaiter as blpop is only used in JobWaiter
+          # 1s should be sufficient wait time to account for delays between 1st and 2nd lpush
+          # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2520#note_1630893702
+          non_default_store.blpop(args.first, timeout: 1)
+        end
+
+        result
       end
 
       private

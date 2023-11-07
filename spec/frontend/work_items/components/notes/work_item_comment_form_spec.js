@@ -10,7 +10,7 @@ import { STATE_OPEN } from '~/work_items/constants';
 import * as confirmViaGlModal from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
+import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 
 Vue.use(VueApollo);
 
@@ -37,7 +37,7 @@ describe('Work item comment form component', () => {
   const findConfirmButton = () => wrapper.find('[data-testid="confirm-button"]');
   const findInternalNoteCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findInternalNoteTooltipIcon = () => wrapper.findComponent(GlIcon);
-  const findWorkItemToggleStateButton = () => wrapper.findComponent(WorkItemStateToggleButton);
+  const findWorkItemToggleStateButton = () => wrapper.findComponent(WorkItemStateToggle);
 
   const createComponent = ({
     isSubmitting = false,

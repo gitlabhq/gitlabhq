@@ -62,6 +62,10 @@ RSpec.describe Gitlab::JobWaiter, :redis, feature_category: :shared do
 
     before do
       allow_any_instance_of(described_class).to receive(:wait).and_call_original
+      stub_feature_flags(
+        use_primary_and_secondary_stores_for_shared_state: false,
+        use_primary_store_as_default_for_shared_state: false
+      )
     end
 
     it 'returns when all jobs have been completed' do
@@ -81,6 +85,57 @@ RSpec.describe Gitlab::JobWaiter, :redis, feature_category: :shared do
       expect { Timeout.timeout(2) { result = waiter.wait(1) } }.not_to raise_error
 
       expect(result).to contain_exactly('a')
+    end
+
+    context 'when migration is ongoing' do
+      let(:waiter) { described_class.new(3) }
+
+      shared_examples 'returns all jobs' do
+        it 'returns all jobs' do
+          result = nil
+          expect { Timeout.timeout(6) { result = waiter.wait(5) } }.not_to raise_error
+
+          expect(result).to contain_exactly('a', 'b', 'c')
+        end
+      end
+
+      context 'when using both stores' do
+        context 'with existing jobs in old store' do
+          before do
+            described_class.notify(waiter.key, 'a')
+            described_class.notify(waiter.key, 'b')
+            described_class.notify(waiter.key, 'c')
+            stub_feature_flags(use_primary_and_secondary_stores_for_shared_state: true)
+          end
+
+          it_behaves_like 'returns all jobs'
+        end
+
+        context 'with jobs in both stores' do
+          before do
+            stub_feature_flags(use_primary_and_secondary_stores_for_shared_state: true)
+            described_class.notify(waiter.key, 'a')
+            described_class.notify(waiter.key, 'b')
+            described_class.notify(waiter.key, 'c')
+          end
+
+          it_behaves_like 'returns all jobs'
+        end
+
+        context 'when using primary store as default store' do
+          before do
+            stub_feature_flags(
+              use_primary_and_secondary_stores_for_shared_state: true,
+              use_primary_store_as_default_for_shared_state: true
+            )
+            described_class.notify(waiter.key, 'a')
+            described_class.notify(waiter.key, 'b')
+            described_class.notify(waiter.key, 'c')
+          end
+
+          it_behaves_like 'returns all jobs'
+        end
+      end
     end
   end
 end

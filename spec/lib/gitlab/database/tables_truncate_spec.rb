@@ -373,7 +373,9 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
       context 'with no main data in ci datatabase' do
         before do
           # Remove 'main' data in ci database
-          ci_connection.truncate_tables([:_test_gitlab_main_items, :_test_gitlab_main_references])
+          ci_connection.execute(
+            "TRUNCATE TABLE _test_gitlab_main_items, _test_gitlab_main_references RESTART IDENTITY CASCADE;"
+          )
         end
 
         it { is_expected.to eq(false) }

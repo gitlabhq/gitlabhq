@@ -410,7 +410,7 @@ group :development, :test do
 
   gem 'awesome_print', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'database_cleaner', '~> 1.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'database_cleaner-active_record', '~> 2.1.0', feature_category: :database
   gem 'factory_bot_rails', '~> 6.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'rspec-rails', '~> 6.0.3' # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -448,7 +448,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 4.5.1', require: false, feature_category: :tooling
+  gem 'gitlab-dangerfiles', '~> 4.6.0', require: false, feature_category: :tooling
 end
 
 group :development, :test, :coverage do
