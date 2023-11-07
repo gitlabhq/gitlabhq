@@ -40,7 +40,7 @@ module QA
         end
 
         Page::Project::Menu.perform(&:go_to_pages_settings)
-        Page::Project::Deployments::Pages.perform(&:go_to_access_page)
+        Page::Project::Settings::Pages.perform(&:go_to_access_page)
 
         Support::Waiter.wait_until(
           sleep_interval: 2,

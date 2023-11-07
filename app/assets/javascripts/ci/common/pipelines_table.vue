@@ -130,8 +130,7 @@ export default {
       return cleanLeadingSeparator(item.project.full_path);
     },
     failedJobsCount(pipeline) {
-      // Remove `pipeline?.failed_builds?.length` when we remove `ci_fix_performance_pipelines_json_endpoint`.
-      return pipeline?.failed_builds_count || pipeline?.failed_builds?.length || 0;
+      return pipeline?.failed_builds_count || 0;
     },
     onRefreshPipelinesTable() {
       this.$emit('refresh-pipelines-table');

@@ -18,6 +18,15 @@ module Projects
       return false unless can?(current_user, :remove_project, project)
 
       project.update_attribute(:pending_delete, true)
+
+      # There is a possibility of active repository move processes for
+      # project and snippets. An attempt to delete the project at the same time
+      # can lead to race condition and an inconsistent state.
+      #
+      # This validation stops the project delete process if it detects active
+      # repository move schedules for it.
+      validate_active_repositories_move!
+
       # Flush the cache for both repositories. This has to be done _before_
       # removing the physical repositories as some expiration code depends on
       # Git data (e.g. a list of branch names).
@@ -49,6 +58,16 @@ module Projects
     end
 
     private
+
+    def validate_active_repositories_move!
+      if project.repository_storage_moves.scheduled_or_started.exists?
+        raise_error(s_("DeleteProject|Couldn't remove the project. A project repository storage move is in progress. Try again when it's complete."))
+      end
+
+      if ::ProjectSnippet.by_project(project).with_repository_storage_moves.merge(::Snippets::RepositoryStorageMove.scheduled_or_started).exists?
+        raise_error(s_("DeleteProject|Couldn't remove the project. A related snippet repository storage move is in progress. Try again when it's complete."))
+      end
+    end
 
     def trash_project_repositories!
       unless remove_repository(project.repository)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippet do
+RSpec.describe Snippet, feature_category: :source_code_management do
   include FakeBlobHelpers
 
   describe 'modules' do
@@ -24,6 +24,22 @@ RSpec.describe Snippet do
     it { is_expected.to have_one(:snippet_repository) }
     it { is_expected.to have_one(:statistics).class_name('SnippetStatistics').dependent(:destroy) }
     it { is_expected.to have_many(:repository_storage_moves).class_name('Snippets::RepositoryStorageMove').inverse_of(:container) }
+  end
+
+  describe 'scopes' do
+    describe '.with_repository_storage_moves' do
+      subject { described_class.with_repository_storage_moves }
+
+      let_it_be(:snippet) { create(:project_snippet) }
+
+      it { is_expected.to be_empty }
+
+      context 'when associated repository storage move exists' do
+        let!(:snippet_repository_storage_move) { create(:snippet_repository_storage_move, container: snippet) }
+
+        it { is_expected.to match_array([snippet]) }
+      end
+    end
   end
 
   describe 'validation' do

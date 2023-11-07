@@ -38,7 +38,7 @@ After you first sign in to Switchboard, you must update your password and set up
 The following stages guide you through a series of four steps to provide the information required to create your GitLab Dedicated tenant.
 
 1. Confirm account details: Confirm key attributes of your GitLab Dedicated account:
-   - Reference architecture: Corresponds with the number of users you provided to your account team when beginning the onboarding process. For more information, see [reference architectures](../../administration/reference_architectures/index.md).
+   - Reference architecture: Corresponds with the number of users you provided to your account team when beginning the onboarding process. For more information, see [reference architectures](../../subscriptions/gitlab_dedicated/index.md#availability-and-scalability).
    - Total repository storage size: Corresponds with the storage size you provided to your account team when beginning the onboarding process.
    - If you need to make changes to these attributes, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 1. Tenant configuration: Provides the minimum required information needed to create your GitLab Dedicated tenant:

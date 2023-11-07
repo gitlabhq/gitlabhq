@@ -159,7 +159,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         .represent(
           @pipelines,
           preload: true,
-          disable_failed_builds: ::Feature.enabled?(:ci_fix_performance_pipelines_json_endpoint, @project)
+          disable_failed_builds: true
         ),
       count: {
         all: @pipelines.count

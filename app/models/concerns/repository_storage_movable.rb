@@ -6,6 +6,9 @@ module RepositoryStorageMovable
 
   included do
     scope :order_created_at_desc, -> { order(created_at: :desc) }
+    scope :scheduled_or_started, -> do
+      where(state: [state_machine.states[:scheduled].value, state_machine.states[:started].value])
+    end
 
     validates :container, presence: true
     validates :state, presence: true

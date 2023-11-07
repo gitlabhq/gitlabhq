@@ -241,7 +241,6 @@ Lint/RedundantCopDisableDirective:
     - 'spec/components/previews/pajamas/banner_component_preview.rb'
     - 'spec/controllers/concerns/preferred_language_switcher_spec.rb'
     - 'spec/controllers/profiles/two_factor_auths_controller_spec.rb'
-    - 'spec/finders/personal_access_tokens_finder_spec.rb'
     - 'spec/frontend/fixtures/merge_requests.rb'
     - 'spec/graphql/mutations/clusters/agent_tokens/create_spec.rb'
     - 'spec/graphql/mutations/clusters/agents/create_spec.rb'

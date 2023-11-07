@@ -5,6 +5,19 @@ RSpec.shared_examples 'handles repository moves' do
     it { is_expected.to belong_to(:container) }
   end
 
+  describe 'scopes' do
+    describe '.scheduled_or_started' do
+      subject { described_class.scheduled_or_started }
+
+      let!(:initial) { create(repository_storage_factory_key, state: 1) }
+      let!(:scheduled) { create(repository_storage_factory_key, state: 2) }
+      let!(:started) { create(repository_storage_factory_key, state: 3) }
+      let!(:finished) { create(repository_storage_factory_key, state: 4) }
+
+      it { is_expected.to contain_exactly(scheduled, started) }
+    end
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:container) }
     it { is_expected.to validate_presence_of(:state) }

@@ -800,9 +800,9 @@ class User < MainClusterwide::ApplicationRecord
 
       order = <<~SQL
         CASE
-          WHEN LOWER(users.name) = :query THEN 0
+          WHEN LOWER(users.public_email) = :query THEN 0
           WHEN LOWER(users.username) = :query THEN 1
-          WHEN LOWER(users.public_email) = :query THEN 2
+          WHEN LOWER(users.name) = :query THEN 2
           ELSE 3
         END
       SQL

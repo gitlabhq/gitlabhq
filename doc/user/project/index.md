@@ -143,19 +143,24 @@ To push your repository and create a project:
 1. Push with SSH or HTTPS:
    - To push with SSH:
 
-      ```shell
-      git push --set-upstream git@gitlab.example.com:namespace/myproject.git master
-      ```
+     ```shell
+     # Use this version if your project uses the standard port 22
+     $ git push --set-upstream git@gitlab.example.com:namespace/myproject.git main
+
+     # Use this version if your project requires a non-standard port number
+     $ git push --set-upstream ssh://git@gitlab.example.com:00/namespace/myproject.git main
+     ```
 
    - To push with HTTPS:
 
-      ```shell
-      git push --set-upstream https://gitlab.example.com/namespace/myproject.git master
-      ```
+     ```shell
+     git push --set-upstream https://gitlab.example.com/namespace/myproject.git master
+     ```
 
    - For `gitlab.example.com`, use the domain name of the machine that hosts your Git repository.
    - For `namespace`, use the name of your [namespace](../namespace/index.md).
    - For `myproject`, use the name of your project.
+   - If specifying a port, change `00` to your project's required port number.
    - Optional. To export existing repository tags, append the `--tags` flag to your `git push` command.
 1. Optional. To configure the remote:
 

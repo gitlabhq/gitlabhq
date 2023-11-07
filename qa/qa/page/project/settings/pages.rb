@@ -8,11 +8,11 @@ module QA
           include QA::Page::Settings::Common
 
           view 'app/views/projects/pages/_access.html.haml' do
-            element :access_page_container
+            element 'access-page-container'
           end
 
           def go_to_access_page
-            within_element(:access_page_container) do
+            within_element('access-page-container') do
               find('a').click
               page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
             end

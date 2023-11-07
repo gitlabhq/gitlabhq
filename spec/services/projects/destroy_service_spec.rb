@@ -472,6 +472,31 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  context 'with related storage move records' do
+    context 'when project has active repository storage move records' do
+      let!(:project_repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project) }
+
+      it 'does not delete the project' do
+        expect(destroy_project(project, user)).to be_falsey
+
+        expect(project.delete_error).to eq "Couldn't remove the project. A project repository storage move is in progress. Try again when it's complete."
+        expect(project.pending_delete).to be_falsey
+      end
+    end
+
+    context 'when project has active snippet storage move records' do
+      let(:project_snippet) { create(:project_snippet, project: project) }
+      let!(:snippet_repository_storage_move) { create(:snippet_repository_storage_move, :started, container: project_snippet) }
+
+      it 'does not delete the project' do
+        expect(destroy_project(project, user)).to be_falsey
+
+        expect(project.delete_error).to eq "Couldn't remove the project. A related snippet repository storage move is in progress. Try again when it's complete."
+        expect(project.pending_delete).to be_falsey
+      end
+    end
+  end
+
   context 'repository removal' do
     describe '.trash_project_repositories!' do
       let(:trash_project_repositories!) { described_class.new(project, user, {}).send(:trash_project_repositories!) }

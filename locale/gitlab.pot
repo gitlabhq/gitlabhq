@@ -16176,6 +16176,12 @@ msgstr ""
 msgid "Delete video"
 msgstr ""
 
+msgid "DeleteProject|Couldn't remove the project. A project repository storage move is in progress. Try again when it's complete."
+msgstr ""
+
+msgid "DeleteProject|Couldn't remove the project. A related snippet repository storage move is in progress. Try again when it's complete."
+msgstr ""
+
 msgid "DeleteProject|Failed to remove design repository. Please try again or contact administrator."
 msgstr ""
 
@@ -28038,6 +28044,11 @@ msgstr ""
 msgid "Learn more: %{url}"
 msgstr ""
 
+msgid "LearnGitLab|%d task to go"
+msgid_plural "LearnGitLab|%d tasks to go"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "LearnGitLab|%{percentage}%{percentSymbol} completed"
 msgstr ""
 
@@ -28144,6 +28155,9 @@ msgid "LearnGitLab|Use the built-in editor to create or upload files."
 msgstr ""
 
 msgid "LearnGitLab|Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:"
+msgstr ""
+
+msgid "LearnGitLab|You completed all tasks!"
 msgstr ""
 
 msgid "LearnGitLab|Your team is growing! You've successfully invited new team members to the %{projectName} project."
@@ -53114,13 +53128,13 @@ msgstr ""
 msgid "VulnerabilityManagement|An unverified non-confirmed finding"
 msgstr ""
 
-msgid "VulnerabilityManagement|Change status"
-msgstr ""
-
 msgid "VulnerabilityManagement|Could not process %{issueReference}: %{errorMessage}."
 msgstr ""
 
 msgid "VulnerabilityManagement|Create Jira issue"
+msgstr ""
+
+msgid "VulnerabilityManagement|Dismiss as..."
 msgstr ""
 
 msgid "VulnerabilityManagement|Enter a name"

@@ -3280,6 +3280,9 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe 'username matching' do
+      let_it_be(:named_john) { create(:user, name: 'John', username: 'abcd') }
+      let_it_be(:username_john) { create(:user, name: 'John Doe', username: 'john') }
+
       it 'returns users with a matching username' do
         expect(described_class.search(user.username)).to eq([user, user2])
       end
@@ -3298,6 +3301,10 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns users with a matching username regardless of the casing' do
         expect(described_class.search(user2.username.upcase)).to eq([user2])
+      end
+
+      it 'returns users with an exact matching username first' do
+        expect(described_class.search('John')).to eq([username_john, named_john])
       end
 
       it 'returns users with a exact matching username shorter than 3 chars' do

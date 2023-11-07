@@ -31,12 +31,6 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         submit_search('gitlab')
       end
 
-      it 'renders page title' do
-        page.within('.page-title') do
-          expect(page).to have_content('Search')
-        end
-      end
-
       it 'renders breadcrumbs' do
         page.within('.breadcrumbs') do
           expect(page).to have_content('Search')

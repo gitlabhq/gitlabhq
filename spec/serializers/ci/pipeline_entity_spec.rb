@@ -256,7 +256,6 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
           project.add_maintainer(user)
         end
 
-        # Remove with `ci_fix_performance_pipelines_json_endpoint`.
         context 'when disable_failed_builds is true' do
           let(:options) { { disable_failed_builds: true } }
 

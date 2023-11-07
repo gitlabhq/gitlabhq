@@ -122,7 +122,9 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
       test_text = '<A' + ('A' * 54773)
 
       expect do
-        Timeout.timeout(3.seconds) { RedCloth.new(test_text, [:sanitize_html]).to_html }
+        Timeout.timeout(Gitlab::OtherMarkup::RENDER_TIMEOUT.seconds) do
+          RedCloth.new(test_text, [:sanitize_html]).to_html
+        end
       end.not_to raise_error
     end
   end

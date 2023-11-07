@@ -1274,10 +1274,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.69.0.tgz#bf76b8ffbe72a783807761a38abe8aaedcfe8c12"
   integrity sha512-Zu8Fcjhi3Bk26jZOptcD5F4SHWC7/KuAe00NULViCeswKdoda1k19B+9oCSbsbxY7vMoFuD20kiCJdBCpxb3HA==
 
-"@gitlab/ui@67.5.2":
-  version "67.5.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-67.5.2.tgz#9a8d6008353b7250c1686a2a20fcae6630c97213"
-  integrity sha512-Qtkh9AEHjPrST/rl4SeY7Wh/ZB68GQO9jjM4Jll+3JicX3prg55uuFd4PATcq71DbXyIySZuDI/DrltgkhWByw==
+"@gitlab/ui@68.0.0":
+  version "68.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-68.0.0.tgz#06228d889a1a49215b0d715b4b3dd7e583a39ff2"
+  integrity sha512-El0BEBqil9hqsLSHl0AuhSikYaeNcg3M6adKti/lkKn0KbTKSl48CsJy/sObQY0khuu70+OoQFeuF85KwWnxEw==
   dependencies:
     "@floating-ui/dom" "1.2.9"
     bootstrap-vue "2.23.1"
@@ -1846,7 +1846,7 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.21.tgz#5de5a2385a35309427f6011992b544514d559aa1"
   integrity sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==
 
-"@popperjs/core@^2.11.2", "@popperjs/core@^2.9.0":
+"@popperjs/core@^2.9.0":
   version "2.11.5"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.5.tgz#db5a11bf66bdab39569719555b0f76e138d7bd64"
   integrity sha512-9X2obfABZuDVLCgPK9aX0a/x4jaOEweTTWE2+9sr0Qqqevj2Uv5XorvusThmc9XGYpS9yI+fhh8RTafBtGposw==
