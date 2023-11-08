@@ -140,9 +140,9 @@ as it can cause the pipeline to behave unexpectedly.
 | `GITLAB_CI`                              | all    | all    | Available for all jobs executed in CI/CD. `true` when available. |
 | `GITLAB_FEATURES`                        | 10.6   | all    | The comma-separated list of licensed features available for the GitLab instance and license. |
 | `GITLAB_USER_EMAIL`                      | 8.12   | all    | The email of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the email of the user who started the job. |
-| `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
+| `GITLAB_USER_ID`                         | 8.12   | all    | The numeric ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the username of the user who started the job. |
-| `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
+| `GITLAB_USER_NAME`                       | 10.0   | all    | The display name of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
 | `KUBECONFIG`                             | 14.2   | all    | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent). |
 | `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#access-webhook-payload). |
 
@@ -157,8 +157,8 @@ These variables are available when:
 |---------------------------------------------|--------|--------|-------------|
 | `CI_MERGE_REQUEST_APPROVED`                 | 14.1   | all    | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/index.md) is available and the merge request has been approved. |
 | `CI_MERGE_REQUEST_ASSIGNEES`                | 11.9   | all    | Comma-separated list of usernames of assignees for the merge request. |
-| `CI_MERGE_REQUEST_ID`                       | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on GitLab. |
-| `CI_MERGE_REQUEST_IID`                      | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project. |
+| `CI_MERGE_REQUEST_ID`                       | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on the GitLab instance. |
+| `CI_MERGE_REQUEST_IID`                      | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
 | `CI_MERGE_REQUEST_LABELS`                   | 11.9   | all    | Comma-separated label names of the merge request. |
 | `CI_MERGE_REQUEST_MILESTONE`                | 11.9   | all    | The milestone title of the merge request. |
 | `CI_MERGE_REQUEST_PROJECT_ID`               | 11.6   | all    | The ID of the project of the merge request. |

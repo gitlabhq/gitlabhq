@@ -492,29 +492,6 @@ To enable Experiment features for a top-level group:
 1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
 1. Select **Save changes**.
 
-## Enable third-party AI features **(ULTIMATE SAAS)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
-
-WARNING:
-These AI features use [third-party services](../ai_features.md#data-usage)
-and require transmission of data, including personal data.
-
-All users in the group have third-party AI features enabled by default.
-This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
-that belong to the group.
-
-To disable third-party AI features for a group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Permissions and group features**.
-1. Under **Third-party AI services**, uncheck the **Use third-party AI services** checkbox.
-1. Select **Save changes**.
-
-When Code Suggestions are enabled and disabled, an
-[audit event](../../administration/audit_events.md) is created.
-
 ## Group activity analytics **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).

@@ -11,11 +11,11 @@ module Types
     implements MemberInterface
 
     field :group, Types::GroupType, null: true,
-                                    description: 'Group that a User is a member of.'
+                                    description: 'Group that a user is a member of.'
 
     field :notification_email,
           resolver: Resolvers::GroupMembers::NotificationEmailResolver,
-          description: "Group notification email for User. Only available for admins."
+          description: "Group notification email for user. Only available for admins."
 
     def group
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.source_id).find

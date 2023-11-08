@@ -37,6 +37,9 @@ To create an OAuth application on your self-managed instance:
    - If you're installing the app from the official marketplace listing, enter `https://gitlab.com/-/jira_connect/oauth_callbacks`.
    - If you're installing the app manually, enter `<instance_url>/-/jira_connect/oauth_callbacks` and replace `<instance_url>` with the URL of your instance.
 1. Clear the **Trusted** and **Confidential** checkboxes.
+
+   NOTE:
+   You must clear these checkboxes to avoid errors.
 1. In **Scopes**, select the `api` checkbox only.
 1. Select **Save application**.
 1. Copy the **Application ID** value.

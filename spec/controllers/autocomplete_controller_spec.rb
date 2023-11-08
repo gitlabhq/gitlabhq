@@ -454,77 +454,85 @@ RSpec.describe AutocompleteController do
     end
   end
 
-  context 'Get merge_request_target_branches', feature_category: :code_review_workflow do
-    let!(:merge_request) { create(:merge_request, source_project: project, target_branch: 'feature') }
-
-    context 'anonymous user' do
-      it 'returns empty json' do
-        get :merge_request_target_branches, params: { project_id: project.id }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_empty
-      end
+  context 'GET branches', feature_category: :code_review_workflow do
+    let_it_be(:merge_request) do
+      create(:merge_request, source_project: project,
+        source_branch: 'test_source_branch', target_branch: 'test_target_branch')
     end
 
-    context 'user without any accessible merge requests' do
-      it 'returns empty json' do
-        sign_in(create(:user))
+    shared_examples 'Get merge_request_{}_branches' do |path, expected_result|
+      context 'anonymous user' do
+        it 'returns empty json' do
+          get path, params: { project_id: project.id }
 
-        get :merge_request_target_branches, params: { project_id: project.id }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_empty
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_empty
+        end
       end
-    end
 
-    context 'user with an accessible merge request but no scope' do
-      where(
-        params: [
-          {},
-          { group_id: ' ' },
-          { project_id: ' ' },
-          { group_id: ' ', project_id: ' ' }
-        ]
-      )
+      context 'user without any accessible merge requests' do
+        it 'returns empty json' do
+          sign_in(create(:user))
 
-      with_them do
-        it 'returns an error' do
+          get path, params: { project_id: project.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_empty
+        end
+      end
+
+      context 'user with an accessible merge request but no scope' do
+        where(
+          params: [
+            {},
+            { group_id: ' ' },
+            { project_id: ' ' },
+            { group_id: ' ', project_id: ' ' }
+          ]
+        )
+
+        with_them do
+          it 'returns an error' do
+            sign_in(user)
+
+            get path, params: params
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response).to eq({ 'error' => 'At least one of group_id or project_id must be specified' })
+          end
+        end
+      end
+
+      context 'user with an accessible merge request by project' do
+        it 'returns json' do
           sign_in(user)
 
-          get :merge_request_target_branches, params: params
+          get path, params: { project_id: project.id }
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({ 'error' => 'At least one of group_id or project_id must be specified' })
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to contain_exactly(expected_result)
+        end
+      end
+
+      context 'user with an accessible merge request by group' do
+        let(:group) { create(:group) }
+        let(:user) { create(:user) }
+
+        it 'returns json' do
+          project.update!(namespace: group)
+          group.add_owner(user)
+
+          sign_in(user)
+
+          get path, params: { group_id: group.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to contain_exactly(expected_result)
         end
       end
     end
 
-    context 'user with an accessible merge request by project' do
-      it 'returns json' do
-        sign_in(user)
-
-        get :merge_request_target_branches, params: { project_id: project.id }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to contain_exactly({ 'title' => 'feature' })
-      end
-    end
-
-    context 'user with an accessible merge request by group' do
-      let(:group) { create(:group) }
-      let(:project) { create(:project, namespace: group) }
-      let(:user) { create(:user) }
-
-      it 'returns json' do
-        group.add_owner(user)
-
-        sign_in(user)
-
-        get :merge_request_target_branches, params: { group_id: group.id }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to contain_exactly({ 'title' => 'feature' })
-      end
-    end
+    it_behaves_like 'Get merge_request_{}_branches', :merge_request_target_branches, { 'title' => 'test_target_branch' }
+    it_behaves_like 'Get merge_request_{}_branches', :merge_request_source_branches, { 'title' => 'test_source_branch' }
   end
 end

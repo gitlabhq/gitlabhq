@@ -22466,6 +22466,7 @@ CREATE TABLE remote_development_agent_configs (
     dns_zone text NOT NULL,
     network_policy_enabled boolean DEFAULT true NOT NULL,
     gitlab_workspaces_proxy_namespace text DEFAULT 'gitlab-workspaces'::text NOT NULL,
+    network_policy_egress jsonb DEFAULT '[{"allow": "0.0.0.0/0", "except": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]}]'::jsonb NOT NULL,
     CONSTRAINT check_72947a4495 CHECK ((char_length(gitlab_workspaces_proxy_namespace) <= 63)),
     CONSTRAINT check_9f5cd54d1c CHECK ((char_length(dns_zone) <= 256))
 );

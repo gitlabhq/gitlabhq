@@ -725,22 +725,35 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '.recent_target_branches' do
+  describe '.recent_target_branches and .recent_source_branches' do
+    def create_mr(source_branch, target_branch, status, remove_source_branch = false)
+      if remove_source_branch
+        create(:merge_request, status, :remove_source_branch, source_project: project,
+          target_branch: target_branch, source_branch: source_branch)
+      else
+        create(:merge_request, status, source_project: project,
+          target_branch: target_branch, source_branch: source_branch)
+      end
+    end
+
     let(:project) { create(:project) }
-    let!(:merge_request1) { create(:merge_request, :opened, source_project: project, target_branch: 'feature') }
-    let!(:merge_request2) { create(:merge_request, :closed, source_project: project, target_branch: 'merge-test') }
-    let!(:merge_request3) { create(:merge_request, :opened, source_project: project, target_branch: 'fix') }
-    let!(:merge_request4) { create(:merge_request, :closed, source_project: project, target_branch: 'feature') }
+    let!(:merge_request1) { create_mr('source1', 'target1', :opened) }
+    let!(:merge_request2) { create_mr('source2', 'target2', :closed) }
+    let!(:merge_request3) { create_mr('source3', 'target3', :opened) }
+    let!(:merge_request4) { create_mr('source4', 'target1', :closed) }
+    let!(:merge_request5) { create_mr('source5', 'target4', :merged, true) }
 
     before do
       merge_request1.update_columns(updated_at: 1.day.since)
       merge_request2.update_columns(updated_at: 2.days.since)
       merge_request3.update_columns(updated_at: 3.days.since)
       merge_request4.update_columns(updated_at: 4.days.since)
+      merge_request5.update_columns(updated_at: 5.days.since)
     end
 
-    it 'returns target branches sort by updated at desc' do
-      expect(described_class.recent_target_branches).to match_array(%w[feature merge-test fix])
+    it 'returns branches sort by updated at desc' do
+      expect(described_class.recent_target_branches).to match_array(%w[target1 target2 target3 target4])
+      expect(described_class.recent_source_branches).to match_array(%w[source1 source2 source3 source4 source5])
     end
   end
 

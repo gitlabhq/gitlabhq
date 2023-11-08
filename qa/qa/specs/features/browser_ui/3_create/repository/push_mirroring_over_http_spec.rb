@@ -3,7 +3,14 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Push mirror a repository over HTTP', product_group: :source_code do
-      it 'configures and syncs a (push) mirrored repository', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347741' do
+      it('configures and syncs a (push) mirrored repository',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347741',
+        quarantine: {
+          only: { condition: -> { ENV['QA_RUN_TYPE'] == 'e2e-package-and-test-ce' } },
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412611',
+          type: :investigating
+        }
+      ) do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 

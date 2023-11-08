@@ -97,7 +97,7 @@ variables:
     - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
     - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
     - source scripts/utils.sh
-    - cd qa && bundle install
+    - cd qa && bundle config set --local without 'development' && bundle install
     - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:healthcheck[collapsed=true]\r\e[0KWait for gdk to start"

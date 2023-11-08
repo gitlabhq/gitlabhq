@@ -277,10 +277,13 @@ module Gitlab
       #
       # Let's define it explicitly instead of propagating it to method_missing
       def close
-        if use_primary_and_secondary_stores?
-          [primary_store, secondary_store].map(&:close).first
+        if same_redis_store?
+          # if same_redis_store?, `use_primary_store_as_default?` returns false
+          # but we should avoid a feature-flag check in `.close` to avoid checking out
+          # an ActiveRecord connection during clean up.
+          secondary_store.close
         else
-          default_store.close
+          [primary_store, secondary_store].map(&:close).first
         end
       end
 

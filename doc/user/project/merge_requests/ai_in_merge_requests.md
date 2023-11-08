@@ -14,7 +14,7 @@ Additional information on enabling these features and maturity can be found in o
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com that is using Google's Vertex service and the `text-bison` model. It requires the [group-level third-party AI features setting](../../group/manage.md#enable-third-party-ai-features) to be enabled.
+This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 Merge requests in projects often have [templates](../description_templates.md#create-a-merge-request-template) defined that need to be filled out. This helps reviewers and other users understand the purpose and changes a merge request might propose.
 
@@ -40,7 +40,7 @@ Provide feedback on this experimental feature in [issue 416537](https://gitlab.c
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com that is using Google's Vertex service and the `text-bison` model. It requires the [group-level third-party AI features setting](../../group/manage.md#enable-third-party-ai-features) to be enabled.
+This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 GitLab Duo Merge request summaries are available on the merge request page in:
 
@@ -56,7 +56,7 @@ Provide feedback on this experimental feature in [issue 408726](https://gitlab.c
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com that is using Google's Vertex service and the `text-bison` model. It requires the [group-level third-party AI features setting](../../group/manage.md#enable-third-party-ai-features) to be enabled.
+This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 When you've completed your review of a merge request and are ready to [submit your review](reviews/index.md#submit-a-review), generate a GitLab Duo Code review summary:
 
@@ -78,7 +78,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com that is using Google's Vertex service and the `text-bison` model. It requires the [group-level third-party AI features setting](../../group/manage.md#enable-third-party-ai-features) to be enabled.
+This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 When preparing to merge your merge request you may wish to edit the proposed squash or merge commit message.
 
@@ -99,7 +99,7 @@ Provide feedback on this experimental feature in [issue 408994](https://gitlab.c
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com that is using Google's Vertex service and the `code-bison` model. It requires the [group-level third-party AI features setting](../../group/manage.md#enable-third-party-ai-features) to be enabled.
+This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 Use GitLab Duo Test generation in a merge request to see a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
 

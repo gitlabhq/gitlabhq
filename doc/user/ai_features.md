@@ -28,22 +28,12 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 
 ## Enable AI/ML features
 
-- Third-party AI features
-  - All features built on large language models (LLM) from Google,
-    Anthropic or OpenAI (besides Code Suggestions) require that this setting is
-    enabled at the group level.
-  - [Generally Available](../policy/experiment-beta-support.md#generally-available-ga)
-    features are available when third-party AI features are enabled.
-  - Third-party AI features are enabled by default.
-  - This setting is available to Ultimate groups on SaaS and can be
-    set by a user who has the Owner role in the group.
-  - View [how to enable this setting](group/manage.md#enable-third-party-ai-features).
 - Experiment and Beta features
   - All features categorized as
     [Experiment features](../policy/experiment-beta-support.md#experiment) or
     [Beta features](../policy/experiment-beta-support.md#beta)
     (besides Code Suggestions) require that this setting is enabled at the group
-    level. This is in addition to the Third-party AI features setting.
+    level.
   - Their usage is subject to the
     [Testing Terms of Use](https://about.gitlab.com/handbook/legal/testing-agreement/).
   - Experiment and Beta features are disabled by default.
@@ -65,7 +55,6 @@ The following subsections describe the experimental AI features in more detail.
 To use this feature:
 
 - The parent group of the project must:
-  - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the repository.
 
@@ -111,7 +100,6 @@ We cannot guarantee that the large language model produces results that are corr
 To use this feature:
 
 - The parent group of the issue must:
-  - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the issue.
 
@@ -135,7 +123,6 @@ language model referenced above.
 To use this feature:
 
 - The parent group of the project must:
-  - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the CI/CD analytics.
 
@@ -161,7 +148,6 @@ Provide feedback on this experimental feature in [issue 416833](https://gitlab.c
 To use this feature:
 
 - The parent group of the project must:
-  - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the CI/CD job.
 
@@ -176,7 +162,6 @@ reason for the failure.
 To use this feature:
 
 - The parent group of the project must:
-  - Enable the [third-party AI features setting](group/manage.md#enable-third-party-ai-features).
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
 - You must be a member of the project with sufficient permissions to view the issue.
 
@@ -214,8 +199,6 @@ These features are in a variety of [feature support levels](../policy/experiment
 ### Data privacy
 
 Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use to provide these features.
-
-Group owners can control which top-level groups have access to third-party AI features by using the [group level third-party AI features setting](group/manage.md#enable-third-party-ai-features).
 
 ### Model accuracy and quality
 

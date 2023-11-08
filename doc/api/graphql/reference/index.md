@@ -11669,6 +11669,29 @@ The edge type for [`PathLock`](#pathlock).
 | <a id="pathlockedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pathlockedgenode"></a>`node` | [`PathLock`](#pathlock) | The item at the end of the edge. |
 
+#### `PendingGroupMemberConnection`
+
+The connection type for [`PendingGroupMember`](#pendinggroupmember).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendinggroupmemberconnectionedges"></a>`edges` | [`[PendingGroupMemberEdge]`](#pendinggroupmemberedge) | A list of edges. |
+| <a id="pendinggroupmemberconnectionnodes"></a>`nodes` | [`[PendingGroupMember]`](#pendinggroupmember) | A list of nodes. |
+| <a id="pendinggroupmemberconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PendingGroupMemberEdge`
+
+The edge type for [`PendingGroupMember`](#pendinggroupmember).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendinggroupmemberedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pendinggroupmemberedgenode"></a>`node` | [`PendingGroupMember`](#pendinggroupmember) | The item at the end of the edge. |
+
 #### `PipelineArtifactRegistryConnection`
 
 The connection type for [`PipelineArtifactRegistry`](#pipelineartifactregistry).
@@ -18197,6 +18220,7 @@ GPG signature for a signed commit.
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
+| <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingGroupMemberConnection`](#pendinggroupmemberconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. A pending membership of a user within this group. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="grouprecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the group. Maximum size is 4. (see [Connections](#connections)) |
 | <a id="grouprepositorysizeexcessprojectcount"></a>`repositorySizeExcessProjectCount` | [`Int!`](#int) | Number of projects in the root namespace where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
@@ -19280,9 +19304,9 @@ Represents a Group Membership.
 | <a id="groupmembercreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
 | <a id="groupmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
 | <a id="groupmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
-| <a id="groupmembergroup"></a>`group` | [`Group`](#group) | Group that a User is a member of. |
+| <a id="groupmembergroup"></a>`group` | [`Group`](#group) | Group that a user is a member of. |
 | <a id="groupmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
-| <a id="groupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for User. Only available for admins. |
+| <a id="groupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for user. Only available for admins. |
 | <a id="groupmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="groupmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
 | <a id="groupmemberuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
@@ -22496,6 +22520,46 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pathlockid"></a>`id` | [`PathLockID!`](#pathlockid) | ID of the path lock. |
 | <a id="pathlockpath"></a>`path` | [`String`](#string) | Locked path. |
 | <a id="pathlockuser"></a>`user` | [`UserCore`](#usercore) | User that has locked this path. |
+
+### `PendingGroupMember`
+
+Represents a Pending Group Membership.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendinggroupmemberaccesslevel"></a>`accessLevel` | [`AccessLevel`](#accesslevel) | GitLab::Access level. |
+| <a id="pendinggroupmemberapproved"></a>`approved` | [`Boolean`](#boolean) | Whether the pending group member has been approved. |
+| <a id="pendinggroupmemberavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending group member. |
+| <a id="pendinggroupmembercreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
+| <a id="pendinggroupmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
+| <a id="pendinggroupmemberemail"></a>`email` | [`String`](#string) | Public email of the pending group member. |
+| <a id="pendinggroupmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
+| <a id="pendinggroupmembergroup"></a>`group` | [`Group`](#group) | Group that a user is a member of. |
+| <a id="pendinggroupmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
+| <a id="pendinggroupmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending group member has been invited. |
+| <a id="pendinggroupmembername"></a>`name` | [`String`](#string) | Name of the pending group member. |
+| <a id="pendinggroupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for user. Only available for admins. |
+| <a id="pendinggroupmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
+| <a id="pendinggroupmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
+| <a id="pendinggroupmemberuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
+| <a id="pendinggroupmemberusername"></a>`username` | [`String`](#string) | Username of the pending group member. |
+| <a id="pendinggroupmemberweburl"></a>`webUrl` | [`String`](#string) | Web URL of the pending group member. |
+
+#### Fields with arguments
+
+##### `PendingGroupMember.mergeRequestInteraction`
+
+Find a merge request.
+
+Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendinggroupmembermergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
 
 ### `Pipeline`
 
@@ -31633,6 +31697,7 @@ Implementations:
 Implementations:
 
 - [`GroupMember`](#groupmember)
+- [`PendingGroupMember`](#pendinggroupmember)
 - [`ProjectMember`](#projectmember)
 
 ##### Fields

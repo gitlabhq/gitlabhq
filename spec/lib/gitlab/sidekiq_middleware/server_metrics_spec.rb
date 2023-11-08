@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # rubocop: disable RSpec/MultipleMemoizedHelpers
-RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
+RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shared do
   shared_examples "a metrics middleware" do
     context "with mocked prometheus" do
       include_context 'server metrics with mocked prometheus'
@@ -452,11 +452,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
   end
 
   context 'when emit_sidekiq_histogram_metrics FF is disabled' do
-    include_context 'server metrics with mocked prometheus'
-    include_context 'server metrics call' do
-      let(:stub_subject) { false }
-    end
-
     subject(:middleware) { described_class.new }
 
     let(:job) { {} }
@@ -484,16 +479,38 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       stub_feature_flags(emit_sidekiq_histogram_metrics: false)
     end
 
+    # include_context below must run after stubbing FF above because
+    # the middleware initialization depends on the FF and it's being initialized
+    # in the 'server metrics call' shared_context
+    include_context 'server metrics with mocked prometheus'
+    include_context 'server metrics call'
+
     it 'does not emit histogram metrics' do
       expect(completion_seconds_metric).not_to receive(:observe)
       expect(queue_duration_seconds).not_to receive(:observe)
       expect(failed_total_metric).not_to receive(:increment)
+      expect(user_execution_seconds_metric).not_to receive(:observe)
+      expect(db_seconds_metric).not_to receive(:observe)
+      expect(gitaly_seconds_metric).not_to receive(:observe)
+      expect(redis_seconds_metric).not_to receive(:observe)
+      expect(elasticsearch_seconds_metric).not_to receive(:observe)
 
       middleware.call(worker, job, queue) { nil }
     end
 
-    it 'emits sidekiq_jobs_completion_seconds_sum metric' do
+    it 'emits sidekiq_jobs_completion_seconds sum and count metric' do
       expect(completion_seconds_sum_metric).to receive(:increment).with(labels, monotonic_time_duration)
+      expect(completion_count_metric).to receive(:increment).with(labels, 1)
+
+      middleware.call(worker, job, queue) { nil }
+    end
+
+    it 'emits resource usage sum metrics' do
+      expect(cpu_seconds_sum_metric).to receive(:increment).with(labels, thread_cputime_duration)
+      expect(db_seconds_sum_metric).to receive(:increment).with(labels, db_duration)
+      expect(gitaly_seconds_sum_metric).to receive(:increment).with(labels, gitaly_duration)
+      expect(redis_seconds_sum_metric).to receive(:increment).with(labels, redis_duration)
+      expect(elasticsearch_seconds_sum_metric).to receive(:increment).with(labels, elasticsearch_duration)
 
       middleware.call(worker, job, queue) { nil }
     end

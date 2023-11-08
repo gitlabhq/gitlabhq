@@ -185,6 +185,11 @@
                     %li.filter-dropdown-item
                       %button.btn.btn-link.js-data-value.monospace
                         {{title}}
+                #js-dropdown-source-branch.filtered-search-input-dropdown-menu.dropdown-menu
+                  %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                    %li.filter-dropdown-item
+                      %button.btn.btn-link.js-data-value.monospace
+                        {{title}}
               #js-dropdown-environment.filtered-search-input-dropdown-menu.dropdown-menu
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   %li.filter-dropdown-item

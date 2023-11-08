@@ -36,7 +36,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Apply the following two feature flags to any AI feature work:
 
-- A general that applies to all AI features.
+- A general flag (`ai_global_switch`) that applies to all AI features.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
 See the [feature flag tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/405161) for the list of all feature flags and how to use them.
@@ -63,11 +63,10 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 
 1. Ensure you have followed [the process to obtain an EE license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
-1. Enable `Experimental features` and `Third-party AI services`
+1. Enable `Experimental features`:
    1. Go to the group with the Ultimate license
    1. **Group Settings** > **General** -> **Permissions and group features**
    1. Enable **Experiment features**
-   1. Enable **Third-party AI services**
 1. Enable the specific feature flag for the feature you want to test
 1. Set the required access token. To receive an access token:
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
@@ -392,11 +391,11 @@ end
 
 We recommend to use [policies](../policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
 
-1. General AI feature flag is enabled
+1. General AI feature flag (`ai_global_switch`) is enabled
 1. Feature specific feature flag is enabled
 1. The namespace has the required license for the feature
 1. User is a member of the group/project
-1. `experiment_features_enabled` and `third_party_ai_features_enabled` flags are set on the `Namespace`
+1. `experiment_features_enabled` settings are set on the `Namespace`
 
 For our example, we need to implement the `allowed?(:amazing_new_ai_feature)` call. As an example, you can look at the [Issue Policy for the summarize comments feature](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb). In our example case, we want to implement the feature for Issues as well:
 
@@ -474,10 +473,9 @@ Caching has following limitations:
 
 ### Check if feature is allowed for this resource based on namespace settings
 
-There are two settings allowed on root namespace level that restrict the use of AI features:
+There is one setting allowed on root namespace level that restrict the use of AI features:
 
 - `experiment_features_enabled`
-- `third_party_ai_features_enabled`.
 
 To check if that feature is allowed for a given namespace, call:
 
@@ -485,13 +483,12 @@ To check if that feature is allowed for a given namespace, call:
 Gitlab::Llm::StageCheck.available?(namespace, :name_of_the_feature)
 ```
 
-Add the name of the feature to the `Gitlab::Llm::StageCheck` class. There are arrays there that differentiate
-between experimental and beta features.
+Add the name of the feature to the `Gitlab::Llm::StageCheck` class. There are
+arrays there that differentiate between experimental and beta features.
 
 This way we are ready for the following different cases:
 
-- If the feature is not in any array, the check will return `true`. For example, the feature was moved to GA and does not use a third-party setting.
-- If feature is in GA, but uses a third-party setting, the class will return a proper answer based on the namespace third-party setting.
+- If the feature is not in any array, the check will return `true`. For example, the feature was moved to GA.
 
 To move the feature from the experimental phase to the beta phase, move the name of the feature from the `EXPERIMENTAL_FEATURES` array to the `BETA_FEATURES` array.
 

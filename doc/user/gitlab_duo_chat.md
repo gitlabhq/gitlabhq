@@ -44,7 +44,6 @@ This is an experimental feature and we're continuously extending the capabilitie
 
 To use this feature, at least one group you're a member of must:
 
-- Have the [third-party AI features setting](group/manage.md#enable-third-party-ai-features) enabled.
 - Have the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
 
 ## Use GitLab Duo Chat

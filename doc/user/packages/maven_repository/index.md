@@ -32,6 +32,10 @@ Do not use authentication methods other than the methods documented here. Undocu
 
 #### Edit the client configuration
 
+Update your configuration to authenticate to the Maven repository with HTTP.
+
+##### Custom HTTP header
+
 You must add the authentication details to the configuration file
 for your client.
 
@@ -122,6 +126,97 @@ file:
           }
           authentication {
               create("header", HttpHeaderAuthentication::class)
+          }
+      }
+  }
+  ```
+
+::EndTabs
+
+##### Basic HTTP Authentication
+
+You can also use basic HTTP authentication to authenticate to the Maven Package Registry.
+
+::Tabs
+
+:::TabTitle `mvn`
+
+| Token type            | Name must be                 | Token                                                                  |
+| --------------------- | ---------------------------- | ---------------------------------------------------------------------- |
+| Personal access token | The username of the user     | Paste token as-is, or define an environment variable to hold the token |
+| Deploy token          | The username of deploy token | Paste token as-is, or define an environment variable to hold the token |
+| CI Job token          | `gitlab-ci-token`            | `${CI_JOB_TOKEN}`                                                      |
+
+Add the following section to your
+[`settings.xml`](https://maven.apache.org/settings.html) file.
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>gitlab-maven</id>
+      <username>REPLACE_WITH_NAME</username>
+      <password>REPLACE_WITH_TOKEN</password>
+      <configuration>
+        <authenticationInfo>
+          <userName>REPLACE_WITH_NAME</userName>
+          <password>REPLACE_WITH_TOKEN</password>
+        </authenticationInfo>
+      </configuration>
+    </server>
+  </servers>
+</settings>
+```
+
+:::TabTitle `gradle`
+
+| Token type            | Name must be                 | Token                                                                  |
+| --------------------- | ---------------------------- | ---------------------------------------------------------------------- |
+| Personal access token | The username of the user     | Paste token as-is, or define an environment variable to hold the token |
+| Deploy token          | The username of deploy token | Paste token as-is, or define an environment variable to hold the token |
+| CI Job token          | `gitlab-ci-token`            | `System.getenv("CI_JOB_TOKEN")`                                        |
+
+In [your `GRADLE_USER_HOME` directory](https://docs.gradle.org/current/userguide/directory_layout.html#dir:gradle_user_home),
+create a file `gradle.properties` with the following content:
+
+```properties
+gitLabPrivateToken=REPLACE_WITH_YOUR_TOKEN
+```
+
+Add a `repositories` section to your
+[`build.gradle`](https://docs.gradle.org/current/userguide/tutorial_using_tasks.html).
+
+- In Groovy DSL:
+
+  ```groovy
+  repositories {
+      maven {
+          url "https://gitlab.example.com/api/v4/groups/<group>/-/packages/maven"
+          name "GitLab"
+          credentials(PasswordCredentials) {
+              username = 'REPLACE_WITH_NAME'
+              password = gitLabPrivateToken
+          }
+          authentication {
+              basic(BasicAuthentication)
+          }
+      }
+  }
+  ```
+
+- In Kotlin DSL:
+
+  ```kotlin
+  repositories {
+      maven {
+          url = uri("https://gitlab.example.com/api/v4/groups/<group>/-/packages/maven")
+          name = "GitLab"
+          credentials(BasicAuthentication::class) {
+              username = "REPLACE_WITH_NAME"
+              password = findProperty("gitLabPrivateToken") as String?
+          }
+          authentication {
+              create("basic", BasicAuthentication::class)
           }
       }
   }

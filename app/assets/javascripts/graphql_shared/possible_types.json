@@ -67,6 +67,7 @@
   ],
   "MemberInterface": [
     "GroupMember",
+    "PendingGroupMember",
     "ProjectMember"
   ],
   "NoteableInterface": [

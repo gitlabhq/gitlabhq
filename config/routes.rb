@@ -88,6 +88,7 @@ InitializerConnections.raise_if_new_database_connection do
       get '/autocomplete/projects' => 'autocomplete#projects'
       get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
       get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
+      get '/autocomplete/merge_request_source_branches' => 'autocomplete#merge_request_source_branches'
       get '/autocomplete/deploy_keys_with_owners' => 'autocomplete#deploy_keys_with_owners'
 
       Gitlab.ee do

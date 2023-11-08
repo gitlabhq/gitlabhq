@@ -1375,6 +1375,12 @@ msgstr ""
 msgid "'%{value}' days of inactivity must be greater than or equal to 90"
 msgstr ""
 
+msgid "'allow: %{allow}' must be a string"
+msgstr ""
+
+msgid "'except: %{except}' must be an array of string"
+msgstr ""
+
 msgid "'projects' is not yet supported"
 msgstr ""
 
@@ -1915,9 +1921,6 @@ msgstr ""
 msgid "AISummary|View summary"
 msgstr ""
 
-msgid "AI| %{link_start}How is my data used?%{link_end}"
-msgstr ""
-
 msgid "AI|%{tool} is %{transition} an answer"
 msgstr ""
 
@@ -1958,9 +1961,6 @@ msgid "AI|Explain the code from %{filePath} in human understandable language pre
 msgstr ""
 
 msgid "AI|Explain your rating to help us improve! (optional)"
-msgstr ""
-
-msgid "AI|Features that use third-party AI services require transmission of data, including personal data."
 msgstr ""
 
 msgid "AI|For example: Organizations should be able to forecast into the future by using value stream analytics charts. This feature would help them understand how their metrics are trending."
@@ -2037,16 +2037,10 @@ msgstr ""
 msgid "AI|There is too much text in the chat. Please try again with a shorter text."
 msgstr ""
 
-msgid "AI|Third-party AI services"
-msgstr ""
-
 msgid "AI|To help improve the quality of the content, send your feedback to GitLab team members."
 msgstr ""
 
 msgid "AI|Unhelpful"
-msgstr ""
-
-msgid "AI|Use third-party AI services"
 msgstr ""
 
 msgid "AI|What does the selected code mean?"
@@ -11922,7 +11916,7 @@ msgstr ""
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
 msgstr ""
 
-msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions currently uses third-party AI services unless those are %{third_party_features_link_start}disabled%{link_end}."
+msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions uses third-party AI services."
 msgstr ""
 
 msgid "CodeownersValidation|An error occurred while loading the validation errors. Please try again later."
@@ -24207,6 +24201,12 @@ msgid "INFO: Your SSH key has expired. Please generate a new key."
 msgstr ""
 
 msgid "INFO: Your SSH key is expiring soon. Please generate a new key."
+msgstr ""
+
+msgid "IP '%{value}' is not a valid CIDR: %{message}"
+msgstr ""
+
+msgid "IP '%{value}' is not a valid CIDR: IP should be followed by a slash followed by an integer subnet mask (for example: '192.168.1.0/24')"
 msgstr ""
 
 msgid "IP Address"
@@ -45951,6 +45951,9 @@ msgstr ""
 msgid "Source project cannot be found."
 msgstr ""
 
+msgid "Source-Branch"
+msgstr ""
+
 msgid "SourceEditor|\"el\" parameter is required for createInstance()"
 msgstr ""
 
@@ -48814,9 +48817,6 @@ msgid "Things to be aware of before transferring:"
 msgstr ""
 
 msgid "Third Party Advisory Link"
-msgstr ""
-
-msgid "Third party AI settings not allowed."
 msgstr ""
 
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
@@ -57592,6 +57592,18 @@ msgid "must be a value between 0 and 1"
 msgstr ""
 
 msgid "must be after start"
+msgstr ""
+
+msgid "must be an array"
+msgstr ""
+
+msgid "must be an array of CIDR values"
+msgstr ""
+
+msgid "must be an array of hash"
+msgstr ""
+
+msgid "must be an array of hash containing 'allow' attribute of type string"
 msgstr ""
 
 msgid "must be an email you have verified"

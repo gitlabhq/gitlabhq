@@ -529,6 +529,14 @@ class MergeRequest < ApplicationRecord
       .pluck(:target_branch)
   end
 
+  def self.recent_source_branches(limit: 100)
+    group(:source_branch)
+      .select(:source_branch)
+      .reorder(arel_table[:updated_at].maximum.desc)
+      .limit(limit)
+      .pluck(:source_branch)
+  end
+
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'merged_at', 'merged_at_asc' then order_merged_at_asc

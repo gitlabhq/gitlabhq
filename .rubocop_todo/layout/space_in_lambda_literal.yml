@@ -271,7 +271,6 @@ Layout/SpaceInLambdaLiteral:
     - 'ee/app/services/vulnerability_exports/exporters/csv_service.rb'
     - 'ee/app/workers/update_all_mirrors_worker.rb'
     - 'ee/lib/api/entities/pending_member.rb'
-    - 'ee/lib/api/ml/ai_assist.rb'
     - 'ee/lib/ee/api/entities/ci/job_request/response.rb'
     - 'ee/lib/ee/api/entities/epic.rb'
     - 'ee/lib/ee/api/entities/issue.rb'
