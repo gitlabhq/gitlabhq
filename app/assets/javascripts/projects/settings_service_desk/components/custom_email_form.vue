@@ -6,6 +6,7 @@ import {
   GlFormInputGroup,
   GlFormInput,
   GlLink,
+  GlFormSelect,
   GlSprintf,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -28,6 +29,11 @@ import {
   I18N_FORM_SMTP_USERNAME_LABEL,
   I18N_FORM_SMTP_PASSWORD_LABEL,
   I18N_FORM_SMTP_PASSWORD_DESCRIPTION,
+  I18N_FORM_SMTP_AUTHENTICATION_LABEL,
+  I18N_FORM_SMTP_AUTHENTICATION_NONE,
+  I18N_FORM_SMTP_AUTHENTICATION_PLAIN,
+  I18N_FORM_SMTP_AUTHENTICATION_LOGIN,
+  I18N_FORM_SMTP_AUTHENTICATION_CRAM_MD5,
   I18N_FORM_SUBMIT_LABEL,
   I18N_FORM_INVALID_FEEDBACK_CUSTOM_EMAIL,
   I18N_FORM_INVALID_FEEDBACK_SMTP_ADDRESS,
@@ -47,6 +53,7 @@ export default {
     GlFormGroup,
     GlFormInputGroup,
     GlFormInput,
+    GlFormSelect,
     GlLink,
     GlSprintf,
   },
@@ -61,6 +68,11 @@ export default {
   I18N_FORM_SMTP_USERNAME_LABEL,
   I18N_FORM_SMTP_PASSWORD_LABEL,
   I18N_FORM_SMTP_PASSWORD_DESCRIPTION,
+  I18N_FORM_SMTP_AUTHENTICATION_LABEL,
+  I18N_FORM_SMTP_AUTHENTICATION_NONE,
+  I18N_FORM_SMTP_AUTHENTICATION_PLAIN,
+  I18N_FORM_SMTP_AUTHENTICATION_LOGIN,
+  I18N_FORM_SMTP_AUTHENTICATION_CRAM_MD5,
   I18N_FORM_SUBMIT_LABEL,
   I18N_FORM_INVALID_FEEDBACK_CUSTOM_EMAIL,
   I18N_FORM_INVALID_FEEDBACK_SMTP_ADDRESS,
@@ -87,6 +99,7 @@ export default {
       smtpPort: '587',
       smtpUsername: '',
       smtpPassword: '',
+      smtpAuthentication: null,
       validationState: {
         customEmail: null,
         smtpAddress: null,
@@ -118,6 +131,7 @@ export default {
         smtp_port: this.smtpPort,
         smtp_username: this.smtpUsername,
         smtp_password: this.smtpPassword,
+        smtp_authentication: this.smtpAuthentication,
       };
     },
     onCustomEmailChange() {
@@ -149,6 +163,26 @@ export default {
       this.validateSmtpPort();
       this.validateSmtpUsername();
       this.validateSmtpPassword();
+    },
+    getSmtpAuthenticationOptions() {
+      return [
+        {
+          text: this.$options.I18N_FORM_SMTP_AUTHENTICATION_NONE,
+          value: null,
+        },
+        {
+          text: this.$options.I18N_FORM_SMTP_AUTHENTICATION_PLAIN,
+          value: 'plain',
+        },
+        {
+          text: this.$options.I18N_FORM_SMTP_AUTHENTICATION_LOGIN,
+          value: 'login',
+        },
+        {
+          text: this.$options.I18N_FORM_SMTP_AUTHENTICATION_CRAM_MD5,
+          value: 'cram_md5',
+        },
+      ];
     },
   },
 };
@@ -300,6 +334,20 @@ export default {
           :required="true"
           :disabled="isSubmitting"
           @change="validateSmtpPassword"
+        />
+      </gl-form-group>
+
+      <gl-form-group
+        :label="$options.I18N_FORM_SMTP_AUTHENTICATION_LABEL"
+        label-for="custom-email-form-smtp-password"
+        class="gl-mt-3"
+      >
+        <gl-form-select
+          id="custom-email-form-smtp-authentication"
+          v-model.trim="smtpAuthentication"
+          :options="getSmtpAuthenticationOptions()"
+          :aria-label="$options.I18N_FORM_SMTP_AUTHENTICATION_LABEL"
+          :disabled="isSubmitting"
         />
       </gl-form-group>
 

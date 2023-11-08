@@ -326,6 +326,26 @@ Returns [`ExplainVulnerabilityPrompt`](#explainvulnerabilityprompt).
 | ---- | ---- | ----------- |
 | <a id="queryexplainvulnerabilitypromptvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | Vulnerability to generate a prompt for. |
 
+### `Query.frecentGroups`
+
+A user's frecently visited groups. Requires the `frecent_namespaces_suggestions` feature flag to be enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`[Group!]`](#group).
+
+### `Query.frecentProjects`
+
+A user's frecently visited projects. Requires the `frecent_namespaces_suggestions` feature flag to be enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`[Project!]`](#project).
+
 ### `Query.geoNode`
 
 Find a Geo node.
@@ -11437,6 +11457,29 @@ The edge type for [`OncallParticipantType`](#oncallparticipanttype).
 | <a id="oncallparticipanttypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="oncallparticipanttypeedgenode"></a>`node` | [`OncallParticipantType`](#oncallparticipanttype) | The item at the end of the edge. |
 
+#### `OrganizationConnection`
+
+The connection type for [`Organization`](#organization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationconnectionedges"></a>`edges` | [`[OrganizationEdge]`](#organizationedge) | A list of edges. |
+| <a id="organizationconnectionnodes"></a>`nodes` | [`[Organization]`](#organization) | A list of nodes. |
+| <a id="organizationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `OrganizationEdge`
+
+The edge type for [`Organization`](#organization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="organizationedgenode"></a>`node` | [`Organization`](#organization) | The item at the end of the edge. |
+
 #### `OrganizationUserConnection`
 
 The connection type for [`OrganizationUser`](#organizationuser).
@@ -13414,6 +13457,7 @@ A user with add-on data.
 | <a id="addonusernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="addonusernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="addonuserorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="addonuserorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="addonuserpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="addonuserprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="addonuserprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -14072,6 +14116,7 @@ Core representation of a GitLab user.
 | <a id="autocompletedusernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="autocompletedusernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="autocompleteduserorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="autocompleteduserorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="autocompleteduserpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="autocompleteduserprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="autocompleteduserprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -20510,6 +20555,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestassigneenamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="mergerequestassigneeorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="mergerequestassigneeorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="mergerequestassigneepreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestassigneeprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestassigneeprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -20791,6 +20837,7 @@ The author of the merge request.
 | <a id="mergerequestauthornamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestauthornamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="mergerequestauthororganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="mergerequestauthororganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="mergerequestauthorpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestauthorprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestauthorprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -21135,6 +21182,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantnamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestparticipantnamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="mergerequestparticipantorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="mergerequestparticipantpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestparticipantprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestparticipantprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -21452,6 +21500,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestreviewernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="mergerequestreviewerorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="mergerequestreviewerpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestreviewerprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestreviewerprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -26388,6 +26437,7 @@ Core representation of a GitLab user.
 | <a id="usercorenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usercorenamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="usercoreorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="usercoreorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="usercorepreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="usercoreprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="usercoreprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -31912,6 +31962,7 @@ Implementations:
 | <a id="usernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
 | <a id="userorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="userorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
 | <a id="userpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="userprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="userprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |

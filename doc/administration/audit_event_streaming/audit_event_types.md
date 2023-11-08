@@ -310,7 +310,6 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Streamed | Introduced in |
 |:-----|:------------|:------------------|:---------|:--------------|
 | [`experiment_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) | Event triggered on toggling setting for enabling experiment AI features| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/404856/) |
-| [`third_party_ai_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) | Event triggered on toggling setting for enabling third-party AI features| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/404856/) |
 
 ### Portfolio management
 

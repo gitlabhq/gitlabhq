@@ -156,7 +156,7 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
           }
         end
 
-        it 'creates all records returns a successful response' do
+        it 'creates all records and returns a successful response' do
           # Because we also log in ServiceDesk::CustomEmailVerifications::CreateService
           expect(Gitlab::AppLogger).to receive(:info).with({ category: 'custom_email_verification' }).once
           expect(Gitlab::AppLogger).to receive(:info).with(logger_params).once
@@ -174,13 +174,38 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
             smtp_address: params[:smtp_address],
             smtp_port: params[:smtp_port].to_i,
             smtp_username: params[:smtp_username],
-            smtp_password: params[:smtp_password]
+            smtp_password: params[:smtp_password],
+            smtp_authentication: nil
           )
           expect(project.service_desk_custom_email_verification).to have_attributes(
             state: 'started',
             triggerer: user,
             error: nil
           )
+        end
+
+        context 'with optional smtp_authentication parameter' do
+          before do
+            params[:smtp_authentication] = 'login'
+          end
+
+          it 'sets authentication and returns a successful response' do
+            response = service.execute
+            project.reset
+
+            expect(response).to be_success
+            expect(project.service_desk_custom_email_credential.smtp_authentication).to eq 'login'
+          end
+
+          context 'with unsupported value' do
+            let(:expected_error_message) { error_cannot_create_custom_email }
+
+            before do
+              params[:smtp_authentication] = 'unsupported'
+            end
+
+            it_behaves_like 'a failing service that does not create records'
+          end
         end
 
         context 'when custom email aready exists' do

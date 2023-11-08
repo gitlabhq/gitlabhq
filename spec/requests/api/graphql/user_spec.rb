@@ -113,4 +113,36 @@ RSpec.describe 'User', feature_category: :user_profile do
       end
     end
   end
+
+  describe 'organizations field' do
+    let_it_be(:organization_user) { create(:organization_user, user: current_user) }
+    let_it_be(:organization) { organization_user.organization }
+    let_it_be(:another_organization) { create(:organization) }
+    let_it_be(:another_user) { create(:user) }
+
+    let(:query) do
+      graphql_query_for(
+        :user,
+        { username: current_user.username.to_s.upcase },
+        'organizations { nodes { path } }'
+      )
+    end
+
+    context 'with permission' do
+      it 'returns the relevant organization details' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data.dig('user', 'organizations', 'nodes').pluck('path'))
+          .to match_array(organization.path)
+      end
+    end
+
+    context 'without permission' do
+      it 'does not return organization details' do
+        post_graphql(query, current_user: another_user)
+
+        expect(graphql_data.dig('user', 'organizations', 'nodes')).to be_nil
+      end
+    end
+  end
 end

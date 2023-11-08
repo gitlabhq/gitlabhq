@@ -1,6 +1,18 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 
+export const BULK_IMPORT_STATIC_ITEMS = {
+  badges: __('Badge'),
+  boards: s__('IssueBoards|Board'),
+  epics: __('Epic'),
+  issues: __('Issue'),
+  labels: __('Label'),
+  members: __('Member'),
+  merge_requests: __('Merge request'),
+  milestones: __('Milestone'),
+  project: __('Project'),
+};
+
 const STATISTIC_ITEMS = {
   diff_note: __('Diff notes'),
   issue: __('Issues'),

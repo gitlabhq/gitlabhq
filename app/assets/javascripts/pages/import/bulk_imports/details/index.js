@@ -8,14 +8,9 @@ export const initBulkImportDetails = () => {
     return null;
   }
 
-  const { failuresPath } = el.dataset;
-
   return new Vue({
     el,
     name: 'BulkImportDetailsRoot',
-    provide: {
-      failuresPath,
-    },
     render(createElement) {
       return createElement(BulkImportDetailsApp);
     },

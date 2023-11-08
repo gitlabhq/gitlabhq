@@ -13927,6 +13927,9 @@ msgstr ""
 msgid "CorpusManagement|Total Size: %{totalSize}"
 msgstr ""
 
+msgid "Correlation ID"
+msgstr ""
+
 msgid "Cost Factor Settings"
 msgstr ""
 
@@ -29398,6 +29401,9 @@ msgstr ""
 msgid "Medium vulnerabilities present"
 msgstr ""
 
+msgid "Member"
+msgstr ""
+
 msgid "Member since"
 msgstr ""
 
@@ -32754,9 +32760,6 @@ msgid "Number of commits per MR"
 msgstr ""
 
 msgid "Number of employees"
-msgstr ""
-
-msgid "Number of events"
 msgstr ""
 
 msgid "Number of files touched"
@@ -36462,9 +36465,6 @@ msgid "ProductAnalytics|The host to send all tracking events to"
 msgstr ""
 
 msgid "ProductAnalytics|The sender of tracking events"
-msgstr ""
-
-msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
 msgstr ""
 
 msgid "ProductAnalytics|This might take a while, feel free to navigate away from this page and come back later."
@@ -44237,6 +44237,9 @@ msgstr ""
 msgid "ServiceDesk|Add external participants from the %{codeStart}Cc%{codeEnd} header"
 msgstr ""
 
+msgid "ServiceDesk|CRAM-MD5"
+msgstr ""
+
 msgid "ServiceDesk|Cannot create custom email"
 msgstr ""
 
@@ -44312,7 +44315,13 @@ msgstr ""
 msgid "ServiceDesk|Keep custom email"
 msgstr ""
 
+msgid "ServiceDesk|Let GitLab select a server-supported method (recommended)"
+msgstr ""
+
 msgid "ServiceDesk|Like the author, external participants receive Service Desk emails and can participate in the discussion."
+msgstr ""
+
+msgid "ServiceDesk|Login"
 msgstr ""
 
 msgid "ServiceDesk|Minimum 8 characters long."
@@ -44322,6 +44331,9 @@ msgid "ServiceDesk|Or reset and connect a new custom email address to this Servi
 msgstr ""
 
 msgid "ServiceDesk|Parameters missing"
+msgstr ""
+
+msgid "ServiceDesk|Plain"
 msgstr ""
 
 msgid "ServiceDesk|Please share your feedback on this feature in the %{linkStart}feedback issue%{linkEnd}"
@@ -44340,6 +44352,9 @@ msgid "ServiceDesk|Reset custom email address."
 msgstr ""
 
 msgid "ServiceDesk|SMTP address is required and must be resolvable."
+msgstr ""
+
+msgid "ServiceDesk|SMTP authentication method"
 msgstr ""
 
 msgid "ServiceDesk|SMTP host"

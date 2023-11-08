@@ -69,7 +69,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:dependency_proxy_access_allowed) do
-    access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
+    valid_dependency_proxy_human_token ||
+      valid_dependency_proxy_group_access_token ||
+      valid_dependency_proxy_deploy_token
   end
 
   desc "Deploy token with read_package_registry scope"
@@ -386,6 +388,18 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     user.is_a?(User)
   end
 
+  def user_is_human?
+    user_is_user? && user.human?
+  end
+
+  def user_is_project_bot?
+    user_is_user? && user.project_bot?
+  end
+
+  def user_is_deploy_token?
+    user.is_a?(DeployToken)
+  end
+
   def group
     @subject
   end
@@ -406,8 +420,16 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     resource_access_token_create_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
 
+  def valid_dependency_proxy_human_token
+    user_is_human? && access_level(for_any_session: true) >= GroupMember::GUEST
+  end
+
+  def valid_dependency_proxy_group_access_token
+    user_is_project_bot? && access_level(for_any_session: true) >= GroupMember::GUEST
+  end
+
   def valid_dependency_proxy_deploy_token
-    @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
+    user_is_deploy_token? && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
   end
 end
 

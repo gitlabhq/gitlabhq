@@ -63,6 +63,10 @@ export default {
       },
       manual: true,
       result({ data }) {
+        if (!data.project) {
+          return;
+        }
+
         if (Object.keys(this.state).length === 0) {
           this.removeSourceBranch =
             data.project.mergeRequest.shouldRemoveSourceBranch ||

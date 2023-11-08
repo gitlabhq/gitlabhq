@@ -236,7 +236,7 @@ export default {
 };
 </script>
 <template>
-  <div class="js-mr-approvals mr-section-container mr-widget-workflow">
+  <div v-if="approvals" class="js-mr-approvals mr-section-container mr-widget-workflow">
     <state-container
       :is-loading="$apollo.queries.approvals.loading"
       :mr="mr"

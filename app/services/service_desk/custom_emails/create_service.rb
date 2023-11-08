@@ -42,6 +42,8 @@ module ServiceDesk
       def create_credential
         credential = ::ServiceDesk::CustomEmailCredential.new(create_credential_params.merge(project: project))
         credential.save
+      rescue ArgumentError
+        false
       end
 
       def create_verification
@@ -53,7 +55,7 @@ module ServiceDesk
       end
 
       def create_credential_params
-        ensure_params.permit(:smtp_address, :smtp_port, :smtp_username, :smtp_password)
+        ensure_params.permit(:smtp_address, :smtp_port, :smtp_username, :smtp_password, :smtp_authentication)
       end
 
       def ensure_params

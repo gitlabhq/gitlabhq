@@ -1,11 +1,17 @@
 import { mount } from '@vue/test-utils';
-import { GlLink } from '@gitlab/ui';
+import { GlFormSelect, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CustomEmailForm from '~/projects/settings_service_desk/components/custom_email_form.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { I18N_FORM_FORWARDING_CLIPBOARD_BUTTON_TITLE } from '~/projects/settings_service_desk/custom_email_constants';
+import {
+  I18N_FORM_FORWARDING_CLIPBOARD_BUTTON_TITLE,
+  I18N_FORM_SMTP_AUTHENTICATION_NONE,
+  I18N_FORM_SMTP_AUTHENTICATION_PLAIN,
+  I18N_FORM_SMTP_AUTHENTICATION_LOGIN,
+  I18N_FORM_SMTP_AUTHENTICATION_CRAM_MD5,
+} from '~/projects/settings_service_desk/custom_email_constants';
 
 describe('CustomEmailForm', () => {
   let wrapper;
@@ -24,6 +30,7 @@ describe('CustomEmailForm', () => {
   const findSmtpPortInput = () => findInputByTestId('form-smtp-port');
   const findSmtpUsernameInput = () => findInputByTestId('form-smtp-username');
   const findSmtpPasswordInput = () => findInputByTestId('form-smtp-password');
+  const findSmtpAuthenticationSelect = () => wrapper.findComponent(GlFormSelect).find('select');
   const findSubmit = () => wrapper.findByTestId('form-submit');
 
   const clickButtonAndExpectNoSubmitEvent = async () => {
@@ -60,6 +67,23 @@ describe('CustomEmailForm', () => {
     );
   });
 
+  it('renders correct translations for options for SMTP authentication', () => {
+    createWrapper();
+
+    const translationStrings = [
+      I18N_FORM_SMTP_AUTHENTICATION_NONE,
+      I18N_FORM_SMTP_AUTHENTICATION_PLAIN,
+      I18N_FORM_SMTP_AUTHENTICATION_LOGIN,
+      I18N_FORM_SMTP_AUTHENTICATION_CRAM_MD5,
+    ];
+
+    findSmtpAuthenticationSelect()
+      .findAll('option')
+      .wrappers.forEach((item, index) => {
+        expect(item.text()).toEqual(translationStrings[index]);
+      });
+  });
+
   it('form inputs are disabled when submitting', () => {
     createWrapper({ isSubmitting: true });
 
@@ -68,6 +92,7 @@ describe('CustomEmailForm', () => {
     expect(findSmtpPortInput().attributes('disabled')).toBeDefined();
     expect(findSmtpUsernameInput().attributes('disabled')).toBeDefined();
     expect(findSmtpPasswordInput().attributes('disabled')).toBeDefined();
+    expect(findSmtpAuthenticationSelect().attributes('disabled')).toBeDefined();
     expect(findSubmit().props('loading')).toBe(true);
   });
 
@@ -99,6 +124,8 @@ describe('CustomEmailForm', () => {
 
         findSmtpPasswordInput().setValue('supersecret');
         findSmtpPasswordInput().trigger('change');
+
+        findSmtpAuthenticationSelect().setValue('login');
       });
 
       it('is invalid when malformed email provided', async () => {
@@ -200,9 +227,10 @@ describe('CustomEmailForm', () => {
             {
               custom_email: 'user@example.com',
               smtp_address: 'smtp.example.com',
+              smtp_username: 'user@example.com',
               smtp_password: 'supersecret',
               smtp_port: '587',
-              smtp_username: 'user@example.com',
+              smtp_authentication: 'login',
             },
           ],
         ]);

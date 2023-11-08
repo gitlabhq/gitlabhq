@@ -71,6 +71,11 @@ module Types
           type: GraphQL::Types::String,
           null: false,
           description: 'Web path of the user.'
+    field :organizations,
+          resolver: Resolvers::Users::OrganizationsResolver,
+          null: true,
+          alpha: { milestone: '16.6' },
+          description: 'Organizations where the user has access.'
     field :group_memberships,
           type: Types::GroupMemberType.connection_type,
           null: true,

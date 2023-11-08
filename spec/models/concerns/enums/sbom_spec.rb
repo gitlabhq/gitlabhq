@@ -23,6 +23,7 @@ RSpec.describe Enums::Sbom, feature_category: :dependency_management do
       :rpm                  | 10
       :deb                  | 11
       :cbl_mariner          | 12
+      :wolfi                | 13
       'unknown-pkg-manager' | 0
       'Python (unknown)'    | 0
     end

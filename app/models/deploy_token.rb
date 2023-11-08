@@ -11,7 +11,6 @@ class DeployToken < ApplicationRecord
   AVAILABLE_SCOPES = %i[read_repository read_registry write_registry
                         read_package_registry write_package_registry].freeze
   GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'
-  REQUIRED_DEPENDENCY_PROXY_SCOPES = %i[read_registry write_registry].freeze
 
   attribute :expires_at, default: -> { Forever.date }
 
@@ -57,7 +56,7 @@ class DeployToken < ApplicationRecord
   def valid_for_dependency_proxy?
     group_type? &&
       active? &&
-      REQUIRED_DEPENDENCY_PROXY_SCOPES.all? { |scope| scope.in?(scopes) }
+      (Gitlab::Auth::REGISTRY_SCOPES & scopes).size == Gitlab::Auth::REGISTRY_SCOPES.size
   end
 
   def revoke!
