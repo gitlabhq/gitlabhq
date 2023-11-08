@@ -621,6 +621,64 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
   end
 
+  describe 'GET test_report_summary.json' do
+    let_it_be(:build) { create(:ci_build, :success, :test_reports, project: project) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when the user has access' do
+      let(:user) { developer }
+
+      context 'when the summary has been generated' do
+        let!(:report_result) { create(:ci_build_report_result, build: build, project: project) }
+
+        before do
+          get_test_report_summary
+        end
+
+        it 'returns the summary as json' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/test_report_summary')
+        end
+      end
+
+      context 'when the summary has not been generated' do
+        before do
+          get_test_report_summary
+        end
+
+        it 'returns a 404 response' do
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when the user does not have access' do
+      let(:user) { guest }
+
+      before do
+        project.update!(public_builds: false)
+        get_test_report_summary
+      end
+
+      it 'returns not_found status' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    def get_test_report_summary
+      get :test_report_summary,
+        params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: build.id
+        },
+        format: :json
+    end
+  end
+
   describe 'GET trace.json' do
     before do
       get_trace

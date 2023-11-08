@@ -273,8 +273,8 @@ jq --raw-output --slurp '
       .[2]."grpc.time_ms",
       .[0]."grpc.request.glProjectPath"
     ]
-  | @sh' current \
-| awk 'BEGIN { printf "%7s %10s %10s %10s\t%s\n", "CT", "MAX DURS", "", "", "PROJECT" }
+  | @sh' current |
+  awk 'BEGIN { printf "%7s %10s %10s %10s\t%s\n", "CT", "MAX DURS", "", "", "PROJECT" }
   { printf "%7u %7u ms, %7u ms, %7u ms\t%s\n", $1, $2, $3, $4, $5 }'
 ```
 
@@ -288,12 +288,18 @@ jq --raw-output --slurp '
   ...
 ```
 
+#### Types of user and project activity overview
+
+```shell
+jq --raw-output '[.username, ."grpc.method", ."grpc.request.glProjectPath"] | @tsv' current | sort | uniq -c | sort -n
+```
+
 #### Find all projects affected by a fatal Git problem
 
 ```shell
-grep "fatal: " current | \
-    jq '."grpc.request.glProjectPath"' | \
-    sort | uniq
+grep "fatal: " current |
+  jq '."grpc.request.glProjectPath"' |
+  sort | uniq
 ```
 
 ### Parsing `gitlab-shell/gitlab-shell.log`

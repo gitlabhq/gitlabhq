@@ -3,13 +3,13 @@
 - verified_at = mirror.ssh_known_hosts_verified_at
 
 .form-group.js-ssh-host-keys-section{ class: ('collapse' unless mirror.ssh_mirror_url?) }
-  = render Pajamas::ButtonComponent.new(button_options: { class: 'js-detect-host-keys gl-mr-3', data: { qa_selector: 'detect_host_keys' } }) do
+  = render Pajamas::ButtonComponent.new(button_options: { class: 'js-detect-host-keys gl-mr-3', data: { testid: 'detect-host-keys' } }) do
     = gl_loading_icon(inline: true, css_class: 'js-spinner gl-display-none gl-mr-2')
     = _('Detect host keys')
   .fingerprint-ssh-info.js-fingerprint-ssh-info.gl-mt-3.gl-mb-3{ class: ('collapse' unless mirror.ssh_mirror_url?) }
     %label.label-bold
       = _('Fingerprints')
-    .fingerprints-list.js-fingerprints-list{ data: { qa_selector: 'fingerprints_list' } }
+    .fingerprints-list.js-fingerprints-list{ data: { testid: 'fingerprints-list' } }
       - mirror.ssh_known_hosts_fingerprints.each do |fp|
         %code= fp.fingerprint_sha256 || fp.fingerprint
     - if verified_at

@@ -29,6 +29,7 @@ import RunnerJobStatusBadge from '../components/runner_job_status_badge.vue';
 import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
+import { versionTokenConfig } from '../components/search_tokens/version_token_config';
 import {
   ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
@@ -117,6 +118,7 @@ export default {
       return [
         pausedTokenConfig,
         statusTokenConfig,
+        versionTokenConfig,
         {
           ...tagTokenConfig,
           recentSuggestionsStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,

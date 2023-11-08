@@ -1,7 +1,7 @@
 ---
 stage: Solutions Architecture
 group: Solutions Architecture
-info: This file is owned by the Solutions Architecture team.
+info: This page is owned by the Solutions Architecture team.
 ---
 
 # Solutions architecture

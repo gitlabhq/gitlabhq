@@ -69,6 +69,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :raw
             get :terminal
             get :proxy
+            get :test_report_summary
 
             # These routes are also defined in gitlab-workhorse. Make sure to update accordingly.
             get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', format: false

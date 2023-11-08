@@ -35,7 +35,7 @@
               %div= form_errors(@project)
               .form-group.has-feedback
                 = label_tag :url, _('Git repository URL'), class: 'label-light'
-                = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url gl-form-input-xl', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { qa_selector: 'mirror_repository_url_field' }
+                = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url gl-form-input-xl', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { testid: 'mirror-repository-url-field' }
 
               = render 'projects/mirrors/instructions'
 
@@ -43,7 +43,7 @@
 
               = render 'projects/mirrors/branch_filter'
 
-              = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { qa_selector: 'mirror_repository_button' }
+              = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { testid: 'mirror-repository-button' }
 
               = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
                 = _('Cancel')

@@ -101,7 +101,7 @@ export default {
 <template>
   <access-dropdown
     toggle-class="js-allowed-to-create gl-max-w-34"
-    test-id="allowed_to_create_dropdown"
+    test-id="allowed-to-create-dropdown"
     :has-license="hasLicense"
     :access-level="$options.ACCESS_LEVELS.CREATE"
     :access-levels-data="accessLevelsData"

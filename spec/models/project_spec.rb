@@ -7121,7 +7121,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           project.check_personal_projects_limit
 
           expect(project.errors[:limit_reached].first)
-            .to match(/Personal project creation is not allowed/)
+            .to eq('You cannot create projects in your personal namespace. Contact your GitLab administrator.')
         end
       end
 
@@ -7134,7 +7134,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           project.check_personal_projects_limit
 
           expect(project.errors[:limit_reached].first)
-            .to match(/Your project limit is 5 projects/)
+            .to eq("You've reached your limit of 5 projects created. Contact your GitLab administrator.")
         end
       end
     end

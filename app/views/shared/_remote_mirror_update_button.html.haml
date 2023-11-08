@@ -3,4 +3,4 @@
     button_options: { class: 'disabled', title: _('Updating'), data: { toggle: 'tooltip', container: 'body' } },
     icon_classes: 'spin')
 - elsif remote_mirror.enabled?
-  = link_button_to nil, update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: 'rspec-update-now-button', data: { toggle: 'tooltip', container: 'body', qa_selector: 'update_now_button' }, title: _('Update now'), icon: 'retry'
+  = link_button_to nil, update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: 'rspec-update-now-button', data: { toggle: 'tooltip', container: 'body', testid: 'update-now-button' }, title: _('Update now'), icon: 'retry'

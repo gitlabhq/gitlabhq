@@ -17,24 +17,24 @@
         = render_if_exists 'projects/mirrors/table_pull_row'
         - @project.remote_mirrors.each_with_index do |mirror, index|
           - next if mirror.new_record?
-          %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { qa_selector: 'mirrored_repository_row_container' } }
-            %td{ data: { qa_selector: 'mirror_repository_url_content' } }
+          %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { testid: 'mirrored-repository-row-container' } }
+            %td{ data: { testid: 'mirror-repository-url-content' } }
               = mirror.safe_url || _('Invalid URL')
               = render_if_exists 'projects/mirrors/mirror_branches_setting_badge', record: mirror
             %td= _('Push')
             %td
               = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')
-            %td{ data: { qa_selector: 'mirror_last_update_at_content' } }= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
+            %td{ data: { testid: 'mirror-last-update-at-content' } }= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
             %td
               - if mirror.disabled?
                 = render 'projects/mirrors/disabled_mirror_badge'
               - if mirror.last_error.present?
-                = gl_badge_tag _('Error'), { variant: :danger }, { data: { toggle: 'tooltip', html: 'true', qa_selector: 'mirror_error_badge_content' }, title: html_escape(mirror.last_error.try(:strip)) }
+                = gl_badge_tag _('Error'), { variant: :danger }, { data: { toggle: 'tooltip', html: 'true', testid: 'mirror-error-badge-content' }, title: html_escape(mirror.last_error.try(:strip)) }
             %td
               - if mirror_settings_enabled
                 .btn-group.mirror-actions-group{ role: 'group' }
                   - if mirror.ssh_key_auth?
-                    = clipboard_button(text: mirror.ssh_public_key, variant: :default, category: :primary, size: :medium, title: _('Copy SSH public key'), testid: 'copy_public_key_button')
+                    = clipboard_button(text: mirror.ssh_public_key, variant: :default, category: :primary, size: :medium, title: _('Copy SSH public key'), testid: 'copy-public-key-button')
                   = render 'shared/remote_mirror_update_button', remote_mirror: mirror
                   = render Pajamas::ButtonComponent.new(variant: :danger,
                     icon: 'remove',

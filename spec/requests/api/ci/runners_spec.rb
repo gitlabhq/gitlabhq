@@ -249,6 +249,39 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :runner_
             a_hash_including('description' => 'Runner tagged with tag1 and tag2')
           ]
         end
+
+        context 'with ci_runner_machines' do
+          let_it_be(:version_ci_runner) { create(:ci_runner, :project, description: 'Runner with machine') }
+          let_it_be(:version_ci_runner_machine) { create(:ci_runner_machine, runner: version_ci_runner, version: '15.0.3') }
+          let_it_be(:version_16_ci_runner) { create(:ci_runner, :project, description: 'Runner with machine version 16') }
+          let_it_be(:version_16_ci_runner_machine) { create(:ci_runner_machine, runner: version_16_ci_runner, version: '16.0.1') }
+
+          it 'filters runners by version_prefix when prefix is "15.0"' do
+            get api('/runners/all?version_prefix=15.0', admin, admin_mode: true)
+
+            expect(json_response).to match_array [
+              a_hash_including('description' => 'Runner with machine', 'active' => true, 'paused' => false)
+            ]
+          end
+
+          it 'filters runners by version_prefix when prefix is "16"' do
+            get api('/runners/all?version_prefix=16', admin, admin_mode: true)
+            expect(json_response).to match_array [
+              a_hash_including('description' => 'Runner with machine version 16', 'active' => true, 'paused' => false)
+            ]
+          end
+
+          it 'filters runners by version_prefix when prefix is "25"' do
+            get api('/runners/all?version_prefix=25', admin, admin_mode: true)
+            expect(json_response).to match_array []
+          end
+
+          it 'does not filter runners by version_prefix when prefix is invalid ("V15")' do
+            get api('/runners/all?version_prefix=v15', admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
       end
 
       context 'without admin privileges' do

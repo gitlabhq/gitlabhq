@@ -310,6 +310,23 @@ export const mockSearchExamples = [
       first: RUNNER_PAGE_SIZE,
     },
   },
+  {
+    name: 'version prefix',
+    urlQuery: '?version_prefix[]=16.',
+    search: {
+      runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
+      filters: [{ type: 'version_prefix', value: { data: '16.', operator: '=' } }],
+      pagination: {},
+      sort: CREATED_DESC,
+    },
+    graphqlVariables: {
+      versionPrefix: '16.',
+      membership: DEFAULT_MEMBERSHIP,
+      sort: CREATED_DESC,
+      first: RUNNER_PAGE_SIZE,
+    },
+  },
 ];
 
 export const onlineContactTimeoutSecs = 2 * 60 * 60;

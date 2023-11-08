@@ -327,6 +327,8 @@ To resolve this issue, ensure all prerequisites for your installation method hav
 - [Prerequisites for connecting the GitLab for Jira Cloud app](#prerequisites)
 - [Prerequisites for installing the GitLab for Jira Cloud app manually](#prerequisites-1)
 
+If you have configured a Jira Connect Proxy URL and the problem persists after checking the prerequisites, review [Debugging Jira Connect Proxy issues](#debugging-jira-connect-proxy-issues).
+
 If you're using GitLab 15.8 and earlier and have previously enabled both the `jira_connect_oauth_self_managed`
 and the `jira_connect_oauth` feature flags, you must disable the `jira_connect_oauth_self_managed` flag
 due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To check for these flags:
@@ -343,6 +345,46 @@ due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To
    # If both flags are enabled, disable the `jira_connect_oauth_self_managed` flag.
    Feature.disable(:jira_connect_oauth_self_managed)
    ```
+
+#### Debugging Jira Connect Proxy issues
+
+If you are using a self-managed GitLab instance and you have configured `https://gitlab.com` for the Jira Connect Proxy URL when
+[setting up the OAuth authentication](#set-up-oauth-authentication), you can inspect the network traffic in your browser's development
+tools while reproducing the `Failed to update the GitLab instance` error to see a more precise error.
+
+You should see a `GET` request to `https://gitlab.com/-/jira_connect/installations`.
+
+This request should return a `200` status code, but it can return a `422` status code if there was a problem. The response body can be checked for the error.
+
+If you cannot resolve the problem and you are a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance. Provide
+GitLab Support with:
+
+1. Your GitLab self-managed instance URL.
+1. Your GitLab.com username.
+1. If possible, the `X-Request-Id` response header for the failed `GET` request to `https://gitlab.com/-/jira_connect/installations`.
+1. Optional. [A HAR file that captured the problem](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting).
+
+The GitLab Support team can then look up why this is failing in the GitLab.com server logs.
+
+##### Process for GitLab Support
+
+NOTE:
+These steps can only be completed by GitLab Support.
+
+In Kibana, the logs should be filtered for `json.meta.caller_id: JiraConnect::InstallationsController#update` and `NOT json.status: 200`.
+If you have been provided the `X-Request-Id` value, you can use that against `json.correlation_id` to narrow down the results.
+
+Each `GET` request to the Jira Connect Proxy URL `https://gitlab.com/-/jira_connect/installations` generates two log entries.
+
+For the first log:
+
+- `json.status` is `422`.
+- `json.params.value` should match the GitLab self-managed URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
+
+For the second log:
+
+- `json.message` is `Proxy lifecycle event received error response` or similar.
+- `json.jira_status_code` and `json.jira_body` might contain details on why GitLab.com wasn't able to connect back to the self-managed instance.
 
 ### `Failed to link group`
 

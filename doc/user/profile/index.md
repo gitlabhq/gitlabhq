@@ -63,7 +63,8 @@ To add new email to your account:
 1. Verify your email address with the verification email received.
 
 NOTE:
-[Making your email non-public](#set-your-public-email) does not prevent it from being utilised for commit matching.
+[Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching,
+[project imports](../project/import/index.md), and [group migrations](../group/import/index.md).
 
 ## Make your user profile page private
 

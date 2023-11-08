@@ -1530,9 +1530,9 @@ class Project < ApplicationRecord
     limit = creator.projects_limit
     error =
       if limit == 0
-        _('Personal project creation is not allowed. Please contact your administrator with questions')
+        _('You cannot create projects in your personal namespace. Contact your GitLab administrator.')
       else
-        _('Your project limit is %{limit} projects! Please contact your administrator to increase it')
+        _("You've reached your limit of %{limit} projects created. Contact your GitLab administrator.")
       end
 
     self.errors.add(:limit_reached, error % { limit: limit })

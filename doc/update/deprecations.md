@@ -842,6 +842,20 @@ PostgreSQL 14 will also be supported for instances that want to upgrade prior to
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Proxy-based DAST deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430966).
+</div>
+
+As of GitLab 17.0, Proxy-based DAST will not be supported. Please migrate to Browser-based DAST to continue analyzing your projects for security findings via dynamic analysis.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Queue selector for running Sidekiq is deprecated
 
 <div class="deprecation-notes">

@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "properties": {
+    "total": {
+      "type": "object",
+      "properties": {
+        "time": { "type": "number" },
+        "count": { "type": "number" },
+        "success": { "type": "number" },
+        "failed": { "type": "number" },
+        "skipped": { "type": "number" },
+        "error": { "type": "number" },
+        "suite_error": { "type": ["string", "null"] }
+      }
+    },
+    "test_suites": {
+      "type": "array",
+      "items": {
+        "name": { "type": "string" },
+        "total_time": { "type": "number" },
+        "total_count": { "type": "number" },
+        "success_count": { "type": "number" },
+        "failed_count": { "type": "number" },
+        "skipped_count": { "type": "number" },
+        "error_count": { "type": "number" },
+        "build_ids": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "suite_error": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

@@ -43,6 +43,7 @@ import {
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
+  PARAM_KEY_VERSION,
   STATUS_ONLINE,
   DEFAULT_MEMBERSHIP,
   RUNNER_PAGE_SIZE,
@@ -253,6 +254,10 @@ describe('AdminRunnersApp', () => {
       expect.objectContaining({
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
+      }),
+      expect.objectContaining({
+        type: PARAM_KEY_VERSION,
+        title: 'Version starts with',
       }),
       expect.objectContaining({
         type: PARAM_KEY_TAG,

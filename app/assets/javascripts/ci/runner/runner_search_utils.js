@@ -12,6 +12,7 @@ import {
   PARAM_KEY_STATUS,
   PARAM_KEY_RUNNER_TYPE,
   PARAM_KEY_TAG,
+  PARAM_KEY_VERSION,
   PARAM_KEY_SEARCH,
   PARAM_KEY_MEMBERSHIP,
   PARAM_KEY_SORT,
@@ -151,7 +152,12 @@ export const fromUrlQueryToSearch = (query = window.location.search) => {
     membership: membership || DEFAULT_MEMBERSHIP,
     filters: prepareTokens(
       urlQueryToFilter(query, {
-        filterNamesAllowList: [PARAM_KEY_PAUSED, PARAM_KEY_STATUS, PARAM_KEY_TAG],
+        filterNamesAllowList: [
+          PARAM_KEY_PAUSED,
+          PARAM_KEY_STATUS,
+          PARAM_KEY_TAG,
+          PARAM_KEY_VERSION,
+        ],
         filteredSearchTermKey: PARAM_KEY_SEARCH,
       }),
     ),
@@ -178,6 +184,7 @@ export const fromSearchToUrl = (
     [PARAM_KEY_MEMBERSHIP]: [],
     [PARAM_KEY_TAG]: [],
     [PARAM_KEY_PAUSED]: [],
+    [PARAM_KEY_VERSION]: [],
     // Current filters
     ...filterToQueryObject(processFilters(filters), {
       filteredSearchTermKey: PARAM_KEY_SEARCH,
@@ -229,6 +236,7 @@ export const fromSearchToVariables = ({
   [filterVariables.status] = queryObj[PARAM_KEY_STATUS] || [];
   filterVariables.search = queryObj[PARAM_KEY_SEARCH];
   filterVariables.tagList = queryObj[PARAM_KEY_TAG];
+  [filterVariables.versionPrefix] = queryObj[PARAM_KEY_VERSION] || [];
 
   if (queryObj[PARAM_KEY_PAUSED]) {
     filterVariables.paused = parseBoolean(queryObj[PARAM_KEY_PAUSED]);

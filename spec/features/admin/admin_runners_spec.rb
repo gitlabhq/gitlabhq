@@ -202,6 +202,36 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         end
       end
 
+      describe 'filter by version prefix' do
+        before_all do
+          runner_v15 = create(:ci_runner, :instance, description: 'runner-v15')
+          runner_v14 = create(:ci_runner, :instance, description: 'runner-v14')
+
+          create(:ci_runner_machine, runner: runner_v15, version: '15.0.0')
+          create(:ci_runner_machine, runner: runner_v14, version: '14.0.0')
+        end
+
+        before do
+          visit admin_runners_path
+        end
+
+        it 'shows all runners' do
+          expect(page).to have_link('All 2')
+
+          expect(page).to have_content 'runner-v15'
+          expect(page).to have_content 'runner-v14'
+        end
+
+        it 'shows filtered runner based on supplied prefix' do
+          input_filtered_search_filter_is_only(s_('Runners|Version starts with'), '15.0')
+
+          expect(page).to have_link('All 1')
+
+          expect(page).not_to have_content 'runner-v14'
+          expect(page).to have_content 'runner-v15'
+        end
+      end
+
       describe 'filter by status' do
         let_it_be(:never_contacted) do
           create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil)

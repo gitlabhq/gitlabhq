@@ -14,7 +14,7 @@
     .create_access_levels-container
       = yield :create_access_levels
 
-  = f.submit _('Protect'), pajamas_button: true, disabled: true, data: { qa_selector: 'protect_tag_button' }
+  = f.submit _('Protect'), pajamas_button: true, disabled: true, data: { testid: 'protect-tag-button' }
   = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
     = _('Cancel')
 

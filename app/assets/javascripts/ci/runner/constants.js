@@ -99,6 +99,7 @@ export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
   'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
 );
+export const I18N_VERSION = s__('Runners|Version starts with');
 export const I18N_VERSION_LABEL = s__('Runners|Version %{version}');
 export const I18N_LAST_CONTACT_LABEL = s__('Runners|Last contact: %{timeAgo}');
 
@@ -157,6 +158,7 @@ export const PARAM_KEY_STATUS = 'status';
 export const PARAM_KEY_PAUSED = 'paused';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';
 export const PARAM_KEY_TAG = 'tag';
+export const PARAM_KEY_VERSION = 'version_prefix';
 export const PARAM_KEY_SEARCH = 'search';
 export const PARAM_KEY_MEMBERSHIP = 'membership';
 

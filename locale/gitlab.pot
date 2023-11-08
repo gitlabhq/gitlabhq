@@ -34652,9 +34652,6 @@ msgstr ""
 msgid "Personal access token"
 msgstr ""
 
-msgid "Personal project creation is not allowed. Please contact your administrator with questions"
-msgstr ""
-
 msgid "Personal projects"
 msgstr ""
 
@@ -41746,6 +41743,9 @@ msgid "Runners|Version"
 msgstr ""
 
 msgid "Runners|Version %{version}"
+msgstr ""
+
+msgid "Runners|Version starts with"
 msgstr ""
 
 msgid "Runners|View installation instructions"
@@ -55169,6 +55169,12 @@ msgstr ""
 msgid "You cannot combine replace_ids with add_ids or remove_ids"
 msgstr ""
 
+msgid "You cannot create new projects in your personal namespace because you have reached your personal project limit."
+msgstr ""
+
+msgid "You cannot create projects in your personal namespace. Contact your GitLab administrator."
+msgstr ""
+
 msgid "You cannot impersonate a blocked user"
 msgstr ""
 
@@ -55519,9 +55525,6 @@ msgstr ""
 msgid "You will receive notifications only for comments in which you were @mentioned"
 msgstr ""
 
-msgid "You won't be able to create new projects because you have reached your project limit."
-msgstr ""
-
 msgid "You'll be charged for %{true_up_start}users over license%{true_up_end} on a quarterly or annual basis, depending on the terms of your agreement."
 msgstr ""
 
@@ -55589,6 +55592,9 @@ msgid "You're viewing members of %{strong_start}%{group_name}%{strong_end}."
 msgstr ""
 
 msgid "You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication."
+msgstr ""
+
+msgid "You've reached your limit of %{limit} projects created. Contact your GitLab administrator."
 msgstr ""
 
 msgid "You've rejected %{user}"
@@ -55884,9 +55890,6 @@ msgid "Your personal access tokens will expire in %{days_to_expire} days or less
 msgstr ""
 
 msgid "Your profile"
-msgstr ""
-
-msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"
 msgstr ""
 
 msgid "Your projects"

@@ -59,7 +59,7 @@ Example response:
 Get a single dependency list export.
 
 ```plaintext
-GET /security/dependency_list_exports/:id
+GET /dependency_list_exports/:id
 ```
 
 | Attribute | Type | Required | Description |
@@ -67,7 +67,7 @@ GET /security/dependency_list_exports/:id
 | `id` | integer | yes | The ID of the dependency list export. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/security/dependency_list_exports/2"
+curl --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/dependency_list_exports/2"
 ```
 
 The status code is `202 Accepted` when the dependency list export is being generated, and `200 OK` when it's ready.
@@ -88,7 +88,7 @@ Example response:
 Download a single dependency list export.
 
 ```plaintext
-GET /security/dependency_list_exports/:id/download
+GET /dependency_list_exports/:id/download
 ```
 
 | Attribute | Type | Required | Description |
@@ -96,7 +96,7 @@ GET /security/dependency_list_exports/:id/download
 | `id` | integer | yes | The ID of the dependency list export. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/security/dependency_list_exports/2/download"
+curl --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/dependency_list_exports/2/download"
 ```
 
 The response is `404 Not Found` if the dependency list export is not finished yet or was not found.
