@@ -407,9 +407,7 @@ integrations:
     - !reference [.rules:test:manual, rules]
 
 ldap-no-server:
-  extends:
-    - .qa
-    - .failure-videos
+  extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
   rules:
@@ -418,9 +416,7 @@ ldap-no-server:
     - !reference [.rules:test:manual, rules]
 
 ldap-tls:
-  extends:
-    - .qa
-    - .failure-videos
+  extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
   rules:
@@ -429,9 +425,7 @@ ldap-tls:
     - !reference [.rules:test:manual, rules]
 
 ldap-no-tls:
-  extends:
-    - .qa
-    - .failure-videos
+  extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
   rules:

@@ -71,7 +71,7 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
 
               entity.update!(source_xid: nil)
 
-              expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+              expect_next_instance_of(BulkImports::Logger) do |logger|
                 expect(logger).to receive(:error).with(
                   a_hash_including(
                     'bulk_import_entity_id' => entity.id,
@@ -82,7 +82,6 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
                     'exception.class' => 'NoMethodError',
                     'exception.message' => /^undefined method `model_id' for nil:NilClass/,
                     'message' => 'Failed to fetch source entity id',
-                    'importer' => 'gitlab_migration',
                     'source_version' => entity.bulk_import.source_version_info.to_s
                   )
                 ).twice

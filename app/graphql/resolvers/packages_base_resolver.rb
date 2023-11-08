@@ -20,7 +20,8 @@ module Resolvers
         default_value: nil
 
     argument :package_version, GraphQL::Types::String,
-        description: 'Filter a package by version.',
+        description: 'Filter a package by version. If used in combination with `include_versionless`,
+          then no versionless packages are returned.',
         required: false,
         default_value: nil
 

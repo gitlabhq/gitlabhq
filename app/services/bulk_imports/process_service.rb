@@ -113,13 +113,12 @@ module BulkImports
         pipeline_class: pipeline[:pipeline],
         minimum_source_version: minimum_version,
         maximum_source_version: maximum_version,
-        source_version: entity.source_version.to_s,
-        importer: 'gitlab_migration'
+        source_version: entity.source_version.to_s
       )
     end
 
     def logger
-      @logger ||= Gitlab::Import::Logger.build
+      @logger ||= Logger.build
     end
   end
 end

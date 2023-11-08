@@ -54,7 +54,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
 
   shared_examples 'failed pipeline' do |exception_class, exception_message|
     it 'logs import failure' do
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect_next_instance_of(BulkImports::Logger) do |logger|
         expect(logger).to receive(:error)
           .with(
             a_hash_including(
@@ -69,7 +69,6 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
               'correlation_id' => anything,
               'class' => 'BulkImports::MyPipeline',
               'message' => 'An object of a pipeline failed to import',
-              'importer' => 'gitlab_migration',
               'exception.backtrace' => anything,
               'source_version' => entity.bulk_import.source_version_info.to_s
             )
@@ -94,14 +93,13 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
       end
 
       it 'logs a warn message and marks entity and tracker as failed' do
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect_next_instance_of(BulkImports::Logger) do |logger|
           expect(logger).to receive(:warn)
             .with(
               log_params(
                 context,
                 message: 'Aborting entity migration due to pipeline failure',
-                pipeline_class: 'BulkImports::MyPipeline',
-                importer: 'gitlab_migration'
+                pipeline_class: 'BulkImports::MyPipeline'
               )
             )
         end
@@ -386,7 +384,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
       it 'logs and returns without execution' do
         entity.fail_op!
 
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect_next_instance_of(BulkImports::Logger) do |logger|
           expect(logger).to receive(:warn)
             .with(
               log_params(
@@ -408,7 +406,6 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         bulk_import_entity_type: context.entity.source_type,
         source_full_path: entity.source_full_path,
         source_version: context.entity.bulk_import.source_version_info.to_s,
-        importer: 'gitlab_migration',
         context_extra: context.extra
       }.merge(extra)
     end

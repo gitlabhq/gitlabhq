@@ -140,14 +140,23 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     context 'filtering on package_version' do
       include_context 'package filter context'
 
-      let!(:package) { create(:nuget_package, project: project, version: '2.0.4') }
+      let!(:package1) { create(:nuget_package, project: project, version: '2.0.4') }
+      let!(:package2) { create(:nuget_package, project: project) }
 
       it 'returns the versioned package' do
         url = group_filter_url(:version, '2.0.4')
         get api(url, user)
 
         expect(json_response.length).to eq(1)
-        expect(json_response.first['version']).to eq(package.version)
+        expect(json_response.first['version']).to eq(package1.version)
+      end
+
+      it 'include_versionless has no effect' do
+        url = "/groups/#{group.id}/packages?package_version=2.0.4&include_versionless=true"
+        get api(url, user)
+
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['version']).to eq(package1.version)
       end
     end
 

@@ -1,8 +1,8 @@
-.event-item
-  .event-item-timestamp
+.event-item{ class: current_path?('users#activity') ? 'user-profile-activity gl-border-bottom-0 gl-pl-7! gl-pb-3' : '' }
+  .event-item-timestamp.gl-font-sm
     = time_ago_with_tooltip(event.created_at)
 
-  .system-note-image= sprite_icon('eye-slash', size: 24, css_class: 'icon')
+  .system-note-image.gl-rounded-full.gl-bg-gray-50.gl-line-height-0= sprite_icon('eye-slash', size: 14, css_class: 'icon')
 
   = event_user_info(event)
 

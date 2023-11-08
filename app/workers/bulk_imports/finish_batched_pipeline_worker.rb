@@ -22,9 +22,11 @@ module BulkImports
       return re_enqueue if import_in_progress?
 
       if tracker.stale?
+        logger.error(log_attributes(message: 'Tracker stale. Failing batches and tracker'))
         tracker.batches.map(&:fail_op!)
         tracker.fail_op!
       else
+        logger.info(log_attributes(message: 'Tracker finished'))
         tracker.finish!
       end
     end
@@ -39,6 +41,21 @@ module BulkImports
 
     def import_in_progress?
       tracker.batches.any? { |b| b.started? || b.created? }
+    end
+
+    def logger
+      @logger ||= Logger.build
+    end
+
+    def log_attributes(extra = {})
+      structured_payload(
+        {
+          tracker_id: tracker.id,
+          bulk_import_id: tracker.entity.id,
+          bulk_import_entity_id: tracker.entity.bulk_import_id,
+          pipeline_class: tracker.pipeline_name
+        }.merge(extra)
+      )
     end
   end
 end

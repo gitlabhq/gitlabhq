@@ -14,18 +14,29 @@ module BulkImports
 
     def perform
       BulkImport.stale.find_each do |import|
+        logger.error(message: 'BulkImport stale', bulk_import_id: import.id)
         import.cleanup_stale
       end
 
-      BulkImports::Entity.includes(:trackers).stale.find_each do |import| # rubocop: disable CodeReuse/ActiveRecord
+      BulkImports::Entity.includes(:trackers).stale.find_each do |entity| # rubocop: disable CodeReuse/ActiveRecord
         ApplicationRecord.transaction do
-          import.cleanup_stale
+          logger.error(
+            message: 'BulkImports::Entity stale',
+            bulk_import_id: entity.bulk_import_id,
+            bulk_import_entity_id: entity.id
+          )
 
-          import.trackers.find_each do |tracker|
+          entity.cleanup_stale
+
+          entity.trackers.find_each do |tracker|
             tracker.cleanup_stale
           end
         end
       end
+    end
+
+    def logger
+      @logger ||= Logger.build
     end
   end
 end

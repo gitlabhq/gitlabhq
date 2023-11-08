@@ -97,7 +97,7 @@ module BulkImports
     end
 
     def logger
-      @logger ||= Gitlab::Import::Logger.build
+      @logger ||= Logger.build
     end
 
     def re_enqueue(delay = FILE_EXTRACTION_PIPELINE_PERFORM_DELAY)
@@ -170,7 +170,7 @@ module BulkImports
           pipeline_class: pipeline_tracker.pipeline_name,
           pipeline_tracker_state: pipeline_tracker.human_status_name,
           source_version: source_version,
-          importer: 'gitlab_migration'
+          importer: Logger::IMPORTER_NAME
         }.merge(extra)
       )
     end

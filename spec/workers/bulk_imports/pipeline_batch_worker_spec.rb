@@ -65,6 +65,10 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
   describe '#perform' do
     it 'runs the given pipeline batch successfully' do
       expect(BulkImports::FinishBatchedPipelineWorker).to receive(:perform_async).with(tracker.id)
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:info).with(a_hash_including('message' => 'Batch tracker started'))
+        expect(logger).to receive(:info).with(a_hash_including('message' => 'Batch tracker finished'))
+      end
 
       worker.perform(batch.id)
 
@@ -173,10 +177,12 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
       expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
         instance_of(StandardError),
         hash_including(
-          batch_id: batch.id,
-          tracker_id: tracker.id,
-          pipeline_class: 'FakePipeline',
-          pipeline_step: 'pipeline_batch_worker_run'
+          'message' => 'Batch tracker failed',
+          'batch_id' => batch.id,
+          'tracker_id' => tracker.id,
+          'pipeline_class' => 'FakePipeline',
+          'pipeline_step' => 'pipeline_batch_worker_run',
+          'importer' => 'gitlab_migration'
         )
       )
 

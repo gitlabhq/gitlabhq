@@ -230,7 +230,8 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
     <p>
-      Java 21 LTS is only available when using <a href="https://maven.apache.org/">Maven</a> or <a href="https://gradle.org/">Gradle</a>. Java 21 LTS for <a href="https://www.scala-sbt.org/">sbt</a> is not yet available and tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/421174">issue 421174</a>. It is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
+      Java 21 LTS for <a href="https://www.scala-sbt.org/">sbt</a> is limited to version 1.9.7. Support for more <a href="https://www.scala-sbt.org/">sbt</a> versions can be tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/430335">issue 430335</a>.
+      It is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>

@@ -15,6 +15,12 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
   describe '#perform' do
     context 'when import is in progress' do
       it 'marks the pipeline as finished' do
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:info).with(
+            a_hash_including('message' => 'Tracker finished')
+          )
+        end
+
         expect { subject.perform(pipeline_tracker.id) }
           .to change { pipeline_tracker.reload.finished? }
           .from(false).to(true)
@@ -46,6 +52,12 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
 
       it 'fails pipeline tracker and its batches' do
         create(:bulk_import_batch_tracker, :finished, tracker: pipeline_tracker)
+
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:error).with(
+            a_hash_including('message' => 'Tracker stale. Failing batches and tracker')
+          )
+        end
 
         subject.perform(pipeline_tracker.id)
 

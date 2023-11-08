@@ -159,8 +159,7 @@ module BulkImports
           source_full_path: context.entity.source_full_path,
           pipeline_class: pipeline,
           context_extra: context.extra,
-          source_version: context.entity.bulk_import.source_version_info.to_s,
-          importer: 'gitlab_migration'
+          source_version: context.entity.bulk_import.source_version_info.to_s
         }
 
         defaults
@@ -169,7 +168,7 @@ module BulkImports
       end
 
       def logger
-        @logger ||= Gitlab::Import::Logger.build
+        @logger ||= Logger.build
       end
 
       def log_exception(exception, payload)

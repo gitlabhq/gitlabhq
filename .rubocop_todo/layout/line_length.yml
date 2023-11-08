@@ -4921,7 +4921,6 @@ Layout/LineLength:
     - 'spec/workers/auto_devops/disable_worker_spec.rb'
     - 'spec/workers/bulk_import_worker_spec.rb'
     - 'spec/workers/bulk_imports/export_request_worker_spec.rb'
-    - 'spec/workers/bulk_imports/stuck_import_worker_spec.rb'
     - 'spec/workers/ci/job_artifacts/expire_project_build_artifacts_worker_spec.rb'
     - 'spec/workers/ci/merge_requests/add_todo_when_build_fails_worker_spec.rb'
     - 'spec/workers/ci/pending_builds/update_group_worker_spec.rb'

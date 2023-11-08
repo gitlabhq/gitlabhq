@@ -30,7 +30,7 @@ GET /projects/:id/packages
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type`        | string         | no       | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, `terraform_module`, or `golang`. |
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
-| `package_version`     | string         | no       | Filter the project packages by version. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
+| `package_version`     | string         | no       | Filter the project packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
 | `status`              | string         | no       | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. |
 
@@ -96,7 +96,7 @@ GET /groups/:id/packages
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type`        | string         | no       | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, or `golang`. |
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
-| `package_version`     | string         | no       | Filter the returned packages by version. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
+| `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
 | `status`              | string         | no       | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. |
 

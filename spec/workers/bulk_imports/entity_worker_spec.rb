@@ -34,7 +34,7 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
     end
 
     it 'enqueues the pipeline workers of the first stage and then re-enqueues itself' do
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect_next_instance_of(BulkImports::Logger) do |logger|
         expect(logger).to receive(:info).with(hash_including('message' => 'Stage starting', 'entity_stage' => 0))
         expect(logger).to receive(:info).with(hash_including('message' => 'Stage running', 'entity_stage' => 0))
       end
@@ -59,7 +59,7 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
     end
 
     it 'does not enqueue the pipeline workers from the next stage and re-enqueues itself' do
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect_next_instance_of(BulkImports::Logger) do |logger|
         expect(logger).to receive(:info).with(hash_including('message' => 'Stage running', 'entity_stage' => 0))
       end
 
@@ -76,7 +76,7 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
     end
 
     it 'enqueues the pipeline workers from the next stage and re-enqueues itself' do
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect_next_instance_of(BulkImports::Logger) do |logger|
         expect(logger).to receive(:info).with(hash_including('message' => 'Stage starting', 'entity_stage' => 1))
       end
 

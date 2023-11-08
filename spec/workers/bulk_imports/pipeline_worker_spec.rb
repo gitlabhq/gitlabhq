@@ -56,7 +56,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
   end
 
   it 'runs the given pipeline successfully' do
-    expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+    expect_next_instance_of(BulkImports::Logger) do |logger|
       expect(logger)
         .to receive(:info)
         .with(
@@ -93,7 +93,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     it 'logs and sets status as failed' do
       job = { 'args' => [pipeline_tracker.id, pipeline_tracker.stage, entity.id] }
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect_next_instance_of(BulkImports::Logger) do |logger|
         expect(logger)
           .to receive(:error)
           .with(
@@ -216,7 +216,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
         entity.update!(status: -1)
 
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect_next_instance_of(BulkImports::Logger) do |logger|
           allow(logger).to receive(:info)
 
           expect(logger)
@@ -268,7 +268,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           expect(tracker).to receive(:retry).and_call_original
         end
 
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect_next_instance_of(BulkImports::Logger) do |logger|
           expect(logger)
             .to receive(:info)
             .with(

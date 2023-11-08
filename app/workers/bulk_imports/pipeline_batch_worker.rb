@@ -45,9 +45,11 @@ module BulkImports
     def run
       return batch.skip! if tracker.failed? || tracker.finished?
 
+      logger.info(log_attributes(message: 'Batch tracker started'))
       batch.start!
       tracker.pipeline_class.new(context).run
       batch.finish!
+      logger.info(log_attributes(message: 'Batch tracker finished'))
     rescue BulkImports::RetryPipelineError => e
       @pending_retry = true
       retry_batch(e)
@@ -56,13 +58,7 @@ module BulkImports
     def fail_batch(exception)
       batch.fail_op!
 
-      Gitlab::ErrorTracking.track_exception(
-        exception,
-        batch_id: batch.id,
-        tracker_id: tracker.id,
-        pipeline_class: tracker.pipeline_name,
-        pipeline_step: 'pipeline_batch_worker_run'
-      )
+      Gitlab::ErrorTracking.track_exception(exception, log_attributes(message: 'Batch tracker failed'))
 
       BulkImports::Failure.create(
         bulk_import_entity_id: batch.tracker.entity.id,
@@ -102,6 +98,25 @@ module BulkImports
 
     def process_batch?
       batch.created? || batch.started?
+    end
+
+    def logger
+      @logger ||= Logger.build
+    end
+
+    def log_attributes(extra = {})
+      structured_payload(
+        {
+          batch_id: batch.id,
+          batch_number: batch.batch_number,
+          tracker_id: tracker.id,
+          bulk_import_id: tracker.entity.bulk_import_id,
+          bulk_import_entity_id: tracker.entity.id,
+          pipeline_class: tracker.pipeline_name,
+          pipeline_step: 'pipeline_batch_worker_run',
+          importer: Logger::IMPORTER_NAME
+        }.merge(extra)
+      )
     end
   end
 end
