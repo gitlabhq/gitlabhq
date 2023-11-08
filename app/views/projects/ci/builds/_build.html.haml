@@ -104,10 +104,10 @@
       .btn-group
         - if can?(current_user, :read_job_artifacts, job) && job.artifacts?
           = link_button_to nil, download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), icon: 'download'
+        - if can?(current_user, :cancel_build, job) && job.active?
+          = link_button_to nil, cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), icon: 'cancel'
         - if can?(current_user, :update_build, job)
-          - if job.active? && can?(current_user, :cancel_build, job)
-            = link_button_to nil, cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), icon: 'cancel'
-          - elsif job.scheduled?
+          - if job.scheduled?
             = render Pajamas::ButtonComponent.new(disabled: true, icon: 'planning') do
               %time.js-remaining-time{ datetime: job.scheduled_at.utc.iso8601 }
                 = duration_in_numbers(job.execute_in)
@@ -124,7 +124,7 @@
               class: 'has-tooltip',
               icon: 'time-out'
           - elsif allow_retry
-            - if job.playable? && !admin && can?(current_user, :update_build, job)
+            - if job.playable? && !admin
               = link_button_to nil, play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Play'), icon: 'play'
             - elsif job.retryable?
               = link_button_to nil, retry_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Retry'), icon: 'retry'

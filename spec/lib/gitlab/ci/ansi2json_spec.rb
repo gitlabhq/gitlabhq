@@ -145,6 +145,7 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
               offset: 63,
               content: [],
               section_duration: '01:03',
+              section_footer: true,
               section: 'prepare-script'
             }
           ])
@@ -163,7 +164,8 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
               offset: 56,
               content: [],
               section: 'prepare-script',
-              section_duration: '01:03'
+              section_duration: '01:03',
+              section_footer: true
             }
           ])
       end
@@ -181,7 +183,8 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
               offset: 49,
               content: [],
               section: 'prepare-script',
-              section_duration: '01:03'
+              section_duration: '01:03',
+              section_footer: true
             },
             {
               offset: 91,
@@ -262,7 +265,8 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
               offset: 75,
               content: [],
               section: 'prepare-script',
-              section_duration: '01:03'
+              section_duration: '01:03',
+              section_footer: true
             }
           ])
       end
@@ -300,7 +304,8 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
                 offset: 106,
                 content: [],
                 section: 'prepare-script-nested',
-                section_duration: '00:02'
+                section_duration: '00:02',
+                section_footer: true
               },
               {
                 offset: 155,
@@ -311,7 +316,8 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
                 offset: 158,
                 content: [],
                 section: 'prepare-script',
-                section_duration: '01:03'
+                section_duration: '01:03',
+                section_footer: true
               },
               {
                 offset: 200,
@@ -345,13 +351,15 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
                 offset: 115,
                 content: [],
                 section: 'prepare-script-nested',
-                section_duration: '00:02'
+                section_duration: '00:02',
+                section_footer: true
               },
               {
                 offset: 164,
                 content: [],
                 section: 'prepare-script',
-                section_duration: '01:03'
+                section_duration: '01:03',
+                section_footer: true
               }
             ])
         end
@@ -378,7 +386,8 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
                 offset: 83,
                 content: [],
                 section: 'prepare-script',
-                section_duration: '01:03'
+                section_duration: '01:03',
+                section_footer: true
               }
             ])
         end
@@ -554,7 +563,8 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
                 offset: 77,
                 content: [],
                 section: 'prepare-script',
-                section_duration: '01:03'
+                section_duration: '01:03',
+                section_footer: true
               }
             ]
           end

@@ -14,6 +14,7 @@ module QA
 
     after do
       instance_oauth_app.remove_via_api!
+      save_gitlab_logs(consumer_name)
       remove_gitlab_service(consumer_name)
     end
 
@@ -26,6 +27,11 @@ module QA
         gitlab.pull
         gitlab.register!
       end
+    end
+
+    # Copy GitLab logs from inside the named Docker container running the GitLab OAuth instance
+    def save_gitlab_logs(name)
+      Service::DockerRun::Gitlab.new(name: name).extract_service_logs
     end
 
     def remove_gitlab_service(name)

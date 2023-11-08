@@ -1,12 +1,8 @@
 <script>
 import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
-import { createAlert } from '~/alert';
-import { convertNodeIdsFromGraphQLIds } from '~/graphql_shared/utils';
 import { thWidthPercent } from '~/lib/utils/table_utility';
-import { s__, __ } from '~/locale';
+import { __ } from '~/locale';
 import UserDate from '~/vue_shared/components/user_date.vue';
-import getUsersGroupCountsQuery from '../graphql/queries/get_users_group_counts.query.graphql';
-import UserActions from './user_actions.vue';
 import UserAvatar from './user_avatar.vue';
 
 export default {
@@ -14,7 +10,6 @@ export default {
     GlSkeletonLoader,
     GlTable,
     UserAvatar,
-    UserActions,
     UserDate,
   },
   props: {
@@ -22,49 +17,20 @@ export default {
       type: Array,
       required: true,
     },
-    paths: {
-      type: Object,
+    adminUserPath: {
+      type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      groupCounts: [],
-    };
-  },
-  apollo: {
     groupCounts: {
-      query: getUsersGroupCountsQuery,
-      variables() {
-        return {
-          usernames: this.users.map((user) => user.username),
-        };
-      },
-      update(data) {
-        const nodes = data?.users?.nodes || [];
-        const parsedIds = convertNodeIdsFromGraphQLIds(nodes);
-
-        return parsedIds.reduce((acc, { id, groupCount }) => {
-          acc[id] = groupCount || 0;
-          return acc;
-        }, {});
-      },
-      error(error) {
-        createAlert({
-          message: this.$options.i18n.groupCountFetchError,
-          captureError: true,
-          error,
-        });
-      },
-      skip() {
-        return !this.users.length;
-      },
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
-  },
-  i18n: {
-    groupCountFetchError: s__(
-      'AdminUsers|Could not load user group counts. Please refresh the page to try again.',
-    ),
+    groupCountsLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   fields: [
     {
@@ -112,7 +78,7 @@ export default {
       :tbody-tr-attr="{ 'data-testid': 'user-row-content' }"
     >
       <template #cell(name)="{ item: user }">
-        <user-avatar :user="user" :admin-user-path="paths.adminUser" />
+        <user-avatar :user="user" :admin-user-path="adminUserPath" />
       </template>
 
       <template #cell(createdAt)="{ item: { createdAt } }">
@@ -125,17 +91,19 @@ export default {
 
       <template #cell(groupCount)="{ item: { id } }">
         <div :data-testid="`user-group-count-${id}`">
-          <gl-skeleton-loader v-if="$apollo.loading" :width="40" :lines="1" />
-          <span v-else>{{ groupCounts[id] }}</span>
+          <gl-skeleton-loader v-if="groupCountsLoading" :width="40" :lines="1" />
+          <span v-else>{{ groupCounts[id] || 0 }}</span>
         </div>
       </template>
 
       <template #cell(projectsCount)="{ item: { id, projectsCount } }">
-        <div :data-testid="`user-project-count-${id}`">{{ projectsCount }}</div>
+        <div :data-testid="`user-project-count-${id}`">
+          {{ projectsCount || 0 }}
+        </div>
       </template>
 
       <template #cell(settings)="{ item: user }">
-        <user-actions :user="user" :paths="paths" :show-button-labels="true" />
+        <slot name="user-actions" :user="user"></slot>
       </template>
     </gl-table>
   </div>

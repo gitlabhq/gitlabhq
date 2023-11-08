@@ -175,7 +175,7 @@ export const fetchJobLog = ({ dispatch, state }) =>
       }
     })
     .catch((e) => {
-      if (e.response.status === HTTP_STATUS_FORBIDDEN) {
+      if (e.response?.status === HTTP_STATUS_FORBIDDEN) {
         dispatch('receiveJobLogUnauthorizedError');
       } else {
         reportToSentry('job_actions', e);

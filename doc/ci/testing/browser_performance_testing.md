@@ -91,6 +91,7 @@ You can also customize the jobs with CI/CD variables:
 - `SITESPEED_IMAGE`: Configure the Docker image to use for the job (default `sitespeedio/sitespeed.io`), but not the image version.
 - `SITESPEED_VERSION`: Configure the version of the Docker image to use for the job (default `14.1.0`).
 - `SITESPEED_OPTIONS`: Configure any additional sitespeed.io options as required (default `nil`). Refer to the [sitespeed.io documentation](https://www.sitespeed.io/documentation/sitespeed.io/configuration/) for more details.
+- `SITESPEED_DOCKER_OPTIONS`: Configure any additional Docker options (default `nil`). Refer to the [Docker options documentation](https://docs.docker.com/engine/reference/commandline/run/#options) for more details.
 
 For example, you can override the number of runs sitespeed.io
 makes on the given URL, and change the version:

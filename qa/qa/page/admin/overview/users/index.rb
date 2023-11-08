@@ -11,7 +11,7 @@ module QA
               element 'pending-approval-tab'
             end
 
-            view 'app/assets/javascripts/admin/users/components/users_table.vue' do
+            view 'app/assets/javascripts/vue_shared/components/users_table/users_table.vue' do
               element 'user-row-content'
             end
 

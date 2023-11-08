@@ -1,7 +1,7 @@
 <script>
 import { GlAvatarLabeled, GlBadge, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { truncate } from '~/lib/utils/text_utility';
-import { USER_AVATAR_SIZE, LENGTH_OF_USER_NOTE_TOOLTIP } from '../constants';
+import { USER_AVATAR_SIZE, LENGTH_OF_USER_NOTE_TOOLTIP } from './constants';
 
 export default {
   directives: {
@@ -23,11 +23,20 @@ export default {
     },
   },
   computed: {
+    subLabel() {
+      if (this.user.email) {
+        return {
+          label: this.user.email,
+          link: `mailto:${this.user.email}`,
+        };
+      }
+
+      return {
+        label: `@${this.user.username}`,
+      };
+    },
     adminUserHref() {
       return this.adminUserPath.replace('id', this.user.username);
-    },
-    adminUserMailto() {
-      return `mailto:${this.user.email}`;
     },
     userNoteShort() {
       return truncate(this.user.note, LENGTH_OF_USER_NOTE_TOOLTIP);
@@ -48,9 +57,9 @@ export default {
       :size="$options.USER_AVATAR_SIZE"
       :src="user.avatarUrl"
       :label="user.name"
-      :sub-label="user.email"
+      :sub-label="subLabel.label"
       :label-link="adminUserHref"
-      :sub-label-link="adminUserMailto"
+      :sub-label-link="subLabel.link"
     >
       <template #meta>
         <div v-if="user.note" class="gl-text-gray-500 gl-p-1">

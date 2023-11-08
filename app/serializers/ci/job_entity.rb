@@ -53,7 +53,7 @@ module Ci
     alias_method :job, :object
 
     def cancelable?
-      job.cancelable? && can?(request.current_user, :update_build, job)
+      job.cancelable? && can?(request.current_user, :cancel_build, job)
     end
 
     def retryable?

@@ -307,7 +307,7 @@ export default {
             @scrollJobLogBottom="scrollBottom"
             @searchResults="setSearchResults"
           />
-          <log :job-log="jobLog" :is-complete="isJobLogComplete" :search-results="searchResults" />
+          <log :search-results="searchResults" />
         </div>
         <!-- EO job log -->
 

@@ -49,6 +49,7 @@ module Gitlab
 
           duration = timestamp.to_i - @open_sections[section].to_i
           @current_line.set_section_duration(duration)
+          @current_line.set_as_section_footer
 
           @open_sections.delete(section)
         end

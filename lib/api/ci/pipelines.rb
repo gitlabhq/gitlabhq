@@ -352,7 +352,7 @@ module API
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
         post ':id/pipelines/:pipeline_id/cancel', urgency: :low, feature_category: :continuous_integration do
-          authorize! :update_pipeline, pipeline
+          authorize! :cancel_pipeline, pipeline
 
           # TODO: inconsistent behavior: when pipeline is not cancelable we should return an error
           ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute

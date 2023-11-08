@@ -56,16 +56,17 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
     end
 
     context 'when project is a catalog resource' do
-      let(:ref) { 'master' }
+      let(:project) { create(:project, :catalog_resource_with_components, create_tag: 'final') }
       let!(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
+      let(:ref) { 'master' }
 
       context 'and it is valid' do
-        let_it_be(:project) { create(:project, :catalog_resource_with_components, create_tag: 'final') }
-
         it_behaves_like 'a successful release creation'
       end
 
-      context 'and it is invalid' do
+      context 'and it is an invalid resource' do
+        let_it_be(:project) { create(:project, :repository) }
+
         it 'raises an error and does not update the release' do
           result = service.execute
 

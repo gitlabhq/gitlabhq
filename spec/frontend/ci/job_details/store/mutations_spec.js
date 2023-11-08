@@ -1,6 +1,7 @@
 import * as types from '~/ci/job_details/store/mutation_types';
 import mutations from '~/ci/job_details/store/mutations';
 import state from '~/ci/job_details/store/state';
+import * as utils from '~/ci/job_details/store/utils';
 
 describe('Jobs Store Mutations', () => {
   let stateCopy;
@@ -87,49 +88,90 @@ describe('Jobs Store Mutations', () => {
     });
 
     describe('with new job log', () => {
+      const mockLog = {
+        append: false,
+        size: 511846,
+        complete: true,
+        lines: [
+          {
+            offset: 1,
+            content: [{ text: 'Line content' }],
+          },
+        ],
+      };
+
+      beforeEach(() => {
+        jest.spyOn(utils, 'logLinesParser');
+      });
+
+      afterEach(() => {
+        utils.logLinesParser.mockRestore();
+      });
+
       describe('log.lines', () => {
-        describe('when append is true', () => {
+        describe('when it is defined', () => {
           it('sets the parsed log', () => {
-            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
-              append: true,
-              size: 511846,
-              complete: true,
-              lines: [
-                {
-                  offset: 1,
-                  content: [{ text: 'Running with gitlab-runner 11.12.1 (5a147c92)' }],
-                },
-              ],
-            });
+            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, mockLog);
+
+            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, [], '');
 
             expect(stateCopy.jobLog).toEqual([
               {
                 offset: 1,
-                content: [{ text: 'Running with gitlab-runner 11.12.1 (5a147c92)' }],
+                content: [{ text: 'Line content' }],
                 lineNumber: 1,
               },
             ]);
           });
         });
 
-        describe('when it is defined', () => {
+        describe('when it is defined and location.hash is set', () => {
+          beforeEach(() => {
+            window.location.hash = '#L1';
+          });
+
           it('sets the parsed log', () => {
-            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
-              append: false,
-              size: 511846,
-              complete: true,
-              lines: [
-                { offset: 0, content: [{ text: 'Running with gitlab-runner 11.11.1 (5a147c92)' }] },
-              ],
-            });
+            mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, mockLog);
+
+            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, [], '#L1');
 
             expect(stateCopy.jobLog).toEqual([
               {
-                offset: 0,
-                content: [{ text: 'Running with gitlab-runner 11.11.1 (5a147c92)' }],
+                offset: 1,
+                content: [{ text: 'Line content' }],
                 lineNumber: 1,
               },
             ]);
+          });
+
+          describe('when append is true', () => {
+            it('sets the parsed log', () => {
+              stateCopy.jobLog = [
+                {
+                  offset: 0,
+                  content: [{ text: 'Previous line content' }],
+                  lineNumber: 1,
+                },
+              ];
+
+              mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, {
+                ...mockLog,
+                append: true,
+              });
+
+              expect(stateCopy.jobLog).toEqual([
+                {
+                  offset: 0,
+                  content: [{ text: 'Previous line content' }],
+                  lineNumber: 1,
+                },
+                {
+                  offset: 1,
+                  content: [{ text: 'Line content' }],
+                  lineNumber: 2,
+                },
+              ]);
+            });
           });
         });
 

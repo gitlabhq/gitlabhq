@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobEntity do
+RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:job) { create(:ci_build, :running) }
   let(:project) { job.project }

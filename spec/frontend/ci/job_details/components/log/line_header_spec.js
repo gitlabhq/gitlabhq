@@ -1,3 +1,4 @@
+import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -30,6 +31,8 @@ describe('Job Log Header Line', () => {
     });
   };
 
+  const findIcon = () => wrapper.findComponent(GlIcon);
+
   describe('line', () => {
     beforeEach(() => {
       createComponent();
@@ -48,23 +51,33 @@ describe('Job Log Header Line', () => {
     });
   });
 
-  describe('when isCloses is true', () => {
+  describe('when isClosed is true', () => {
     beforeEach(() => {
       createComponent({ ...defaultProps, isClosed: true });
     });
 
     it('sets icon name to be chevron-lg-right', () => {
-      expect(wrapper.vm.iconName).toEqual('chevron-lg-right');
+      expect(findIcon().props('name')).toEqual('chevron-lg-right');
     });
   });
 
-  describe('when isCloses is false', () => {
+  describe('when isClosed is false', () => {
     beforeEach(() => {
       createComponent({ ...defaultProps, isClosed: false });
     });
 
     it('sets icon name to be chevron-lg-down', () => {
-      expect(wrapper.vm.iconName).toEqual('chevron-lg-down');
+      expect(findIcon().props('name')).toEqual('chevron-lg-down');
+    });
+  });
+
+  describe('when isClosed is not defined', () => {
+    beforeEach(() => {
+      createComponent({ ...defaultProps, isClosed: undefined });
+    });
+
+    it('sets icon name to be chevron-lg-right', () => {
+      expect(findIcon().props('name')).toEqual('chevron-lg-down');
     });
   });
 

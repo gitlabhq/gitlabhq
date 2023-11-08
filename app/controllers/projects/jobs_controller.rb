@@ -15,6 +15,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_read_build_report_results!, only: [:test_report_summary]
   before_action :authorize_update_build!,
     except: [:index, :show, :raw, :trace, :erase, :cancel, :unschedule, :test_report_summary]
+  before_action :authorize_cancel_build!, only: [:cancel]
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
@@ -191,6 +192,10 @@ class Projects::JobsController < Projects::ApplicationController
 
   def authorize_update_build!
     return access_denied! unless can?(current_user, :update_build, @build)
+  end
+
+  def authorize_cancel_build!
+    return access_denied! unless can?(current_user, :cancel_build, @build)
   end
 
   def authorize_erase_build!

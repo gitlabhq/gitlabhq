@@ -70,32 +70,6 @@ RSpec.describe Ci::InitialPipelineProcessWorker, feature_category: :continuous_i
 
         subject
       end
-
-      context 'when `create_deployment_only_for_processable_jobs` FF is disabled' do
-        before do
-          stub_feature_flags(create_deployment_only_for_processable_jobs: false)
-        end
-
-        it 'creates a deployment record' do
-          expect { subject }.to change { Deployment.count }.by(1)
-
-          expect(job.deployment).to have_attributes(
-            project: job.project,
-            ref: job.ref,
-            sha: job.sha,
-            deployable: job,
-            deployable_type: 'CommitStatus',
-            environment: job.persisted_environment
-          )
-        end
-
-        it 'a deployment is created before atomic processing is kicked off' do
-          expect(::Deployments::CreateForJobService).to receive(:new).ordered
-          expect(::Ci::PipelineProcessing::AtomicProcessingService).to receive(:new).ordered
-
-          subject
-        end
-      end
     end
   end
 end

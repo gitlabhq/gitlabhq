@@ -461,6 +461,18 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
     end
 
+    context 'when expiry is defined' do
+      it "rotates user's own token", :freeze_time do
+        expiry_date = Date.today + 1.month
+
+        post(api(path, token.user), params: { expires_at: expiry_date })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['token']).not_to eq(token.token)
+        expect(json_response['expires_at']).to eq(expiry_date.to_s)
+      end
+    end
+
     context 'without permission' do
       it 'returns an error message' do
         another_user = create(:user)

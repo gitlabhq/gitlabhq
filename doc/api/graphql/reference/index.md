@@ -22829,6 +22829,7 @@ Represents pipeline counts for the project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pipelinepermissionsadminpipeline"></a>`adminPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_pipeline` on this resource. |
+| <a id="pipelinepermissionscancelpipeline"></a>`cancelPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `cancel_pipeline` on this resource. |
 | <a id="pipelinepermissionsdestroypipeline"></a>`destroyPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_pipeline` on this resource. |
 | <a id="pipelinepermissionsupdatepipeline"></a>`updatePipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pipeline` on this resource. |
 

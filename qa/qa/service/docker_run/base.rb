@@ -120,6 +120,14 @@ module QA
           # If the host could not be resolved, fallback on localhost
           '127.0.0.1'
         end
+
+        # Copy files to/from the Docker container and the host
+        #
+        # @param from the source path to copy files from
+        # @param to the destination path to copy files to
+        def copy(from:, to:)
+          shell("docker cp #{from} #{to}")
+        end
       end
     end
   end

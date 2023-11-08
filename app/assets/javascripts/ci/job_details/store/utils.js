@@ -117,28 +117,31 @@ export const getNextLineNumber = (acc) => {
  * @returns Array parsed log lines
  */
 export const logLinesParser = (lines = [], prevLogLines = [], hash = '') =>
-  lines.reduce((acc, line) => {
-    const lineNumber = getNextLineNumber(acc);
+  lines.reduce(
+    (acc, line) => {
+      const lineNumber = getNextLineNumber(acc);
 
-    const last = acc[acc.length - 1];
+      const last = acc[acc.length - 1];
 
-    // If the object is an header, we parse it into another structure
-    if (line.section_header) {
-      acc.push(parseHeaderLine(line, lineNumber, hash));
-    } else if (isCollapsibleSection(acc, last, line)) {
-      // if the object belongs to a nested section, we append it to the new `lines` array of the
-      // previously formatted header
-      last.lines.push(parseLine(line, lineNumber));
-    } else if (line.section_duration) {
-      // if the line has section_duration, we look for the correct header to add it
-      addDurationToHeader(acc, line);
-    } else {
-      // otherwise it's a regular line
-      acc.push(parseLine(line, lineNumber));
-    }
+      // If the object is an header, we parse it into another structure
+      if (line.section_header) {
+        acc.push(parseHeaderLine(line, lineNumber, hash));
+      } else if (isCollapsibleSection(acc, last, line)) {
+        // if the object belongs to a nested section, we append it to the new `lines` array of the
+        // previously formatted header
+        last.lines.push(parseLine(line, lineNumber));
+      } else if (line.section_duration) {
+        // if the line has section_duration, we look for the correct header to add it
+        addDurationToHeader(acc, line);
+      } else {
+        // otherwise it's a regular line
+        acc.push(parseLine(line, lineNumber));
+      }
 
-    return acc;
-  }, prevLogLines);
+      return acc;
+    },
+    [...prevLogLines],
+  );
 
 /**
  * Finds the repeated offset, removes the old one

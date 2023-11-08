@@ -15,6 +15,10 @@ module QA
         def fixture(*args)
           ::File.join(fixtures_path, *args)
         end
+
+        def qa_tmp(*args)
+          ::File.join([qa_root, 'tmp', *args].compact)
+        end
       end
     end
   end

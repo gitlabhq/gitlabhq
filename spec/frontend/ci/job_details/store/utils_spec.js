@@ -195,11 +195,9 @@ describe('Jobs Store Utils', () => {
         expect(result[0].lineNumber).toEqual(1);
         expect(result[1].lineNumber).toEqual(2);
         expect(result[2].line.lineNumber).toEqual(3);
-        expect(result[2].lines[0].lineNumber).toEqual(4);
-        expect(result[2].lines[1].lineNumber).toEqual(5);
-        expect(result[3].line.lineNumber).toEqual(6);
-        expect(result[3].lines[0].lineNumber).toEqual(7);
-        expect(result[3].lines[1].lineNumber).toEqual(8);
+        expect(result[3].line.lineNumber).toEqual(4);
+        expect(result[3].lines[0].lineNumber).toEqual(5);
+        expect(result[3].lines[1].lineNumber).toEqual(6);
       });
     });
 
@@ -215,16 +213,16 @@ describe('Jobs Store Utils', () => {
       });
 
       it('creates a lines array property with the content of the collapsible section', () => {
-        expect(result[2].lines.length).toEqual(2);
-        expect(result[2].lines[0].content).toEqual(mockJobLog[3].content);
-        expect(result[2].lines[1].content).toEqual(mockJobLog[4].content);
+        expect(result[3].lines.length).toEqual(2);
+        expect(result[3].lines[0].content).toEqual(mockJobLog[5].content);
+        expect(result[3].lines[1].content).toEqual(mockJobLog[6].content);
       });
     });
 
     describe('section duration', () => {
       it('adds the section information to the header section', () => {
-        expect(result[2].line.section_duration).toEqual(mockJobLog[5].section_duration);
-        expect(result[3].line.section_duration).toEqual(mockJobLog[9].section_duration);
+        expect(result[2].line.section_duration).toEqual(mockJobLog[3].section_duration);
+        expect(result[3].line.section_duration).toEqual(mockJobLog[7].section_duration);
       });
 
       it('does not add section duration as a line', () => {

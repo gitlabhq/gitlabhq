@@ -791,14 +791,14 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
 
     context 'authorized user' do
-      context 'user with :update_build persmission' do
+      context 'user with :cancel_build permission' do
         it 'cancels running or pending job' do
           expect(response).to have_gitlab_http_status(:created)
           expect(project.builds.first.status).to eq('success')
         end
       end
 
-      context 'user without :update_build permission' do
+      context 'user without :cancel_build permission' do
         let(:api_user) { reporter }
 
         it 'does not cancel job' do
