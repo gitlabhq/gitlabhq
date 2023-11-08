@@ -185,8 +185,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         it "sets the runner's ip_address" do
           post api('/runners'),
-               params: { token: registration_token },
-               headers: { 'X-Forwarded-For' => '123.111.123.111' }
+            params: { token: registration_token },
+            headers: { 'X-Forwarded-For' => '123.111.123.111' }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(::Ci::Runner.last.ip_address).to eq('123.111.123.111')

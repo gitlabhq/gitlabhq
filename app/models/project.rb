@@ -45,6 +45,7 @@ class Project < ApplicationRecord
   include UpdatedAtFilterable
   include IgnorableColumns
   include CrossDatabaseIgnoredTables
+  include UseSqlFunctionForPrimaryKeyLookups
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
 

@@ -277,6 +277,8 @@
   - 2
 - - emails_on_push
   - 2
+- - environments_auto_recover
+  - 1
 - - environments_auto_stop
   - 1
 - - environments_canary_ingress_update

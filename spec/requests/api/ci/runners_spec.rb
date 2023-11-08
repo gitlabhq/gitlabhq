@@ -500,13 +500,17 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :runner_
           active = shared_runner.active
           runner_queue_value = shared_runner.ensure_runner_queue_value
 
-          update_runner(shared_runner.id, admin, description: "#{description}_updated",
-                                                 active: !active,
-                                                 tag_list: ['ruby2.1', 'pgsql', 'mysql'],
-                                                 run_untagged: 'false',
-                                                 locked: 'true',
-                                                 access_level: 'ref_protected',
-                                                 maximum_timeout: 1234)
+          update_runner(
+            shared_runner.id,
+            admin,
+            description: "#{description}_updated",
+            active: !active,
+            tag_list: ['ruby2.1', 'pgsql', 'mysql'],
+            run_untagged: 'false',
+            locked: 'true',
+            access_level: 'ref_protected',
+            maximum_timeout: 1234
+          )
           shared_runner.reload
 
           expect(response).to have_gitlab_http_status(:ok)

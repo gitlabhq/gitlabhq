@@ -13,8 +13,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   end
 
   let_it_be(:pipeline) do
-    create(:ci_empty_pipeline, project: project, sha: project.commit.id,
-                               ref: project.default_branch, user: user, name: 'Build pipeline')
+    create(
+      :ci_empty_pipeline,
+      project: project,
+      sha: project.commit.id,
+      ref: project.default_branch,
+      user: user,
+      name: 'Build pipeline'
+    )
   end
 
   before do
@@ -357,8 +363,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     let(:query) { {} }
     let(:api_user) { user }
     let_it_be(:job) do
-      create(:ci_build, :success, name: 'build', pipeline: pipeline,
-                                  artifacts_expire_at: 1.day.since)
+      create(
+        :ci_build,
+        :success,
+        name: 'build',
+        pipeline: pipeline,
+        artifacts_expire_at: 1.day.since
+      )
     end
 
     let(:guest) { create(:project_member, :guest, project: project).user }
@@ -540,12 +551,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     let(:downstream_pipeline) { create(:ci_pipeline) }
 
     let!(:pipeline_source) do
-      create(:ci_sources_pipeline,
-             source_pipeline: pipeline,
-             source_project: project,
-             source_job: bridge,
-             pipeline: downstream_pipeline,
-             project: downstream_pipeline.project)
+      create(
+        :ci_sources_pipeline,
+        source_pipeline: pipeline,
+        source_project: project,
+        source_job: bridge,
+        pipeline: downstream_pipeline,
+        project: downstream_pipeline.project
+      )
     end
 
     let(:query) { {} }
@@ -713,12 +726,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     def create_bridge(pipeline, status = :created)
       create(:ci_bridge, status: status, pipeline: pipeline).tap do |bridge|
         downstream_pipeline = create(:ci_pipeline)
-        create(:ci_sources_pipeline,
-              source_pipeline: pipeline,
-              source_project: pipeline.project,
-              source_job: bridge,
-              pipeline: downstream_pipeline,
-              project: downstream_pipeline.project)
+        create(
+          :ci_sources_pipeline,
+          source_pipeline: pipeline,
+          source_project: pipeline.project,
+          source_job: bridge,
+          pipeline: downstream_pipeline,
+          project: downstream_pipeline.project
+        )
       end
     end
   end
@@ -914,13 +929,24 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       let(:second_branch) { project.repository.branches[2] }
 
       let!(:second_pipeline) do
-        create(:ci_empty_pipeline, project: project, sha: second_branch.target,
-                                   ref: second_branch.name, user: user, name: 'Build pipeline')
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          sha: second_branch.target,
+          ref: second_branch.name,
+          user: user,
+          name: 'Build pipeline'
+        )
       end
 
       before do
-        create(:ci_empty_pipeline, project: project, sha: project.commit.parent.id,
-                                   ref: project.default_branch, user: user)
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          sha: project.commit.parent.id,
+          ref: project.default_branch,
+          user: user
+        )
       end
 
       context 'default repository branch' do
@@ -1182,8 +1208,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   describe 'POST /projects/:id/pipelines/:pipeline_id/retry' do
     context 'authorized user' do
       let_it_be(:pipeline) do
-        create(:ci_pipeline, project: project, sha: project.commit.id,
-                             ref: project.default_branch)
+        create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
       end
 
       let_it_be(:build) { create(:ci_build, :failed, pipeline: pipeline) }
@@ -1228,8 +1253,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   describe 'POST /projects/:id/pipelines/:pipeline_id/cancel' do
     let_it_be(:pipeline) do
-      create(:ci_empty_pipeline, project: project, sha: project.commit.id,
-                                 ref: project.default_branch)
+      create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
     end
 
     let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline) }

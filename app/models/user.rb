@@ -32,6 +32,7 @@ class User < MainClusterwide::ApplicationRecord
   include EachBatch
   include CrossDatabaseIgnoredTables
   include IgnorableColumns
+  include UseSqlFunctionForPrimaryKeyLookups
 
   ignore_column %i[
     email_opted_in

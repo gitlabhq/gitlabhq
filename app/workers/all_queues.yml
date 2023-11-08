@@ -2883,6 +2883,15 @@
   :weight: 2
   :idempotent: false
   :tags: []
+- :name: environments_auto_recover
+  :worker_name: Environments::AutoRecoverWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: environments_auto_stop
   :worker_name: Environments::AutoStopWorker
   :feature_category: :continuous_delivery

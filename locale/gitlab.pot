@@ -54522,7 +54522,7 @@ msgstr ""
 msgid "WorkItem|Save and overwrite"
 msgstr ""
 
-msgid "WorkItem|Search existing %{workItemType}s"
+msgid "WorkItem|Search existing items"
 msgstr ""
 
 msgid "WorkItem|Select type"
@@ -54580,6 +54580,9 @@ msgid "WorkItem|Something went wrong while fetching items. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching milestones. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while fetching the %{workItemType}. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching work item award emojis. Please try again."

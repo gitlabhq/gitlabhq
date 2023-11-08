@@ -18,6 +18,7 @@ class Namespace < ApplicationRecord
   include Referable
   include CrossDatabaseIgnoredTables
   include IgnorableColumns
+  include UseSqlFunctionForPrimaryKeyLookups
 
   ignore_column :unlock_membership_to_ldap, remove_with: '16.7', remove_after: '2023-11-16'
 

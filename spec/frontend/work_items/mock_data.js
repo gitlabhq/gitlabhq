@@ -1600,27 +1600,18 @@ export const availableWorkItemsResponse = {
             id: 'gid://gitlab/WorkItem/458',
             iid: '2',
             title: 'Task 1',
-            state: 'OPEN',
-            createdAt: '2022-08-03T12:41:54Z',
-            confidential: false,
             __typename: 'WorkItem',
           },
           {
             id: 'gid://gitlab/WorkItem/459',
             iid: '3',
             title: 'Task 2',
-            state: 'OPEN',
-            createdAt: '2022-08-03T12:41:54Z',
-            confidential: false,
             __typename: 'WorkItem',
           },
           {
             id: 'gid://gitlab/WorkItem/460',
             iid: '4',
             title: 'Task 3',
-            state: 'OPEN',
-            createdAt: '2022-08-03T12:41:54Z',
-            confidential: true,
             __typename: 'WorkItem',
           },
         ],
@@ -1640,24 +1631,18 @@ export const availableObjectivesResponse = {
             id: 'gid://gitlab/WorkItem/716',
             iid: '122',
             title: 'Objective 101',
-            state: 'OPEN',
-            confidential: false,
             __typename: 'WorkItem',
           },
           {
             id: 'gid://gitlab/WorkItem/712',
             iid: '118',
             title: 'Objective 103',
-            state: 'OPEN',
-            confidential: false,
             __typename: 'WorkItem',
           },
           {
             id: 'gid://gitlab/WorkItem/711',
             iid: '117',
             title: 'Objective 102',
-            state: 'OPEN',
-            confidential: false,
             __typename: 'WorkItem',
           },
         ],
@@ -1677,8 +1662,6 @@ export const searchedObjectiveResponse = {
             id: 'gid://gitlab/WorkItem/716',
             iid: '122',
             title: 'Objective 101',
-            state: 'OPEN',
-            confidential: false,
             __typename: 'WorkItem',
           },
         ],
@@ -1687,7 +1670,7 @@ export const searchedObjectiveResponse = {
   },
 };
 
-export const searchedWorkItemsResponse = {
+export const searchWorkItemsTextResponse = {
   data: {
     workspace: {
       __typename: 'Project',
@@ -1698,9 +1681,57 @@ export const searchedWorkItemsResponse = {
             id: 'gid://gitlab/WorkItem/459',
             iid: '3',
             title: 'Task 2',
-            state: 'OPEN',
-            createdAt: '2022-08-03T12:41:54Z',
-            confidential: false,
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const searchWorkItemsIidResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [],
+      },
+      workItemsByIid: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/460',
+            iid: '101',
+            title: 'Task 3',
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const searchWorkItemsTextIidResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/459',
+            iid: '3',
+            title: 'Task 123',
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+      workItemsByIid: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/460',
+            iid: '123',
+            title: 'Task 2',
             __typename: 'WorkItem',
           },
         ],

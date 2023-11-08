@@ -11,8 +11,6 @@ query groupWorkItems(
         id
         iid
         title
-        state
-        confidential
       }
     }
   }

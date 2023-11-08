@@ -8,6 +8,8 @@ class Environment < ApplicationRecord
   include NullifyIfBlank
   include FromUnion
 
+  LONG_STOP = 1.week
+
   self.reactive_cache_refresh_interval = 1.minute
   self.reactive_cache_lifetime = 55.seconds
   self.reactive_cache_hard_limit = 10.megabytes
@@ -104,6 +106,7 @@ class Environment < ApplicationRecord
   scope :preload_project, -> { preload(:project) }
   scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
   scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
+  scope :long_stopping,  -> { with_state(:stopping).where('updated_at < ?', LONG_STOP.ago) }
 
   scope :deployed_and_updated_before, -> (project_id, before) do
     # this query joins deployments and filters out any environment that has recent deployments
@@ -320,6 +323,10 @@ class Environment < ApplicationRecord
 
   def last_deployed_at
     last_deployment.try(:created_at)
+  end
+
+  def long_stopping?
+    stopping? && self.updated_at < LONG_STOP.ago
   end
 
   def ref_path

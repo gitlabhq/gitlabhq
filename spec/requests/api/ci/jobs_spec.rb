@@ -14,9 +14,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   let_it_be(:pipeline, reload: true) do
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.id,
-                         ref: project.default_branch)
+    create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
   end
 
   let(:user) { create(:user) }
@@ -25,10 +23,14 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   let(:guest) { create(:project_member, :guest, project: project).user }
 
   let(:running_job) do
-    create(:ci_build, :running, project: project,
-                                user: user,
-                                pipeline: pipeline,
-                                artifacts_expire_at: 1.day.since)
+    create(
+      :ci_build,
+      :running,
+      project: project,
+      user: user,
+      pipeline: pipeline,
+      artifacts_expire_at: 1.day.since
+    )
   end
 
   let!(:job) do

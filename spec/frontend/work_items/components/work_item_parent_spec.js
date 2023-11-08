@@ -148,15 +148,27 @@ describe('WorkItemParent component', () => {
       });
 
       await findCollapsibleListbox().vm.$emit('shown');
-      await findCollapsibleListbox().vm.$emit('search', 'Objective 101');
 
       await waitForPromises();
+
+      expect(searchedItemQueryHandler).toHaveBeenCalledWith({
+        fullPath: 'full-path',
+        searchTerm: '',
+        types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+        in: undefined,
+        iid: null,
+        isNumber: false,
+      });
+
+      await findCollapsibleListbox().vm.$emit('search', 'Objective 101');
 
       expect(searchedItemQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full-path',
         searchTerm: 'Objective 101',
         types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
         in: 'TITLE',
+        iid: null,
+        isNumber: false,
       });
 
       await nextTick();

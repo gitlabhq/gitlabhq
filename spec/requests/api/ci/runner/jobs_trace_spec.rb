@@ -23,14 +23,28 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:user) { create(:user) }
     let(:job) do
-      create(:ci_build, :artifacts, :extended_options,
-             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
+      create(
+        :ci_build,
+        :artifacts,
+        :extended_options,
+        pipeline: pipeline,
+        name: 'spinach',
+        stage: 'test',
+        stage_idx: 0
+      )
     end
 
     describe 'PATCH /api/v4/jobs/:id/trace' do
       let(:job) do
-        create(:ci_build, :running, :trace_live,
-               project: project, user: user, runner_id: runner.id, pipeline: pipeline)
+        create(
+          :ci_build,
+          :running,
+          :trace_live,
+          project: project,
+          user: user,
+          runner_id: runner.id,
+          pipeline: pipeline
+        )
       end
 
       let(:headers) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token, 'Content-Type' => 'text/plain' } }

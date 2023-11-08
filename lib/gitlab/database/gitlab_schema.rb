@@ -139,19 +139,19 @@ module Gitlab
       end
 
       def self.deleted_tables_to_schema
-        @deleted_tables_to_schema ||= self.build_dictionary('deleted_tables').to_h
+        @deleted_tables_to_schema ||= self.build_dictionary('deleted_tables').map(&:name_and_schema).to_h
       end
 
       def self.deleted_views_to_schema
-        @deleted_views_to_schema ||= self.build_dictionary('deleted_views').to_h
+        @deleted_views_to_schema ||= self.build_dictionary('deleted_views').map(&:name_and_schema).to_h
       end
 
       def self.tables_to_schema
-        @tables_to_schema ||= self.build_dictionary('').to_h
+        @tables_to_schema ||= self.build_dictionary('').map(&:name_and_schema).to_h
       end
 
       def self.views_to_schema
-        @views_to_schema ||= self.build_dictionary('views').to_h
+        @views_to_schema ||= self.build_dictionary('views').map(&:name_and_schema).to_h
       end
 
       def self.schema_names
@@ -160,21 +160,9 @@ module Gitlab
 
       def self.build_dictionary(scope)
         Dir.glob(dictionary_path_globs(scope)).map do |file_path|
-          data = YAML.load_file(file_path)
-
-          key_name = data['table_name'] || data['view_name']
-
-          # rubocop:disable Gitlab/DocUrl
-          if data['gitlab_schema'].nil?
-            raise(
-              UnknownSchemaError,
-              "#{file_path} must specify a valid gitlab_schema for #{key_name}. " \
-              "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
-            )
-          end
-          # rubocop:enable Gitlab/DocUrl
-
-          [key_name, data['gitlab_schema'].to_sym]
+          dictionary = Dictionary.new(file_path)
+          dictionary.validate!
+          dictionary
         end
       end
     end
