@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
   describe '#execute' do
-    let_it_be(:allowed_content_types) { %w(application/gzip application/octet-stream) }
+    let_it_be(:allowed_content_types) { %w[application/gzip application/octet-stream] }
     let_it_be(:file_size_limit) { 5.gigabytes }
     let_it_be(:config) { build(:bulk_import_configuration) }
     let_it_be(:content_type) { 'application/octet-stream' }

@@ -1,6 +1,3 @@
-#import "./notes/abuse_report_note.fragment.graphql"
-#import "./notes/abuse_report_discussion_resolved_status.fragment.graphql"
-
 query abuseReportQuery($id: AbuseReportID!) {
   abuseReport(id: $id) {
     id
@@ -11,18 +8,6 @@ query abuseReportQuery($id: AbuseReportID!) {
         description
         color
         textColor
-      }
-    }
-    discussions {
-      nodes {
-        id
-        replyId
-        ...AbuseReportDiscussionResolvedStatus
-        notes {
-          nodes {
-            ...AbuseReportNote
-          }
-        }
       }
     }
   }

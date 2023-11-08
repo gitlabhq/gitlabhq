@@ -50,7 +50,7 @@ export default {
         this.observabilityEnabled = await this.observabilityClient.isObservabilityEnabled();
       } catch (e) {
         createAlert({
-          message: s__('Observability|Failed to load page.'),
+          message: s__('Observability|Error: Failed to load page. Try reloading the page.'),
         });
       } finally {
         this.loading = false;
@@ -63,7 +63,9 @@ export default {
         this.observabilityEnabled = true;
       } catch (e) {
         createAlert({
-          message: s__('Observability|Failed to enable GitLab Observability.'),
+          message: s__(
+            'Observability|Error: Failed to enable GitLab Observability. Please retry later.',
+          ),
         });
       } finally {
         this.loading = false;

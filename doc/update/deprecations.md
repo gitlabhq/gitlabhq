@@ -1301,6 +1301,33 @@ If you have [public or internal](https://docs.gitlab.com/ee/user/public_access.h
 Enabling the `ldap_settings_unlock_groups_by_owners` feature flag allowed non-LDAP synced users to be added to a locked LDAP group. This [feature](https://gitlab.com/gitlab-org/gitlab/-/issues/1793) has always been disabled by default and behind a feature flag. We are removing this feature to keep continuity with our SAML integration, and because allowing non-synced group members defeats the "single source of truth" principle of using a directory service. Once this feature is removed, any LDAP group members that are not synced with LDAP will lose access to that group.
 
 </div>
+
+<div class="deprecation breaking-change" data-milestone="16.5">
+
+### Geo: Housekeeping Rake tasks
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">16.5</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416384).
+</div>
+
+As part of the migration of the replication and verification to the
+[Geo self-service framework (SSF)](https://docs.gitlab.com/ee/development/geo/framework.html),
+the legacy replication for project repositories has been
+[removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130565).
+As a result, the following Rake tasks that relied on legacy code have also been removed. The work invoked by these Rake tasks are now triggered automatically either periodically or based on trigger events.
+
+| Rake task | Replacement |
+| --------- | ----------- |
+| `geo:git:housekeeping:full_repack` | [Moved to UI](https://docs.gitlab.com/ee/administration/housekeeping.html#heuristical-housekeeping). No equivalent Rake task in the SSF. |
+| `geo:git:housekeeping:gc` | Always executed for new repositories, and then when it's needed. No equivalent Rake task in the SSF. |
+| `geo:git:housekeeping:incremental_repack` | Executed when needed. No equivalent Rake task in the SSF. |
+| `geo:run_orphaned_project_registry_cleaner` | Executed regularly by a registry [consistency worker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/geo/secondary/registry_consistency_worker.rb) which removes orphaned registries. No equivalent Rake task in the SSF. |
+| `geo:verification:repository:reset` | Moved to UI.  No equivalent Rake task in the SSF. |
+| `geo:verification:wiki:reset` | Moved to UI.  No equivalent Rake task in the SSF. |
+
+</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="16.3">

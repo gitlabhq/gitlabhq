@@ -127,7 +127,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
     context 'with a nuspec file with metadata' do
       let(:nuspec_filepath) { 'packages/nuget/with_metadata.nuspec' }
-      let(:expected_tags) { %w(foo bar test tag1 tag2 tag3 tag4 tag5) }
+      let(:expected_tags) { %w[foo bar test tag1 tag2 tag3 tag4 tag5] }
 
       before do
         allow_next_instance_of(Packages::Nuget::MetadataExtractionService) do |service|

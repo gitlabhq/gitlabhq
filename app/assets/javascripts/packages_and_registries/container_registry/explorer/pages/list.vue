@@ -293,7 +293,6 @@ export default {
         </template>
       </registry-header>
       <persisted-search
-        class="gl-mb-5"
         :sortable-fields="$options.searchConfig"
         :default-order="$options.searchConfig[0].orderBy"
         default-sort="desc"

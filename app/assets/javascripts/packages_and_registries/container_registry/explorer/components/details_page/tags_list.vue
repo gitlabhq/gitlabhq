@@ -219,7 +219,6 @@ export default {
 <template>
   <div>
     <persisted-search
-      class="gl-mb-5"
       :sortable-fields="$options.sortableFields"
       :default-order="$options.sortableFields[0].orderBy"
       default-sort="asc"

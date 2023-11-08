@@ -66,6 +66,8 @@
   }
 
   .description {
+    @include clearfix;
+
     margin-top: 6px;
   }
 

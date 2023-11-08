@@ -1,6 +1,7 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
+import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS } from './constants';
 
 function reportErrorAndThrow(e) {
   logError(e);
@@ -184,7 +185,7 @@ function filterObjToQueryParams(filterObj) {
  *
  * @returns Array<Trace> : A list of traces
  */
-async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize } = {}) {
+async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize, sortBy } = {}) {
   const params = filterObjToQueryParams(filters);
   if (pageToken) {
     params.append('page_token', pageToken);
@@ -192,6 +193,10 @@ async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize } = {
   if (pageSize) {
     params.append('page_size', pageSize);
   }
+  const sortOrder = Object.values(SORTING_OPTIONS).includes(sortBy)
+    ? sortBy
+    : DEFAULT_SORTING_OPTION;
+  params.append('sort', sortOrder);
 
   try {
     const { data } = await axios.get(tracingUrl, {
@@ -260,12 +265,12 @@ async function fetchMetrics(metricsUrl) {
   }
 }
 
-export function buildClient(options) {
-  if (!options) {
+export function buildClient(config) {
+  if (!config) {
     throw new Error('No options object provided'); // eslint-disable-line @gitlab/require-i18n-strings
   }
 
-  const { provisioningUrl, tracingUrl, servicesUrl, operationsUrl, metricsUrl } = options;
+  const { provisioningUrl, tracingUrl, servicesUrl, operationsUrl, metricsUrl } = config;
 
   if (typeof provisioningUrl !== 'string') {
     throw new Error('provisioningUrl param must be a string');
@@ -290,7 +295,7 @@ export function buildClient(options) {
   return {
     enableObservability: () => enableObservability(provisioningUrl),
     isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
-    fetchTraces: (filters) => fetchTraces(tracingUrl, filters),
+    fetchTraces: (options) => fetchTraces(tracingUrl, options),
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),

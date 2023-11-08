@@ -41,7 +41,7 @@ RSpec.shared_examples 'create_merge_request quick action' do
       expect(created_mr.source_branch).to eq(issue.to_branch_name)
 
       visit project_merge_request_path(project, created_mr)
-      expect(page).to have_content %{Draft: Resolve "#{issue.title}"}
+      expect(page).to have_content %(Draft: Resolve "#{issue.title}")
     end
 
     it 'creates a merge request using the given branch name' do
@@ -54,7 +54,7 @@ RSpec.shared_examples 'create_merge_request quick action' do
       expect(created_mr.source_branch).to eq(branch_name)
 
       visit project_merge_request_path(project, created_mr)
-      expect(page).to have_content %{Draft: Resolve "#{issue.title}"}
+      expect(page).to have_content %(Draft: Resolve "#{issue.title}")
     end
   end
 end

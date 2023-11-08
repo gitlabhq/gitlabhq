@@ -7,6 +7,7 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   before_action :find_abuse_report, only: [:show, :moderate_user, :update, :destroy]
   before_action only: :show do
     push_frontend_feature_flag(:abuse_report_labels)
+    push_frontend_feature_flag(:abuse_report_notes)
   end
 
   def index

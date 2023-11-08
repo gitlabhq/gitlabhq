@@ -21,7 +21,7 @@ RSpec.describe ProductAnalytics::BuildGraphService, feature_category: :product_a
 
   it 'returns a valid graph hash' do
     expect(subject[:id]).to eq(:platform)
-    expect(subject[:keys]).to eq(%w(app mobile web))
+    expect(subject[:keys]).to eq(%w[app mobile web])
     expect(subject[:values]).to eq([1, 1, 2])
   end
 end

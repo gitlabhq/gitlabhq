@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module UsageDataHelpers
-  COUNTS_KEYS = %i(
+  COUNTS_KEYS = %i[
     assignee_lists
     ci_builds
     ci_external_pipelines
@@ -72,9 +72,9 @@ module UsageDataHelpers
     uploads
     web_hooks
     user_preferences_user_gitpod_enabled
-  ).freeze
+  ].freeze
 
-  USAGE_DATA_KEYS = %i(
+  USAGE_DATA_KEYS = %i[
     counts
     recorded_at
     mattermost_enabled
@@ -93,7 +93,7 @@ module UsageDataHelpers
     prometheus_metrics_enabled
     object_store
     topology
-  ).freeze
+  ].freeze
 
   def stub_usage_data_connections
     Gitlab::Database.database_base_models_with_gitlab_shared.each_value do |base_model|

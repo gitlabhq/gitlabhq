@@ -6,11 +6,11 @@ RSpec.describe Issuable::ProcessAssignees, feature_category: :team_planning do
   describe '#execute' do
     it 'returns assignee_ids when add_assignee_ids and remove_assignee_ids are not specified' do
       process = described_class.new(
-        assignee_ids: %w(5 7 9),
+        assignee_ids: %w[5 7 9],
         add_assignee_ids: nil,
         remove_assignee_ids: nil,
-        existing_assignee_ids: %w(1 3 9),
-        extra_assignee_ids: %w(2 5 12)
+        existing_assignee_ids: %w[1 3 9],
+        extra_assignee_ids: %w[2 5 12]
       )
       result = process.execute
 
@@ -22,8 +22,8 @@ RSpec.describe Issuable::ProcessAssignees, feature_category: :team_planning do
         assignee_ids: nil,
         add_assignee_ids: nil,
         remove_assignee_ids: nil,
-        existing_assignee_ids: %w(1 3 11),
-        extra_assignee_ids: %w(2 5 12)
+        existing_assignee_ids: %w[1 3 11],
+        extra_assignee_ids: %w[2 5 12]
       )
       result = process.execute
 
@@ -32,11 +32,11 @@ RSpec.describe Issuable::ProcessAssignees, feature_category: :team_planning do
 
     it 'combines other ids when both add_assignee_ids and remove_assignee_ids are not empty' do
       process = described_class.new(
-        assignee_ids: %w(5 7 9),
-        add_assignee_ids: %w(2 4 6),
-        remove_assignee_ids: %w(4 7 11),
-        existing_assignee_ids: %w(1 3 11),
-        extra_assignee_ids: %w(2 5 12)
+        assignee_ids: %w[5 7 9],
+        add_assignee_ids: %w[2 4 6],
+        remove_assignee_ids: %w[4 7 11],
+        existing_assignee_ids: %w[1 3 11],
+        extra_assignee_ids: %w[2 5 12]
       )
       result = process.execute
 
@@ -45,11 +45,11 @@ RSpec.describe Issuable::ProcessAssignees, feature_category: :team_planning do
 
     it 'combines other ids when remove_assignee_ids is not empty' do
       process = described_class.new(
-        assignee_ids: %w(5 7 9),
+        assignee_ids: %w[5 7 9],
         add_assignee_ids: nil,
-        remove_assignee_ids: %w(4 7 11),
-        existing_assignee_ids: %w(1 3 11),
-        extra_assignee_ids: %w(2 5 12)
+        remove_assignee_ids: %w[4 7 11],
+        existing_assignee_ids: %w[1 3 11],
+        extra_assignee_ids: %w[2 5 12]
       )
       result = process.execute
 
@@ -58,11 +58,11 @@ RSpec.describe Issuable::ProcessAssignees, feature_category: :team_planning do
 
     it 'combines other ids when add_assignee_ids is not empty' do
       process = described_class.new(
-        assignee_ids: %w(5 7 9),
-        add_assignee_ids: %w(2 4 6),
+        assignee_ids: %w[5 7 9],
+        add_assignee_ids: %w[2 4 6],
         remove_assignee_ids: nil,
-        existing_assignee_ids: %w(1 3 11),
-        extra_assignee_ids: %w(2 5 12)
+        existing_assignee_ids: %w[1 3 11],
+        extra_assignee_ids: %w[2 5 12]
       )
       result = process.execute
 
@@ -71,9 +71,9 @@ RSpec.describe Issuable::ProcessAssignees, feature_category: :team_planning do
 
     it 'combines ids when existing_assignee_ids and extra_assignee_ids are omitted' do
       process = described_class.new(
-        assignee_ids: %w(5 7 9),
-        add_assignee_ids: %w(2 4 6),
-        remove_assignee_ids: %w(4 7 11)
+        assignee_ids: %w[5 7 9],
+        add_assignee_ids: %w[2 4 6],
+        remove_assignee_ids: %w[4 7 11]
       )
       result = process.execute
 
@@ -82,11 +82,11 @@ RSpec.describe Issuable::ProcessAssignees, feature_category: :team_planning do
 
     it 'handles mixed string and integer arrays' do
       process = described_class.new(
-        assignee_ids: %w(5 7 9),
+        assignee_ids: %w[5 7 9],
         add_assignee_ids: [2, 4, 6],
-        remove_assignee_ids: %w(4 7 11),
+        remove_assignee_ids: %w[4 7 11],
         existing_assignee_ids: [1, 3, 11],
-        extra_assignee_ids: %w(2 5 12)
+        extra_assignee_ids: %w[2 5 12]
       )
       result = process.execute
 

@@ -3,6 +3,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { buildClient } from '~/observability/client';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
+import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS } from '~/observability/constants';
 
 jest.mock('~/lib/utils/axios_utils');
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -26,6 +27,8 @@ describe('buildClient', () => {
     operationsUrl,
     metricsUrl,
   };
+
+  const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
@@ -173,7 +176,7 @@ describe('buildClient', () => {
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(tracingUrl, {
         withCredentials: true,
-        params: new URLSearchParams(),
+        params: expect.any(URLSearchParams),
       });
       expect(result).toEqual(mockResponse);
     });
@@ -192,6 +195,31 @@ describe('buildClient', () => {
       expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
 
+    describe('sort order', () => {
+      beforeEach(() => {
+        axiosMock.onGet(tracingUrl).reply(200, {
+          traces: [],
+        });
+      });
+      it('appends sort param if specified', async () => {
+        await client.fetchTraces({ sortBy: SORTING_OPTIONS.DURATION_DESC });
+
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.DURATION_DESC}`);
+      });
+
+      it('defaults to DEFAULT_SORTING_OPTION if no sortBy param is specified', async () => {
+        await client.fetchTraces();
+
+        expect(getQueryParam()).toBe(`sort=${DEFAULT_SORTING_OPTION}`);
+      });
+
+      it('defaults to created_desc if sortBy param is not an accepted value', async () => {
+        await client.fetchTraces({ sortBy: 'foo-bar' });
+
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
+      });
+    });
+
     describe('query filter', () => {
       beforeEach(() => {
         axiosMock.onGet(tracingUrl).reply(200, {
@@ -199,24 +227,22 @@ describe('buildClient', () => {
         });
       });
 
-      const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
-
       it('does not set any query param without filters', async () => {
         await client.fetchTraces();
 
-        expect(getQueryParam()).toBe('');
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
       });
 
       it('appends page_token if specified', async () => {
         await client.fetchTraces({ pageToken: 'page-token' });
 
-        expect(getQueryParam()).toBe('page_token=page-token');
+        expect(getQueryParam()).toContain('page_token=page-token');
       });
 
       it('appends page_size if specified', async () => {
         await client.fetchTraces({ pageSize: 10 });
 
-        expect(getQueryParam()).toBe('page_size=10');
+        expect(getQueryParam()).toContain('page_size=10');
       });
 
       it('converts filter to proper query params', async () => {
@@ -242,7 +268,7 @@ describe('buildClient', () => {
             attribute: [{ operator: '=', value: 'name1=value1' }],
           },
         });
-        expect(getQueryParam()).toBe(
+        expect(getQueryParam()).toContain(
           'gt[duration_nano]=100000000&lt[duration_nano]=1000000000' +
             '&operation=op&not[operation]=not-op' +
             '&service_name=service&not[service_name]=not-service' +
@@ -261,7 +287,7 @@ describe('buildClient', () => {
             ],
           },
         });
-        expect(getQueryParam()).toBe('operation=op&operation=op2');
+        expect(getQueryParam()).toContain('operation=op&operation=op2');
       });
 
       it('ignores unsupported filters', async () => {
@@ -271,7 +297,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe('');
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
       });
 
       it('ignores empty filters', async () => {
@@ -282,7 +308,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe('');
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
       });
 
       it('ignores unsupported operators', async () => {
@@ -309,7 +335,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe('');
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
       });
     });
   });

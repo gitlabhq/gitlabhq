@@ -33,8 +33,8 @@ RSpec.describe Packages::CreateDependencyService, feature_category: :package_reg
         expect { subject }
           .to change { Packages::Dependency.count }.by(1)
           .and change { Packages::DependencyLink.count }.by(1)
-        expect(dependency_names).to match_array(%w(express))
-        expect(dependency_link_types).to match_array(%w(dependencies))
+        expect(dependency_names).to match_array(%w[express])
+        expect(dependency_link_types).to match_array(%w[dependencies])
       end
 
       context 'with repeated packages' do
@@ -49,8 +49,8 @@ RSpec.describe Packages::CreateDependencyService, feature_category: :package_reg
           expect { subject }
             .to change { Packages::Dependency.count }.by(4)
             .and change { Packages::DependencyLink.count }.by(6)
-          expect(dependency_names).to match_array(%w(d3 d3 d3 dagre-d3 dagre-d3 express))
-          expect(dependency_link_types).to match_array(%w(bundleDependencies dependencies dependencies devDependencies devDependencies peerDependencies))
+          expect(dependency_names).to match_array(%w[d3 d3 d3 dagre-d3 dagre-d3 express])
+          expect(dependency_link_types).to match_array(%w[bundleDependencies dependencies dependencies devDependencies devDependencies peerDependencies])
         end
       end
 
@@ -72,8 +72,8 @@ RSpec.describe Packages::CreateDependencyService, feature_category: :package_reg
           expect { subject }
             .to change { Packages::Dependency.count }.by(1)
             .and change { Packages::DependencyLink.count }.by(1)
-          expect(dependency_names).to match_array(%w(express))
-          expect(dependency_link_types).to match_array(%w(dependencies))
+          expect(dependency_names).to match_array(%w[express])
+          expect(dependency_link_types).to match_array(%w[dependencies])
         end
       end
 
@@ -105,8 +105,8 @@ RSpec.describe Packages::CreateDependencyService, feature_category: :package_reg
           expect { subject }
             .to change { Packages::Dependency.count }.by(1)
             .and change { Packages::DependencyLink.count }.by(1)
-          expect(dependency_names).to match_array(%w(express))
-          expect(dependency_link_types).to match_array(%w(dependencies))
+          expect(dependency_names).to match_array(%w[express])
+          expect(dependency_link_types).to match_array(%w[dependencies])
         end
       end
     end

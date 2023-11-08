@@ -171,7 +171,7 @@ export default {
         />
       </template>
     </package-title>
-    <package-search class="gl-mb-5" @update="handleSearchUpdate" />
+    <package-search @update="handleSearchUpdate" />
 
     <delete-packages
       :refetch-queries="refetchQueriesData"

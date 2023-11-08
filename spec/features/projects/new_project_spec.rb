@@ -9,12 +9,36 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     stub_application_setting(import_sources: Gitlab::ImportSources.values)
   end
 
+  shared_examples 'shows correct navigation' do
+    context 'for a new top-level project' do
+      it 'shows the "Your work" navigation' do
+        visit new_project_path
+        expect(page).to have_selector(".super-sidebar", text: "Your work")
+      end
+    end
+
+    context 'for a new group project' do
+      let_it_be(:parent_group) { create(:group) }
+
+      before do
+        parent_group.add_owner(user)
+      end
+
+      it 'shows the group sidebar of the parent group' do
+        visit new_project_path(namespace_id: parent_group.id)
+        expect(page).to have_selector(".super-sidebar", text: parent_group.name)
+      end
+    end
+  end
+
   context 'as a user' do
     let_it_be(:user) { create(:user) }
 
     before do
       sign_in(user)
     end
+
+    it_behaves_like 'shows correct navigation'
 
     it 'shows the project description field when it should' do
       description_label = 'Project description (optional)'
@@ -77,6 +101,8 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
   context 'as an admin' do
     let(:user) { create(:admin) }
+
+    it_behaves_like 'shows correct navigation'
 
     shared_examples '"New project" page' do
       before do
@@ -569,31 +595,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       let(:oauth_config_instructions) { 'To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration' }
 
       it_behaves_like 'has instructions to enable OAuth'
-    end
-  end
-
-  describe 'super-sidebar' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:parent_group) { create(:group) }
-
-    before do
-      parent_group.add_owner(user)
-      user.update!(use_new_navigation: true)
-      sign_in(user)
-    end
-
-    context 'for a new top-level project' do
-      it 'shows the "Your work" navigation' do
-        visit new_project_path
-        expect(page).to have_selector(".super-sidebar", text: "Your work")
-      end
-    end
-
-    context 'for a new group project' do
-      it 'shows the group sidebar of the parent group' do
-        visit new_project_path(namespace_id: parent_group.id)
-        expect(page).to have_selector(".super-sidebar", text: parent_group.name)
-      end
     end
   end
 end

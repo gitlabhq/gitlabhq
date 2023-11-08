@@ -81,7 +81,7 @@ RSpec.describe UploadService, feature_category: :shared do
       it 'allows the upload' do
         service.override_max_attachment_size = 101.megabytes
 
-        expect(subject.keys).to eq(%i(alt url markdown))
+        expect(subject.keys).to eq(%i[alt url markdown])
       end
 
       it 'disallows the upload' do

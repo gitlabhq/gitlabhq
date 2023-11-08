@@ -23,7 +23,7 @@ RSpec.describe Ci::StuckBuilds::DropScheduledService, feature_category: :runner_
     end
   end
 
-  %w(success skipped failed canceled running pending).each do |status|
+  %w[success skipped failed canceled running pending].each do |status|
     context "when job is #{status}" do
       before do
         job.update!(status: status)

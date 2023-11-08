@@ -111,3 +111,5 @@ export const HISTORY_ITEMS_I18N = {
   reportedByForCategory: s__('AbuseReport|Reported by %{name} for %{category}.'),
   deletedReporter: s__('AbuseReport|No user found'),
 };
+
+export const SKELETON_NOTES_COUNT = 5;

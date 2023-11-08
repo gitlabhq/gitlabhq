@@ -139,7 +139,7 @@ RSpec.describe Ci::StuckBuilds::DropPendingService, feature_category: :runner_fl
     end
   end
 
-  %w(success skipped failed canceled).each do |status|
+  %w[success skipped failed canceled].each do |status|
     context "when job is #{status}" do
       let(:status) { status }
       let(:updated_at) { 2.days.ago }

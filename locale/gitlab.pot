@@ -5115,6 +5115,9 @@ msgstr ""
 msgid "An error occurred while fetching codequality mr diff reports."
 msgstr ""
 
+msgid "An error occurred while fetching comments, please try again."
+msgstr ""
+
 msgid "An error occurred while fetching commit data."
 msgstr ""
 
@@ -15033,9 +15036,6 @@ msgid "DORA4Metrics|Accept testing terms of use?"
 msgstr ""
 
 msgid "DORA4Metrics|All labels"
-msgstr ""
-
-msgid "DORA4Metrics|Analytics Dashboards"
 msgstr ""
 
 msgid "DORA4Metrics|Average (last %{days}d)"
@@ -32804,10 +32804,10 @@ msgstr ""
 msgid "Observability|Enable"
 msgstr ""
 
-msgid "Observability|Failed to enable GitLab Observability."
+msgid "Observability|Error: Failed to enable GitLab Observability. Please retry later."
 msgstr ""
 
-msgid "Observability|Failed to load page."
+msgid "Observability|Error: Failed to load page. Try reloading the page."
 msgstr ""
 
 msgid "Observability|Get started with GitLab Observability"
@@ -50453,6 +50453,9 @@ msgstr ""
 msgid "Tracing|Check again"
 msgstr ""
 
+msgid "Tracing|Created date"
+msgstr ""
+
 msgid "Tracing|Date"
 msgstr ""
 
@@ -50462,7 +50465,13 @@ msgstr ""
 msgid "Tracing|Duration (ms)"
 msgstr ""
 
-msgid "Tracing|Failed to load trace details."
+msgid "Tracing|Error: Failed to load trace details. Try reloading the page."
+msgstr ""
+
+msgid "Tracing|Error: Something went wrong while fetching the operations. Try again."
+msgstr ""
+
+msgid "Tracing|Error: Something went wrong while fetching the services. Try again."
 msgstr ""
 
 msgid "Tracing|Failed to load traces."
@@ -50517,12 +50526,6 @@ msgid "Tracing|Select a service to load suggestions"
 msgstr ""
 
 msgid "Tracing|Service"
-msgstr ""
-
-msgid "Tracing|Something went wrong while fetching the operations"
-msgstr ""
-
-msgid "Tracing|Something went wrong while fetching the services"
 msgstr ""
 
 msgid "Tracing|Time range"

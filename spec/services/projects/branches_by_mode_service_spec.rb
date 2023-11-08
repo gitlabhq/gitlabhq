@@ -50,7 +50,7 @@ RSpec.describe Projects::BranchesByModeService, feature_category: :source_code_m
 
         branches, prev_page, next_page = subject
 
-        expect(branches.map(&:name)).to match_array(%w(feature feature_conflict))
+        expect(branches.map(&:name)).to match_array(%w[feature feature_conflict])
         expect(next_page).to be_nil
         expect(prev_page).to be_nil
       end

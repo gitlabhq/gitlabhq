@@ -145,7 +145,7 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
               an_instance_of(described_class::EnvironmentUpdateFailure),
               project_id: project.id,
               environment_id: environment.id,
-              reason: %q{External url javascript scheme is not allowed}
+              reason: %q(External url javascript scheme is not allowed)
             )
             .once
 

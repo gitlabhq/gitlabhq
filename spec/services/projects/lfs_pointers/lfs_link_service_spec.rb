@@ -73,10 +73,10 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
 
     it 'only queries for the batch that will be processed', :aggregate_failures do
       stub_const("#{described_class}::BATCH_SIZE", 1)
-      oids = %w(one two)
+      oids = %w[one two]
 
-      expect(LfsObject).to receive(:for_oids).with(%w(one)).once.and_call_original
-      expect(LfsObject).to receive(:for_oids).with(%w(two)).once.and_call_original
+      expect(LfsObject).to receive(:for_oids).with(%w[one]).once.and_call_original
+      expect(LfsObject).to receive(:for_oids).with(%w[two]).once.and_call_original
 
       subject.execute(oids)
     end

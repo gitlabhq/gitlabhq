@@ -80,7 +80,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns the title message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq(%{Changed the title to "A brand new title".})
+        expect(message).to eq(%(Changed the title to "A brand new title".))
       end
     end
 
@@ -695,7 +695,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, _, message = service.execute(content, issuable)
 
         if tag_message.present?
-          expect(message).to eq(%{Tagged this commit to #{tag_name} with "#{tag_message}".})
+          expect(message).to eq(%(Tagged this commit to #{tag_name} with "#{tag_message}".))
         else
           expect(message).to eq("Tagged this commit to #{tag_name}.")
         end
@@ -1979,7 +1979,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     context '/board_move command' do
       let_it_be(:todo) { create(:label, project: project, title: 'To Do') }
       let_it_be(:inreview) { create(:label, project: project, title: 'In Review') }
-      let(:content) { %{/board_move ~"#{inreview.title}"} }
+      let(:content) { %(/board_move ~"#{inreview.title}") }
 
       let_it_be(:board) { create(:board, project: project) }
       let_it_be(:todo_list) { create(:list, board: board, label: todo) }
@@ -2043,14 +2043,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'if multiple labels are given' do
         let(:issuable) { issue }
-        let(:content) { %{/board_move ~"#{inreview.title}" ~"#{todo.title}"} }
+        let(:content) { %(/board_move ~"#{inreview.title}" ~"#{todo.title}") }
 
         it_behaves_like 'failed command', 'Failed to move this issue because only a single label can be provided.'
       end
 
       context 'if the given label is not a list on the board' do
         let(:issuable) { issue }
-        let(:content) { %{/board_move ~"#{bug.title}"} }
+        let(:content) { %(/board_move ~"#{bug.title}") }
 
         it_behaves_like 'failed command', 'Failed to move this issue because label was not found.'
       end

@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Abuse Report Note Body should show the note body 1`] = `
+<div
+  class="md note-text"
+  data-testid="abuse-report-note-body"
+>
+  <p
+    data-sourcepos="1:1-1:9"
+    dir="auto"
+  >
+    Comment 1
+  </p>
+</div>
+`;

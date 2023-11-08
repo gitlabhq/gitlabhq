@@ -122,7 +122,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
         expect(build('build')).to be_success
         expect(build('build2')).to be_success
         expect(build('test')).to be_pending
-        expect(build('test').needs.map(&:name)).to match_array(%w(build build2))
+        expect(build('test').needs.map(&:name)).to match_array(%w[build build2])
       end
 
       context 'when there is a failed DAG test without needs' do

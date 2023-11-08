@@ -135,10 +135,6 @@ FactoryBot.define do
       end
     end
 
-    trait :no_super_sidebar do
-      use_new_navigation { false }
-    end
-
     trait :two_factor_via_webauthn do
       transient { registrations_count { 5 } }
 

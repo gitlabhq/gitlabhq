@@ -134,7 +134,9 @@ describe('ProvisionedObservabilityContainer', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findEmptyState().exists()).toBe(false);
       expect(findSlotComponent().exists()).toBe(false);
-      expect(createAlert).toHaveBeenLastCalledWith({ message: 'Failed to load page.' });
+      expect(createAlert).toHaveBeenLastCalledWith({
+        message: 'Error: Failed to load page. Try reloading the page.',
+      });
     });
 
     it('shows an alert when checking if observability is enabled fails', async () => {
@@ -147,7 +149,7 @@ describe('ProvisionedObservabilityContainer', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenLastCalledWith({
-        message: 'Failed to enable GitLab Observability.',
+        message: 'Error: Failed to enable GitLab Observability. Please retry later.',
       });
     });
   });

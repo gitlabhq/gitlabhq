@@ -132,3 +132,211 @@ export const mockCreateLabelResponse = {
     },
   },
 };
+
+export const mockDiscussionWithNoReplies = [
+  {
+    id: 'gid://gitlab/Note/1',
+    body: 'Comment 1',
+    bodyHtml: '\u003cp data-sourcepos="1:1-1:9" dir="auto"\u003eComment 1\u003c/p\u003e',
+    createdAt: '2023-10-19T06:11:13Z',
+    lastEditedAt: '2023-10-20T02:46:50Z',
+    url: 'http://127.0.0.1:3000/admin/abuse_reports/1#note_1',
+    resolved: false,
+    author: {
+      id: 'gid://gitlab/User/1',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+      name: 'Administrator',
+      username: 'root',
+      webUrl: 'http://127.0.0.1:3000/root',
+      __typename: 'UserCore',
+    },
+    lastEditedBy: null,
+    userPermissions: {
+      adminNote: true,
+      __typename: 'NotePermissions',
+    },
+    discussion: {
+      id: 'gid://gitlab/Discussion/055af96ab917175219aec8739c911277b18ea41d',
+      notes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Note/1',
+            __typename: 'Note',
+          },
+        ],
+        __typename: 'NoteConnection',
+      },
+      __typename: 'Discussion',
+    },
+    __typename: 'Note',
+  },
+];
+export const mockDiscussionWithReplies = [
+  {
+    id: 'gid://gitlab/DiscussionNote/2',
+    body: 'Comment 2',
+    bodyHtml: '\u003cp data-sourcepos="1:1-1:9" dir="auto"\u003eComment 2\u003c/p\u003e',
+    createdAt: '2023-10-20T07:47:21Z',
+    lastEditedAt: '2023-10-20T07:47:42Z',
+    url: 'http://127.0.0.1:3000/admin/abuse_reports/1#note_2',
+    resolved: false,
+    author: {
+      id: 'gid://gitlab/User/1',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+      name: 'Administrator',
+      username: 'root',
+      webUrl: 'http://127.0.0.1:3000/root',
+      __typename: 'UserCore',
+    },
+    lastEditedBy: null,
+    userPermissions: {
+      adminNote: true,
+      __typename: 'NotePermissions',
+    },
+    discussion: {
+      id: 'gid://gitlab/Discussion/9c7228e06fb0339a3d1440fcda960acfd8baa43a',
+      notes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/DiscussionNote/2',
+            __typename: 'Note',
+          },
+          {
+            id: 'gid://gitlab/DiscussionNote/3',
+            __typename: 'Note',
+          },
+          {
+            id: 'gid://gitlab/DiscussionNote/4',
+            __typename: 'Note',
+          },
+        ],
+        __typename: 'NoteConnection',
+      },
+      __typename: 'Discussion',
+    },
+    __typename: 'Note',
+  },
+  {
+    id: 'gid://gitlab/DiscussionNote/3',
+    body: 'Reply comment 1',
+    bodyHtml: '\u003cp data-sourcepos="1:1-1:15" dir="auto"\u003eReply comment 1\u003c/p\u003e',
+    createdAt: '2023-10-20T07:47:42Z',
+    lastEditedAt: '2023-10-20T07:47:42Z',
+    url: 'http://127.0.0.1:3000/admin/abuse_reports/1#note_3',
+    resolved: false,
+    author: {
+      id: 'gid://gitlab/User/1',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+      name: 'Administrator',
+      username: 'root',
+      webUrl: 'http://127.0.0.1:3000/root',
+      __typename: 'UserCore',
+    },
+    lastEditedBy: null,
+    userPermissions: {
+      adminNote: true,
+      __typename: 'NotePermissions',
+    },
+    discussion: {
+      id: 'gid://gitlab/Discussion/9c7228e06fb0339a3d1440fcda960acfd8baa43a',
+      notes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/DiscussionNote/2',
+            __typename: 'Note',
+          },
+          {
+            id: 'gid://gitlab/DiscussionNote/3',
+            __typename: 'Note',
+          },
+          {
+            id: 'gid://gitlab/DiscussionNote/4',
+            __typename: 'Note',
+          },
+        ],
+        __typename: 'NoteConnection',
+      },
+      __typename: 'Discussion',
+    },
+    __typename: 'Note',
+  },
+  {
+    id: 'gid://gitlab/DiscussionNote/4',
+    body: 'Reply comment 2',
+    bodyHtml: '\u003cp data-sourcepos="1:1-1:15" dir="auto"\u003eReply comment 2\u003c/p\u003e',
+    createdAt: '2023-10-20T08:26:51Z',
+    lastEditedAt: '2023-10-20T08:26:51Z',
+    url: 'http://127.0.0.1:3000/admin/abuse_reports/1#note_4',
+    resolved: false,
+    author: {
+      id: 'gid://gitlab/User/1',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+      name: 'Administrator',
+      username: 'root',
+      webUrl: 'http://127.0.0.1:3000/root',
+      __typename: 'UserCore',
+    },
+    lastEditedBy: null,
+    userPermissions: {
+      adminNote: true,
+      __typename: 'NotePermissions',
+    },
+    discussion: {
+      id: 'gid://gitlab/Discussion/9c7228e06fb0339a3d1440fcda960acfd8baa43a',
+      notes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/DiscussionNote/2',
+            __typename: 'Note',
+          },
+          {
+            id: 'gid://gitlab/DiscussionNote/3',
+            __typename: 'Note',
+          },
+          {
+            id: 'gid://gitlab/DiscussionNote/4',
+            __typename: 'Note',
+          },
+        ],
+        __typename: 'NoteConnection',
+      },
+      __typename: 'Discussion',
+    },
+    __typename: 'Note',
+  },
+];
+
+export const mockNotesByIdResponse = {
+  data: {
+    abuseReport: {
+      id: 'gid://gitlab/AbuseReport/1',
+      discussions: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Discussion/055af96ab917175219aec8739c911277b18ea41d',
+            replyId:
+              'gid://gitlab/IndividualNoteDiscussion/055af96ab917175219aec8739c911277b18ea41d',
+            notes: {
+              nodes: mockDiscussionWithNoReplies,
+              __typename: 'NoteConnection',
+            },
+          },
+          {
+            id: 'gid://gitlab/Discussion/9c7228e06fb0339a3d1440fcda960acfd8baa43a',
+            replyId: 'gid://gitlab/Discussion/9c7228e06fb0339a3d1440fcda960acfd8baa43a',
+            notes: {
+              nodes: mockDiscussionWithReplies,
+              __typename: 'NoteConnection',
+            },
+          },
+        ],
+        __typename: 'DiscussionConnection',
+      },
+      __typename: 'AbuseReport',
+    },
+  },
+};

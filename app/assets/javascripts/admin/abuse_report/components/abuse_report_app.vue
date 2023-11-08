@@ -7,6 +7,7 @@ import ReportDetails from './report_details.vue';
 import ReportedContent from './reported_content.vue';
 import ActivityEventsList from './activity_events_list.vue';
 import ActivityHistoryItem from './activity_history_item.vue';
+import AbuseReportNotes from './abuse_report_notes.vue';
 
 const alertDefaults = {
   visible: false,
@@ -24,6 +25,7 @@ export default {
     ReportedContent,
     ActivityEventsList,
     ActivityHistoryItem,
+    AbuseReportNotes,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -96,5 +98,10 @@ export default {
         />
       </template>
     </activity-events-list>
+
+    <abuse-report-notes
+      v-if="glFeatures.abuseReportNotes"
+      :abuse-report-id="abuseReport.report.globalId"
+    />
   </section>
 </template>

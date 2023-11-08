@@ -11,7 +11,7 @@ module ProjectsHelper
   end
 
   def link_to_project(project)
-    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name), class: 'gl-link' do
+    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name), class: 'gl-link gl-text-truncate' do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace

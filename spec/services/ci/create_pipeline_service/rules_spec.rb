@@ -219,7 +219,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         let(:job1) { pipeline.builds.find_by(name: 'job1') }
         let(:job2) { pipeline.builds.find_by(name: 'job2') }
 
-        let(:variable_keys) { %w(VAR1 VAR2 VAR3 VAR4 VAR5 VAR6 VAR7) }
+        let(:variable_keys) { %w[VAR1 VAR2 VAR3 VAR4 VAR5 VAR6 VAR7] }
 
         context 'when no match' do
           let(:ref) { 'refs/heads/wip' }

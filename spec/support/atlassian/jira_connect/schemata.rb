@@ -7,11 +7,11 @@ module Atlassian
         {
           'type' => 'object',
           'additionalProperties' => false,
-          'required' => %w(
+          'required' => %w[
             schemaVersion pipelineId buildNumber updateSequenceNumber
             displayName url state issueKeys testInfo references
             lastUpdated
-          ),
+          ],
           'properties' => {
             'schemaVersion' => schema_version_type,
             'pipelineId' => { 'type' => 'string' },
@@ -24,7 +24,7 @@ module Atlassian
             'issueKeys' => issue_keys_type,
             'testInfo' => {
               'type' => 'object',
-              'required' => %w(totalNumber numberPassed numberFailed numberSkipped),
+              'required' => %w[totalNumber numberPassed numberFailed numberSkipped],
               'properties' => {
                 'totalNumber' => { 'type' => 'integer' },
                 'numberFailed' => { 'type' => 'integer' },
@@ -36,11 +36,11 @@ module Atlassian
               'type' => 'array',
               'items' => {
                 'type' => 'object',
-                'required' => %w(commit ref),
+                'required' => %w[commit ref],
                 'properties' => {
                   'commit' => {
                     'type' => 'object',
-                    'required' => %w(id repositoryUri),
+                    'required' => %w[id repositoryUri],
                     'properties' => {
                       'id' => { 'type' => 'string' },
                       'repositoryUri' => { 'type' => 'string' }
@@ -48,7 +48,7 @@ module Atlassian
                   },
                   'ref' => {
                     'type' => 'object',
-                    'required' => %w(name uri),
+                    'required' => %w[name uri],
                     'properties' => {
                       'name' => { 'type' => 'string' },
                       'uri' => { 'type' => 'string' }
@@ -65,16 +65,16 @@ module Atlassian
         {
           'type' => 'object',
           'additionalProperties' => false,
-          'required' => %w(
+          'required' => %w[
             deploymentSequenceNumber updateSequenceNumber
             associations displayName url description lastUpdated
             state pipeline environment
-          ),
+          ],
           'properties' => {
             'deploymentSequenceNumber' => { 'type' => 'integer' },
             'updateSequenceNumber' => { 'type' => 'integer' },
             'associations' => {
-              'type' => %w(array),
+              'type' => %w[array],
               'items' => association_type,
               'minItems' => 1
             },
@@ -95,9 +95,9 @@ module Atlassian
         {
           'type' => 'object',
           'additionalProperties' => false,
-          'required' => %w(
+          'required' => %w[
             updateSequenceId id key issueKeys summary details
-          ),
+          ],
           'properties' => {
             'id' => { 'type' => 'string' },
             'key' => { 'type' => 'string' },
@@ -120,7 +120,7 @@ module Atlassian
               'environment' => {
                 'type' => 'object',
                 'additionalProperties' => false,
-                'required' => %w(name),
+                'required' => %w[name],
                 'properties' => {
                   'name' => { 'type' => 'string' },
                   'type' => {
@@ -144,7 +144,7 @@ module Atlassian
         {
           'type' => 'object',
           'additionalProperties' => false,
-          'required' => %w(url status lastUpdated),
+          'required' => %w[url status lastUpdated],
           'properties' => {
             'lastUpdated' => iso8601_type,
             'url' => { 'type' => 'string' },
@@ -157,7 +157,7 @@ module Atlassian
         {
           'type' => 'object',
           'additionalProperties' => false,
-          'required' => %w(enabled),
+          'required' => %w[enabled],
           'properties' => {
             'enabled' => { 'type' => 'boolean' },
             'defaultValue' => { 'type' => 'string' },
@@ -182,7 +182,7 @@ module Atlassian
         {
           'type' => 'object',
           'additionalProperties' => false,
-          'required' => %w(id displayName type),
+          'required' => %w[id displayName type],
           'properties' => {
             'id' => { 'type' => 'string', 'maxLength' => 255 },
             'displayName' => { 'type' => 'string', 'maxLength' => 255 },
@@ -198,7 +198,7 @@ module Atlassian
         {
           'type' => 'object',
           'additionalProperties' => false,
-          'required' => %w(id displayName url),
+          'required' => %w[id displayName url],
           'properties' => {
             'id' => { 'type' => 'string', 'maxLength' => 255 },
             'displayName' => { 'type' => 'string', 'maxLength' => 255 },
@@ -222,7 +222,7 @@ module Atlassian
         {
           'type' => 'object',
           'additionalProperties' => false,
-          'required' => %w(associationType values),
+          'required' => %w[associationType values],
           'properties' => {
             'associationType' => {
               'type' => 'string',
@@ -276,7 +276,7 @@ module Atlassian
       def provider_metadata
         {
           'type' => 'object',
-          'required' => %w(product),
+          'required' => %w[product],
           'properties' => { 'product' => { 'type' => 'string' } }
         }
       end

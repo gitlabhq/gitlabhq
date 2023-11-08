@@ -50,7 +50,7 @@ RSpec.describe Graphql::Arguments do
       hash: { a: 1, b: 2, c: 3 },
       int: 42,
       float: 2.7,
-      string: %q[he said "no"],
+      string: %q(he said "no"),
       enum: :OFF,
       null: nil,
       bool_true: true,

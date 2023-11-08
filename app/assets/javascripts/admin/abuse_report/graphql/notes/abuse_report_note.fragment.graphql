@@ -3,13 +3,19 @@
 
 fragment AbuseReportNote on Note {
   id
-  author {
-    ...Author
-  }
   body
   bodyHtml
   createdAt
+  lastEditedAt
+  url
   resolved
+  author {
+    ...Author
+  }
+  lastEditedBy {
+    ...Author
+    webPath
+  }
   userPermissions {
     ...AbuseReportNotePermissions
   }

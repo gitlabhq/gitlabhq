@@ -147,17 +147,17 @@ RSpec.describe ExceedQueryLimitHelpers do
       test_matcher = TestMatcher.new
 
       recorder = ActiveRecord::QueryRecorder.new do
-        TestQueries.find_by(version: %w(foo bar baz).join("\n"))
-        TestQueries.find_by(version: %w(foo biz baz).join("\n"))
-        TestQueries.find_by(version: %w(foo bar baz).join("\n"))
+        TestQueries.find_by(version: %w[foo bar baz].join("\n"))
+        TestQueries.find_by(version: %w[foo biz baz].join("\n"))
+        TestQueries.find_by(version: %w[foo bar baz].join("\n"))
       end
 
       recorder.count
 
       expect(test_matcher.count_queries(recorder)).to eq({
         'SELECT "schema_migrations".* FROM "schema_migrations"' => {
-          %[WHERE "schema_migrations"."version" = 'foo\nbar\nbaz' LIMIT 1] => 2,
-          %[WHERE "schema_migrations"."version" = 'foo\nbiz\nbaz' LIMIT 1] => 1
+          %(WHERE "schema_migrations"."version" = 'foo\nbar\nbaz' LIMIT 1) => 2,
+          %(WHERE "schema_migrations"."version" = 'foo\nbiz\nbaz' LIMIT 1) => 1
         }
       })
     end
@@ -183,13 +183,13 @@ RSpec.describe ExceedQueryLimitHelpers do
 
       expect(test_matcher.count_queries(recorder)).to eq({
         'SELECT "schema_migrations".* FROM "schema_migrations"' => {
-          %q[WHERE "schema_migrations"."version" = 'foobar'] => 2,
-          %q[WHERE "schema_migrations"."version" = 'also foobar and baz'] => 1,
-          %q[ORDER BY "schema_migrations"."version" ASC LIMIT 1] => 1
+          %q(WHERE "schema_migrations"."version" = 'foobar') => 2,
+          %q(WHERE "schema_migrations"."version" = 'also foobar and baz') => 1,
+          %q(ORDER BY "schema_migrations"."version" ASC LIMIT 1) => 1
         },
         'SELECT COUNT(*) FROM "schema_migrations"' => {
           "" => 2,
-          %q[WHERE "schema_migrations"."version" = 'foobar'] => 1
+          %q(WHERE "schema_migrations"."version" = 'foobar') => 1
         },
         'SAVEPOINT active_record_1' => { "" => 1 },
         'INSERT INTO "schema_migrations" ("version")' => {
@@ -197,11 +197,11 @@ RSpec.describe ExceedQueryLimitHelpers do
         },
         'RELEASE SAVEPOINT active_record_1' => { "" => 1 },
         'UPDATE "schema_migrations"' => {
-          %q[SET "version" = 'y' WHERE "schema_migrations"."version" = 'x'] => 1,
-          %q[SET "version" = 'z' WHERE "schema_migrations"."version" = 'y'] => 1
+          %q(SET "version" = 'y' WHERE "schema_migrations"."version" = 'x') => 1,
+          %q(SET "version" = 'z' WHERE "schema_migrations"."version" = 'y') => 1
         },
         'DELETE FROM "schema_migrations"' => {
-          %q[WHERE "schema_migrations"."version" = 'z'] => 1
+          %q(WHERE "schema_migrations"."version" = 'z') => 1
         }
       })
     end

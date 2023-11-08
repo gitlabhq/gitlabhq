@@ -16,7 +16,7 @@ RSpec.shared_context 'container repository delete tags service shared context' d
 
     stub_container_registry_tags(
       repository: repository.path,
-      tags: %w(latest A Ba Bb C D E))
+      tags: %w[latest A Ba Bb C D E])
   end
 
   def stub_delete_reference_request(tag, status = 200)

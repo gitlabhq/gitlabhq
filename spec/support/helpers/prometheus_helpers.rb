@@ -207,7 +207,7 @@ module PrometheusHelpers
   def prometheus_label_values
     {
       'status': 'success',
-      'data': %w(job_adds job_controller_rate_limiter_use job_depth job_queue_latency job_work_duration_sum up)
+      'data': %w[job_adds job_controller_rate_limiter_use job_depth job_queue_latency job_work_duration_sum up]
     }
   end
 

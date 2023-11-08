@@ -135,7 +135,6 @@ export default {
   <div class="gl-my-3">
     <details-header :images-detail="imagesDetail" />
     <persisted-search
-      class="gl-mb-5"
       :sortable-fields="$options.searchConfig.nameSortFields"
       :default-order="$options.searchConfig.nameSortFields[0].orderBy"
       default-sort="asc"

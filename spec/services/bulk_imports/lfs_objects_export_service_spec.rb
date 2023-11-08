@@ -15,7 +15,7 @@ RSpec.describe BulkImports::LfsObjectsExportService, feature_category: :importer
   before do
     stub_lfs_object_storage
 
-    %w(wiki design).each do |repository_type|
+    %w[wiki design].each do |repository_type|
       create(
         :lfs_objects_project,
         project: project,

@@ -324,7 +324,7 @@ RSpec.shared_examples 'wiki controller actions' do
       post :preview_markdown, params: routing_params.merge(id: 'page/path', text: '*Markdown* text')
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.keys).to match_array(%w(body references))
+      expect(json_response.keys).to match_array(%w[body references])
     end
   end
 

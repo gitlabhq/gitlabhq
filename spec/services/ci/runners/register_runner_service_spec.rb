@@ -74,7 +74,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
             active: false,
             locked: true,
             run_untagged: false,
-            tag_list: %w(tag1 tag2),
+            tag_list: %w[tag1 tag2],
             access_level: 'ref_protected',
             maximum_timeout: 600,
             name: 'some name',
@@ -290,7 +290,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       let(:token) { registration_token }
 
       let(:args) do
-        { tag_list: %w(tag1 tag2) }
+        { tag_list: %w[tag1 tag2] }
       end
 
       it 'creates runner with tags' do

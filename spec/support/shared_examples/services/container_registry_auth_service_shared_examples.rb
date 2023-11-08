@@ -127,7 +127,7 @@ end
 
 RSpec.shared_examples 'a pullable and pushable' do
   it_behaves_like 'an accessible' do
-    let(:actions) { %w(pull push) }
+    let(:actions) { %w[pull push] }
   end
 end
 
