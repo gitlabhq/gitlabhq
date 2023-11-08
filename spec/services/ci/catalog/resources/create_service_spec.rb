@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Catalog::AddResourceService, feature_category: :pipeline_composition do
+RSpec.describe Ci::Catalog::Resources::CreateService, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, :catalog_resource_with_components) }
   let_it_be(:user) { create(:user) }
 
@@ -29,20 +29,6 @@ RSpec.describe Ci::Catalog::AddResourceService, feature_category: :pipeline_comp
           response = service.execute
 
           expect(response.payload.project).to eq(project)
-        end
-      end
-
-      context 'with an invalid project' do
-        let_it_be(:project) { create(:project, :repository) }
-
-        before_all do
-          project.add_owner(user)
-        end
-
-        it 'does not create a catalog resource' do
-          response = service.execute
-
-          expect(response.message).to eq('Project must have a description, Project must contain components')
         end
       end
 

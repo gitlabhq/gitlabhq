@@ -13,8 +13,6 @@ You can get AI generated support from GitLab Duo Chat about the following topics
 
 - How to use GitLab.
 - Questions about an issue.
-- How to use GitLab.
-- Questions about an issue.
 - Question about an epic.
 - Questions about a code file.
 - Follow-up questions to answers from the chat.

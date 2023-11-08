@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+# DEPRECATED. Consider using using Internal Events tracking framework
+# https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html
+
 require 'rails/generators'
 
 module Gitlab
   module UsageMetricDefinition
     class RedisHllGenerator < Rails::Generators::Base
-      desc 'Generates a metric definition .yml file with defaults for Redis HLL.'
+      desc '[DEPRECATED] Generates a metric definition .yml file with defaults for Redis HLL.'
 
       argument :category, type: :string, desc: "Category name"
       argument :events, type: :array, desc: "Unique event names", banner: 'event_one event_two event_three'

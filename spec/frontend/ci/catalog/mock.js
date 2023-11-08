@@ -1,5 +1,23 @@
 import { componentsMockData } from '~/ci/catalog/constants';
 
+export const emptyCatalogResponseBody = {
+  data: {
+    ciCatalogResources: {
+      pageInfo: {
+        startCursor:
+          'eyJjcmVhdGVkX2F0IjoiMjAxNS0wNy0wMyAxMDowMDowMC4wMDAwMDAwMDAgKzAwMDAiLCJpZCI6IjEyOSJ9',
+        endCursor:
+          'eyJjcmVhdGVkX2F0IjoiMjAxNS0wNy0wMyAxMDowMDowMC4wMDAwMDAwMDAgKzAwMDAiLCJpZCI6IjExMCJ9',
+        hasNextPage: false,
+        hasPreviousPage: false,
+        __typename: 'PageInfo',
+      },
+      count: 0,
+      nodes: [],
+    },
+  },
+};
+
 export const catalogResponseBody = {
   data: {
     ciCatalogResources: {

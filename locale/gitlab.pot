@@ -10337,6 +10337,9 @@ msgstr ""
 msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
 msgstr ""
 
+msgid "CiCatalog|Discover CI configuration resources for a seamless CI/CD experience."
+msgstr ""
+
 msgid "CiCatalog|Get started with the CI/CD Catalog"
 msgstr ""
 
@@ -12599,9 +12602,6 @@ msgid "ComplianceReport|No violations found. Change search options and try again
 msgstr ""
 
 msgid "ComplianceReport|Remove framework from selected projects"
-msgstr ""
-
-msgid "ComplianceReport|Retrieving the compliance framework report failed. Refresh the page and try again."
 msgstr ""
 
 msgid "ComplianceReport|Search target branch"
@@ -35330,10 +35330,13 @@ msgstr ""
 msgid "Pipelines|This pipeline is stuck"
 msgstr ""
 
-msgid "Pipelines|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch."
+msgid "Pipelines|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch."
 msgstr ""
 
-msgid "Pipelines|This pipeline ran on the contents of this merge request's source branch, not the target branch."
+msgid "Pipelines|This pipeline ran on the contents of the merge request combined with the contents of the target branch."
+msgstr ""
+
+msgid "Pipelines|This pipeline ran on the contents of the merge request's source branch, not the target branch."
 msgstr ""
 
 msgid "Pipelines|This pipeline will run code originating from a forked project merge request. This means that the code can potentially have security considerations like exposing CI variables."
@@ -35415,6 +35418,9 @@ msgid "Pipelines|merge request"
 msgstr ""
 
 msgid "Pipelines|merge train"
+msgstr ""
+
+msgid "Pipelines|merged results"
 msgstr ""
 
 msgid "Pipelines|stuck"
@@ -40427,6 +40433,9 @@ msgid "Request Headers"
 msgstr ""
 
 msgid "Request a new one"
+msgstr ""
+
+msgid "Request changes"
 msgstr ""
 
 msgid "Request data is too large"
@@ -46501,6 +46510,15 @@ msgid "Submit as spam"
 msgstr ""
 
 msgid "Submit feedback"
+msgstr ""
+
+msgid "Submit feedback and approve these changes."
+msgstr ""
+
+msgid "Submit feedback that should be addressed before merging."
+msgstr ""
+
+msgid "Submit general feedback without explicit approval."
 msgstr ""
 
 msgid "Submit review"

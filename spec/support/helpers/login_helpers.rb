@@ -262,19 +262,15 @@ module LoginHelpers
   end
 
   def stub_omniauth_config(messages)
-    allow(Gitlab.config.omniauth).to receive_messages(messages)
+    allow(Gitlab.config.omniauth).to receive_messages(GitlabSettings::Options.build(messages))
   end
 
   def stub_basic_saml_config
-    allow_next_instance_of(Gitlab::Auth::Saml::Config) do |config|
-      allow(config).to receive_messages({ options: { name: 'saml', args: {} } })
-    end
+    stub_omniauth_config(providers: [{ name: 'saml', args: {} }])
   end
 
   def stub_saml_group_config(groups)
-    allow_next_instance_of(Gitlab::Auth::Saml::Config) do |config|
-      allow(config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} } })
-    end
+    stub_omniauth_config(providers: [{ name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} }])
   end
 end
 

@@ -1,0 +1,16 @@
+#import "~/ci/catalog/graphql/fragments/catalog_resource.fragment.graphql"
+
+query getCatalogResources($after: String, $before: String, $first: Int = 20, $last: Int) {
+  ciCatalogResources(after: $after, before: $before, first: $first, last: $last) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    count
+    nodes {
+      ...CatalogResourceFields
+    }
+  }
+}

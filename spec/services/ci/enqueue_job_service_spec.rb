@@ -78,4 +78,33 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
       execute
     end
   end
+
+  context 'when the job is manually triggered another user' do
+    let(:job_variables) do
+      [{ key: 'third', secret_value: 'third' },
+       { key: 'fourth', secret_value: 'fourth' }]
+    end
+
+    let(:service) do
+      described_class.new(build, current_user: user, variables: job_variables)
+    end
+
+    it 'assigns the user and variables to the job', :aggregate_failures do
+      called = false
+      service.execute do
+        unless called
+          called = true
+          raise ActiveRecord::StaleObjectError
+        end
+
+        build.enqueue!
+      end
+
+      build.reload
+
+      expect(called).to be true # ensure we actually entered the failure path
+      expect(build.user).to eq(user)
+      expect(build.job_variables.map(&:key)).to contain_exactly('third', 'fourth')
+    end
+  end
 end

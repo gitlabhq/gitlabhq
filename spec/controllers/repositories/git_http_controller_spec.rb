@@ -200,4 +200,24 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       end
     end
   end
+
+  describe '#append_info_to_payload' do
+    let(:log_payload) { {} }
+    let(:container) { project.design_management_repository }
+    let(:repository_path) { "#{container.full_path}.git" }
+    let(:params) { { repository_path: repository_path, service: 'git-upload-pack' } }
+    let(:repository_storage) { "default" }
+
+    before do
+      allow(controller).to receive(:append_info_to_payload).and_wrap_original do |method, *|
+        method.call(log_payload)
+      end
+    end
+
+    it 'appends metadata for logging' do
+      post :git_upload_pack, params: params
+      expect(controller).to have_received(:append_info_to_payload)
+      expect(log_payload.dig(:metadata, :repository_storage)).to eq(repository_storage)
+    end
+  end
 end

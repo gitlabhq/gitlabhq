@@ -25,12 +25,22 @@ export const EMOJI_VERSION = '3';
 const isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
 
 async function loadEmoji() {
-  if (
-    isLocalStorageAvailable &&
-    window.localStorage.getItem(CACHE_VERSION_KEY) === EMOJI_VERSION &&
-    window.localStorage.getItem(CACHE_KEY)
-  ) {
-    return JSON.parse(window.localStorage.getItem(CACHE_KEY));
+  try {
+    window.localStorage.removeItem(CACHE_VERSION_KEY);
+  } catch {
+    // Cleanup after us and remove the old EMOJI_VERSION_KEY
+  }
+
+  try {
+    if (isLocalStorageAvailable) {
+      const parsed = JSON.parse(window.localStorage.getItem(CACHE_KEY));
+      if (parsed?.EMOJI_VERSION === EMOJI_VERSION && parsed.data) {
+        return parsed.data;
+      }
+    }
+  } catch {
+    // Maybe the stored data was corrupted or the version didn't match.
+    // Let's not error out.
   }
 
   // We load the JSON file direct from the server
@@ -41,8 +51,7 @@ async function loadEmoji() {
   );
 
   try {
-    window.localStorage.setItem(CACHE_VERSION_KEY, EMOJI_VERSION);
-    window.localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    window.localStorage.setItem(CACHE_KEY, JSON.stringify({ data, EMOJI_VERSION }));
   } catch {
     // Setting data in localstorage may fail when storage quota is exceeded.
     // We should continue even when this fails.

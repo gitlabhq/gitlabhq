@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Development processes
@@ -35,32 +35,12 @@ Complementary reads:
 
 ### Development guidelines review
 
-When you submit a change to the GitLab development guidelines, who
-you ask for reviews depends on the level of change.
+For changes to development guidelines, request review and approval from an experienced GitLab Team Member.
 
-#### Wording, style, or link changes
-
-Not all changes require extensive review. For example, MRs that don't change the
-content's meaning or function can be reviewed, approved, and merged by any
-maintainer or Technical Writer. These can include:
-
-- Typo fixes.
-- Clarifying links, such as to external programming language documentation.
-- Changes to comply with the [Documentation Style Guide](documentation/index.md)
-  that don't change the intent of the documentation page.
-
-#### Specific changes
-
-If the MR proposes changes that are limited to a particular stage, group, or team,
-request a review and approval from an experienced GitLab Team Member in that
-group. For example, if you're documenting a new internal API used exclusively by
+For example, if you're documenting a new internal API used exclusively by
 a given group, request an engineering review from one of the group's members.
 
-After the engineering review is complete, assign the MR to the
-[Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-in the modified documentation page's metadata.
-If the page is not assigned to a specific group, follow the
-[Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines).
+Small fixes, like typos, can be merged by any user with at least the Maintainer role.
 
 #### Broader changes
 
@@ -85,7 +65,6 @@ In these cases, use the following workflow:
    - [Quality](https://about.gitlab.com/handbook/engineering/quality/)
      - [Engineering Productivity](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/)
    - [Infrastructure](https://about.gitlab.com/handbook/engineering/infrastructure/)
-   - [Technical Writing](https://about.gitlab.com/handbook/product/ux/technical-writing/)
 
    You can skip this step for MRs authored by EMs or Staff Engineers responsible
    for their area.
@@ -97,15 +76,12 @@ In these cases, use the following workflow:
    author / approver of the MR.
 
    If this is a significant change across multiple areas, request final review
-   and approval from the VP of Development, the DRI for Development Guidelines,
-   @clefelhocz1.
+   and approval from the VP of Development, who is the DRI for development guidelines.
 
-1. After all approvals are complete, assign the MR to the
-   [Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-   in the modified documentation page's metadata.
-   If the page is not assigned to a specific group, follow the
-   [Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines).
-   The Technical Writer may ask for additional approvals as previously suggested before merging the MR.
+Any Maintainer can merge the MR.
+If you would like a review by a technical writer, post a message in the #docs Slack channel.
+Technical writers do not need to review the content, however, and any Maintainer
+other than the MR author can merge.
 
 ### Reviewer values
 
@@ -113,6 +89,8 @@ In these cases, use the following workflow:
 
 As a reviewer or as a reviewee, make sure to familiarize yourself with
 the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/reviewer-values/) we strive for at GitLab.
+
+Also, any doc content should follow the [Documentation Style Guide](documentation/index.md).
 
 ## Language-specific guides
 

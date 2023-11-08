@@ -26,6 +26,11 @@ import { __ } from '~/locale';
 import NoteHeader from '~/notes/components/note_header.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 
+const ALLOWED_ICONS = ['issue-close'];
+const ICON_COLORS = {
+  'issue-close': 'gl-bg-blue-100! gl-text-blue-700',
+};
+
 export default {
   i18n: {
     deleteButtonLabel: __('Remove description history'),
@@ -66,6 +71,12 @@ export default {
     noteAnchorId() {
       return `note_${this.noteId}`;
     },
+    getIconColor() {
+      return ICON_COLORS[this.note.systemNoteIconName] || '';
+    },
+    isAllowedIcon() {
+      return ALLOWED_ICONS.includes(this.note.systemNoteIconName);
+    },
     isTargetNote() {
       return this.targetNoteHash === this.noteAnchorId;
     },
@@ -102,9 +113,16 @@ export default {
     class="note system-note note-wrapper"
   >
     <div
-      class="gl-float-left gl--flex-center gl-rounded-full gl-mt-n1 gl-ml-2 gl-w-6 gl-h-6 gl-bg-gray-50 gl-text-gray-600"
+      :class="[
+        getIconColor,
+        {
+          'gl-bg-gray-50 gl-text-gray-600 system-note-icon': isAllowedIcon,
+          'system-note-tiny-dot gl-bg-gray-900!': !isAllowedIcon,
+        },
+      ]"
+      class="gl-float-left gl--flex-center gl-rounded-full gl-relative"
     >
-      <gl-icon :name="note.systemNoteIconName" />
+      <gl-icon v-if="isAllowedIcon" :size="12" :name="note.systemNoteIconName" />
     </div>
     <div class="timeline-content">
       <div class="note-header">

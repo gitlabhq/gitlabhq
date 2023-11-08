@@ -30,6 +30,9 @@ export const createLocalStorageSpy = () => {
   let storage = {};
 
   return {
+    get length() {
+      return Object.keys(storage).length;
+    },
     clear: jest.fn(() => {
       storage = {};
     }),

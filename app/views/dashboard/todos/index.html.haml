@@ -83,7 +83,7 @@
         %ul.content-list.todos-list
           = render @allowed_todos
       = paginate @todos, theme: "gitlab"
-    .js-nothing-here-container.gl-empty-state.gl-text-center.hidden
+    .col.js-nothing-here-container.gl-empty-state.gl-text-center.hidden
       .svg-content.svg-150
         = image_tag 'illustrations/empty-todos-all-done-md.svg'
       .text-content.gl-text-center

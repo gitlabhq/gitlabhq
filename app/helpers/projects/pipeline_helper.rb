@@ -40,6 +40,7 @@ module Projects
         child: pipeline.child?.to_s,
         latest: pipeline.latest?.to_s,
         merge_train_pipeline: pipeline.merge_train_pipeline?.to_s,
+        merged_results_pipeline: (pipeline.merged_result_pipeline? && !pipeline.merge_train_pipeline?).to_s,
         invalid: pipeline.has_yaml_errors?.to_s,
         failed: pipeline.failure_reason?.to_s,
         auto_devops: pipeline.auto_devops_source?.to_s,

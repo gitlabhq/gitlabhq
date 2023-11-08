@@ -40,8 +40,14 @@ describe('Work Items system note component', () => {
     );
   });
 
-  it('should render svg icon', () => {
-    expect(findTimelineIcon().exists()).toBe(true);
+  it('should render svg icon only for allowed icons', () => {
+    expect(findTimelineIcon().exists()).toBe(false);
+
+    const ALLOWED_ICONS = ['issue-close'];
+    ALLOWED_ICONS.forEach((icon) => {
+      createComponent({ note: { ...workItemSystemNoteWithMetadata, systemNoteIconName: icon } });
+      expect(findTimelineIcon().exists()).toBe(true);
+    });
   });
 
   it('should not show compare previous version for FOSS', () => {

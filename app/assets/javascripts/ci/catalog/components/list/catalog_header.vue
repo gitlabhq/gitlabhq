@@ -4,12 +4,22 @@ import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { CATALOG_FEEDBACK_DISMISSED_KEY } from '../../constants';
 
+const defaultTitle = __('CI/CD Catalog');
+const defaultDescription = s__(
+  'CiCatalog|Discover CI configuration resources for a seamless CI/CD experience.',
+);
+
 export default {
   components: {
     GlBanner,
     GlLink,
   },
-  inject: ['pageTitle', 'pageDescription'],
+  inject: {
+    pageTitle: { default: defaultTitle },
+    pageDescription: {
+      default: defaultDescription,
+    },
+  },
   data() {
     return {
       isFeedbackBannerDismissed: localStorage.getItem(CATALOG_FEEDBACK_DISMISSED_KEY) === 'true',
@@ -50,7 +60,7 @@ export default {
     </gl-banner>
     <h1 class="gl-font-size-h-display">{{ pageTitle }}</h1>
     <p>
-      <span>{{ pageDescription }}</span>
+      <span data-testid="description">{{ pageDescription }}</span>
       <gl-link :href="$options.learnMorePath" target="_blank">{{
         $options.i18n.learnMore
       }}</gl-link>

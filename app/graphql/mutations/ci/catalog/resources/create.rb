@@ -15,7 +15,7 @@ module Mutations
 
           def resolve(project_path:)
             project = authorized_find!(project_path: project_path)
-            response = ::Ci::Catalog::AddResourceService.new(project, current_user).execute
+            response = ::Ci::Catalog::Resources::CreateService.new(project, current_user).execute
 
             errors = response.success? ? [] : [response.message]
 

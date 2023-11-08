@@ -190,7 +190,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   def update_reviewer_state
     if reviewer_state_params[:reviewer_state] === 'approved'
       ::MergeRequests::ApprovalService
-        .new(project: @project, current_user: current_user)
+        .new(project: @project, current_user: current_user, params: approve_params)
         .execute(merge_request)
     else
       ::MergeRequests::UpdateReviewerStateService

@@ -79,7 +79,7 @@ module Gitlab
           end
 
           def create_ci_catalog(project)
-            result = ::Ci::Catalog::AddResourceService.new(project, @current_user).execute
+            result = ::Ci::Catalog::Resources::CreateService.new(project, @current_user).execute
             if result.success?
               result.payload
             else

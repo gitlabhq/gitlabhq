@@ -125,6 +125,13 @@ module Repositories
     def log_user_activity
       Users::ActivityService.new(author: user, project: project, namespace: project&.namespace).execute
     end
+
+    def append_info_to_payload(payload)
+      super
+
+      payload[:metadata] ||= {}
+      payload[:metadata][:repository_storage] = project&.repository_storage
+    end
   end
 end
 

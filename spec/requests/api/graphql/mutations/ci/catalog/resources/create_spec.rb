@@ -36,19 +36,5 @@ RSpec.describe 'CatalogResourcesCreate', feature_category: :pipeline_composition
         expect(response).to have_gitlab_http_status(:success)
       end
     end
-
-    context 'with an invalid project' do
-      let_it_be(:project) { create(:project, :repository) }
-
-      before_all do
-        project.add_owner(current_user)
-      end
-
-      it 'returns an error' do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        expect(graphql_mutation_response(:catalog_resources_create)['errors']).not_to be_empty
-      end
-    end
   end
 end

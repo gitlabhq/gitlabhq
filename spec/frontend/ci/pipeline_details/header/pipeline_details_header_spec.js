@@ -97,6 +97,7 @@ describe('Pipeline details header', () => {
       child: false,
       latest: true,
       mergeTrainPipeline: false,
+      mergedResultsPipeline: false,
       invalid: false,
       failed: false,
       autoDevops: false,

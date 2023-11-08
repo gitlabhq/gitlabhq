@@ -1,7 +1,15 @@
 <script>
-import { GlDisclosureDropdown, GlButton, GlIcon, GlForm, GlFormCheckbox } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlButton,
+  GlIcon,
+  GlForm,
+  GlFormCheckbox,
+  GlFormRadioGroup,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -34,12 +42,14 @@ export default {
     GlButton,
     GlIcon,
     GlForm,
+    GlFormRadioGroup,
     GlFormCheckbox,
     MarkdownEditor,
     ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
     SummarizeMyReview: () =>
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
   },
@@ -53,6 +63,7 @@ export default {
         note: '',
         approve: false,
         approval_password: '',
+        reviewer_state: 'reviewed',
       },
       formFieldProps: {
         id: 'review-note-body',
@@ -73,6 +84,38 @@ export default {
     },
     autosaveKey() {
       return `submit_review_dropdown/${this.getNoteableData.id}`;
+    },
+    radioGroupOptions() {
+      return [
+        {
+          html: [
+            __('Comment'),
+            `<p class="help-text">
+              ${__('Submit general feedback without explicit approval.')}
+            </p>`,
+          ].join('<br />'),
+          value: 'reviewed',
+        },
+        {
+          html: [
+            __('Approve'),
+            `<p class="help-text">
+              ${__('Submit feedback and approve these changes.')}
+            </p>`,
+          ].join('<br />'),
+          value: 'approved',
+          disabled: !this.userPermissions.canApprove,
+        },
+        {
+          html: [
+            __('Request changes'),
+            `<p class="help-text">
+              ${__('Submit feedback that should be addressed before merging.')}
+            </p>`,
+          ].join('<br />'),
+          value: 'requested_changes',
+        },
+      ];
     },
   },
   watch: {
@@ -208,7 +251,14 @@ export default {
             @keydown.ctrl.enter="submitReview"
           />
         </div>
-        <template v-if="userPermissions.canApprove">
+        <gl-form-radio-group
+          v-if="glFeatures.mrRequestChanges"
+          v-model="noteData.reviewer_state"
+          :options="radioGroupOptions"
+          class="gl-mt-4"
+          data-testid="reviewer_states"
+        />
+        <template v-else-if="userPermissions.canApprove">
           <gl-form-checkbox
             v-model="noteData.approve"
             data-testid="approve_merge_request"
@@ -216,14 +266,14 @@ export default {
           >
             {{ __('Approve merge request') }}
           </gl-form-checkbox>
-          <approval-password
-            v-if="getNoteableData.require_password_to_approve"
-            v-show="noteData.approve"
-            v-model="noteData.approval_password"
-            class="gl-mt-3"
-            data-testid="approve_password"
-          />
         </template>
+        <approval-password
+          v-if="userPermissions.canApprove && getNoteableData.require_password_to_approve"
+          v-show="noteData.approve || noteData.reviewer_state === 'approved'"
+          v-model="noteData.approval_password"
+          class="gl-mt-3"
+          data-testid="approve_password"
+        />
         <div class="gl-display-flex gl-justify-content-start gl-mt-4">
           <gl-button
             :loading="isSubmitting"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UsageMetricDefinition::RedisHllGenerator, :silence_stdout do
+RSpec.describe Gitlab::UsageMetricDefinition::RedisHllGenerator, :silence_stdout, feature_category: :service_ping do
   include UsageDataHelpers
 
   let(:category) { 'test_category' }
@@ -16,6 +16,10 @@ RSpec.describe Gitlab::UsageMetricDefinition::RedisHllGenerator, :silence_stdout
     stub_const("#{Gitlab::UsageMetricDefinitionGenerator}::TOP_LEVEL_DIR", temp_dir)
     # Stub Prometheus requests from Gitlab::Utils::UsageData
     stub_prometheus_queries
+
+    allow_next_instance_of(Gitlab::UsageMetricDefinitionGenerator) do |instance|
+      allow(instance).to receive(:ask).and_return('y') # confirm deprecation warning
+    end
   end
 
   after do

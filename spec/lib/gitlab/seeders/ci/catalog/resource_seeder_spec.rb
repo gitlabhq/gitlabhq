@@ -53,7 +53,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Catalog::ResourceSeeder, feature_category:
 
     context 'when ci resource creation fails' do
       before do
-        allow_next_instance_of(::Ci::Catalog::AddResourceService) do |service|
+        allow_next_instance_of(::Ci::Catalog::Resources::CreateService) do |service|
           allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'error'))
         end
       end

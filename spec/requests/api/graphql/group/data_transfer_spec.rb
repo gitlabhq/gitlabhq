@@ -71,45 +71,21 @@ RSpec.describe 'group data transfers', feature_category: :source_code_management
   context 'when user has enough permissions' do
     before do
       group.add_owner(current_user)
+      subject
     end
 
-    context 'when data_transfer_monitoring_mock_data is NOT enabled' do
-      before do
-        stub_feature_flags(data_transfer_monitoring_mock_data: false)
-        subject
-      end
+    it 'returns real results' do
+      expect(response).to have_gitlab_http_status(:ok)
 
-      it 'returns real results' do
-        expect(response).to have_gitlab_http_status(:ok)
+      expect(egress_data.count).to eq(2)
 
-        expect(egress_data.count).to eq(2)
+      expect(egress_data.first.keys).to match_array(
+        %w[date totalEgress repositoryEgress artifactsEgress packagesEgress registryEgress]
+      )
 
-        expect(egress_data.first.keys).to match_array(
-          %w[date totalEgress repositoryEgress artifactsEgress packagesEgress registryEgress]
-        )
-
-        expect(egress_data.pluck('repositoryEgress')).to match_array(%w[1 6])
-      end
-
-      it_behaves_like 'a working graphql query'
+      expect(egress_data.pluck('repositoryEgress')).to match_array(%w[1 6])
     end
 
-    context 'when data_transfer_monitoring_mock_data is enabled' do
-      before do
-        stub_feature_flags(data_transfer_monitoring_mock_data: true)
-        subject
-      end
-
-      it 'returns mock results' do
-        expect(response).to have_gitlab_http_status(:ok)
-
-        expect(egress_data.count).to eq(12)
-        expect(egress_data.first.keys).to match_array(
-          %w[date totalEgress repositoryEgress artifactsEgress packagesEgress registryEgress]
-        )
-      end
-
-      it_behaves_like 'a working graphql query'
-    end
+    it_behaves_like 'a working graphql query'
   end
 end

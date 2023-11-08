@@ -10,36 +10,53 @@ describe('CatalogHeader', () => {
   let wrapper;
 
   const defaultProps = {};
-  const defaultProvide = {
+  const customProvide = {
     pageTitle: 'Catalog page',
     pageDescription: 'This is a nice catalog page',
   };
 
   const findBanner = () => wrapper.findComponent(GlBanner);
   const findFeedbackButton = () => findBanner().findComponent(GlButton);
-  const findTitle = () => wrapper.findByText(defaultProvide.pageTitle);
-  const findDescription = () => wrapper.findByText(defaultProvide.pageDescription);
+  const findTitle = () => wrapper.find('h1');
+  const findDescription = () => wrapper.findByTestId('description');
 
-  const createComponent = ({ props = {}, stubs = {} } = {}) => {
+  const createComponent = ({ props = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(CatalogHeader, {
       propsData: {
         ...defaultProps,
         ...props,
       },
-      provide: defaultProvide,
+      provide,
       stubs: {
         ...stubs,
       },
     });
   };
 
-  it('renders the Catalog title and description', () => {
-    createComponent();
+  describe('title and description', () => {
+    describe('when there are no values provided', () => {
+      beforeEach(() => {
+        createComponent();
+      });
 
-    expect(findTitle().exists()).toBe(true);
-    expect(findDescription().exists()).toBe(true);
+      it('renders the default values', () => {
+        expect(findTitle().text()).toBe('CI/CD Catalog');
+        expect(findDescription().text()).toBe(
+          'Discover CI configuration resources for a seamless CI/CD experience.',
+        );
+      });
+    });
+    describe('when custom values are provided', () => {
+      beforeEach(() => {
+        createComponent({ provide: customProvide });
+      });
+
+      it('renders the custom values', () => {
+        expect(findTitle().text()).toBe(customProvide.pageTitle);
+        expect(findDescription().text()).toBe(customProvide.pageDescription);
+      });
+    });
   });
-
   describe('Feedback banner', () => {
     describe('when user has never dismissed', () => {
       beforeEach(() => {

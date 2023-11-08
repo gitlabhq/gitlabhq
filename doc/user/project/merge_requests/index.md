@@ -82,6 +82,7 @@ or:
 > - Filtering by `reviewer` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
 > - Filtering by potential approvers was moved to GitLab Premium in 13.9.
 > - Filtering by `approved-by` moved to GitLab Premium in 13.9.
+> - Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
 
 To filter the list of merge requests:
 

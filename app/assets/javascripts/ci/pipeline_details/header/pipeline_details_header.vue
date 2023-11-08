@@ -64,7 +64,7 @@ export default {
     latestBadgeTooltip: __('Latest pipeline for the most recent commit on this branch'),
     mergeTrainBadgeText: s__('Pipelines|merge train'),
     mergeTrainBadgeTooltip: s__(
-      'Pipelines|This pipeline ran on the contents of this merge request combined with the contents of all other merge requests queued for merging into the target branch.',
+      'Pipelines|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch.',
     ),
     invalidBadgeText: s__('Pipelines|yaml invalid'),
     failedBadgeText: s__('Pipelines|error'),
@@ -74,7 +74,11 @@ export default {
     ),
     detachedBadgeText: s__('Pipelines|merge request'),
     detachedBadgeTooltip: s__(
-      "Pipelines|This pipeline ran on the contents of this merge request's source branch, not the target branch.",
+      "Pipelines|This pipeline ran on the contents of the merge request's source branch, not the target branch.",
+    ),
+    mergedResultsBadgeText: s__('Pipelines|merged results'),
+    mergedResultsBadgeTooltip: s__(
+      'Pipelines|This pipeline ran on the contents of the merge request combined with the contents of the target branch.',
     ),
     stuckBadgeText: s__('Pipelines|stuck'),
     stuckBadgeTooltip: s__('Pipelines|This pipeline is stuck'),
@@ -525,6 +529,15 @@ export default {
               size="sm"
             >
               {{ $options.i18n.detachedBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.mergedResultsPipeline"
+              v-gl-tooltip
+              :title="$options.i18n.mergedResultsBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              {{ $options.i18n.mergedResultsBadgeText }}
             </gl-badge>
             <gl-badge
               v-if="badges.stuck"

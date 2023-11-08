@@ -1,5 +1,5 @@
 import { initEmojiMap, EMOJI_VERSION } from '~/emoji';
-import { CACHE_VERSION_KEY, CACHE_KEY } from '~/emoji/constants';
+import { CACHE_KEY } from '~/emoji/constants';
 
 export const validEmoji = {
   atom: {
@@ -105,9 +105,8 @@ export function clearEmojiMock() {
   initEmojiMap.promise = null;
 }
 
-export async function initEmojiMock(mockData = mockEmojiData) {
+export async function initEmojiMock(data = mockEmojiData) {
   clearEmojiMock();
-  localStorage.setItem(CACHE_VERSION_KEY, EMOJI_VERSION);
-  localStorage.setItem(CACHE_KEY, JSON.stringify(mockData));
+  localStorage.setItem(CACHE_KEY, JSON.stringify({ data, EMOJI_VERSION }));
   await initEmojiMap();
 }

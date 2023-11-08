@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout do
+RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout, feature_category: :service_ping do
   include UsageDataHelpers
 
   let(:key_path) { 'counts_weekly.test_metric' }
@@ -14,6 +14,10 @@ RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout do
     stub_const("#{described_class}::TOP_LEVEL_DIR", temp_dir)
     # Stub Prometheus requests from Gitlab::Utils::UsageData
     stub_prometheus_queries
+
+    allow_next_instance_of(described_class) do |instance|
+      allow(instance).to receive(:ask).and_return('y') # confirm deprecation warning
+    end
   end
 
   after do
@@ -98,6 +102,21 @@ RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout do
       files = Dir.glob(File.join(temp_dir, 'metrics/counts_7d/*_metric.yml'))
 
       expect(files.count).to eq(2)
+    end
+  end
+
+  ['n', 'N', 'random word', nil].each do |answer|
+    context "when user agreed with deprecation warning by typing: #{answer}" do
+      it 'does not create definition file' do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:ask).and_return(answer)
+        end
+
+        described_class.new([key_path], { 'dir' => dir, 'class_name' => class_name }).invoke_all
+        files = Dir.glob(File.join(temp_dir, 'metrics/counts_7d/*_metric.yml'))
+
+        expect(files.count).to eq(0)
+      end
     end
   end
 end

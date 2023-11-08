@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Saml::Config do
+  include LoginHelpers
+
   describe '.enabled?' do
     subject { described_class.enabled? }
 
@@ -10,7 +12,7 @@ RSpec.describe Gitlab::Auth::Saml::Config do
 
     context 'when SAML is enabled' do
       before do
-        allow(Gitlab::Auth::OAuth::Provider).to receive(:providers).and_return([:saml])
+        stub_basic_saml_config
       end
 
       it { is_expected.to eq(true) }

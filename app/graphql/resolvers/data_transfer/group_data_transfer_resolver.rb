@@ -16,16 +16,12 @@ module Resolvers
       def resolve(**args)
         return { egress_nodes: [] } unless Feature.enabled?(:data_transfer_monitoring, group)
 
-        results = if Feature.enabled?(:data_transfer_monitoring_mock_data, group)
-                    ::DataTransfer::MockedTransferFinder.new.execute
-                  else
-                    ::DataTransfer::GroupDataTransferFinder.new(
-                      group: group,
-                      from: args[:from],
-                      to: args[:to],
-                      user: current_user
-                    ).execute.map(&:attributes)
-                  end
+        results = ::DataTransfer::GroupDataTransferFinder.new(
+          group: group,
+          from: args[:from],
+          to: args[:to],
+          user: current_user
+        ).execute.map(&:attributes)
 
         { egress_nodes: results.to_a }
       end

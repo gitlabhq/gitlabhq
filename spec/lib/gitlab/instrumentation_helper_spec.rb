@@ -42,15 +42,19 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     context 'when Redis calls are made' do
       let_it_be(:redis_store_class) { define_helper_redis_store_class }
 
-      before do # init redis connection with `test` env details
+      before do
         redis_store_class.with(&:ping)
         Gitlab::Redis::Queues.with(&:ping)
         RequestStore.clear!
       end
 
-      it 'adds Redis data and omits Gitaly data' do
-        stub_rails_env('staging') # to avoid raising CrossSlotError
+      it 'adds Redis data including cross slot calls' do
+        expect(Gitlab::Instrumentation::RedisBase)
+          .to receive(:raise_cross_slot_validation_errors?)
+          .once.and_return(false)
+
         redis_store_class.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
+
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
           redis_store_class.with { |redis| redis.mget('cache-test', 'cache-test-2') }
         end

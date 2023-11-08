@@ -1,9 +1,11 @@
+import MockAdapter from 'axios-mock-adapter';
 import {
   emojiFixtureMap,
   initEmojiMock,
   validEmoji,
   invalidEmoji,
   clearEmojiMock,
+  mockEmojiData,
 } from 'helpers/emoji';
 import { trimText } from 'helpers/text_helper';
 import { createMockClient } from 'helpers/mock_apollo_helper';
@@ -16,6 +18,7 @@ import {
   getEmojiMap,
   emojiFallbackImageSrc,
   loadCustomEmojiWithNames,
+  EMOJI_VERSION,
 } from '~/emoji';
 
 import isEmojiUnicodeSupported, {
@@ -26,8 +29,11 @@ import isEmojiUnicodeSupported, {
   isHorceRacingSkinToneComboEmoji,
   isPersonZwjEmoji,
 } from '~/emoji/support/is_emoji_unicode_supported';
-import { NEUTRAL_INTENT_MULTIPLIER } from '~/emoji/constants';
+import { CACHE_KEY, CACHE_VERSION_KEY, NEUTRAL_INTENT_MULTIPLIER } from '~/emoji/constants';
 import customEmojiQuery from '~/emoji/queries/custom_emoji.query.graphql';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { useLocalStorageSpy } from 'jest/__helpers__/local_storage_helper';
 
 let mockClient;
 jest.mock('~/lib/graphql', () => {
@@ -73,6 +79,195 @@ function createMockEmojiClient() {
   window.gon = { features: { customEmoji: true } };
   document.body.dataset.groupFullPath = 'test-group';
 }
+
+describe('retrieval of emojis.json', () => {
+  useLocalStorageSpy();
+
+  let mock;
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+    mock.onGet(/emojis\.json$/).reply(HTTP_STATUS_OK, mockEmojiData);
+    initEmojiMap.promise = null;
+  });
+
+  afterEach(() => {
+    mock.restore();
+  });
+
+  const assertCorrectLocalStorage = () => {
+    expect(localStorage.length).toBe(1);
+    expect(localStorage.getItem(CACHE_KEY)).toBe(
+      JSON.stringify({ data: mockEmojiData, EMOJI_VERSION }),
+    );
+  };
+
+  const assertEmojiBeingLoadedCorrectly = () => {
+    expect(Object.keys(getEmojiMap())).toEqual(Object.keys(validEmoji));
+  };
+
+  it('should remove the old `CACHE_VERSION_KEY`', async () => {
+    localStorage.setItem(CACHE_VERSION_KEY, EMOJI_VERSION);
+
+    await initEmojiMap();
+
+    expect(localStorage.getItem(CACHE_VERSION_KEY)).toBe(null);
+  });
+
+  describe('when the localStorage is empty', () => {
+    it('should call the API and store results in localStorage', async () => {
+      await initEmojiMap();
+
+      assertEmojiBeingLoadedCorrectly();
+      expect(mock.history.get.length).toBe(1);
+      assertCorrectLocalStorage();
+    });
+  });
+
+  describe('when the localStorage stores the correct version', () => {
+    beforeEach(async () => {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ data: mockEmojiData, EMOJI_VERSION }));
+      localStorage.setItem.mockClear();
+      await initEmojiMap();
+    });
+
+    it('should not call the API and not mutate the localStorage', () => {
+      assertEmojiBeingLoadedCorrectly();
+      expect(mock.history.get.length).toBe(0);
+      expect(localStorage.setItem).not.toHaveBeenCalled();
+      assertCorrectLocalStorage();
+    });
+  });
+
+  describe('when the localStorage stores an incorrect version', () => {
+    beforeEach(async () => {
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ data: mockEmojiData, EMOJI_VERSION: `${EMOJI_VERSION}-different` }),
+      );
+      localStorage.setItem.mockClear();
+      await initEmojiMap();
+    });
+
+    it('should call the API and store results in localStorage', () => {
+      assertEmojiBeingLoadedCorrectly();
+      expect(mock.history.get.length).toBe(1);
+      assertCorrectLocalStorage();
+    });
+  });
+
+  describe('when the localStorage stores corrupted data', () => {
+    beforeEach(async () => {
+      localStorage.setItem(CACHE_KEY, "[invalid: 'INVALID_JSON");
+      localStorage.setItem.mockClear();
+      await initEmojiMap();
+    });
+
+    it('should call the API and store results in localStorage', () => {
+      assertEmojiBeingLoadedCorrectly();
+      expect(mock.history.get.length).toBe(1);
+      assertCorrectLocalStorage();
+    });
+  });
+
+  describe('when the localStorage stores data in a different format', () => {
+    beforeEach(async () => {
+      localStorage.setItem(CACHE_KEY, JSON.stringify([]));
+      localStorage.setItem.mockClear();
+      await initEmojiMap();
+    });
+
+    it('should call the API and store results in localStorage', () => {
+      assertEmojiBeingLoadedCorrectly();
+      expect(mock.history.get.length).toBe(1);
+      assertCorrectLocalStorage();
+    });
+  });
+
+  describe('when the localStorage is full', () => {
+    beforeEach(async () => {
+      const oldSetItem = localStorage.setItem;
+      localStorage.setItem = jest.fn().mockImplementationOnce((key, value) => {
+        if (key === CACHE_KEY) {
+          throw new Error('Storage Full');
+        }
+        oldSetItem(key, value);
+      });
+      await initEmojiMap();
+    });
+
+    it('should call API but not store the results', () => {
+      assertEmojiBeingLoadedCorrectly();
+      expect(mock.history.get.length).toBe(1);
+      expect(localStorage.length).toBe(0);
+      expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        CACHE_KEY,
+        JSON.stringify({ data: mockEmojiData, EMOJI_VERSION }),
+      );
+    });
+  });
+
+  describe('backwards compatibility', () => {
+    // As per: https://gitlab.com/gitlab-org/gitlab/-/blob/62b66abd3bb7801e7c85b4e42a1bbd51fbb37c1b/app/assets/javascripts/emoji/index.js#L27-52
+    async function prevImplementation() {
+      if (
+        window.localStorage.getItem(CACHE_VERSION_KEY) === EMOJI_VERSION &&
+        window.localStorage.getItem(CACHE_KEY)
+      ) {
+        return JSON.parse(window.localStorage.getItem(CACHE_KEY));
+      }
+
+      // We load the JSON file direct from the server
+      // because it can't be loaded from a CDN due to
+      // cross domain problems with JSON
+      const { data } = await axios.get(
+        `${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/emojis.json`,
+      );
+
+      try {
+        window.localStorage.setItem(CACHE_VERSION_KEY, EMOJI_VERSION);
+        window.localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      } catch {
+        // Setting data in localstorage may fail when storage quota is exceeded.
+        // We should continue even when this fails.
+      }
+
+      return data;
+    }
+
+    it('Old -> New -> Old should not break', async () => {
+      // The follow steps simulate a multi-version deployment. e.g.
+      // Hitting a page on "regular" .com, then canary, and then "regular" again
+
+      // Load emoji the old way to pre-populate the cache
+      let res = await prevImplementation();
+      expect(res).toEqual(mockEmojiData);
+      expect(mock.history.get.length).toBe(1);
+      localStorage.setItem.mockClear();
+
+      // Load emoji the new way
+      await initEmojiMap();
+      expect(mock.history.get.length).toBe(2);
+      assertEmojiBeingLoadedCorrectly();
+      assertCorrectLocalStorage();
+      localStorage.setItem.mockClear();
+
+      // Load emoji the old way to pre-populate the cache
+      res = await prevImplementation();
+      expect(res).toEqual(mockEmojiData);
+      expect(mock.history.get.length).toBe(3);
+      expect(localStorage.setItem.mock.calls).toEqual([
+        [CACHE_VERSION_KEY, EMOJI_VERSION],
+        [CACHE_KEY, JSON.stringify(mockEmojiData)],
+      ]);
+
+      // Load emoji the old way should work again (and be taken from the cache)
+      res = await prevImplementation();
+      expect(res).toEqual(mockEmojiData);
+      expect(mock.history.get.length).toBe(3);
+    });
+  });
+});
 
 describe('emoji', () => {
   beforeEach(async () => {

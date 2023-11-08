@@ -2,7 +2,9 @@
 
 require "spec_helper"
 
-RSpec.describe AuthHelper do
+RSpec.describe AuthHelper, feature_category: :system_access do
+  include LoginHelpers
+
   describe "button_based_providers" do
     it 'returns all enabled providers from devise' do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
@@ -310,88 +312,16 @@ RSpec.describe AuthHelper do
     end
   end
 
-  describe '#auth_strategy_class' do
-    subject(:auth_strategy_class) { helper.auth_strategy_class(name) }
-
-    context 'when configuration specifies no provider' do
-      let(:name) { 'does_not_exist' }
-
-      before do
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([])
-      end
-
-      it 'returns false' do
-        expect(auth_strategy_class).to be_falsey
-      end
-    end
-
-    context 'when configuration specifies a provider with args but without strategy_class' do
-      let(:name) { 'google_oauth2' }
-      let(:provider) do
-        Struct.new(:name, :args).new(
-          name,
-          'app_id' => 'YOUR_APP_ID'
-        )
-      end
-
-      before do
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
-      end
-
-      it 'returns false' do
-        expect(auth_strategy_class).to be_falsey
-      end
-    end
-
-    context 'when configuration specifies a provider with args and strategy_class' do
-      let(:name) { 'provider1' }
-      let(:strategy) { 'OmniAuth::Strategies::LDAP' }
-      let(:provider) do
-        Struct.new(:name, :args).new(
-          name,
-          'strategy_class' => strategy
-        )
-      end
-
-      before do
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
-      end
-
-      it 'returns the class' do
-        expect(auth_strategy_class).to eq(strategy)
-      end
-    end
-
-    context 'when configuration specifies another provider with args and another strategy_class' do
-      let(:name) { 'provider1' }
-      let(:strategy) { 'OmniAuth::Strategies::LDAP' }
-      let(:provider) do
-        Struct.new(:name, :args).new(
-          'another_name',
-          'strategy_class' => strategy
-        )
-      end
-
-      before do
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
-      end
-
-      it 'returns false' do
-        expect(auth_strategy_class).to be_falsey
-      end
-    end
-  end
-
   describe '#saml_providers' do
     subject(:saml_providers) { helper.saml_providers }
 
     let(:saml_strategy) { 'OmniAuth::Strategies::SAML' }
 
-    let(:saml_provider_1_name) { 'saml_provider_1' }
+    let(:saml_provider_1_name) { 'saml' }
     let(:saml_provider_1) do
       Struct.new(:name, :args).new(
         saml_provider_1_name,
-        'strategy_class' => saml_strategy
+        {}
       )
     end
 
@@ -422,7 +352,7 @@ RSpec.describe AuthHelper do
 
     context 'when SAML is enabled without specifying a strategy class' do
       before do
-        allow(Gitlab::Auth::OAuth::Provider).to receive(:providers).and_return([:saml])
+        stub_omniauth_config(providers: [saml_provider_1])
       end
 
       it 'returns the saml provider' do
@@ -432,8 +362,7 @@ RSpec.describe AuthHelper do
 
     context 'when configuration specifies no provider' do
       before do
-        allow(Devise).to receive(:omniauth_providers).and_return([])
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([])
+        stub_omniauth_config(providers: [])
       end
 
       it 'returns an empty list' do
@@ -443,30 +372,27 @@ RSpec.describe AuthHelper do
 
     context 'when configuration specifies a provider with a SAML strategy_class' do
       before do
-        allow(Devise).to receive(:omniauth_providers).and_return([saml_provider_1_name])
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([saml_provider_1])
+        stub_omniauth_config(providers: [saml_provider_1])
       end
 
       it 'returns the provider' do
-        expect(saml_providers).to match_array([saml_provider_1_name])
+        expect(saml_providers).to match_array([saml_provider_1_name.to_sym])
       end
     end
 
     context 'when configuration specifies two providers with a SAML strategy_class' do
       before do
-        allow(Devise).to receive(:omniauth_providers).and_return([saml_provider_1_name, saml_provider_2_name])
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([saml_provider_1, saml_provider_2])
+        stub_omniauth_config(providers: [saml_provider_1, saml_provider_2])
       end
 
       it 'returns the provider' do
-        expect(saml_providers).to match_array([saml_provider_1_name, saml_provider_2_name])
+        expect(saml_providers).to match_array([saml_provider_1_name.to_sym, saml_provider_2_name.to_sym])
       end
     end
 
     context 'when configuration specifies a provider with a non-SAML strategy_class' do
       before do
-        allow(Devise).to receive(:omniauth_providers).and_return([ldap_provider_name])
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([ldap_provider])
+        stub_omniauth_config(providers: [ldap_provider])
       end
 
       it 'returns an empty list' do
@@ -476,12 +402,11 @@ RSpec.describe AuthHelper do
 
     context 'when configuration specifies four providers but only two with SAML strategy_class' do
       before do
-        allow(Devise).to receive(:omniauth_providers).and_return([saml_provider_1_name, ldap_provider_name, saml_provider_2_name, google_oauth2_provider_name])
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([saml_provider_1, ldap_provider, saml_provider_2, google_oauth2_provider])
+        stub_omniauth_config(providers: [saml_provider_1, ldap_provider, saml_provider_2, google_oauth2_provider])
       end
 
       it 'returns the provider' do
-        expect(saml_providers).to match_array([saml_provider_1_name, saml_provider_2_name])
+        expect(saml_providers).to match_array([saml_provider_1_name.to_sym, saml_provider_2_name.to_sym])
       end
     end
   end

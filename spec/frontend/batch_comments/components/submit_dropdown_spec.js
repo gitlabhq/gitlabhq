@@ -19,7 +19,11 @@ let wrapper;
 let publishReview;
 let trackingSpy;
 
-function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) {
+function factory({
+  canApprove = true,
+  shouldAnimateReviewButton = false,
+  mrRequestChanges = false,
+} = {}) {
   publishReview = jest.fn();
   trackingSpy = mockTracking(undefined, null, jest.spyOn);
   const requestHandlers = [
@@ -75,6 +79,9 @@ function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) 
   wrapper = mountExtended(SubmitDropdown, {
     store,
     apolloProvider,
+    provide: {
+      glFeatures: { mrRequestChanges },
+    },
   });
 }
 
@@ -101,6 +108,7 @@ describe('Batch comments submit dropdown', () => {
       note: 'Hello world',
       approve: false,
       approval_password: '',
+      reviewer_state: 'reviewed',
     });
   });
 
@@ -171,4 +179,52 @@ describe('Batch comments submit dropdown', () => {
       );
     },
   );
+
+  describe('when mrRequestChanges feature flag is enabled', () => {
+    it('renders a radio group with review state options', async () => {
+      factory({ mrRequestChanges: true });
+
+      await waitForPromises();
+
+      expect(wrapper.findAll('.gl-form-radio').length).toBe(3);
+    });
+
+    it('renders disabled approve radio button when user can not approve', async () => {
+      factory({ mrRequestChanges: true, canApprove: false });
+
+      wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+
+      await waitForPromises();
+
+      expect(wrapper.find('.custom-control-input[value="approved"]').attributes('disabled')).toBe(
+        'disabled',
+      );
+    });
+
+    it.each`
+      value
+      ${'approved'}
+      ${'reviewed'}
+      ${'requested_changes'}
+    `('sends $value review state to api when submitting', async ({ value }) => {
+      factory({ mrRequestChanges: true });
+
+      wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+
+      await waitForPromises();
+
+      await wrapper.find(`.custom-control-input[value="${value}"]`).trigger('change');
+
+      findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+      expect(publishReview).toHaveBeenCalledWith(expect.anything(), {
+        noteable_type: 'merge_request',
+        noteable_id: 1,
+        note: 'Hello world',
+        approve: false,
+        approval_password: '',
+        reviewer_state: value,
+      });
+    });
+  });
 });

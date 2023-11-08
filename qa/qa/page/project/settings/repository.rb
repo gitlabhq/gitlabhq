@@ -33,7 +33,7 @@ module QA
 
           def expand_deploy_tokens(&block)
             expand_content('deploy-tokens-settings-content') do
-              Settings::DeployTokens.perform(&block)
+              Settings::ProjectDeployTokens.perform(&block)
             end
           end
 

@@ -70,4 +70,3 @@
 - UploaderFinder
 - UserGroupNotificationSettingsFinder
 - UserGroupsCounter
-- DataTransfer::MockedTransferFinder # Can be removed when https://gitlab.com/gitlab-org/gitlab/-/issues/397693 is closed
