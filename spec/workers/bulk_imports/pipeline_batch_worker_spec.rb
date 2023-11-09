@@ -13,6 +13,10 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
         @context = context
       end
 
+      def self.relation
+        'labels'
+      end
+
       def run
         @context.tracker.finish!
       end
@@ -200,6 +204,57 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
       described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new("Something went wrong"))
 
       expect(batch.reload).to be_failed
+    end
+  end
+
+  context 'with stop signal from database health check' do
+    around do |example|
+      with_sidekiq_server_middleware do |chain|
+        chain.add Gitlab::SidekiqMiddleware::SkipJobs
+        Sidekiq::Testing.inline! { example.run }
+      end
+    end
+
+    before do
+      stub_feature_flags("drop_sidekiq_jobs_#{described_class.name}": false)
+
+      stop_signal = instance_double("Gitlab::Database::HealthStatus::Signals::Stop", stop?: true)
+      allow(Gitlab::Database::HealthStatus).to receive(:evaluate).and_return([stop_signal])
+    end
+
+    it 'defers the job by set time' do
+      expect_next_instance_of(described_class) do |worker|
+        expect(worker).not_to receive(:perform).with(batch.id)
+      end
+
+      expect(described_class).to receive(:perform_in).with(described_class::DEFER_ON_HEALTH_DELAY, batch.id)
+
+      described_class.perform_async(batch.id)
+    end
+
+    it 'lazy evaluates schema and tables', :aggregate_failures do
+      block = described_class.database_health_check_attrs[:block]
+
+      job_args = [batch.id]
+
+      schema, table = block.call([job_args])
+
+      expect(schema).to eq(:gitlab_main_cell)
+      expect(table).to eq(['labels'])
+    end
+
+    context 'when `bulk_import_deferred_workers` feature flag is disabled' do
+      it 'does not defer job execution' do
+        stub_feature_flags(bulk_import_deferred_workers: false)
+
+        expect_next_instance_of(described_class) do |worker|
+          expect(worker).to receive(:perform).with(batch.id)
+        end
+
+        expect(described_class).not_to receive(:perform_in)
+
+        described_class.perform_async(batch.id)
+      end
     end
   end
 end

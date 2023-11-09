@@ -6,12 +6,13 @@ info: This page is owned by the Solutions Architecture team.
 
 # AWS Solutions
 
-This documentation covers solutions relating to GitLab and Amazon Web Services (AWS).
+This documentation covers solutions relating to leveraging GitLab with and on Amazon Web Services (AWS).
 
-[GitLab AWS Integration Index](gitlab_aws_integration.md)
-[GitLab Instances on AWS EKS](gitlab_instance_on_aws.md)
-[SRE Considerations Gitaly on AWS](gitaly_sre_for_aws.md)
-[Provision GitLab on a single EC2 instance in AWS](gitlab_single_box_on_aws.md)
+- [GitLab partnership certifications and designations from AWS](gitlab_aws_integration.md)
+- [GitLab AWS Integration Index](gitlab_aws_partner_designations.md)
+- [GitLab Instances on AWS EKS](gitlab_instance_on_aws.md)
+- [SRE Considerations Gitaly on AWS](gitaly_sre_for_aws.md)
+- [Provision GitLab on a single EC2 instance in AWS](gitlab_single_box_on_aws.md)
 
 ## Cloud platform well architected compliance
 

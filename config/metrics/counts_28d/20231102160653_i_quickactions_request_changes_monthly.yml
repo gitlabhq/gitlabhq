@@ -1,0 +1,23 @@
+---
+key_path: redis_hll_counters.quickactions.i_quickactions_request_changes_monthly
+description: Count using the `/request_changes` quick action on Merge Requests
+product_section: dev
+product_stage: create
+product_group: code_review
+value_type: number
+status: active
+milestone: '16.6'
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_quickactions_request_changes
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate

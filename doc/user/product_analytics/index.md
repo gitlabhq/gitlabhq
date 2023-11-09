@@ -113,6 +113,18 @@ To onboard a project:
 1. Select **Set up product analytics**.
 Your instance is being created, and the project onboarded.
 
+### Onboard an internal project
+
+GitLab team members can enable Product Analytics on their internal projects on GitLab.com (Ultimate) during the experiment phase.
+
+1. Send a message to the Product Analytics team (`#g_analyze_product_analytics`) informing them of the repository to be enabled.
+1. Using ChatOps, enable both the `product_analytics_dashboards` and `combined_analytics_dashboards`:
+
+    ```plaintext
+    /chatops run feature set product_analytics_dashboards true --project=FULLPATH_TO_PROJECT
+    /chatops run feature set combined_analytics_dashboards true --project=FULLPATH_TO_PROJECT
+    ```
+
 ## Instrument your application
 
 To instrument code to collect data, use one or more of the existing SDKs:
@@ -303,19 +315,6 @@ To view product analytics usage quota:
 1. Select **Settings > Usage quota** and select the **Product analytics** tab.
 
 The usage quota excludes projects that are not onboarded with product analytics.
-
-## Onboarding GitLab internal projects
-
-GitLab team members can enable Product Analytics on their own internal projects on GitLab.com during the experiment phase.
-
-1. Send a message to the Product Analytics team (`#g_analyze_product_analytics`) informing them of the repository to be enabled.
-1. Ensure that the project is within an Ultimate namespace.
-1. Using ChatOps, enable both the `product_analytics_dashboards` and `combined_analytics_dashboards`
-
-    ```plaintext
-    /chatops run feature set product_analytics_dashboards true --project=FULLPATH_TO_PROJECT
-    /chatops run feature set combined_analytics_dashboards true --project=FULLPATH_TO_PROJECT
-    ```
 
 ## Troubleshooting
 

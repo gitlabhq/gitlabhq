@@ -80,13 +80,20 @@ module Gitlab
         end
 
         health_check_attrs = worker_class.database_health_check_attrs
-        job_base_model = Gitlab::Database.schemas_to_base_models[health_check_attrs[:gitlab_schema]].first
+
+        tables, schema = health_check_attrs.values_at(:tables, :gitlab_schema)
+
+        if health_check_attrs[:block].respond_to?(:call)
+          schema, tables = health_check_attrs[:block].call(job['args'], schema, tables)
+        end
+
+        job_base_model = Gitlab::Database.schemas_to_base_models[schema].first
 
         health_context = Gitlab::Database::HealthStatus::Context.new(
           DatabaseHealthStatusChecker.new(job['jid'], worker_class.name),
           job_base_model.connection,
-          health_check_attrs[:tables],
-          health_check_attrs[:gitlab_schema]
+          tables,
+          schema
         )
 
         Gitlab::Database::HealthStatus.evaluate(health_context).any?(&:stop?)

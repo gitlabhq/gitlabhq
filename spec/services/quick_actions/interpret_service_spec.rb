@@ -2187,6 +2187,67 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
+    context 'request_changes command' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:content) { '/request_changes' }
+
+      context "when `mr_request_changes` feature flag is disabled" do
+        before do
+          stub_feature_flags(mr_request_changes: false)
+        end
+
+        it 'does not call MergeRequests::UpdateReviewerStateService' do
+          expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
+
+          service.execute(content, merge_request)
+        end
+      end
+
+      context "when the user is a reviewer" do
+        before do
+          create(:merge_request_reviewer, merge_request: merge_request, reviewer: current_user)
+        end
+
+        it 'calls MergeRequests::UpdateReviewerStateService with requested_changes' do
+          expect_next_instance_of(
+            MergeRequests::UpdateReviewerStateService,
+            project: project, current_user: current_user
+          ) do |service|
+            expect(service).to receive(:execute).with(merge_request, "requested_changes").and_return({ status: :success })
+          end
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq('Changes requested to the current merge request.')
+        end
+
+        it 'returns error message from MergeRequests::UpdateReviewerStateService' do
+          expect_next_instance_of(
+            MergeRequests::UpdateReviewerStateService,
+            project: project, current_user: current_user
+          ) do |service|
+            expect(service).to receive(:execute).with(merge_request, "requested_changes").and_return({ status: :error, message: 'Error' })
+          end
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect(message).to eq('Error')
+        end
+      end
+
+      context "when the user is not a reviewer" do
+        it 'does not call MergeRequests::UpdateReviewerStateService' do
+          expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
+
+          service.execute(content, merge_request)
+        end
+      end
+
+      it_behaves_like 'approve command unavailable' do
+        let(:issuable) { issue }
+      end
+    end
+
     it_behaves_like 'issues link quick action', :relate do
       let(:user) { developer }
     end

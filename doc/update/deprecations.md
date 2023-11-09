@@ -1257,6 +1257,29 @@ Previous work helped [align the vulnerabilities calls for pipeline security tabs
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.9">
+
+## GitLab 16.9
+
+<div class="deprecation " data-milestone="16.9">
+
+### Deprecation of `lfs_check` feature flag
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">16.9</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233550).
+</div>
+
+In GitLab 16.9, we will remove the `lfs_check` feature flag. This feature flag was [introduced 4 years ago](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60588) and controls whether the LFS integrity check is enabled. The feature flag is enabled by default, but some customers experienced performance issues with the LFS integrity check and explicitly disabled it.
+
+After [dramatically improving the performance](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61355) of the LFS integrity check, we are ready to remove the feature flag. After the flag is removed, the feature will automatically be turned on for any environment in which it is currently disabled.
+
+If this feature flag is disabled for your environment, and you are concerned about performance issues, please enable it and monitor the performance before it is removed in 16.9. If you see any performance issues after enabling it, please let us know in [this feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233550).
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.8">
 
 ## GitLab 16.8

@@ -124,6 +124,10 @@ class BulkImports::Entity < ApplicationRecord
     entity_type.pluralize
   end
 
+  def portable_class
+    entity_type.classify.constantize
+  end
+
   def base_resource_url_path
     "/#{pluralized_name}/#{encoded_source_full_path}"
   end

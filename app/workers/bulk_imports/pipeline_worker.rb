@@ -7,6 +7,8 @@ module BulkImports
 
     FILE_EXTRACTION_PIPELINE_PERFORM_DELAY = 10.seconds
 
+    DEFER_ON_HEALTH_DELAY = 5.minutes
+
     data_consistency :always
     feature_category :importers
     sidekiq_options dead: false, retry: 3
@@ -19,6 +21,25 @@ module BulkImports
 
     sidekiq_retries_exhausted do |msg, exception|
       new.perform_failure(msg['args'][0], msg['args'][2], exception)
+    end
+
+    defer_on_database_health_signal(:gitlab_main, [], DEFER_ON_HEALTH_DELAY) do |job_args, schema, tables|
+      pipeline_tracker = ::BulkImports::Tracker.find(job_args.first)
+      pipeline_schema = ::BulkImports::PipelineSchemaInfo.new(
+        pipeline_tracker.pipeline_class,
+        pipeline_tracker.entity.portable_class
+      )
+
+      if pipeline_schema.db_schema && pipeline_schema.db_table
+        schema = pipeline_schema.db_schema
+        tables = [pipeline_schema.db_table]
+      end
+
+      [schema, tables]
+    end
+
+    def self.defer_on_database_health_signal?
+      Feature.enabled?(:bulk_import_deferred_workers)
     end
 
     # Keep _stage parameter for backwards compatibility.

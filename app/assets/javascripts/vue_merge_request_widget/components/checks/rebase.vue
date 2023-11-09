@@ -184,7 +184,9 @@ export default {
 
 <template>
   <merge-checks-message :check="check">
-    <action-buttons v-if="!isLoading" :tertiary-buttons="tertiaryActionsButtons" />
+    <template #failed>
+      <action-buttons v-if="!isLoading" :tertiary-buttons="tertiaryActionsButtons" />
+    </template>
     <gl-modal
       ref="modal"
       :modal-id="$options.modal.id"

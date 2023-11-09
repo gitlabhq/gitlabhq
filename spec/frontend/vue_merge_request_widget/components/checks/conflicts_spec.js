@@ -74,7 +74,12 @@ describe('Merge request merge checks conflicts component', () => {
       sourceBranchProtected,
       rendersConflictButton,
     }) => {
-      factory({ mr: { conflictResolutionPath }, pushToSourceBranch, sourceBranchProtected });
+      factory({
+        status: 'FAILED',
+        mr: { conflictResolutionPath },
+        pushToSourceBranch,
+        sourceBranchProtected,
+      });
 
       await waitForPromises();
 

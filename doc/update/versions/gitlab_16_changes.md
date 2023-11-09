@@ -117,8 +117,32 @@ Specific information applies to installations using Geo:
   SELECT id FROM push_rules WHERE LENGTH(delete_branch_regex) > 511;
   ```
 
+  To find out if a push rule belongs to a project, group, or instance, run this script
+  in the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+  
+  ```ruby
+  # replace `delete_branch_regex` with a name of the field used in constraint
+  long_rules = PushRule.where("length(delete_branch_regex) > 511")
+
+  array = long_rules.map do |lr|
+    if lr.project
+      "Push rule with ID #{lr.id} is configured in a project #{lr.project.full_name}"
+    elsif lr.group
+      "Push rule with ID #{lr.id} is configured in a group #{lr.group.full_name}"
+    else
+      "Push rule with ID #{lr.id} is configured on the instance level"
+    end
+  end
+
+  puts "Total long rules: #{array.count}"
+  puts array.join("\n")
+  ```
+
   Reduce the value length of the regex field for affected push rules records, then
   retry the migration.
+
+  If you have too many affected push rules, and you can't update them through the GitLab UI,
+  contact [GitLab support](https://about.gitlab.com/support/).
 
 ### Self-compiled installations
 

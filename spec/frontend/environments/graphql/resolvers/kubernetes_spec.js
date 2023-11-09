@@ -3,6 +3,7 @@ import { CoreV1Api, AppsV1Api, BatchV1Api, WatchApi } from '@gitlab/cluster-clie
 import axios from '~/lib/utils/axios_utils';
 import { resolvers } from '~/environments/graphql/resolvers';
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '~/environments/constants';
+import k8sPodsQuery from '~/environments/graphql/queries/k8s_pods.query.graphql';
 import { k8sPodsMock, k8sServicesMock, k8sNamespacesMock } from '../mock_data';
 
 describe('~/frontend/environments/graphql/resolvers', () => {
@@ -28,16 +29,16 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
   describe('k8sPods', () => {
     const client = { writeQuery: jest.fn() };
-    describe('when k8sWatchApi feature is disabled', () => {
-      const mockPodsListFn = jest.fn().mockImplementation(() => {
-        return Promise.resolve({
-          items: k8sPodsMock,
-        });
+    const mockPodsListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        items: k8sPodsMock,
       });
+    });
 
-      const mockNamespacedPodsListFn = jest.fn().mockImplementation(mockPodsListFn);
-      const mockAllPodsListFn = jest.fn().mockImplementation(mockPodsListFn);
+    const mockNamespacedPodsListFn = jest.fn().mockImplementation(mockPodsListFn);
+    const mockAllPodsListFn = jest.fn().mockImplementation(mockPodsListFn);
 
+    describe('when k8sWatchApi feature is disabled', () => {
       beforeEach(() => {
         jest
           .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedPod')
@@ -90,63 +91,68 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
     describe('when k8sWatchApi feature is enabled', () => {
       const mockWatcher = WatchApi.prototype;
-      const mockPodsListFn = jest.fn().mockImplementation(() => {
+      const mockPodsListWatcherFn = jest.fn().mockImplementation(() => {
         return Promise.resolve(mockWatcher);
       });
 
       const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
         if (eventName === 'data') {
-          callback(k8sPodsMock);
-        }
-      });
-      const mockOnErrorFn = jest.fn().mockImplementation((eventName, callback) => {
-        if (eventName === 'error') {
-          const error = { message: 'API error' };
-          callback(error);
-        }
-      });
-      const mockOnTimeoutFn = jest.fn().mockImplementation((eventName, callback) => {
-        if (eventName === 'timeout') {
-          callback({});
+          callback([]);
         }
       });
 
-      beforeEach(() => {
-        gon.features = { k8sWatchApi: true };
-        jest.spyOn(mockWatcher, 'subscribeToStream').mockImplementation(mockPodsListFn);
-        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
-      });
+      describe('when the pods data is present', () => {
+        beforeEach(() => {
+          gon.features = { k8sWatchApi: true };
 
-      it('should request namespaced pods from the cluster_client library if namespace is specified', () => {
-        mockResolvers.Query.k8sPods(null, { configuration, namespace }, { client });
+          jest
+            .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedPod')
+            .mockImplementation(mockNamespacedPodsListFn);
+          jest
+            .spyOn(CoreV1Api.prototype, 'listCoreV1PodForAllNamespaces')
+            .mockImplementation(mockAllPodsListFn);
+          jest.spyOn(mockWatcher, 'subscribeToStream').mockImplementation(mockPodsListWatcherFn);
+          jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
+        });
 
-        expect(mockPodsListFn).toHaveBeenCalledWith(`/api/v1/namespaces/${namespace}/pods`, {
-          watch: true,
+        it('should request namespaced pods from the cluster_client library if namespace is specified', async () => {
+          await mockResolvers.Query.k8sPods(null, { configuration, namespace }, { client });
+
+          expect(mockPodsListWatcherFn).toHaveBeenCalledWith(
+            `/api/v1/namespaces/${namespace}/pods`,
+            {
+              watch: true,
+            },
+          );
+        });
+        it('should request all pods from the cluster_client library if namespace is not specified', async () => {
+          await mockResolvers.Query.k8sPods(null, { configuration, namespace: '' }, { client });
+
+          expect(mockPodsListWatcherFn).toHaveBeenCalledWith(`/api/v1/pods`, { watch: true });
+        });
+        it('should update cache with the new data when received from the library', async () => {
+          await mockResolvers.Query.k8sPods(null, { configuration, namespace: '' }, { client });
+
+          expect(client.writeQuery).toHaveBeenCalledWith({
+            query: k8sPodsQuery,
+            variables: { configuration, namespace: '' },
+            data: { k8sPods: [] },
+          });
         });
       });
-      it('should request all pods from the cluster_client library if namespace is not specified', () => {
-        mockResolvers.Query.k8sPods(null, { configuration, namespace: '' }, { client });
 
-        expect(mockPodsListFn).toHaveBeenCalledWith(`/api/v1/pods`, { watch: true });
-      });
-      it('should return data when received from the library', async () => {
-        const pods = await mockResolvers.Query.k8sPods(null, { configuration }, { client });
+      it('should not watch pods from the cluster_client library when the pods data is not present', async () => {
+        jest.spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedPod').mockImplementation(
+          jest.fn().mockImplementation(() => {
+            return Promise.resolve({
+              items: [],
+            });
+          }),
+        );
 
-        expect(pods).toEqual(k8sPodsMock);
-      });
-      it('should throw an error when received from the library', async () => {
-        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnErrorFn);
+        await mockResolvers.Query.k8sPods(null, { configuration, namespace }, { client });
 
-        await expect(
-          mockResolvers.Query.k8sPods(null, { configuration }, { client }),
-        ).rejects.toThrow('API error');
-      });
-      it('should return empty data when received timeout event from the library', async () => {
-        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnTimeoutFn);
-
-        await expect(
-          mockResolvers.Query.k8sPods(null, { configuration }, { client }),
-        ).resolves.toEqual([]);
+        expect(mockPodsListWatcherFn).not.toHaveBeenCalled();
       });
     });
   });

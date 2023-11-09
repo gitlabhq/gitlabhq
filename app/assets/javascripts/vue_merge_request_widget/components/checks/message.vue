@@ -57,6 +57,7 @@ export default {
         <div class="gl-display-flex">{{ failureReason }}</div>
       </div>
       <slot></slot>
+      <slot v-if="check.status === 'FAILED'" name="failed"></slot>
     </div>
   </div>
 </template>

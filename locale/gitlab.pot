@@ -9802,6 +9802,9 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
+msgid "Changes requested to the current merge request."
+msgstr ""
+
 msgid "Changes saved."
 msgstr ""
 
@@ -30157,9 +30160,6 @@ msgstr ""
 msgid "Metrics:"
 msgstr ""
 
-msgid "Metrics|Check again"
-msgstr ""
-
 msgid "Metrics|Create metric"
 msgstr ""
 
@@ -30197,9 +30197,6 @@ msgid "Metrics|Name"
 msgstr ""
 
 msgid "Metrics|New metric"
-msgstr ""
-
-msgid "Metrics|No metrics to display."
 msgstr ""
 
 msgid "Metrics|PromQL query is valid"
@@ -40403,6 +40400,9 @@ msgid "Request a new one"
 msgstr ""
 
 msgid "Request changes"
+msgstr ""
+
+msgid "Request changes to the current merge request."
 msgstr ""
 
 msgid "Request data is too large"

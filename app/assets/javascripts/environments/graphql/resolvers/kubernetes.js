@@ -5,8 +5,6 @@ import {
   BatchV1Api,
   WatchApi,
   EVENT_DATA,
-  EVENT_TIMEOUT,
-  EVENT_ERROR,
 } from '@gitlab/cluster-client';
 import { humanizeClusterErrors } from '../../helpers/k8s_integration_helper';
 import k8sPodsQuery from '../queries/k8s_pods.query.graphql';
@@ -63,60 +61,57 @@ const handleClusterError = async (err) => {
   throw errorData;
 };
 
+const watchPods = ({ configuration, namespace, client }) => {
+  const path = namespace ? `/api/v1/namespaces/${namespace}/pods` : '/api/v1/pods';
+  const config = new Configuration(configuration);
+  const watcherApi = new WatchApi(config);
+
+  watcherApi
+    .subscribeToStream(path, { watch: true })
+    .then((watcher) => {
+      let result = [];
+
+      watcher.on(EVENT_DATA, (data) => {
+        result = data.map((item) => {
+          return { status: { phase: item.status.phase } };
+        });
+
+        client.writeQuery({
+          query: k8sPodsQuery,
+          variables: { configuration, namespace },
+          data: { k8sPods: result },
+        });
+      });
+    })
+    .catch((err) => {
+      handleClusterError(err);
+    });
+};
+
 export default {
   k8sPods(_, { configuration, namespace }, { client }) {
     const config = new Configuration(configuration);
 
-    if (!gon.features?.k8sWatchApi) {
-      const coreV1Api = new CoreV1Api(config);
-      const podsApi = namespace
-        ? coreV1Api.listCoreV1NamespacedPod({ namespace })
-        : coreV1Api.listCoreV1PodForAllNamespaces();
+    const coreV1Api = new CoreV1Api(config);
+    const podsApi = namespace
+      ? coreV1Api.listCoreV1NamespacedPod({ namespace })
+      : coreV1Api.listCoreV1PodForAllNamespaces();
 
-      return podsApi
-        .then((res) => res?.items || [])
-        .catch(async (err) => {
-          try {
-            await handleClusterError(err);
-          } catch (error) {
-            throw new Error(error.message);
-          }
-        });
-    }
+    return podsApi
+      .then((res) => {
+        if (gon.features?.k8sWatchApi) {
+          watchPods({ configuration, namespace, client });
+        }
 
-    const path = namespace ? `/api/v1/namespaces/${namespace}/pods` : '/api/v1/pods';
-    const watcherApi = new WatchApi(config);
-
-    return watcherApi.subscribeToStream(path, { watch: true }).then((watcher) => {
-      let result = [];
-
-      return new Promise((resolve, reject) => {
-        watcher.on(EVENT_DATA, (data) => {
-          result = data.map((item) => {
-            return { status: { phase: item.status.phase } };
-          });
-
-          resolve(result);
-
-          setTimeout(() => {
-            client.writeQuery({
-              query: k8sPodsQuery,
-              variables: { configuration, namespace },
-              data: { k8sPods: result },
-            });
-          }, 0);
-        });
-
-        watcher.on(EVENT_TIMEOUT, () => {
-          resolve(result);
-        });
-
-        watcher.on(EVENT_ERROR, (errorData) => {
-          const error = errorData?.message ? new Error(errorData.message) : errorData;
-          reject(error);
-        });
+        return res?.items || [];
+      })
+      .catch(async (err) => {
+        try {
+          await handleClusterError(err);
+        } catch (error) {
+          throw new Error(error.message);
+        }
       });
-    });
   },
   k8sServices(_, { configuration, namespace }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));

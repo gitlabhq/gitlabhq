@@ -1,0 +1,13 @@
+- title: "Deprecation of `lfs_check` feature flag"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  removal_milestone: "16.9"  # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "16.6"  # (required) The milestone when this feature was first announced as deprecated.
+  breaking_change: false  # (required) Change to false if this is not a breaking change.
+  reporter: derekferguson  # (required) GitLab username of the person reporting the change
+  stage: Create  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/233550  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    In GitLab 16.9, we will remove the `lfs_check` feature flag. This feature flag was [introduced 4 years ago](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60588) and controls whether the LFS integrity check is enabled. The feature flag is enabled by default, but some customers experienced performance issues with the LFS integrity check and explicitly disabled it.
+
+    After [dramatically improving the performance](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61355) of the LFS integrity check, we are ready to remove the feature flag. After the flag is removed, the feature will automatically be turned on for any environment in which it is currently disabled.
+
+    If this feature flag is disabled for your environment, and you are concerned about performance issues, please enable it and monitor the performance before it is removed in 16.9. If you see any performance issues after enabling it, please let us know in [this feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233550).

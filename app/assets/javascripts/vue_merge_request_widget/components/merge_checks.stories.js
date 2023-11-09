@@ -17,7 +17,7 @@ const defaultRender = (apolloProvider) => ({
   data() {
     return { service: {}, mr: { conflictResolutionPath: 'https://gitlab.com' } };
   },
-  template: '<merge-checks :mr="mr" />',
+  template: '<merge-checks :mr="mr" :service="service" />',
 });
 
 const Template = ({ canMerge, failed, pushToSourceBranch }) => {
