@@ -21,12 +21,14 @@ RSpec.describe 'Marking all todos done', feature_category: :team_planning do
   let(:input) { {} }
 
   let(:mutation) do
-    graphql_mutation(:todos_mark_all_done, input,
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       todos { id }
-                       errors
-                     QL
+    graphql_mutation(
+      :todos_mark_all_done,
+      input,
+      <<-QL.strip_heredoc
+        clientMutationId
+        todos { id }
+        errors
+      QL
     )
   end
 

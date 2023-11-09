@@ -22,7 +22,7 @@ module Gitlab
             hash[waiter.key] = waiter.jobs_remaining
           end
 
-          AdvanceStageWorker.perform_async(project.id, waiters, :attachments)
+          AdvanceStageWorker.perform_async(project.id, waiters.deep_stringify_keys, 'attachments')
         end
 
         def importers(project)

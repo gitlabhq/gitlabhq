@@ -2395,44 +2395,48 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       developer_permissions + [:create_cluster, :read_cluster, :update_cluster, :admin_cluster, :admin_terraform_state, :admin_project_google_cloud]
     end
 
-    where(:project_visibility, :access_level, :role, :allowed) do
-      :public   | ProjectFeature::ENABLED   | :maintainer | true
-      :public   | ProjectFeature::ENABLED   | :developer  | true
-      :public   | ProjectFeature::ENABLED   | :guest      | true
-      :public   | ProjectFeature::ENABLED   | :anonymous  | true
-      :public   | ProjectFeature::PRIVATE   | :maintainer | true
-      :public   | ProjectFeature::PRIVATE   | :developer  | true
-      :public   | ProjectFeature::PRIVATE   | :guest      | true
-      :public   | ProjectFeature::PRIVATE   | :anonymous  | false
-      :public   | ProjectFeature::DISABLED  | :maintainer | false
-      :public   | ProjectFeature::DISABLED  | :developer  | false
-      :public   | ProjectFeature::DISABLED  | :guest      | false
-      :public   | ProjectFeature::DISABLED  | :anonymous  | false
-      :internal | ProjectFeature::ENABLED   | :maintainer | true
-      :internal | ProjectFeature::ENABLED   | :developer  | true
-      :internal | ProjectFeature::ENABLED   | :guest      | true
-      :internal | ProjectFeature::ENABLED   | :anonymous  | false
-      :internal | ProjectFeature::PRIVATE   | :maintainer | true
-      :internal | ProjectFeature::PRIVATE   | :developer  | true
-      :internal | ProjectFeature::PRIVATE   | :guest      | true
-      :internal | ProjectFeature::PRIVATE   | :anonymous  | false
-      :internal | ProjectFeature::DISABLED  | :maintainer | false
-      :internal | ProjectFeature::DISABLED  | :developer  | false
-      :internal | ProjectFeature::DISABLED  | :guest      | false
-      :internal | ProjectFeature::DISABLED  | :anonymous  | false
-      :private  | ProjectFeature::ENABLED   | :maintainer | true
-      :private  | ProjectFeature::ENABLED   | :developer  | true
-      :private  | ProjectFeature::ENABLED   | :guest      | true
-      :private  | ProjectFeature::ENABLED   | :anonymous  | false
-      :private  | ProjectFeature::PRIVATE   | :maintainer | true
-      :private  | ProjectFeature::PRIVATE   | :developer  | true
-      :private  | ProjectFeature::PRIVATE   | :guest      | true
-      :private  | ProjectFeature::PRIVATE   | :anonymous  | false
-      :private  | ProjectFeature::DISABLED  | :maintainer | false
-      :private  | ProjectFeature::DISABLED  | :developer  | false
-      :private  | ProjectFeature::DISABLED  | :guest      | false
-      :private  | ProjectFeature::DISABLED  | :anonymous  | false
+    shared_context 'with permission matrix' do
+      where(:project_visibility, :access_level, :role, :allowed) do
+        :public   | ProjectFeature::ENABLED   | :maintainer | true
+        :public   | ProjectFeature::ENABLED   | :developer  | true
+        :public   | ProjectFeature::ENABLED   | :guest      | true
+        :public   | ProjectFeature::ENABLED   | :anonymous  | true
+        :public   | ProjectFeature::PRIVATE   | :maintainer | true
+        :public   | ProjectFeature::PRIVATE   | :developer  | true
+        :public   | ProjectFeature::PRIVATE   | :guest      | true
+        :public   | ProjectFeature::PRIVATE   | :anonymous  | false
+        :public   | ProjectFeature::DISABLED  | :maintainer | false
+        :public   | ProjectFeature::DISABLED  | :developer  | false
+        :public   | ProjectFeature::DISABLED  | :guest      | false
+        :public   | ProjectFeature::DISABLED  | :anonymous  | false
+        :internal | ProjectFeature::ENABLED   | :maintainer | true
+        :internal | ProjectFeature::ENABLED   | :developer  | true
+        :internal | ProjectFeature::ENABLED   | :guest      | true
+        :internal | ProjectFeature::ENABLED   | :anonymous  | false
+        :internal | ProjectFeature::PRIVATE   | :maintainer | true
+        :internal | ProjectFeature::PRIVATE   | :developer  | true
+        :internal | ProjectFeature::PRIVATE   | :guest      | true
+        :internal | ProjectFeature::PRIVATE   | :anonymous  | false
+        :internal | ProjectFeature::DISABLED  | :maintainer | false
+        :internal | ProjectFeature::DISABLED  | :developer  | false
+        :internal | ProjectFeature::DISABLED  | :guest      | false
+        :internal | ProjectFeature::DISABLED  | :anonymous  | false
+        :private  | ProjectFeature::ENABLED   | :maintainer | true
+        :private  | ProjectFeature::ENABLED   | :developer  | true
+        :private  | ProjectFeature::ENABLED   | :guest      | true
+        :private  | ProjectFeature::ENABLED   | :anonymous  | false
+        :private  | ProjectFeature::PRIVATE   | :maintainer | true
+        :private  | ProjectFeature::PRIVATE   | :developer  | true
+        :private  | ProjectFeature::PRIVATE   | :guest      | true
+        :private  | ProjectFeature::PRIVATE   | :anonymous  | false
+        :private  | ProjectFeature::DISABLED  | :maintainer | false
+        :private  | ProjectFeature::DISABLED  | :developer  | false
+        :private  | ProjectFeature::DISABLED  | :guest      | false
+        :private  | ProjectFeature::DISABLED  | :anonymous  | false
+      end
     end
+
+    include_context 'with permission matrix'
 
     with_them do
       let(:current_user) { user_subject(role) }
@@ -2450,6 +2454,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
 
     context 'when terraform state management is disabled' do
+      include_context 'with permission matrix'
+
       before do
         stub_config(terraform_state: { enabled: false })
       end

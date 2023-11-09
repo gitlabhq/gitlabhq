@@ -16,11 +16,15 @@ module Gitlab
           hash
         end
 
+        # This method allow objects to be safely passed directly to Sidekiq without errors.
+        # It returns JSON datatypes: string, integer, float, boolean, null(nil), array and hash.
         def convert_value_for_to_hash(value)
           if value.is_a?(Array)
             value.map { |v| convert_value_for_to_hash(v) }
           elsif value.respond_to?(:to_hash)
             value.to_hash
+          elsif value.respond_to?(:strftime) || value.is_a?(Symbol)
+            value.to_s
           else
             value
           end

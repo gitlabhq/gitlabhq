@@ -32,7 +32,7 @@ module Gitlab
         end
 
         def move_to_next_stage(project, waiters = {})
-          AdvanceStageWorker.perform_async(project.id, waiters, :notes)
+          AdvanceStageWorker.perform_async(project.id, waiters.deep_stringify_keys, 'notes')
         end
       end
     end

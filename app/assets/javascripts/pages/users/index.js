@@ -1,7 +1,8 @@
 import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
 import UserCallout from '~/user_callout';
-import { initProfileTabs } from '~/profile';
+import { initProfileTabs, initUserAchievements } from '~/profile';
+import { initUserActionsApp } from '~/users/profile/actions';
 import UserTabs from './user_tabs';
 
 function initUserProfile(action) {
@@ -27,4 +28,6 @@ function initUserProfile(action) {
 const page = $('body').attr('data-page');
 const action = page.split(':')[1];
 initUserProfile(action);
+initUserAchievements();
+initUserActionsApp();
 new UserCallout(); // eslint-disable-line no-new

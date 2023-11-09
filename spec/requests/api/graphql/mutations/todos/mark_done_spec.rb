@@ -19,15 +19,17 @@ RSpec.describe 'Marking todos done', feature_category: :team_planning do
   let(:input) { { id: todo1.to_global_id.to_s } }
 
   let(:mutation) do
-    graphql_mutation(:todo_mark_done, input,
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       todo {
-                         id
-                         state
-                       }
-                     QL
+    graphql_mutation(
+      :todo_mark_done,
+      input,
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        todo {
+          id
+          state
+        }
+      QL
     )
   end
 

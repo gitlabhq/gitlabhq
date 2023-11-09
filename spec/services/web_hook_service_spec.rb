@@ -429,8 +429,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             .with(
               project_hook.id,
               hash_including(default_log_data.deep_stringify_keys),
-              :ok,
-              nil
+              'ok',
+              ''
             )
 
           service_instance.execute
@@ -460,8 +460,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
                   response_status: 400
                 ).deep_stringify_keys
               ),
-              :failed,
-              nil
+              'failed',
+              ''
             )
 
           service_instance.execute
@@ -484,8 +484,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
                   internal_error_message: 'Some HTTP Post error'
                 ).deep_stringify_keys
               ),
-              :error,
-              nil
+              'error',
+              ''
             )
 
           service_instance.execute
@@ -502,8 +502,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             .with(
               project_hook.id,
               hash_including(default_log_data.merge(response_body: '').deep_stringify_keys),
-              :ok,
-              nil
+              'ok',
+              ''
             )
 
           service_instance.execute
@@ -523,8 +523,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             .with(
               project_hook.id,
               hash_including(default_log_data.merge(response_body: stripped_body).deep_stringify_keys),
-              :ok,
-              nil
+              'ok',
+              ''
             )
 
           service_instance.execute
@@ -556,8 +556,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             .with(
               project_hook.id,
               hash_including(default_log_data.merge(response_headers: expected_response_headers).deep_stringify_keys),
-              :ok,
-              nil
+              'ok',
+              ''
             )
 
           service_instance.execute
@@ -581,8 +581,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             .with(
               project_hook.id,
               hash_including(default_log_data.merge(response_headers: expected_response_headers).deep_stringify_keys),
-              :ok,
-              nil
+              'ok',
+              ''
             )
 
           service_instance.execute
@@ -599,8 +599,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             .with(
               project_hook.id,
               hash_including(default_log_data.deep_stringify_keys),
-              :ok,
-              nil
+              'ok',
+              ''
             )
             .and_raise(
               Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError.new(WebHooks::LogExecutionWorker, 100, 50)
@@ -612,8 +612,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
               hash_including(default_log_data.merge(
                 request_data: WebHookLog::OVERSIZE_REQUEST_DATA
               ).deep_stringify_keys),
-              :ok,
-              nil
+              'ok',
+              ''
             )
             .and_call_original
             .ordered

@@ -33,7 +33,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_cat
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, :notes)
+          .with(project.id, { '123' => 2 }, 'notes')
 
         worker.import(client, project)
       end
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_cat
 
       it 'skips issue events import and calls next stage' do
         expect(Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter).not_to receive(:new)
-        expect(Gitlab::GithubImport::AdvanceStageWorker).to receive(:perform_async).with(project.id, {}, :notes)
+        expect(Gitlab::GithubImport::AdvanceStageWorker).to receive(:perform_async).with(project.id, {}, 'notes')
 
         worker.import(client, project)
       end

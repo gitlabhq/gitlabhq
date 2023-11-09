@@ -174,15 +174,16 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   end
 
   describe 'sync with project' do
-    shared_examples 'name and description of the catalog resource matches the project' do
+    shared_examples 'denormalized columns of the catalog resource match the project' do
       it do
-        expect(resource.reload.name).to eq(project.name)
-        expect(resource.reload.description).to eq(project.description)
+        expect(resource.name).to eq(project.name)
+        expect(resource.description).to eq(project.description)
+        expect(resource.visibility_level).to eq(project.visibility_level)
       end
     end
 
     context 'when the catalog resource is created' do
-      it_behaves_like 'name and description of the catalog resource matches the project'
+      it_behaves_like 'denormalized columns of the catalog resource match the project'
     end
 
     context 'when the project name is updated' do
@@ -190,7 +191,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
         project.update!(name: 'My new project name')
       end
 
-      it_behaves_like 'name and description of the catalog resource matches the project'
+      it_behaves_like 'denormalized columns of the catalog resource match the project'
     end
 
     context 'when the project description is updated' do
@@ -198,7 +199,15 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
         project.update!(description: 'My new description')
       end
 
-      it_behaves_like 'name and description of the catalog resource matches the project'
+      it_behaves_like 'denormalized columns of the catalog resource match the project'
+    end
+
+    context 'when the project visibility_level is updated' do
+      before do
+        project.update!(visibility_level: 10)
+      end
+
+      it_behaves_like 'denormalized columns of the catalog resource match the project'
     end
   end
 end

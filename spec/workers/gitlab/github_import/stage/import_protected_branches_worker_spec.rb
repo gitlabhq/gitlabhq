@@ -27,7 +27,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker, featu
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :lfs_objects)
+        .with(project.id, { '123' => 2 }, 'lfs_objects')
 
       worker.import(client, project)
     end

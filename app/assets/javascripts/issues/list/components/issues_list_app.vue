@@ -907,7 +907,7 @@ export default {
       v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
       header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
-      class="gl-w-40p gl-xs-w-full"
+      class="gl-w-full gl-sm-w-40p"
       @close="activeIssuable = null"
     >
       <template #title>

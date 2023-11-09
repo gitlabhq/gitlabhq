@@ -56,9 +56,14 @@ module Ci
 
       private
 
+      # These columns are denormalized from the `projects` table. We first sync these
+      # columns when the catalog resource record is created. Then any updates to the
+      # `projects` columns will be synced to the `catalog_resources` table by a worker
+      # (to be implemented in https://gitlab.com/gitlab-org/gitlab/-/issues/429376.)
       def sync_with_project
         self.name = project.name
         self.description = project.description
+        self.visibility_level = project.visibility_level
       end
     end
   end

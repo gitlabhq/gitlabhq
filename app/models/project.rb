@@ -142,7 +142,9 @@ class Project < ApplicationRecord
   after_create :set_timestamps_for_create
   after_create :check_repository_absence!
 
-  after_update :update_catalog_resource, if: -> { (saved_change_to_name? || saved_change_to_description?) && catalog_resource }
+  # TODO: Remove this callback after background syncing is implemented. See https://gitlab.com/gitlab-org/gitlab/-/issues/429376.
+  after_update :update_catalog_resource,
+    if: -> { (saved_change_to_name? || saved_change_to_description? || saved_change_to_visibility_level?) && catalog_resource }
 
   before_destroy :remove_private_deploy_keys
   after_destroy :remove_exports

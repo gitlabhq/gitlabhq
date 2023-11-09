@@ -391,6 +391,7 @@ class User < MainClusterwide::ApplicationRecord
     :first_day_of_week, :first_day_of_week=,
     :timezone, :timezone=,
     :time_display_relative, :time_display_relative=,
+    :time_display_format, :time_display_format=,
     :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
     :view_diffs_file_by_file, :view_diffs_file_by_file=,
     :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,

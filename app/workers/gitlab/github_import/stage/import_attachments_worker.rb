@@ -50,8 +50,8 @@ module Gitlab
         def move_to_next_stage(project, waiters = {})
           AdvanceStageWorker.perform_async(
             project.id,
-            waiters,
-            :protected_branches
+            waiters.deep_stringify_keys,
+            'protected_branches'
           )
         end
       end

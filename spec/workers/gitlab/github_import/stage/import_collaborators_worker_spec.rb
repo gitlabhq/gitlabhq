@@ -35,7 +35,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, :pull_requests_merged_by)
+          .with(project.id, { '123' => 2 }, 'pull_requests_merged_by')
 
         worker.import(client, project)
       end
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, {}, :pull_requests_merged_by)
+          .with(project.id, {}, 'pull_requests_merged_by')
 
         worker.import(client, project)
       end
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, {}, :pull_requests_merged_by)
+          .with(project.id, {}, 'pull_requests_merged_by')
 
         worker.import(client, project)
       end

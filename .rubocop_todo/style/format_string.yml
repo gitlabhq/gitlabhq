@@ -256,7 +256,6 @@ Style/FormatString:
     - 'lib/gitlab/github_import/issuable_finder.rb'
     - 'lib/gitlab/github_import/object_counter.rb'
     - 'lib/gitlab/github_import/page_counter.rb'
-    - 'lib/gitlab/github_import/parallel_scheduling.rb'
     - 'lib/gitlab/import_export/base/relation_factory.rb'
     - 'lib/gitlab/import_export/error.rb'
     - 'lib/gitlab/import_export/snippet_repo_restorer.rb'

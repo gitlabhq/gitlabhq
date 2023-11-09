@@ -98,7 +98,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter, feature_catego
         .and_yield(github_comment)
 
       expect(Gitlab::GithubImport::ImportDiffNoteWorker).to receive(:perform_in)
-        .with(1.second, project.id, an_instance_of(Hash), an_instance_of(String))
+        .with(1, project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

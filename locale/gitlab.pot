@@ -36134,6 +36134,9 @@ msgstr ""
 msgid "Preferences|This feature is experimental and translations are not yet complete."
 msgstr ""
 
+msgid "Preferences|Time format"
+msgstr ""
+
 msgid "Preferences|Time preferences"
 msgstr ""
 
@@ -49554,6 +49557,15 @@ msgstr ""
 msgid "Time (in hours) that users are allowed to skip forced configuration of two-factor authentication."
 msgstr ""
 
+msgid "Time Display|12-hour: 2:34 PM"
+msgstr ""
+
+msgid "Time Display|24-hour: 14:34"
+msgstr ""
+
+msgid "Time Display|System"
+msgstr ""
+
 msgid "Time based: Yes"
 msgstr ""
 
@@ -51431,6 +51443,9 @@ msgid "UpdateProject|Prune unreachable objects"
 msgstr ""
 
 msgid "UpdateProject|Pruning unreachable objects can lead to repository corruption."
+msgstr ""
+
+msgid "UpdateProject|Updating default branch is blocked by security policy"
 msgstr ""
 
 msgid "UpdateRepositoryStorage|Timeout waiting for %{type} repository pushes"

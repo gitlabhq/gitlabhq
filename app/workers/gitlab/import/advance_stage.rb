@@ -19,7 +19,7 @@ module Gitlab
       #              completed.
       # timeout_timer - Time the sidekiq worker was first initiated with the current job_count
       # previous_job_count - Number of jobs remaining on last invocation of this worker
-      def perform(project_id, waiters, next_stage, timeout_timer = Time.zone.now, previous_job_count = nil)
+      def perform(project_id, waiters, next_stage, timeout_timer = Time.zone.now.to_s, previous_job_count = nil)
         import_state_jid = find_import_state_jid(project_id)
 
         # If the import state is nil the project may have been deleted or the import
@@ -45,7 +45,9 @@ module Gitlab
 
           handle_timeout(import_state_jid, next_stage, project_id, new_waiters, new_job_count)
         else
-          self.class.perform_in(INTERVAL, project_id, new_waiters, next_stage, timeout_timer, previous_job_count)
+          self.class.perform_in(INTERVAL,
+            project_id, new_waiters.deep_stringify_keys, next_stage.to_s, timeout_timer.to_s, previous_job_count
+          )
         end
       end
 

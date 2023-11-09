@@ -59,6 +59,10 @@ module PreferencesHelper
     ]
   end
 
+  def time_display_format_choices
+    UserPreference.time_display_formats
+  end
+
   def first_day_of_week_choices_with_default
     first_day_of_week_choices.unshift([_('System default (%{default})') % { default: default_first_day_of_week }, nil])
   end

@@ -1272,7 +1272,7 @@ Gitaly Cluster [does not support snapshot backups](../gitaly/index.md#snapshot-b
 When considering using file system data transfer or snapshots:
 
 - Don't use these methods to migrate from one operating system to another. The operating systems of the source and destination should be as similar as possible. For example,
-  don't use these methods to migrate from Ubuntu to Fedora.
+  don't use these methods to migrate from Ubuntu to RHEL.
 - Data consistency is very important. You should stop GitLab with `sudo gitlab-ctl stop` before taking doing a file system transfer (with `rsync`, for example) or taking a
   snapshot.
 

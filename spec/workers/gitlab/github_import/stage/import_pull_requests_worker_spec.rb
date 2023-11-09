@@ -35,7 +35,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_ca
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, :collaborators)
+          .with(project.id, { '123' => 2 }, 'collaborators')
 
         expect(MergeRequest).to receive(:track_target_project_iid!)
 
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_ca
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, :collaborators)
+          .with(project.id, { '123' => 2 }, 'collaborators')
 
         expect(MergeRequest).not_to receive(:track_target_project_iid!)
 

@@ -44,6 +44,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:time_display_relative).to(:user_preference) }
     it { is_expected.to delegate_method(:time_display_relative=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:time_display_format).to(:user_preference) }
+    it { is_expected.to delegate_method(:time_display_format=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:show_whitespace_in_diffs).to(:user_preference) }
     it { is_expected.to delegate_method(:show_whitespace_in_diffs=).to(:user_preference).with_arguments(:args) }
 

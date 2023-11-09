@@ -71,6 +71,16 @@ RSpec.describe PreferencesHelper do
     end
   end
 
+  describe '#time_display_format_choices_with_default' do
+    it 'returns choices' do
+      expect(helper.time_display_format_choices).to eq({
+        "12-hour: 2:34 PM" => 1,
+        "24-hour: 14:34" => 2,
+        "System" => 0
+      })
+    end
+  end
+
   describe '#user_application_theme' do
     context 'with a user' do
       it "returns user's theme's css_class" do

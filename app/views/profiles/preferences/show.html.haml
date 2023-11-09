@@ -155,6 +155,12 @@
       = f.gitlab_ui_checkbox_component :time_display_relative,
         s_('Preferences|Use relative times'),
         help_text: s_('Preferences|For example: 30 minutes ago.')
+    .form-group
+      = f.label :time_display_format, class: 'label-bold' do
+        = s_('Preferences|Time format')
+      - time_display_format_choices.each_entry do |time_display_format_option|
+        .gl-mb-4
+        = f.gitlab_ui_radio_component :time_display_format, time_display_format_option[1], time_display_format_option[0]
   .settings-section.js-preferences-form.js-search-settings-section#enabled_following
     .settings-sticky-header
       .settings-sticky-header-inner

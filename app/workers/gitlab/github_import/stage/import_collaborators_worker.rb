@@ -43,7 +43,7 @@ module Gitlab
 
         def move_to_next_stage(project, waiters = {})
           AdvanceStageWorker.perform_async(
-            project.id, waiters, :pull_requests_merged_by
+            project.id, waiters.deep_stringify_keys, 'pull_requests_merged_by'
           )
         end
       end

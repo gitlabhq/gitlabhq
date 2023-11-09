@@ -30,7 +30,7 @@ module Gitlab
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },
-            :collaborators
+            'collaborators'
           )
         end
 
