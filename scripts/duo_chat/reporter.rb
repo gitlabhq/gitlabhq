@@ -155,6 +155,8 @@ class Reporter
 
         #### LLM Evaluation
 
+        Tools used: #{data['tools_used']}
+
         #{evalutions(data)}
 
 

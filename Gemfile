@@ -398,6 +398,12 @@ group :development do
   gem 'sprite-factory', '~> 1.7' # rubocop:todo Gemfile/MissingFeatureCategory
 
   gem 'listen', '~> 3.7' # rubocop:todo Gemfile/MissingFeatureCategory
+
+  gem 'ruby-lsp', "~> 0.12.3", feature_category: :tooling
+
+  gem 'ruby-lsp-rails', "~> 0.2.7", feature_category: :tooling
+
+  gem 'ruby-lsp-rspec', "~> 0.1.5", feature_category: :tooling
 end
 
 group :development, :test do

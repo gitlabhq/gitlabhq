@@ -103,24 +103,13 @@ For example:
 
 ## Include archived projects in search results
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/413821) in GitLab 16.3. Feature flag `search_projects_hide_archived` removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived` for the project scope. Disabled by default.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10957) in GitLab 16.6 for all scopes.
 
 By default, archived projects are excluded from search results.
-To include archived projects:
+To include the search result from archived projects:
 
-1. On the project search page, on the left sidebar, select the **Include archived** checkbox.
-1. On the left sidebar, select **Apply**.
-
-### Include issues in archived projects
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124846) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `search_issues_hide_archived_projects`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416483) in GitLab 16.6. Feature flag `search_issues_hide_archived_projects` removed.
-
-By default, issues in archived projects are excluded from search results.
-To include issues in archived projects:
-
-1. On the project search page, on the left sidebar, select the **Include archived** checkbox.
+1. On the search result page, on the left sidebar, select the **Include archived** checkbox.
 1. On the left sidebar, select **Apply**.
 
 ## Search for code
