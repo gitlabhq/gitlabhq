@@ -4,6 +4,7 @@ module Environments
   class AutoRecoverWorker
     include ApplicationWorker
 
+    deduplicate :until_executed
     data_consistency :delayed
     idempotent!
     feature_category :continuous_delivery

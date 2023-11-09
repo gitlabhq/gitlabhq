@@ -20,6 +20,10 @@ RSpec.describe Environments::AutoRecoverWorker, feature_category: :continuous_de
     project.repository.add_branch(developer, 'review/feature', 'master')
   end
 
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
   context 'when environment has been updated recently' do
     it 'recovers the environment' do
       environment.stop!
