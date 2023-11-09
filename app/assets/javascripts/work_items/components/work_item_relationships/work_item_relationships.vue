@@ -1,6 +1,6 @@
 <script>
 import { produce } from 'immer';
-import { GlLoadingIcon, GlIcon, GlButton, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlButton, GlLink, GlToggle } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -8,7 +8,11 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
-import { WIDGET_TYPE_LINKED_ITEMS, LINKED_CATEGORIES_MAP } from '../../constants';
+import {
+  WIDGET_TYPE_LINKED_ITEMS,
+  LINKED_CATEGORIES_MAP,
+  I18N_WORK_ITEM_SHOW_LABELS,
+} from '../../constants';
 
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
@@ -24,6 +28,7 @@ export default {
     WidgetWrapper,
     WorkItemRelationshipList,
     WorkItemAddRelationshipForm,
+    GlToggle,
   },
   inject: ['isGroup'],
   props: {
@@ -94,6 +99,7 @@ export default {
       linksBlocks: [],
       isShownLinkItemForm: false,
       widgetName: 'linkeditems',
+      showLabels: true,
     };
   },
   computed: {
@@ -197,6 +203,7 @@ export default {
     blockingTitle: s__('WorkItem|Blocking'),
     blockedByTitle: s__('WorkItem|Blocked by'),
     addLinkedWorkItemButtonLabel: s__('WorkItem|Add'),
+    showLabelsLabel: I18N_WORK_ITEM_SHOW_LABELS,
   },
 };
 </script>
@@ -219,11 +226,18 @@ export default {
       </div>
     </template>
     <template #header-right>
+      <gl-toggle
+        :value="showLabels"
+        :label="$options.i18n.showLabelsLabel"
+        label-position="left"
+        label-id="relationship-toggle-labels"
+        @change="showLabels = $event"
+      />
       <gl-button
         v-if="canAdminWorkItemLink"
         data-testid="link-item-add-button"
         size="small"
-        class="gl-ml-3"
+        class="gl-ml-4"
         @click="showLinkItemForm"
       >
         <slot name="add-button-text">{{ $options.i18n.addLinkedWorkItemButtonLabel }}</slot>
@@ -261,6 +275,7 @@ export default {
               :linked-items="linksBlocks"
               :heading="$options.i18n.blockingTitle"
               :can-update="canAdminWorkItemLink"
+              :show-labels="showLabels"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
               @removeLinkedItem="removeLinkedItem"
             />
@@ -273,6 +288,7 @@ export default {
               :linked-items="linksIsBlockedBy"
               :heading="$options.i18n.blockedByTitle"
               :can-update="canAdminWorkItemLink"
+              :show-labels="showLabels"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
               @removeLinkedItem="removeLinkedItem"
             />
@@ -281,6 +297,7 @@ export default {
               :linked-items="linksRelatesTo"
               :heading="$options.i18n.relatedToTitle"
               :can-update="canAdminWorkItemLink"
+              :show-labels="showLabels"
               @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
               @removeLinkedItem="removeLinkedItem"
             />

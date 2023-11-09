@@ -399,11 +399,14 @@ RSpec.shared_examples 'work items notifications' do
   it 'displays toast when notification is toggled' do
     click_button _('More actions'), match: :first
 
-    expect(page).not_to have_button(class: 'gl-toggle is-checked')
+    within_testid('notifications-toggle-form') do
+      expect(page).not_to have_button(class: 'gl-toggle is-checked')
 
-    click_button(class: 'gl-toggle')
+      click_button(class: 'gl-toggle')
 
-    expect(page).to have_button(class: 'gl-toggle is-checked')
+      expect(page).to have_button(class: 'gl-toggle is-checked')
+    end
+
     expect(page).to have_css('.gl-toast', text: _('Notifications turned on.'))
   end
 end

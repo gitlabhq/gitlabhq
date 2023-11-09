@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlToggle } from '@gitlab/ui';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -82,6 +82,7 @@ describe('WorkItemRelationships', () => {
     wrapper.findAllComponents(WorkItemRelationshipList);
   const findAddButton = () => wrapper.findByTestId('link-item-add-button');
   const findWorkItemRelationshipForm = () => wrapper.findComponent(WorkItemAddRelationshipForm);
+  const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
 
   it('shows loading icon when query is not processed', () => {
     createComponent();
@@ -99,6 +100,11 @@ describe('WorkItemRelationships', () => {
     expect(findLinkedItemsHelpLink().attributes('href')).toBe(
       '/help/user/okrs.md#linked-items-in-okrs',
     );
+    expect(findShowLabelsToggle().props()).toMatchObject({
+      value: true,
+      labelPosition: 'left',
+      label: 'Show labels',
+    });
   });
 
   it('renders blocking linked item lists', async () => {
@@ -152,6 +158,29 @@ describe('WorkItemRelationships', () => {
     await findWorkItemRelationshipForm().vm.$emit('cancel');
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
   });
+
+  it.each`
+    toggleValue
+    ${true}
+    ${false}
+  `(
+    'passes showLabels as $toggleValue to child items when toggle is $toggleValue',
+    async ({ toggleValue }) => {
+      await createComponent({
+        workItemQueryHandler: jest
+          .fn()
+          .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
+      });
+
+      findShowLabelsToggle().vm.$emit('change', toggleValue);
+
+      await nextTick();
+
+      expect(findAllWorkItemRelationshipListComponents().at(0).props('showLabels')).toBe(
+        toggleValue,
+      );
+    },
+  );
 
   describe('when project context', () => {
     it('calls the project work item query', () => {

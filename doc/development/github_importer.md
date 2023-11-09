@@ -213,22 +213,6 @@ process. This is done by calling `ProjectImportState#refresh_jid_expiration`. By
 refreshing this TTL we can ensure our import does not get marked as failed so
 long we're still performing work.
 
-## GitHub rate limit
-
-GitHub has a rate limit of 5,000 API calls per hour. The number of requests
-necessary to import a project is largely dominated by the number of unique users
-involved in a project (for example, issue authors), because we need the email address of users to map
-them to GitLab users. Other data such as issue pages and comments typically only requires a few dozen requests to import.
-
-We handle the rate limit by doing the following:
-
-1. After we hit the rate limit, we either:
-   - Automatically reschedule jobs in such a way that they are not executed until the rate limit has been reset.
-   - Move onto another GitHub access token if multiple GitHub access tokens were passed to the API.
-1. We cache the mapping of GitHub users to GitLab users in Redis.
-
-More information on user caching can be found below.
-
 ## Caching user lookups
 
 When mapping GitHub users to GitLab users we need to (in the worst case)

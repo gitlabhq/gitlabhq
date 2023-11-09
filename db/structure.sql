@@ -12120,6 +12120,7 @@ CREATE TABLE application_settings (
     math_rendering_limits_enabled boolean DEFAULT true NOT NULL,
     service_access_tokens_expiration_enforced boolean DEFAULT true NOT NULL,
     enable_artifact_external_redirect_warning_page boolean DEFAULT true NOT NULL,
+    allow_project_creation_for_guest_and_below boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -25579,11 +25580,12 @@ ALTER SEQUENCE zentao_tracker_data_id_seq OWNED BY zentao_tracker_data.id;
 
 CREATE TABLE zoekt_indexed_namespaces (
     id bigint NOT NULL,
-    zoekt_shard_id bigint NOT NULL,
+    zoekt_shard_id bigint,
     namespace_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    search boolean DEFAULT true NOT NULL
+    search boolean DEFAULT true NOT NULL,
+    zoekt_node_id bigint
 );
 
 CREATE SEQUENCE zoekt_indexed_namespaces_id_seq
@@ -25594,6 +25596,30 @@ CREATE SEQUENCE zoekt_indexed_namespaces_id_seq
     CACHE 1;
 
 ALTER SEQUENCE zoekt_indexed_namespaces_id_seq OWNED BY zoekt_indexed_namespaces.id;
+
+CREATE TABLE zoekt_nodes (
+    id bigint NOT NULL,
+    uuid uuid NOT NULL,
+    used_bytes bigint DEFAULT 0 NOT NULL,
+    total_bytes bigint DEFAULT 0 NOT NULL,
+    last_seen_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    index_base_url text NOT NULL,
+    search_base_url text NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_32f39efba3 CHECK ((char_length(search_base_url) <= 1024)),
+    CONSTRAINT check_38c354a3c2 CHECK ((char_length(index_base_url) <= 1024))
+);
+
+CREATE SEQUENCE zoekt_nodes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE zoekt_nodes_id_seq OWNED BY zoekt_nodes.id;
 
 CREATE TABLE zoekt_shards (
     id bigint NOT NULL,
@@ -27211,6 +27237,8 @@ ALTER TABLE ONLY x509_issuers ALTER COLUMN id SET DEFAULT nextval('x509_issuers_
 ALTER TABLE ONLY zentao_tracker_data ALTER COLUMN id SET DEFAULT nextval('zentao_tracker_data_id_seq'::regclass);
 
 ALTER TABLE ONLY zoekt_indexed_namespaces ALTER COLUMN id SET DEFAULT nextval('zoekt_indexed_namespaces_id_seq'::regclass);
+
+ALTER TABLE ONLY zoekt_nodes ALTER COLUMN id SET DEFAULT nextval('zoekt_nodes_id_seq'::regclass);
 
 ALTER TABLE ONLY zoekt_shards ALTER COLUMN id SET DEFAULT nextval('zoekt_shards_id_seq'::regclass);
 
@@ -29903,6 +29931,9 @@ ALTER TABLE ONLY zentao_tracker_data
 
 ALTER TABLE ONLY zoekt_indexed_namespaces
     ADD CONSTRAINT zoekt_indexed_namespaces_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY zoekt_nodes
+    ADD CONSTRAINT zoekt_nodes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY zoekt_shards
     ADD CONSTRAINT zoekt_shards_pkey PRIMARY KEY (id);
@@ -35036,6 +35067,16 @@ CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data 
 
 CREATE INDEX index_zoekt_indexed_namespaces_on_namespace_id ON zoekt_indexed_namespaces USING btree (namespace_id);
 
+CREATE UNIQUE INDEX index_zoekt_node_and_namespace ON zoekt_indexed_namespaces USING btree (zoekt_node_id, namespace_id);
+
+CREATE UNIQUE INDEX index_zoekt_nodes_on_index_base_url ON zoekt_nodes USING btree (index_base_url);
+
+CREATE INDEX index_zoekt_nodes_on_last_seen_at ON zoekt_nodes USING btree (last_seen_at);
+
+CREATE UNIQUE INDEX index_zoekt_nodes_on_search_base_url ON zoekt_nodes USING btree (search_base_url);
+
+CREATE UNIQUE INDEX index_zoekt_nodes_on_uuid ON zoekt_nodes USING btree (uuid);
+
 CREATE UNIQUE INDEX index_zoekt_shard_and_namespace ON zoekt_indexed_namespaces USING btree (zoekt_shard_id, namespace_id);
 
 CREATE UNIQUE INDEX index_zoekt_shards_on_index_base_url ON zoekt_shards USING btree (index_base_url);
@@ -37567,6 +37608,9 @@ ALTER TABLE ONLY merge_request_review_llm_summaries
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zoekt_indexed_namespaces
+    ADD CONSTRAINT fk_9267f4de0c FOREIGN KEY (zoekt_node_id) REFERENCES zoekt_nodes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_site_profiles_builds
     ADD CONSTRAINT fk_94e80df60e FOREIGN KEY (dast_site_profile_id) REFERENCES dast_site_profiles(id) ON DELETE CASCADE;

@@ -91,6 +91,7 @@ describe('WorkItemLinkChild', () => {
         childItem: workItemObjectiveWithChild,
         canUpdate: true,
         showTaskIcon: false,
+        showLabels: true,
       });
     });
   });

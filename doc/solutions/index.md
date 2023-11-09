@@ -13,3 +13,7 @@ This documentation is the home for solutions GitLab wishes to share with custome
 ## Relationship to documentation
 
 While information in this section gives valuable and qualified guidance on ways to solve problems by using the GitLab platform, the product documentation is the authoritative reference for product features and functions.
+
+## Solutions categories
+
+[Cloud Solutions](cloud/index.md)

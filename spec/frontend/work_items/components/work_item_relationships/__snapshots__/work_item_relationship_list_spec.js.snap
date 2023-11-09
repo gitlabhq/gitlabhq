@@ -22,6 +22,7 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
         <work-item-link-child-contents-stub
           canupdate="true"
           childitem="[object Object]"
+          showlabels="true"
           showtaskicon="true"
         />
       </li>

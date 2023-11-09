@@ -40,11 +40,16 @@ describe('WorkItemLinkChildContents', () => {
   const findScopedLabel = () => findAllLabels().at(1);
   const findRemoveButton = () => wrapper.findComponent(GlButton);
 
-  const createComponent = ({ canUpdate = true, childItem = workItemTask } = {}) => {
+  const createComponent = ({
+    canUpdate = true,
+    childItem = workItemTask,
+    showLabels = true,
+  } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildContents, {
       propsData: {
         canUpdate,
         childItem,
+        showLabels,
       },
     });
   };
@@ -128,19 +133,6 @@ describe('WorkItemLinkChildContents', () => {
 
       expect(findMetadataComponent().exists()).toBe(false);
     });
-
-    it('renders labels', () => {
-      const mockLabel = mockLabels[0];
-
-      expect(findAllLabels()).toHaveLength(mockLabels.length);
-      expect(findRegularLabel().props()).toMatchObject({
-        title: mockLabel.title,
-        backgroundColor: mockLabel.color,
-        description: mockLabel.description,
-        scoped: false,
-      });
-      expect(findScopedLabel().props('scoped')).toBe(true); // Second label is scoped
-    });
   });
 
   describe('item menu', () => {
@@ -162,6 +154,33 @@ describe('WorkItemLinkChildContents', () => {
       findRemoveButton().vm.$emit('click');
 
       expect(wrapper.emitted('removeChild')).toEqual([[workItemTask]]);
+    });
+  });
+
+  describe('item labels', () => {
+    it('renders normal and scoped label', () => {
+      createComponent({ childItem: workItemObjectiveWithChild });
+
+      const mockLabel = mockLabels[0];
+
+      expect(findAllLabels()).toHaveLength(mockLabels.length);
+      expect(findRegularLabel().props()).toMatchObject({
+        title: mockLabel.title,
+        backgroundColor: mockLabel.color,
+        description: mockLabel.description,
+        scoped: false,
+      });
+      expect(findScopedLabel().props('scoped')).toBe(true); // Second label is scoped
+    });
+
+    it.each`
+      expectedAssertion           | showLabels
+      ${'does not render labels'} | ${true}
+      ${'renders label'}          | ${false}
+    `('$expectedAssertion when showLabels is $showLabels', ({ showLabels }) => {
+      createComponent({ showLabels, childItem: workItemObjectiveWithChild });
+
+      expect(findAllLabels().exists()).toBe(showLabels);
     });
   });
 });

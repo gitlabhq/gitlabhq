@@ -22,6 +22,11 @@ export default {
       required: false,
       default: false,
     },
+    showLabels: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 };
 </script>
@@ -35,6 +40,7 @@ export default {
       :issuable-gid="workItemId"
       :child-item="child"
       :work-item-type="workItemType"
+      :show-labels="showLabels"
       @removeChild="$emit('removeChild', $event)"
       @click="$emit('click', Object.assign($event, { childItem: child }))"
     />

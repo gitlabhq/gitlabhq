@@ -23,14 +23,6 @@ This page attempts to index the ways in which GitLab can integrate with AWS. It 
 | `[GitLab Solution]`  | Built as Solution Example by GitLab or GitLab Partners       | Community/Example   |
 | `[CI Solution]` | Built, at least in part, using GitLab CI and therefore <br />more customer customizable. | Items tagged `[CI Solution will]` <br />also carry one of the other tags <br />that indicates the maintenance status. |
 
-## Partnership Information
-
-### AWS known issues list
-
-Known issues are gathered from within GitLab and from customer reported issues. Customers successfully implement GitLab with a variety of “as a Service” components that GitLab has not specifically been designed for, nor has ongoing testing for. While GitLab does take partner technologies very seriously, the highlighting of known issues here is a convenience for implementers and it does not imply that GitLab has targeted compatibility with, nor carries any type of guarantee of running on the partner technology where the issues occur. Consult individual issues to understand the GitLab stance and plans on any given known issue.
-
-See the [GitLab AWS known issues list](https://gitlab.com/gitlab-com/alliances/aws/public-tracker/-/issues?label_name[]=AWS+Known+Issue) for a complete list.
-
 ## Integrations For Development Activities
 
 ### SCM Integrations
@@ -91,8 +83,8 @@ Generally solutions demonstrate end-to-end capabilities for the development fram
 
 - Installing GitLab Self-Managed on AWS
   - GitLab Single EC2 Instance. `[GitLab Built]`
-    - [Using 5 Seat AWS marketplace subscription](../../../install/aws/index.md#marketplace-subscription)
-    - [Using Prepared AMIs](../../../install/aws/index.md#official-gitlab-releases-as-amis) - Bring Your Own License for Enterprise Edition.
+    - [Using 5 Seat AWS marketplace subscription](gitlab_single_box_on_aws.md#marketplace-subscription)
+    - [Using Prepared AMIs](gitlab_single_box_on_aws.md#official-gitlab-releases-as-amis) - Bring Your Own License for Enterprise Edition.
 
   - GitLab Cloud Native Hybrid Scaled on AWS EKS and Paas. `[GitLab Built]`
     - Using GitLab Environment Toolkit (GET) - `[GitLab Solution]`
@@ -101,6 +93,9 @@ Generally solutions demonstrate end-to-end capabilities for the development fram
     - Using GitLab Environment Toolkit (GET) - `[GitLab Solution]`
 
 - [Amazon Managed Grafana](https://docs.aws.amazon.com/grafana/latest/userguide/gitlab-AMG-datasource.html) for GitLab self-managed Prometheus metrics. `[AWS Built]`
+
+## GitLab Runner on AWS Compute
+
 - [Autoscaling GitLab Runner on AWS EC2](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/). `[GitLab Built]`
 - [GitLab HA Scaling Runner Vending Machine for AWS EC2 ASG](https://gitlab.com/guided-explorations/aws/gitlab-runner-autoscaling-aws-asg/). `[GitLab Solution]`
   - Runner vending machine training resources.

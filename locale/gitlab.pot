@@ -54564,6 +54564,9 @@ msgstr ""
 msgid "WorkItem|Select type"
 msgstr ""
 
+msgid "WorkItem|Show labels"
+msgstr ""
+
 msgid "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits."
 msgstr ""
 

@@ -200,13 +200,13 @@ then run `gitlab-ctl reconfigure`. For more information, read
 **Requirements:**
 
 - [Wildcard DNS setup](#dns-configuration)
-- [TLS-terminating load balancer](../../install/aws/manual_install_aws.md#load-balancer)
+- [TLS-terminating load balancer](../../install/aws/index.md#load-balancer)
 
 ---
 
 URL scheme: `https://<namespace>.example.io/<project_slug>`
 
-This setup is primarily intended to be used when [installing a GitLab POC on Amazon Web Services](../../install/aws/manual_install_aws.md). This includes a TLS-terminating [classic load balancer](../../install/aws/manual_install_aws.md#load-balancer) that listens for HTTPS connections, manages TLS certificates, and forwards HTTP traffic to the instance.
+This setup is primarily intended to be used when [installing a GitLab POC on Amazon Web Services](../../install/aws/index.md). This includes a TLS-terminating [classic load balancer](../../install/aws/index.md#load-balancer) that listens for HTTPS connections, manages TLS certificates, and forwards HTTP traffic to the instance.
 
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 

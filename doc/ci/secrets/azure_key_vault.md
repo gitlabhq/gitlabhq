@@ -9,14 +9,19 @@ type: concepts, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3.
 
+NOTE:
+A [bug was discovered](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) and this feature might not work as expected or at all. A fix is scheduled for a future release.
+
 You can use secrets stored in the [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/)
 in your GitLab CI/CD pipelines.
 
 Prerequisites:
 
-- Have a key vault on Azure.
-- Have an application with key vault permissions.
-- [Configure OpenID Connect in Azure to retrieve temporary credentials](../../ci/cloud_services/azure/index.md).
+- Have a [Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/quick-create-portal) on Azure.
+  - Your IAM user must be granted [granted the **Key Vault Administrator** role assignment](https://learn.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal#grant-access)
+    for the **resource group** assigned to the Key Vault. Otherwise, you can't create secrets inside the Key Vault.
+- [Configure OpenID Connect in Azure to retrieve temporary credentials](../../ci/cloud_services/azure/index.md). These
+  steps include instructions on how to create an Azure AD application for Key Vault access.
 - Add [CI/CD variables to your project](../variables/index.md#for-a-project) to provide details about your Vault server:
   - `AZURE_KEY_VAULT_SERVER_URL`: The URL of your Azure Key Vault server, such as `https://vault.example.com`.
   - `AZURE_CLIENT_ID`: The client ID of the Azure application.
@@ -31,19 +36,64 @@ You can use a secret stored in your Azure Key Vault in a job by defining it with
 job:
   id_tokens:
     AZURE_JWT:
-      aud: 'azure'
+      aud: 'https://gitlab.com'
   secrets:
     DATABASE_PASSWORD:
-      token: AZURE_JWT
+      token: $AZURE_JWT
       azure_key_vault:
         name: 'test'
-        version: 'test'
+        version: '00000000000000000000000000000000'
 ```
 
 In this example:
 
-- `name` is the name of the secret.
-- `version` is the version of the secret.
+- `aud` is the audience, which must match the audience used when [creating the federated identity credentials](../../ci/cloud_services/azure/index.md#create-azure-ad-federated-identity-credentials)
+- `name` is the name of the secret in Azure Key Vault.
+- `version` is the version of the secret in Azure Key Vault. The version is a generated
+  GUID without dashes, which can be found on the Azure Key Vault secrets page.
 - GitLab fetches the secret from Azure Key Vault and stores the value in a temporary file.
   The path to this file is stored in a `DATABASE_PASSWORD` CI/CD variable, similar to
   [file type CI/CD variables](../variables/index.md#use-file-type-cicd-variables).
+
+## Troubleshooting
+
+Refer to [OIDC for Azure troubleshooting](../../ci/cloud_services/azure/index.md#troubleshooting) for general
+problems when setting up OIDC with Azure.
+
+### `JWT token is invalid or malformed` message
+
+You might receive this error when fetching secrets from Azure Key Vault:
+
+```plaintext
+RESPONSE 400 Bad Request
+AADSTS50027: JWT token is invalid or malformed.
+```
+
+This occurs due to a known issue in GitLab Runner where the JWT token isn't parsed correctly.
+A fix is [scheduled for a future GitLab Runner release](https://gitlab.com/gitlab-org/gitlab/-/issues/424746).
+
+### `Caller is not authorized to perform action on resource` message
+
+You might receive this error when fetching secrets from Azure Key Vault:
+
+```plaintext
+RESPONSE 403: 403 Forbidden
+ERROR CODE: Forbidden
+Caller is not authorized to perform action on resource.\r\nIf role assignments, deny assignments or role definitions were changed recently, please observe propagation time.
+ForbiddenByRbac
+```
+
+If your Azure Key Vault is using RBAC, you must add the **Key Vault Secrets User** to your Azure AD
+application.
+
+For example:
+
+```shell
+appId=$(az ad app list --display-name gitlab-oidc --query '[0].appId' -otsv)
+az role assignment create --assignee $appId --role "Key Vault Secrets User" --scope /subscriptions/<subscription-id>
+```
+
+You can find your subscription ID in:
+
+- The [Azure Portal](https://learn.microsoft.com/en-us/azure/azure-portal/get-subscription-tenant-id#find-your-azure-subscription).
+- The [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#get-the-active-subscription).

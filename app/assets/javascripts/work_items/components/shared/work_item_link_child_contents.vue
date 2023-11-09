@@ -52,6 +52,11 @@ export default {
       required: false,
       default: false,
     },
+    showLabels: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -113,6 +118,9 @@ export default {
     },
     showRemove() {
       return this.canUpdate && this.isFocused;
+    },
+    displayLabels() {
+      return this.showLabels && this.labels.length;
     },
   },
   methods: {
@@ -180,7 +188,7 @@ export default {
           class="gl-ml-6 ml-xl-0"
         />
       </div>
-      <div v-if="labels.length" class="gl-display-flex gl-flex-wrap gl-flex-basis-full gl-ml-6">
+      <div v-if="displayLabels" class="gl-display-flex gl-flex-wrap gl-flex-basis-full gl-ml-6">
         <gl-label
           v-for="label in labels"
           :key="label.id"

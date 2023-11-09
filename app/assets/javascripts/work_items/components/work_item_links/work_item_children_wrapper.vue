@@ -50,6 +50,11 @@ export default {
       required: false,
       default: false,
     },
+    showLabels: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -277,6 +282,7 @@ export default {
       :confidential="child.confidential"
       :work-item-type="workItemType"
       :has-indirect-children="hasIndirectChildren"
+      :show-labels="showLabels"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"

@@ -145,3 +145,24 @@ This is typically a result of [a performance issue with `kaniko` and HTTP/2](htt
 The current workaround is to use HTTP/1.1 when pushing with `kaniko`.
 
 To use HTTP/1.1, set the `GODEBUG` environment variable to `"http2client=0"`.
+
+## `docker login` command fails with `access forbidden`
+
+The container registry [returns the GitLab API URL to the Docker client](../../../administration/packages/container_registry.md#architecture-of-gitlab-container-registry)
+to validate credentials. The Docker client uses basic auth, so the request contains
+the `Authorization` header. If the `Authorization` header is missing in the request to the
+`/jwt/auth` endpoint configured in the `token_realm` for the registry configuration,
+you receive an `access forbidden` error message.
+
+For example:
+
+```plaintext
+> docker login gitlab.example.com:4567
+
+Username: user
+Password:
+Error response from daemon: Get "https://gitlab.company.com:4567/v2/": denied: access forbidden
+```
+
+To avoid this error, ensure the `Authorization` header is not stripped from the request.
+For example, a proxy in front of GitLab might be redirecting to the `/jwt/auth` endpoint.

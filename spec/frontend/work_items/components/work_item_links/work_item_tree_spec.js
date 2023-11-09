@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+import { GlToggle } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
@@ -20,6 +21,7 @@ describe('WorkItemTree', () => {
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
   const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
+  const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
 
   const createComponent = ({
     workItemType = 'Objective',
@@ -126,4 +128,21 @@ describe('WorkItemTree', () => {
 
     expect(wrapper.emitted('addChild')).toEqual([[]]);
   });
+
+  it.each`
+    toggleValue
+    ${true}
+    ${false}
+  `(
+    'passes showLabels as $toggleValue to child items when toggle is $toggleValue',
+    async ({ toggleValue }) => {
+      createComponent();
+
+      findShowLabelsToggle().vm.$emit('change', toggleValue);
+
+      await nextTick();
+
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(toggleValue);
+    },
+  );
 });
