@@ -34,7 +34,6 @@ class JwtController < ApplicationController
 
     authenticate_with_http_basic do |login, password|
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, request: request)
-      @raw_token = password
 
       if @authentication_result.failed?
         log_authentication_failed(login, @authentication_result)
@@ -81,7 +80,6 @@ class JwtController < ApplicationController
   def additional_params
     {
       scopes: scopes_param,
-      raw_token: @raw_token,
       deploy_token: @authentication_result.deploy_token,
       auth_type: @authentication_result.type
     }.compact

@@ -21,19 +21,21 @@ RSpec.describe 'Setting reviewers of a merge request', :assume_throttled, featur
       project_path: project.full_path,
       iid: merge_request.iid.to_s
     }
-    graphql_mutation(:merge_request_set_reviewers, variables.merge(input),
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       mergeRequest {
-                         id
-                         reviewers {
-                           nodes {
-                             username
-                           }
-                         }
-                       }
-    QL
+    graphql_mutation(
+      :merge_request_set_reviewers,
+      variables.merge(input),
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        mergeRequest {
+          id
+          reviewers {
+            nodes {
+              username
+            }
+          }
+        }
+      QL
     )
   end
 

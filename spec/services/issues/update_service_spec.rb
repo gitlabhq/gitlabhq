@@ -491,9 +491,9 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         end
 
         it 'creates system note about discussion lock' do
-          note = find_note('locked this issue')
+          note = find_note('locked the discussion in this issue')
 
-          expect(note.note).to eq 'locked this issue'
+          expect(note.note).to eq 'locked the discussion in this issue'
         end
       end
 

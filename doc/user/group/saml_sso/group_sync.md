@@ -81,6 +81,8 @@ When SAML is enabled, users with the Maintainer or Owner role
 see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map
 a SAML identity provider group name to a GitLab role. This can be done for a top-level group or any subgroup.
 
+SAML Group Sync only manages a group if that group has one or more SAML group links. If a SAML group link is created then removed, the user remains in the group until they are removed from the group in the identity provider.
+
 To link the SAML groups:
 
 1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`. The value entered here must exactly match the value sent in the SAML response. For some IdPs, this may be a group ID or object ID (Azure AD) instead of a friendly group name.

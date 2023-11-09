@@ -232,7 +232,7 @@ If strings are reused throughout a component, it can be useful to define these s
 If we are reusing the same translated string in multiple components, it is tempting to add them to a `constants.js` file instead and import them across our components. However, there are multiple pitfalls to this approach:
 
 - It creates distance between the HTML template and the copy, adding an additional level of complexity while navigating our codebase.
-- Copy strings are rarely, if ever, truly the same entity. The benefit of having a reusable variable is to have one easy place to go to update a value, but for copy it is quite common to have similar strings that aren't quite the same.
+- The benefit of having a reusable variable is to have one easy place to go to update a value, but for copy it is quite common to have similar strings that aren't quite the same.
 
 Another practice to avoid when exporting copy strings is to import them in specs. While it might seem like a much more efficient test (if we change the copy, the test will still pass!) it creates additional problems:
 

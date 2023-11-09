@@ -32258,8 +32258,20 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aichatinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
+| <a id="aichatinputcurrentfile"></a>`currentFile` **{warning-solid}** | [`AiCurrentFileInput`](#aicurrentfileinput) | **Deprecated:** This feature is an Experiment. It can be changed or removed at any time. Introduced in 16.6. |
 | <a id="aichatinputnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="aichatinputresourceid"></a>`resourceId` | [`AiModelID`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiCurrentFileInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicurrentfileinputcontentabovecursor"></a>`contentAboveCursor` | [`String`](#string) | Content above cursor. |
+| <a id="aicurrentfileinputcontentbelowcursor"></a>`contentBelowCursor` | [`String`](#string) | Content below cursor. |
+| <a id="aicurrentfileinputfilename"></a>`fileName` | [`String!`](#string) | File name. |
+| <a id="aicurrentfileinputselectedtext"></a>`selectedText` | [`String!`](#string) | Selected text. |
 
 ### `AiExplainCodeInput`
 

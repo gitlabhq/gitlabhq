@@ -60,42 +60,6 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
-    context 'with invalid group access token' do
-      let_it_be(:user) { create(:user, :project_bot) }
-
-      context 'not under the group' do
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
-
-      context 'with sufficient scopes, but not active' do
-        context 'expired' do
-          let_it_be(:pat) do
-            create(:personal_access_token, :expired, user: user).tap do |pat|
-              pat.update_column(:scopes, Gitlab::Auth::REGISTRY_SCOPES)
-            end
-          end
-
-          it { is_expected.to have_gitlab_http_status(:not_found) }
-        end
-
-        context 'revoked' do
-          let_it_be(:pat) do
-            create(:personal_access_token, :revoked, user: user).tap do |pat|
-              pat.update_column(:scopes, Gitlab::Auth::REGISTRY_SCOPES)
-            end
-          end
-
-          it { is_expected.to have_gitlab_http_status(:not_found) }
-        end
-      end
-
-      context 'with insufficient scopes' do
-        let_it_be(:pat) { create(:personal_access_token, user: user, scopes: [Gitlab::Auth::READ_API_SCOPE]) }
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
-    end
-
     context 'with deploy token from a different group,' do
       let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
 
@@ -155,7 +119,11 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
   end
 
   shared_examples 'authorize action with permission' do
-    shared_examples 'sends Workhorse instructions' do
+    context 'with a valid user' do
+      before do
+        group.add_guest(user)
+      end
+
       it 'sends Workhorse local file instructions', :aggregate_failures do
         subject
 
@@ -175,32 +143,6 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         expect(json_response['RemoteObject']).not_to be_nil
         expect(json_response['MaximumSize']).to eq(maximum_size)
       end
-    end
-
-    before do
-      group.add_guest(user)
-    end
-
-    context 'with a valid user' do
-      it_behaves_like 'sends Workhorse instructions'
-    end
-
-    context 'with a valid group access token' do
-      let_it_be(:user) { create(:user, :project_bot) }
-      let_it_be_with_reload(:token) { create(:personal_access_token, user: user) }
-
-      before do
-        token.update_column(:scopes, Gitlab::Auth::REGISTRY_SCOPES)
-      end
-
-      it_behaves_like 'sends Workhorse instructions'
-    end
-
-    context 'with a deploy token' do
-      let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-      it_behaves_like 'sends Workhorse instructions'
     end
   end
 

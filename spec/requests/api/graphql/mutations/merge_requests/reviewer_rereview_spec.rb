@@ -16,11 +16,13 @@ RSpec.describe 'Setting assignees of a merge request', feature_category: :code_r
       project_path: project.full_path,
       iid: merge_request.iid.to_s
     }
-    graphql_mutation(:merge_request_reviewer_rereview, variables.merge(input),
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-    QL
+    graphql_mutation(
+      :merge_request_reviewer_rereview,
+      variables.merge(input),
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+      QL
     )
   end
 

@@ -23,6 +23,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
     failureReason,
     triggeredByPath,
     schedule,
+    trigger,
     child,
     latest,
     mergeTrainPipeline,
@@ -60,6 +61,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
           refText,
           badges: {
             schedule: parseBoolean(schedule),
+            trigger: parseBoolean(trigger),
             child: parseBoolean(child),
             latest: parseBoolean(latest),
             mergeTrainPipeline: parseBoolean(mergeTrainPipeline),

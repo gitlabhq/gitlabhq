@@ -10,6 +10,7 @@ describe('Pipeline label component', () => {
   let wrapper;
 
   const findScheduledTag = () => wrapper.findByTestId('pipeline-url-scheduled');
+  const findTriggeredTag = () => wrapper.findByTestId('pipeline-url-triggered');
   const findLatestTag = () => wrapper.findByTestId('pipeline-url-latest');
   const findYamlTag = () => wrapper.findByTestId('pipeline-url-yaml');
   const findStuckTag = () => wrapper.findByTestId('pipeline-url-stuck');
@@ -43,6 +44,7 @@ describe('Pipeline label component', () => {
     expect(findAutoDevopsTag().exists()).toBe(false);
     expect(findFailureTag().exists()).toBe(false);
     expect(findScheduledTag().exists()).toBe(false);
+    expect(findTriggeredTag().exists()).toBe(false);
     expect(findForkTag().exists()).toBe(false);
     expect(findTrainTag().exists()).toBe(false);
     expect(findMergedResultsTag().exists()).toBe(false);
@@ -131,6 +133,20 @@ describe('Pipeline label component', () => {
 
     expect(findScheduledTag().exists()).toBe(true);
     expect(findScheduledTag().text()).toContain('scheduled');
+  });
+
+  it('should render triggered badge when pipeline was triggered by a trigger', () => {
+    const triggeredPipeline = {
+      ...defaultProps.pipeline,
+      source: 'trigger',
+    };
+
+    createComponent({
+      pipeline: triggeredPipeline,
+    });
+
+    expect(findTriggeredTag().exists()).toBe(true);
+    expect(findTriggeredTag().text()).toBe('trigger token');
   });
 
   it('should render the fork badge when the pipeline was run in a fork', () => {

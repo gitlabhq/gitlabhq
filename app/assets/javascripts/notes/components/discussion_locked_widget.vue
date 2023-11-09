@@ -24,7 +24,9 @@ export default {
     },
     lockedIssueWarning() {
       return sprintf(
-        __('This %{issuableDisplayName} is locked. Only project members can comment.'),
+        __(
+          'The discussion in this %{issuableDisplayName} is locked. Only project members can comment.',
+        ),
         { issuableDisplayName: this.issuableDisplayName },
       );
     },

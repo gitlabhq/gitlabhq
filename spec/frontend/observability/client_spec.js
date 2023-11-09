@@ -213,10 +213,10 @@ describe('buildClient', () => {
         expect(getQueryParam()).toBe(`sort=${DEFAULT_SORTING_OPTION}`);
       });
 
-      it('defaults to created_desc if sortBy param is not an accepted value', async () => {
+      it('defaults to timestamp_desc if sortBy param is not an accepted value', async () => {
         await client.fetchTraces({ sortBy: 'foo-bar' });
 
-        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
     });
 
@@ -230,7 +230,7 @@ describe('buildClient', () => {
       it('does not set any query param without filters', async () => {
         await client.fetchTraces();
 
-        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
 
       it('appends page_token if specified', async () => {
@@ -297,7 +297,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
 
       it('ignores empty filters', async () => {
@@ -308,7 +308,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
 
       it('ignores unsupported operators', async () => {
@@ -335,7 +335,7 @@ describe('buildClient', () => {
           },
         });
 
-        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.CREATED_DESC}`);
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
     });
   });

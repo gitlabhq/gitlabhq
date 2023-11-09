@@ -156,12 +156,12 @@ Prerequisite:
 
 To lock an issue or merge request:
 
-1. On the right sidebar, next to **Lock issue** or **Lock merge request**, select **Edit**.
+1. On the right sidebar, next to **Lock discussion**, select **Edit**.
 1. On the confirmation dialog, select **Lock**.
 
 Notes are added to the page details.
 
-If an issue or merge request is locked and closed, you cannot reopen it.
+If an issue or merge request is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
 
 <!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
 If you don't see this action on the right sidebar, your project or instance might have [moved sidebar actions](../project/merge_requests/index.md#move-sidebar-actions) enabled.

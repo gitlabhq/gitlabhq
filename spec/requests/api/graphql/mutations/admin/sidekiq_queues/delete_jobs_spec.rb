@@ -20,7 +20,7 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
     let(:current_user) { create(:user) }
 
     it_behaves_like 'a mutation that returns top-level errors',
-                    errors: ['You must be an admin to use this mutation']
+      errors: ['You must be an admin to use this mutation']
   end
 
   context 'when the user is an admin' do
@@ -51,9 +51,7 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
         post_graphql_mutation(mutation, current_user: admin)
 
         expect(mutation_response['errors']).to be_empty
-        expect(mutation_response['result']).to eq('completed' => true,
-                                                  'deletedJobs' => 2,
-                                                  'queueSize' => 1)
+        expect(mutation_response['result']).to eq('completed' => true, 'deletedJobs' => 2, 'queueSize' => 1)
       end
     end
 
@@ -61,14 +59,14 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
       let(:variables) { { queue_name: queue } }
 
       it_behaves_like 'a mutation that returns errors in the response',
-                      errors: ['No metadata provided']
+        errors: ['No metadata provided']
     end
 
     context 'when the queue does not exist' do
       let(:variables) { { user: admin.username, queue_name: 'authorized_projects_2' } }
 
       it_behaves_like 'a mutation that returns top-level errors',
-                      errors: ['Queue authorized_projects_2 not found']
+        errors: ['Queue authorized_projects_2 not found']
     end
   end
 end

@@ -260,21 +260,36 @@ can cause a `500` error when editing the `.gitlab-ci.yml` file with the [web edi
 
 Ensure that included configuration files do not create a loop of references to each other.
 
-### `Failed to pull image` message
+### `Failed to pull image` messages
 
 > **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
-When a runner tries to pull an image from a private project, the job could fail with the following error:
+A runner might return a `Failed to pull image` message when trying to pull a container image
+in a CI/CD job.
 
-```shell
-WARNING: Failed to pull image with policy "always": Error response from daemon: pull access denied for registry.example.com/path/to/project, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
-```
+The runner authenticates with a [CI/CD job token](jobs/ci_job_token.md)
+when fetching a container image defined with [`image`](yaml/index.md#image)
+from another project's container registry.
 
-This error can happen if the following are both true:
+If the job token settings prevent access to the other project's container registry,
+the runner returns an error message.
 
-- The **Limit access _to_ this project** option is enabled in the private project
-  hosting the image.
-- The job attempting to fetch the image is running for a project that is not listed in
+For example:
+
+- ```plaintext
+  WARNING: Failed to pull image with policy "always": Error response from daemon: pull access denied for registry.example.com/path/to/project, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+  ```
+
+- ```plaintext
+  WARNING: Failed to pull image with policy "": image pull failed: rpc error: code = Unknown desc = failed to pull and unpack image "registry.example.com/path/to/project/image:v1.2.3": failed to resolve reference "registry.example.com/path/to/project/image:v1.2.3": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  ```
+
+These errors can happen if the following are both true:
+
+- The [**Limit access _to_ this project**](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)
+  option is enabled in the private project hosting the image.
+- The job attempting to fetch the image is running in a project that is not listed in
   the private project's allowlist.
 
-The recommended solution is to [add your project to the private project's job token scope allowlist](jobs/ci_job_token.md#add-a-project-to-the-job-token-scope-allowlist).
+To resolve this issue, add any projects with CI/CD jobs that fetch images from the container
+registry to the target project's [job token allowlist](jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token).

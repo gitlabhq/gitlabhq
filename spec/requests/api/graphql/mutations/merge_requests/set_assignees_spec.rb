@@ -21,19 +21,21 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       project_path: project.full_path,
       iid: merge_request.iid.to_s
     }
-    graphql_mutation(:merge_request_set_assignees, variables.merge(input),
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       mergeRequest {
-                         id
-                         assignees {
-                           nodes {
-                             username
-                           }
-                         }
-                       }
-    QL
+    graphql_mutation(
+      :merge_request_set_assignees,
+      variables.merge(input),
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        mergeRequest {
+          id
+          assignees {
+            nodes {
+              username
+            }
+          }
+        }
+      QL
     )
   end
 

@@ -128,14 +128,11 @@ time is set to 15 minutes.
 If you are using self-managed GitLab, an administrator can
 [increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration).
 
-## `insufficient_scope: authorization failed` when pulling an image
+## `Failed to pull image` messages
 
-GitLab CI/CD jobs that set [`image`](../../../ci/yaml/index.md#image) to pull an image
-from a project's container registry automatically authenticate with a [CI/CD job token](../../../ci/jobs/ci_job_token.md).
-
-All projects with CI/CD jobs that fetch images from the container registry must be listed
-in the registry project's [job token allowlist](../../../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token).
-Otherwise, the job fails with an `insufficient_scope: authorization failed` error.
+You might receive a [`Failed to pull image'](../../../ci/debugging.md#failed-to-pull-image-messages)
+error message when a CI/CD job is unable to pull a container image from a project with a limited
+[CI/CD job token scope](../../../ci/jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects).
 
 ## Slow uploads when using `kaniko` to push large images
 

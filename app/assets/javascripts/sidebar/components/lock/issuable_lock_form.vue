@@ -50,12 +50,12 @@ export default {
     issueCapitalized: __('Issue'),
     mergeRequest: __('merge request'),
     mergeRequestCapitalized: __('Merge request'),
-    lockingMergeRequest: __('Locking %{issuableDisplayName}'),
-    unlockingMergeRequest: __('Unlocking %{issuableDisplayName}'),
-    lockMergeRequest: __('Lock %{issuableDisplayName}'),
-    unlockMergeRequest: __('Unlock %{issuableDisplayName}'),
-    lockedMessage: __('%{issuableDisplayName} locked.'),
-    unlockedMessage: __('%{issuableDisplayName} unlocked.'),
+    lockingMergeRequest: __('Locking discussion'),
+    unlockingMergeRequest: __('Unlocking discussion'),
+    lockMergeRequest: __('Lock discussion'),
+    unlockMergeRequest: __('Unlock discussion'),
+    lockedMessage: __('Discussion locked.'),
+    unlockedMessage: __('Discussion unlocked.'),
   },
   data() {
     return {
@@ -152,7 +152,7 @@ export default {
         })
         .catch(() => {
           const alertMessage = __(
-            'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
+            'Something went wrong trying to change the locked state of the discussion',
           );
           createAlert({
             message: sprintf(alertMessage, { issuableDisplayName: this.issuableDisplayName }),

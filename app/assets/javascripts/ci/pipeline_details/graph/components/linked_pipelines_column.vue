@@ -209,7 +209,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex" :class="{ 'gl-w-full': isNewPipelineGraph }">
+  <div class="gl-display-flex" :class="{ 'gl-w-full gl-sm-w-auto': isNewPipelineGraph }">
     <div :class="columnClass" class="linked-pipelines-column">
       <div data-testid="linked-column-title" :class="computedTitleClasses">
         {{ columnTitle }}

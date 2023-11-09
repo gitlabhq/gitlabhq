@@ -15,15 +15,17 @@ RSpec.describe 'Setting locked status of a merge request', feature_category: :co
       project_path: project.full_path,
       iid: merge_request.iid.to_s
     }
-    graphql_mutation(:merge_request_set_locked, variables.merge(input),
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       mergeRequest {
-                         id
-                         discussionLocked
-                       }
-    QL
+    graphql_mutation(
+      :merge_request_set_locked,
+      variables.merge(input),
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        mergeRequest {
+          id
+          discussionLocked
+        }
+      QL
     )
   end
 

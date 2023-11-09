@@ -14,21 +14,23 @@ RSpec.describe 'Create an alert issue from an alert', feature_category: :inciden
       project_path: project.full_path,
       iid: alert.iid.to_s
     }
-    graphql_mutation(:create_alert_issue, variables,
-                     <<~QL
-                       clientMutationId
-                       errors
-                       alert {
-                         iid
-                         issue {
-                           iid
-                         }
-                       }
-                       issue {
-                         iid
-                         title
-                       }
-                     QL
+    graphql_mutation(
+      :create_alert_issue,
+      variables,
+      <<~QL
+        clientMutationId
+        errors
+        alert {
+          iid
+          issue {
+            iid
+          }
+        }
+        issue {
+          iid
+          title
+        }
+      QL
     )
   end
 

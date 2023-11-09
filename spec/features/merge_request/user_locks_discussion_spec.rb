@@ -43,7 +43,7 @@ RSpec.describe 'Merge request > User locks discussion', :js, feature_category: :
         page.within('.js-vue-notes-event') do
           expect(page).not_to have_selector('js-main-target-form')
           expect(page.find('.issuable-note-warning'))
-            .to have_content('This merge request is locked. Only project members can comment.')
+            .to have_content('The discussion in this merge request is locked. Only project members can comment.')
         end
       end
     end

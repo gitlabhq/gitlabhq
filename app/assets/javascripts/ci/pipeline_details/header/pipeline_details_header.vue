@@ -58,6 +58,10 @@ export default {
   i18n: {
     scheduleBadgeText: s__('Pipelines|Scheduled'),
     scheduleBadgeTooltip: __('This pipeline was created by a schedule'),
+    triggerBadgeText: __('trigger token'),
+    triggerBadgeTooltip: __(
+      'This pipeline was created by an API call authenticated with a trigger token',
+    ),
     childBadgeText: s__('Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})'),
     childBadgeTooltip: __('This is a child pipeline within the parent pipeline'),
     latestBadgeText: s__('Pipelines|latest'),
@@ -460,6 +464,15 @@ export default {
               size="sm"
             >
               {{ $options.i18n.scheduleBadgeText }}
+            </gl-badge>
+            <gl-badge
+              v-if="badges.trigger"
+              v-gl-tooltip
+              :title="$options.i18n.triggerBadgeTooltip"
+              variant="info"
+              size="sm"
+            >
+              {{ $options.i18n.triggerBadgeText }}
             </gl-badge>
             <gl-badge
               v-if="badges.child"

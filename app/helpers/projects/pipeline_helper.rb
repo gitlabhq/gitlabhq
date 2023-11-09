@@ -37,6 +37,7 @@ module Projects
         failure_reason: pipeline.failure_reason,
         triggered_by_path: pipeline.child? ? pipeline_path(pipeline.triggered_by_pipeline) : '',
         schedule: pipeline.schedule?.to_s,
+        trigger: pipeline.trigger?.to_s,
         child: pipeline.child?.to_s,
         latest: pipeline.latest?.to_s,
         merge_train_pipeline: pipeline.merge_train_pipeline?.to_s,

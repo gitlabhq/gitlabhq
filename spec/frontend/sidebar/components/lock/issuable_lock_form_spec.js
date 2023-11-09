@@ -176,8 +176,8 @@ describe('IssuableLockForm', () => {
 
     it.each`
       locked   | message
-      ${true}  | ${'Merge request locked.'}
-      ${false} | ${'Merge request unlocked.'}
+      ${true}  | ${'Discussion locked.'}
+      ${false} | ${'Discussion unlocked.'}
     `('displays $message when merge request is $locked', async ({ locked, message }) => {
       initStore(locked);
 

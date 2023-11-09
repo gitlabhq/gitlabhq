@@ -94,6 +94,7 @@ describe('Pipeline details header', () => {
     failureReason: 'pipeline failed',
     badges: {
       schedule: true,
+      trigger: false,
       child: false,
       latest: true,
       mergeTrainPipeline: false,
@@ -179,6 +180,7 @@ describe('Pipeline details header', () => {
       expect(findAllBadges()).toHaveLength(2);
       expect(wrapper.findByText('latest').exists()).toBe(true);
       expect(wrapper.findByText('Scheduled').exists()).toBe(true);
+      expect(wrapper.findByText('trigger token').exists()).toBe(false);
     });
 
     it('displays ref text', () => {
@@ -200,6 +202,21 @@ describe('Pipeline details header', () => {
       expect(findPipelineUserLink().attributes('data-user-id')).toBe(userId);
       expect(findPipelineUserLink().attributes('data-username')).toBe(user.username);
       expect(findPipelineUserLink().attributes('href')).toBe(user.webUrl);
+    });
+  });
+
+  describe('with triggered pipeline', () => {
+    beforeEach(async () => {
+      createComponent(defaultHandlers, {
+        ...defaultProps,
+        badges: { ...defaultProps.badges, trigger: true },
+      });
+
+      await waitForPromises();
+    });
+
+    it('displays triggered badge', () => {
+      expect(wrapper.findByText('trigger token').exists()).toBe(true);
     });
   });
 

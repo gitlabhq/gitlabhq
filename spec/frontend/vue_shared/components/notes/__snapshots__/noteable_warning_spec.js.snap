@@ -2,7 +2,7 @@
 
 exports[`Issue Warning Component when issue is locked but not confidential renders information about locked issue 1`] = `
 <span>
-  This issue is locked. Only project members can comment.
+  The discussion in this issue is locked. Only project members can comment.
   <gl-link-stub
     href="locked-path"
     target="_blank"
@@ -34,12 +34,12 @@ exports[`Issue Warning Component when noteable is locked and confidential render
     >
       confidential
     </gl-link-stub>
-    and
+    and its
     <gl-link-stub
       href=""
       target="_blank"
     >
-      locked
+      discussion is locked
     </gl-link-stub>
     .
   </span>

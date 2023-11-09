@@ -792,12 +792,6 @@ msgstr ""
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
 msgstr ""
 
-msgid "%{issuableDisplayName} locked."
-msgstr ""
-
-msgid "%{issuableDisplayName} unlocked."
-msgstr ""
-
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
@@ -5488,9 +5482,6 @@ msgstr ""
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
-msgid "Analytics|Analytics events by month"
-msgstr ""
-
 msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -5537,9 +5528,6 @@ msgid "Analytics|Create your dashboard"
 msgstr ""
 
 msgid "Analytics|Create your visualization"
-msgstr ""
-
-msgid "Analytics|Current month to date"
 msgstr ""
 
 msgid "Analytics|Custom dashboards"
@@ -5608,9 +5596,6 @@ msgstr ""
 msgid "Analytics|Event Props"
 msgstr ""
 
-msgid "Analytics|Events"
-msgstr ""
-
 msgid "Analytics|Failed to fetch data"
 msgstr ""
 
@@ -5627,9 +5612,6 @@ msgid "Analytics|Line chart"
 msgstr ""
 
 msgid "Analytics|Link clicks"
-msgstr ""
-
-msgid "Analytics|Month"
 msgstr ""
 
 msgid "Analytics|New dashboard"
@@ -5657,18 +5639,6 @@ msgid "Analytics|Page Title"
 msgstr ""
 
 msgid "Analytics|Pages"
-msgstr ""
-
-msgid "Analytics|Previous month"
-msgstr ""
-
-msgid "Analytics|Product analytics usage is calculated based on the total number of events received from projects within the group. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "Analytics|Projects"
-msgstr ""
-
-msgid "Analytics|Projects (%{maxProjects} of %{totalProjects} shown)"
 msgstr ""
 
 msgid "Analytics|Referer"
@@ -5707,9 +5677,6 @@ msgstr ""
 msgid "Analytics|Something went wrong while loading available visualizations. Refresh the page to try again."
 msgstr ""
 
-msgid "Analytics|Something went wrong while loading product analytics usage data. Refresh the page to try again."
-msgstr ""
-
 msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
@@ -5725,12 +5692,6 @@ msgstr ""
 msgid "Analytics|Target URL"
 msgstr ""
 
-msgid "Analytics|This group has no projects with product analytics onboarded in the current or previous month."
-msgstr ""
-
-msgid "Analytics|This table excludes projects that do not have product analytics onboarded."
-msgstr ""
-
 msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
 msgstr ""
 
@@ -5741,12 +5702,6 @@ msgid "Analytics|Updating dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Updating visualization %{visualizationName}"
-msgstr ""
-
-msgid "Analytics|Usage by month"
-msgstr ""
-
-msgid "Analytics|Usage by project"
 msgstr ""
 
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
@@ -17562,7 +17517,13 @@ msgstr ""
 msgid "Discuss a specific suggestion or question."
 msgstr ""
 
+msgid "Discussion locked."
+msgstr ""
+
 msgid "Discussion to reply to cannot be found"
+msgstr ""
+
+msgid "Discussion unlocked."
 msgstr ""
 
 msgid "Disk Usage"
@@ -28630,13 +28591,13 @@ msgstr ""
 msgid "Lock"
 msgstr ""
 
-msgid "Lock %{issuableDisplayName}"
-msgstr ""
-
 msgid "Lock %{issuableType}"
 msgstr ""
 
 msgid "Lock File?"
+msgstr ""
+
+msgid "Lock discussion"
 msgstr ""
 
 msgid "Lock label after a merge request is merged"
@@ -28660,7 +28621,7 @@ msgstr ""
 msgid "Lock the discussion"
 msgstr ""
 
-msgid "Lock this %{issuableDisplayName}? Only %{strongStart}project members%{strongEnd} will be able to comment."
+msgid "Lock this discussion? Only %{strongStart}project members%{strongEnd} will be able to comment."
 msgstr ""
 
 msgid "Lock to current projects"
@@ -28678,7 +28639,7 @@ msgstr ""
 msgid "Locked the discussion."
 msgstr ""
 
-msgid "Locking %{issuableDisplayName}"
+msgid "Locking discussion"
 msgstr ""
 
 msgid "Locks the discussion."
@@ -29416,36 +29377,6 @@ msgstr ""
 msgid "MemberRoles|Add new role"
 msgstr ""
 
-msgid "MemberRoles|Admin group member"
-msgstr ""
-
-msgid "MemberRoles|Admin merge requests"
-msgstr ""
-
-msgid "MemberRoles|Admin vulnerability"
-msgstr ""
-
-msgid "MemberRoles|Allows admin access to group members."
-msgstr ""
-
-msgid "MemberRoles|Allows admin access to the merge requests."
-msgstr ""
-
-msgid "MemberRoles|Allows admin access to the vulnerability reports. Select 'Read vulnerability' for this to take effect."
-msgstr ""
-
-msgid "MemberRoles|Allows manage access to the project access tokens. Select 'Manage Project Access Tokens' for this to take effect."
-msgstr ""
-
-msgid "MemberRoles|Allows read-only access to the dependencies."
-msgstr ""
-
-msgid "MemberRoles|Allows read-only access to the source code."
-msgstr ""
-
-msgid "MemberRoles|Allows read-only access to the vulnerability reports."
-msgstr ""
-
 msgid "MemberRoles|Are you sure you want to delete this role?"
 msgstr ""
 
@@ -29453,6 +29384,9 @@ msgid "MemberRoles|Base role"
 msgstr ""
 
 msgid "MemberRoles|Base role to use as template"
+msgstr ""
+
+msgid "MemberRoles|Could not fetch available permissions: %{message}"
 msgstr ""
 
 msgid "MemberRoles|Create new role"
@@ -29491,9 +29425,6 @@ msgstr ""
 msgid "MemberRoles|Make sure the group is in the Ultimate tier."
 msgstr ""
 
-msgid "MemberRoles|Manage Project Access Tokens"
-msgstr ""
-
 msgid "MemberRoles|Name"
 msgstr ""
 
@@ -29501,15 +29432,6 @@ msgid "MemberRoles|No custom roles for this group"
 msgstr ""
 
 msgid "MemberRoles|Permissions"
-msgstr ""
-
-msgid "MemberRoles|Read code"
-msgstr ""
-
-msgid "MemberRoles|Read dependency"
-msgstr ""
-
-msgid "MemberRoles|Read vulnerability"
 msgstr ""
 
 msgid "MemberRoles|Role name"
@@ -36320,6 +36242,9 @@ msgstr ""
 msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
 msgstr ""
 
+msgid "ProductAnalytics|Analytics events by month"
+msgstr ""
+
 msgid "ProductAnalytics|Analyze your product with Product Analytics"
 msgstr ""
 
@@ -36359,6 +36284,9 @@ msgstr ""
 msgid "ProductAnalytics|Cube API key"
 msgstr ""
 
+msgid "ProductAnalytics|Current month to date"
+msgstr ""
+
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
 msgstr ""
 
@@ -36383,6 +36311,9 @@ msgstr ""
 msgid "ProductAnalytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
 msgstr ""
 
+msgid "ProductAnalytics|Get started with product analytics"
+msgstr ""
+
 msgid "ProductAnalytics|How many sessions a user has"
 msgstr ""
 
@@ -36390,6 +36321,12 @@ msgid "ProductAnalytics|How often users returned compared to all sessions"
 msgstr ""
 
 msgid "ProductAnalytics|Instrument your application"
+msgstr ""
+
+msgid "ProductAnalytics|Learn how to enable product analytics"
+msgstr ""
+
+msgid "ProductAnalytics|Learn how to onboard projects"
 msgstr ""
 
 msgid "ProductAnalytics|Link Click Events"
@@ -36419,6 +36356,12 @@ msgstr ""
 msgid "ProductAnalytics|Measuring"
 msgstr ""
 
+msgid "ProductAnalytics|Month"
+msgstr ""
+
+msgid "ProductAnalytics|No projects found"
+msgstr ""
+
 msgid "ProductAnalytics|On what do you want to get insights?"
 msgstr ""
 
@@ -36428,7 +36371,19 @@ msgstr ""
 msgid "ProductAnalytics|Percentage of Users Returning"
 msgstr ""
 
+msgid "ProductAnalytics|Previous month"
+msgstr ""
+
 msgid "ProductAnalytics|Product analytics onboarding"
+msgstr ""
+
+msgid "ProductAnalytics|Product analytics usage is calculated based on the total number of events received from projects within the group. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "ProductAnalytics|Projects"
+msgstr ""
+
+msgid "ProductAnalytics|Projects (%{maxProjects} of %{totalProjects} shown)"
 msgstr ""
 
 msgid "ProductAnalytics|Returning Users"
@@ -36458,6 +36413,9 @@ msgstr ""
 msgid "ProductAnalytics|Snowplow configurator connection string"
 msgstr ""
 
+msgid "ProductAnalytics|Something went wrong while loading product analytics usage data. Refresh the page to try again."
+msgstr ""
+
 msgid "ProductAnalytics|The connection string for your Snowplow configurator instance."
 msgstr ""
 
@@ -36467,13 +36425,28 @@ msgstr ""
 msgid "ProductAnalytics|The sender of tracking events"
 msgstr ""
 
+msgid "ProductAnalytics|This group has no projects with product analytics onboarded in the current period."
+msgstr ""
+
 msgid "ProductAnalytics|This might take a while, feel free to navigate away from this page and come back later."
+msgstr ""
+
+msgid "ProductAnalytics|This table excludes projects that do not have product analytics onboarded."
 msgstr ""
 
 msgid "ProductAnalytics|To instrument your application, select one of the options below. After an option has been instrumented and data is being collected, this page will progress to the next step."
 msgstr ""
 
+msgid "ProductAnalytics|Track your product's performance, and optimize your product and development processes."
+msgstr ""
+
 msgid "ProductAnalytics|Unique Users"
+msgstr ""
+
+msgid "ProductAnalytics|Usage by month"
+msgstr ""
+
+msgid "ProductAnalytics|Usage by project"
 msgstr ""
 
 msgid "ProductAnalytics|Used to retrieve dashboard data from the Cube instance."
@@ -42141,6 +42114,9 @@ msgstr ""
 msgid "ScanResultPolicy|Fix available is only applicable to container and dependency scanning"
 msgstr ""
 
+msgid "ScanResultPolicy|If an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced."
+msgstr ""
+
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
 msgstr ""
 
@@ -42192,7 +42168,13 @@ msgstr ""
 msgid "ScanResultPolicy|Override project approval settings"
 msgstr ""
 
+msgid "ScanResultPolicy|Password confirmation on approvals provides an additional level of security. Enabling this enforces the setting on all projects targeted by this policy."
+msgstr ""
+
 msgid "ScanResultPolicy|Pre-existing"
+msgstr ""
+
+msgid "ScanResultPolicy|Prevent a user from removing a branch from the protected branches list or from deleting a protected branch."
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent approval by commit author"
@@ -42205,6 +42187,9 @@ msgid "ScanResultPolicy|Prevent branch protection modification"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent pushing and force pushing"
+msgstr ""
+
+msgid "ScanResultPolicy|Prevent pushing and force pushing to a protected branch."
 msgstr ""
 
 msgid "ScanResultPolicy|Protected branch settings"
@@ -42237,7 +42222,13 @@ msgstr ""
 msgid "ScanResultPolicy|Status is:"
 msgstr ""
 
+msgid "ScanResultPolicy|The merge request author cannot approve their own merge request."
+msgstr ""
+
 msgid "ScanResultPolicy|Unknown"
+msgstr ""
+
+msgid "ScanResultPolicy|Users who have contributed code to the MR are ineligible for approval, ensuring code committers cannot introduce vulnerabilities and approve code to merge."
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
@@ -42250,9 +42241,6 @@ msgid "ScanResultPolicy|When %{scanType} in an open that targets %{branches} %{b
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
-msgstr ""
-
-msgid "ScanResultPolicy|When enabled, two person approval will be required on all MRs as merge request authors cannot approve their own MRs and merge them unilaterally"
 msgstr ""
 
 msgid "ScanResultPolicy|You have selected any protected branch option as a condition. To better protect your project, it is recommended to enable the protect branch settings. %{linkStart}Learn more.%{linkEnd}"
@@ -45558,6 +45546,9 @@ msgstr ""
 msgid "Something went wrong on our end. Please try again."
 msgstr ""
 
+msgid "Something went wrong trying to change the locked state of the discussion"
+msgstr ""
+
 msgid "Something went wrong trying to change the locked state of this %{issuableDisplayName}"
 msgstr ""
 
@@ -48056,6 +48047,18 @@ msgstr ""
 msgid "The directory has been successfully created."
 msgstr ""
 
+msgid "The discussion in this %{issuableDisplayName} is locked. Only project members can comment."
+msgstr ""
+
+msgid "The discussion in this %{issuable} is locked. Only project members can comment."
+msgstr ""
+
+msgid "The discussion in this %{noteableTypeText} is locked."
+msgstr ""
+
+msgid "The discussion in this merge request is locked."
+msgstr ""
+
 msgid "The domain you entered is misformatted."
 msgstr ""
 
@@ -48858,16 +48861,10 @@ msgstr ""
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
 msgstr ""
 
-msgid "This %{issuable} is locked. Only project members can comment."
-msgstr ""
-
 msgid "This %{issuable} would exceed the maximum number of linked %{issuables} (%{limit})."
 msgstr ""
 
-msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and %{lockedLinkStart}locked%{lockedLinkEnd}."
-msgstr ""
-
-msgid "This %{noteableTypeText} is locked."
+msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and its %{lockedLinkStart}discussion is locked%{lockedLinkEnd}."
 msgstr ""
 
 msgid "This %{viewer} could not be displayed because %{reason}. You can %{options} instead."
@@ -49323,9 +49320,6 @@ msgstr ""
 msgid "This merge request is from an internal project to a public project."
 msgstr ""
 
-msgid "This merge request is locked."
-msgstr ""
-
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."
 msgstr ""
 
@@ -49348,6 +49342,9 @@ msgid "This pipeline was created by a schedule"
 msgstr ""
 
 msgid "This pipeline was created by a schedule."
+msgstr ""
+
+msgid "This pipeline was created by an API call authenticated with a trigger token"
 msgstr ""
 
 msgid "This pipeline was triggered using the api"
@@ -50489,9 +50486,6 @@ msgstr ""
 msgid "Tracing|Check again"
 msgstr ""
 
-msgid "Tracing|Created date"
-msgstr ""
-
 msgid "Tracing|Date"
 msgstr ""
 
@@ -50565,6 +50559,9 @@ msgid "Tracing|Service"
 msgstr ""
 
 msgid "Tracing|Time range"
+msgstr ""
+
+msgid "Tracing|Timestamp"
 msgstr ""
 
 msgid "Tracing|Toggle child spans"
@@ -51241,10 +51238,10 @@ msgstr ""
 msgid "Unlock"
 msgstr ""
 
-msgid "Unlock %{issuableDisplayName}"
+msgid "Unlock account"
 msgstr ""
 
-msgid "Unlock account"
+msgid "Unlock discussion"
 msgstr ""
 
 msgid "Unlock more features with GitLab Ultimate"
@@ -51253,7 +51250,7 @@ msgstr ""
 msgid "Unlock the discussion"
 msgstr ""
 
-msgid "Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment."
+msgid "Unlock this discussion? %{strongStart}Everyone%{strongEnd} will be able to comment."
 msgstr ""
 
 msgid "Unlocked"
@@ -51262,7 +51259,7 @@ msgstr ""
 msgid "Unlocked the discussion."
 msgstr ""
 
-msgid "Unlocking %{issuableDisplayName}"
+msgid "Unlocking discussion"
 msgstr ""
 
 msgid "Unlocks the discussion."
@@ -58190,6 +58187,9 @@ msgid "token already revoked"
 msgstr ""
 
 msgid "total must be less than or equal to %{size}"
+msgstr ""
+
+msgid "trigger token"
 msgstr ""
 
 msgid "triggered"

@@ -126,12 +126,14 @@ describe('Issue Warning Component', () => {
     });
 
     it('renders confidential & locked messages with noteable "issue"', () => {
-      expect(findLockedBlock(wrapperLocked).text()).toContain('This issue is locked.');
+      expect(findLockedBlock(wrapperLocked).text()).toContain(
+        'The discussion in this issue is locked.',
+      );
       expect(findConfidentialBlock(wrapperConfidential).text()).toContain(
         'This is a confidential issue.',
       );
       expect(findLockedAndConfidentialBlock(wrapperLockedAndConfidential).text()).toContain(
-        'This issue is confidential and locked.',
+        'This issue is confidential and its discussion is locked.',
       );
     });
 
@@ -147,7 +149,9 @@ describe('Issue Warning Component', () => {
       });
 
       await nextTick();
-      expect(findLockedBlock(wrapperLocked).text()).toContain('This epic is locked.');
+      expect(findLockedBlock(wrapperLocked).text()).toContain(
+        'The discussion in this epic is locked.',
+      );
 
       await nextTick();
       expect(findConfidentialBlock(wrapperConfidential).text()).toContain(
@@ -156,7 +160,7 @@ describe('Issue Warning Component', () => {
 
       await nextTick();
       expect(findLockedAndConfidentialBlock(wrapperLockedAndConfidential).text()).toContain(
-        'This epic is confidential and locked.',
+        'This epic is confidential and its discussion is locked.',
       );
     });
 
@@ -172,7 +176,9 @@ describe('Issue Warning Component', () => {
       });
 
       await nextTick();
-      expect(findLockedBlock(wrapperLocked).text()).toContain('This merge request is locked.');
+      expect(findLockedBlock(wrapperLocked).text()).toContain(
+        'The discussion in this merge request is locked.',
+      );
 
       await nextTick();
       expect(findConfidentialBlock(wrapperConfidential).text()).toContain(
@@ -181,7 +187,7 @@ describe('Issue Warning Component', () => {
 
       await nextTick();
       expect(findLockedAndConfidentialBlock(wrapperLockedAndConfidential).text()).toContain(
-        'This merge request is confidential and locked.',
+        'This merge request is confidential and its discussion is locked.',
       );
     });
   });

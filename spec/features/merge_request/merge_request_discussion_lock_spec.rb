@@ -92,7 +92,7 @@ RSpec.describe 'Merge Request Discussion Lock', :js, feature_category: :code_rev
       it 'the user can lock the merge_request' do
         find('#new-actions-header-dropdown button').click
 
-        expect(page).to have_content('Lock merge request')
+        expect(page).to have_content('Lock discussion')
       end
     end
 
@@ -105,7 +105,7 @@ RSpec.describe 'Merge Request Discussion Lock', :js, feature_category: :code_rev
       it 'the user can unlock the merge_request' do
         find('#new-actions-header-dropdown button').click
 
-        expect(page).to have_content('Unlock merge request')
+        expect(page).to have_content('Unlock discussion')
       end
     end
   end

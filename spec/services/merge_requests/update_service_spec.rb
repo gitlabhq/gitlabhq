@@ -351,10 +351,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
 
       it 'creates system note about discussion lock' do
-        note = find_note('locked this merge request')
+        note = find_note('locked the discussion in this merge request')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'locked this merge request'
+        expect(note.note).to eq 'locked the discussion in this merge request'
       end
 
       context 'when current user cannot admin issues in the project' do

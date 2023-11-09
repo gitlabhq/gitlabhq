@@ -20,9 +20,12 @@ export default {
   },
   computed: {
     title() {
-      return sprintf(__('This %{issuable} is locked. Only project members can comment.'), {
-        issuable: issuableTypeText[this.issuableType],
-      });
+      return sprintf(
+        __('The discussion in this %{issuable} is locked. Only project members can comment.'),
+        {
+          issuable: issuableTypeText[this.issuableType],
+        },
+      );
     },
   },
 };

@@ -784,7 +784,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
           service = described_class.new(noteable: issuable, author: author)
           expect(service.discussion_lock.note)
-            .to eq("unlocked this #{type.to_s.titleize.downcase}")
+            .to eq("unlocked the discussion in this #{type.to_s.titleize.downcase}")
         end
       end
     end
@@ -804,7 +804,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
           service = described_class.new(noteable: issuable, author: author)
           expect(service.discussion_lock.note)
-            .to eq("locked this #{type.to_s.titleize.downcase}")
+            .to eq("locked the discussion in this #{type.to_s.titleize.downcase}")
         end
       end
     end

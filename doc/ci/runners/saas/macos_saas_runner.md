@@ -34,34 +34,26 @@ In comparison to our SaaS runners on Linux, where you can run any Docker image,
 GitLab SaaS provides a set of VM images for macOS.
 
 You can execute your build in one of the following images, which you specify
-in your `.gitlab-ci.yml` file.
-
-Each image runs a specific version of macOS and Xcode.
+in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and Xcode.
 
 | VM image                   | Status |
 |----------------------------|--------|
-| `macos-12-xcode-13`        | `GA`   |
 | `macos-12-xcode-14`        | `GA`   |
-| `macos-13-xcode-14`        | `Beta` |
+| `macos-13-xcode-14`        | `GA`   |
+| `macos-14-xcode-15`        | `Beta` |
+
+If no image is specified, the macOS runner uses `macos-13-xcode-14`.
 
 ## Image update policy for macOS
 
-macOS and Xcode follow a yearly release cadence, during which GitLab increments its versions synchronously. GitLab typically supports multiple versions of preinstalled tools. For more information, see
-a [full list of preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/tree/main/toolchain).
+macOS and Xcode follow a yearly release cadence, during which GitLab increments its versions synchronously. GitLab typically supports multiple versions of preinstalled tools. For more information, see the [full list of preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/tree/main/toolchain).
 
-GitLab provides `stable` and `latest` macOS images that follow different update patterns:
+When Apple releases a new macOS version, GitLab releases a new `stable` image based on the OS in the next release, 
+which is in Beta.
 
-- **Stable image:** The `stable` images and installed components are updated every release. Images without the `:latest` prefix are considered stable images.
-- **Latest image:** The `latest` images are typically updated on a weekly cadence and use a `:latest` prefix in the image name. Using the `latest` image results in more regularly updated components and shorter update times for Homebrew or asdf. The `latest` images are used to test software components before releasing the components to the `stable` images.
-By definition, the `latest` images are always Beta.
-A `latest` image is not available.
+With the release of the first patch to macOS, the `stable` image becomes Generally Available (GA). As only two GA images are supported at a time, the prior OS version becomes deprecated and is deleted after three months in accordance with the [supported image lifecycle](../index.md#supported-image-lifecycle).
 
-### Image release process
-
-When Apple releases a new macOS version, GitLab releases both `stable` and `latest` images based on the OS in the next release. Both images are Beta.
-
-With the release of the first patch to macOS, the `stable` image becomes Generally Available (GA).
-As only two GA images are supported at a time, the prior OS version becomes deprecated and is deleted after three months in accordance with the [supported image lifecycle](../index.md#supported-image-lifecycle).
+The `stable` images and installed components are updated every release, to keep the preinstalled software up-to-date.
 
 ## Example `.gitlab-ci.yml` file
 

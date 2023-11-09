@@ -13,13 +13,15 @@ RSpec.describe 'PipelineRetry', feature_category: :continuous_integration do
     variables = {
       id: pipeline.to_global_id.to_s
     }
-    graphql_mutation(:pipeline_retry, variables,
-                     <<-QL
-                       errors
-                       pipeline {
-                         id
-                       }
-                     QL
+    graphql_mutation(
+      :pipeline_retry,
+      variables,
+      <<-QL
+        errors
+        pipeline {
+          id
+        }
+      QL
     )
   end
 

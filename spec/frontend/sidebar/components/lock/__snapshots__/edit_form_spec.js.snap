@@ -9,7 +9,7 @@ exports[`Edit Form Dropdown In issue page when locked the appropriate warning te
     class="text"
   >
     <gl-sprintf-stub
-      message="Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment."
+      message="Unlock this discussion? %{strongStart}Everyone%{strongEnd} will be able to comment."
     />
   </p>
   <edit-form-buttons-stub
@@ -28,7 +28,7 @@ exports[`Edit Form Dropdown In issue page when unlocked the appropriate warning 
     class="text"
   >
     <gl-sprintf-stub
-      message="Lock this %{issuableDisplayName}? Only %{strongStart}project members%{strongEnd} will be able to comment."
+      message="Lock this discussion? Only %{strongStart}project members%{strongEnd} will be able to comment."
     />
   </p>
   <edit-form-buttons-stub
@@ -46,7 +46,7 @@ exports[`Edit Form Dropdown In merge request page when locked the appropriate wa
     class="text"
   >
     <gl-sprintf-stub
-      message="Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment."
+      message="Unlock this discussion? %{strongStart}Everyone%{strongEnd} will be able to comment."
     />
   </p>
   <edit-form-buttons-stub
@@ -65,7 +65,7 @@ exports[`Edit Form Dropdown In merge request page when unlocked the appropriate 
     class="text"
   >
     <gl-sprintf-stub
-      message="Lock this %{issuableDisplayName}? Only %{strongStart}project members%{strongEnd} will be able to comment."
+      message="Lock this discussion? Only %{strongStart}project members%{strongEnd} will be able to comment."
     />
   </p>
   <edit-form-buttons-stub
