@@ -1,8 +1,0 @@
----
-name: invitations_member_role_id
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134100
-rollout_issue_url:
-milestone: '16.6'
-type: development
-group: group::authorization
-default_enabled: false

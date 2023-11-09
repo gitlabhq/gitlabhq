@@ -83,18 +83,9 @@ module Members
     end
 
     def add_members
-      @members = if Feature.enabled?(:invitations_member_role_id, source)
-                   creator_service.add_members(
-                     source, invites, params[:access_level], **create_params
-                   )
-                 else
-                   source.add_members(
-                     invites,
-                     params[:access_level],
-                     expires_at: params[:expires_at],
-                     current_user: current_user
-                   )
-                 end
+      @members = creator_service.add_members(
+        source, invites, params[:access_level], **create_params
+      )
 
       members.each { |member| process_result(member) }
     end

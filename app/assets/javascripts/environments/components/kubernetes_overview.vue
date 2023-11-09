@@ -111,7 +111,6 @@ export default {
         <kubernetes-status-bar
           :cluster-health-status="clusterHealthStatus"
           :configuration="k8sAccessConfiguration"
-          :namespace="namespace"
           :environment-name="environmentName"
           :flux-resource-path="fluxResourcePath"
           class="gl-mb-3" />

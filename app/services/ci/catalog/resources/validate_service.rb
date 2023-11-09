@@ -44,7 +44,7 @@ module Ci
           return if Ci::Catalog::ComponentsProject.new(project).fetch_component_paths(ref,
             limit: MINIMUM_AMOUNT_OF_COMPONENTS).any?
 
-          errors << 'Project must contain components'
+          errors << 'Project must contain components. Ensure you are using the correct directory structure'
         end
 
         def project_has_readme?

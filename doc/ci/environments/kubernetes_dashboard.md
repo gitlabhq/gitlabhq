@@ -83,8 +83,7 @@ You can review the sync status of your Flux deployments from a dashboard.
 To display the deployment status, your dashboard must be able to retrieve the `Kustomization` and `HelmRelease` resources,
 which requires a namespace to be configured for the environment.
 
-By default, GitLab searches the `Kustomization` and `HelmRelease` resources for the name of the project slug.
-You can specify the resource names with the **Flux resource** dropdown list in the environment settings.
+GitLab searches the `Kustomization` and `HelmRelease` resources specified by the **Flux resource** dropdown list in the environment settings.
 
 A dashboard displays one of the following status badges:
 

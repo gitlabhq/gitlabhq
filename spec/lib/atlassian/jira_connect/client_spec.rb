@@ -447,38 +447,77 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
   end
 
   describe '#user_info' do
-    let(:account_id) { '12345' }
-    let(:response_body) do
-      {
-        groups: {
-          items: [
-            { name: 'site-admins' }
-          ]
-        }
-      }.to_json
-    end
+    context 'when user is a site administrator' do
+      let(:account_id) { '12345' }
+      let(:response_body) do
+        {
+          groups: {
+            items: [
+              { name: 'site-admins' }
+            ]
+          }
+        }.to_json
+      end
 
-    before do
-      stub_full_request("https://gitlab-test.atlassian.net/rest/api/3/user?accountId=#{account_id}&expand=groups")
-        .to_return(status: response_status, body: response_body, headers: { 'Content-Type': 'application/json' })
-    end
+      before do
+        stub_full_request("https://gitlab-test.atlassian.net/rest/api/3/user?accountId=#{account_id}&expand=groups")
+          .to_return(status: response_status, body: response_body, headers: { 'Content-Type': 'application/json' })
+      end
 
-    context 'with a successful response' do
-      let(:response_status) { 200 }
+      context 'with a successful response' do
+        let(:response_status) { 200 }
 
-      it 'returns a JiraUser instance' do
-        jira_user = client.user_info(account_id)
+        it 'returns a JiraUser instance' do
+          jira_user = client.user_info(account_id)
 
-        expect(jira_user).to be_a(Atlassian::JiraConnect::JiraUser)
-        expect(jira_user).to be_site_admin
+          expect(jira_user).to be_a(Atlassian::JiraConnect::JiraUser)
+          expect(jira_user).to be_jira_admin
+        end
+      end
+
+      context 'with a failed response' do
+        let(:response_status) { 401 }
+
+        it 'returns nil' do
+          expect(client.user_info(account_id)).to be_nil
+        end
       end
     end
 
-    context 'with a failed response' do
-      let(:response_status) { 401 }
+    context 'when user is an organization administrator' do
+      let(:account_id) { '12345' }
+      let(:response_body) do
+        {
+          groups: {
+            items: [
+              { name: 'org-admins' }
+            ]
+          }
+        }.to_json
+      end
 
-      it 'returns nil' do
-        expect(client.user_info(account_id)).to be_nil
+      before do
+        stub_full_request("https://gitlab-test.atlassian.net/rest/api/3/user?accountId=#{account_id}&expand=groups")
+          .to_return(status: response_status, body: response_body, headers: { 'Content-Type': 'application/json' })
+      end
+
+      context 'with a successful response' do
+        let(:response_status) { 200 }
+
+        it 'returns a JiraUser instance' do
+          jira_user = client.user_info(account_id)
+
+          expect(jira_user).to be_a(Atlassian::JiraConnect::JiraUser)
+          expect(jira_user).to be_jira_admin
+        end
+      end
+
+      context 'with a failed response' do
+        let(:response_status) { 401 }
+
+        it 'returns nil' do
+          expect(client.user_info(account_id)).to be_nil
+        end
       end
     end
   end

@@ -71,7 +71,10 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
           result = service.execute
 
           expect(result[:status]).to eq(:error)
-          expect(result[:message]).to eq('Project must have a description, Project must contain components')
+          expect(result[:http_status]).to eq(422)
+          expect(result[:message]).to eq(
+            'Project must have a description, ' \
+            'Project must contain components. Ensure you are using the correct directory structure')
         end
       end
     end
@@ -105,6 +108,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
             result = service.execute
 
             expect(result[:status]).to eq(:error)
+            expect(result[:http_status]).to eq(403)
           end
         end
 
@@ -140,6 +144,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       it 'raises an error and does not update the release' do
         result = service.execute
         expect(result[:status]).to eq(:error)
+        expect(result[:http_status]).to eq(409)
         expect(project.releases.find_by(tag: tag_name).description).to eq(description)
       end
     end
@@ -151,6 +156,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
         result = service.execute
 
         expect(result[:status]).to eq(:error)
+        expect(result[:http_status]).to eq(400)
         expect(result[:message]).to eq("Milestone(s) not found: #{inexistent_milestone_tag}")
       end
 
@@ -160,6 +166,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
         result = service.execute
 
         expect(result[:status]).to eq(:error)
+        expect(result[:http_status]).to eq(400)
         expect(result[:message]).to eq("Milestone id(s) not found: #{inexistent_milestone_id}")
       end
     end
@@ -245,6 +252,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
         result = service.execute
 
         expect(result[:status]).to eq(:error)
+        expect(result[:http_status]).to eq(400)
         expect(result[:message]).to eq("Milestone(s) not found: #{inexistent_title}")
       end
 
@@ -261,6 +269,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
           result = service.execute
 
           expect(result[:status]).to eq(:error)
+          expect(result[:http_status]).to eq(400)
           expect(result[:message]).to eq("Milestone id(s) not found: #{non_existing_record_id}")
         end
       end

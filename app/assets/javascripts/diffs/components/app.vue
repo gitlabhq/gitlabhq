@@ -61,8 +61,14 @@ import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 import DiffsFileTree from './diffs_file_tree.vue';
 import getMRCodequalityAndSecurityReports from './graphql/get_mr_codequality_and_security_reports.query.graphql';
 
+export const FINDINGS_STATUS_PARSED = 'PARSED';
+export const FINDINGS_STATUS_ERROR = 'ERROR';
+export const FINDINGS_POLL_INTERVAL = 1000;
+
 export default {
   name: 'DiffsApp',
+  FINDINGS_STATUS_PARSED,
+  FINDINGS_STATUS_ERROR,
   components: {
     DiffsFileTree,
     FindingsDrawer,
@@ -145,6 +151,7 @@ export default {
   apollo: {
     getMRCodequalityAndSecurityReports: {
       query: getMRCodequalityAndSecurityReports,
+      pollInterval: FINDINGS_POLL_INTERVAL,
       variables() {
         return { fullPath: this.projectPath, iid: this.iid };
       },
@@ -154,23 +161,37 @@ export default {
         return !this.sastReportsInInlineDiff || (!codeQualityBoolean && !this.sastReportAvailable);
       },
       update(data) {
-        if (data?.project?.mergeRequest?.codequalityReportsComparer?.report?.newErrors) {
-          this.$store.commit(
-            'diffs/SET_CODEQUALITY_DATA',
-            sortFindingsByFile(
-              data.project.mergeRequest.codequalityReportsComparer.report.newErrors,
-            ),
+        const codeQualityBoolean = Boolean(this.endpointCodequality);
+        const { codequalityReportsComparer, sastReport } = data?.project?.mergeRequest || {};
+
+        if (
+          (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
+          /* Checking for newErrors instead of a status indicator is a workaround that
+             needs to be adjusted once https://gitlab.com/gitlab-org/gitlab/-/issues/429527 is resolved. */
+          (!codeQualityBoolean || codequalityReportsComparer?.report?.newErrors.length > 0)
+        ) {
+          this.getMRCodequalityAndSecurityReportStopPolling(
+            this.$apollo.queries.getMRCodequalityAndSecurityReports,
           );
         }
 
-        if (data.project?.mergeRequest?.sastReport?.report) {
-          this.$store.commit('diffs/SET_SAST_DATA', data.project.mergeRequest.sastReport.report);
+        if (sastReport?.status === FINDINGS_STATUS_ERROR && this.sastReportAvailable) {
+          this.fetchScannerFindingsError();
+        }
+
+        if (codequalityReportsComparer?.report?.newErrors) {
+          this.$store.commit(
+            'diffs/SET_CODEQUALITY_DATA',
+            sortFindingsByFile(codequalityReportsComparer.report.newErrors),
+          );
+        }
+
+        if (sastReport?.report) {
+          this.$store.commit('diffs/SET_SAST_DATA', sastReport.report);
         }
       },
       error() {
-        createAlert({
-          message: __('Something went wrong fetching the Scanner Findings. Please try again!'),
-        });
+        this.fetchScannerFindingsError();
       },
     },
   },
@@ -410,6 +431,11 @@ export default {
     closeDrawer() {
       this.setDrawer({});
     },
+    fetchScannerFindingsError() {
+      createAlert({
+        message: __('Something went wrong fetching the Scanner Findings. Please try again.'),
+      });
+    },
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
@@ -418,6 +444,9 @@ export default {
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
+    },
+    getMRCodequalityAndSecurityReportStopPolling(query) {
+      query.stopPolling();
     },
     unsubscribeFromEvents() {
       diffsEventHub.$off(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
@@ -494,7 +523,7 @@ export default {
           })
           .catch(() => {
             createAlert({
-              message: __('Something went wrong on our end. Please try again!'),
+              message: __('Something went wrong on our end. Please try again.'),
             });
           });
       }
@@ -511,7 +540,7 @@ export default {
           })
           .catch(() => {
             createAlert({
-              message: __('Something went wrong on our end. Please try again!'),
+              message: __('Something went wrong on our end. Please try again.'),
             });
           });
       }

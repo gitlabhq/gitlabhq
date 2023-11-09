@@ -91,6 +91,7 @@ class Environment < ApplicationRecord
   delegate :auto_rollback_enabled?, to: :project
 
   scope :available, -> { with_state(:available) }
+  scope :active, -> { with_state(:available, :stopping) }
   scope :stopped, -> { with_state(:stopped) }
 
   scope :order_by_last_deployed_at, -> do

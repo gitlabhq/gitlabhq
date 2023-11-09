@@ -32,6 +32,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ], remove_with: '16.5', remove_after: '2023-09-22'
   ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.10', remove_after: '2024-03-22'
 
+  ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
+
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
@@ -91,7 +93,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_allowlist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_denylist, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
 
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/300916
   serialize :asset_proxy_allowlist, Array # rubocop:disable Cop/ActiveRecordSerialize
@@ -303,8 +304,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :repository_storages, presence: true
-  validate :check_repository_storages
   validate :check_repository_storages_weighted
 
   validates :auto_devops_domain,

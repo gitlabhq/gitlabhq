@@ -122,7 +122,6 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
       expect(findKubernetesStatusBar().props()).toEqual({
         clusterHealthStatus: 'success',
         configuration,
-        namespace: kubernetesNamespace,
         environmentName: resolvedEnvironment.name,
         fluxResourcePath: fluxResourcePathMock,
       });

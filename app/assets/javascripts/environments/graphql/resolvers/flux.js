@@ -18,14 +18,8 @@ const handleClusterError = (err) => {
   throw error;
 };
 
-const buildFluxResourceUrl = ({
-  basePath,
-  namespace,
-  apiVersion,
-  resourceType,
-  environmentName = '',
-}) => {
-  return `${basePath}/apis/${apiVersion}/namespaces/${namespace}/${resourceType}/${environmentName}`;
+const buildFluxResourceUrl = ({ basePath, namespace, apiVersion, resourceType }) => {
+  return `${basePath}/apis/${apiVersion}/namespaces/${namespace}/${resourceType}`;
 };
 
 const buildFluxResourceWatchPath = ({ namespace, apiVersion, resourceType }) => {
@@ -57,17 +51,22 @@ const watchFluxResource = ({ watchPath, resourceName, query, variables, field, c
     });
 };
 
-const getFluxResourceStatus = ({ url, watchPath, query, variables, field, client }) => {
+const getFluxResourceStatus = ({ query, variables, field, resourceType, client }) => {
   const { headers } = variables.configuration;
   const withCredentials = true;
+  const url = `${variables.configuration.basePath}/apis/${variables.fluxResourcePath}`;
 
   return axios
     .get(url, { withCredentials, headers })
     .then((res) => {
       const fluxData = res?.data;
       const resourceName = fluxData?.metadata?.name;
+      const namespace = fluxData?.metadata?.namespace;
+      const apiVersion = fluxData?.apiVersion;
 
       if (gon.features?.k8sWatchApi && resourceName) {
+        const watchPath = buildFluxResourceWatchPath({ namespace, apiVersion, resourceType });
+
         watchFluxResource({
           watchPath,
           resourceName,
@@ -111,67 +110,21 @@ const getFluxResources = (configuration, url) => {
 };
 
 export default {
-  fluxKustomizationStatus(
-    _,
-    { configuration, namespace, environmentName, fluxResourcePath = '' },
-    { client },
-  ) {
-    const watchPath = buildFluxResourceWatchPath({
-      namespace,
-      apiVersion: kustomizationsApiVersion,
-      resourceType: KUSTOMIZATIONS_RESOURCE_TYPE,
-    });
-    let url;
-
-    if (fluxResourcePath) {
-      url = `${configuration.basePath}/apis/${fluxResourcePath}`;
-    } else {
-      url = buildFluxResourceUrl({
-        basePath: configuration.basePath,
-        resourceType: KUSTOMIZATIONS_RESOURCE_TYPE,
-        apiVersion: kustomizationsApiVersion,
-        namespace,
-        environmentName,
-      });
-    }
+  fluxKustomizationStatus(_, { configuration, fluxResourcePath }, { client }) {
     return getFluxResourceStatus({
-      url,
-      watchPath,
       query: fluxKustomizationStatusQuery,
-      variables: { configuration, namespace, environmentName, fluxResourcePath },
+      variables: { configuration, fluxResourcePath },
       field: kustomizationField,
+      resourceType: KUSTOMIZATIONS_RESOURCE_TYPE,
       client,
     });
   },
-  fluxHelmReleaseStatus(
-    _,
-    { configuration, namespace, environmentName, fluxResourcePath },
-    { client },
-  ) {
-    const watchPath = buildFluxResourceWatchPath({
-      namespace,
-      apiVersion: helmReleasesApiVersion,
-      resourceType: HELM_RELEASES_RESOURCE_TYPE,
-    });
-    let url;
-
-    if (fluxResourcePath) {
-      url = `${configuration.basePath}/apis/${fluxResourcePath}`;
-    } else {
-      url = buildFluxResourceUrl({
-        basePath: configuration.basePath,
-        resourceType: HELM_RELEASES_RESOURCE_TYPE,
-        apiVersion: helmReleasesApiVersion,
-        namespace,
-        environmentName,
-      });
-    }
+  fluxHelmReleaseStatus(_, { configuration, fluxResourcePath }, { client }) {
     return getFluxResourceStatus({
-      url,
-      watchPath,
       query: fluxHelmReleaseStatusQuery,
-      variables: { configuration, namespace, environmentName, fluxResourcePath },
+      variables: { configuration, fluxResourcePath },
       field: helmReleaseField,
+      resourceType: HELM_RELEASES_RESOURCE_TYPE,
       client,
     });
   },

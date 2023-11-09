@@ -19,7 +19,9 @@ RSpec.describe Ci::Catalog::Resources::ValidateService, feature_category: :pipel
         response = described_class.new(project, project.default_branch).execute
 
         expect(response.message).to eq(
-          'Project must have a README, Project must have a description, Project must contain components')
+          'Project must have a README, ' \
+          'Project must have a description, ' \
+          'Project must contain components. Ensure you are using the correct directory structure')
       end
     end
 
@@ -37,7 +39,9 @@ RSpec.describe Ci::Catalog::Resources::ValidateService, feature_category: :pipel
         project = create(:project, :small_repo, description: 'project with no README and no components')
         response = described_class.new(project, project.default_branch).execute
 
-        expect(response.message).to eq('Project must have a README, Project must contain components')
+        expect(response.message).to eq(
+          'Project must have a README, ' \
+          'Project must contain components. Ensure you are using the correct directory structure')
       end
     end
 
@@ -46,7 +50,9 @@ RSpec.describe Ci::Catalog::Resources::ValidateService, feature_category: :pipel
         project = create(:project, :repository)
         response = described_class.new(project, project.default_branch).execute
 
-        expect(response.message).to eq('Project must have a description, Project must contain components')
+        expect(response.message).to eq(
+          'Project must have a description, ' \
+          'Project must contain components. Ensure you are using the correct directory structure')
       end
     end
 
@@ -74,7 +80,8 @@ RSpec.describe Ci::Catalog::Resources::ValidateService, feature_category: :pipel
         project = create(:project, :readme, description: 'project with no README and no components')
         response = described_class.new(project, project.default_branch).execute
 
-        expect(response.message).to eq('Project must contain components')
+        expect(response.message).to eq(
+          'Project must contain components. Ensure you are using the correct directory structure')
       end
     end
   end

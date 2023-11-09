@@ -1,15 +1,6 @@
-query getFluxHelmReleaseStatusQuery(
-  $configuration: LocalConfiguration
-  $namespace: String
-  $environmentName: String
-  $fluxResourcePath: String
-) {
-  fluxHelmReleaseStatus(
-    configuration: $configuration
-    namespace: $namespace
-    environmentName: $environmentName
-    fluxResourcePath: $fluxResourcePath
-  ) @client {
+query getFluxHelmReleaseStatusQuery($configuration: LocalConfiguration, $fluxResourcePath: String) {
+  fluxHelmReleaseStatus(configuration: $configuration, fluxResourcePath: $fluxResourcePath)
+    @client {
     message
     status
     type

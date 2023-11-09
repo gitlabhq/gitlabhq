@@ -2,6 +2,8 @@
 
 class Projects::EnvironmentsController < Projects::ApplicationController
   MIN_SEARCH_LENGTH = 3
+  ACTIVE_STATES = %i[available stopping].freeze
+  SCOPES_TO_STATES = { "active" => ACTIVE_STATES, "stopped" => %i[stopped] }.freeze
 
   include ProductAnalyticsTracking
   include KasCookie
@@ -35,7 +37,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        @environments = search_environments.with_state(params[:scope] || :available)
+        states = SCOPES_TO_STATES.fetch(params[:scope], ACTIVE_STATES)
+        @environments = search_environments.with_state(states)
+
         environments_count_by_state = search_environments.count_by_state
 
         Gitlab::PollingInterval.set_header(response, interval: 3_000)
@@ -44,6 +48,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
           review_app: serialize_review_app,
           can_stop_stale_environments: can?(current_user, :stop_environment, @project),
           available_count: environments_count_by_state[:available],
+          active_count: environments_count_by_state[:available] + environments_count_by_state[:stopping],
           stopped_count: environments_count_by_state[:stopped]
         }
       end
@@ -58,14 +63,16 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
+        states = SCOPES_TO_STATES.fetch(params[:scope], ACTIVE_STATES)
         folder_environments = search_environments(type: params[:id])
 
-        @environments = folder_environments.with_state(params[:scope] || :available)
+        @environments = folder_environments.with_state(states)
           .order(:name)
 
         render json: {
           environments: serialize_environments(request, response),
           available_count: folder_environments.available.count,
+          active_count: folder_environments.active.count,
           stopped_count: folder_environments.stopped.count
         }
       end

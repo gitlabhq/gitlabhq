@@ -50,14 +50,25 @@ To create an OAuth application on your self-managed instance:
 
 ## Jira user requirements
 
-You must ensure that the Jira user that is used to setup the GitLab for Jira Cloud app is a member of the Site Administrators (`site-admins`) group in your
-[Atlassian organization](https://admin.atlassian.com):
+> Support for the `org-admins` group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420687) in GitLab 16.6.
 
-1. If you don't have a `site-admins` group in your Atlassian organization, [create the group](https://support.atlassian.com/user-management/docs/create-groups/).
-1. If not already a member, [add your Jira user as a member](https://support.atlassian.com/user-management/docs/edit-a-group/) of the `site-admins` group.
+In your [Atlassian organization](https://admin.atlassian.com), you must ensure that the Jira user that is used to set up the GitLab for Jira Cloud app is a member of
+either:
 
-If you have customized your global permissions in Jira, you might also need to grant the
-[`Browse users and groups` permission](https://confluence.atlassian.com/jirakb/unable-to-browse-for-users-and-groups-120521888.html) to the Jira user.
+- The Organization Administrators (`org-admins`) group. Newer Atlassian organizations are using
+  [centralized user management](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Centralized-user-management-content),
+  which contains the `org-admins` group. Existing Atlassian organizations are being migrated to centralized user management.
+  If available, you should use the `org-admins` group to indicate which Jira users can manage the GitLab for Jira app. Alternatively you can use the
+  `site-admins` group.
+- The Site Administrators (`site-admins`) group. The `site-admins` group was used under
+  [original user management](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Original-user-management-content).
+
+If necessary:
+
+1. [Create your preferred group](https://support.atlassian.com/user-management/docs/create-groups/).
+1. [Edit the group](https://support.atlassian.com/user-management/docs/edit-a-group/) to add your Jira user as a member of it.
+1. If you customized your global permissions in Jira, you might also need to grant the
+   [`Browse users and groups` permission](https://confluence.atlassian.com/jirakb/unable-to-browse-for-users-and-groups-120521888.html) to the Jira user.
 
 ## Connect the GitLab for Jira Cloud app
 

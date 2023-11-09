@@ -48,7 +48,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   def destroy
     subscription = current_jira_installation.subscriptions.find(params[:id])
 
-    if !jira_user&.site_admin?
+    if !jira_user&.jira_admin?
       render json: { error: 'forbidden' }, status: :forbidden
     elsif subscription.destroy
       render json: { success: true }

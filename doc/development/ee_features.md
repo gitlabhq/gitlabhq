@@ -78,7 +78,7 @@ end
 
 ### Do not use SaaS-only features for functionality in CE
 
-`Gitlab::Saas.feature_vailable?` must not appear in CE.
+`Gitlab::Saas.feature_available?` must not appear in CE.
 See [extending CE with EE guide](#extend-ce-features-with-ee-backend-code).
 
 ### SaaS-only features in tests

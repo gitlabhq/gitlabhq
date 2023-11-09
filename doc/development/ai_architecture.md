@@ -77,7 +77,7 @@ A [draft MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122035) has b
 The index function has been updated to improve search quality. This was tested locally by setting the `ivfflat.probes` value to `10` with the following SQL command:
 
 ```ruby
-Embedding::TanukiBotMvc.connection.execute("SET ivfflat.probes = 10")
+::Embedding::Vertex::GitlabDocumentation.connection.execute("SET ivfflat.probes = 10")
 ```
 
 Setting the `probes` value for indexing improves results, as per the neighbor [documentation](https://github.com/ankane/neighbor#indexing).

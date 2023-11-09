@@ -1,6 +1,6 @@
 query getEnvironmentApp($page: Int, $scope: String, $search: String) {
   environmentApp(page: $page, scope: $scope, search: $search) @client {
-    availableCount
+    activeCount
     stoppedCount
     environments
     reviewApp

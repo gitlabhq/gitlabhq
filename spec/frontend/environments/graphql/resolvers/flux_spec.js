@@ -15,8 +15,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       headers: { 'GitLab-Agent-Id': '1' },
     },
   };
-  const namespace = 'default';
-  const environmentName = 'my-environment';
 
   beforeEach(() => {
     mockResolvers = resolvers();
@@ -29,34 +27,14 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
   describe('fluxKustomizationStatus', () => {
     const client = { writeQuery: jest.fn() };
-    const endpoint = `${configuration.basePath}/apis/kustomize.toolkit.fluxcd.io/v1beta1/namespaces/${namespace}/kustomizations/${environmentName}`;
     const fluxResourcePath =
       'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app';
-    const endpointWithFluxResourcePath = `${configuration.basePath}/apis/${fluxResourcePath}`;
+    const endpoint = `${configuration.basePath}/apis/${fluxResourcePath}`;
 
     describe('when k8sWatchApi feature is disabled', () => {
-      it('should request Flux Kustomizations for the provided namespace via the Kubernetes API if the fluxResourcePath is not specified', async () => {
-        mock
-          .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
-          .reply(HTTP_STATUS_OK, {
-            status: { conditions: fluxKustomizationsMock },
-          });
-
-        const fluxKustomizationStatus = await mockResolvers.Query.fluxKustomizationStatus(
-          null,
-          {
-            configuration,
-            namespace,
-            environmentName,
-          },
-          { client },
-        );
-
-        expect(fluxKustomizationStatus).toEqual(fluxKustomizationsMock);
-      });
       it('should request Flux Kustomization for the provided fluxResourcePath via the Kubernetes API', async () => {
         mock
-          .onGet(endpointWithFluxResourcePath, {
+          .onGet(endpoint, {
             withCredentials: true,
             headers: configuration.baseOptions.headers,
           })
@@ -68,8 +46,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           null,
           {
             configuration,
-            namespace,
-            environmentName,
             fluxResourcePath,
           },
           { client },
@@ -87,8 +63,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           null,
           {
             configuration,
-            namespace,
-            environmentName,
+            fluxResourcePath,
           },
           { client },
         );
@@ -108,6 +83,8 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         }
       });
       const resourceName = 'custom-resource';
+      const resourceNamespace = 'custom-namespace';
+      const apiVersion = 'kustomize.toolkit.fluxcd.io/v1beta1';
 
       beforeEach(() => {
         gon.features = { k8sWatchApi: true };
@@ -120,7 +97,8 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           mock
             .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
             .reply(HTTP_STATUS_OK, {
-              metadata: { name: resourceName },
+              apiVersion,
+              metadata: { name: resourceName, namespace: resourceNamespace },
               status: { conditions: fluxKustomizationsMock },
             });
         });
@@ -129,14 +107,13 @@ describe('~/frontend/environments/graphql/resolvers', () => {
             null,
             {
               configuration,
-              namespace,
-              environmentName,
+              fluxResourcePath,
             },
             { client },
           );
 
           expect(mockKustomizationStatusFn).toHaveBeenCalledWith(
-            `/apis/kustomize.toolkit.fluxcd.io/v1beta1/namespaces/${namespace}/kustomizations`,
+            `/apis/${apiVersion}/namespaces/${resourceNamespace}/kustomizations`,
             {
               watch: true,
               fieldSelector: `metadata.name=${decodeURIComponent(resourceName)}`,
@@ -149,8 +126,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
             null,
             {
               configuration,
-              namespace,
-              environmentName,
+              fluxResourcePath,
             },
             { client },
           );
@@ -168,8 +144,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           null,
           {
             configuration,
-            namespace,
-            environmentName,
+            fluxResourcePath,
           },
           { client },
         );
@@ -181,34 +156,14 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
   describe('fluxHelmReleaseStatus', () => {
     const client = { writeQuery: jest.fn() };
-    const endpoint = `${configuration.basePath}/apis/helm.toolkit.fluxcd.io/v2beta1/namespaces/${namespace}/helmreleases/${environmentName}`;
     const fluxResourcePath =
       'helm.toolkit.fluxcd.io/v2beta1/namespaces/my-namespace/helmreleases/app';
-    const endpointWithFluxResourcePath = `${configuration.basePath}/apis/${fluxResourcePath}`;
+    const endpoint = `${configuration.basePath}/apis/${fluxResourcePath}`;
 
     describe('when k8sWatchApi feature is disabled', () => {
-      it('should request Flux Helm Releases via the Kubernetes API', async () => {
-        mock
-          .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
-          .reply(HTTP_STATUS_OK, {
-            status: { conditions: fluxKustomizationsMock },
-          });
-
-        const fluxHelmReleaseStatus = await mockResolvers.Query.fluxHelmReleaseStatus(
-          null,
-          {
-            configuration,
-            namespace,
-            environmentName,
-          },
-          { client },
-        );
-
-        expect(fluxHelmReleaseStatus).toEqual(fluxKustomizationsMock);
-      });
       it('should request Flux HelmRelease for the provided fluxResourcePath via the Kubernetes API', async () => {
         mock
-          .onGet(endpointWithFluxResourcePath, {
+          .onGet(endpoint, {
             withCredentials: true,
             headers: configuration.baseOptions.headers,
           })
@@ -220,8 +175,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           null,
           {
             configuration,
-            namespace,
-            environmentName,
             fluxResourcePath,
           },
           { client },
@@ -239,8 +192,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           null,
           {
             configuration,
-            namespace,
-            environmentName,
+            fluxResourcePath,
           },
           { client },
         );
@@ -260,6 +212,8 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         }
       });
       const resourceName = 'custom-resource';
+      const resourceNamespace = 'custom-namespace';
+      const apiVersion = 'helm.toolkit.fluxcd.io/v2beta1';
 
       beforeEach(() => {
         gon.features = { k8sWatchApi: true };
@@ -272,7 +226,8 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           mock
             .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
             .reply(HTTP_STATUS_OK, {
-              metadata: { name: resourceName },
+              apiVersion,
+              metadata: { name: resourceName, namespace: resourceNamespace },
               status: { conditions: fluxKustomizationsMock },
             });
         });
@@ -281,14 +236,13 @@ describe('~/frontend/environments/graphql/resolvers', () => {
             null,
             {
               configuration,
-              namespace,
-              environmentName,
+              fluxResourcePath,
             },
             { client },
           );
 
           expect(mockHelmReleaseStatusFn).toHaveBeenCalledWith(
-            `/apis/helm.toolkit.fluxcd.io/v2beta1/namespaces/${namespace}/helmreleases`,
+            `/apis/${apiVersion}/namespaces/${resourceNamespace}/helmreleases`,
             {
               watch: true,
               fieldSelector: `metadata.name=${decodeURIComponent(resourceName)}`,
@@ -301,8 +255,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
             null,
             {
               configuration,
-              namespace,
-              environmentName,
+              fluxResourcePath,
             },
             { client },
           );
@@ -320,8 +273,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           null,
           {
             configuration,
-            namespace,
-            environmentName,
+            fluxResourcePath,
           },
           { client },
         );

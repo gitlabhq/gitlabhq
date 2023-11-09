@@ -21509,13 +21509,7 @@ msgstr ""
 msgid "Geo|Remove %{siteType} site"
 msgstr ""
 
-msgid "Geo|Remove entry"
-msgstr ""
-
 msgid "Geo|Remove site"
-msgstr ""
-
-msgid "Geo|Remove tracking database entry"
 msgstr ""
 
 msgid "Geo|Removing a Geo site stops the synchronization to and from that site. Are you sure?"
@@ -21687,9 +21681,6 @@ msgid "Geo|This will reverify all projects. It may take some time to complete. A
 msgstr ""
 
 msgid "Geo|Time in seconds"
-msgstr ""
-
-msgid "Geo|Tracking database entry will be removed. Are you sure?"
 msgstr ""
 
 msgid "Geo|Tuning settings"
@@ -26948,7 +26939,7 @@ msgstr ""
 msgid "JiraConnect|Tell us what you think!"
 msgstr ""
 
-msgid "JiraConnect|The Jira user is not a site administrator. Check the permissions in Jira and try again."
+msgid "JiraConnect|The Jira user is not a site or organization administrator. Check the permissions in Jira and try again."
 msgstr ""
 
 msgid "JiraConnect|We would love to learn more about your experience with the GitLab for Jira Cloud App."
@@ -45549,7 +45540,7 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-msgid "Something went wrong fetching the Scanner Findings. Please try again!"
+msgid "Something went wrong fetching the Scanner Findings. Please try again."
 msgstr ""
 
 msgid "Something went wrong on our end"

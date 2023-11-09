@@ -31,7 +31,9 @@ RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeli
 
         expect(Ci::Catalog::Resources::Version.count).to be(0)
         expect(response).to be_error
-        expect(response.message).to eq('Project must have a description, Project must contain components')
+        expect(response.message).to eq(
+          'Project must have a description, ' \
+          'Project must contain components. Ensure you are using the correct directory structure')
       end
     end
 

@@ -53,7 +53,7 @@ module Releases
       if project.catalog_resource && release.valid?
         response = Ci::Catalog::Resources::ReleaseService.new(release).execute
 
-        return error(response.message) if response.error?
+        return error(response.message, 422) if response.error?
       end
 
       release.save!

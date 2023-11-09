@@ -34,16 +34,16 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
     describe 'with one available environment' do
       let!(:environment) { create(:environment, project: project, state: :available) }
 
-      it 'shows "Available" and "Stopped" tab with links' do
+      it 'shows "Active" and "Stopped" tab with links' do
         visit_environments(project)
 
-        expect(page).to have_link(_('Available'))
+        expect(page).to have_link(_('Active'))
         expect(page).to have_link(_('Stopped'))
       end
 
-      describe 'in available tab page' do
+      describe 'in active tab page' do
         it 'shows one environment' do
-          visit_environments(project, scope: 'available')
+          visit_environments(project, scope: 'active')
 
           expect(page).to have_link(environment.name, href: project_environment_path(project, environment))
         end
@@ -56,7 +56,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
         end
 
         it 'renders second page of pipelines' do
-          visit_environments(project, scope: 'available')
+          visit_environments(project, scope: 'active')
 
           find('.page-link.next-page-item').click
           wait_for_requests
@@ -85,7 +85,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
         end
 
         it 'shows one environment without error' do
-          visit_environments(project, scope: 'available')
+          visit_environments(project, scope: 'active')
 
           expect(page).to have_link(environment.name, href: project_environment_path(project, environment))
         end
@@ -95,9 +95,9 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
     describe 'with one stopped environment' do
       let!(:environment) { create(:environment, project: project, state: :stopped) }
 
-      describe 'in available tab page' do
+      describe 'in active tab page' do
         it 'shows no environments' do
-          visit_environments(project, scope: 'available')
+          visit_environments(project, scope: 'active')
 
           expect(page).to have_content(s_('Environments|Get started with environments'))
         end
@@ -122,7 +122,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
     it 'does not show environments and tabs' do
       expect(page).to have_content(s_('Environments|Get started with environments'))
 
-      expect(page).not_to have_link(_('Available'))
+      expect(page).not_to have_link(_('Active'))
       expect(page).not_to have_link(_('Stopped'))
     end
   end
@@ -142,7 +142,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
       it 'shows environments names and counters' do
         expect(page).to have_link(environment.name, href: project_environment_path(project, environment))
 
-        expect(page).to have_link("#{_('Available')} 1")
+        expect(page).to have_link("#{_('Active')} 1")
         expect(page).to have_link("#{_('Stopped')} 0")
       end
 
