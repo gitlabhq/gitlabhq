@@ -278,10 +278,14 @@ The method used to mask variables [limits what can be included in a masked varia
 The value of the variable must:
 
 - Be a single line.
-- Be 8 characters or longer, consisting only of:
-  - Characters from the Base64 alphabet (RFC4648).
-  - The `@`, `:`, `.`, or `~` characters.
+- Be 8 characters or longer.
 - Not match the name of an existing predefined or custom CI/CD variable.
+
+Additionally, if [variable expansion](#prevent-cicd-variable-expansion) is enabled,
+the value can contain only:
+
+- Characters from the Base64 alphabet (RFC4648).
+- The `@`, `:`, `.`, or `~` characters.
 
 Different versions of [GitLab Runner](../runners/index.md) have different masking limitations:
 
