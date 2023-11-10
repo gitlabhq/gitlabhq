@@ -16,6 +16,7 @@ module BulkImports
 
     def perform(pipeline_tracker_id)
       @tracker = Tracker.find(pipeline_tracker_id)
+      @context = ::BulkImports::Pipeline::Context.new(tracker)
 
       return unless tracker.batched?
       return unless tracker.started?
@@ -26,6 +27,7 @@ module BulkImports
         tracker.batches.map(&:fail_op!)
         tracker.fail_op!
       else
+        tracker.pipeline_class.new(@context).on_finish
         logger.info(log_attributes(message: 'Tracker finished'))
         tracker.finish!
       end

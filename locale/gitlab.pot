@@ -49396,6 +49396,9 @@ msgstr ""
 msgid "This link points to external content"
 msgstr ""
 
+msgid "This link will redirect you to %{url}. If this URL looks wrong, please go back or close this window. Do you want to continue?"
+msgstr ""
+
 msgid "This may expose confidential information as the selected fork is in another namespace that can have other members."
 msgstr ""
 
@@ -55692,6 +55695,9 @@ msgid "You'll be signed out from your current account automatically."
 msgstr ""
 
 msgid "You'll need to use different branch names to get a valid comparison."
+msgstr ""
+
+msgid "You're about to leave GitLab"
 msgstr ""
 
 msgid "You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end} in %{strong_start}%{group_name}%{strong_end}."

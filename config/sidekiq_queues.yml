@@ -563,6 +563,8 @@
   - 1
 - - projects_git_garbage_collect
   - 1
+- - projects_import_export_after_import_merge_requests
+  - 1
 - - projects_import_export_create_relation_exports
   - 1
 - - projects_import_export_parallel_project_export

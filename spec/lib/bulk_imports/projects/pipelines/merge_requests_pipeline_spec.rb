@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:another_user) { create(:user) }
   let_it_be(:group) { create(:group) }
@@ -43,6 +43,7 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline do
         'base_commit_sha' => 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f',
         'head_commit_sha' => 'a97f74ddaa848b707bea65441c903ae4bf5d844d',
         'start_commit_sha' => '9eea46b5c72ead701c22f516474b95049c9d9462',
+        'diff_type' => 1,
         'merge_request_diff_commits' => [
           {
             'sha' => 'COMMIT1',
@@ -98,6 +99,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline do
       allow(project.repository).to receive(:fetch_source_branch!).and_return(true)
       allow(project.repository).to receive(:branch_exists?).and_return(false)
       allow(project.repository).to receive(:create_branch)
+
+      allow(::Projects::ImportExport::AfterImportMergeRequestsWorker).to receive(:perform_async)
 
       pipeline.run
     end
@@ -244,8 +247,10 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline do
         expect(imported_mr.merge_request_diff).to be_present
       end
 
-      it 'has the correct data for merge request latest_merge_request_diff' do
-        expect(imported_mr.latest_merge_request_diff_id).to eq(imported_mr.merge_request_diffs.maximum(:id))
+      it 'enqueues AfterImportMergeRequestsWorker worker' do
+        expect(::Projects::ImportExport::AfterImportMergeRequestsWorker)
+          .to have_received(:perform_async)
+          .with(project.id)
       end
 
       it 'imports diff files' do

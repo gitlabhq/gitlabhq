@@ -56,7 +56,7 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
         end
       end
 
-      it_behaves_like 'MLflow|shared error cases'
+      it_behaves_like 'MLflow|shared model registry error cases'
       it_behaves_like 'MLflow|Requires read_api scope'
     end
   end
@@ -127,7 +127,7 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
         end
       end
 
-      it_behaves_like 'MLflow|shared error cases'
+      it_behaves_like 'MLflow|shared model registry error cases'
       it_behaves_like 'MLflow|Requires api scope and write permission'
     end
   end
@@ -160,7 +160,43 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
         end
       end
 
-      it_behaves_like 'MLflow|shared error cases'
+      it_behaves_like 'MLflow|shared model registry error cases'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
+    end
+  end
+
+  describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/get-latest-versions' do
+    let_it_be(:version1) { create(:ml_model_versions, model: model, created_at: 1.week.ago) }
+    let_it_be(:version2) { create(:ml_model_versions, model: model, created_at: 1.day.ago) }
+
+    let(:model_name) { model.name }
+    let(:params) { { name: model_name } }
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/get-latest-versions" }
+    let(:request) { post api(route), params: params, headers: headers }
+
+    it 'returns an array with the most recently created model version', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      is_expected.to match_response_schema('ml/get_latest_versions')
+      expect(json_response["model_versions"][0]["name"]).to eq(model_name)
+      expect(json_response["model_versions"][0]["version"]).to eq(version2.version)
+    end
+
+    describe 'Error States' do
+      context 'when has access' do
+        context 'and model does not exist' do
+          let(:model_name) { 'foo' }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+
+        context 'and name is not passed' do
+          let(:params) { {} }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+      end
+
+      it_behaves_like 'MLflow|shared model registry error cases'
       it_behaves_like 'MLflow|Requires read_api scope'
     end
   end

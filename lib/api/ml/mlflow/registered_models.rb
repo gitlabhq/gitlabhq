@@ -12,6 +12,7 @@ module API
         before do
           check_api_read!
           check_api_write! unless request.get? || request.head?
+          check_api_model_registry_read!
         end
 
         resource 'registered-models' do
@@ -51,13 +52,8 @@ module API
               desc: 'Registered model unique name identifier, in reference to the project'
           end
           get 'get', urgency: :low do
-            resource_not_found! unless params[:name]
-
-            model = ::Ml::FindModelService.new(user_project, params[:name]).execute
-
-            resource_not_found! if model.nil?
-
-            present model, with: Entities::Ml::Mlflow::RegisteredModel, root: :registered_model
+            present find_model(user_project, params[:name]), with: Entities::Ml::Mlflow::RegisteredModel,
+              root: :registered_model
           end
 
           desc 'Update a Registered Model by Name' do
@@ -73,14 +69,25 @@ module API
               desc: 'Optional description for registered model.'
           end
           patch 'update', urgency: :low do
-            resource_not_found! unless params[:name]
-
-            model = ::Ml::FindModelService.new(user_project, params[:name]).execute
-
-            resource_not_found! if model.nil?
-
-            present ::Ml::UpdateModelService.new(model, params[:description]).execute,
+            present ::Ml::UpdateModelService.new(find_model(user_project, params[:name]), params[:description]).execute,
               with: Entities::Ml::Mlflow::RegisteredModel, root: :registered_model
+          end
+
+          desc 'Fetch the latest Model Version for the given Registered Model Name' do
+            success Entities::Ml::Mlflow::ModelVersions::Types::ModelVersion
+            detail 'https://mlflow.org/docs/2.6.0/rest-api.html#get-latest-modelversions'
+          end
+          params do
+            # The name param is actually required, however it is listed as optional here
+            # we can send a custom error response required by MLFlow
+            optional :name, type: String,
+              desc: 'Registered model unique name identifier, in reference to the project'
+          end
+          post 'get-latest-versions', urgency: :low do
+            model = find_model(user_project, params[:name])
+
+            present [model.latest_version], with: Entities::Ml::Mlflow::ModelVersions::Types::ModelVersion,
+              root: :model_versions
           end
         end
       end

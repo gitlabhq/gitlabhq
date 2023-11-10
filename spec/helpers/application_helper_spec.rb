@@ -649,7 +649,7 @@ RSpec.describe ApplicationHelper do
       it 'returns mastodon url when mastodon username is set' do
         user.mastodon = '@robin@example.com'
 
-        expect(mastodon).to eq('https://example.com/@robin')
+        expect(mastodon).to eq(external_redirect_path(url: 'https://example.com/@robin'))
       end
     end
   end

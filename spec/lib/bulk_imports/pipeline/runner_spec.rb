@@ -194,6 +194,8 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
             .with(context, extracted_data.data.first)
         end
 
+        expect(subject).to receive(:on_finish)
+
         expect_next_instance_of(Gitlab::Import::Logger) do |logger|
           expect(logger).to receive(:info)
             .with(
@@ -235,6 +237,14 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
               log_params(
                 context,
                 pipeline_class: 'BulkImports::MyPipeline',
+                pipeline_step: :on_finish
+              )
+            )
+          expect(logger).to receive(:info)
+            .with(
+              log_params(
+                context,
+                pipeline_class: 'BulkImports::MyPipeline',
                 pipeline_step: :after_run
               )
             )
@@ -249,6 +259,28 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
 
         subject.run
+      end
+
+      context 'when the pipeline is batched' do
+        let(:tracker) { create(:bulk_import_tracker, :batched, entity: entity) }
+
+        before do
+          allow_next_instance_of(BulkImports::Extractor) do |extractor|
+            allow(extractor).to receive(:extract).and_return(extracted_data)
+          end
+        end
+
+        it 'calls after_run' do
+          expect(subject).to receive(:after_run)
+
+          subject.run
+        end
+
+        it 'does not call on_finish' do
+          expect(subject).not_to receive(:on_finish)
+
+          subject.run
+        end
       end
 
       context 'when extracted data has multiple pages' do

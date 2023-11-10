@@ -154,6 +154,37 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     end
   end
 
+  describe '.by_project_id_name_and_version' do
+    let(:version) { model_version1.version }
+    let(:project_id) { model_version1.project.id }
+    let(:model_name) { model_version1.model.name }
+    let_it_be(:latest_version) { create(:ml_model_versions, model: model_version1.model) }
+
+    subject { described_class.by_project_id_name_and_version(project_id, model_name, version) }
+
+    context 'if exists' do
+      it { is_expected.to eq(model_version1) }
+    end
+
+    context 'if id has no match' do
+      let(:version) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+
+    context 'if project id does not match' do
+      let(:project_id) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+
+    context 'if model name does not match' do
+      let(:model_name) { non_existing_record_id }
+
+      it { is_expected.to be(nil) }
+    end
+  end
+
   describe '.order_by_model_id_id_desc' do
     subject { described_class.order_by_model_id_id_desc }
 

@@ -83,6 +83,10 @@ module API
           candidate_repository.by_eid(eid) || resource_not_found!
         end
 
+        def find_model(project, name)
+          ::Ml::FindModelService.new(project, name).execute || resource_not_found!
+        end
+
         def packages_url
           path = api_v4_projects_packages_generic_package_version_path(
             id: user_project.id, package_name: '', file_name: ''

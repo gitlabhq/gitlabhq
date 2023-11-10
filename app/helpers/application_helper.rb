@@ -375,7 +375,7 @@ module ApplicationHelper
 
     url = user.mastodon.match UserDetail::MASTODON_VALIDATION_REGEX
 
-    "https://#{url[2]}/@#{url[1]}"
+    external_redirect_path(url: "https://#{url[2]}/@#{url[1]}")
   end
 
   def collapsed_sidebar?

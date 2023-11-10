@@ -40,12 +40,22 @@ module BulkImports
           run_pipeline_step(:after_run) do
             after_run(extracted_data)
           end
+
+          # For batches, `#on_finish` is called once within `FinishBatchedPipelineWorker`
+          # after all batches have completed.
+          unless tracker.batched?
+            run_pipeline_step(:on_finish) do
+              on_finish
+            end
+          end
         end
 
         info(message: 'Pipeline finished')
       rescue MarkedAsFailedError
         skip!('Skipping pipeline due to failed entity')
       end
+
+      def on_finish; end
 
       private # rubocop:disable Lint/UselessAccessModifier
 
