@@ -15,7 +15,8 @@ module Ci
       belongs_to :project
       has_many :components, class_name: 'Ci::Catalog::Resources::Component', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
-      has_many :versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :catalog_resource
+      has_many :versions, class_name: 'Ci::Catalog::Resources::Version', foreign_key: :catalog_resource_id,
+        inverse_of: :catalog_resource
 
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
       scope :search, ->(query) { fuzzy_search(query, [:name, :description], use_minimum_char_limit: false) }
@@ -32,14 +33,6 @@ module Ci
       enum state: { draft: 0, published: 1 }
 
       before_create :sync_with_project
-
-      def versions
-        project.releases.order_released_desc
-      end
-
-      def latest_version
-        project.releases.latest
-      end
 
       def unpublish!
         update!(state: :draft)

@@ -4,6 +4,11 @@ query getMRCodequalityAndSecurityReports($fullPath: ID!, $iid: String!) {
     mergeRequest(iid: $iid) {
       id
       title
+      project {
+        id
+        nameWithNamespace
+        fullPath
+      }
       hasSecurityReports
       codequalityReportsComparer {
         report {
@@ -46,6 +51,12 @@ query getMRCodequalityAndSecurityReports($fullPath: ID!, $iid: String!) {
         status
         report {
           added {
+            identifiers {
+              externalId
+              externalType
+              name
+              url
+            }
             uuid
             title
             description

@@ -392,9 +392,14 @@ Use **confirmation dialog** to describe the dialog that asks you to confirm an a
 
 Do not use **confirmation box** or **confirmation dialog box**. See also [**dialog**](#dialog).
 
-## Container Registry
+## container registry
 
-Use title case for the GitLab Container Registry.
+When documenting the GitLab container registry features and functionality, use lower case.
+
+Use:
+
+- The GitLab container registry supports A, B, and C.
+- You can push a Docker image to your project's container registry.
 
 ## currently
 

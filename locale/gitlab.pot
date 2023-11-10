@@ -237,6 +237,11 @@ msgid_plural "%d completed issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d compliance framework selected"
+msgid_plural "%d compliance frameworks selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d contribution"
 msgid_plural "%d contributions"
 msgstr[0] ""
@@ -4789,6 +4794,9 @@ msgid "All eligible users"
 msgstr ""
 
 msgid "All environments"
+msgstr ""
+
+msgid "All frameworks selected"
 msgstr ""
 
 msgid "All groups"
@@ -18487,6 +18495,9 @@ msgstr ""
 msgid "Enforce two-factor authentication for all user sign-ins."
 msgstr ""
 
+msgid "Engine"
+msgstr ""
+
 msgid "Enhance security by storing service account keys in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}"
 msgstr ""
 
@@ -20717,16 +20728,16 @@ msgstr ""
 msgid "FindFile|Switch branch/tag"
 msgstr ""
 
-msgid "FindingsDrawer|Category:"
+msgid "FindingsDrawer|Code Quality"
 msgstr ""
 
-msgid "FindingsDrawer|Engine:"
+msgid "FindingsDrawer|Code Quality Finding"
 msgstr ""
 
-msgid "FindingsDrawer|Other locations:"
+msgid "FindingsDrawer|Detected in pipeline"
 msgstr ""
 
-msgid "FindingsDrawer|Severity:"
+msgid "FindingsDrawer|SAST Finding"
 msgstr ""
 
 msgid "Fingerprint (MD5)"
@@ -41897,6 +41908,9 @@ msgstr ""
 msgid "SAML|Your organization's SSO has been connected to your GitLab account"
 msgstr ""
 
+msgid "SAST"
+msgstr ""
+
 msgid "SBOMs last updated"
 msgstr ""
 
@@ -42999,6 +43013,9 @@ msgstr ""
 msgid "SecurityOrchestration|Choose approver type"
 msgstr ""
 
+msgid "SecurityOrchestration|Choose framework labels"
+msgstr ""
+
 msgid "SecurityOrchestration|Choose specific role"
 msgstr ""
 
@@ -43006,6 +43023,9 @@ msgid "SecurityOrchestration|Clear all"
 msgstr ""
 
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
+msgstr ""
+
+msgid "SecurityOrchestration|Create new framework label"
 msgstr ""
 
 msgid "SecurityOrchestration|Create policy"
@@ -43063,6 +43083,9 @@ msgid "SecurityOrchestration|Exceptions"
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to load cluster agents."
+msgstr ""
+
+msgid "SecurityOrchestration|Failed to load compliance frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to load group projects"
@@ -43126,6 +43149,9 @@ msgid "SecurityOrchestration|New scan result policy"
 msgstr ""
 
 msgid "SecurityOrchestration|No actions defined - policy will not run."
+msgstr ""
+
+msgid "SecurityOrchestration|No compliance frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|No description"
@@ -43266,6 +43292,9 @@ msgid "SecurityOrchestration|Select a project to store your security policies in
 msgstr ""
 
 msgid "SecurityOrchestration|Select exception branches"
+msgstr ""
+
+msgid "SecurityOrchestration|Select frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|Select groups"
@@ -50445,6 +50474,9 @@ msgid "Too many results to display. Edit your search or add a filter."
 msgstr ""
 
 msgid "Too many users found. Quick actions are limited to at most %{max_count} users"
+msgstr ""
+
+msgid "Tool"
 msgstr ""
 
 msgid "TopNav|Explore"

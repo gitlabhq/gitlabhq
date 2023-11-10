@@ -14,11 +14,6 @@ module Projects
     alias_attribute :project, :container
     scope :with_projects, -> { includes(container: :route) }
 
-    override :update_repository_storage
-    def update_repository_storage(new_storage)
-      container.update_column(:repository_storage, new_storage)
-    end
-
     override :schedule_repository_storage_update_worker
     def schedule_repository_storage_update_worker
       Projects::UpdateRepositoryStorageWorker.perform_async(

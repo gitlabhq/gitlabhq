@@ -46,6 +46,8 @@ module RepositoryStorageMovable
         transition replicated: :cleanup_failed
       end
 
+      # An after_transition can't affect the success of the transition.
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45160#note_431071664
       around_transition initial: :scheduled do |storage_move, block|
         block.call
 
@@ -64,13 +66,9 @@ module RepositoryStorageMovable
         true
       end
 
-      before_transition started: :replicated do |storage_move|
+      after_transition started: :replicated do |storage_move|
         storage_move.container.set_repository_writable!
 
-        storage_move.update_repository_storage(storage_move.destination_storage_name)
-      end
-
-      after_transition started: :replicated do |storage_move|
         # We have several scripts in place that replicate some statistics information
         # to other databases. Some of them depend on the updated_at column
         # to identify the models they need to extract.
@@ -86,6 +84,13 @@ module RepositoryStorageMovable
         storage_move.container.set_repository_writable!
       end
 
+      # This callback ensures the repository is set to writable in the event of
+      # a connection error during the :started -> :replicated transition
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/427254#note_1636072125
+      before_transition replicated: :cleanup_failed do |storage_move|
+        storage_move.container.set_repository_writable!
+      end
+
       state :initial, value: 1
       state :scheduled, value: 2
       state :started, value: 3
@@ -94,15 +99,6 @@ module RepositoryStorageMovable
       state :replicated, value: 6
       state :cleanup_failed, value: 7
     end
-  end
-
-  # Projects, snippets, and group wikis has different db structure. In projects,
-  # we need to update some columns in this step, but we don't with the other resources.
-  #
-  # Therefore, we create this No-op method for snippets and wikis and let project
-  # overwrite it in their implementation.
-  def update_repository_storage(new_storage)
-    # No-op
   end
 
   def schedule_repository_storage_update_worker

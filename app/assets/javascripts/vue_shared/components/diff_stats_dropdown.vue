@@ -118,9 +118,9 @@ export default {
             </span>
           </template>
           <template #list-item="{ item }">
-            <div class="gl-display-flex gl-gap-3 gl-align-items-center">
-              <gl-icon :name="item.icon" :class="item.iconColor" />
-              <div class="gl-flex-grow-1">
+            <div class="gl-display-flex gl-gap-3 gl-align-items-center gl-overflow-hidden">
+              <gl-icon :name="item.icon" :class="item.iconColor" class="gl-flex-shrink-0" />
+              <div class="gl-flex-grow-1 gl-overflow-hidden">
                 <div class="gl-display-flex">
                   <span
                     class="gl-font-weight-bold gl-mr-3 gl-flex-grow-1"

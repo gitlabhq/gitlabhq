@@ -72,9 +72,9 @@ RSpec.shared_examples 'handles repository moves' do
     end
 
     context 'when in the default state' do
-      subject(:storage_move) { create(repository_storage_factory_key, container: container, destination_storage_name: 'test_second_storage') }
+      let!(:storage_move) { create(repository_storage_factory_key, container: container, destination_storage_name: 'test_second_storage') }
 
-      context 'and transits to scheduled' do
+      context 'and transitions to scheduled' do
         it 'triggers the corresponding repository storage worker' do
           expect(repository_storage_worker).to receive(:perform_async).with(container.id, 'test_second_storage', storage_move.id)
 
@@ -90,31 +90,37 @@ RSpec.shared_examples 'handles repository moves' do
 
           it 'does not trigger the corresponding repository storage worker and adds an error' do
             expect(repository_storage_worker).not_to receive(:perform_async)
+
             storage_move.schedule!
+
             expect(storage_move.errors[error_key]).to include('foobar')
           end
 
           it 'sets the state to failed' do
             expect(storage_move).to receive(:do_fail!).and_call_original
+
             storage_move.schedule!
+
             expect(storage_move.state_name).to eq(:failed)
+            expect(container).not_to be_repository_read_only
           end
         end
       end
 
-      context 'and transits to started' do
+      context 'and transitions to started' do
         it 'does not allow the transition' do
-          expect { storage_move.start! }
-            .to raise_error(StateMachines::InvalidTransition)
+          expect { storage_move.start! }.to raise_error(StateMachines::InvalidTransition)
         end
       end
     end
 
     context 'when started' do
-      subject(:storage_move) { create(repository_storage_factory_key, :started, container: container, destination_storage_name: 'test_second_storage') }
+      let!(:storage_move) { create(repository_storage_factory_key, :started, container: container, destination_storage_name: 'test_second_storage') }
 
-      context 'and transits to replicated' do
+      context 'and transitions to replicated' do
         it 'marks the container as writable' do
+          container.set_repository_read_only!
+
           storage_move.finish_replication!
 
           expect(container).not_to be_repository_read_only
@@ -122,12 +128,29 @@ RSpec.shared_examples 'handles repository moves' do
 
         it 'updates the updated_at column of the container', :aggregate_failures do
           expect { storage_move.finish_replication! }.to change { container.updated_at }
+
           expect(storage_move.container.updated_at).to be >= storage_move.updated_at
         end
       end
 
-      context 'and transits to failed' do
+      context 'and transitions to failed' do
         it 'marks the container as writable' do
+          container.set_repository_read_only!
+
+          storage_move.do_fail!
+
+          expect(container).not_to be_repository_read_only
+        end
+      end
+    end
+
+    context 'when replicated' do
+      let!(:storage_move) { create(repository_storage_factory_key, :replicated, container: container, destination_storage_name: 'test_second_storage') }
+
+      context 'and transitions to cleanup_failed' do
+        it 'marks the container as writable' do
+          container.set_repository_read_only!
+
           storage_move.do_fail!
 
           expect(container).not_to be_repository_read_only

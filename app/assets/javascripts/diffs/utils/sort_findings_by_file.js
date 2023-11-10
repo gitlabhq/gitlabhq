@@ -1,10 +1,17 @@
 export function sortFindingsByFile(newErrors = []) {
   const files = {};
-  newErrors.forEach(({ filePath, line, description, severity }) => {
+  newErrors.forEach(({ line, description, severity, filePath, webUrl, engineName }) => {
     if (!files[filePath]) {
       files[filePath] = [];
     }
-    files[filePath].push({ line, description, severity: severity.toLowerCase() });
+    files[filePath].push({
+      line,
+      description,
+      severity: severity.toLowerCase(),
+      filePath,
+      webUrl,
+      engineName,
+    });
   });
 
   const sortedFiles = Object.keys(files)

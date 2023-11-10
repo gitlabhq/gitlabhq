@@ -15,7 +15,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
   - Background workers execute
   - GraphQL subscriptions deliver results back in real time
 - Abstraction for
-  - OpenAI
   - Google Vertex AI
   - Anthropic
 - Rate Limiting
@@ -28,7 +27,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - Automatic Markdown Rendering of responses
 - Centralised Group Level settings for experiment and 3rd party
 - Experimental API endpoints for exploration of AI APIs by GitLab team members without the need for credentials
-  - OpenAI
   - Google Vertex AI
   - Anthropic
 
@@ -70,7 +68,7 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. Enable the specific feature flag for the feature you want to test
 1. Set the required access token. To receive an access token:
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
-   1. For all other providers, like Anthropic or OpenAI, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
+   1. For all other providers, like Anthropic, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
 
 ### Set up the embedding database
 
@@ -114,12 +112,6 @@ In order to obtain a GCP service key for local development, please follow the st
 # PROJECT_ID = "your-gcp-project-name"
 
 Gitlab::CurrentSettings.update(vertex_ai_project: PROJECT_ID)
-```
-
-### Configure OpenAI access
-
-```ruby
-Gitlab::CurrentSettings.update(openai_api_key: "<open-ai-key>")
 ```
 
 ### Configure Anthropic access
@@ -182,9 +174,6 @@ Use the [experimental REST API endpoints](https://gitlab.com/gitlab-org/gitlab/-
 
 The endpoints are:
 
-- `https://gitlab.example.com/api/v4/ai/experimentation/openai/completions`
-- `https://gitlab.example.com/api/v4/ai/experimentation/openai/embeddings`
-- `https://gitlab.example.com/api/v4/ai/experimentation/openai/chat/completions`
 - `https://gitlab.example.com/api/v4/ai/experimentation/anthropic/complete`
 - `https://gitlab.example.com/api/v4/ai/experimentation/vertex/chat`
 
@@ -229,10 +218,8 @@ mutation {
 }
 ```
 
-The GraphQL API then uses the [OpenAI Client](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/open_ai/client.rb)
+The GraphQL API then uses the [Anthropic Client](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/anthropic/client.rb)
 to send the response.
-
-Remember that other clients are available and you should not use OpenAI.
 
 #### How to receive a response
 
@@ -274,7 +261,7 @@ To not have many concurrent subscriptions, you should also only subscribe to the
 
 #### Current abstraction layer flow
 
-The following graph uses OpenAI as an example. You can use different providers.
+The following graph uses VertexAI as an example. You can use different providers.
 
 ```mermaid
 flowchart TD
@@ -283,9 +270,9 @@ B --> C[Llm::ExecuteMethodService]
 C --> D[One of services, for example: Llm::GenerateSummaryService]
 D -->|scheduled| E[AI worker:Llm::CompletionWorker]
 E -->F[::Gitlab::Llm::Completions::Factory]
-F -->G[`::Gitlab::Llm::OpenAi::Completions::...` class using `::Gitlab::Llm::OpenAi::Templates::...` class]
-G -->|calling| H[Gitlab::Llm::OpenAi::Client]
-H --> |response| I[::Gitlab::Llm::OpenAi::ResponseService]
+F -->G[`::Gitlab::Llm::VertexAi::Completions::...` class using `::Gitlab::Llm::Templates::...` class]
+G -->|calling| H[Gitlab::Llm::VertexAi::Client]
+H --> |response| I[::Gitlab::Llm::GraphqlSubscriptionResponseService]
 I --> J[GraphqlTriggers.ai_completion_response]
 J --> K[::GitlabSchema.subscriptions.trigger]
 ```
@@ -495,33 +482,27 @@ To move the feature from the experimental phase to the beta phase, move the name
 ### Implement calls to AI APIs and the prompts
 
 The `CompletionWorker` will call the `Completions::Factory` which will initialize the Service and execute the actual call to the API.
-In our example, we will use OpenAI and implement two new classes:
+In our example, we will use VertexAI and implement two new classes:
 
 ```ruby
-# /ee/lib/gitlab/llm/open_ai/completions/amazing_new_ai_feature.rb
+# /ee/lib/gitlab/llm/vertex_ai/completions/amazing_new_ai_feature.rb
 
 module Gitlab
   module Llm
-    module OpenAi
+    module VertexAi
       module Completions
-        class AmazingNewAiFeature
-          def initialize(ai_prompt_class)
-            @ai_prompt_class = ai_prompt_class
+        class AmazingNewAiFeature < Gitlab::Llm::Completions::Base
+          def execute
+            prompt = ai_prompt_class.new(options[:user_input]).to_prompt
+
+            response = Gitlab::Llm::VertexAi::Client.new(user).text(content: prompt)
+
+            response_modifier = ::Gitlab::Llm::VertexAi::ResponseModifiers::Predictions.new(response)
+
+            ::Gitlab::Llm::GraphqlSubscriptionResponseService.new(
+              user, nil, response_modifier, options: response_options
+            ).execute
           end
-
-          def execute(user, issue, options)
-            options = ai_prompt_class.get_options(options[:messages])
-
-            ai_response = Gitlab::Llm::OpenAi::Client.new(user).chat(content: nil, **options)
-
-            ::Gitlab::Llm::OpenAi::ResponseService.new(user, issue, ai_response, options: {}).execute(
-              Gitlab::Llm::OpenAi::ResponseModifiers::Chat.new
-            )
-          end
-
-          private
-
-          attr_reader :ai_prompt_class
         end
       end
     end
@@ -530,28 +511,23 @@ end
 ```
 
 ```ruby
-# /ee/lib/gitlab/llm/open_ai/templates/amazing_new_ai_feature.rb
+# /ee/lib/gitlab/llm/vertex_ai/templates/amazing_new_ai_feature.rb
 
 module Gitlab
   module Llm
-    module OpenAi
+    module VertexAi
       module Templates
         class AmazingNewAiFeature
-          TEMPERATURE = 0.3
+          def initialize(user_input)
+            @user_input = user_input
+          end
 
-          def self.get_options(messages)
-            system_content = <<-TEMPLATE
-              You are an assistant that writes code for the following input:
-              """
-            TEMPLATE
+          def to_prompt
+            <<-PROMPT
+            You are an assistant that writes code for the following context:
 
-            {
-              messages: [
-                { role: "system", content: system_content },
-                { role: "user", content: messages },
-              ],
-              temperature: TEMPERATURE
-            }
+            context: #{user_input}
+            PROMPT
           end
         end
       end

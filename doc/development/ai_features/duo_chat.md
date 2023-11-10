@@ -12,7 +12,6 @@ NOTE:
 Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
 
 1. [Enable Anthropic API features](index.md#configure-anthropic-access).
-1. [Enable OpenAI support](index.md#configure-openai-access).
 1. [Ensure the embedding database is configured](index.md#set-up-the-embedding-database).
 1. Ensure that your current branch is up-to-date with `master`.
 1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
@@ -97,10 +96,8 @@ functionality, you can use the following RSpec tests to validate answers to some
 predefined questions when using real LLMs:
 
 ```ruby
-export OPENAI_EMBEDDINGS='true' # if using OpenAI embeddings
 export VERTEX_AI_EMBEDDINGS='true' # if using Vertex embeddings
-export ANTHROPIC_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings.openai_api_key
-export OPENAI_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings.anthropic_api_key
+export ANTHROPIC_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings
 export VERTEX_AI_CREDENTIALS='<vertex-ai-credentials>' # can set as dev value of Gitlab::CurrentSettings.vertex_ai_credentials
 export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::CurrentSettings.vertex_ai_project
 
@@ -113,7 +110,7 @@ make sure a new fixture is generated and committed together with the change.
 ## Running the rspecs tagged with `real_ai_request`
 
 The rspecs tagged with the metadata `real_ai_request` can be run in GitLab project's CI by triggering
-`rspec-ee unit gitlab-duo-chat` or `rspec-ee unit gitlab-duo-chat-open-ai`.
+`rspec-ee unit gitlab-duo-chat`.
 The former runs with Vertex APIs enabled. The CI jobs are optional and allowed to fail to account for
 the non-deterministic nature of LLM responses.
 

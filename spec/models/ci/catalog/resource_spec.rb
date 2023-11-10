@@ -110,18 +110,6 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
   end
 
-  describe '#versions' do
-    it 'returns releases ordered by released date descending' do
-      expect(resource.versions).to eq([release3, release2, release1])
-    end
-  end
-
-  describe '#latest_version' do
-    it 'returns the latest release' do
-      expect(resource.latest_version).to eq(release3)
-    end
-  end
-
   describe '#state' do
     it 'defaults to draft' do
       expect(resource.state).to eq('draft')

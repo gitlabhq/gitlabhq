@@ -55,9 +55,8 @@ It is possible to utilize other models or technologies, however they will need t
 
 The following models have been approved for use:
 
-- [OpenAI models](https://platform.openai.com/docs/models)
 - Google's [Vertex AI](https://cloud.google.com/vertex-ai) and [model garden](https://cloud.google.com/model-garden)
-- [AI Code Suggestions](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main)
+- [Anthropic models](https://docs.anthropic.com/claude/reference/selecting-a-model)
 - [Suggested reviewer](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10)
 
 ### Vector stores

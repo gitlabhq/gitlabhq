@@ -14,7 +14,7 @@ module Enums
       apk: 9,
       rpm: 10,
       deb: 11,
-      cbl_mariner: 12,
+      'cbl-mariner': 12,
       wolfi: 13
     }.with_indifferent_access.freeze
 

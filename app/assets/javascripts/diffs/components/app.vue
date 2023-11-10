@@ -146,6 +146,7 @@ export default {
       virtualScrollCurrentIndex: -1,
       subscribedToVirtualScrollingEvents: false,
       autoScrolled: false,
+      activeProject: undefined,
     };
   },
   apollo: {
@@ -164,6 +165,7 @@ export default {
         const codeQualityBoolean = Boolean(this.endpointCodequality);
         const { codequalityReportsComparer, sastReport } = data?.project?.mergeRequest || {};
 
+        this.activeProject = data?.project?.mergeRequest?.project;
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
           /* Checking for newErrors instead of a status indicator is a workaround that
@@ -678,7 +680,7 @@ export default {
 
 <template>
   <div v-show="shouldShow">
-    <findings-drawer :drawer="activeDrawer" @close="closeDrawer" />
+    <findings-drawer :project="activeProject" :drawer="activeDrawer" @close="closeDrawer" />
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions :diff-files-count-text="numTotalFiles" />
