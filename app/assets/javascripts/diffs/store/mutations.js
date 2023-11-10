@@ -39,6 +39,7 @@ export default {
       viewDiffsFileByFile,
       mrReviews,
       diffViewType,
+      perPage,
     } = options;
     Object.assign(state, {
       endpoint,
@@ -54,6 +55,7 @@ export default {
       viewDiffsFileByFile,
       mrReviews,
       diffViewType,
+      perPage,
     });
   },
 

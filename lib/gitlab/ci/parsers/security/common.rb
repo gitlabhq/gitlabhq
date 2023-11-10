@@ -141,7 +141,7 @@ module Gitlab
                 project_id: @project.id,
                 found_by_pipeline: report.pipeline,
                 vulnerability_finding_signatures_enabled: @signatures_enabled,
-                cvss: data['cvss'] || []
+                cvss: data['cvss_vectors'] || []
               )
             )
           end

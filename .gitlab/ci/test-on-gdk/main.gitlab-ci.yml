@@ -27,7 +27,7 @@ include:
 variables:
   COLORIZED_LOGS: "true"
   GIT_DEPTH: "20"
-  GIT_STRATEGY: "clone" # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
+  GIT_STRATEGY: "clone"  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_SUBMODULE_STRATEGY: "none"
 
 .rules:gdk:qa-selective:

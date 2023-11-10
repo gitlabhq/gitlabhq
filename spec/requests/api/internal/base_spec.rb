@@ -560,6 +560,20 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
       end
 
+      context 'when Gitaly provides a relative_path argument', :request_store do
+        subject { push(key, project, relative_path: relative_path) }
+
+        let(:relative_path) { 'relative_path' }
+
+        it 'stores relative_path value in RequestStore' do
+          allow(Gitlab::SafeRequestStore).to receive(:[]=).and_call_original
+          expect(Gitlab::SafeRequestStore).to receive(:[]=).with(:gitlab_git_relative_path, relative_path)
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       context "git push with project.wiki" do
         subject { push(key, project.wiki, env: env.to_json) }
 

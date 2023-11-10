@@ -135,6 +135,26 @@ def generate_metrics_table
   )
 end
 
+def render_screen(paused)
+  metrics_table = generate_metrics_table
+  events_table = generate_snowplow_table
+
+  print TTY::Cursor.clear_screen
+  print TTY::Cursor.move_to(0, 0)
+
+  puts "Updated at #{Time.current} #{'[PAUSED]' if paused}"
+  puts "Monitored events: #{ARGV.join(', ')}"
+  puts
+
+  puts metrics_table
+
+  puts events_table
+
+  puts
+  puts "Press \"p\" to toggle refresh. (It makes it easier to select and copy the tables)"
+  puts "Press \"q\" to quit"
+end
+
 begin
   snowplow_data
 rescue Errno::ECONNREFUSED
@@ -144,21 +164,20 @@ rescue Errno::ECONNREFUSED
   exit 1
 end
 
+reader = TTY::Reader.new
+paused = false
+
 begin
   loop do
-    metrics_table = generate_metrics_table
-    events_table = generate_snowplow_table
+    case reader.read_keypress(nonblock: true)
+    when 'p'
+      paused = !paused
+      render_screen(paused)
+    when 'q'
+      break
+    end
 
-    print TTY::Cursor.clear_screen
-    print TTY::Cursor.move_to(0, 0)
-
-    puts "Updated at #{Time.current}"
-    puts "Monitored events: #{ARGV.join(', ')}"
-    puts
-
-    puts metrics_table
-
-    puts events_table
+    render_screen(paused) unless paused
 
     sleep 1
   end

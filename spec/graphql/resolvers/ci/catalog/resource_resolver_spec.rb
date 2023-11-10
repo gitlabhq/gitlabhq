@@ -11,37 +11,112 @@ RSpec.describe Resolvers::Ci::Catalog::ResourceResolver, feature_category: :pipe
   let_it_be(:user) { create(:user) }
 
   describe '#resolve' do
-    context 'when the user can read code on the catalog resource project' do
-      before_all do
-        namespace.add_developer(user)
-      end
+    context 'when id argument is provided' do
+      context 'when the user is authorised to view the resource' do
+        before_all do
+          namespace.add_developer(user)
+        end
 
-      context 'when resource is found' do
-        it 'returns a single CI/CD Catalog resource' do
-          result = resolve(described_class, ctx: { current_user: user },
-            args: { id: resource.to_global_id.to_s })
+        context 'when resource is found' do
+          it 'returns a single CI/CD Catalog resource' do
+            result = resolve(described_class, ctx: { current_user: user },
+              args: { id: resource.to_global_id.to_s })
 
-          expect(result.id).to eq(resource.id)
-          expect(result.class).to eq(Ci::Catalog::Resource)
+            expect(result.id).to eq(resource.id)
+            expect(result.class).to eq(Ci::Catalog::Resource)
+          end
+        end
+
+        context 'when resource is not found' do
+          it 'raises ResourceNotAvailable error' do
+            result = resolve(described_class, ctx: { current_user: user },
+              args: { id: "gid://gitlab/Ci::Catalog::Resource/not-a-real-id" })
+
+            expect(result).to be_a(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+          end
         end
       end
 
-      context 'when resource does not exist' do
+      context 'when user is not authorised to view the resource' do
         it 'raises ResourceNotAvailable error' do
           result = resolve(described_class, ctx: { current_user: user },
-            args: { id: "gid://gitlab/Ci::Catalog::Resource/not-a-real-id" })
+            args: { id: resource.to_global_id.to_s })
 
           expect(result).to be_a(::Gitlab::Graphql::Errors::ResourceNotAvailable)
         end
       end
     end
 
-    context 'when the user cannot read code on the catalog resource project' do
-      it 'raises ResourceNotAvailable error' do
-        result = resolve(described_class, ctx: { current_user: user },
-          args: { id: resource.to_global_id.to_s })
+    context 'when full_path argument is provided' do
+      context 'when the user is authorised to view the resource' do
+        before_all do
+          namespace.add_developer(user)
+        end
 
-        expect(result).to be_a(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+        context 'when resource is found' do
+          it 'returns a single CI/CD Catalog resource' do
+            result = resolve(described_class, ctx: { current_user: user },
+              args: { full_path: resource.project.full_path })
+
+            expect(result.id).to eq(resource.id)
+            expect(result.class).to eq(Ci::Catalog::Resource)
+          end
+        end
+
+        context 'when resource is not found' do
+          it 'raises ResourceNotAvailable error' do
+            result = resolve(described_class, ctx: { current_user: user },
+              args: { full_path: "project/non_exisitng_resource" })
+
+            expect(result).to be_a(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+          end
+        end
+
+        context 'when project is not a catalog resource' do
+          let_it_be(:project) { create(:project, :private, namespace: namespace) }
+
+          it 'raises ResourceNotAvailable error' do
+            result = resolve(described_class, ctx: { current_user: user }, args: { full_path: project.full_path })
+
+            expect(result).to be_a(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+          end
+        end
+      end
+
+      context 'when user is not authorised to view the resource' do
+        it 'raises ResourceNotAvailable error' do
+          result = resolve(described_class, ctx: { current_user: user },
+            args: { full_path: resource.project.full_path })
+
+          expect(result).to be_a(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
+    end
+
+    context 'when neither id nor full_path argument is provided' do
+      before_all do
+        namespace.add_developer(user)
+      end
+      it 'raises ArgumentError' do
+        expect_graphql_error_to_be_created(::Gitlab::Graphql::Errors::ArgumentError,
+          "Exactly one of 'id' or 'full_path' arguments is required.") do
+          resolve(described_class, ctx: { current_user: user },
+            args: {})
+        end
+      end
+    end
+
+    context 'when both full_path and id arguments are provided' do
+      before_all do
+        namespace.add_developer(user)
+      end
+
+      it 'raises ArgumentError' do
+        expect_graphql_error_to_be_created(::Gitlab::Graphql::Errors::ArgumentError,
+          "Exactly one of 'id' or 'full_path' arguments is required.") do
+          resolve(described_class, ctx: { current_user: user },
+            args: { full_path: resource.project.full_path, id: resource.to_global_id.to_s })
+        end
       end
     end
   end

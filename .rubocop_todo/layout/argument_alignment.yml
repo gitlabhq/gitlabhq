@@ -1488,7 +1488,6 @@ Layout/ArgumentAlignment:
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/lib/google_api/cloud_platform/client_spec.rb'
     - 'spec/lib/peek/views/detailed_view_spec.rb'
-    - 'spec/lib/peek/views/rugged_spec.rb'
     - 'spec/lib/security/weak_passwords_spec.rb'
     - 'spec/lib/sidebars/projects/menus/repository_menu_spec.rb'
     - 'spec/lib/uploaded_file_spec.rb'

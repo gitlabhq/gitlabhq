@@ -11,6 +11,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include SourcegraphDecorator
   include DiffHelper
   include Gitlab::Cache::Helpers
+  include MergeRequestsHelper
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
@@ -625,7 +626,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def endpoint_diff_batch_url(project, merge_request)
-    per_page = current_user&.view_diffs_file_by_file ? '1' : '5'
+    per_page = current_user&.view_diffs_file_by_file ? '1' : DIFF_BATCH_ENDPOINT_PER_PAGE.to_s
     params = request
       .query_parameters
       .merge(view: 'inline', diff_head: true, w: show_whitespace, page: '0', per_page: per_page)

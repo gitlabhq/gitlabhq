@@ -11,7 +11,7 @@ const DEFAULT_CONFIG = {
 
 const transform = (el, binding) => {
   if (binding.oldValue !== binding.value) {
-    const config = { ...DEFAULT_CONFIG, ...(binding.arg ?? {}) };
+    const config = { ...DEFAULT_CONFIG, ...binding.arg };
 
     el.textContent = '';
 

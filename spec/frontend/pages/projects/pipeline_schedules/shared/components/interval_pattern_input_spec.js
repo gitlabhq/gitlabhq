@@ -51,7 +51,7 @@ describe('Interval Pattern Input Component', () => {
   beforeEach(() => {
     oldWindowGl = window.gl;
     window.gl = {
-      ...(window.gl || {}),
+      ...window.gl,
       pipelineScheduleFieldErrors: {
         updateFormValidityState: jest.fn(),
       },

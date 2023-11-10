@@ -12,10 +12,10 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
-      "cvss": [
+      "cvss_vectors": [
         {
           "vendor": "GitLab",
-          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
         }
       ],
       "location": {

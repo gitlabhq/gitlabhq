@@ -140,5 +140,4 @@ Lint/SymbolConversion:
     - 'spec/support/shared_examples/harbor/repositories_controller_shared_examples.rb'
     - 'spec/support/shared_examples/harbor/tags_controller_shared_examples.rb'
     - 'spec/support/shared_examples/models/diff_positionable_note_shared_examples.rb'
-    - 'spec/views/admin/application_settings/_repository_storage.html.haml_spec.rb'
     - 'spec/workers/gitlab/github_gists_import/import_gist_worker_spec.rb'

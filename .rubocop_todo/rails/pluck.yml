@@ -176,7 +176,6 @@ Rails/Pluck:
     - 'spec/lib/gitlab/sidekiq_config/worker_matcher_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/client_spec.rb'
     - 'spec/lib/gitlab/tree_summary_spec.rb'
-    - 'spec/lib/peek/views/rugged_spec.rb'
     - 'spec/models/bulk_imports/entity_spec.rb'
     - 'spec/models/ci/bridge_spec.rb'
     - 'spec/models/ci/build_spec.rb'

@@ -1,9 +1,23 @@
-import { findKey } from 'lodash';
+import { findKey, intersection } from 'lodash';
 import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
 import { formatSearchResultCount, addCountOverLimit } from '~/search/store/utils';
 
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, ICON_MAP } from './constants';
+
+const queryLabelFilters = (state) => state?.query?.[labelFilterData.filterParam] || [];
+const urlQueryLabelFilters = (state) => state?.urlQuery?.[labelFilterData.filterParam] || [];
+
+const appliedSelectedLabelsKeys = (state) =>
+  intersection(urlQueryLabelFilters(state), queryLabelFilters(state));
+
+const unselectedLabelsKeys = (state) =>
+  urlQueryLabelFilters(state)?.filter((label) => !queryLabelFilters(state)?.includes(label));
+
+const unappliedNewLabelKeys = (state) =>
+  state?.query?.labels?.filter((label) => !urlQueryLabelFilters(state)?.includes(label));
+
+export const queryLanguageFilters = (state) => state.query[languageFilterData.filterParam] || [];
 
 export const frequentGroups = (state) => {
   return state.frequentItems[GROUPS_LOCAL_STORAGE_KEY];
@@ -39,25 +53,28 @@ export const filteredLabels = (state) => {
 };
 
 export const filteredAppliedSelectedLabels = (state) =>
-  filteredLabels(state)?.filter((label) => state?.urlQuery?.labels?.includes(label.key));
+  filteredLabels(state)?.filter((label) => urlQueryLabelFilters(state)?.includes(label.key));
 
 export const appliedSelectedLabels = (state) => {
   return labelAggregationBuckets(state)?.filter((label) =>
-    state?.urlQuery?.labels?.includes(label.key),
+    appliedSelectedLabelsKeys(state)?.includes(label.key),
   );
 };
 
-export const filteredUnselectedLabels = (state) => {
-  if (!state?.urlQuery?.labels) {
-    return filteredLabels(state);
-  }
+export const filteredUnselectedLabels = (state) =>
+  filteredLabels(state)?.filter((label) => !urlQueryLabelFilters(state)?.includes(label.key));
 
-  return filteredLabels(state)?.filter((label) => !state?.urlQuery?.labels?.includes(label.key));
-};
+export const unselectedLabels = (state) =>
+  labelAggregationBuckets(state).filter((label) =>
+    unselectedLabelsKeys(state)?.includes(label.key),
+  );
+
+export const unappliedNewLabels = (state) =>
+  labelAggregationBuckets(state).filter((label) =>
+    unappliedNewLabelKeys(state)?.includes(label.key),
+  );
 
 export const currentScope = (state) => findKey(state.navigation, { active: true });
-
-export const queryLanguageFilters = (state) => state.query[languageFilterData.filterParam] || [];
 
 export const navigationItems = (state) =>
   Object.values(state.navigation).map((item) => ({

@@ -69,6 +69,30 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
     end
 
+    context 'with additional metadata' do
+      before do
+        params.merge!(
+          metadata_version: '2.3',
+          author_email: 'cschultz@example.com, snoopy@peanuts.com',
+          description: 'Example description',
+          description_content_type: 'text/plain',
+          summary: 'A module for collecting votes from beagles.',
+          keywords: 'dog,puppy,voting,election'
+        )
+      end
+
+      it 'creates the package' do
+        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+
+        expect(created_package.pypi_metadatum.metadata_version).to eq('2.3')
+        expect(created_package.pypi_metadatum.author_email).to eq('cschultz@example.com, snoopy@peanuts.com')
+        expect(created_package.pypi_metadatum.description).to eq('Example description')
+        expect(created_package.pypi_metadatum.description_content_type).to eq('text/plain')
+        expect(created_package.pypi_metadatum.summary).to eq('A module for collecting votes from beagles.')
+        expect(created_package.pypi_metadatum.keywords).to eq('dog,puppy,voting,election')
+      end
+    end
+
     context 'with an invalid metadata' do
       let(:requires_python) { 'x' * 256 }
 

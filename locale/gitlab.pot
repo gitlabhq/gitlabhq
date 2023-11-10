@@ -24110,6 +24110,9 @@ msgstr ""
 msgid "I accept the %{terms_link}"
 msgstr ""
 
+msgid "I am sorry, I am unable to find what you are looking for."
+msgstr ""
+
 msgid "I forgot my password"
 msgstr ""
 
@@ -34532,9 +34535,6 @@ msgstr ""
 msgid "PerformanceBar|Redis calls"
 msgstr ""
 
-msgid "PerformanceBar|Rugged calls"
-msgstr ""
-
 msgid "PerformanceBar|SQL queries"
 msgstr ""
 
@@ -36233,6 +36233,9 @@ msgstr ""
 msgid "Product analytics"
 msgstr ""
 
+msgid "Product analytics requires Experiment and Beta features to be enabled."
+msgstr ""
+
 msgid "ProductAnalytics|1. Add the NPM package to your package.json using your preferred package manager"
 msgstr ""
 
@@ -36404,6 +36407,9 @@ msgstr ""
 msgid "ProductAnalytics|Previous month"
 msgstr ""
 
+msgid "ProductAnalytics|Product Analytics"
+msgstr ""
+
 msgid "ProductAnalytics|Product analytics onboarding"
 msgstr ""
 
@@ -36446,6 +36452,9 @@ msgstr ""
 msgid "ProductAnalytics|Something went wrong while loading product analytics usage data. Refresh the page to try again."
 msgstr ""
 
+msgid "ProductAnalytics|Store, query, and visualize quantitative data to get insights into user value."
+msgstr ""
+
 msgid "ProductAnalytics|The connection string for your Snowplow configurator instance."
 msgstr ""
 
@@ -36477,6 +36486,9 @@ msgid "ProductAnalytics|Usage by month"
 msgstr ""
 
 msgid "ProductAnalytics|Usage by project"
+msgstr ""
+
+msgid "ProductAnalytics|Use product analytics"
 msgstr ""
 
 msgid "ProductAnalytics|Used to retrieve dashboard data from the Cube instance."
@@ -49101,6 +49113,9 @@ msgstr ""
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
+msgid "This feature is only allowed in groups that enable this feature."
+msgstr ""
+
 msgid "This feature requires local storage to be enabled"
 msgstr ""
 
@@ -53143,6 +53158,9 @@ msgstr ""
 msgid "VulnerabilityExport|CVE"
 msgstr ""
 
+msgid "VulnerabilityExport|CVSS Vectors"
+msgstr ""
+
 msgid "VulnerabilityExport|CWE"
 msgstr ""
 
@@ -55305,6 +55323,9 @@ msgid "You do not belong to any groups yet."
 msgstr ""
 
 msgid "You do not belong to any projects yet."
+msgstr ""
+
+msgid "You do not have access to AI features."
 msgstr ""
 
 msgid "You do not have access to any projects for creating incidents."

@@ -90,6 +90,7 @@ export const setBaseConfig = ({ commit }, options) => {
     viewDiffsFileByFile,
     mrReviews,
     diffViewType,
+    perPage,
   } = options;
   commit(types.SET_BASE_CONFIG, {
     endpoint,
@@ -105,6 +106,7 @@ export const setBaseConfig = ({ commit }, options) => {
     viewDiffsFileByFile,
     mrReviews,
     diffViewType,
+    perPage,
   });
 
   Array.from(new Set(Object.values(mrReviews).flat())).forEach((id) => {
@@ -207,7 +209,7 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
 };
 
 export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
-  let perPage = state.viewDiffsFileByFile ? 1 : 5;
+  let perPage = state.viewDiffsFileByFile ? 1 : state.perPage;
   let increaseAmount = 1.4;
   const startPage = 0;
   const id = window?.location?.hash;

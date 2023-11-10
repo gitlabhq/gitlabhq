@@ -45,10 +45,10 @@ review-build-cng-env:
       scripts/trigger-build.rb
       VERSION
   before_script:
-    - apk add --no-cache --update curl # Not present in ruby-alpine, so we add it manually
+    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
     - !reference [".build-cng-env", before_script]
-    - mv VERSION GITLAB_WORKHORSE_VERSION # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
+    - mv VERSION GITLAB_WORKHORSE_VERSION  # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
 
 review-build-cng:
   extends:
@@ -98,9 +98,9 @@ review-deploy:
       scripts/review_apps/seed-dast-test-data.sh
       VERSION
   before_script:
-    - apk add --no-cache --update curl # Not present in ruby-alpine, so we add it manually
+    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
-    - mv VERSION GITLAB_WORKHORSE_VERSION # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
+    - mv VERSION GITLAB_WORKHORSE_VERSION  # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)

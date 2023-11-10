@@ -96,10 +96,10 @@ grep <PROJECT_NAME> <FILE> | jq .
 jq 'select(.duration_s > 5000)' <FILE>
 ```
 
-#### Find all project requests with more than 5 rugged calls
+#### Find all project requests with more than 5 Gitaly calls
 
 ```shell
-grep <PROJECT_NAME> <FILE> | jq 'select(.rugged_calls > 5)'
+grep <PROJECT_NAME> <FILE> | jq 'select(.gitaly_calls > 5)'
 ```
 
 #### Find all requests with a Gitaly duration > 10 seconds

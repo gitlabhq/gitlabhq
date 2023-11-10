@@ -517,6 +517,44 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
     end
 
+    describe '.fetch_relative_path' do
+      subject { described_class.request_kwargs('default', timeout: 1)[:metadata]['relative-path-bin'] }
+
+      let(:relative_path) { 'relative_path' }
+
+      context 'when RequestStore is disabled' do
+        it 'does not set a relative path' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when RequestStore is enabled', :request_store do
+        context 'when RequestStore is empty' do
+          it 'does not set a relative path' do
+            is_expected.to be_nil
+          end
+        end
+
+        context 'when RequestStore contains a relalive_path value' do
+          before do
+            Gitlab::SafeRequestStore[:gitlab_git_relative_path] = relative_path
+          end
+
+          it 'sets a base64 encoded version of relative_path' do
+            is_expected.to eq(relative_path)
+          end
+
+          context 'when relalive_path is empty' do
+            let(:relative_path) { '' }
+
+            it 'does not set a relative path' do
+              is_expected.to be_nil
+            end
+          end
+        end
+      end
+    end
+
     context 'gitlab_git_env' do
       let(:policy) { 'gitaly-route-repository-accessor-policy' }
 

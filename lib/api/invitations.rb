@@ -42,11 +42,7 @@ module API
 
           source = find_source(source_type, params[:id])
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_admin_source_member!(source_type, source)
 
           create_service_params = params.merge(source: source)
 
@@ -69,11 +65,7 @@ module API
           source = find_source(source_type, params[:id])
           query = params[:query]
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_admin_source_member!(source_type, source)
 
           invitations = paginate(retrieve_member_invitations(source, query))
 
@@ -95,11 +87,7 @@ module API
           source = find_source(source_type, params.delete(:id))
           invite_email = params[:email]
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_admin_source_member!(source_type, source)
 
           invite = retrieve_member_invitations(source, invite_email).first
           not_found! unless invite
@@ -137,11 +125,7 @@ module API
           source = find_source(source_type, params[:id])
           invite_email = params[:email]
 
-          if ::Feature.enabled?(:admin_group_member, source)
-            authorize_admin_source_member!(source_type, source)
-          else
-            authorize_admin_source!(source_type, source)
-          end
+          authorize_admin_source_member!(source_type, source)
 
           invite = retrieve_member_invitations(source, invite_email).first
           not_found! unless invite

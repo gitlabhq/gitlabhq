@@ -55,12 +55,15 @@ export default {
   },
   i18n: I18N,
   computed: {
-    ...mapState(['useSidebarNavigation', 'searchLabelString', 'query', 'aggregations']),
+    ...mapState(['useSidebarNavigation', 'searchLabelString', 'query', 'urlQuery', 'aggregations']),
     ...mapGetters([
       'filteredLabels',
       'filteredUnselectedLabels',
       'filteredAppliedSelectedLabels',
       'appliedSelectedLabels',
+      'unselectedLabels',
+      'unappliedNewLabels',
+      'labelAggregationBuckets',
     ]),
     searchInputDescribeBy() {
       if (this.isLoggedIn) {
@@ -100,10 +103,10 @@ export default {
       return FIRST_DROPDOWN_INDEX;
     },
     hasSelectedLabels() {
-      return this.filteredAppliedSelectedLabels.length > 0;
+      return this.filteredAppliedSelectedLabels?.length > 0;
     },
     hasUnselectedLabels() {
-      return this.filteredUnselectedLabels.length > 0;
+      return this.filteredUnselectedLabels?.length > 0;
     },
     labelSearchBox() {
       return this.$refs.searchLabelInputBox?.$el.querySelector('[role=searchbox]');
@@ -122,24 +125,29 @@ export default {
         this.setLabelFilterSearch({ value });
       },
     },
-    selectedFilters: {
+    selectedLabels: {
       get() {
         return this.combinedSelectedFilters;
       },
       set(value) {
         this.setQuery({ key: this.$options.labelFilterData?.filterParam, value });
-
         trackSelectCheckbox(value);
       },
     },
   },
   async created() {
-    await this.fetchAllAggregation();
+    if (this.urlQuery?.[labelFilterData.filterParam]?.length > 0) {
+      await this.fetchAllAggregation();
+    }
   },
   methods: {
     ...mapActions(['fetchAllAggregation', 'setQuery', 'closeLabel', 'setLabelFilterSearch']),
-    openDropdown() {
+    async openDropdown() {
       this.isFocused = true;
+
+      if (!this.aggregations.error && this.filteredLabels?.length === 0) {
+        await this.fetchAllAggregation();
+      }
 
       trackOpenDropdown();
     },
@@ -158,16 +166,8 @@ export default {
       const { key } = event.target.closest('.gl-label').dataset;
       this.closeLabel({ key });
     },
-    reactiveLabelColor(label) {
-      const { color, key } = label;
-
-      return this.query?.labels?.some((labelKey) => labelKey === key)
-        ? color
-        : `rgba(${rgbFromHex(color)}, 0.3)`;
-    },
-    isLabelClosable(label) {
-      const { key } = label;
-      return this.query?.labels?.some((labelKey) => labelKey === key);
+    inactiveLabelColor(label) {
+      return `rgba(${rgbFromHex(label.color)}, 0.3)`;
     },
   },
   FIRST_DROPDOWN_INDEX,
@@ -188,13 +188,34 @@ export default {
     </h5>
     <div class="gl-my-5">
       <gl-label
+        v-for="label in unappliedNewLabels"
+        :key="label.key"
+        class="gl-mr-2 gl-mb-2 gl-bg-gray-10"
+        :data-key="label.key"
+        :background-color="inactiveLabelColor(label)"
+        :title="label.title"
+        :show-close-button="false"
+        data-testid="unapplied-label"
+      />
+      <gl-label
+        v-for="label in unselectedLabels"
+        :key="label.key"
+        class="gl-mr-2 gl-mb-2 gl-bg-gray-10"
+        :data-key="label.key"
+        :background-color="inactiveLabelColor(label)"
+        :title="label.title"
+        :show-close-button="false"
+        data-testid="unselected-label"
+      />
+      <gl-label
         v-for="label in appliedSelectedLabels"
         :key="label.key"
         class="gl-mr-2 gl-mb-2 gl-bg-gray-10"
         :data-key="label.key"
-        :background-color="reactiveLabelColor(label)"
+        :background-color="label.color"
         :title="label.title"
-        :show-close-button="isLabelClosable(label)"
+        :show-close-button="true"
+        data-testid="label"
         @close="onLabelClose"
       />
     </div>
@@ -245,7 +266,7 @@ export default {
             $options.i18n.DROPDOWN_HEADER
           }}</gl-dropdown-section-header>
           <gl-dropdown-form>
-            <gl-form-checkbox-group v-model="selectedFilters">
+            <gl-form-checkbox-group v-model="selectedLabels">
               <label-dropdown-items
                 v-if="hasSelectedLabels"
                 :labels="filteredAppliedSelectedLabels"

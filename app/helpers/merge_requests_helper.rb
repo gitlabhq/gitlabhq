@@ -3,6 +3,7 @@
 module MergeRequestsHelper
   include Gitlab::Utils::StrongMemoize
   include CompareHelper
+  DIFF_BATCH_ENDPOINT_PER_PAGE = 5
 
   def create_mr_button_from_event?(event)
     create_mr_button?(from: event.branch_name, source_project: event.project)
@@ -202,7 +203,8 @@ module MergeRequestsHelper
       source_project_full_path: merge_request.source_project&.full_path,
       is_forked: project.forked?.to_s,
       new_comment_template_path: profile_comment_templates_path,
-      iid: merge_request.iid
+      iid: merge_request.iid,
+      per_page: DIFF_BATCH_ENDPOINT_PER_PAGE
     }
   end
 

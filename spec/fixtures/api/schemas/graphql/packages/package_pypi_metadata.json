@@ -1,13 +1,51 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": ["id"],
+  "required": [
+    "id"
+  ],
   "properties": {
     "id": {
       "type": "string"
     },
+    "authorEmail": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "descriptionContentType": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "keywords": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadataVersion": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "requiredPython": {
       "type": "string"
+    },
+    "summary": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   }
 }

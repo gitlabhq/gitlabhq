@@ -240,7 +240,16 @@ To view group import history:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
-1. If there are any errors for a particular import, you can see them by selecting **Details**.
+1. If there are any errors for a particular import, select **See failures** to see their details.
+
+### Review results of the import
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
+
+To review the results of an import:
+
+1. Go to the [Group import history page](#group-import-history).
+1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** status.
 
 ### Migrated group items
 

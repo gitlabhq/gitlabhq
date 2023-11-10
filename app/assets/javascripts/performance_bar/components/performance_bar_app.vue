@@ -61,11 +61,6 @@ export default {
       keys: ['feature', 'request'],
     },
     {
-      metric: 'rugged',
-      header: s__('PerformanceBar|Rugged calls'),
-      keys: ['feature', 'args'],
-    },
-    {
       metric: 'redis',
       header: s__('PerformanceBar|Redis calls'),
       keys: ['cmd', 'instance'],

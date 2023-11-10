@@ -115,10 +115,10 @@ It picks reviewers and maintainers from the list at the
 page, with these behaviors:
 
 - It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-  - Contains the string `OOO`, `PTO`, `Parental Leave`, or `Friends and Family`.
+  - Contains the string `OOO`, `PTO`, `Parental Leave`, `Friends and Family`, or `Conference`.
   - GitLab user **Busy** indicator is set to `True`.
   - Emoji is from one of these categories:
-    - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`
+    - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`, 🏙 `:cityscape:`
     - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
     - **At capacity** - 🔴 `:red_circle:`
     - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)

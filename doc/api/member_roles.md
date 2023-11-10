@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Read dependency added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) in GitLab 16.3.
 > - [Name and description fields added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
 > - [Admin merge request introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `admin_merge_request`. Disabled by default.
-> - [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `admin_group_member`. Disabled by default.
+> - [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `admin_group_member`. Disabled by default. The feature flag has been removed in GitLab 16.6.
 > - [Manage project access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) in GitLab 16.5 in [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`. Disabled by default.
 
 FLAG:

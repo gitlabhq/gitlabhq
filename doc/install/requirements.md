@@ -230,7 +230,6 @@ The recommended number of threads is dependent on several factors, including tot
 
 - If the operating system has a maximum 2 GB of memory, the recommended number of threads is `1`.
   A higher value results in excess swapping, and decrease performance.
-- If legacy Rugged code is in use, the recommended number of threads is `1`.
 - In all other cases, the recommended number of threads is `4`. We don't recommend setting this
 higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
 works.

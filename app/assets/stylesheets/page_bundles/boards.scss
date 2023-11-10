@@ -39,6 +39,12 @@
     width: 400px;
   }
 
+  &.board-add-new-list {
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+    }
+  }
+
   &.is-collapsed {
     .board-title-text > span,
     .issue-count-badge > span {

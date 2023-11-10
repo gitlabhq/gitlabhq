@@ -1109,6 +1109,7 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/encrypted_configuration.rb'
     - 'lib/gitlab/encrypted_incoming_email_command.rb'
     - 'lib/gitlab/encrypted_ldap_command.rb'
+    - 'lib/gitlab/encrypted_redis_command.rb'
     - 'lib/gitlab/encrypted_service_desk_email_command.rb'
     - 'lib/gitlab/encrypted_smtp_command.rb'
     - 'lib/gitlab/environment_logger.rb'

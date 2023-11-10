@@ -83,7 +83,7 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
     .get(
       pathWithParams({
         path: reposPath,
-        ...(filter ?? {}),
+        ...filter,
         ...paginationParams({ state }),
       }),
     )

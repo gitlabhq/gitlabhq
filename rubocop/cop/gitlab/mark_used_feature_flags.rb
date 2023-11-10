@@ -16,9 +16,6 @@ module RuboCop
         EXPERIMENT_METHODS = %i[
           experiment
         ].freeze
-        RUGGED_METHODS = %i[
-          use_rugged?
-        ].freeze
         WORKER_METHODS = %i[
           data_consistency
           deduplicate
@@ -28,7 +25,7 @@ module RuboCop
           push_force_frontend_feature_flag
           limit_feature_flag=
           limit_feature_flag_for_override=
-        ].freeze + EXPERIMENT_METHODS + RUGGED_METHODS + WORKER_METHODS
+        ].freeze + EXPERIMENT_METHODS + WORKER_METHODS
 
         RESTRICT_ON_SEND = FEATURE_METHODS + SELF_METHODS
 
@@ -119,7 +116,7 @@ module RuboCop
               pair.key.value == :feature_flag
             end&.value
           else
-            arg_index = rugged_method?(node) ? 3 : 2
+            arg_index = 2
 
             node.children[arg_index]
           end
@@ -154,10 +151,6 @@ module RuboCop
 
         def caller_is_feature_gitaly?(node)
           class_caller(node) == "Feature::Gitaly"
-        end
-
-        def rugged_method?(node)
-          RUGGED_METHODS.include?(method_name(node))
         end
 
         def feature_method?(node)

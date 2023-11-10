@@ -41,8 +41,8 @@ To read or write Git data, a request has to be made to Gitaly. This means that
 if you're developing a new feature where you need data that's not yet available
 in `lib/gitlab/git` changes have to be made to Gitaly.
 
-There should be no new code that touches Git repositories via disk access (for example,
-Rugged, `git`, `rm -rf`) anywhere in the `gitlab` repository. Anything that
+There should be no new code that touches Git repositories via disk access
+anywhere in the `gitlab` repository. Anything that
 needs direct access to the Git repository *must* be implemented in Gitaly, and
 exposed via an RPC.
 

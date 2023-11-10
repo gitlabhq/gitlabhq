@@ -339,7 +339,6 @@ Style/RedundantSelf:
     - 'lib/gitlab/quick_actions/dsl.rb'
     - 'lib/gitlab/redis/hll.rb'
     - 'lib/gitlab/routing.rb'
-    - 'lib/gitlab/rugged_instrumentation.rb'
     - 'lib/gitlab/search/query.rb'
     - 'lib/gitlab/session.rb'
     - 'lib/gitlab/sidekiq_config/cli_methods.rb'

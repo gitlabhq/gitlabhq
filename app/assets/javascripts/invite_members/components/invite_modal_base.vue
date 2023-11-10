@@ -297,7 +297,7 @@ export default {
         </gl-form-group>
 
         <gl-form-group
-          class="gl-w-half gl-xs-w-full"
+          class="gl-sm-w-half gl-w-full"
           :label="$options.ACCESS_LEVEL"
           :label-for="dropdownId"
         >
@@ -317,7 +317,7 @@ export default {
         </gl-form-group>
 
         <gl-form-group
-          class="gl-w-half gl-xs-w-full"
+          class="gl-sm-w-half gl-w-full"
           :label="$options.ACCESS_EXPIRE_DATE"
           :label-for="datepickerId"
         >
@@ -338,10 +338,10 @@ export default {
 
     <template #modal-footer>
       <div
-        class="gl-m-0 gl-xs-w-full gl-display-flex gl-xs-flex-direction-column! gl-flex-direction-row-reverse"
+        class="gl-m-0 gl-w-full gl-display-flex gl-xs-flex-direction-column! gl-flex-direction-row-reverse"
       >
         <gl-button
-          class="gl-xs-w-full gl-xs-mb-3! gl-sm-ml-3!"
+          class="gl-w-full gl-sm-w-auto gl-xs-mb-3! gl-sm-ml-3!"
           data-testid="invite-modal-submit"
           v-bind="actionPrimary.attributes"
           @click="onSubmit"
@@ -350,7 +350,7 @@ export default {
         </gl-button>
 
         <gl-button
-          class="gl-xs-w-full"
+          class="gl-w-full gl-sm-w-auto"
           data-testid="invite-modal-cancel"
           v-bind="actionCancel.attributes"
           @click="onCancel"

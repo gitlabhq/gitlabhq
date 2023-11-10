@@ -5229,16 +5229,34 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject { build.doom! }
 
     let(:traits) { [] }
-    let(:build) { create(:ci_build, *traits, pipeline: pipeline) }
+    let(:build) do
+      travel(-1.minute) do
+        create(:ci_build, *traits, pipeline: pipeline)
+      end
+    end
 
-    it 'updates status and failure_reason', :aggregate_failures do
-      subject
+    it 'updates status, failure_reason, finished_at and updated_at', :aggregate_failures do
+      old_timestamp = build.updated_at
 
+      new_timestamp = \
+        freeze_time do
+          Time.current.tap do
+            subject
+          end
+        end
+
+      expect(old_timestamp).not_to eq(new_timestamp)
+      expect(build.updated_at).to eq(new_timestamp)
+      expect(build.finished_at).to eq(new_timestamp)
       expect(build.status).to eq("failed")
       expect(build.failure_reason).to eq("data_integrity_failure")
     end
 
-    it 'logs a message' do
+    it 'logs a message and increments the job failure counter', :aggregate_failures do
+      expect(::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter)
+        .to(receive(:increment))
+        .with(reason: :data_integrity_failure)
+
       expect(Gitlab::AppLogger)
         .to receive(:info)
         .with(a_hash_including(message: 'Build doomed', class: build.class.name, build_id: build.id))
@@ -5273,10 +5291,18 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'with running builds' do
       let(:traits) { [:picked] }
 
-      it 'drops associated runtime metadata' do
+      it 'drops associated runtime metadata', :aggregate_failures do
         subject
 
         expect(build.reload.runtime_metadata).not_to be_present
+      end
+    end
+
+    context 'finished builds' do
+      let(:traits) { [:finished] }
+
+      it 'does not update finished_at' do
+        expect { subject }.not_to change { build.reload.finished_at }
       end
     end
   end

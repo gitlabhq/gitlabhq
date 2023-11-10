@@ -12,7 +12,6 @@ module Gitlab
 
     def add_instrumentation_data(payload)
       instrument_gitaly(payload)
-      instrument_rugged(payload)
       instrument_redis(payload)
       instrument_elasticsearch(payload)
       instrument_zoekt(payload)
@@ -38,15 +37,6 @@ module Gitlab
 
       payload[:gitaly_calls] = gitaly_calls
       payload[:gitaly_duration_s] = Gitlab::GitalyClient.query_time
-    end
-
-    def instrument_rugged(payload)
-      rugged_calls = Gitlab::RuggedInstrumentation.query_count
-
-      return if rugged_calls == 0
-
-      payload[:rugged_calls] = rugged_calls
-      payload[:rugged_duration_s] = Gitlab::RuggedInstrumentation.query_time
     end
 
     def instrument_redis(payload)

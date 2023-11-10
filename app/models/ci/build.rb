@@ -921,12 +921,24 @@ module Ci
     # Consider this object to have a structural integrity problems
     def doom!
       transaction do
-        update_columns(status: :failed, failure_reason: :data_integrity_failure)
+        now = Time.current
+        attributes = {
+          status: :failed,
+          failure_reason: :data_integrity_failure,
+          updated_at: now
+        }
+        attributes[:finished_at] = now unless finished_at.present?
+
+        update_columns(attributes)
         all_queuing_entries.delete_all
         all_runtime_metadata.delete_all
       end
 
       deployment&.sync_status_with(self)
+
+      ::Gitlab::Ci::Pipeline::Metrics
+        .job_failure_reason_counter
+        .increment(reason: :data_integrity_failure)
 
       Gitlab::AppLogger.info(
         message: 'Build doomed',

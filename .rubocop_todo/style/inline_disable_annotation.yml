@@ -2572,6 +2572,7 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/encrypted_command_base.rb'
     - 'lib/gitlab/encrypted_incoming_email_command.rb'
     - 'lib/gitlab/encrypted_ldap_command.rb'
+    - 'lib/gitlab/encrypted_redis_command.rb'
     - 'lib/gitlab/encrypted_service_desk_email_command.rb'
     - 'lib/gitlab/encrypted_smtp_command.rb'
     - 'lib/gitlab/error_tracking/processor/context_payload_processor.rb'

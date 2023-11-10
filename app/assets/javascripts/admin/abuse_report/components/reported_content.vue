@@ -128,7 +128,7 @@ export default {
             </gl-link>
             <time-ago-tooltip
               :time="report.reportedAt"
-              class="gl-ml-3 gl-text-secondary gl-xs-w-full"
+              class="gl-ml-3 gl-text-secondary gl-w-full gl-sm-w-auto"
             />
           </div>
         </div>

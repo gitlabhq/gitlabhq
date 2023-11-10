@@ -21,7 +21,7 @@ describe('RecoveryCodes', () => {
         propsData: {
           codes,
           profileAccountPath,
-          ...(options?.propsData || {}),
+          ...options?.propsData,
         },
         ...options,
       }),

@@ -249,7 +249,6 @@ export default {
       <transition name="slide" @after-enter="afterFormEnters">
         <board-add-new-column
           v-if="addColumnFormVisible"
-          class="gl-xs-w-full!"
           :board-id="boardId"
           :list-query-variables="listQueryVariables"
           :lists="boardListsById"

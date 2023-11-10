@@ -931,7 +931,7 @@
       variables:
         BUILD_GDK_BASE: "true"
     - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
+    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - <<: *if-default-branch-refs
     - <<: *if-merge-request
@@ -1589,9 +1589,9 @@
     - <<: *if-merge-request-approved-and-specific-devops-stage
       changes: *code-patterns
       allow_failure: true
-    # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
-    # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
-    # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
+      # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
+      # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
+      # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
 
 # Like .qa:rules:package-and-test-common but not allowed to fail.
 # It's named `e2e` instead of `package-and-test` because it's used for e2e tests on GDK (and could be used
@@ -1628,7 +1628,7 @@
       variables:
         MR_CODE_PATTERNS: "true"
     - <<: *if-merge-request
-      changes: *code-qa-patterns # Includes all CI changes
+      changes: *code-qa-patterns  # Includes all CI changes
     - <<: *if-force-ci
       when: manual
 
@@ -1684,7 +1684,7 @@
   rules:
     - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
       when: never
-    - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
+    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - !reference [".qa:rules:e2e-blocking", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
@@ -2325,13 +2325,10 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
+    - <<: *if-merge-request
       when: never
     - if: '$FAST_QUARANTINE == "false" && $RETRY_FAILED_TESTS_IN_NEW_PROCESS != "true"'
       when: never
-    - <<: *if-merge-request
-      changes: *code-backstage-patterns
-      when: always
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
       when: always

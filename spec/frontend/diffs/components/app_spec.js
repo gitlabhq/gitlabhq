@@ -65,7 +65,7 @@ describe('diffs/components/app', () => {
     const provide = {
       ...provisions,
       glFeatures: {
-        ...(provisions.glFeatures || {}),
+        ...provisions.glFeatures,
       },
     };
 

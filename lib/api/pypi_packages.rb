@@ -280,6 +280,13 @@ module API
           optional :requires_python, type: String, documentation: { example: '>=3.7' }
           optional :md5_digest, type: String, documentation: { example: '900150983cd24fb0d6963f7d28e17f72' }
           optional :sha256_digest, type: String, regexp: Gitlab::Regex.sha256_regex, documentation: { example: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad' }
+          optional :metadata_version, type: String, documentation: { example: '2.3' }
+          optional :author_email, type: String, documentation: { example: 'cschultz@example.com, snoopy@peanuts.com' }
+          optional :description, type: String
+          optional :description_content_type, type: String,
+            documentation: { example: 'text/markdown; charset=UTF-8; variant=GFM' }
+          optional :summary, type: String, documentation: { example: 'A module for collecting votes from beagles.' }
+          optional :keywords, type: String, documentation: { example: 'dog,puppy,voting,election' }
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
