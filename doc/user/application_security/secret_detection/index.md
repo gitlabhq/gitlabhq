@@ -6,19 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Secret Detection **(FREE ALL)**
 
-> - In GitLab 13.1, Secret Detection was split from the [SAST configuration](../sast/index.md#configuration)
->   into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then
->   Secret Detection is already enabled.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) from GitLab Ultimate to GitLab
->   Free in 13.3.
-> - [In GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/297269), Secret Detection jobs
->   `secret_detection_default_branch` and `secret_detection` were consolidated into one job,
->   `secret_detection`.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an interactive reading and how-to demo of this Secret Detection doc, see [How to enable secret detection in GitLab Application Security Part 1/2](https://youtu.be/dbMxeO6nJCE?feature=shared) and [How to enable secret detection in GitLab Application Security Part 2/2](https://youtu.be/VL-_hdiTazo?feature=shared)
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an interactive reading and how-to demo playlist, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
+> [In GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/297269), Secret Detection jobs `secret_detection_default_branch` and `secret_detection` were consolidated into one job, `secret_detection`.
 
 People sometimes accidentally commit secrets like keys or API tokens to Git repositories.
 After a sensitive value is pushed to a remote repository, anyone with access to the repository can impersonate the authorized user of the secret for malicious purposes.
@@ -36,6 +24,13 @@ With GitLab Ultimate, Secret Detection results are also processed so you can:
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](automatic_response.md) to leaks in public repositories.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an interactive reading and how-to demo of this Secret Detection documentation see:
+
+- [How to enable secret detection in GitLab Application Security Part 1/2](https://youtu.be/dbMxeO6nJCE?feature=shared)
+- [How to enable secret detection in GitLab Application Security Part 2/2](https://youtu.be/VL-_hdiTazo?feature=shared)
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For other interactive reading and how-to demos, see the [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9).
 
 ## Detected secrets
 

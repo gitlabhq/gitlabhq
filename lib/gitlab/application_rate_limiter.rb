@@ -55,6 +55,7 @@ module Gitlab
           phone_verification_send_code: { threshold: 10, interval: 1.hour },
           phone_verification_verify_code: { threshold: 10, interval: 10.minutes },
           namespace_exists: { threshold: 20, interval: 1.minute },
+          update_namespace_name: { threshold: -> { application_settings.update_namespace_name_rate_limit }, interval: 1.hour },
           fetch_google_ip_list: { threshold: 10, interval: 1.minute },
           project_fork_sync: { threshold: 10, interval: 30.minutes },
           ai_action: { threshold: 160, interval: 8.hours },

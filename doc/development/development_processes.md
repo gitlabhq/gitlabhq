@@ -79,7 +79,10 @@ In these cases, use the following workflow:
    and approval from the VP of Development, who is the DRI for development guidelines.
 
 Any Maintainer can merge the MR.
-If you would like a review by a technical writer, post a message in the #docs Slack channel.
+
+#### Technical writing reviews
+
+If you would like a review by a technical writer, post a message in the `#docs` Slack channel.
 Technical writers do not need to review the content, however, and any Maintainer
 other than the MR author can merge.
 

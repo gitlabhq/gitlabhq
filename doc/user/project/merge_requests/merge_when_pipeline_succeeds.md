@@ -79,7 +79,7 @@ merge. This configuration works for both:
 - GitLab CI/CD pipelines.
 - Pipelines run from an [external CI integration](../integrations/index.md#available-integrations).
 
-As a result, [disabling GitLab CI/CD pipelines](../../../ci/index.md#disable-gitlab-cicd-in-a-project)
+As a result, [disabling GitLab CI/CD pipelines](../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines)
 does not disable this feature, but you can use pipelines from external
 CI providers with it.
 

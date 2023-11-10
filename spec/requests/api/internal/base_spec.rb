@@ -1527,7 +1527,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
   describe 'POST /internal/pre_receive' do
     let(:valid_params) do
-      { gl_repository: gl_repository }
+      { gl_repository: gl_repository, user_id: user.id }
     end
 
     it 'decreases the reference counter and returns the result' do
@@ -1538,6 +1538,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       post api("/internal/pre_receive"), params: valid_params, headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['reference_counter_increased']).to be(true)
+    end
+
+    it 'sticks to the primary' do
+      expect(User.sticking).to receive(:find_caught_up_replica).with(:user, user.id)
+
+      post api("/internal/pre_receive"), params: valid_params, headers: gitlab_shell_internal_api_request_header
     end
   end
 

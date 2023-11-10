@@ -1,9 +1,9 @@
 ---
-redirect_to: 'index.md#disable-gitlab-cicd-in-a-project'
+redirect_to: 'pipelines/settings.md#disable-gitlab-cicd-pipelines'
 remove_date: '2024-01-30'
 ---
 
-This document was moved to [another location](index.md#disable-gitlab-cicd-in-a-project).
+This document was moved to [another location](pipelines/settings.md#disable-gitlab-cicd-pipelines).
 
 <!-- This redirect file can be deleted after <2024-01-30>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

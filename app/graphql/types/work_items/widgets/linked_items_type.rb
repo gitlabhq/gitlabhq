@@ -13,6 +13,7 @@ module Types
         field :linked_items, Types::WorkItems::LinkedItemType.connection_type,
           null: true, complexity: 5,
           alpha: { milestone: '16.3' },
+          extras: [:lookahead],
           description: 'Linked items for the work item. Returns `null` ' \
                        'if `linked_work_items` feature flag is disabled.',
           resolver: Resolvers::WorkItems::LinkedItemsResolver

@@ -871,6 +871,38 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
     end
 
+    before do
+      stub_application_setting(update_namespace_name_rate_limit: 1)
+    end
+
+    it 'increments the update_namespace_name rate limit' do
+      put api("/groups/#{group1.id}", user1), params: { name: "#{new_group_name}_1" }
+
+      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: group1)).to be_falsey
+
+      put api("/groups/#{group1.id}", user1), params: { name: "#{new_group_name}_2" }
+
+      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: group1)).to be_truthy
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(group1.reload.name).to eq("#{new_group_name}_2")
+    end
+
+    context 'a name is not passed in' do
+      it 'does not mark name update throttling' do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+        put api("/groups/#{group1.id}", user1), params: { path: 'another/path' }
+      end
+    end
+
+    context 'an empty name is passed in' do
+      it 'does not mark name update throttling' do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+        put api("/groups/#{group1.id}", user1), params: { name: '' }
+      end
+    end
+
     context 'when authenticated as the group owner' do
       it 'updates the group', :aggregate_failures do
         workhorse_form_with_file(

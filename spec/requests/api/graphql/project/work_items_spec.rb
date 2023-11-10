@@ -350,7 +350,9 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   end
 
   context 'when fetching work item linked items widget' do
-    let_it_be(:related_items) { create_list(:work_item, 3, project: project, milestone: milestone1) }
+    let_it_be(:other_project) { create(:project, :repository, :public, group: group) }
+    let_it_be(:other_milestone) { create(:milestone, project: other_project) }
+    let_it_be(:related_items) { create_list(:work_item, 3, project: other_project, milestone: other_milestone) }
 
     let(:fields) do
       <<~GRAPHQL
@@ -384,21 +386,24 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
 
     before do
       create(:work_item_link, source: item1, target: related_items[0], link_type: 'relates_to')
+      create(:work_item_link, source: item2, target: related_items[0], link_type: 'relates_to')
     end
 
     it 'executes limited number of N+1 queries', :use_sql_query_cache do
+      post_graphql(query, current_user: current_user) # warm-up
+
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
       end
 
-      create(:work_item_link, source: item1, target: related_items[1], link_type: 'relates_to')
-      create(:work_item_link, source: item1, target: related_items[2], link_type: 'relates_to')
+      [item1, item2].each do |item|
+        create(:work_item_link, source: item, target: related_items[1], link_type: 'relates_to')
+        create(:work_item_link, source: item, target: related_items[2], link_type: 'relates_to')
+      end
 
       expect_graphql_errors_to_be_empty
-      # TODO: Fix N+1 queries executed for the linked work item widgets
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/420605
       expect { post_graphql(query, current_user: current_user) }
-        .not_to exceed_all_query_limit(control).with_threshold(11)
+        .not_to exceed_all_query_limit(control)
     end
   end
 

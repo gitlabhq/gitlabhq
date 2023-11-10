@@ -4,13 +4,10 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Define inputs for configuration added with `include` **(FREE ALL BETA)**
+# Define inputs for configuration added with `include` **(FREE ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
-
-FLAG:
-`spec` and `inputs` are experimental [Open Beta features](../../policy/experiment-beta-support.md#beta)
-and subject to change without notice.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - Made generally available in GitLab 16.6.
 
 ## Define input parameters with `spec:inputs`
 
@@ -18,21 +15,23 @@ and subject to change without notice.
 > - `options` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393401) in GitLab 16.6.
 
 Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
-to a pipeline with `include`. Use [`include:inputs`](#set-input-parameter-values-with-includeinputs)
+to a pipeline with `include`. Use [`include:inputs`](#set-input-values-when-using-include)
 to define the values to use when the pipeline runs.
 
 The specs must be declared at the top of the configuration file, in a header section.
 Separate the header from the rest of the configuration with `---`.
 
 Use the interpolation format `$[[ input.input-id ]]` to reference the values outside of the header section.
-The inputs are evaluated and interpolated once, when the configuration is fetched
-during pipeline creation, but before the configuration is merged with the contents of the `.gitlab-ci.yml`.
+The inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
+configuration is merged with the contents of the `.gitlab-ci.yml` file.
+
+For example, in a file named `custom_website_scan.yml`:
 
 ```yaml
 spec:
   inputs:
-    environment:
     job-stage:
+    environment:
 ---
 
 scan-website:
@@ -42,61 +41,58 @@ scan-website:
 
 When using `spec:inputs`:
 
-- Defined inputs are mandatory by default.
-- Inputs can be made optional by specifying a `default`. Use `default: null` to have no default value.
-- Inputs can use `options` to specify a list of allowed values for an input. The limit is 50 options per input.
-- If an input uses both `default` and `options`, the default value must be one of the listed options. If not, the pipeline fails with a validation error.
-- You can optionally use `description` to give a description to a specific input.
+- Inputs are mandatory by default.
+- Inputs must be strings by default.
 - A string containing an interpolation block must not exceed 1 MB.
 - The string inside an interpolation block must not exceed 1 KB.
 
-For example, a `custom_configuration.yml`:
+Additionally, use:
 
-```yaml
-spec:
-  inputs:
-    website:
-    user:
-      default: 'test-user'
-      options: ['test-user', 'admin-user']
-    flags:
-      default: null
-      description: 'Sample description of the `flags` input detail.'
----
+- [`spec:inputs:default`](index.md#specinputsdefault) to define default values for inputs
+  when not specified. When you specify a default, the inputs are no longer mandatory.
+- [`spec:inputs:description`](index.md#specinputsdescription) to give a description to
+  a specific input. The description does not affect the input, but can help people
+  understand the input details or expected values.
+- [`spec:inputs:options`](index.md#specinputsoptions) to specify a list of allowed values
+  for an input.
+- [`spec:inputs:type`](index.md#specinputstype) to force a specific input type, which
+  can be `string` (the default type), `number`, or `boolean`.
 
-# The pipeline configuration would follow...
-```
-
-In this example:
-
-- `website` is mandatory and must be defined.
-- `user` is optional. If not defined, the value is `test-user`, which is one of the values specified in `options`.
-- `flags` is optional. If not defined, it has no value. The optional description should give details about the input.
-
-## Set input parameter values with `include:inputs`
+## Set input values when using `include`
 
 > `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
 
-Use `include:inputs` to set the values for the parameters when the included configuration
-is added to the pipeline.
+Use [`include:inputs`](index.md#includeinputs) to set the values for the parameters
+when the included configuration is added to the pipeline.
 
-For example, to include a `custom_configuration.yml` that has the same specs
+For example, to include a `custom_website_scan.yml` that has the same specs
 as the [example above](#define-input-parameters-with-specinputs):
 
 ```yaml
 include:
-  - local: 'custom_configuration.yml'
+  - local: 'custom_website_scan.yml'
     inputs:
-      website: "My website"
+      job-stage: post-deploy
+      environment: production
+
+stages:
+  - build
+  - test
+  - deploy
+  - post-deploy
+
+# The pipeline configuration would follow...
 ```
 
-In this example:
+In this example, the included configuration is added with:
 
-- `website` has a value of `My website` for the included configuration.
+- `job-stage` set to `post-deploy`, so the included job runs in the custom `post-deploy` stage.
+- `environment` set to `production`, so the included job runs for the production environment.
 
 ### Use `include:inputs` with multiple files
 
-`inputs` must be specified separately for each included file. For example:
+[`inputs`](index.md#includeinputs) must be specified separately for each included file.
+For example:
 
 ```yaml
 include:

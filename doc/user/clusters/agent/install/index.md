@@ -76,7 +76,7 @@ In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `ce
 Prerequisites:
 
 - For a [GitLab CI/CD workflow](../ci_cd_workflow.md), ensure that
-  [GitLab CI/CD is not disabled](../../../../ci/index.md#disable-gitlab-cicd-in-a-project).
+  [GitLab CI/CD is not disabled](../../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines).
 
 You must register an agent before you can install the agent in your cluster. To register an agent:
 

@@ -1587,7 +1587,6 @@
 - './ee/spec/models/concerns/ee/project_security_scanners_information_spec.rb'
 - './ee/spec/models/concerns/ee/weight_eventable_spec.rb'
 - './ee/spec/models/concerns/elastic/application_versioned_search_spec.rb'
-- './ee/spec/models/concerns/elastic/issue_spec.rb'
 - './ee/spec/models/concerns/elastic/merge_request_spec.rb'
 - './ee/spec/models/concerns/elastic/milestone_spec.rb'
 - './ee/spec/models/concerns/elastic/note_spec.rb'

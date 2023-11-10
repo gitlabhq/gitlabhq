@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SnippetRepository do
+RSpec.describe SnippetRepository, feature_category: :snippets do
   let_it_be(:user) { create(:user) }
 
   let(:snippet) { create(:personal_snippet, :repository, author: user) }
@@ -67,6 +67,8 @@ RSpec.describe SnippetRepository do
         expect(move_file_blob).not_to be_nil
         expect(update_file_blob).not_to be_nil
       end
+
+      expect(described_class.sticking).to receive(:stick)
 
       expect do
         snippet_repository.multi_files_action(user, data, **commit_opts)

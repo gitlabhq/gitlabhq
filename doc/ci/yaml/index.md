@@ -36,6 +36,12 @@ A GitLab CI/CD pipeline configuration includes:
   | [`variables`](#variables) | Define CI/CD variables for all job in the pipeline. |
   | [`workflow`](#workflow)   | Control what types of pipeline run. |
 
+- [Header keywords](#header-keywords)
+
+  | Keyword         | Description |
+  |-----------------|:------------|
+  | [`spec`](#spec) | Define specifications for external configuration files. |
+
 - [Jobs](../jobs/index.md) configured with [job keywords](#job-keywords):
 
   | Keyword                                     | Description |
@@ -350,6 +356,42 @@ include:
 - All [nested includes](includes.md#use-nested-includes) are executed without context as a public user,
   so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
 
+#### `include:inputs`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+
+Use `include:inputs` to set the values for input parameters when the included configuration
+uses [`spec:inputs`](#specinputs) and is added to the pipeline.
+
+**Keyword type**: Global keyword.
+
+**Possible inputs**: A string, numeric value, or boolean.
+
+**Example of `include:inputs`**:
+
+```yaml
+include:
+  - local: 'custom_configuration.yml'
+    inputs:
+      website: "My website"
+```
+
+In this example:
+
+- The configuration contained in `custom_configuration.yml` is added to the pipeline,
+  with a `website` input set to a value of `My website` for the included configuration.
+
+**Additional details**:
+
+- If the included configuration file uses [`spec:inputs:type`](#specinputstype),
+  the input value must match the defined type.
+- If the included configuration file uses [`spec:inputs:options`](#specinputsoptions),
+  the input value must match one of the listed options.
+
+**Related topics**:
+
+- [Set input values when using `include`](inputs.md#set-input-values-when-using-include).
+
 ### `stages`
 
 Use `stages` to define stages that contain groups of jobs. Use [`stage`](#stage)
@@ -592,6 +634,193 @@ When the branch is something else:
   - Use unique variable names in every project's pipeline configuration, like `PROJECT1_VARIABLE_NAME`.
   - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
     exact variables you want to forward to the downstream pipeline.
+
+## Header keywords
+
+Some keywords must be defined in a header section of a YAML configuration file.
+The header must be at the top of the file, separated from the rest of the configuration
+with `---`.
+
+### `spec`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+
+Add a `spec` section to the header of a YAML file to configure the behavior of a pipeline
+when a configuration is added to the pipeline with the `include` keyword.
+
+#### `spec:inputs`
+
+You can use `spec:inputs` to define input parameters for the CI/CD configuration you intend to add
+to a pipeline with `include`. Use `include:inputs` to define the values to use when the pipeline runs.
+
+Use the inputs to customize the behavior of the configuration when included in CI/CD configuration.
+
+Use the interpolation format `$[[ input.input-id ]]` to reference the values outside of the header section.
+Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
+configuration is merged with the contents of the `.gitlab-ci.yml` file.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: A hash of strings representing the expected inputs.
+
+**Example of `spec:inputs`**:
+
+```yaml
+spec:
+  inputs:
+    environment:
+    job-stage:
+---
+
+scan-website:
+  stage: $[[ inputs.job-stage ]]
+  script: ./scan-website $[[ inputs.environment ]]
+```
+
+**Additional details**:
+
+- Inputs are mandatory unless you use [`spec:inputs:default`](#specinputsdefault)
+  to set a default value.
+- Inputs expect strings unless you use [`spec:inputs:type`](#specinputstype) to set a
+  different input type.
+- A string containing an interpolation block must not exceed 1 MB.
+- The string inside an interpolation block must not exceed 1 KB.
+
+**Related topics**:
+
+- [Define input parameters with `spec:inputs`](inputs.md#define-input-parameters-with-specinputs).
+
+##### `spec:inputs:default`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+
+Inputs are mandatory when included, unless you set a default value with `spec:inputs:default`.
+
+Use `default: null` to have no default value.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: A string representing the default value, or `null`.
+
+**Example of `spec:inputs:default`**:
+
+```yaml
+spec:
+  inputs:
+    website:
+    user:
+      default: 'test-user'
+    flags:
+      default: null
+---
+
+# The pipeline configuration would follow...
+```
+
+In this example:
+
+- `website` is mandatory and must be defined.
+- `user` is optional. If not defined, the value is `test-user`.
+- `flags` is optional. If not defined, it has no value.
+
+**Additional details**:
+
+- If an input uses both `default` and [`options`](#specinputsoptions), the default value
+  must be one of the listed options. If not, the pipeline fails with a validation error.
+
+##### `spec:inputs:description`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
+
+Use `description` to give a description to a specific input. The description does
+not affect the behavior of the input and is only used to help users of the file
+understand the input.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: A string representing the description.
+
+**Example of `spec:inputs:description`**:
+
+```yaml
+spec:
+  inputs:
+    flags:
+      description: 'Sample description of the `flags` input details.'
+---
+
+# The pipeline configuration would follow...
+```
+
+##### `spec:inputs:options`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393401) in GitLab 16.6.
+
+Inputs can use `options` to specify a list of allowed values for an input.
+The limit is 50 options per input.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: An array of input options.
+
+**Example of `spec:inputs:options`**:
+
+```yaml
+spec:
+  inputs:
+    environment:
+      options:
+        - development
+        - staging
+        - production
+---
+
+# The pipeline configuration would follow...
+```
+
+In this example:
+
+- `environment` is mandatory and must be defined with one of the values in the list.
+
+**Additional details**:
+
+- If an input uses both [`default`](#specinputsdefault) and `options`, the default value
+  must be one of the listed options. If not, the pipeline fails with a validation error.
+
+##### `spec:inputs:type`
+
+By default, inputs expect strings. Use `spec:inputs:type` to set a different required
+type for inputs.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: Can be one of:
+
+- `string`, to accept string inputs (default when not defined).
+- `number`, to only accept numeric inputs.
+- `boolean`, to only accept `true` or `false` inputs.
+
+**Example of `spec:inputs:type`**:
+
+```yaml
+spec:
+  inputs:
+    job_name:
+    website:
+      type: string
+    port:
+      type: number
+    available:
+      type: boolean
+---
+
+# The pipeline configuration would follow...
+```
 
 ## Job keywords
 

@@ -98,7 +98,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/spec/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate_spec.rb'
     - 'ee/spec/mailers/credentials_inventory_mailer_spec.rb'
     - 'ee/spec/mailers/emails/requirements_spec.rb'
-    - 'ee/spec/models/concerns/elastic/issue_spec.rb'
     - 'ee/spec/models/concerns/elastic/note_spec.rb'
     - 'ee/spec/requests/api/analytics/project_deployment_frequency_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/iterations/create_spec.rb'

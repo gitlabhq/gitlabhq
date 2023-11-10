@@ -70,6 +70,7 @@ In the following table, you can see:
 | [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) | GitLab 16.6 and later |
 | [Users and permissions report](../../administration/admin_area.md#user-permission-export) | GitLab 16.6 and later |
 | [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
+| [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
 
 ### Enable registration features
 

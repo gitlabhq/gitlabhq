@@ -619,6 +619,47 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           )
         end
 
+        context 'when inaccessible links are present' do
+          let_it_be(:no_access_item) { create(:work_item, title: "PRIVATE", project: create(:project, :private)) }
+
+          before do
+            create(:work_item_link, source: work_item, target: no_access_item, link_type: 'relates_to')
+          end
+
+          it 'returns only items that the user has access to' do
+            expect(graphql_dig_at(work_item_data, :widgets, "linkedItems", "nodes", "linkId"))
+              .to match_array([link1.to_gid.to_s, link2.to_gid.to_s])
+          end
+        end
+
+        context 'when limiting the number of results' do
+          it_behaves_like 'sorted paginated query' do
+            include_context 'no sort argument'
+
+            let(:first_param) { 1 }
+            let(:all_records) { [link1, link2] }
+            let(:data_path) { ['workItem', 'widgets', "linkedItems", -1] }
+
+            def widget_fields(args)
+              query_graphql_field(
+                :widgets, {}, query_graphql_field(
+                  '... on WorkItemWidgetLinkedItems', {}, query_graphql_field(
+                    'linkedItems', args, "#{page_info} nodes { linkId }"
+                  )
+                )
+              )
+            end
+
+            def pagination_query(params)
+              graphql_query_for('workItem', { 'id' => global_id }, widget_fields(params))
+            end
+
+            def pagination_results_data(nodes)
+              nodes.map { |item| GlobalID::Locator.locate(item['linkId']) }
+            end
+          end
+        end
+
         context 'when filtering by link type' do
           let(:work_item_fields) do
             <<~GRAPHQL

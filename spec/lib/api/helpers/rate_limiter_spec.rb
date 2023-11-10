@@ -69,4 +69,12 @@ RSpec.describe API::Helpers::RateLimiter do
       end
     end
   end
+
+  describe '#mark_throttle!' do
+    it 'calls ApplicationRateLimiter#throttle?' do
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(false)
+
+      subject.mark_throttle!(key, scope: scope)
+    end
+  end
 end

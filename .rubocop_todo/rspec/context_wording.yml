@@ -419,7 +419,6 @@ RSpec/ContextWording:
     - 'ee/spec/models/concerns/deprecated_approvals_before_merge_spec.rb'
     - 'ee/spec/models/concerns/ee/issuable_spec.rb'
     - 'ee/spec/models/concerns/ee/participable_spec.rb'
-    - 'ee/spec/models/concerns/elastic/issue_spec.rb'
     - 'ee/spec/models/concerns/elastic/note_spec.rb'
     - 'ee/spec/models/concerns/elastic/project_spec.rb'
     - 'ee/spec/models/concerns/elastic/repository_spec.rb'

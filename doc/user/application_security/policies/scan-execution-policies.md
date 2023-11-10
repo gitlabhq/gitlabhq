@@ -28,9 +28,6 @@ implicitly so that the policies can be enforced. This ensures policies enabling 
 secret detection, static analysis, or other scanners that do not require a build in the
 project, are still able to execute and be enforced.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
-
 In the event of a job name collision, GitLab appends a hyphen and a number to the job name. GitLab
 increments the number until the name no longer conflicts with existing job names. If you create a
 policy at the group level, it applies to every child project or subgroup. You cannot edit a
@@ -45,6 +42,9 @@ NOTE:
 Policy jobs for scans other than DAST scans are created in the `test` stage of the pipeline. If you modify the default pipeline
 [`stages`](../../../ci/yaml/index.md#stages),
 to remove the `test` stage, jobs will run in the `scan-policies` stage instead. This stage is injected into the CI pipeline at evaluation time if it doesn't exist. If the `build` stage exists, it is injected just after the `build` stage. If the `build` stage does not exist, it is injected at the beginning of the pipeline. DAST scans always run in the `dast` stage. If this stage does not exist, then a `dast` stage is injected at the end of the pipeline.
+
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an overview, see [Enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
 
 ## Scan execution policy editor
 

@@ -73,6 +73,19 @@ class WorkItem < Issue
       includes(:parent_link).order(keyset_order)
     end
 
+    def linked_items_keyset_order
+      ::Gitlab::Pagination::Keyset::Order.build(
+        [
+          ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'issue_link_id',
+            column_expression: IssueLink.arel_table[:id],
+            order_expression: IssueLink.arel_table[:id].asc,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
+    end
+
     override :related_link_class
     def related_link_class
       WorkItems::RelatedWorkItemLink
@@ -150,7 +163,9 @@ class WorkItem < Issue
   def linked_work_items(current_user = nil, authorize: true, preload: nil, link_type: nil)
     return [] if new_record?
 
-    linked_work_items = linked_work_items_query(link_type).preload(preload).reorder('issue_link_id')
+    linked_work_items = linked_work_items_query(link_type)
+                          .preload(preload)
+                          .reorder(self.class.linked_items_keyset_order)
     return linked_work_items unless authorize
 
     cross_project_filter = ->(work_items) { work_items.where(project: project) }

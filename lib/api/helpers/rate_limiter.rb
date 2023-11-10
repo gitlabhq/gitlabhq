@@ -18,6 +18,10 @@ module API
 
         render_api_error!({ error: _('This endpoint has been requested too many times. Try again later.') }, 429)
       end
+
+      def mark_throttle!(key, scope:)
+        Gitlab::ApplicationRateLimiter.throttled?(key, scope: scope)
+      end
     end
   end
 end

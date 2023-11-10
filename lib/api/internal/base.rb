@@ -4,11 +4,17 @@ module API
   # Internal access API
   module Internal
     class Base < ::API::Base
+      include Gitlab::RackLoadBalancingHelpers
+
       before { authenticate_by_gitlab_shell_token! }
 
       before do
         api_endpoint = env['api.endpoint']
         feature_category = api_endpoint.options[:for].try(:feature_category_for_app, api_endpoint).to_s
+
+        if actor.user
+          load_balancer_stick_request(::User, :user, actor.user.id)
+        end
 
         Gitlab::ApplicationContext.push(
           user: -> { actor&.user },

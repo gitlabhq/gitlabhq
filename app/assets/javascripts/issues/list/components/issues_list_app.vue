@@ -1027,7 +1027,10 @@ export default {
             :export-csv-path="exportCsvPathWithQuery"
             :issuable-count="currentTabCount"
           />
-          <gl-disclosure-dropdown-group :bordered="true" :group="subscribeDropdownOptions" />
+          <gl-disclosure-dropdown-group
+            :bordered="showCsvButtons"
+            :group="subscribeDropdownOptions"
+          />
         </gl-disclosure-dropdown>
       </template>
 

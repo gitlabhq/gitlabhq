@@ -1,0 +1,8 @@
+---
+name: use_new_rule_finalize_approach
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133633
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427612
+milestone: '16.6'
+type: development
+group: group::code review
+default_enabled: false
