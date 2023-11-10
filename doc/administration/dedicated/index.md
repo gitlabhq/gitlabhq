@@ -214,7 +214,9 @@ Make sure the AWS KMS keys are replicated to your desired primary, secondary and
 
 ## Configuration changes
 
-To change or update the configuration for your GitLab Dedicated instance, open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request. You can request configuration changes for the options originally specified during onboarding, or for any of the following optional features.
+Switchboard empowers the user to make limited configuration changes to their Dedicated Tenant Instance. As Switchboard matures further configuration changes will be made available.
+
+To change or update the configuration of your GitLab Dedicated instance, use Switchboard following the instructions in the relevant section or open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request. You can request configuration changes for the options originally specified during onboarding, or for any of the following optional features.
 
 The turnaround time to process configuration change requests is [documented in the GitLab handbook](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/#handling-configuration-changes-for-tenant-environments).
 

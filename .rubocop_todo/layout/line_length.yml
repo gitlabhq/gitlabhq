@@ -841,7 +841,6 @@ Layout/LineLength:
     - 'ee/app/helpers/vulnerabilities_helper.rb'
     - 'ee/app/mailers/ee/emails/profile.rb'
     - 'ee/app/mailers/ee/preview/notify_preview.rb'
-    - 'ee/app/mailers/emails/namespace_storage_usage_mailer.rb'
     - 'ee/app/models/approval_merge_request_rule.rb'
     - 'ee/app/models/approval_project_rule.rb'
     - 'ee/app/models/approval_state.rb'

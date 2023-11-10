@@ -44,8 +44,9 @@ class PersonalAccessToken < ApplicationRecord
   scope :last_used_after, -> (date) { where("last_used_at >= ?", date) }
 
   validates :scopes, presence: true
+  validates :expires_at, presence: true, on: :create, unless: :allow_expires_at_to_be_empty?
+
   validate :validate_scopes
-  validates :expires_at, presence: true, on: :create
   validate :expires_at_before_instance_max_expiry_date, on: :create
 
   def revoke!
@@ -95,6 +96,10 @@ class PersonalAccessToken < ApplicationRecord
 
   def prefix_from_application_current_settings
     self.class.token_prefix
+  end
+
+  def allow_expires_at_to_be_empty?
+    false
   end
 
   def expires_at_before_instance_max_expiry_date

@@ -7,7 +7,7 @@ RSpec.describe UpdateProjectStatisticsWorker, feature_category: :source_code_man
 
   let(:worker) { described_class.new }
   let(:project) { create(:project, :repository) }
-  let(:statistics) { %w(repository_size) }
+  let(:statistics) { %w[repository_size] }
   let(:lease_key) { "namespace:namespaces_root_statistics:#{project.namespace_id}" }
 
   describe '#perform' do

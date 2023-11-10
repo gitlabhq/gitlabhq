@@ -13,8 +13,8 @@ RSpec.describe Packages::Debian::ComponentFileUploader do
 
       it_behaves_like "builds correct paths",
         store_dir: %r[^\h{2}/\h{2}/\h{64}/debian_#{container_type}_component_file/\d+$],
-        cache_dir: %r[/packages/tmp/cache$],
-        work_dir: %r[/packages/tmp/work$]
+        cache_dir: %r{/packages/tmp/cache$},
+        work_dir: %r{/packages/tmp/work$}
 
       context 'object store is remote' do
         before do
@@ -25,8 +25,8 @@ RSpec.describe Packages::Debian::ComponentFileUploader do
 
         it_behaves_like "builds correct paths",
           store_dir: %r[^\h{2}/\h{2}/\h{64}/debian_#{container_type}_component_file/\d+$],
-          cache_dir: %r[/packages/tmp/cache$],
-          work_dir: %r[/packages/tmp/work$]
+          cache_dir: %r{/packages/tmp/cache$},
+          work_dir: %r{/packages/tmp/work$}
       end
 
       describe 'remote file' do

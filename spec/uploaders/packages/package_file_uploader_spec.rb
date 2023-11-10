@@ -10,8 +10,8 @@ RSpec.describe Packages::PackageFileUploader do
 
   it_behaves_like "builds correct paths",
     store_dir: %r[^\h{2}/\h{2}/\h{64}/packages/\d+/files/\d+$],
-    cache_dir: %r[/packages/tmp/cache],
-    work_dir: %r[/packages/tmp/work]
+    cache_dir: %r{/packages/tmp/cache},
+    work_dir: %r{/packages/tmp/work}
 
   context 'object store is remote' do
     before do

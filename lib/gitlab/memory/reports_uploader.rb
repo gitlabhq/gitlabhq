@@ -13,11 +13,11 @@ module Gitlab
 
       def upload(path)
         log_upload_requested(path)
-        start_monotonic_time = Gitlab::Metrics::System.monotonic_time
+        start_monotonic_time = ::Gitlab::Metrics::System.monotonic_time
 
         File.open(path.to_s) { |file| fog.put_object(gcs_bucket, File.basename(path), file) }
 
-        duration_s = Gitlab::Metrics::System.monotonic_time - start_monotonic_time
+        duration_s = ::Gitlab::Metrics::System.monotonic_time - start_monotonic_time
         log_upload_success(path, duration_s)
       rescue StandardError, Errno::ENOENT => error
         log_exception(error)

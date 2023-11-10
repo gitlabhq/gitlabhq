@@ -347,10 +347,6 @@ module UsersHelper
     }.with_indifferent_access.freeze
   end
 
-  def saved_replies_enabled?
-    Feature.enabled?(:saved_replies, current_user)
-  end
-
   def preload_project_associations(_)
     # Overridden in EE
   end

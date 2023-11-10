@@ -1,0 +1,8 @@
+---
+# Cop supports --autocorrect.
+Performance/StringReplacement:
+  Details: grace period
+  Exclude:
+    - 'ee/app/models/saml_provider.rb'
+    - 'lib/gitlab/uploads/migration_helper.rb'
+    - 'lib/kramdown/parser/atlassian_document_format.rb'

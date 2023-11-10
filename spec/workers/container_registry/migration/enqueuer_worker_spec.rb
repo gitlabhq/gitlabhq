@@ -16,7 +16,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
   before do
     stub_container_registry_config(enabled: true)
     stub_application_setting(container_registry_import_created_before: 1.day.ago)
-    stub_container_registry_tags(repository: container_repository.path, tags: %w(tag1 tag2 tag3), with_manifest: true)
+    stub_container_registry_tags(repository: container_repository.path, tags: %w[tag1 tag2 tag3], with_manifest: true)
   end
 
   describe '#perform' do
@@ -133,7 +133,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
 
         stub_container_registry_tags(
           repository: container_repository2.path,
-          tags: %w(tag4 tag5 tag6),
+          tags: %w[tag4 tag5 tag6],
           with_manifest: true
         )
       end
@@ -204,7 +204,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
           stub_application_setting(container_registry_import_max_tags_count: 0)
           # Add 8 tags to the next repository
           stub_container_registry_tags(
-            repository: container_repository.path, tags: %w(a b c d e f g h), with_manifest: true
+            repository: container_repository.path, tags: %w[a b c d e f g h], with_manifest: true
           )
         end
 

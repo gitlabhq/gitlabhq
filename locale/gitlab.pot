@@ -9820,6 +9820,9 @@ msgstr ""
 msgid "Changes to the title have not been saved"
 msgstr ""
 
+msgid "Changes will not affect existing token expiration dates. %{link_start}How will this affect expiration dates?%{link_end}"
+msgstr ""
+
 msgid "Changes:"
 msgstr ""
 
@@ -23313,6 +23316,12 @@ msgid "GroupSettings|Select the project containing the %{code_start}.gitlab/insi
 msgstr ""
 
 msgid "GroupSettings|Select the project containing your custom Insights file."
+msgstr ""
+
+msgid "GroupSettings|Service access tokens expiration enforced setting was not saved"
+msgstr ""
+
+msgid "GroupSettings|Service account token expiration"
 msgstr ""
 
 msgid "GroupSettings|Set a size limit for all content in each Pages site in this group. %{link_start}Learn more.%{link_end}"
@@ -37226,6 +37235,11 @@ msgstr ""
 msgid "ProjectCreationLevel|Roles allowed to create projects"
 msgstr ""
 
+msgid "ProjectExceededSize|Here is the project exceeding the storage quota:%{projects_list}"
+msgid_plural "ProjectExceededSize|From the %{repository_size_excess_project_count} projects exceeding the quota, below are the projects using the most storage:%{projects_list}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ProjectFileTree|Name"
 msgstr ""
 
@@ -40490,6 +40504,9 @@ msgid "Requests per period"
 msgstr ""
 
 msgid "Require additional authentication for administrative tasks."
+msgstr ""
+
+msgid "Require expiration date"
 msgstr ""
 
 msgid "Required approvals (%{approvals_given} given)"
@@ -44246,10 +44263,16 @@ msgstr ""
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
 msgstr ""
 
+msgid "Service access token expiration"
+msgstr ""
+
 msgid "Service account"
 msgstr ""
 
 msgid "Service account generated successfully"
+msgstr ""
+
+msgid "Service account token expiration"
 msgstr ""
 
 msgid "Service accounts"

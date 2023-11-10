@@ -9,9 +9,9 @@ RSpec.describe ExternalDiffUploader do
   subject(:uploader) { described_class.new(diff, :external_diff) }
 
   it_behaves_like "builds correct paths",
-    store_dir: %r[merge_request_diffs/mr-\d+],
-    cache_dir: %r[/external-diffs/tmp/cache],
-    work_dir: %r[/external-diffs/tmp/work]
+    store_dir: %r{merge_request_diffs/mr-\d+},
+    cache_dir: %r{/external-diffs/tmp/cache},
+    work_dir: %r{/external-diffs/tmp/work}
 
   context "object store is REMOTE" do
     before do
@@ -21,7 +21,7 @@ RSpec.describe ExternalDiffUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like "builds correct paths",
-      store_dir: %r[merge_request_diffs/mr-\d+]
+      store_dir: %r{merge_request_diffs/mr-\d+}
   end
 
   describe 'remote file' do

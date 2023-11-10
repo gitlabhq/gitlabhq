@@ -14,8 +14,8 @@ RSpec.describe Pages::DeploymentUploader do
 
   it_behaves_like "builds correct paths",
     store_dir: %r[/\h{2}/\h{2}/\h{64}/pages_deployments/\d+],
-    cache_dir: %r[pages/@hashed/tmp/cache],
-    work_dir: %r[pages/@hashed/tmp/work]
+    cache_dir: %r{pages/@hashed/tmp/cache},
+    work_dir: %r{pages/@hashed/tmp/work}
 
   context 'when object store is REMOTE' do
     before do

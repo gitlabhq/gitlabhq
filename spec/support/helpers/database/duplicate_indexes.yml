@@ -167,11 +167,6 @@ project_repositories:
 project_topics:
   index_project_topics_on_project_id_and_topic_id:
     - index_project_topics_on_project_id
-projects:
-  index_projects_api_path_id_desc:
-    - index_on_projects_path
-  index_projects_on_path_and_id:
-    - index_on_projects_path
 protected_environments:
   index_protected_environments_on_project_id_and_name:
     - index_protected_environments_on_project_id

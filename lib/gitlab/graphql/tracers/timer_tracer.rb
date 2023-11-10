@@ -15,11 +15,11 @@ module Gitlab
         end
 
         def trace(key, data)
-          start_time = Gitlab::Metrics::System.monotonic_time
+          start_time = ::Gitlab::Metrics::System.monotonic_time
 
           yield
         ensure
-          data[:duration_s] = Gitlab::Metrics::System.monotonic_time - start_time
+          data[:duration_s] = ::Gitlab::Metrics::System.monotonic_time - start_time
         end
       end
     end

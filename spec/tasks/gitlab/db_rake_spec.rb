@@ -601,8 +601,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'drop_tables' do
-    let(:tables) { %w(one two schema_migrations) }
-    let(:views) { %w(three four pg_stat_statements) }
+    let(:tables) { %w[one two schema_migrations] }
+    let(:views) { %w[three four pg_stat_statements] }
     let(:schemas) { Gitlab::Database::EXTRA_SCHEMAS }
     let(:ignored_views) { double(ActiveRecord::Relation, pluck: ['pg_stat_statements']) }
 

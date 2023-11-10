@@ -260,7 +260,7 @@ RSpec.describe Ci::Build, 'TokenAuthenticatable' do
       it 'persists a new token' do
         build.save!
 
-        build.token.yield_self do |previous_token|
+        build.token.then do |previous_token|
           build.reset_token!
 
           expect(build.token).not_to eq previous_token

@@ -13,9 +13,9 @@ RSpec.describe NamespaceFileUploader do
   it_behaves_like 'builds correct paths' do
     let(:patterns) do
       {
-        store_dir: %r[uploads/-/system/namespace/\d+],
+        store_dir: %r{uploads/-/system/namespace/\d+},
         upload_path: identifier,
-        absolute_path: %r[#{CarrierWave.root}/uploads/-/system/namespace/\d+/#{identifier}]
+        absolute_path: %r{#{CarrierWave.root}/uploads/-/system/namespace/\d+/#{identifier}}
       }
     end
   end
@@ -30,7 +30,7 @@ RSpec.describe NamespaceFileUploader do
     it_behaves_like 'builds correct paths' do
       let(:patterns) do
         {
-          store_dir: %r[namespace/\d+/\h+],
+          store_dir: %r{namespace/\d+/\h+},
           upload_path: identifier
         }
       end

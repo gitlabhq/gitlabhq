@@ -359,7 +359,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'has an association with processable CI/CD entities' do
-      pipeline.processables.pluck('name').yield_self do |processables|
+      pipeline.processables.pluck('name').then do |processables|
         expect(processables).to match_array %w[build bridge]
       end
     end

@@ -11,10 +11,10 @@ RSpec.describe DesignManagement::DesignV432x230Uploader do
   subject(:uploader) { described_class.new(model, :image_v432x230) }
 
   it_behaves_like 'builds correct paths',
-    store_dir: %r[uploads/-/system/design_management/action/image_v432x230/],
-    upload_path: %r[uploads/-/system/design_management/action/image_v432x230/],
-    relative_path: %r[uploads/-/system/design_management/action/image_v432x230/],
-    absolute_path: %r[#{CarrierWave.root}/uploads/-/system/design_management/action/image_v432x230/]
+    store_dir: %r{uploads/-/system/design_management/action/image_v432x230/},
+    upload_path: %r{uploads/-/system/design_management/action/image_v432x230/},
+    relative_path: %r{uploads/-/system/design_management/action/image_v432x230/},
+    absolute_path: %r{#{CarrierWave.root}/uploads/-/system/design_management/action/image_v432x230/}
 
   context 'object_store is REMOTE' do
     before do
@@ -24,9 +24,9 @@ RSpec.describe DesignManagement::DesignV432x230Uploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like 'builds correct paths',
-      store_dir: %r[design_management/action/image_v432x230/],
-      upload_path: %r[design_management/action/image_v432x230/],
-      relative_path: %r[design_management/action/image_v432x230/]
+      store_dir: %r{design_management/action/image_v432x230/},
+      upload_path: %r{design_management/action/image_v432x230/},
+      relative_path: %r{design_management/action/image_v432x230/}
   end
 
   describe "#migrate!" do

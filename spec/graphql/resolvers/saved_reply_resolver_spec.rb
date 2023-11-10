@@ -8,30 +8,18 @@ RSpec.describe Resolvers::SavedReplyResolver, feature_category: :user_profile do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:saved_reply) { create(:saved_reply, user: current_user) }
 
-  describe 'feature flag disabled' do
-    before do
-      stub_feature_flags(saved_replies: false)
-    end
-
-    it 'does not return saved reply' do
-      expect(resolve_saved_reply).to be_nil
-    end
+  it 'returns users saved reply' do
+    expect(resolve_saved_reply).to eq(saved_reply)
   end
 
-  describe 'feature flag enabled' do
-    it 'returns users saved reply' do
-      expect(resolve_saved_reply).to eq(saved_reply)
-    end
+  it 'returns nil when saved reply is not found' do
+    expect(resolve_saved_reply({ id: 'gid://gitlab/Users::SavedReply/100' })).to be_nil
+  end
 
-    it 'returns nil when saved reply is not found' do
-      expect(resolve_saved_reply({ id: 'gid://gitlab/Users::SavedReply/100' })).to be_nil
-    end
+  it 'returns nil when saved reply is another users' do
+    other_users_saved_reply = create(:saved_reply, user: create(:user))
 
-    it 'returns nil when saved reply is another users' do
-      other_users_saved_reply = create(:saved_reply, user: create(:user))
-
-      expect(resolve_saved_reply({ id: other_users_saved_reply.to_global_id })).to be_nil
-    end
+    expect(resolve_saved_reply({ id: other_users_saved_reply.to_global_id })).to be_nil
   end
 
   def resolve_saved_reply(args = { id: saved_reply.to_global_id })

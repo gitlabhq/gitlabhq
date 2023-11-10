@@ -57,7 +57,7 @@ module DbCleaner
   end
 
   def recreate_all_databases!
-    start = Gitlab::Metrics::System.monotonic_time
+    start = ::Gitlab::Metrics::System.monotonic_time
 
     puts "Recreating the database"
 
@@ -81,7 +81,7 @@ module DbCleaner
     Gitlab::Database::Partitioning.sync_partitions_ignore_db_error
     stub_feature_flags(disallow_database_ddl_feature_flags: disable_ddl_was)
 
-    puts "Databases re-creation done in #{Gitlab::Metrics::System.monotonic_time - start}"
+    puts "Databases re-creation done in #{::Gitlab::Metrics::System.monotonic_time - start}"
   end
 
   def recreate_databases_and_seed_if_needed

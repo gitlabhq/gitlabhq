@@ -23,7 +23,7 @@ module Sidebars
 
         override :render?
         def render?
-          !!context.current_user && saved_replies_enabled?
+          !!context.current_user
         end
 
         override :active_routes

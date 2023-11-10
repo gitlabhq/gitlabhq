@@ -10,7 +10,7 @@ RSpec.describe Projects::RecordTargetPlatformsWorker, feature_category: :activat
   let_it_be(:project) { create(:project, :repository, detected_repository_languages: true) }
 
   let(:worker) { described_class.new }
-  let(:service_result) { %w(ios osx watchos) }
+  let(:service_result) { %w[ios osx watchos] }
   let(:service_double) { instance_double(Projects::RecordTargetPlatformsService, execute: service_result) }
   let(:lease_key) { "#{described_class.name.underscore}:#{project.id}" }
   let(:lease_timeout) { described_class::LEASE_TIMEOUT }

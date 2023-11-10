@@ -119,7 +119,7 @@ RSpec.describe 'sentry errors requests', feature_category: :error_tracking do
     end
 
     let(:error_data) { graphql_data.dig('project', 'sentryErrors', 'errors', 'nodes') }
-    let(:pagination_data) {  graphql_data.dig('project', 'sentryErrors', 'errors', 'pageInfo') }
+    let(:pagination_data) { graphql_data.dig('project', 'sentryErrors', 'errors', 'pageInfo') }
 
     it_behaves_like 'a working graphql query' do
       before do

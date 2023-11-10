@@ -83,13 +83,13 @@ class WebHookService
 
     log_execution(
       response: response,
-      execution_duration: Gitlab::Metrics::System.monotonic_time - start_time
+      execution_duration: ::Gitlab::Metrics::System.monotonic_time - start_time
     )
 
     ServiceResponse.success(message: response.body, payload: { http_status: response.code })
   rescue *Gitlab::HTTP::HTTP_ERRORS,
          Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError => e
-    execution_duration = Gitlab::Metrics::System.monotonic_time - start_time
+    execution_duration = ::Gitlab::Metrics::System.monotonic_time - start_time
     error_message = e.to_s
 
     log_execution(

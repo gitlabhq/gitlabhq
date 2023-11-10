@@ -290,6 +290,7 @@ module MergeRequestsHelper
     data = {
       iid: @merge_request.iid,
       projectPath: @project.full_path,
+      sourceProjectPath: @merge_request.source_project_path,
       title: markdown_field(@merge_request, :title),
       isFluidLayout: fluid_layout.to_s,
       tabs: [

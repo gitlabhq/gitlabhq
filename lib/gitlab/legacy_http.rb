@@ -35,8 +35,8 @@ module Gitlab
       read_total_timeout = options.fetch(:timeout, Gitlab::HTTP::DEFAULT_READ_TOTAL_TIMEOUT)
 
       httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
-        start_time ||= Gitlab::Metrics::System.monotonic_time
-        elapsed = Gitlab::Metrics::System.monotonic_time - start_time
+        start_time ||= ::Gitlab::Metrics::System.monotonic_time
+        elapsed = ::Gitlab::Metrics::System.monotonic_time - start_time
 
         if elapsed > read_total_timeout
           raise Gitlab::HTTP::ReadTotalTimeout, "Request timed out after #{elapsed} seconds"

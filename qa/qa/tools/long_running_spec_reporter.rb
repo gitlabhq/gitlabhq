@@ -41,7 +41,7 @@ module QA
       def mean_runtime
         @mean_runtime ||= latest_report.values
           .select { |v| v < RUNTIME_THRESHOLD }
-          .yield_self { |runtimes| runtimes.sum(0.0) / runtimes.length }
+          .then { |runtimes| runtimes.sum(0.0) / runtimes.length }
       end
 
       # Spec files exceeding runtime threshold

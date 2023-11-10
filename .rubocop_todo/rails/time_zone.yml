@@ -1,11 +1,11 @@
 ---
 # Cop supports --autocorrect.
 Rails/TimeZone:
+  Details: grace period
   Exclude:
     - 'ee/lib/delay.rb'
     - 'ee/lib/gitlab/elastic/indexer.rb'
     - 'ee/lib/gitlab/geo/event_gap_tracking.rb'
-    - 'ee/lib/gitlab/geo/log_cursor/events/repository_updated_event.rb'
     - 'ee/lib/gitlab/geo/log_cursor/logger.rb'
     - 'ee/lib/gitlab/geo/oauth/login_state.rb'
     - 'ee/spec/lib/gitlab/geo/base_request_spec.rb'
@@ -36,13 +36,11 @@ Rails/TimeZone:
     - 'lib/gitlab/popen.rb'
     - 'lib/gitlab/prometheus_client.rb'
     - 'lib/gitlab/task_helpers.rb'
-    - 'lib/gitlab/x509/tag.rb'
     - 'lib/grafana/time_window.rb'
     - 'lib/json_web_token/token.rb'
     - 'lib/object_storage/direct_upload.rb'
     - 'lib/quality/seeders/issues.rb'
     - 'lib/tasks/gitlab/assets.rake'
-    - 'lib/tasks/gitlab/backup.rake'
     - 'lib/tasks/gitlab/cleanup.rake'
     - 'lib/tasks/gitlab/list_repos.rake'
     - 'spec/lib/api/helpers_spec.rb'
@@ -78,7 +76,6 @@ Rails/TimeZone:
     - 'spec/lib/gitlab/graphql_logger_spec.rb'
     - 'spec/lib/gitlab/graphs/commits_spec.rb'
     - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
-    - 'spec/lib/gitlab/json_logger_spec.rb'
     - 'spec/lib/gitlab/lfs_token_spec.rb'
     - 'spec/lib/gitlab/log_timestamp_formatter_spec.rb'
     - 'spec/lib/gitlab/middleware/rails_queue_duration_spec.rb'
@@ -87,3 +84,4 @@ Rails/TimeZone:
     - 'spec/lib/gitlab/x509/signature_spec.rb'
     - 'spec/lib/grafana/time_window_spec.rb'
     - 'spec/lib/json_web_token/hmac_token_spec.rb'
+    - 'spec/models/merge_request_diff_commit_spec.rb'

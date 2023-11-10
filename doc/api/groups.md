@@ -1340,6 +1340,10 @@ Example response:
 }
 ```
 
+| Attribute | Type            | Required | Description |
+| --------- | --------------- | -------- | ----------- |
+| `expires_at`      | date | no      | Personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+
 ### Rotate a Personal Access Token for Service Account User
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
@@ -1484,6 +1488,7 @@ PUT /groups/:id/hooks/:hook_id
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
+| `service_access_tokens_expiration_enforced` | boolean | no | Require service account access tokens to have an expiration date. |
 | `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 
 ### Delete group hook

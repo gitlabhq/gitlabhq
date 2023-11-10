@@ -88,7 +88,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     end
 
     def ensure_valid_target!(target)
-      raise "Target must be one of [puma,sidekiq]" unless %w(puma sidekiq).include?(target)
+      raise "Target must be one of [puma,sidekiq]" unless %w[puma sidekiq].include?(target)
     end
   end
 

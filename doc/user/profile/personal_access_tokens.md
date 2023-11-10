@@ -137,6 +137,42 @@ Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC.
 - In GitLab Ultimate, administrators can
   [limit the allowable lifetime of access tokens](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens). If not set, the maximum allowable lifetime of a personal access token is 365 days.
 - In GitLab Free and Premium, the maximum allowable lifetime of a personal access token is 365 days.
+- If you do not set an expiry date when creating a personal access token, the expiry date is set to the
+  [maximum allowed lifetime for the token](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
+  If the maximum allowed lifetime is not set, the default expiry date is 365 days from the date of creation.
+
+### Service Accounts
+
+You can [create a personal access token for a service account](../../api/groups.md#create-personal-access-token-for-service-account-user) with no expiry date.
+
+NOTE:
+Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.
+
+#### GitLab.com
+
+Prerequisite:
+
+- You must have the Owner role in the top-level group.
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Permissions and group features**.
+1. Clear the **Service account token expiration** checkbox.
+
+You can now create personal access tokens for a service account user with no expiry date.
+
+#### Self-managed GitLab
+
+Prerequisite:
+
+- You must be an administrator for your self-managed instance.
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Clear the **Service account token expiration** checkbox.
+
+You can now create personal access tokens for a service account user with no expiry date.
 
 ## Create a personal access token programmatically **(FREE SELF)**
 

@@ -14,33 +14,17 @@ RSpec.describe Mutations::SavedReplies::Create do
       mutation.resolve(**mutation_arguments)
     end
 
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(saved_replies: false)
-      end
+    context 'when service fails to create a new saved reply' do
+      let(:mutation_arguments) { { name: '', content: '' } }
 
-      it 'raises Gitlab::Graphql::Errors::ResourceNotAvailable' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled')
-      end
+      it { expect(subject[:saved_reply]).to be_nil }
+      it { expect(subject[:errors]).to match_array(["Content can't be blank", "Name can't be blank"]) }
     end
 
-    context 'when feature is enabled for current user' do
-      before do
-        stub_feature_flags(saved_replies: current_user)
-      end
-
-      context 'when service fails to create a new saved reply' do
-        let(:mutation_arguments) { { name: '', content: '' } }
-
-        it { expect(subject[:saved_reply]).to be_nil }
-        it { expect(subject[:errors]).to match_array(["Content can't be blank", "Name can't be blank"]) }
-      end
-
-      context 'when service successfully creates a new saved reply' do
-        it { expect(subject[:saved_reply].name).to eq(mutation_arguments[:name]) }
-        it { expect(subject[:saved_reply].content).to eq(mutation_arguments[:content]) }
-        it { expect(subject[:errors]).to be_empty }
-      end
+    context 'when service successfully creates a new saved reply' do
+      it { expect(subject[:saved_reply].name).to eq(mutation_arguments[:name]) }
+      it { expect(subject[:saved_reply].content).to eq(mutation_arguments[:content]) }
+      it { expect(subject[:errors]).to be_empty }
     end
   end
 end

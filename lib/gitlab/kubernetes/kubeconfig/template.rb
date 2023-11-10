@@ -44,7 +44,7 @@ module Gitlab
             )
           end
           kubeconfig_yaml[:clusters].each do |cluster|
-            ca_pem = cluster.dig(:cluster, :'certificate-authority-data')&.yield_self do |data|
+            ca_pem = cluster.dig(:cluster, :'certificate-authority-data')&.then do |data|
               Base64.strict_decode64(data)
             end
 

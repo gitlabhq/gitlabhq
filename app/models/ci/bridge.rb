@@ -114,7 +114,7 @@ module Ci
         project = options&.dig(:trigger, :project)
         next unless project
 
-        scoped_variables.to_runner_variables.yield_self do |all_variables|
+        scoped_variables.to_runner_variables.then do |all_variables|
           ::ExpandVariables.expand(project, all_variables)
         end
       end
@@ -199,7 +199,7 @@ module Ci
       branch = options&.dig(:trigger, :branch)
       return unless branch
 
-      scoped_variables.to_runner_variables.yield_self do |all_variables|
+      scoped_variables.to_runner_variables.then do |all_variables|
         ::ExpandVariables.expand(branch, all_variables)
       end
     end

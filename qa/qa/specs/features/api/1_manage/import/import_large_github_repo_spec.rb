@@ -292,7 +292,7 @@ module QA
         fetch_github_objects unless only_stats_comparison
 
         import_status = -> {
-          imported_project.project_import_status.yield_self do |status|
+          imported_project.project_import_status.then do |status|
             @stats = status[:stats]&.slice(:fetched, :imported)
 
             # fail fast if import explicitly failed

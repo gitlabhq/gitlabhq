@@ -22,7 +22,7 @@ RSpec.describe MilestonesFinder do
     end
 
     it 'returns milestones for groups' do
-      result = described_class.new(group_ids: group.id,  state: 'all').execute
+      result = described_class.new(group_ids: group.id, state: 'all').execute
 
       expect(result).to contain_exactly(milestone_5, milestone_1, milestone_2)
     end

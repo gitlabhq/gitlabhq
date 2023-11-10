@@ -1,3 +1,4 @@
+-# rubocop: disable CodeReuse/ActiveRecord
 - add_to_breadcrumbs _("Users"), admin_users_path
 - breadcrumb_title @user.name
 - page_title _("Groups and projects"), @user.name, _("Users")
@@ -9,7 +10,7 @@
       = _('Groups')
     - c.with_body do
       %ul.hover-list
-        - @user.group_members.includes(:source).each do |group_member| # rubocop: disable CodeReuse/ActiveRecord
+        - @user.group_members.includes(:source).find_each do |group_member|
           - group = group_member.group
           %li.group_member
             %strong= link_to group.name, admin_group_path(group)
@@ -50,3 +51,4 @@
 
                     - if member.respond_to? :project
                       = link_button_to nil, project_project_member_path(project, member), data: { confirm: remove_member_message(member), confirm_btn_variant: 'danger' }, aria: { label: _('Remove') }, remote: true, method: :delete, class: 'gl-ml-3', title: _('Remove user from project'), variant: :danger, size: :small, icon: 'remove'
+-# rubocop: enable CodeReuse/ActiveRecord

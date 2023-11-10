@@ -23,10 +23,6 @@ module Mutations
         end
       end
 
-      def feature_enabled?
-        Feature.enabled?(:saved_replies, current_user)
-      end
-
       def find_object(id)
         GitlabSchema.find_by_gid(id)
       end

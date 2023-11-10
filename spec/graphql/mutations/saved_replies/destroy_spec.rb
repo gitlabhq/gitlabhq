@@ -13,34 +13,18 @@ RSpec.describe Mutations::SavedReplies::Destroy do
       mutation.resolve(id: saved_reply.to_global_id)
     end
 
-    context 'when feature is disabled' do
+    context 'when service fails to delete a new saved reply' do
       before do
-        stub_feature_flags(saved_replies: false)
+        saved_reply.destroy!
       end
 
       it 'raises Gitlab::Graphql::Errors::ResourceNotAvailable' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled')
+        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
 
-    context 'when feature is enabled for current user' do
-      before do
-        stub_feature_flags(saved_replies: current_user)
-      end
-
-      context 'when service fails to delete a new saved reply' do
-        before do
-          saved_reply.destroy!
-        end
-
-        it 'raises Gitlab::Graphql::Errors::ResourceNotAvailable' do
-          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-        end
-      end
-
-      context 'when service successfully deletes the saved reply' do
-        it { expect(subject[:errors]).to be_empty }
-      end
+    context 'when service successfully deletes the saved reply' do
+      it { expect(subject[:errors]).to be_empty }
     end
   end
 end

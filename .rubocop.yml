@@ -316,6 +316,11 @@ Rails/ActiveRecordCallbacksOrder:
     - app/models/**/*.rb
     - ee/app/models/**/*.rb
 
+# We disable this since network latency isn't an issue and schema changes execute in a few milliseconds.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136251#note_1638949892.
+Rails/BulkChangeTable:
+  Enabled: false
+
 Cop/DefaultScope:
   Enabled: true
 

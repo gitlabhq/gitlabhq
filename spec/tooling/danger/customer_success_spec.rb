@@ -17,53 +17,53 @@ RSpec.describe Tooling::Danger::CustomerSuccess do
     where do
       {
         'with data category changes to Ops and no Customer Success::Impact Check label' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['-data_category: cat1', '+data_category: operational'],
           customer_labeled: false,
           impacted: true,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with data category changes and Customer Success::Impact Check label' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml],
           changed_lines: ['-data_category: cat1', '+data_category: operational'],
           customer_labeled: true,
           impacted: false,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with metric file changes and no data category changes' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml],
           changed_lines: ['-product_stage: growth'],
           customer_labeled: false,
           impacted: false,
           impacted_files: []
         },
         'with data category changes from Ops' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['-data_category: operational', '+data_category: cat2'],
           customer_labeled: false,
           impacted: true,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with data category removed' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['-data_category: operational'],
           customer_labeled: false,
           impacted: true,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with data category added' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['+data_category: operational'],
           customer_labeled: false,
           impacted: true,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with data category in uppercase' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['+data_category: Operational'],
           customer_labeled: false,
           impacted: true,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         }
       }
     end

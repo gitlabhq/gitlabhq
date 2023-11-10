@@ -35,10 +35,10 @@ RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
     context 'with an existing project' do
       it 'refreshes the method caches' do
         expect_any_instance_of(Repository).to receive(:refresh_method_caches)
-          .with(%i(readme))
+          .with(%i[readme])
           .and_call_original
 
-        worker.perform(project.id, %w(readme))
+        worker.perform(project.id, %w[readme])
       end
 
       context 'with statistics disabled' do
@@ -52,7 +52,7 @@ RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
       end
 
       context 'with statistics' do
-        let(:statistics) { %w(repository_size) }
+        let(:statistics) { %w[repository_size] }
 
         it 'updates the project statistics' do
           expect(worker).to receive(:update_statistics)
@@ -69,16 +69,16 @@ RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
           allow(Gitlab::MarkupHelper).to receive(:plain?).and_return(true)
 
           expect_any_instance_of(Repository).to receive(:refresh_method_caches)
-                                                  .with(%i(readme))
+                                                  .with(%i[readme])
                                                   .and_call_original
-          worker.perform(project.id, %w(readme))
+          worker.perform(project.id, %w[readme])
         end
       end
     end
   end
 
   describe '#update_statistics' do
-    let(:statistics) { %w(repository_size) }
+    let(:statistics) { %w[repository_size] }
 
     context 'when a lease could not be obtained' do
       it 'does not update the project statistics' do
@@ -120,7 +120,7 @@ RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
   end
 
   it_behaves_like 'an idempotent worker' do
-    let(:job_args) { [project.id, %w(readme), %w(repository_size)] }
+    let(:job_args) { [project.id, %w[readme], %w[repository_size]] }
 
     it 'calls Projects::UpdateStatisticsService service twice', :clean_gitlab_redis_shared_state do
       expect(Projects::UpdateStatisticsService).to receive(:new).once.and_return(double(execute: true))

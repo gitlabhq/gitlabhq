@@ -17,95 +17,95 @@ RSpec.describe Tooling::Danger::Datateam do
     where do
       {
         'with structure.sql subtraction changes and no Data Warehouse::Impact Check label' => {
-          modified_files: %w(db/structure.sql app/models/user.rb),
+          modified_files: %w[db/structure.sql app/models/user.rb],
           changed_lines: ['-group_id bigint NOT NULL'],
           mr_labels: [],
           impacted: true,
-          impacted_files: %w(db/structure.sql)
+          impacted_files: %w[db/structure.sql]
         },
         'with structure.sql subtraction changes and Data Warehouse::Impact Check label' => {
-          modified_files: %w(db/structure.sql),
+          modified_files: %w[db/structure.sql],
           changed_lines: ['-group_id bigint NOT NULL)'],
           mr_labels: ['Data Warehouse::Impact Check'],
           impacted: false,
-          impacted_files: %w(db/structure.sql)
+          impacted_files: %w[db/structure.sql]
         },
         'with structure.sql addition changes and no Data Warehouse::Impact Check label' => {
-          modified_files: %w(db/structure.sql app/models/user.rb),
+          modified_files: %w[db/structure.sql app/models/user.rb],
           changed_lines: ['+group_id bigint NOT NULL'],
           mr_labels: [],
           impacted: false,
-          impacted_files: %w(db/structure.sql)
+          impacted_files: %w[db/structure.sql]
         },
         'with user model changes' => {
-          modified_files: %w(app/models/users.rb),
+          modified_files: %w[app/models/users.rb],
           changed_lines: ['+has_one :namespace'],
           mr_labels: [],
           impacted: false,
           impacted_files: []
         },
         'with perfomance indicator changes and no Data Warehouse::Impact Check label' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['+-gmau'],
           mr_labels: [],
           impacted: true,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with perfomance indicator changes and Data Warehouse::Impact Check label' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml],
           changed_lines: ['+-gmau'],
           mr_labels: ['Data Warehouse::Impact Check'],
           impacted: false,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with metric file changes and no performance indicator changes' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml],
           changed_lines: ['-product_stage: growth'],
           mr_labels: [],
           impacted: false,
           impacted_files: []
         },
         'with metric file changes and no performance indicator changes and other label' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml],
           changed_lines: ['-product_stage: growth'],
           mr_labels: ['type::maintenance'],
           impacted: false,
           impacted_files: []
         },
         'with performance indicator changes and other label' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['+-gmau'],
           mr_labels: ['type::maintenance'],
           impacted: true,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with performance indicator changes, Data Warehouse::Impact Check and other label' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['+-gmau'],
           mr_labels: ['type::maintenance', 'Data Warehouse::Impact Check'],
           impacted: false,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with performance indicator changes and other labels' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['+-gmau'],
           mr_labels: ['type::maintenance', 'Data Warehouse::Impacted'],
           impacted: false,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with metric status removed' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['+status: removed'],
           mr_labels: ['type::maintenance'],
           impacted: true,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         },
         'with metric status active' => {
-          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb],
           changed_lines: ['+status: active'],
           mr_labels: ['type::maintenance'],
           impacted: false,
-          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+          impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
         }
       }
     end
