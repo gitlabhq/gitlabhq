@@ -2764,7 +2764,6 @@ RSpec/ContextWording:
     - 'spec/services/wikis/create_attachment_service_spec.rb'
     - 'spec/services/work_items/create_service_spec.rb'
     - 'spec/services/work_items/parent_links/create_service_spec.rb'
-    - 'spec/support/helpers/cycle_analytics_helpers/test_generation.rb'
     - 'spec/support/shared_contexts/bulk_imports_requests_shared_context.rb'
     - 'spec/support/shared_contexts/changes_access_checks_shared_context.rb'
     - 'spec/support/shared_contexts/container_repositories_shared_context.rb'

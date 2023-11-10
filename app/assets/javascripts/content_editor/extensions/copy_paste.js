@@ -106,8 +106,16 @@ export default Extension.create({
 
     const handleCutAndCopy = (view, event) => {
       const slice = view.state.selection.content();
-      const gfmContent = this.options.serializer.serialize({ doc: slice.content });
+      let gfmContent = this.options.serializer.serialize({ doc: slice.content });
+      const gfmContentWithoutSingleTableCell = gfmContent.replace(
+        /^<table>[\s\n]*<tr>[\s\n]*<t[hd]>|<\/t[hd]>[\s\n]*<\/tr>[\s\n]*<\/table>[\s\n]*$/gim,
+        '',
+      );
+      const containsSingleTableCell = !/<t[hd]>/.test(gfmContentWithoutSingleTableCell);
 
+      if (containsSingleTableCell) {
+        gfmContent = gfmContentWithoutSingleTableCell;
+      }
       const documentFragment = DOMSerializer.fromSchema(view.state.schema).serializeFragment(
         slice.content,
       );

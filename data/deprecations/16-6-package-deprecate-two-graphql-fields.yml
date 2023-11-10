@@ -1,0 +1,13 @@
+- title: "GraphQL: deprecate support for `canDestroy` and `canDelete`"
+  announcement_milestone: "16.6"
+  removal_milestone: "17.0"
+  breaking_change: true
+  reporter: trizzi
+  stage: Package
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390754
+  body: |
+    The Package Registry user interface relies on the GitLab GraphQL API. To make it easy for everyone to contribute, it's important that the frontend is coded consistently across all GitLab product areas. Before GitLab 16.6, however, the Package Registry UI handled permissions differently from other areas of the product.
+
+    In 16.6, we added a new `UserPermissions` field under the `Types::PermissionTypes::Package` type to align the Package Registry with the rest of GitLab. This new field replaces the `canDestroy` field under the `Package`, `PackageBase`, and `PackageDetailsType` types. It also replaces the field `canDelete` for `ContainerRepository`, `ContainerRepositoryDetails`, and `ContainerRepositoryTag`. In GitLab 17.0, the `canDestroy` and `canDelete` fields will be removed.
+
+    This is a breaking change that will be completed in 17.0.

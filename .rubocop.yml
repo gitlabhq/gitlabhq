@@ -1092,3 +1092,8 @@ Cop/ExperimentsTestCoverage:
     - 'lib/**/*'
     - 'ee/app/**/*'
     - 'ee/lib/**/*'
+
+RSpec/UselessDynamicDefinition:
+  Exclude:
+    - 'spec/factories/**/*'
+    - 'ee/spec/factories/**/*'

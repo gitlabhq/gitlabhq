@@ -9,6 +9,10 @@ import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import ListItem from '~/content_editor/extensions/list_item';
 import Italic from '~/content_editor/extensions/italic';
+import Table from '~/content_editor/extensions/table';
+import TableCell from '~/content_editor/extensions/table_cell';
+import TableRow from '~/content_editor/extensions/table_row';
+import TableHeader from '~/content_editor/extensions/table_header';
 import { VARIANT_DANGER } from '~/alert';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { ALERT_EVENT } from '~/content_editor/constants';
@@ -65,6 +69,10 @@ describe('content_editor/extensions/copy_paste', () => {
         Heading,
         BulletList,
         ListItem,
+        Table,
+        TableCell,
+        TableRow,
+        TableHeader,
         CopyPaste.configure({ renderMarkdown, eventHub, serializer: new MarkdownSerializer() }),
       ],
     });
@@ -164,6 +172,40 @@ describe('content_editor/extensions/copy_paste', () => {
 
     it('modifies the document', () => {
       expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc().toJSON());
+    });
+  });
+
+  describe('when copying content with a single table cell', () => {
+    it('sets the clipboard data properly', () => {
+      const event = buildClipboardEvent({ eventName: 'copy' });
+
+      tiptapEditor.commands.insertContent('<table><tr><td>Cell 1</td></tr></table>');
+      tiptapEditor.commands.selectAll();
+      tiptapEditor.view.dispatchEvent(event);
+
+      expect(event.clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', 'Cell 1');
+    });
+  });
+
+  describe('when copying content with a table with multiple cells', () => {
+    it('sets the clipboard data properly', () => {
+      const event = buildClipboardEvent({ eventName: 'copy' });
+
+      tiptapEditor.commands.insertContent('<table><tr><td>Cell 1</td><td>Cell 2</td></tr></table>');
+      tiptapEditor.commands.selectAll();
+      tiptapEditor.view.dispatchEvent(event);
+
+      expect(event.clipboardData.setData).toHaveBeenCalledWith(
+        'text/x-gfm',
+        `<table>
+<tr>
+<td>Cell 1</td>
+<td>Cell 2</td>
+</tr>
+</table>
+
+`,
+      );
     });
   });
 

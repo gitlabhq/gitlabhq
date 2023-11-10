@@ -405,7 +405,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/merge_trains/refresh_worker.rb'
     - 'ee/app/workers/namespaces/sync_namespace_name_worker.rb'
     - 'ee/app/workers/new_epic_worker.rb'
-    - 'ee/app/workers/package_metadata/sync_worker.rb'
     - 'ee/app/workers/personal_access_tokens/groups/policy_worker.rb'
     - 'ee/app/workers/personal_access_tokens/instance/policy_worker.rb'
     - 'ee/app/workers/projects/register_suggested_reviewers_project_worker.rb'

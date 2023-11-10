@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe User, feature_category: :system_access do
-  User::USER_TYPES.keys.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition
+  User::USER_TYPES.each_key do |type| # rubocop:disable RSpec/UselessDynamicDefinition -- `type` used in `let`
     let_it_be(type) { create(:user, username: type, user_type: type) }
   end
   let(:bots) { User::BOT_USER_TYPES.map { |type| public_send(type) } }

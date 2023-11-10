@@ -14,7 +14,7 @@ module Explore
     private
 
     def check_feature_flag
-      render_404 unless Feature.enabled?(:global_ci_catalog)
+      render_404 unless Feature.enabled?(:global_ci_catalog, current_user)
     end
   end
 end

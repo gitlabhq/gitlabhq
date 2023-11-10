@@ -182,13 +182,15 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
       context 'without authors or description' do
         %i[authors description].each do |property|
-          let(:metadata) { { package_name: package_name, package_version: package_version, property => nil } }
+          context "for #{property}" do
+            let(:metadata) { { package_name: package_name, package_version: package_version, property => nil } }
 
-          before do
-            allow(service).to receive(:metadata).and_return(metadata)
+            before do
+              allow(service).to receive(:metadata).and_return(metadata)
+            end
+
+            it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: described_class::INVALID_METADATA_ERROR_MESSAGE
           end
-
-          it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: described_class::INVALID_METADATA_ERROR_MESSAGE
         end
       end
     end

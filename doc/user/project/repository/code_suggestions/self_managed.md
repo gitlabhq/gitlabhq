@@ -164,7 +164,7 @@ A self-managed GitLab instance does not generate the code suggestion. After succ
 authentication to the self-managed instance, a token is generated.
 
 The IDE/editor then uses this token to securely transmit data directly to
-GitLab.com's Code Suggestions service for processing.
+GitLab.com's Code Suggestions service via the [Cloud Connector gateway service](../../../../architecture/blueprints/cloud_connector/index.md) for processing.
 
 The Code Suggestions service then securely returns an AI-generated code suggestion.
 

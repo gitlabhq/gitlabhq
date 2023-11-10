@@ -177,9 +177,8 @@ Prerequisites:
 
 - Owner role for a top-level group.
 
-Users with the Owner role for a group can update streaming destinations' custom HTTP headers using the
-`auditEventsStreamingHeadersUpdate` mutation type. You can retrieve the custom HTTP headers ID
-by [listing all the custom HTTP headers](#list-streaming-destinations) for the group.
+To update streaming destinations for a group, use the `externalAuditEventDestinationUpdate` mutation type. You can retrieve the destinations ID
+by [listing all the streaming destinations](#list-streaming-destinations) for the group.
 
 ```graphql
 mutation {
@@ -205,6 +204,24 @@ Streaming destination is updated if:
 
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
+
+Users with the Owner role for a group can update streaming destinations' custom HTTP headers using the
+`auditEventsStreamingHeadersUpdate` mutation type. You can retrieve the custom HTTP headers ID
+by [listing all the custom HTTP headers](#list-streaming-destinations) for the group.
+
+```graphql
+mutation {
+  auditEventsStreamingHeadersUpdate(input: { headerId: "gid://gitlab/AuditEvents::Streaming::Header/2", key: "new-key", value: "new-value", active: false }) {
+    errors
+    header {
+      id
+      key
+      value
+      active
+    }
+  }
+}
+```
 
 Group owners can remove an HTTP header using the GraphQL `auditEventsStreamingHeadersDestroy` mutation. You can retrieve the header ID
 by [listing all the custom HTTP headers](#list-streaming-destinations) for the group.

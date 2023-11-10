@@ -638,6 +638,24 @@ In GitLab 17.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting`
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL: deprecate support for `canDestroy` and `canDelete`
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390754).
+</div>
+
+The Package Registry user interface relies on the GitLab GraphQL API. To make it easy for everyone to contribute, it's important that the frontend is coded consistently across all GitLab product areas. Before GitLab 16.6, however, the Package Registry UI handled permissions differently from other areas of the product.
+
+In 16.6, we added a new `UserPermissions` field under the `Types::PermissionTypes::Package` type to align the Package Registry with the rest of GitLab. This new field replaces the `canDestroy` field under the `Package`, `PackageBase`, and `PackageDetailsType` types. It also replaces the field `canDelete` for `ContainerRepository`, `ContainerRepositoryDetails`, and `ContainerRepositoryTag`. In GitLab 17.0, the `canDestroy` and `canDelete` fields will be removed.
+
+This is a breaking change that will be completed in 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### HashiCorp Vault integration will no longer use CI_JOB_JWT by default
 
 <div class="deprecation-notes">

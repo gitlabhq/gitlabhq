@@ -203,7 +203,7 @@ RSpec.describe Packages::GroupPackagesFinder do
     end
 
     context 'group has package of all types' do
-      package_types.each do |pt| # rubocop:disable RSpec/UselessDynamicDefinition
+      package_types.each do |pt| # rubocop:disable RSpec/UselessDynamicDefinition -- `pt` used in `let`
         let_it_be("package_#{pt}") { create("#{pt}_package", project: project) }
       end
 

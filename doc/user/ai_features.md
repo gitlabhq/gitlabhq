@@ -7,12 +7,16 @@ type: index, reference
 
 # GitLab Duo
 
+> - [First GitLab Duo features introduced](https://about.gitlab.com/blog/2023/05/03/gitlab-ai-assisted-features/) in GitLab 16.0.
+> - [Removed third-party AI setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136144) in GitLab 16.6.
+> - [Removed support for OpenAI from all GitLab Duo features](https://gitlab.com/groups/gitlab-org/-/epics/10964) in GitLab 16.6.
+
 GitLab is creating AI-assisted features across our DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle.
 
 | Feature | Purpose | Large Language Model | Current availability | Maturity |
 |-|-|-|-|-|
 | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | Assists in creating faster and higher-quality reviews by automatically suggesting reviewers for your merge request. | GitLab creates a machine learning model for each project, which is used to generate reviewers <br><br> [View the issue](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10) | SaaS only <br><br> Ultimate tier | [Generally Available (GA)](../policy/experiment-beta-support.md#generally-available-ga) |
-| [Code Suggestions](project/repository/code_suggestions/index.md) | Helps you write code more efficiently by viewing code suggestions as you type. | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion) and Anthropic [`Claude-instant-1.2`](https://docs.anthropic.com/claude/reference/selecting-a-model) <br><br> For Code Generation: Vertex AI Codey [`code-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-generation) and Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model)| [SaaS: All tiers](project/repository/code_suggestions/saas.md) <br><br> [Self-managed: Premium and Ultimate with Cloud Licensing](project/repository/code_suggestions/self_managed.md) | [Beta](../policy/experiment-beta-support.md#beta) |
+| [Code Suggestions](project/repository/code_suggestions/index.md) | Helps you write code more efficiently by viewing code suggestions as you type. | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion) <br><br> For Code Generation: Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model)| [SaaS: All tiers](project/repository/code_suggestions/saas.md) <br><br> [Self-managed: Premium and Ultimate with Cloud Licensing](project/repository/code_suggestions/self_managed.md) | [Beta](../policy/experiment-beta-support.md#beta) |
 | [Vulnerability summary](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code. | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) <br><br> Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) if degraded performance | SaaS only <br><br> Ultimate tier | [Beta](../policy/experiment-beta-support.md#beta) |
 | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | Helps you understand code by explaining it in English language. | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-chat) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [GitLab Duo Chat](gitlab_duo_chat.md) | Process and generate text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) <br><br> Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
@@ -24,7 +28,7 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 | [Test generation](project/merge_requests/ai_in_merge_requests.md#generate-suggested-tests-in-merge-requests) | Automates repetitive tasks and helps catch bugs early. | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Helps you discover or recall Git commands when and where you need them. | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-chat) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
 | [Root cause analysis](#root-cause-analysis) | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
-| [Issue description generation](#summarize-an-issue-with-issue-description-generation) | Generate issue descriptions. | OpenAI's [`GPT-3`](https://platform.openai.com/docs/models/gpt-3) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Issue description generation](#summarize-an-issue-with-issue-description-generation) | Generate issue descriptions. | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
 
 ## Enable AI/ML features
 
@@ -184,7 +188,7 @@ For details about this Experimental feature, see [GitLab Duo Chat](gitlab_duo_ch
 
 ## Data usage
 
-GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function.
+GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function. GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Models](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview#genai-models) and [Anthropic Claude](https://www.anthropic.com/product).
 
 ### Progressive enhancement
 
@@ -194,11 +198,38 @@ These features are designed as a progressive enhancement to existing GitLab feat
 
 These features are in a variety of [feature support levels](../policy/experiment-beta-support.md#beta). Due to the nature of these features, there may be high demand for usage which may cause degraded performance or unexpected downtime of the feature. We have built these features to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable **beta and experimental** features for any or all customers at any time at our discretion.
 
-## Third party services
-
 ### Data privacy
 
-Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use to provide these features.
+GitLab Duo AI features are powered by a generative AI models. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use to provide these features.
+
+### Data retention
+
+The below reflects the current retention periods of GitLab AI model [Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
+
+- Anthropic retains input and output data for 30 days.
+- Google discards input and output data immediately after the output is provided. Google currently does not store data for abuse monitoring.
+
+All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations. 
+
+### Telemetry
+
+GitLab Duo collects aggregated or de-identified first-party usage data through our [Snowplow collector](https://about.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
+
+- Number of unique users
+- Number of unique instances
+- Prompt lengths
+- Model used
+- Status code responses
+- API responses times
+
+### Training data
+
+GitLab does not train generative AI models based on private (non-public) data. The vendors we work with also do not train models based on private data.
+
+For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
+
+- Google Vertex AI Models APIs [data governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
+- Anthropic Claude's [constitution](https://www.anthropic.com/index/claudes-constitution).
 
 ### Model accuracy and quality
 

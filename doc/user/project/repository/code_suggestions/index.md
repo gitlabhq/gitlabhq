@@ -17,6 +17,11 @@ Beta users should read about the [known limitations](#known-limitations). We loo
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
+Code Suggestions supports two distinct types of interactions:
+
+- Code Completion, which suggests completions the current line you are typing. These suggestions are usually low latency.
+- Code Generation, which generates code based on a natural language code comment block. Generating code can exceed multiple seconds.
+
 GitLab Duo Code Suggestions are available:
 
 - On [self-managed](self_managed.md) and [SaaS](saas.md).
@@ -31,7 +36,7 @@ GitLab Duo Code Suggestions are available:
 </figure>
 
 During Beta, usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
-Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage).
+Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage). As Code Suggestions matures to General Availibility it will be governed by our [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/). 
 
 ## Use Code Suggestions
 
@@ -120,9 +125,11 @@ This improvement should result in:
 Code Suggestions is powered by a generative AI model.
 
 Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
-This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The gateway calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
+This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
 
 GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Code Models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) and [Anthropic Claude](https://www.anthropic.com/product) for Code Suggestions.
+
+[View data retention policies](../../../ai_features.md#data-retention).
 
 ### Telemetry
 
