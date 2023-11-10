@@ -1,5 +1,4 @@
 <script>
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 import EmailParticipantsWarning from './email_participants_warning.vue';
 import AttachmentsWarning from './attachments_warning.vue';
@@ -12,7 +11,6 @@ export default {
     EmailParticipantsWarning,
     NoteableWarning,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     noteableData: {
       type: Object,
@@ -56,11 +54,7 @@ export default {
       return this.emailParticipants.length && !this.isInternalNote;
     },
     showAttachmentWarning() {
-      return (
-        this.glFeatures.serviceDeskNewNoteEmailNativeAttachments &&
-        this.showEmailParticipantsWarning &&
-        this.containsLink
-      );
+      return this.showEmailParticipantsWarning && this.containsLink;
     },
   },
 };

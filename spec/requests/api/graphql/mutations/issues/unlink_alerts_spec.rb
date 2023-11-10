@@ -21,19 +21,21 @@ RSpec.describe 'Unlink alert from an incident', feature_category: :incident_mana
       alert_id: alert_to_unlink.to_global_id.to_s
     }
 
-    graphql_mutation(:issue_unlink_alert, variables,
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       issue {
-                         iid
-                         alertManagementAlerts {
-                           nodes {
-                             id
-                           }
-                         }
-                       }
-                     QL
+    graphql_mutation(
+      :issue_unlink_alert,
+      variables,
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        issue {
+          iid
+          alertManagementAlerts {
+            nodes {
+              id
+            }
+          }
+        }
+      QL
     )
   end
 

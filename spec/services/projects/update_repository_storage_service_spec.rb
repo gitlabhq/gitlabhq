@@ -79,6 +79,30 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
         end
       end
 
+      context 'when touch raises an exception' do
+        let(:exception) { RuntimeError.new('Boom') }
+
+        it 'marks the storage move as failed and restores read-write access' do
+          allow(repository_storage_move).to receive(:container).and_return(project)
+
+          allow(project).to receive(:touch).and_wrap_original do
+            project.assign_attributes(updated_at: 1.second.ago)
+            raise exception
+          end
+
+          expect(project_repository_double).to receive(:replicate)
+            .with(project.repository.raw)
+          expect(project_repository_double).to receive(:checksum)
+            .and_return(checksum)
+
+          expect { subject.execute }.to raise_error(exception)
+          project.reload
+
+          expect(project).not_to be_repository_read_only
+          expect(repository_storage_move.reload).to be_failed
+        end
+      end
+
       context 'when the filesystems are the same' do
         before do
           expect(Gitlab::GitalyClient).to receive(:filesystem_id).twice.and_return(SecureRandom.uuid)

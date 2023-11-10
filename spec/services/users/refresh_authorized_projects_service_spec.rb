@@ -98,6 +98,13 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
       service.execute_without_lease
     end
 
+    it 'updates project_authorizations_recalculated_at', :freeze_time do
+      default_date = Time.zone.local('2010')
+      expect do
+        service.execute_without_lease
+      end.to change { user.project_authorizations_recalculated_at }.from(default_date).to(Time.zone.now)
+    end
+
     it 'returns a User' do
       expect(service.execute_without_lease).to be_an_instance_of(User)
     end

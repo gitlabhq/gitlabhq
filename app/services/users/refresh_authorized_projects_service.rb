@@ -72,6 +72,8 @@ module Users
         changes.remove_projects_for_user(user, remove)
       end.apply!
 
+      user.update!(project_authorizations_recalculated_at: Time.zone.now) if remove.any? || add.any?
+
       # Since we batch insert authorization rows, Rails' associations may get
       # out of sync. As such we force a reload of the User object.
       user.reset

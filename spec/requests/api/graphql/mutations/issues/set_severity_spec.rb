@@ -17,15 +17,17 @@ RSpec.describe 'Setting severity level of an incident', feature_category: :incid
       iid: incident.iid.to_s
     }
 
-    graphql_mutation(:issue_set_severity, variables.merge(input),
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       issue {
-                         iid
-                         severity
-                       }
-                     QL
+    graphql_mutation(
+      :issue_set_severity,
+      variables.merge(input),
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        issue {
+          iid
+          severity
+        }
+      QL
     )
   end
 

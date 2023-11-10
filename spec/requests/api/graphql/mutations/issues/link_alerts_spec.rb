@@ -19,19 +19,21 @@ RSpec.describe 'Link alerts to an incident', feature_category: :incident_managem
       alert_references: [alert1.to_reference, alert2.details_url]
     }
 
-    graphql_mutation(:issue_link_alerts, variables,
-                     <<-QL.strip_heredoc
-                       clientMutationId
-                       errors
-                       issue {
-                         iid
-                         alertManagementAlerts {
-                           nodes {
-                             iid
-                           }
-                         }
-                       }
-                     QL
+    graphql_mutation(
+      :issue_link_alerts,
+      variables,
+      <<-QL.strip_heredoc
+        clientMutationId
+        errors
+        issue {
+          iid
+          alertManagementAlerts {
+            nodes {
+              iid
+            }
+          }
+        }
+      QL
     )
   end
 

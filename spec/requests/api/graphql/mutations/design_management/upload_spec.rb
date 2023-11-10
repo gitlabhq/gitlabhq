@@ -36,10 +36,11 @@ RSpec.describe "uploading designs", feature_category: :design_management do
     end
 
     it 'returns an error' do
-      workhorse_post_with_file(api('/', current_user, version: 'graphql'),
-                               params: params,
-                               file_key: '1'
-                              )
+      workhorse_post_with_file(
+        api('/', current_user, version: 'graphql'),
+        params: params,
+        file_key: '1'
+      )
 
       expect(response).to have_attributes(
         code: eq('400'),

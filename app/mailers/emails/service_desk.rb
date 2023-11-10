@@ -227,8 +227,6 @@ module Emails
       # Filepaths we should replace in markdown content
       @uploads_as_attachments = []
 
-      return unless Feature.enabled?(:service_desk_new_note_email_native_attachments, @note.project)
-
       uploaders = find_uploaders_for(@note)
       return if uploaders.nil?
       return if uploaders.sum(&:size) > EMAIL_ATTACHMENTS_SIZE_LIMIT

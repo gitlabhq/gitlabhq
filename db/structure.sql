@@ -24346,6 +24346,7 @@ CREATE TABLE user_details (
     enterprise_group_associated_at timestamp with time zone,
     email_reset_offered_at timestamp with time zone,
     mastodon text DEFAULT ''::text NOT NULL,
+    project_authorizations_recalculated_at timestamp with time zone DEFAULT '2010-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
     CONSTRAINT check_466a25be35 CHECK ((char_length(twitter) <= 500)),
@@ -33208,8 +33209,6 @@ CREATE INDEX index_members_on_source_state_type_access_level_and_user_id ON memb
 CREATE INDEX index_members_on_user_id_and_access_level_requested_at_is_null ON members USING btree (user_id, access_level) WHERE (requested_at IS NULL);
 
 CREATE INDEX index_members_on_user_id_created_at ON members USING btree (user_id, created_at) WHERE ((ldap = true) AND ((type)::text = 'GroupMember'::text) AND ((source_type)::text = 'Namespace'::text));
-
-CREATE INDEX index_merge_request_assignees_on_merge_request_id ON merge_request_assignees USING btree (merge_request_id);
 
 CREATE UNIQUE INDEX index_merge_request_assignees_on_merge_request_id_and_user_id ON merge_request_assignees USING btree (merge_request_id, user_id);
 
