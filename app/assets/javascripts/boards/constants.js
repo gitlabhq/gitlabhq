@@ -132,6 +132,7 @@ export const listIssuablesQueries = {
     optimisticResponse: {
       assignees: { nodes: [], __typename: 'UserCoreConnection' },
       confidential: false,
+      closedAt: null,
       dueDate: null,
       emailsDisabled: false,
       hidden: false,

@@ -202,3 +202,6 @@ export const DETAILED_MERGE_STATUS = {
   CI_STILL_RUNNING: 'CI_STILL_RUNNING',
   EXTERNAL_STATUS_CHECKS: 'EXTERNAL_STATUS_CHECKS',
 };
+
+export const MT_SKIP_TRAIN = 'skip';
+export const MT_RESTART_TRAIN = 'restart';

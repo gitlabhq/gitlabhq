@@ -6432,6 +6432,9 @@ msgstr ""
 msgid "Are you sure you want to close this blocked issue?"
 msgstr ""
 
+msgid "Are you sure you want to continue?"
+msgstr ""
+
 msgid "Are you sure you want to delete %{name}?"
 msgstr ""
 
@@ -29755,6 +29758,12 @@ msgstr ""
 msgid "Merge in progress"
 msgstr ""
 
+msgid "Merge now and don't restart train"
+msgstr ""
+
+msgid "Merge now and restart train"
+msgstr ""
+
 msgid "Merge options"
 msgstr ""
 
@@ -29834,6 +29843,9 @@ msgid "Merge requests are a place to propose changes you've made to a project an
 msgstr ""
 
 msgid "Merge requests can't be merged if the status checks did not succeed or are still running."
+msgstr ""
+
+msgid "Merge train pipelines continue without the merged changes."
 msgstr ""
 
 msgid "Merge trains"
@@ -40658,6 +40670,9 @@ msgstr ""
 msgid "Restart Terminal"
 msgstr ""
 
+msgid "Restart merge train pipelines with the merged changes."
+msgstr ""
+
 msgid "Restore"
 msgstr ""
 
@@ -43950,6 +43965,9 @@ msgid "Select a group"
 msgstr ""
 
 msgid "Select a label"
+msgstr ""
+
+msgid "Select a merge moment"
 msgstr ""
 
 msgid "Select a milestone"
@@ -57550,6 +57568,12 @@ msgid "mrWidget|Merge failed."
 msgstr ""
 
 msgid "mrWidget|Merged by"
+msgstr ""
+
+msgid "mrWidget|Merging immediately is not recommended. The merged changes could cause pipeline failures on the target branch, and the changes will not be validated against the commits being added by the merge requests currently in the merge train. Read the %{linkStart}documentation%{linkEnd} for more information."
+msgstr ""
+
+msgid "mrWidget|Merging immediately isn't recommended as it may negatively impact the existing merge train. Read the %{linkStart}documentation%{linkEnd} for more information."
 msgstr ""
 
 msgid "mrWidget|Please restore it or use a different %{type} branch."

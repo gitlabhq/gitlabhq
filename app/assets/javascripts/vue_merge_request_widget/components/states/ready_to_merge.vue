@@ -1,10 +1,9 @@
 <script>
 import {
-  GlIcon,
   GlButton,
   GlButtonGroup,
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
   GlFormCheckbox,
   GlSprintf,
   GlLink,
@@ -32,6 +31,8 @@ import {
   MT_MERGE_STRATEGY,
   PIPELINE_FAILED_STATE,
   STATE_MACHINE,
+  MT_SKIP_TRAIN,
+  MT_RESTART_TRAIN,
 } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -127,13 +128,12 @@ export default {
     SquashBeforeMerge,
     CommitEdit,
     CommitMessageDropdown,
-    GlIcon,
     GlSprintf,
     GlLink,
     GlButton,
     GlButtonGroup,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlFormCheckbox,
     GlSkeletonLoader,
     MergeFailedPipelineConfirmationDialog,
@@ -144,6 +144,10 @@ export default {
     MergeTrainFailedPipelineConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_train_failed_pipeline_confirmation_dialog.vue'
+      ),
+    MergeTrainRestartTrainConfirmationDialog: () =>
+      import(
+        'ee_component/vue_merge_request_widget/components/merge_train_restart_train_confirmation_dialog.vue'
       ),
     AddedCommitMessage,
     RelatedLinks,
@@ -174,6 +178,10 @@ export default {
       squashCommitMessageIsTouched: false,
       isPipelineFailedModalVisibleMergeTrain: false,
       isPipelineFailedModalVisibleNormalMerge: false,
+      isMergeTrainBeingForceMerged: false,
+      mergeTrainMergeType: MT_RESTART_TRAIN,
+      skipMergeTrain: false,
+      mergeTrainsSkipAllowed: this.mr.mergeTrainsSkipAllowed,
       editCommitMessage: false,
     };
   },
@@ -325,6 +333,12 @@ export default {
         title: this.autoMergePopoverSettings.title,
       };
     },
+    isSkipMergeTrainAvailable() {
+      return this.mergeTrainsSkipAllowed && this.glFeatures.mergeTrainsSkipTrain;
+    },
+    displaySkipMergeTrainOptions() {
+      return this.shouldDisplayMergeImmediatelyDropdownOptions && this.isSkipMergeTrainAvailable;
+    },
   },
   watch: {
     'mr.state': function mrStateWatcher() {
@@ -389,6 +403,7 @@ export default {
         auto_merge_strategy: useAutoMerge ? this.preferredAutoMergeStrategy : undefined,
         should_remove_source_branch: this.removeSourceBranch === true,
         squash: this.squashBeforeMerge,
+        skip_merge_train: this.skipMergeTrain,
       };
 
       // If users can't alter the squash message (e.g. for 1-commit merge requests),
@@ -439,6 +454,17 @@ export default {
       } else {
         this.handleMergeButtonClick(false, true);
       }
+    },
+    handleMergeTrainMergeImmediatelyButtonClick(type) {
+      this.mergeTrainMergeType = type;
+      this.isMergeTrainBeingForceMerged = true;
+    },
+    processMergeTrain() {
+      if (this.mergeTrainMergeType === MT_SKIP_TRAIN) {
+        this.skipMergeTrain = true;
+      }
+
+      this.handleMergeButtonClick(false, true, true);
     },
     onMergeImmediatelyConfirmation() {
       this.handleMergeButtonClick(false, true, true);
@@ -503,6 +529,8 @@ export default {
     sourceDivergedFromTargetText: s__('mrWidget|The source branch is %{link} the target branch.'),
     divergedCommits: (count) => n__('%d commit behind', '%d commits behind', count),
   },
+  MT_SKIP_TRAIN,
+  MT_RESTART_TRAIN,
 };
 </script>
 
@@ -649,27 +677,53 @@ export default {
                   @click="handleMergeButtonClick(isAutoMergeAvailable)"
                   >{{ mergeButtonText }}</gl-button
                 >
-                <gl-dropdown
+                <gl-disclosure-dropdown
                   v-if="shouldShowMergeImmediatelyDropdown"
                   v-gl-tooltip.hover.focus="__('Select merge moment')"
                   :disabled="isMergeButtonDisabled"
                   variant="confirm"
+                  class="gl-mr-0"
                   data-testid="merge-immediately-dropdown"
+                  icon="chevron-down"
                   toggle-class="btn-icon js-merge-moment"
+                  :toggle-text="__('Select a merge moment')"
+                  text-sr-only
+                  no-caret
                 >
-                  <template #button-content>
-                    <gl-icon name="chevron-down" class="mr-0" />
-                    <span class="sr-only">{{ __('Select merge moment') }}</span>
-                  </template>
-                  <gl-dropdown-item
-                    icon-name="warning"
-                    button-class="accept-merge-request"
+                  <gl-disclosure-dropdown-item
+                    v-if="
+                      !shouldDisplayMergeImmediatelyDropdownOptions || !isSkipMergeTrainAvailable
+                    "
                     data-testid="merge-immediately-button"
-                    @click="handleMergeImmediatelyButtonClick"
+                    @action="handleMergeImmediatelyButtonClick"
                   >
-                    {{ __('Merge immediately') }}
-                  </gl-dropdown-item>
-                </gl-dropdown>
+                    <template #list-item> {{ __('Merge immediately') }} </template>
+                  </gl-disclosure-dropdown-item>
+                  <gl-disclosure-dropdown-item
+                    v-if="displaySkipMergeTrainOptions"
+                    data-testid="mt-merge-now-restart-button"
+                    @action="handleMergeTrainMergeImmediatelyButtonClick($options.MT_RESTART_TRAIN)"
+                  >
+                    <template #list-item>
+                      <strong>{{ __(`Merge now and restart train`) }}</strong>
+                      <p class="gl-text-gray-400 gl-font-sm gl-mb-0">
+                        {{ __('Restart merge train pipelines with the merged changes.') }}
+                      </p>
+                    </template>
+                  </gl-disclosure-dropdown-item>
+                  <gl-disclosure-dropdown-item
+                    v-if="displaySkipMergeTrainOptions"
+                    data-testid="mt-merge-now-skip-restart-button"
+                    @action="handleMergeTrainMergeImmediatelyButtonClick($options.MT_SKIP_TRAIN)"
+                  >
+                    <template #list-item>
+                      <strong>{{ __(`Merge now and don't restart train`) }}</strong>
+                      <p class="gl-text-gray-400 gl-font-sm gl-mb-0">
+                        {{ __('Merge train pipelines continue without the merged changes.') }}
+                      </p>
+                    </template>
+                  </gl-disclosure-dropdown-item>
+                </gl-disclosure-dropdown>
               </gl-button-group>
               <template v-if="showAutoMergeHelperText">
                 <div
@@ -759,6 +813,13 @@ export default {
         :visible="isPipelineFailedModalVisibleMergeTrain"
         @startMergeTrain="onStartMergeTrainConfirmation"
         @cancel="isPipelineFailedModalVisibleMergeTrain = false"
+      />
+      <merge-train-restart-train-confirmation-dialog
+        v-if="isSkipMergeTrainAvailable"
+        :visible="isMergeTrainBeingForceMerged"
+        :merge-train-type="mergeTrainMergeType"
+        @processMergeTrainMerge="processMergeTrain"
+        @cancel="isMergeTrainBeingForceMerged = false"
       />
       <merge-failed-pipeline-confirmation-dialog
         :visible="isPipelineFailedModalVisibleNormalMerge"

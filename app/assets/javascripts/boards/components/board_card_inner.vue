@@ -399,7 +399,7 @@ export default {
             <issue-due-date
               v-if="item.dueDate"
               :date="item.dueDate"
-              :closed="item.closed || Boolean(item.closedAt)"
+              :closed="Boolean(item.closedAt)"
             />
             <issue-time-estimate v-if="item.timeEstimate" :estimate="item.timeEstimate" />
             <issue-card-weight
