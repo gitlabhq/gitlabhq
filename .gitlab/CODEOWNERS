@@ -954,6 +954,18 @@ lib/gitlab/checks/**
 /doc/user/workspace/ @ashrafkhamis
 # End rake-managed-docs-block
 
+[Authorization] @gitlab-org/govern/authorization/approvers
+/config/initializers/declarative_policy.rb
+/config/initializers/declarative_policy_cached_attributes.rb
+/app/policies/
+/ee/app/policies/
+/ee/app/services/member_roles/
+/ee/app/graphql/types/member_roles/
+/ee/app/graphql/mutations/member_roles/
+/ee/app/graphql/resolvers/member_roles/
+/ee/spec/requests/custom_roles/
+/ee/lib/api/member_roles.rb
+
 [Authentication] @gitlab-org/govern/authentication/approvers
 /app/assets/javascripts/access_tokens/
 /app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql
@@ -1161,7 +1173,6 @@ lib/gitlab/checks/**
 /ee/lib/gitlab/geo/oauth/
 /ee/lib/gitlab/kerberos/
 /ee/lib/omni_auth/
-/ee/spec/requests/custom_roles/
 /ee/lib/system_check/geo/authorized_keys_check.rb
 /ee/lib/system_check/geo/authorized_keys_flag_check.rb
 /lib/api/entities/impersonation_token.rb
