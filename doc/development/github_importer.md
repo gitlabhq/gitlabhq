@@ -34,21 +34,42 @@ The importer's codebase is broken up into the following directories:
 
 ## Architecture overview
 
-When a GitHub project is imported, we schedule and execute a job for the
-`RepositoryImportWorker` worker as all other importers. However, unlike other
-importers, we don't immediately perform the work necessary. Instead work is
-divided into separate stages, with each stage consisting out of a set of Sidekiq
-jobs that are executed. Between every stage a job is scheduled that periodically
-checks if all work of the current stage is completed, advancing the import
-process to the next stage when this is the case. The worker handling this is
-called `Gitlab::GithubImport::AdvanceStageWorker`.
+When a GitHub project is imported, work is divided into separate stages, with
+each stage consisting of a set of Sidekiq jobs that are executed. Between
+every stage a job is scheduled that periodically checks if all work of the
+current stage is completed, advancing the import process to the next stage when
+this is the case. The worker handling this is called
+`Gitlab::GithubImport::AdvanceStageWorker`.
+
+- An import is initiated via an API request to
+  [`POST /import/github`](https://gitlab.com/gitlab-org/gitlab/-/blob/18878b90991e2d478f3c79a68013b156d83b5db8/lib/api/import_github.rb#L42)
+- The API endpoint calls [`Import::GitHubService`](https://gitlab.com/gitlab-org/gitlab/-/blob/18878b90991e2d478f3c79a68013b156d83b5db8/lib/api/import_github.rb#L43).
+- Which calls
+  [`Gitlab::LegacyGithubImport::ProjectCreator`](https://gitlab.com/gitlab-org/gitlab/-/blob/18878b90991e2d478f3c79a68013b156d83b5db8/app/services/import/github_service.rb#L31-38)
+- Which calls
+  [`Projects::CreateService`](https://gitlab.com/gitlab-org/gitlab/-/blob/18878b90991e2d478f3c79a68013b156d83b5db8/lib/gitlab/legacy_github_import/project_creator.rb#L30)
+- Which calls
+  [`@project.import_state.schedule`](https://gitlab.com/gitlab-org/gitlab/-/blob/18878b90991e2d478f3c79a68013b156d83b5db8/app/services/projects/create_service.rb#L325)
+- Which calls
+  [`project.add_import_job`](https://gitlab.com/gitlab-org/gitlab/-/blob/1d154fa0b9121566aebf3afe3d28808d025cc5af/app/models/project_import_state.rb#L43)
+- Which calls
+  [`RepositoryImportWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/1d154fa0b9121566aebf3afe3d28808d025cc5af/app/models/project.rb#L1105)
 
 ## Stages
 
 ### 1. RepositoryImportWorker
 
-This worker starts the import process by scheduling a job for the
-next worker.
+This worker calls
+[`Projects::ImportService.new.execute`](https://gitlab.com/gitlab-org/gitlab/-/blob/651e6a0139396ed6fa9ce73e27587ca88f9f4d96/app/workers/repository_import_worker.rb#L23-24),
+which calls
+[`importer.execute`](https://gitlab.com/gitlab-org/gitlab/-/blob/fcccaaac8d62191ad233cebeffc67111145b1ad7/app/services/projects/import_service.rb#L143).
+
+In this context, `importer` is an instance of
+[`Gitlab::ImportSources.importer(project.import_type)`](https://gitlab.com/gitlab-org/gitlab/-/blob/fcccaaac8d62191ad233cebeffc67111145b1ad7/app/services/projects/import_service.rb#L149),
+which for `github` import types maps to
+[`ParallelImporter`](https://gitlab.com/gitlab-org/gitlab/-/blob/651e6a0139396ed6fa9ce73e27587ca88f9f4d96/lib/gitlab/import_sources.rb#L13).
+
+`ParallelImporter` schedules a job for the next worker.
 
 ### 2. Stage::ImportRepositoryWorker
 
