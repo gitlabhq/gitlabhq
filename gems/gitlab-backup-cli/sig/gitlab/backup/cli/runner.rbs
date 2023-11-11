@@ -1,0 +1,15 @@
+module Gitlab
+  module Backup
+    module Cli
+      class Runner
+        def self.exit_on_failure?: -> bool
+
+        def version: -> void
+
+        private
+
+        def rails_environment!: -> void
+      end
+    end
+  end
+end

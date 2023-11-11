@@ -57,10 +57,6 @@ module Sidebars
               monitor_menu_item,
               usage_quotas_menu_item
             ]
-          elsif context.current_user && can?(context.current_user, :manage_resource_access_tokens, context.project)
-            [
-              access_tokens_menu_item
-            ]
           else
             []
           end

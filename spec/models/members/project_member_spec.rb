@@ -51,6 +51,50 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.permissible_access_level_roles_for_project_access_token' do
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    before do
+      project.add_owner(owner)
+      project.add_maintainer(maintainer)
+      project.add_developer(developer)
+    end
+
+    subject(:access_levels) { described_class.permissible_access_level_roles_for_project_access_token(user, project) }
+
+    context 'when member can manage owners' do
+      let(:user) { owner }
+
+      it 'returns Gitlab::Access.options_with_owner' do
+        expect(access_levels).to eq(Gitlab::Access.options_with_owner)
+      end
+    end
+
+    context 'when member cannot manage owners' do
+      let(:user) { maintainer }
+
+      it 'returns Gitlab::Access.options' do
+        expect(access_levels).to eq(Gitlab::Access.options)
+      end
+    end
+
+    context 'when the user is a developer' do
+      let(:user) { developer }
+
+      it 'returns Gitlab::Access.options' do
+        expect(access_levels).to eq({
+          "Guest" => 10,
+          "Reporter" => 20,
+          "Developer" => 30
+        })
+      end
+    end
+  end
+
   describe '#real_source_type' do
     subject { create(:project_member).real_source_type }
 

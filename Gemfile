@@ -40,6 +40,7 @@ gem 'gitlab-safe_request_store', path: 'gems/gitlab-safe_request_store' # ruboco
 # GitLab Monorepo Gems
 group :monorepo do
   gem 'gitlab-utils', path: 'gems/gitlab-utils' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'gitlab-backup-cli', path: 'gems/gitlab-backup-cli', feature_category: :backup_restore
 end
 
 # Responders respond_to and respond_with
@@ -265,7 +266,7 @@ gem 're2', '2.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Misc
 
-gem 'semver_dialects', '~> 1.2.1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'semver_dialects', '~> 1.5', feature_category: :static_application_security_testing
 gem 'version_sorter', '~> 2.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'csv_builder', path: 'gems/csv_builder' # rubocop:todo Gemfile/MissingFeatureCategory
 

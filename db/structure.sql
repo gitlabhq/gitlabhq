@@ -18525,6 +18525,7 @@ CREATE TABLE member_roles (
     admin_merge_request boolean DEFAULT false NOT NULL,
     admin_group_member boolean DEFAULT false NOT NULL,
     manage_project_access_tokens boolean DEFAULT false NOT NULL,
+    archive_project boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
 );

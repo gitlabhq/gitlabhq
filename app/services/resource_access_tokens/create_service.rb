@@ -17,6 +17,8 @@ module ResourceAccessTokens
       access_level = params[:access_level] || Gitlab::Access::MAINTAINER
       return error("Could not provision owner access to project access token") if do_not_allow_owner_access_level_for_project_bot?(access_level)
 
+      return error("Access level of the token can't be greater the access level of the user who created the token") unless validate_access_level(access_level)
+
       return error(s_('AccessTokens|Access token limit reached')) if reached_access_token_limit?
 
       user = create_user
@@ -123,6 +125,14 @@ module ResourceAccessTokens
 
     def success(access_token)
       ServiceResponse.success(payload: { access_token: access_token })
+    end
+
+    def validate_access_level(access_level)
+      return true unless resource.is_a?(Project)
+      return true if current_user.bot?
+      return true if current_user.can?(:manage_owners, resource)
+
+      current_user.authorized_project?(resource, access_level.to_i)
     end
 
     def do_not_allow_owner_access_level_for_project_bot?(access_level)

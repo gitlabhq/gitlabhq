@@ -1,0 +1,7 @@
+module Gitlab
+  module Backup
+    module Cli
+      VERSION: String
+    end
+  end
+end
