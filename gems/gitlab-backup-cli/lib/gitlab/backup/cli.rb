@@ -7,7 +7,7 @@ module Gitlab
       autoload :VERSION, 'gitlab/backup/cli/version'
       autoload :Runner, 'gitlab/backup/cli/runner'
 
-      class Error < StandardError; end
+      Error = Class.new(StandardError)
       # Your code goes here...
     end
   end

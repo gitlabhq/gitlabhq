@@ -18,7 +18,7 @@ module Gitlab
         desc 'version', 'Display the version information'
 
         def version
-          puts "GitLab Backup CLI (#{VERSION})"
+          puts "GitLab Backup CLI (#{VERSION})" # rubocop:disable Rails/Output -- CLI output
         end
 
         private

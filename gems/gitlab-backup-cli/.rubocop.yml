@@ -1,19 +1,2 @@
----
-inherit_gem:
-  gitlab-styles:
-    - rubocop-bundler.yml
-    - rubocop-fips.yml
-    - rubocop-gemspec.yml
-    - rubocop-layout.yml
-    - rubocop-lint.yml
-    - rubocop-metrics.yml
-    - rubocop-naming.yml
-    - rubocop-performance.yml
-    - rubocop-rspec.yml
-    - rubocop-security.yml
-    - rubocop-style.yml
-
-AllCops:
-  TargetRubyVersion: 3.0
-  SuggestExtensions: false
-  NewCops: disable
+inherit_from:
+  - ../config/rubocop.yml
