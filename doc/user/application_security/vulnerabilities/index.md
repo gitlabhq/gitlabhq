@@ -249,7 +249,7 @@ To resolve a vulnerability, you can either:
 - [Resolve a vulnerability with a merge request](#resolve-a-vulnerability-with-a-merge-request).
 - [Resolve a vulnerability manually](#resolve-a-vulnerability-manually).
 
-![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
+![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4_updated.png)
 
 ### Resolve a vulnerability with a merge request
 
