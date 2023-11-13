@@ -10,28 +10,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
-  ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
-  ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
-  ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
-
-  ignore_column %i[
-    relay_state_domain_allowlist
-    in_product_marketing_emails_enabled
-  ], remove_with: '16.6', remove_after: '2023-10-22'
-
-  ignore_columns %i[
-    encrypted_product_analytics_clickhouse_connection_string
-    encrypted_product_analytics_clickhouse_connection_string_iv
-    encrypted_jitsu_administrator_password
-    encrypted_jitsu_administrator_password_iv
-    jitsu_host
-    jitsu_project_xid
-    jitsu_administrator_email
-  ], remove_with: '16.5', remove_after: '2023-09-22'
   ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.10', remove_after: '2024-03-22'
-
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
 
   INSTANCE_REVIEW_MIN_USERS = 50

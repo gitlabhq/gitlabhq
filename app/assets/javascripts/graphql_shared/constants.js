@@ -24,7 +24,6 @@ export const TYPENAME_SCANNER_PROFILE = 'DastScannerProfile';
 export const TYPENAME_SITE_PROFILE = 'DastSiteProfile';
 export const TYPENAME_TODO = 'Todo';
 export const TYPENAME_USER = 'User';
-export const TYPENAME_VULNERABILITIES_SCANNER = 'Vulnerabilities::Scanner';
 export const TYPENAME_VULNERABILITY = 'Vulnerability';
 export const TYPENAME_WORK_ITEM = 'WorkItem';
 export const TYPENAME_ORGANIZATION = 'Organization';

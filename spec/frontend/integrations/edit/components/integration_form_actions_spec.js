@@ -28,7 +28,7 @@ describe('IntegrationFormActions', () => {
   const findConfirmationModal = () => wrapper.findComponent(ConfirmationModal);
   const findResetConfirmationModal = () => wrapper.findComponent(ResetConfirmationModal);
   const findResetButton = () => wrapper.findByTestId('reset-button');
-  const findSaveButton = () => wrapper.findByTestId('save-button');
+  const findSaveButton = () => wrapper.findByTestId('save-changes-button');
   const findTestButton = () => wrapper.findByTestId('test-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
 

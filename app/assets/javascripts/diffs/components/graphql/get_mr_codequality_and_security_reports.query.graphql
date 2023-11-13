@@ -11,6 +11,7 @@ query getMRCodequalityAndSecurityReports($fullPath: ID!, $iid: String!) {
       }
       hasSecurityReports
       codequalityReportsComparer {
+        status
         report {
           status
           newErrors {

@@ -143,7 +143,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integ
       end
 
       it 'shows a token placeholder' do
-        token_placeholder = find_field('service_token')['placeholder']
+        token_placeholder = find_field('service-token')['placeholder']
 
         expect(token_placeholder).to eq('')
       end

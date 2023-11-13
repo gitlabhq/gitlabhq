@@ -1,5 +1,5 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -49,7 +49,7 @@ identifiers:
 - user
 - namespace
 product_section: dev
-product_stage: analyze
+product_stage: monitor
 product_group: group::product analytics
 milestone: "16.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128029

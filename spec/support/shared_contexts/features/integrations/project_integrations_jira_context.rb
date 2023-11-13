@@ -7,8 +7,8 @@ RSpec.shared_context 'project integration Jira context' do
   def fill_form(disable: false)
     click_active_checkbox if disable
 
-    fill_in 'service_url', with: url
-    fill_in 'service_username', with: 'username'
-    fill_in 'service_password', with: 'password'
+    fill_in 'service-url', with: url
+    fill_in 'service-username', with: 'username'
+    fill_in 'service-password', with: 'password'
   end
 end

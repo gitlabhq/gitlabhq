@@ -39,7 +39,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
       it 'shows errors when some required fields are not filled in' do
         visit_project_integration('Jira')
 
-        fill_in 'service_password', with: 'password'
+        fill_in 'service-password', with: 'password'
         click_test_integration
 
         page.within('[data-testid="integration-settings-form"]') do

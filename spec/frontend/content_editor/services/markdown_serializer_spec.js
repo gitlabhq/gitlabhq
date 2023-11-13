@@ -607,6 +607,34 @@ this is not really json:table but just trying out whether this case works or not
     );
   });
 
+  it('correctly serializes bullet task list with different bullet styles', () => {
+    expect(
+      serialize(
+        taskList(
+          { bullet: '+' },
+          taskItem({ checked: true }, paragraph('list item 1')),
+          taskItem(paragraph('list item 2')),
+          taskItem(
+            paragraph('list item 3'),
+            taskList(
+              { bullet: '-' },
+              taskItem({ checked: true }, paragraph('sub-list item 1')),
+              taskItem(paragraph('sub-list item 2')),
+            ),
+          ),
+        ),
+      ),
+    ).toBe(
+      `
++ [x] list item 1
++ [ ] list item 2
++ [ ] list item 3
+  - [x] sub-list item 1
+  - [ ] sub-list item 2
+      `.trim(),
+    );
+  });
+
   it('correctly serializes a numeric list', () => {
     expect(
       serialize(

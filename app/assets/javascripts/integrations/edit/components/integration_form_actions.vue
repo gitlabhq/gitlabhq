@@ -79,8 +79,7 @@ export default {
           variant="confirm"
           :loading="isSaving"
           :disabled="disableButtons"
-          data-testid="save-button"
-          data-qa-selector="save_changes_button"
+          data-testid="save-changes-button"
         >
           {{ __('Save changes') }}
         </gl-button>
@@ -93,8 +92,7 @@ export default {
         type="submit"
         :loading="isSaving"
         :disabled="disableButtons"
-        data-testid="save-button"
-        data-qa-selector="save_changes_button"
+        data-testid="save-changes-button"
         @click.prevent="onSaveClick"
       >
         {{ __('Save changes') }}

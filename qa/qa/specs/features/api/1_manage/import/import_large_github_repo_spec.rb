@@ -10,14 +10,15 @@ require "etc"
 # Because of this, all expectation check for inclusion rather than exact match to avoid failures if extra issues,
 #   comments, events got created while import was running.
 
-# rubocop:disable Rails/Pluck
+# rubocop:disable Rails/Pluck -- false positive matches
+# rubocop:disable RSpec/MultipleMemoizedHelpers -- slightly specific test which relies on instance variables to track metrics
 module QA
   RSpec.describe 'Manage', :github, requires_admin: 'creates users',
     only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
     custom_test_metrics: {
       tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "rspec/rspec-core" }
     } do
-    describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    describe 'Project import', product_group: :import_and_integrate do
       let!(:api_client) { Runtime::API::Client.as_admin }
       let!(:user) { create(:user, api_client: api_client) }
       let!(:user_api_client) do
@@ -50,7 +51,7 @@ module QA
       let(:suggestion_pattern) { /suggestion:-\d+\+\d+/ }
       let(:gh_link_pattern) { %r{https://github.com/#{github_repo}/(issues|pull)} }
       let(:gl_link_pattern) { %r{#{gitlab_address}/#{imported_project.path_with_namespace}/-/(issues|merge_requests)} }
-      # rubocop:disable Lint/MixedRegexpCaptureTypes
+      # rubocop:disable Lint/MixedRegexpCaptureTypes -- optional capture groups
       let(:event_pattern) do
         Regexp.union(
           [
@@ -127,7 +128,7 @@ module QA
               max: 3,
               interval: 1,
               retry_block: ->(exception:, **) { logger.warn("Request to GitHub failed: '#{exception}', retrying") },
-              exceptions: [Octokit::InternalServerError, Octokit::ServerError]
+              exceptions: [Octokit::InternalServerError, Octokit::ServerError, Net::OpenTimeout]
             )
             builder.use(Faraday::Response::RaiseError) # faraday retry swallows errors, so it needs to be re-raised
           end
@@ -719,3 +720,4 @@ module QA
   end
 end
 # rubocop:enable Rails/Pluck
+# rubocop:enable RSpec/MultipleMemoizedHelpers

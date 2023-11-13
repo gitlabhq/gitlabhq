@@ -20555,7 +20555,8 @@
         "attrs": {
           "numeric": false,
           "start": 1,
-          "parens": false
+          "parens": false,
+          "bullet": "*"
         },
         "content": [
           {
@@ -20588,7 +20589,8 @@
         "attrs": {
           "numeric": false,
           "start": 1,
-          "parens": false
+          "parens": false,
+          "bullet": "*"
         },
         "content": [
           {
@@ -21261,7 +21263,8 @@
         "attrs": {
           "numeric": false,
           "start": 1,
-          "parens": false
+          "parens": false,
+          "bullet": "*"
         },
         "content": [
           {
@@ -22996,7 +22999,8 @@
         "attrs": {
           "numeric": true,
           "start": 1,
-          "parens": false
+          "parens": false,
+          "bullet": "*"
         },
         "content": [
           {
@@ -23902,7 +23906,8 @@
         "attrs": {
           "numeric": false,
           "start": 1,
-          "parens": false
+          "parens": false,
+          "bullet": "*"
         },
         "content": [
           {

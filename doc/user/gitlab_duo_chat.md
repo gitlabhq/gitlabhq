@@ -52,6 +52,8 @@ To use this feature, at least one group you're a member of must:
 1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
 1. You can ask a follow-up question.
 1. If you want to ask a new question unrelated to the previous conversation, you may receive better answers if you clear the context by typing `/reset` into the input box and selecting **Send**.
+1. If you want to delete all previous conversations, you may do so by typing `/clean` into the input box and selecting **Send**.
+   1. IMPORTANT: Currently you have to refresh the page after using `/clean` command.
 
 NOTE:
 Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.

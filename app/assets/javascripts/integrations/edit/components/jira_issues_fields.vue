@@ -86,7 +86,7 @@ export default {
     <gl-form-checkbox
       v-model="enableJiraIssues"
       :disabled="checkboxDisabled"
-      data-qa-selector="service_jira_issues_enabled_checkbox"
+      data-testid="jira-issues-enabled-checkbox"
     >
       {{ $options.i18n.enableCheckboxLabel }}
       <template #help>
@@ -107,7 +107,7 @@ export default {
           id="service_project_key"
           v-model="projectKey"
           name="service[project_key]"
-          data-qa-selector="service_jira_project_key_field"
+          data-testid="jira-project-key-field"
           :placeholder="$options.i18n.projectKeyPlaceholder"
           :required="enableJiraIssues"
           :state="validProjectKey"

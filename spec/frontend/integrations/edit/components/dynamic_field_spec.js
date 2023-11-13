@@ -169,7 +169,7 @@ describe('DynamicField', () => {
             expect(findGlFormInput().exists()).toBe(true);
             expect(findGlFormInput().attributes()).toMatchObject({
               type: 'text',
-              id: 'service_project_url',
+              id: 'service-project_url',
               name: 'service[project_url]',
               placeholder: mockField.placeholder,
               required: expect.any(String),

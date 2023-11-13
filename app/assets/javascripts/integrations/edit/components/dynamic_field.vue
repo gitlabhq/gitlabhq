@@ -106,7 +106,7 @@ export default {
       });
     },
     fieldId() {
-      return `service_${this.name}`;
+      return `service-${this.name}`;
     },
     fieldName() {
       return `service[${this.name}]`;
@@ -182,7 +182,7 @@ export default {
       autocomplete="new-password"
       :placeholder="placeholder"
       :required="passwordRequired"
-      :data-qa-selector="`${fieldId}_field`"
+      :data-testid="`${fieldId}-field`"
     />
     <gl-form-input
       v-else
@@ -191,7 +191,7 @@ export default {
       :type="type"
       :placeholder="placeholder"
       :required="required"
-      :data-qa-selector="`${fieldId}_field`"
+      :data-testid="`${fieldId}-field`"
     />
   </gl-form-group>
 </template>

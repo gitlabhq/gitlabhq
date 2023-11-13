@@ -7639,7 +7639,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> incomplete</li>
     </ul>
   wysiwyg: |-
-    <ul dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">incomplete</p></div></li></ul>
+    <ul dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">incomplete</p></div></li></ul>
 07_01_00__gitlab_official_specification_markdown__task_list_items__002:
   canonical: |
     <ul>
@@ -7655,7 +7655,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> completed</li>
     </ul>
   wysiwyg: |-
-    <ul dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">completed</p></div></li></ul>
+    <ul dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">completed</p></div></li></ul>
 07_01_00__gitlab_official_specification_markdown__task_list_items__003:
   canonical: |
     <ul>
@@ -7986,7 +7986,7 @@
   wysiwyg: |-
     <ul dir="auto" bullet="*"><li dir="auto"><p dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" class="with-attachment-icon">Sample Audio</a></span></p></li><li dir="auto"><p dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/2.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/2.mp4" class="with-attachment-icon">Sample Video</a></span></p></li></ul>
     <ol dir="auto" parens="false"><li dir="auto"><p dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/1.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/1.mp4" class="with-attachment-icon">Sample Video</a></span></p></li><li dir="auto"><p dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" class="with-attachment-icon">Sample Audio</a></span></p></li></ol>
-    <ul dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" class="with-attachment-icon">Sample Audio</a></span></p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" class="with-attachment-icon">Sample Audio</a></span></p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/3.mp4" class="with-attachment-icon">Sample Video</a></span></p></div></li></ul>
+    <ul dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" class="with-attachment-icon">Sample Audio</a></span></p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" class="with-attachment-icon">Sample Audio</a></span></p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/3.mp4" class="with-attachment-icon">Sample Video</a></span></p></div></li></ul>
 08_04_10__gitlab_internal_extension_markdown__migrated_golden_master_examples__blockquote__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8477,7 +8477,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example</li>
     </ol>
   wysiwyg: |-
-    <ol dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">hello</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">world</p></div></li><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">example</p></div></li></ol>
+    <ol dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">hello</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">world</p></div></li><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">example</p></div></li></ol>
 08_04_46__gitlab_internal_extension_markdown__migrated_golden_master_examples__reference_for_project_wiki__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8828,7 +8828,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> bar</li>
     </ul>
   wysiwyg: |-
-    <ul dir="auto" start="1" parens="false" data-type="taskList"><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">foo</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">bar</p></div></li></ul>
+    <ul dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">foo</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">bar</p></div></li></ul>
 09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__002:
   canonical: |
     <ul>

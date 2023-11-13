@@ -11,6 +11,7 @@ require 'ipaddress'
 
 module Gitlab
   class UrlBlocker
+    GETADDRINFO_TIMEOUT_SECONDS = 15
     DENY_ALL_REQUESTS_EXCEPT_ALLOWED_DEFAULT = proc { deny_all_requests_except_allowed_app_setting }.freeze
 
     # Result stores the validation result:
@@ -181,12 +182,16 @@ module Gitlab
       #
       # @return [Array<Addrinfo>]
       def get_address_info(uri)
-        Addrinfo.getaddrinfo(uri.hostname, get_port(uri), nil, :STREAM).map do |addr|
-          addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
+        Timeout.timeout(GETADDRINFO_TIMEOUT_SECONDS) do
+          Addrinfo.getaddrinfo(uri.hostname, get_port(uri), nil, :STREAM).map do |addr|
+            addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
+          end
         end
-      rescue ArgumentError => error
+      rescue Timeout::Error => e
+        raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, e.message
+      rescue ArgumentError => e
         # Addrinfo.getaddrinfo errors if the domain exceeds 1024 characters.
-        raise unless error.message.include?('hostname too long')
+        raise unless e.message.include?('hostname too long')
 
         raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "Host is too long (maximum is 1024 characters)"
       end

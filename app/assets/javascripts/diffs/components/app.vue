@@ -168,9 +168,7 @@ export default {
         this.activeProject = data?.project?.mergeRequest?.project;
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
-          /* Checking for newErrors instead of a status indicator is a workaround that
-             needs to be adjusted once https://gitlab.com/gitlab-org/gitlab/-/issues/429527 is resolved. */
-          (!codeQualityBoolean || codequalityReportsComparer?.report?.newErrors.length > 0)
+          (!codeQualityBoolean || codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
         ) {
           this.getMRCodequalityAndSecurityReportStopPolling(
             this.$apollo.queries.getMRCodequalityAndSecurityReports,

@@ -1238,8 +1238,7 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 
 ### Get a list of SCIM provisioned users
 
-This endpoint is used as part of the SCIM syncing mechanism. It only returns
-a single user based on a unique ID which should match the `extern_uid` of the user.
+This endpoint is used as part of the SCIM syncing mechanism. It returns a list of users depending on the filter used.
 
 ```plaintext
 GET /api/scim/v2/groups/:group_path/Users
@@ -1257,7 +1256,7 @@ Parameters:
 NOTE:
 Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
 
-Example request:
+Example request filtering on a specific identifier:
 
 ```shell
 curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users?filter=id%20eq%20%220b1d561c-21ff-4092-beab-8154b17f82f2%22" \
@@ -1474,8 +1473,7 @@ This instance SCIM API is different to the [SCIM API](../../api/scim.md). The SC
 
 ### Get a list of SCIM provisioned users
 
-This endpoint is used as part of the SCIM syncing mechanism. It only returns
-a single user based on a unique ID which should match the `extern_uid` of the user.
+This endpoint is used as part of the SCIM syncing mechanism. It returns a list of users depending on the filter used.
 
 ```plaintext
 GET /api/scim/v2/application/Users

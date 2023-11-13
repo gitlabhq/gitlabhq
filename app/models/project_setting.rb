@@ -11,16 +11,6 @@ class ProjectSetting < ApplicationRecord
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
 
-  ignore_columns %i[
-    encrypted_product_analytics_clickhouse_connection_string
-    encrypted_product_analytics_clickhouse_connection_string_iv
-    encrypted_jitsu_administrator_password
-    encrypted_jitsu_administrator_password_iv
-    jitsu_host
-    jitsu_project_xid
-    jitsu_administrator_email
-  ], remove_with: '16.5', remove_after: '2023-09-22'
-
   ignore_column :jitsu_key, remove_with: '16.7', remove_after: '2023-11-17'
 
   attr_encrypted :cube_api_key,

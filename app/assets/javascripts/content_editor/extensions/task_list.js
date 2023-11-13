@@ -27,6 +27,13 @@ export default TaskList.extend({
         default: false,
         parseHTML: (element) => /^[0-9]+\)/.test(getMarkdownSource(element)),
       },
+      bullet: {
+        default: '*',
+        parseHTML(element) {
+          const bullet = getMarkdownSource(element)?.charAt(0);
+          return '*+-'.includes(bullet) ? bullet : '*';
+        },
+      },
     };
   },
 
