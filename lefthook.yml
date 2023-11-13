@@ -107,7 +107,7 @@ pre-push:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
 
   scripts:
     "merge_conflicts":
@@ -124,7 +124,7 @@ pre-commit:
       tags: backend style
       files: git diff --name-only --diff-filter=d --staged
       glob: '*.{rb,rake}'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
     secrets-detection:
       tags: secrets
       files: git diff --name-only --diff-filter=d --staged
@@ -152,7 +152,7 @@ auto-fix:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '*.{rb,rake}'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --autocorrect --force-exclusion {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --autocorrect --force-exclusion --no-server {files}
     gettext:
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD --cached | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true

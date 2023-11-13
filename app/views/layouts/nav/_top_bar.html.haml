@@ -12,4 +12,4 @@
     - elsif defined?(@left_sidebar)
       = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'toggle-mobile-nav gl-ml-n3', data: { testid: 'toggle-mobile-nav-button' }, aria: { label: _('Open sidebar') } })
     = render "layouts/nav/breadcrumbs/breadcrumbs"
-    = render "layouts/nav/ask_duo_button"
+    = render_if_exists "layouts/nav/ask_duo_button"
