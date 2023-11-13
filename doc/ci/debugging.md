@@ -163,7 +163,7 @@ For help with a specific area, see:
 
 - [Caching](caching/index.md#troubleshooting).
 - [CI/CD job tokens](jobs/ci_job_token.md).
-- [Container Registry](../user/packages/container_registry/troubleshoot_container_registry.md).
+- [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md).
 - [Docker](docker/using_docker_build.md#troubleshooting).
 - [Downstream pipelines](pipelines/downstream_pipelines.md#troubleshooting).
 - [Environments](environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).

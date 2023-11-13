@@ -92,9 +92,9 @@ and push the artifact to the [GitLab Container Registry](../../../packages/conta
 
    - Uses `kustomization.yaml` to render your final Kubernetes manifests.
    - Packages your manifests into an OCI artifact.
-   - Pushes the OCI artifact to the Container Registry.
+   - Pushes the OCI artifact to the container registry.
 
-   After the pipeline has completed, you can check your OCI artifact with the Container Registry UI.
+   After the pipeline has completed, you can check your OCI artifact with the container registry UI.
 
 ## Configure Flux to sync your artifact
 

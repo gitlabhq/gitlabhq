@@ -51,6 +51,12 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
    sudo gitlab-ctl reconfigure
    ```
 
+1. Restart PostgreSQL to enable the TCP port:
+
+  ```shell
+  sudo gitlab-ctl restart
+  ```
+
 ## Troubleshooting
 
 ### Resolve `SSL SYSCALL error: EOF detected` error

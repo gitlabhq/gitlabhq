@@ -29,7 +29,7 @@ For more information, see [alternative backup strategies](#alternative-backup-st
 - [PostgreSQL databases](#postgresql-databases)
 - [Git repositories](#git-repositories)
 - [Blobs](#blobs)
-- [Container Registry](#container-registry)
+- [Container registry](#container-registry)
 - [Configuration files](#storing-configuration-files)
 - [Other data](#other-data)
 
@@ -90,9 +90,9 @@ The [backup command](#backup-command) doesn't back up blobs that aren't stored o
 - [Amazon S3 backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/s3-backups.html)
 - [Google Cloud Storage Transfer Service](https://cloud.google.com/storage-transfer-service) and [Google Cloud Storage Object Versioning](https://cloud.google.com/storage/docs/object-versioning)
 
-### Container Registry
+### Container registry
 
-[GitLab Container Registry](../packages/container_registry.md) storage can be configured in either:
+[GitLab container registry](../packages/container_registry.md) storage can be configured in either:
 
 - The file system in a specific location.
 - An [Object Storage](../object_storage.md) solution. Object Storage solutions can be:
@@ -1621,9 +1621,9 @@ You should verify that the secrets are the root cause before deleting any data.
    TRUNCATE integrations, chat_names, issue_tracker_data, jira_tracker_data, slack_integrations, web_hooks, zentao_tracker_data, web_hook_logs CASCADE;
    ```
 
-### Container Registry push failures after restoring from a backup
+### Container registry push failures after restoring from a backup
 
-If you use the [Container Registry](../../user/packages/container_registry/index.md),
+If you use the [container registry](../../user/packages/container_registry/index.md),
 pushes to the registry may fail after restoring your backup on a Linux package (Omnibus)
 instance after restoring the registry data.
 

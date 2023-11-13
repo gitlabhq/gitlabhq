@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Delete container images from the Container Registry **(FREE ALL)**
+# Delete container images from the container registry **(FREE ALL)**
 
 You can delete container images from your Container Registry.
 
@@ -18,9 +18,9 @@ Deleting a container image on self-managed instances doesn't free up storage spa
 as eligible for deletion. To actually delete unreferenced container images and recover storage space, administrators
 must run [garbage collection](../../../administration/packages/container_registry.md#container-registry-garbage-collection).
 
-On GitLab.com, the latest version of the Container Registry includes an automatic online garbage
+On GitLab.com, the latest version of the container registry includes an automatic online garbage
 collector. For more information, see [this blog post](https://about.gitlab.com/blog/2021/10/25/gitlab-com-container-registry-update/).
-In this new version of the Container Registry, the following are automatically scheduled
+In this new version of the container registry, the following are automatically scheduled
 for deletion in 24 hours if left unreferenced:
 
 - Layers that aren't referenced by any image manifest.
@@ -117,4 +117,4 @@ the code example by changing the `REG_SHA256` and `REG_VERSION` variables define
 ## Use a cleanup policy
 
 You can create a per-project [cleanup policy](reduce_container_registry_storage.md#cleanup-policy) to ensure older tags and
-images are regularly removed from the Container Registry.
+images are regularly removed from the container registry.

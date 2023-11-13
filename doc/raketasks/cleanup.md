@@ -216,7 +216,7 @@ sudo gitlab-rake gitlab:cleanup:sessions:active_sessions_lookup_keys
 bundle exec rake gitlab:cleanup:sessions:active_sessions_lookup_keys RAILS_ENV=production
 ```
 
-## Container Registry garbage collection
+## Container registry garbage collection
 
 Container Registry can use considerable amounts of disk space. To clear up
 unused layers, the registry includes a [garbage collect command](../administration/packages/container_registry.md#container-registry-garbage-collection).

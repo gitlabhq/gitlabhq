@@ -1134,7 +1134,7 @@ In addition to application-based limits, GitLab.com is configured to use Cloudfl
 
 ## Container Repository tag deletion limit
 
-Container repository tags are in the Container Registry and, as such, each tag deletion triggers network requests to the Container Registry. Because of this, we limit the number of tags that a single API call can delete to 20.
+Container repository tags are in the container registry and, as such, each tag deletion triggers network requests to the container registry. Because of this, we limit the number of tags that a single API call can delete to 20.
 
 ## Project-level Secure Files API limits
 

@@ -36,7 +36,7 @@ Setting | Table | Description
 `terraform_module_max_file_size` | `plan_limits` | Maximum file size for a Terraform package file.
 `helm_max_file_size` | `plan_limits` | Maximum file size for a Helm package file.
 
-### Container Registry
+### Container registry
 
 Setting | Table | Description
 ------- | ----- | -----------
@@ -51,7 +51,7 @@ Setting | Table | Description
 `container_registry_expiration_policies_caching` | `application_settings` | Enable or disable tag creation timestamp caching during execution of cleanup policies.
 `container_registry_import_max_tags_count` | `application_settings` | Defines what is a the maximum amount of tags that we accept to migrate.
 `container_registry_import_max_retries` | `application_settings` | The maximum amount of retries done on a migration that is aborted.
-`container_registry_import_start_max_retries` | `application_settings` | The maximum amount of requests to start an import step that is sent to the Container Registry API.
+`container_registry_import_start_max_retries` | `application_settings` | The maximum amount of requests to start an import step that is sent to the container registry API.
 `container_registry_import_max_step_duration` | `application_settings` | The maximum amount of seconds before an ongoing migration is considered as stale.
 `container_registry_import_target_plan` | `application_settings` | The target subscription plan on which we're intend to pick container repositories.
 `container_registry_import_created_before` | `application_settings` | Only image repositories created before this timestamp are eligible for the migration.

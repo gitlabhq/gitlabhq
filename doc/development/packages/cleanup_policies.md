@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Cleanup policies are recurrent background processes that automatically remove
 objects according to some parameters set by users.
 
-## Container Registry
+## Container registry
 
 Cleanup policies for the container registry work on all the container repositories
 hosted in a single project. All tags that match the cleanup parameters are removed.

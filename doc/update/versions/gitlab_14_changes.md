@@ -565,7 +565,7 @@ that may remain stuck permanently in a **pending** state when the instance lacks
   For information on how to fix this, see
   [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
-- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication
+- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the container registry replication
   wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
   (for example `amd64`) would be replicated to the secondary site. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
 
@@ -666,7 +666,7 @@ that may remain stuck permanently in a **pending** state when the instance lacks
   For information on how to fix this, see
   [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
-- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication
+- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the container registry replication
   wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
   (for example `amd64`) would be replicated to the secondary site. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
 
@@ -733,7 +733,7 @@ that may remain stuck permanently in a **pending** state when the instance lacks
 
 ### Geo installations **(PREMIUM SELF)**
 
-- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication
+- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the container registry replication
   wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
   (for example `amd64`) would be replicated to the secondary site. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
 

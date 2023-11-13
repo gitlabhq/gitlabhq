@@ -52,7 +52,7 @@ We start by preparing a custom image based on the `quay.io/buildah/stable:v1.23.
    EOF
    ```
 
-1. Build and push the Buildah image to a Container Registry. Let's push to the
+1. Build and push the Buildah image to a container registry. Let's push to the
    [GitLab Container Registry](../../user/packages/container_registry/index.md):
 
    ```shell

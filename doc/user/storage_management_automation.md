@@ -838,7 +838,7 @@ you can configure:
 - The number of days before an image tag can be deleted (`older_than`)
 
 WARNING:
-On GitLab.com, due to the scale of the Container Registry, the number of tags deleted by this API is limited.
+On GitLab.com, due to the scale of the container registry, the number of tags deleted by this API is limited.
 If your Container Registry has a large number of tags to delete, only some of them are deleted. You might need
 to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
 

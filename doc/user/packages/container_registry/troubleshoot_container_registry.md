@@ -61,7 +61,7 @@ you may receive one of the following errors:
 - Project cannot be transferred because tags are present in its container registry.
 - Namespace cannot be moved because at least one project has tags in the container registry.
 
-This error occurs when the project has images in the Container Registry.
+This error occurs when the project has images in the container registry.
 You must delete or move these images before you change the path or transfer
 the project.
 
@@ -122,7 +122,7 @@ unauthorized: authentication required
 ```
 
 This error happens when your authentication token expires before the image push is complete. By default, tokens for
-the Container Registry on self-managed GitLab instances expire every five minutes. On GitLab.com, the token expiration
+the container registry on self-managed GitLab instances expire every five minutes. On GitLab.com, the token expiration
 time is set to 15 minutes.
 
 If you are using self-managed GitLab, an administrator can

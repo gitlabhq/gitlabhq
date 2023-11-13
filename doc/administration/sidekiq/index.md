@@ -200,9 +200,9 @@ To set up multiple Sidekiq nodes:
    sudo gitlab-ctl reconfigure
    ```
 
-## Configure the Container Registry when using an external Sidekiq
+## Configure the container registry when using an external Sidekiq
 
-If you're using the Container Registry and it's running on a different
+If you're using the container registry and it's running on a different
 node than Sidekiq, follow the steps below.
 
 1. Edit `/etc/gitlab/gitlab.rb`, and configure the registry URL:

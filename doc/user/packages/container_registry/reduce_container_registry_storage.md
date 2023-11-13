@@ -24,7 +24,7 @@ For information on the planned availability for self-managed instances, see [epi
 
 ## How container registry usage is calculated
 
-Image layers stored in the Container Registry are deduplicated at the root namespace level.
+Image layers stored in the container registry are deduplicated at the root namespace level.
 
 An image is only counted once if:
 
@@ -75,7 +75,7 @@ the size value only changes when:
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/218737) from "expiration policy" to "cleanup policy" in GitLab 13.2.
 > - [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
 
-The cleanup policy is a scheduled job you can use to remove tags from the Container Registry.
+The cleanup policy is a scheduled job you can use to remove tags from the container registry.
 For the project where it's defined, tags matching the regex pattern are removed.
 The underlying layers and images remain.
 
@@ -106,7 +106,7 @@ GitLab.com that don't have a container image.
 
 ### How the cleanup policy works
 
-The cleanup policy collects all tags in the Container Registry and excludes tags until the only
+The cleanup policy collects all tags in the container registry and excludes tags until the only
 tags you want to delete remain.
 
 The cleanup policy searches for images based on the tag name. Support for full path matching is tracked in issue [281071](https://gitlab.com/gitlab-org/gitlab/-/issues/281071).
@@ -121,11 +121,11 @@ The cleanup policy:
 1. Orders the remaining tags by `created_date`.
 1. Excludes the N tags based on the `keep_n` value (Number of tags to retain).
 1. Excludes the tags more recent than the `older_than` value (Expiration interval).
-1. Deletes the remaining tags in the list from the Container Registry.
+1. Deletes the remaining tags in the list from the container registry.
 
 WARNING:
 On GitLab.com, the execution time for the cleanup policy is limited. Some tags may remain in
-the Container Registry after the policy runs. The next time the policy runs, the remaining tags are included.
+the container registry after the policy runs. The next time the policy runs, the remaining tags are included.
 It may take multiple runs to delete all tags.
 
 WARNING:
@@ -333,7 +333,7 @@ only if the number of tags being cleaned up is minimal.
 
 ## More Container Registry storage reduction options
 
-Here are some other options you can use to reduce the Container Registry storage used by your project:
+Here are some other options you can use to reduce the container registry storage used by your project:
 
 - Use the [GitLab UI](delete_container_registry_images.md#use-the-gitlab-ui)
   to delete individual image tags or the entire repository containing all the tags.
@@ -371,7 +371,7 @@ There can be different reasons behind this:
   - If you are on GitLab 13.9 or later, you can [set limits for the cleanup policy](reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
     This limits the cleanup execution in time, and avoids the expired token error.
 
-  - Extend the expiration delay of the Container Registry authentication tokens. This defaults to 5
+  - Extend the expiration delay of the container registry authentication tokens. This defaults to 5
     minutes. You can set a custom value by running
     `ApplicationSetting.last.update(container_registry_token_expire_delay: <integer>)` in the Rails
     console, where `<integer>` is the desired number of minutes. For reference, the expiration delay

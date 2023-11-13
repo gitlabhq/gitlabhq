@@ -60,7 +60,7 @@ Prerequisites:
 FLAG:
 On self-managed GitLab, by default the Kubernetes watch API integration is not available.
 To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `k8s_watch_api`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 View a dashboard to see the status of any connected clusters.
 If the `k8s_watch_api` feature flag is enabled, the status of your

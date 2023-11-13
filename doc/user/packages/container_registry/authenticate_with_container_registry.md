@@ -4,14 +4,14 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Authenticate with the Container Registry **(FREE ALL)**
+# Authenticate with the container registry **(FREE ALL)**
 
 <!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
 WARNING:
 In GitLab 16.0 and later, [external authorization](../../admin_area/settings/external_authorization.md) prevents personal access tokens and deploy tokens from accessing container and package registries and affects all users who use these tokens to access the registries. You can disable external authorization if you want to use personal access tokens and deploy tokens with the container or package registries.
 <!--- end_remove -->
 
-To authenticate with the Container Registry, you can use a:
+To authenticate with the container registry, you can use a:
 
 - [Personal access token](../../profile/personal_access_tokens.md).
 - [Deploy token](../../project/deploy_tokens/index.md).
@@ -31,11 +31,11 @@ To authenticate, run the `docker login` command. For example:
 
 ## Use GitLab CI/CD to authenticate
 
-To use CI/CD to authenticate with the Container Registry, you can use:
+To use CI/CD to authenticate with the container registry, you can use:
 
 - The `CI_REGISTRY_USER` CI/CD variable.
 
-  This variable has read-write access to the Container Registry and is valid for
+  This variable has read-write access to the container registry and is valid for
   one job only. Its password is also automatically created and assigned to `CI_REGISTRY_PASSWORD`.
 
   ```shell

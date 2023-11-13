@@ -117,8 +117,8 @@ A personal access token can perform actions based on the assigned scopes.
 | `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944) in GitLab 12.10.) |
 | `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API. |
 | `write_repository` | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API). |
-| `read_registry`    | Grants read-only (pull) access to a [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the Container Registry is enabled. |
-| `write_registry`   | Grants read-write (push) access to a [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the Container Registry is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
+| `read_registry`    | Grants read-only (pull) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled. |
+| `write_registry`   | Grants read-write (push) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator. |
 | `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.) |
 | `create_runner`    | Grants permission to create runners. |

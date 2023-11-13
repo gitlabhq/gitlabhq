@@ -95,7 +95,7 @@ This might be easier, but would definitely not offer the same amount of data iso
 
 ### 3.2. Run Container Registry within a Cell
 
-It appears that except `/jwt/auth` which would likely have to be processed by Router (to decode `scope`) the Container Registry could be run as a local service of a Cell.
+It appears that except `/jwt/auth` which would likely have to be processed by Router (to decode `scope`) the container registry could be run as a local service of a Cell.
 The actual data at least in case of GitLab.com is not forwarded via registry, but rather served directly from Object Storage / CDN.
 
 Its design encodes container repository image in a URL that is easily routable.

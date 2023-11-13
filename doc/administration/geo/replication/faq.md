@@ -65,7 +65,7 @@ connectivity between your sites, and your hardware.
 
 That's totally fine. We use HTTP(s) to fetch repository changes from the **primary** site to all **secondary** sites.
 
-## Is this possible to set up a Container Registry for a **secondary** site that mirrors the one on the **primary** site?
+## Is this possible to set up a container registry for a **secondary** site that mirrors the one on the **primary** site?
 
 Yes. See [Container Registry for a **secondary** site](container_registry.md).
 

@@ -161,7 +161,7 @@ The pipeline setup consists of several jobs in the main GitLab pipeline:
 #### `build-gdk-image`
 
 [This job](https://gitlab.com/gitlab-org/gitlab/-/blob/07504c34b28ac656537cd60810992aa15e9e91b8/.gitlab/ci/build-images.gitlab-ci.yml#L32)
-uses the code from the merge request to build a Docker image that can be used in test jobs to launch a GDK instance in a container. The image is pushed to the Container Registry.
+uses the code from the merge request to build a Docker image that can be used in test jobs to launch a GDK instance in a container. The image is pushed to the container registry.
 
 The job also runs in pipelines on the default branch to build a base image that includes the GDK and GitLab components.
 This avoids building the entire image from scratch in merge requests. However, if the merge request includes changes to

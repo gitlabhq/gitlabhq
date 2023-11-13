@@ -10,19 +10,19 @@ participating-stages: []
 
 <!-- vale gitlab.FutureTense = NO -->
 
-# Container Registry Metadata Database
+# Container registry metadata database
 
-## Usage of the GitLab Container Registry
+## Usage of the GitLab container registry
 
-With the [Container Registry](https://gitlab.com/gitlab-org/container-registry) integrated into GitLab, every GitLab project can have its own space to store its Docker images. You can use the registry to build, push and share images using the Docker client, CI/CD or the GitLab API.
+With the [container registry](https://gitlab.com/gitlab-org/container-registry) integrated into GitLab, every GitLab project can have its own space to store its Docker images. You can use the registry to build, push and share images using the Docker client, CI/CD or the GitLab API.
 
 Each day on GitLab.com, between [150k and 200k images are pushed to the registry](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9620193&udv=0), generating about [700k API events](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=7601761&udv=0). It's also worth noting that although some customers use other registry vendors, [more than 96% of instances](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9832282&udv=0) are using the GitLab Container Registry.
 
-For GitLab.com and for GitLab customers, the Container Registry is a critical component to building and deploying software.
+For GitLab.com and for GitLab customers, the container registry is a critical component to building and deploying software.
 
 ## Current Architecture
 
-The Container Registry is a single [Go](https://go.dev/) application. Its only dependency is the storage backend on which images and metadata are stored.
+The container registry is a single [Go](https://go.dev/) application. Its only dependency is the storage backend on which images and metadata are stored.
 
 ```mermaid
 graph LR
@@ -30,7 +30,7 @@ graph LR
    R -- Write/read metadata --> B
 ```
 
-Client applications (for example, GitLab Rails and Docker CLI) interact with the Container Registry through its [HTTP API](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md). The most common operations are pushing and pulling images to/from the registry, which require a series of HTTP requests in a specific order. The request flow for these operations is detailed in the [Request flow](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/push-pull-request-flow.md).
+Client applications (for example, GitLab Rails and Docker CLI) interact with the container registry through its [HTTP API](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md). The most common operations are pushing and pulling images to/from the registry, which require a series of HTTP requests in a specific order. The request flow for these operations is detailed in the [Request flow](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/push-pull-request-flow.md).
 
 The registry supports multiple [storage backends](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#storage), including Google Cloud Storage (GCS) which is used for the GitLab.com registry. In the storage backend, images are stored as blobs, deduplicated, and shared across repositories. These are then linked (like a symlink) to each repository that relies on them, giving them access to the central storage location.
 
@@ -38,7 +38,7 @@ The name and hierarchy of repositories, as well as image manifests and tags are 
 
 ### Clients
 
-The Container Registry has two main clients: the GitLab Rails application and the Docker client/CLI.
+The container registry has two main clients: the GitLab Rails application and the Docker client/CLI.
 
 #### Docker
 

@@ -58,7 +58,7 @@ erDiagram
         packages_debian_file_metadata |o--|| packages_package_files : ""
 ```
 
-## Container Registry
+## Container registry
 
 ```mermaid
 erDiagram

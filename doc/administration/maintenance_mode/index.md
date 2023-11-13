@@ -162,7 +162,7 @@ You should disable auto deploys during Maintenance Mode, and enable them when it
 
 Terraform integration depends on running CI pipelines, hence it is blocked.
 
-### Container Registry
+### Container registry
 
 `docker push` fails with this error: `denied: requested access to the resource is denied`, but `docker pull` works.
 

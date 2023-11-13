@@ -147,8 +147,8 @@ The scope determines the actions you can perform when you authenticate with a gr
 |:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api`              | Grants complete read and write access to the scoped group and related project API, including the [Package Registry](../../packages/package_registry/index.md).                   |
 | `read_api`         | Grants read access to the scoped group and related project API, including the [Package Registry](../../packages/package_registry/index.md).                                      |
-| `read_registry`    | Grants read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if any project within a group is private and authorization is required. |
-| `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                                              |
+| `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/index.md) images if any project within a group is private and authorization is required. |
+| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md).                                                                              |
 | `read_repository`  | Grants read access (pull) to all repositories within a group.                                                                                                                    |
 | `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                 |
 | `create_runner`    | Grants permission to create runners in a group.                                                                                                                                  |

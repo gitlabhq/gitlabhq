@@ -149,13 +149,13 @@ If the GitLab instance is configured for sending out email notifications to user
 configure S/MIME signing to help the recipients ensure that the emails are
 legitimate. Follow the instructions on [signing outgoing email](../administration/smime_signing_email.md).
 
-## Container Registry
+## Container registry
 
-If Lets Encrypt is configured, the Container Registry is enabled by default. This
+If Lets Encrypt is configured, the container registry is enabled by default. This
 allows projects to store their own Docker images. Follow the instructions for
-configuring the [Container Registry](../administration/packages/container_registry.md),
+configuring the [container registry](../administration/packages/container_registry.md),
 so you can do things like restrict automatic enablement on new projects and
-disabling the Container Registry entirely. You may have to adjust firewall rules to
+disabling the container registry entirely. You may have to adjust firewall rules to
 allow access - if a completely standalone system, you should restrict access to the
 Container Registry to localhost only. Specific examples of ports used and their
 configuration are also included in the documentation.

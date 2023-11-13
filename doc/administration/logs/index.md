@@ -1047,8 +1047,8 @@ For Linux package installations, NGINX logs are in:
 - `/var/log/gitlab/nginx/gitlab_error.log`: A log of NGINX errors for GitLab
 - `/var/log/gitlab/nginx/gitlab_pages_access.log`: A log of requests made to Pages static sites
 - `/var/log/gitlab/nginx/gitlab_pages_error.log`: A log of NGINX errors for Pages static sites
-- `/var/log/gitlab/nginx/gitlab_registry_access.log`: A log of requests made to the Container Registry
-- `/var/log/gitlab/nginx/gitlab_registry_error.log`: A log of NGINX errors for the Container Registry
+- `/var/log/gitlab/nginx/gitlab_registry_access.log`: A log of requests made to the container registry
+- `/var/log/gitlab/nginx/gitlab_registry_error.log`: A log of NGINX errors for the container registry
 - `/var/log/gitlab/nginx/gitlab_mattermost_access.log`: A log of requests made to Mattermost
 - `/var/log/gitlab/nginx/gitlab_mattermost_error.log`: A log of NGINX errors for Mattermost
 

@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Answer questions with GitLab Duo Chat **(ULTIMATE SAAS EXPERIMENT)**
+# Answer questions with GitLab Duo Chat **(ULTIMATE SAAS BETA)**
 
-> Introduced in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+> Introduced in GitLab 16.6 as an [Beta](../policy/experiment-beta-support.md#beta).
 
 You can get AI generated support from GitLab Duo Chat about the following topics:
 
@@ -36,7 +36,7 @@ In addition to the provided prompts, feel free to ask follow-up questions to del
 - A follow-up to the question `Write a Ruby function that prints 'Hello, World!' when called.` could be:
   - `Could you also explain how I can call and execute this Ruby function in a typical Ruby environment, such as the command line?`
 
-This is an experimental feature and we're continuously extending the capabilities and reliability of the chat.
+This is a Beta feature. We're continuously extending the capabilities and reliability of the chat responses.
 
 ## Enable GitLab Duo Chat
 

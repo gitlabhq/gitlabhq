@@ -440,7 +440,7 @@ On your GitLab project repository navigate to the **Registry** tab.
 
 ![container registry page empty image](img/container_registry_page_empty_image.png)
 
-You may need to enable the Container Registry for your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
+You may need to enable the container registry for your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
 
 To start using Container Registry on our machine, we first need to sign in to the GitLab registry using our GitLab username and password.
 Make sure you have [Docker](https://docs.docker.com/engine/install/) installed on our machine,

@@ -273,9 +273,9 @@ For information on configuring Geo with Object storage, see [Geo with Object sto
 
 For information on using Geo in disaster recovery situations to mitigate data-loss and restore services, see [Disaster Recovery](disaster_recovery/index.md).
 
-### Replicating the Container Registry
+### Replicating the container registry
 
-For more information on how to replicate the Container Registry, see [Container Registry for a **secondary** site](replication/container_registry.md).
+For more information on how to replicate the container registry, see [Container registry for a **secondary** site](replication/container_registry.md).
 
 ### Geo secondary proxy
 

@@ -56,11 +56,11 @@ This content has been moved to [Activate GitLab EE with a license file or key](.
 
 ### Registry Disk Space Usage by Project
 
-Find this content in the [Container Registry troubleshooting documentation](../packages/container_registry.md#registry-disk-space-usage-by-project).
+Find this content in the [container registry troubleshooting documentation](../packages/container_registry.md#registry-disk-space-usage-by-project).
 
 ### Run the Cleanup policy now
 
-Find this content in the [Container Registry troubleshooting documentation](../packages/container_registry.md#run-the-cleanup-policy-now).
+Find this content in the [container registry troubleshooting documentation](../packages/container_registry.md#run-the-cleanup-policy-now).
 
 ## Sidekiq
 

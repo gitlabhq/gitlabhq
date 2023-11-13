@@ -459,10 +459,19 @@ To create a task list, follow the format of an ordered or unordered list:
 
 ### Table of contents
 
+<!--
+The following paragraphs use HTML to work around a Markdown bug.
+Do not change it back to a Markdown backticks.
+For more information, see https://gitlab.com/gitlab-org/gitlab/-/issues/359077.
+-->
 A table of contents is an unordered list that links to subheadings in the document.
 You can add a table of contents to issues and merge requests, but you can't add one
-to notes or comments. Add either the `[[_TOC_]]` or `[TOC]` tag on its own line
+to notes or comments. Add either the `[[_TOC_]]` or <code>`[TOC]`</code> tag on its own line
 to the **Description** field of any of the supported content types:
+
+NOTE:
+A TOC renders also when you use <code>`[TOC]`</code>, regardless of being on its own line or not.
+This behavior is unintended. For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
 
 - Markdown files.
 - Wiki pages.
