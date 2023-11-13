@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-module ClickHouseHelpers
-  private
-
+module ClickHouseTestHelpers
   def migrate(target_version, migration_context)
     quietly { migration_context.up(target_version) }
   end
@@ -36,8 +34,15 @@ module ClickHouseHelpers
       .map(&:symbolize_keys)
   end
 
-  def clear_db(configuration: ClickHouse::Client.configuration)
-    ClickHouseTestRunner.new.clear_db(configuration)
+  def clear_db(configuration = ClickHouse::Client.configuration)
+    configuration.databases.each_key do |db|
+      # drop all tables
+      lookup_tables(db, configuration).each do |table|
+        ClickHouse::Client.execute("DROP TABLE IF EXISTS #{table}", db, configuration)
+      end
+
+      ClickHouse::MigrationSupport::SchemaMigration.create_table(db, configuration)
+    end
   end
 
   def register_database(config, database_identifier, db_config)
@@ -51,6 +56,21 @@ module ClickHouseHelpers
     )
   end
 
+  private
+
+  def lookup_tables(db, configuration = ClickHouse::Client.configuration)
+    ClickHouse::Client.select('SHOW TABLES', db, configuration).pluck('name')
+  end
+
+  def quietly(&_block)
+    was_verbose = ClickHouse::Migration.verbose
+    ClickHouse::Migration.verbose = false
+
+    yield
+  ensure
+    ClickHouse::Migration.verbose = was_verbose
+  end
+
   def clear_consts(fixtures_path)
     $LOADED_FEATURES.select { |file| file.include? fixtures_path }.each do |file|
       const = File.basename(file)
@@ -61,14 +81,5 @@ module ClickHouseHelpers
       Object.send(:remove_const, const.to_s) if const
       $LOADED_FEATURES.delete(file)
     end
-  end
-
-  def quietly(&_block)
-    was_verbose = ClickHouse::Migration.verbose
-    ClickHouse::Migration.verbose = false
-
-    yield
-  ensure
-    ClickHouse::Migration.verbose = was_verbose
   end
 end

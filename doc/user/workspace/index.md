@@ -95,9 +95,13 @@ Only these properties are relevant to the GitLab implementation of the `containe
 | `endpoints`    | Port mappings to expose from the container.                                       |
 | `volumeMounts` | Storage volume to mount in the container.                                         |
 
-### Using variables in a Devfile
+### Using variables in a devfile
 
-You can also define variables to be used in your devfile. The `variables` object is a map of name-value pairs used for string replacement in the devfile. The [Devfile 2.2.0 documentation](https://devfile.io/docs/2.2.0/defining-variables) lists some limits on how and where you can use variables. In addition, you cannot define any variables whose names are prefixed with `gl-`/`gl_`/`GL-`/`GL_`. 
+You can define variables to use in your devfile.
+The `variables` object is a map of name-value pairs that you can use for string replacement in the devfile.
+
+Variables cannot have names that start with `gl-`, `gl_`, `GL-`, or `GL_`.
+For more information about how and where to use variables, see the [devfile documentation](https://devfile.io/docs/2.2.0/defining-variables).
 
 ### Example configurations
 

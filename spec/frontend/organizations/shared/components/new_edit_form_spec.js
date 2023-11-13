@@ -49,6 +49,17 @@ describe('NewEditForm', () => {
     expect(findUrlField().exists()).toBe(true);
   });
 
+  it('requires `Organization URL` field to be a minimum of two characters', async () => {
+    createComponent();
+
+    await findUrlField().setValue('f');
+    await submitForm();
+
+    expect(
+      wrapper.findByText('Organization URL must be a minimum of two characters.').exists(),
+    ).toBe(true);
+  });
+
   describe('when `fieldsToRender` prop is set', () => {
     beforeEach(() => {
       createComponent({ propsData: { fieldsToRender: [FORM_FIELD_ID] } });

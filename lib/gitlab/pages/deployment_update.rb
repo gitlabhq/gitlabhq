@@ -89,14 +89,10 @@ module Gitlab
         project.actual_limits.pages_file_entries
       end
 
+      # If a newer pipeline already build a PagesDeployment
       def validate_outdated_sha
         return if latest?
-
-        # use pipeline_id in case the build is retried
-        last_deployed_pipeline_id = project.pages_metadatum&.pages_deployment&.ci_build&.pipeline_id
-
-        return unless last_deployed_pipeline_id
-        return if last_deployed_pipeline_id <= build.pipeline_id
+        return if latest_pipeline_id <= build.pipeline_id
 
         errors.add(:base, 'build SHA is outdated for this ref')
       end
@@ -110,6 +106,13 @@ module Gitlab
 
       def sha
         build.sha
+      end
+
+      def latest_pipeline_id
+        project
+          .active_pages_deployments
+          .with_path_prefix(build.pages&.dig(:path_prefix))
+          .latest_pipeline_id
       end
     end
   end

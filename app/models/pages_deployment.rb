@@ -17,7 +17,8 @@ class PagesDeployment < ApplicationRecord
   scope :with_files_stored_locally, -> { where(file_store: ::ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
   scope :project_id_in, ->(ids) { where(project_id: ids) }
-  scope :active, -> { where(deleted_at: nil) }
+  scope :with_path_prefix, ->(prefix) { where("COALESCE(path_prefix, '') = ?", prefix.to_s) }
+  scope :active, -> { where(deleted_at: nil).order(created_at: :desc) }
   scope :deactivated, -> { where('deleted_at < ?', Time.now.utc) }
 
   validates :file, presence: true
@@ -33,11 +34,23 @@ class PagesDeployment < ApplicationRecord
   skip_callback :save, :after, :store_file!
   after_commit :store_file_after_commit!, on: [:create, :update]
 
+  def self.latest_pipeline_id
+    Ci::Build.id_in(pluck(:ci_build_id)).maximum(:commit_id)
+  end
+
+  def self.deactivate_all(project)
+    now = Time.now.utc
+    active
+      .project_id_in(project.id)
+      .update_all(updated_at: now, deleted_at: now)
+  end
+
   def self.deactivate_deployments_older_than(deployment, time: nil)
     now = Time.now.utc
     active
       .older_than(deployment.id)
-      .where(project_id: deployment.project_id, path_prefix: deployment.path_prefix)
+      .project_id_in(deployment.project_id)
+      .with_path_prefix(deployment.path_prefix)
       .update_all(updated_at: now, deleted_at: time || now)
   end
 

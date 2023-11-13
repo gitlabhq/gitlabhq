@@ -15,3 +15,6 @@ schema_inconsistencies:
 - type: missing_indexes
   object_name: index_namespaces_on_created_at
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134948
+- type: missing_indexes
+  object_name: index_namespaces_on_ldap_sync_last_successful_update_at
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135040

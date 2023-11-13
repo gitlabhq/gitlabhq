@@ -6,7 +6,7 @@ require_relative '../../../lib/click_house/migration_support/migration_error'
 
 RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
   click_house: :without_migrations, feature_category: :database do
-  include ClickHouseHelpers
+  include ClickHouseTestHelpers
 
   # We don't need to delete data since we don't modify Postgres data
   self.use_transactional_tests = false
@@ -96,7 +96,7 @@ RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
       end
 
       around do |example|
-        clear_db(configuration: config)
+        clear_db(config)
 
         previous_config = ClickHouse::Migration.client_configuration
         ClickHouse::Migration.client_configuration = config

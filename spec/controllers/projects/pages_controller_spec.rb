@@ -48,7 +48,6 @@ RSpec.describe Projects::PagesController, feature_category: :pages do
 
     context 'when the project does not have onboarding complete' do
       before do
-        project.pages_metadatum.update_attribute(:deployed, false)
         project.pages_metadatum.update_attribute(:onboarding_complete, false)
       end
 
@@ -73,6 +72,17 @@ RSpec.describe Projects::PagesController, feature_category: :pages do
         it 'returns a 200 status code' do
           expect(subject).to have_gitlab_http_status(:ok)
         end
+      end
+    end
+
+    context 'when the project has a deployed pages app' do
+      before do
+        project.pages_metadatum.update_attribute(:onboarding_complete, false)
+        create(:pages_deployment, project: project)
+      end
+
+      it 'does not redirect to #new' do
+        expect(subject).not_to redirect_to(action: 'new')
       end
     end
 

@@ -34,10 +34,6 @@ namespace :gitlab do
       ENV['VERSION'].to_i if ENV['VERSION'] && !ENV['VERSION'].empty?
     end
 
-    def verbose
-      ENV['VERBOSE'] ? ENV['VERBOSE'] != 'false' : true
-    end
-
     def migrate(direction)
       require_relative '../../../../lib/click_house/migration_support/schema_migration'
       require_relative '../../../../lib/click_house/migration_support/migration_context'
@@ -47,7 +43,7 @@ namespace :gitlab do
 
       scope = ENV['SCOPE']
       verbose_was = ClickHouse::Migration.verbose
-      ClickHouse::Migration.verbose = verbose
+      ClickHouse::Migration.verbose = ENV['VERBOSE'] ? ENV['VERBOSE'] != 'false' : true
 
       migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths
       schema_migration = ClickHouse::MigrationSupport::SchemaMigration

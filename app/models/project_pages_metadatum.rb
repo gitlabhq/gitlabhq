@@ -10,7 +10,4 @@ class ProjectPagesMetadatum < ApplicationRecord
 
   belongs_to :project, inverse_of: :pages_metadatum
   belongs_to :pages_deployment
-
-  scope :deployed, -> { where(deployed: true) }
-  scope :with_project_route_and_deployment, -> { preload(:pages_deployment, project: [:namespace, :route]) }
 end

@@ -699,6 +699,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   end
 
   context 'when package duplicates are not allowed' do
+    let(:params) { { package: temp_file(file_name, content: File.open(expand_fixture_path('packages/nuget/package.nupkg'))) } }
     let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
     let_it_be(:existing_package) { create(:nuget_package, project: project) }
     let_it_be(:metadata) { { package_name: existing_package.name, package_version: existing_package.version } }

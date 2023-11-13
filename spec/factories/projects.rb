@@ -508,7 +508,7 @@ FactoryBot.define do
   trait :pages_published do
     after(:create) do |project|
       project.mark_pages_onboarding_complete
-      project.mark_pages_as_deployed
+      create(:pages_deployment, project: project) # rubocop: disable RSpec/FactoryBot/StrategyInCallback
     end
   end
 

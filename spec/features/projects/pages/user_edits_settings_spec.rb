@@ -22,7 +22,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
 
     context 'when pages deployed' do
       before do
-        project.mark_pages_as_deployed
+        create(:pages_deployment, project: project)
       end
 
       it 'renders Access pages' do
@@ -125,7 +125,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
     before do
       project.namespace.update!(owner: user)
 
-      project.mark_pages_as_deployed
+      create(:pages_deployment, project: project)
     end
 
     it 'tries to change the setting' do
@@ -187,7 +187,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   describe 'Remove page' do
     context 'when pages are deployed' do
       before do
-        project.mark_pages_as_deployed
+        create(:pages_deployment, project: project)
       end
 
       it 'removes the pages', :sidekiq_inline do

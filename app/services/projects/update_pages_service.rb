@@ -33,7 +33,7 @@ module Projects
         break error('The uploaded artifact size does not match the expected value') unless deployment
         break error(deployment_update.errors.first.full_message) unless deployment_update.valid?
 
-        update_project_pages_deployment(deployment)
+        deactive_old_deployments(deployment)
         success
       end
     rescue StandardError => e
@@ -45,7 +45,6 @@ module Projects
 
     def success
       commit_status.success
-      @project.mark_pages_as_deployed
       publish_deployed_event
       super
     end
@@ -84,11 +83,11 @@ module Projects
     def create_pages_deployment(artifacts_path, build)
       File.open(artifacts_path) do |file|
         attributes = pages_deployment_attributes(file, build)
-        deployment = project.pages_deployments.create!(**attributes)
+        deployment = project.pages_deployments.build(**attributes)
 
-        break if deployment.size != file.size || deployment.file.size != file.size
+        break if deployment.file.size != file.size
 
-        deployment
+        deployment.tap(&:save!)
       end
     end
 
@@ -103,9 +102,7 @@ module Projects
       }
     end
 
-    def update_project_pages_deployment(deployment)
-      project.update_pages_deployment!(deployment)
-
+    def deactive_old_deployments(deployment)
       PagesDeployment.deactivate_deployments_older_than(
         deployment,
         time: OLD_DEPLOYMENTS_DESTRUCTION_DELAY.from_now)

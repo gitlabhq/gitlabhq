@@ -464,8 +464,10 @@ class Project < ApplicationRecord
   # GitLab Pages
   has_many :pages_domains
   has_one  :pages_metadatum, class_name: 'ProjectPagesMetadatum', inverse_of: :project
-  # we need to clean up files, not only remove records
-  has_many :pages_deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  # rubocop:disable Cop/ActiveRecordDependent -- we need to clean up files, not only remove records
+  has_many :pages_deployments, dependent: :destroy, inverse_of: :project
+  # rubocop:enable Cop/ActiveRecordDependent
+  has_many :active_pages_deployments, -> { active }, class_name: 'PagesDeployment', inverse_of: :project
 
   # Can be too many records. We need to implement delete_all in batches.
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/228637
@@ -740,7 +742,7 @@ class Project < ApplicationRecord
   end
 
   scope :with_pages_deployed, -> do
-    joins(:pages_metadatum).merge(ProjectPagesMetadatum.deployed)
+    where_exists(PagesDeployment.active.where('pages_deployments.project_id = projects.id'))
   end
 
   scope :pages_metadata_not_migrated, -> do
@@ -2205,11 +2207,11 @@ class Project < ApplicationRecord
   end
 
   def pages_deployed?
-    pages_metadatum&.deployed?
+    active_pages_deployments.exists?
   end
 
   def pages_show_onboarding?
-    !(pages_metadatum&.onboarding_complete || pages_metadatum&.deployed)
+    !(pages_metadatum&.onboarding_complete || pages_deployed?)
   end
 
   def remove_private_deploy_keys
@@ -2229,27 +2231,6 @@ class Project < ApplicationRecord
 
   def mark_pages_onboarding_complete
     ensure_pages_metadatum.update!(onboarding_complete: true)
-  end
-
-  def mark_pages_as_deployed
-    ensure_pages_metadatum.update!(deployed: true)
-  end
-
-  def mark_pages_as_not_deployed
-    ensure_pages_metadatum.update!(deployed: false)
-  end
-
-  def update_pages_deployment!(deployment)
-    ensure_pages_metadatum.update!(pages_deployment: deployment)
-  end
-
-  def set_first_pages_deployment!(deployment)
-    ensure_pages_metadatum
-
-    # where().update_all to perform update in the single transaction with check for null
-    ProjectPagesMetadatum
-      .where(project_id: id, pages_deployment_id: nil)
-      .update_all(deployed: deployment.present?, pages_deployment_id: deployment&.id)
   end
 
   def set_full_path(gl_full_path: full_path)

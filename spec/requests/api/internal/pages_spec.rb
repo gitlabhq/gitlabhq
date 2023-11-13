@@ -46,17 +46,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
       end
     end
 
-    context 'when authenticated' do
-      before do
-        project.update_pages_deployment!(create(:pages_deployment, project: project))
-      end
-
-      around do |example|
-        freeze_time do
-          example.run
-        end
-      end
-
+    context 'when authenticated', :freeze_time do
       context 'when domain does not exist' do
         it 'responds with 204 no content' do
           get api('/internal/pages'), headers: auth_header, params: { host: 'any-domain.gitlab.io' }
@@ -79,10 +69,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
         end
 
         context 'when there are no pages deployed for the related project' do
-          before do
-            project.mark_pages_as_not_deployed
-          end
-
           it 'responds with 204 No Content' do
             get api('/internal/pages'), headers: auth_header, params: { host: 'pages.io' }
 
@@ -91,9 +77,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
         end
 
         context 'when there are pages deployed for the related project' do
-          before do
-            project.mark_pages_as_deployed
-          end
+          let!(:deployment) { create(:pages_deployment, project: project) }
 
           it 'domain lookup is case insensitive' do
             get api('/internal/pages'), headers: auth_header, params: { host: 'Pages.IO' }
@@ -110,7 +94,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
             expect(json_response['certificate']).to eq(pages_domain.certificate)
             expect(json_response['key']).to eq(pages_domain.key)
 
-            deployment = project.pages_metadatum.pages_deployment
             expect(json_response['lookup_paths']).to eq(
               [
                 {
@@ -144,10 +127,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
         end
 
         context 'when there are no pages deployed for the related project' do
-          before do
-            project.mark_pages_as_not_deployed
-          end
-
           it 'responds with 204 No Content' do
             get api('/internal/pages'), headers: auth_header, params: { host: 'unique-domain.example.com' }
 
@@ -156,9 +135,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
         end
 
         context 'when there are pages deployed for the related project' do
-          before do
-            project.mark_pages_as_deployed
-          end
+          let!(:deployment) { create(:pages_deployment, project: project) }
 
           context 'when the unique domain is disabled' do
             before do
@@ -186,7 +163,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('internal/pages/virtual_domain')
 
-            deployment = project.pages_metadatum.pages_deployment
             expect(json_response['lookup_paths']).to eq(
               [
                 {
@@ -218,10 +194,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
         end
 
         context 'when there are no pages deployed for the related project' do
-          before do
-            project.mark_pages_as_not_deployed
-          end
-
           it 'responds with 204 No Content' do
             get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" }
 
@@ -232,9 +204,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
         end
 
         context 'when there are pages deployed for the related project' do
-          before do
-            project.mark_pages_as_deployed
-          end
+          let!(:deployment) { create(:pages_deployment, project: project) }
 
           context 'with a regular project' do
             it 'responds with the correct domain configuration' do
@@ -243,7 +213,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')
 
-              deployment = project.pages_metadatum.pages_deployment
               expect(json_response['lookup_paths']).to eq(
                 [
                   {
@@ -274,7 +243,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
 
             3.times do
               project = create(:project, group: group)
-              project.mark_pages_as_deployed
+              create(:pages_deployment, project: project)
             end
 
             expect { get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" } }
@@ -292,7 +261,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')
 
-              deployment = project.pages_metadatum.pages_deployment
               expect(json_response['lookup_paths']).to eq(
                 [
                   {

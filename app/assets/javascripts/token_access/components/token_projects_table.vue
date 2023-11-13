@@ -29,9 +29,6 @@ export default {
     removeProject(project) {
       this.$emit('removeProject', project);
     },
-    namespaceFallback(namespace) {
-      return namespace?.fullPath || '';
-    },
   },
 };
 </script>
@@ -50,13 +47,7 @@ export default {
     </template>
 
     <template #cell(project)="{ item }">
-      <span data-testid="token-access-project-name">{{ item.name }}</span>
-    </template>
-
-    <template #cell(namespace)="{ item }">
-      <span data-testid="token-access-project-namespace">
-        {{ namespaceFallback(item.namespace) }}
-      </span>
+      <span data-testid="token-access-project-name">{{ item.fullPath }}</span>
     </template>
 
     <template #cell(actions)="{ item }">

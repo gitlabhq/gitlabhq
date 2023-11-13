@@ -103,7 +103,13 @@ export default {
         },
         [FORM_FIELD_PATH]: {
           label: s__('Organization|Organization URL'),
-          validators: [formValidators.required(s__('Organization|Organization URL is required.'))],
+          validators: [
+            formValidators.required(s__('Organization|Organization URL is required.')),
+            formValidators.factory(
+              s__('Organization|Organization URL must be a minimum of two characters.'),
+              (val) => val.length >= 2,
+            ),
+          ],
           groupAttrs: {
             class: 'gl-w-full',
           },

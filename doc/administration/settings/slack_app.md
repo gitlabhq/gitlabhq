@@ -105,9 +105,13 @@ To enable the GitLab for Slack app functionality, your network must allow inboun
 
 ## Troubleshooting
 
-### Slash commands return `/gitlab failed with the error "dispatch_failed"` in Slack
+When administering the GitLab for Slack app for self-managed instances, you might encounter the following issues.
+
+For GitLab.com, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md#troubleshooting).
+
+### Slash commands return an error in Slack
 
 Slash commands might return `/gitlab failed with the error "dispatch_failed"` in Slack. To resolve this issue, ensure:
 
-- The GitLab for Slack app is properly [configured](#configure-the-settings), and the **Enable GitLab for Slack app** checkbox is selected.
+- The GitLab for Slack app is properly [configured](#configure-the-settings) and the **Enable GitLab for Slack app** checkbox is selected.
 - Your GitLab instance [allows requests to and from Slack](#connectivity-requirements).

@@ -240,9 +240,7 @@ class PagesDomain < ApplicationRecord
   end
 
   def pages_deployed?
-    return false unless project
-
-    project.pages_metadatum&.deployed?
+    project&.pages_deployed?
   end
 
   private

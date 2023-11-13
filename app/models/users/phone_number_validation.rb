@@ -33,13 +33,16 @@ module Users
     validates :telesign_reference_xid, length: { maximum: 255 }
 
     scope :for_user, -> (user_id) { where(user_id: user_id) }
-    scope :by_reference_id, ->(reference_id) { find_by(telesign_reference_xid: reference_id) }
 
     def self.related_to_banned_user?(international_dial_code, phone_number)
       joins(:banned_user).where(
         international_dial_code: international_dial_code,
         phone_number: phone_number
       ).exists?
+    end
+
+    def self.by_reference_id(ref_id)
+      find_by(telesign_reference_xid: ref_id)
     end
 
     def validated?

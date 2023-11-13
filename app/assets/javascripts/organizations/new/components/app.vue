@@ -4,12 +4,13 @@ import { s__ } from '~/locale';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import createOrganizationMutation from '../graphql/mutations/create_organization.mutation.graphql';
+import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
+import organizationCreateMutation from '../graphql/mutations/organization_create.mutation.graphql';
 import NewEditForm from '../../shared/components/new_edit_form.vue';
 
 export default {
   name: 'OrganizationNewApp',
-  components: { NewEditForm, GlSprintf, GlLink },
+  components: { NewEditForm, GlSprintf, GlLink, FormErrorsAlert },
   i18n: {
     pageTitle: s__('Organization|New organization'),
     pageDescription: s__(
@@ -22,6 +23,7 @@ export default {
   data() {
     return {
       loading: false,
+      errors: [],
     };
   },
   computed: {
@@ -35,21 +37,22 @@ export default {
       try {
         const {
           data: {
-            createOrganization: { organization, errors },
+            organizationCreate: { organization, errors },
           },
         } = await this.$apollo.mutate({
-          mutation: createOrganizationMutation,
+          mutation: organizationCreateMutation,
           variables: {
-            ...formValues,
+            input: { name: formValues.name, path: formValues.path },
           },
         });
 
         if (errors.length) {
-          // TODO: handle errors when using real API after https://gitlab.com/gitlab-org/gitlab/-/issues/417891 is complete.
+          this.errors = errors;
+
           return;
         }
 
-        visitUrlWithAlerts(organization.path, [
+        visitUrlWithAlerts(organization.webUrl, [
           {
             id: 'organization-successfully-created',
             title: this.$options.i18n.successAlertTitle,
@@ -69,6 +72,7 @@ export default {
 
 <template>
   <div class="gl-py-6">
+    <form-errors-alert v-model="errors" />
     <h1 class="gl-mt-0 gl-font-size-h-display">{{ $options.i18n.pageTitle }}</h1>
     <p>
       <gl-sprintf :message="$options.i18n.pageDescription">

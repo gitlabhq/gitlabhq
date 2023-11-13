@@ -181,4 +181,13 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       it { is_expected.to eq false }
     end
   end
+
+  describe '#web_url' do
+    it 'returns web url from `Gitlab::UrlBuilder`' do
+      web_url = 'http://127.0.0.1:3000/-/organizations/default'
+
+      expect(Gitlab::UrlBuilder).to receive(:build).with(organization, only_path: nil).and_return(web_url)
+      expect(organization.web_url).to eq(web_url)
+    end
+  end
 end

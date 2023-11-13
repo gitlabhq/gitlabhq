@@ -660,6 +660,7 @@ project:
 - pages_domains
 - pages_metadatum
 - pages_deployments
+- active_pages_deployments
 - authorized_users
 - project_authorizations
 - remote_mirrors

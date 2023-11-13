@@ -33515,6 +33515,9 @@ msgstr ""
 msgid "Organization|Organization URL is required."
 msgstr ""
 
+msgid "Organization|Organization URL must be a minimum of two characters."
+msgstr ""
+
 msgid "Organization|Organization name"
 msgstr ""
 

@@ -1973,7 +1973,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       parent_2 = create(:group) # No projects
 
       create(:project, group: child_1_1).tap do |project|
-        project.pages_metadatum.update!(deployed: true)
+        create(:pages_deployment, project: project)
       end
 
       create(:project, group: child_1_1)

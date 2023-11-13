@@ -45,22 +45,39 @@ ClickHouse::Client.select('SELECT 1', :main)
 
 ## Database schema and migrations
 
-For the ClickHouse database there are no established schema migration procedures yet. We have very basic tooling to build up the database schema in the test environment from scratch using timestamp-prefixed SQL files.
+There are `bundle exec rake gitlab:clickhouse:migrate` and `bundle exec rake gitlab:clickhouse:rollback` tasks
+(introduced in [!136103](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136103)).
 
-You can create a table by placing a new SQL file in the `db/click_house/main` folder:
+You can create a migration by creating a Ruby migration file in `db/click_house/migrate` folder. It should be prefixed with a timestamp in the format `YYYYMMDDHHMMSS_description_of_migration.rb`
 
-```sql
-// 20230811124511_create_issues.sql
-CREATE TABLE issues
-(
-  id UInt64 DEFAULT 0,
-  title String DEFAULT ''
-)
-ENGINE = MergeTree
-PRIMARY KEY (id)
+```ruby
+# 20230811124511_create_issues.rb
+# frozen_string_literal: true
+
+class CreateIssues < ClickHouse::Migration
+  def up
+    execute <<~SQL
+      CREATE TABLE issues
+      (
+        id UInt64 DEFAULT 0,
+        title String DEFAULT ''
+      )
+      ENGINE = MergeTree
+      PRIMARY KEY (id)
+    SQL
+  end
+
+  def down
+    execute <<~SQL
+      DROP TABLE sync_cursors
+    SQL
+  end
+end
 ```
 
-When you're working locally in your development environment, you can create or re-create your table schema by executing the respective `CREATE TABLE` statement. Alternatively, you can use the following snippet in the Rails console:
+When you're working locally in your development environment, you can create or re-create your table schema by
+executing `rake gitlab:clickhouse:rollback` and `rake gitlab:clickhouse:migrate`.
+Alternatively, you can use the following snippet in the Rails console:
 
 ```ruby
 require_relative 'spec/support/database/click_house/hooks.rb'

@@ -95,12 +95,6 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
         end
       end
     end
-
-    describe '#by_reference_id' do
-      it 'returns the correct phone number record for the given reference_id' do
-        expect(described_class.by_reference_id('target')).to eq phone_number_record_1
-      end
-    end
   end
 
   describe '#validated?' do
@@ -120,6 +114,22 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
       it 'returns true' do
         expect(phone_number_record.validated?).to be(true)
       end
+    end
+  end
+
+  describe '.by_reference_id' do
+    let_it_be(:phone_number_record) { create(:phone_number_validation) }
+
+    let(:ref_id) { phone_number_record.telesign_reference_xid }
+
+    subject { described_class.by_reference_id(ref_id) }
+
+    it { is_expected.to eq phone_number_record }
+
+    context 'when there is no matching record' do
+      let(:ref_id) { 'does-not-exist' }
+
+      it { is_expected.to be_nil }
     end
   end
 end

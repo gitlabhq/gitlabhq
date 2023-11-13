@@ -636,8 +636,7 @@ class Namespace < ApplicationRecord
       :route,
       :project_setting,
       :project_feature,
-      pages_metadatum: :pages_deployment
-    )
+      :active_pages_deployments)
   end
 
   private

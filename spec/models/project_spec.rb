@@ -2820,7 +2820,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context "will return false if pages is deployed even if onboarding_complete is false" do
       before do
         project.pages_metadatum.update_column(:onboarding_complete, false)
-        project.pages_metadatum.update_column(:deployed, true)
+        create(:pages_deployment, project: project)
       end
 
       it { is_expected.to be_falsey }
@@ -2834,7 +2834,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'if pages are deployed' do
       before do
-        project.pages_metadatum.update_column(:deployed, true)
+        create(:pages_deployment, project: project)
       end
 
       it { is_expected.to be_truthy }
@@ -7198,126 +7198,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#mark_pages_as_deployed' do
-    let(:project) { create(:project) }
-
-    it "works when artifacts_archive is missing" do
-      project.mark_pages_as_deployed
-
-      expect(project.pages_metadatum.reload.deployed).to eq(true)
-    end
-
-    it "creates new record and sets deployed to true if none exists yet" do
-      project.pages_metadatum.destroy!
-      project.reload
-
-      project.mark_pages_as_deployed
-
-      expect(project.pages_metadatum.reload.deployed).to eq(true)
-    end
-
-    it "updates the existing record and sets deployed to true and records artifact archive" do
-      pages_metadatum = project.pages_metadatum
-      pages_metadatum.update!(deployed: false)
-
-      expect do
-        project.mark_pages_as_deployed
-      end.to change { pages_metadatum.reload.deployed }.from(false).to(true)
-    end
-  end
-
-  describe '#mark_pages_as_not_deployed' do
-    let(:project) { create(:project) }
-
-    it "creates new record and sets deployed to false if none exists yet" do
-      project.pages_metadatum.destroy!
-      project.reload
-
-      project.mark_pages_as_not_deployed
-
-      expect(project.pages_metadatum.reload.deployed).to eq(false)
-    end
-
-    it "updates the existing record and sets deployed to false and clears artifacts_archive" do
-      pages_metadatum = project.pages_metadatum
-      pages_metadatum.update!(deployed: true)
-
-      expect do
-        project.mark_pages_as_not_deployed
-      end.to change { pages_metadatum.reload.deployed }.from(true).to(false)
-    end
-  end
-
-  describe '#update_pages_deployment!' do
-    let(:project) { create(:project) }
-    let(:deployment) { create(:pages_deployment, project: project) }
-
-    it "creates new metadata record if none exists yet and sets deployment" do
-      project.pages_metadatum.destroy!
-      project.reload
-
-      project.update_pages_deployment!(deployment)
-
-      expect(project.pages_metadatum.pages_deployment).to eq(deployment)
-    end
-
-    it "updates the existing metadara record with deployment" do
-      expect do
-        project.update_pages_deployment!(deployment)
-      end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
-    end
-  end
-
-  describe '#set_first_pages_deployment!' do
-    let(:project) { create(:project) }
-    let(:deployment) { create(:pages_deployment, project: project) }
-
-    it "creates new metadata record if none exists yet and sets deployment" do
-      project.pages_metadatum.destroy!
-      project.reload
-
-      project.set_first_pages_deployment!(deployment)
-
-      expect(project.pages_metadatum.reload.pages_deployment).to eq(deployment)
-      expect(project.pages_metadatum.reload.deployed).to eq(true)
-    end
-
-    it "updates the existing metadara record with deployment" do
-      expect do
-        project.set_first_pages_deployment!(deployment)
-      end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
-
-      expect(project.pages_metadatum.reload.deployed).to eq(true)
-    end
-
-    it 'only updates metadata for this project' do
-      other_project = create(:project)
-
-      expect do
-        project.set_first_pages_deployment!(deployment)
-      end.not_to change { other_project.pages_metadatum.reload.pages_deployment }.from(nil)
-
-      expect(other_project.pages_metadatum.reload.deployed).to eq(false)
-    end
-
-    it 'does nothing if metadata already references some deployment' do
-      existing_deployment = create(:pages_deployment, project: project)
-      project.set_first_pages_deployment!(existing_deployment)
-
-      expect do
-        project.set_first_pages_deployment!(deployment)
-      end.not_to change { project.pages_metadatum.reload.pages_deployment }.from(existing_deployment)
-    end
-
-    it 'marks project as not deployed if deployment is nil' do
-      project.mark_pages_as_deployed
-
-      expect do
-        project.set_first_pages_deployment!(nil)
-      end.to change { project.pages_metadatum.reload.deployed }.from(true).to(false)
-    end
-  end
-
   describe '#has_pool_repository?' do
     it 'returns false when it does not have a pool repository' do
       subject = create(:project, :repository)
@@ -7381,7 +7261,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'returns only projects that have pages deployed' do
       _project_without_pages = create(:project)
       project_with_pages = create(:project)
-      project_with_pages.mark_pages_as_deployed
+      create(:pages_deployment, project: project_with_pages)
 
       expect(described_class.with_pages_deployed).to contain_exactly(project_with_pages)
     end

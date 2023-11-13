@@ -13,11 +13,11 @@ module Packages
       INVALID_METADATA_ERROR_SYMBOL_MESSAGE = 'package name, version and/or description not found in metadata'
       MISSING_MATCHING_PACKAGE_ERROR_MESSAGE = 'symbol package is invalid, matching package does not exist'
 
-      InvalidMetadataError = Class.new(StandardError)
-      ZipError = Class.new(StandardError)
+      InvalidMetadataError = ZipError = Class.new(StandardError)
 
-      def initialize(package_file)
+      def initialize(package_file, package_zip_file)
         @package_file = package_file
+        @package_zip_file = package_zip_file
       end
 
       def execute
@@ -57,7 +57,7 @@ module Packages
         build_infos = package_to_destroy&.build_infos || []
 
         update_package(target_package, build_infos)
-        update_symbol_files(target_package, package_to_destroy) if symbol_package?
+        create_symbol_files
         ::Packages::UpdatePackageFileService.new(@package_file, package_id: target_package.id, file_name: package_filename)
                                             .execute
         package_to_destroy&.destroy!
@@ -79,8 +79,12 @@ module Packages
         raise InvalidMetadataError, e.message
       end
 
-      def update_symbol_files(package, package_to_destroy)
-        package_to_destroy.nuget_symbols.update_all(package_id: package.id)
+      def create_symbol_files
+        return unless symbol_package?
+
+        ::Packages::Nuget::Symbols::CreateSymbolFilesService
+          .new(existing_package, @package_zip_file)
+          .execute
       end
 
       def valid_metadata?
@@ -145,9 +149,10 @@ module Packages
       def symbol_package?
         package_types.include?(SYMBOL_PACKAGE_IDENTIFIER)
       end
+      strong_memoize_attr :symbol_package?
 
       def metadata
-        ::Packages::Nuget::MetadataExtractionService.new(@package_file).execute.payload
+        ::Packages::Nuget::MetadataExtractionService.new(@package_zip_file).execute.payload
       end
       strong_memoize_attr :metadata
 

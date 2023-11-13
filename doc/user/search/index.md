@@ -103,13 +103,13 @@ For example:
 
 ## Include archived projects in search results
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived` for the project scope. Disabled by default.
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10957) in GitLab 16.6 for all scopes.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived` for project search. Disabled by default.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10957) in GitLab 16.6 for all search scopes.
 
 By default, archived projects are excluded from search results.
-To include the search result from archived projects:
+To include archived projects in search results:
 
-1. On the search result page, on the left sidebar, select the **Include archived** checkbox.
+1. On the search page, on the left sidebar, select the **Include archived** checkbox.
 1. On the left sidebar, select **Apply**.
 
 ## Search for code

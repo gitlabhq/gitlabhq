@@ -9,7 +9,6 @@ RSpec.describe API::Pages, feature_category: :pages do
 
   before do
     project.add_maintainer(user)
-    project.mark_pages_as_deployed
   end
 
   describe 'DELETE /projects/:id/pages' do
@@ -17,7 +16,7 @@ RSpec.describe API::Pages, feature_category: :pages do
 
     it_behaves_like 'DELETE request permissions for admin mode' do
       before do
-        allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+        stub_pages_setting(enabled: true)
       end
 
       let(:succes_status_code) { :no_content }
@@ -25,7 +24,7 @@ RSpec.describe API::Pages, feature_category: :pages do
 
     context 'when Pages is disabled' do
       before do
-        allow(Gitlab.config.pages).to receive(:enabled).and_return(false)
+        stub_pages_setting(enabled: false)
       end
 
       it_behaves_like '404 response' do
@@ -35,7 +34,7 @@ RSpec.describe API::Pages, feature_category: :pages do
 
     context 'when Pages is enabled' do
       before do
-        allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+        stub_pages_setting(enabled: true)
       end
 
       context 'when Pages are deployed' do
@@ -48,15 +47,11 @@ RSpec.describe API::Pages, feature_category: :pages do
         it 'removes the pages' do
           delete api(path, admin, admin_mode: true)
 
-          expect(project.reload.pages_metadatum.deployed?).to be(false)
+          expect(project.reload.pages_deployed?).to be(false)
         end
       end
 
       context 'when pages are not deployed' do
-        before do
-          project.mark_pages_as_not_deployed
-        end
-
         it 'returns 204' do
           delete api(path, admin, admin_mode: true)
 

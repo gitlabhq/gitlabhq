@@ -1,5 +1,0 @@
-# TODO: Use real input type when https://gitlab.com/gitlab-org/gitlab/-/issues/417891 is complete.
-input LocalCreateOrganizationInput {
-  name: String
-  path: String
-}

@@ -1007,8 +1007,6 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387898).
 </div>
 
-This deprecation is now superseded by another [deprecation notice](#running-a-single-database-is-deprecated).
-
 Previously, [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
 configuration had a single `main:` section. This is being deprecated. The new
 configuration has both a `main:` and a `ci:` section.

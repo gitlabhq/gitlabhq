@@ -28,7 +28,6 @@ describe('Token projects table', () => {
   const findAllDeleteProjectBtn = () => wrapper.findAllComponents(GlButton);
   const findAllTableRows = () => wrapper.findAllByTestId('projects-token-table-row');
   const findProjectNameCell = () => wrapper.findByTestId('token-access-project-name');
-  const findProjectNamespaceCell = () => wrapper.findByTestId('token-access-project-namespace');
 
   it('displays a table', () => {
     createComponent();
@@ -57,25 +56,9 @@ describe('Token projects table', () => {
     expect(findAllDeleteProjectBtn()).toHaveLength(1);
   });
 
-  it('displays project and namespace cells', () => {
+  it('displays project fullpath', () => {
     createComponent();
 
-    expect(findProjectNameCell().text()).toBe('merge-train-stuff');
-    expect(findProjectNamespaceCell().text()).toBe('root');
-  });
-
-  it('displays empty string for namespace when namespace is null', () => {
-    const nullNamespace = {
-      id: '1',
-      name: 'merge-train-stuff',
-      namespace: null,
-      fullPath: 'root/merge-train-stuff',
-      isLocked: false,
-      __typename: 'Project',
-    };
-
-    createComponent({ projects: [nullNamespace] });
-
-    expect(findProjectNamespaceCell().text()).toBe('');
+    expect(findProjectNameCell().text()).toBe('root/merge-train-stuff');
   });
 });

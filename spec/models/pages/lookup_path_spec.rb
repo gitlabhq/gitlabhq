@@ -55,12 +55,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
     end
 
     context 'when there is pages deployment' do
-      let(:deployment) { create(:pages_deployment, project: project) }
-
-      before do
-        project.mark_pages_as_deployed
-        project.pages_metadatum.update!(pages_deployment: deployment)
-      end
+      let!(:deployment) { create(:pages_deployment, project: project) }
 
       it 'uses deployment from object storage' do
         freeze_time do
@@ -73,12 +68,6 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
             file_count: deployment.file_count
           )
         end
-      end
-
-      it 'does not recreate source hash' do
-        expect(deployment.file).to receive(:url_or_file_path).once
-
-        2.times { lookup_path.source }
       end
 
       context 'when deployment is in the local storage' do
@@ -159,12 +148,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
     end
 
     context 'when there is a deployment' do
-      let(:deployment) { create(:pages_deployment, project: project, root_directory: 'foo') }
-
-      before do
-        project.mark_pages_as_deployed
-        project.pages_metadatum.update!(pages_deployment: deployment)
-      end
+      let!(:deployment) { create(:pages_deployment, project: project, root_directory: 'foo') }
 
       it 'returns the deployment\'s root_directory' do
         expect(lookup_path.root_directory).to eq('foo')

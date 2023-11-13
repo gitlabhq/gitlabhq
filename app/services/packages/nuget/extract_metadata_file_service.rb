@@ -20,7 +20,7 @@ module Packages
       attr_reader :package_zip_file
 
       def nuspec_file_content
-        entry = package_zip_file.glob('*.nuspec').first
+        entry = extract_nuspec_file
 
         raise ExtractionError, 'nuspec file not found' unless entry
         raise ExtractionError, 'nuspec file too big' if MAX_FILE_SIZE < entry.size
@@ -31,6 +31,16 @@ module Packages
         end
       rescue Zip::EntrySizeError => e
         raise ExtractionError, "nuspec file has the wrong entry size: #{e.message}"
+      end
+
+      def extract_nuspec_file
+        if package_zip_file.is_a?(Zip::InputStream)
+          while (entry = package_zip_file.get_next_entry) # rubocop:disable Lint/AssignmentInCondition -- Following https://github.com/rubyzip/rubyzip#notes-on-zipinputstream and that's why the disable rubocop rule
+            break entry if entry.name.end_with?('.nuspec')
+          end
+        else
+          package_zip_file.glob('*.nuspec').first
+        end
       end
     end
   end

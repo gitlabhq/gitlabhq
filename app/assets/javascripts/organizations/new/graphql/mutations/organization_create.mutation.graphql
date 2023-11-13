@@ -1,0 +1,9 @@
+mutation organizationCreate($input: OrganizationCreateInput!) {
+  organizationCreate(input: $input) {
+    organization {
+      id
+      webUrl
+    }
+    errors
+  }
+}

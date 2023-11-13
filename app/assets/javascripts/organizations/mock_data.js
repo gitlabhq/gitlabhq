@@ -281,12 +281,25 @@ export const organizationGroups = {
   ],
 };
 
-export const createOrganizationResponse = {
-  organization: {
-    name: 'Default',
-    path: '/-/organizations/default',
+export const organizationCreateResponse = {
+  data: {
+    organizationCreate: {
+      organization: {
+        id: 'gid://gitlab/Organizations::Organization/1',
+        webUrl: 'http://127.0.0.1:3000/-/organizations/default',
+      },
+      errors: [],
+    },
   },
-  errors: [],
+};
+
+export const organizationCreateResponseWithErrors = {
+  data: {
+    organizationCreate: {
+      organization: null,
+      errors: ['Path is too short (minimum is 2 characters)'],
+    },
+  },
 };
 
 export const updateOrganizationResponse = {

@@ -49,39 +49,29 @@ module Packages
       strong_memoize_attr :existing_package
 
       def metadata
-        if remote_package_file?
-          ExtractMetadataContentService
+        if params[:remote_url].present?
+          ::Packages::Nuget::ExtractMetadataContentService
             .new(nuspec_file_content)
             .execute
             .payload
         else # to cover the case when package file is on disk not in object storage
-          MetadataExtractionService
-            .new(mock_package_file)
-            .execute
-            .payload
+          Zip::InputStream.open(params[:file]) do |zip|
+            ::Packages::Nuget::MetadataExtractionService
+              .new(zip)
+              .execute
+              .payload
+          end
         end
       end
       strong_memoize_attr :metadata
 
-      def remote_package_file?
-        params[:remote_url].present?
-      end
-
       def nuspec_file_content
-        ExtractRemoteMetadataFileService
+        ::Packages::Nuget::ExtractRemoteMetadataFileService
           .new(params[:remote_url])
           .execute
           .payload
-      rescue ExtractRemoteMetadataFileService::ExtractionError => e
+      rescue ::Packages::Nuget::ExtractRemoteMetadataFileService::ExtractionError => e
         raise ExtractionError, e.message
-      end
-
-      def mock_package_file
-        ::Packages::PackageFile.new(
-          params
-            .slice(:file, :file_name)
-            .merge(package: ::Packages::Package.nuget.build)
-        )
       end
     end
   end

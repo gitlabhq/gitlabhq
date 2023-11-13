@@ -2,7 +2,6 @@ import {
   organizations,
   organizationProjects,
   organizationGroups,
-  createOrganizationResponse,
   updateOrganizationResponse,
 } from '../../mock_data';
 
@@ -35,12 +34,6 @@ export default {
     },
   },
   Mutation: {
-    createOrganization: async () => {
-      // Simulate API loading
-      await simulateLoading();
-
-      return createOrganizationResponse;
-    },
     updateOrganization: async () => {
       // Simulate API loading
       await simulateLoading();

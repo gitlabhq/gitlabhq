@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_category: :database do
-  include ClickHouseHelpers
+  include ClickHouseTestHelpers
 
   # We don't need to delete data since we don't modify Postgres data
   self.use_transactional_tests = false
@@ -11,13 +11,14 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
   let(:migrations_base_dir) { 'click_house/migrations' }
   let(:migrations_dirname) { '' }
   let(:migrations_dir) { expand_fixture_path("#{migrations_base_dir}/#{migrations_dirname}") }
+  let(:verbose) { nil }
 
   before(:all) do
     Rake.application.rake_require 'tasks/gitlab/click_house/migration'
   end
 
   before do
-    stub_env('VERBOSE', 'false')
+    stub_env('VERBOSE', verbose) if verbose
   end
 
   describe 'migrate' do
@@ -42,11 +43,25 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
 
       it 'creates a table' do
         expect { migration }.to change { active_schema_migrations_count }.from(0).to(1)
+          .and output.to_stdout
 
         expect(describe_table('some')).to match({
           id: a_hash_including(type: 'UInt64'),
           date: a_hash_including(type: 'Date')
         })
+      end
+
+      context 'when VERBOSE is false' do
+        let(:verbose) { 'false' }
+
+        it 'does not write to stdout' do
+          expect { migration }.not_to output.to_stdout
+
+          expect(describe_table('some')).to match({
+            id: a_hash_including(type: 'UInt64'),
+            date: a_hash_including(type: 'Date')
+          })
+        end
       end
     end
 

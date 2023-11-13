@@ -18,7 +18,7 @@ module Packages
 
         return unless package_file
 
-        ::Packages::Nuget::UpdatePackageFromMetadataService.new(package_file).execute
+        ::Packages::Nuget::ProcessPackageFileService.new(package_file).execute
       rescue StandardError => exception
         process_package_file_error(
           package_file: package_file,

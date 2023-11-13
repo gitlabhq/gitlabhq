@@ -204,6 +204,13 @@ providing users with information about official releases.
 Components [can be used](#use-a-component-in-a-cicd-configuration) without being released,
 by using the commit SHA or ref. However, the `~latest` version keyword can only be used with released tags.
 
+NOTE:
+The `~latest` keyword always returns the most recent release, not the release with
+the latest semantic version. For example, if you first release `v2.0.0`, and later release
+a patch fix like `v1.5.1`, then `~latest` returns the `v1.5.1` release.
+[Issue #427286](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) proposes to
+change this behavior.
+
 ## Use a component in a CI/CD configuration
 
 You can add a component to a CI/CD configuration with the `include: component` keyword.
