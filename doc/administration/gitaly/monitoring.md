@@ -90,6 +90,47 @@ In Prometheus, look for the following metrics:
 - `gitaly_pack_objects_queued` indicates how many requests for pack-objects processes are waiting due to the concurrency limit being reached.
 - `gitaly_pack_objects_acquiring_seconds` indicates how long a request for a pack-object process has to wait due to concurrency limits before being processed.
 
+## Monitor Gitaly adaptive concurrency limiting
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
+
+You can observe specific behavior of [adaptive concurrency limiting](configure_gitaly.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
+
+In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the adaptive concurrency limiting when the current limits are adjusted.
+You can filter the content of the logs (`msg`) for "Multiplicative decrease" and "Additive increase" messages.
+
+| Log Field | Description |
+|:---|:---|
+| `limit` | The name of the limit being adjusted. |
+| `previous_limit` | The previous limit before it was increased or decreased. |
+| `new_limit` | The new limit after it was increased or decreased. |
+| `watcher` | The resource watcher that decided the node is under pressure. For example: `CgroupCpu` or `CgroupMemory`. |
+| `reason` | The reason behind limit adjustment. |
+| `stats.*` | Some statistics behind an adjustment decision. They are for debugging purposes. |
+
+Example log:
+
+```json
+{
+  "msg": "Multiplicative decrease",
+  "limit": "pack-objects",
+  "new_limit": 14,
+  "previous_limit": 29,
+  "reason": "cgroup CPU throttled too much",
+  "watcher": "CgroupCpu",
+  "stats.time_diff": 15.0,
+  "stats.throttled_duration": 13.0,
+  "stat.sthrottled_threshold": 0.5
+}
+```
+
+In Prometheus, look for the following metrics:
+
+- `gitaly_concurrency_limiting_current_limit` The current limit value of an adaptive concurrency limit.
+- `gitaly_concurrency_limiting_watcher_errors_total` indicates the total number of watcher errors while fetching resource metrics.
+- `gitaly_concurrency_limiting_backoff_events_total` indicates the total number of backoff events, which are when the limits being
+  adjusted due to resource pressure.
+
 ## Monitor Gitaly cgroups
 
 You can observe the status of [control groups (cgroups)](configure_gitaly.md#control-groups) using Prometheus:

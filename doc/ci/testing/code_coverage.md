@@ -40,7 +40,10 @@ using the [`coverage`](../yaml/index.md#coverage) keyword.
 
 #### Test coverage examples
 
-Use this regex for commonly used test tools.
+The following list shows sample regex patterns for many common test coverage tools.
+If the tooling has changed after these samples were created, or if the tooling was customized,
+the regex might not work. Test the regex carefully to make sure it correctly finds the
+coverage in the tool's output:
 
 <!-- vale gitlab.Spelling = NO -->
 

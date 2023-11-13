@@ -87,12 +87,11 @@ export default {
     {
       key: 'incidentSla',
       label: s__('IncidentManagement|Time to SLA'),
-      thClass: `gl-text-right gl-w-10p`,
+      thClass: `${thClass} gl-text-right gl-w-10p`,
       tdClass: `${tdClass} gl-text-right`,
       thAttr: TH_INCIDENT_SLA_TEST_ID,
       actualSortKey: 'SLA_DUE_AT',
       sortable: true,
-      sortDirection: 'asc',
     },
     {
       key: 'assignees',

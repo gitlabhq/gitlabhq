@@ -12,6 +12,8 @@ Use Code Quality to analyze your source code's quality and complexity. This help
 project's code simple, readable, and easier to maintain. Code Quality should supplement your
 other review processes, not replace them.
 
+Code Quality runs in CI/CD pipelines, and helps you avoid merging changes that would degrade your code's quality.
+
 Code Quality uses the open source Code Climate tool, and selected
 [plugins](https://docs.codeclimate.com/docs/list-of-engines), to analyze your source code.
 To confirm if your code's languages are covered, see the Code Climate list of
@@ -19,9 +21,6 @@ To confirm if your code's languages are covered, see the Code Climate list of
 You can extend the code coverage either by using Code Climate
 [Analysis Plugins](https://docs.codeclimate.com/docs/list-of-engines) or a
 [custom tool](#implement-a-custom-tool).
-
-Run Code Quality reports in your CI/CD pipeline to verify changes don't degrade your code's quality,
-_before_ committing them to the default branch.
 
 ## Features per tier
 
@@ -344,9 +343,9 @@ code_quality:
 > [Introduced](https://gitlab.com/gitlab-org/ci-cd/codequality/-/merge_requests/30) in GitLab 13.7.
 
 Using a private container image registry can reduce the time taken to download images, and also
-reduce external dependencies. Because of the nested architecture of container execution, the
-registry prefix must be specifically configured to be passed down into CodeClimate's subsequent
-`docker pull` commands for individual engines.
+reduce external dependencies. You must configure the registry prefix to be passed down
+to CodeClimate's subsequent `docker pull` commands for individual engines, because of
+the nested method of container execution.
 
 The following variables can address all of the required image pulls:
 
