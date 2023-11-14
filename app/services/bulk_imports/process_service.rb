@@ -32,7 +32,9 @@ module BulkImports
 
         entity.start!
 
-        BulkImports::ExportRequestWorker.perform_async(entity.id)
+        Gitlab::ApplicationContext.with_context(bulk_import_entity_id: entity.id) do
+          BulkImports::ExportRequestWorker.perform_async(entity.id)
+        end
       end
     end
 

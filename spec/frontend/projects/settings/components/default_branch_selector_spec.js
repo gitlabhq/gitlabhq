@@ -4,6 +4,7 @@ import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES } from '~/ref/constants';
 
 describe('projects/settings/components/default_branch_selector', () => {
+  const disabled = true;
   const persistedDefaultBranch = 'main';
   const projectId = '123';
   let wrapper;
@@ -13,6 +14,7 @@ describe('projects/settings/components/default_branch_selector', () => {
   const buildWrapper = () => {
     wrapper = shallowMount(DefaultBranchSelector, {
       propsData: {
+        disabled,
         persistedDefaultBranch,
         projectId,
       },
@@ -25,6 +27,7 @@ describe('projects/settings/components/default_branch_selector', () => {
 
   it('displays a RefSelector component', () => {
     expect(findRefSelector().props()).toEqual({
+      disabled,
       value: persistedDefaultBranch,
       enabledRefTypes: [REF_TYPE_BRANCHES],
       projectId,

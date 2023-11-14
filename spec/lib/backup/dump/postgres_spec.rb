@@ -32,5 +32,25 @@ RSpec.describe Backup::Dump::Postgres, feature_category: :backup_restore do
 
       expect(File.exist?(db_file_name)).to eq(true)
     end
+
+    context 'when COMPRESS_CMD is set to tee' do
+      let(:tee_pid) { spawn('tee', in: pipes[0], out: [db_file_name, 'w', 0o600]) }
+
+      before do
+        stub_env('COMPRESS_CMD', 'tee')
+      end
+
+      it 'passes through tee instead of gzip' do
+        expect(subject).to receive(:spawn).with('tee', in: pipes.first,
+                                                       out: [db_file_name, 'w', 0o600]).and_return(tee_pid)
+        expect(Process).to receive(:spawn).with('pg_dump', *args, pg_database, out: pipes[1]).and_return(pg_dump_pid)
+
+        expect do
+          subject.dump(pg_database, db_file_name, args)
+        end.to output(/Using custom COMPRESS_CMD 'tee'/).to_stdout
+
+        expect(File.exist?(db_file_name)).to eq(true)
+      end
+    end
   end
 end

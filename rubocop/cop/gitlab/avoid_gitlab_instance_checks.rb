@@ -27,7 +27,7 @@ module RuboCop
         MSG = 'Avoid the use of `%{name}`. Use Gitlab::Saas.feature_available?. ' \
               'See https://docs.gitlab.com/ee/development/ee_features.html#saas-only-feature'
         RESTRICT_ON_SEND = %i[
-          com? com_except_jh? com_and_canary? com_but_not_canary? org_or_com? should_check_namespace_plan?
+          com? com_except_jh? com_and_canary? com_but_not_canary? org_or_com? should_check_namespace_plan? enabled?
         ].freeze
 
         # @!method gitlab?(node)
@@ -43,8 +43,16 @@ module RuboCop
                 {nil? (cbase)} :Gitlab) :CurrentSettings) :should_check_namespace_plan?)
         PATTERN
 
+        # @!method saas_enabled?(node)
+        def_node_matcher :saas_enabled?, <<~PATTERN
+          (send
+            (const
+              (const
+                {nil? (cbase)} :Gitlab) :Saas) :enabled?)
+        PATTERN
+
         def on_send(node)
-          return unless gitlab?(node) || should_check_namespace_plan?(node)
+          return unless gitlab?(node) || should_check_namespace_plan?(node) || saas_enabled?(node)
 
           add_offense(node, message: format(MSG, name: node.method_name))
         end

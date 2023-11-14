@@ -112,11 +112,9 @@ export default {
         </div>
       </div>
       <div
-        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-space-between"
+        class="gl-display-flex gl-sm-flex-direction-column gl-justify-content-space-between gl-font-sm"
       >
-        <span class="gl-display-flex gl-flex-basis-two-thirds gl-font-sm">{{
-          resource.description
-        }}</span>
+        <span class="gl-display-flex gl-flex-basis-two-thirds">{{ resource.description }}</span>
         <div class="gl-display-flex gl-justify-content-end">
           <span v-if="hasReleasedVersion">
             <gl-sprintf :message="$options.i18n.releasedMessage">

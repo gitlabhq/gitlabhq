@@ -77,13 +77,8 @@ module UsageDataHelpers
   USAGE_DATA_KEYS = %i[
     counts
     recorded_at
-    mattermost_enabled
-    ldap_enabled
     omniauth_enabled
     reply_by_email_enabled
-    container_registry_enabled
-    dependency_proxy_enabled
-    gitlab_shared_runners_enabled
     gitlab_pages
     git
     gitaly

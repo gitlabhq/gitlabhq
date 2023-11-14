@@ -346,6 +346,70 @@ The resulting file is named `dump_gitlab_backup.tar`. This is useful for
 systems that make use of rsync and incremental backups, and results in
 considerably faster transfer speeds.
 
+#### Backup compression
+
+By default, Gzip fast compression is applied during backup of:
+
+- [PostgreSQL database](#postgresql-databases) dumps.
+- [blobs](#blobs), for example uploads, job artifacts, external merge request diffs.
+
+The default command is `gzip -c -1`. You can override this command with `COMPRESS_CMD`.
+
+Caveats:
+
+- The compression command is used in a pipeline, so your custom command must output to stdout.
+- If you specify a command that is not packaged with GitLab, then you must install it yourself.
+- The resultant filenames will still end in `.gz`.
+- The default decompression command, used during restore, is `gzip -cd`. Therefore if you override the compression command to use a format that cannot be decompressed by `gzip -cd`, you must override the decompression command during restore.
+
+### Default compression: Gzip with fastest method
+
+```shell
+gitlab-backup create
+```
+
+### Gzip with slowest method
+
+```shell
+gitlab-backup create COMPRESS_CMD="gzip -c --best"
+```
+
+If `gzip` was used for backup, then restore does not require any options:
+
+```shell
+gitlab-backup restore
+```
+
+### No compression
+
+If your backup destination has built-in automatic compression, then you may wish to skip compression.
+
+The `tee` command pipes `stdin` to `stdout`.
+
+```shell
+gitlab-backup create COMPRESS_CMD=tee
+```
+
+And on restore:
+
+```shell
+gitlab-backup restore DECOMPRESS_CMD=tee
+```
+
+### Replace Gzip
+
+This is an example of how to use a compression tool which you installed manually:
+
+```shell
+gitlab-backup create COMPRESS_CMD="foo --bar --baz"
+```
+
+Similarly, on restore:
+
+```shell
+gitlab-backup restore DECOMPRESS_CMD="foo --quz"
+```
+
 #### Confirm archive can be transferred
 
 To ensure the generated archive is transferable by rsync, you can set the `GZIP_RSYNCABLE=yes`

@@ -571,13 +571,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       subject { described_class.features_usage_data_ce }
 
       it 'gathers feature usage data', :aggregate_failures do
-        expect(subject[:mattermost_enabled]).to eq(Gitlab.config.mattermost.enabled)
-        expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)
         expect(subject[:omniauth_enabled]).to eq(Gitlab::Auth.omniauth_enabled?)
         expect(subject[:reply_by_email_enabled]).to eq(Gitlab::Email::IncomingEmail.enabled?)
-        expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
-        expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
-        expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
       end
 
       context 'with embedded Prometheus' do

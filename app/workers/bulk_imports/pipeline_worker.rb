@@ -124,12 +124,14 @@ module BulkImports
     def re_enqueue(delay = FILE_EXTRACTION_PIPELINE_PERFORM_DELAY)
       log_extra_metadata_on_done(:re_enqueue, true)
 
-      self.class.perform_in(
-        delay,
-        pipeline_tracker.id,
-        pipeline_tracker.stage,
-        entity.id
-      )
+      with_context(bulk_import_entity_id: entity.id) do
+        self.class.perform_in(
+          delay,
+          pipeline_tracker.id,
+          pipeline_tracker.stage,
+          entity.id
+        )
+      end
     end
 
     def context
@@ -218,7 +220,9 @@ module BulkImports
       1.upto(export_status.batches_count) do |batch_number|
         batch = pipeline_tracker.batches.find_or_create_by!(batch_number: batch_number) # rubocop:disable CodeReuse/ActiveRecord
 
-        ::BulkImports::PipelineBatchWorker.perform_async(batch.id)
+        with_context(bulk_import_entity_id: entity.id) do
+          ::BulkImports::PipelineBatchWorker.perform_async(batch.id)
+        end
       end
     end
   end

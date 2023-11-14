@@ -130,14 +130,17 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Rotate a group access token. Revokes the previous token and creates a new token that expires in one week.
 
+In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
+
 ```plaintext
 POST /groups/:id/access_tokens/:token_id/rotate
 ```
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the project access token |
+| Attribute | Type       | required | Description         |
+|-----------|------------|----------|---------------------|
+| `id` | integer/string  | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `token_id` | integer/string | yes | ID of the access token |
+| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>/rotate"

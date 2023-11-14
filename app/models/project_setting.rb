@@ -11,8 +11,6 @@ class ProjectSetting < ApplicationRecord
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
 
-  ignore_column :jitsu_key, remove_with: '16.7', remove_after: '2023-11-17'
-
   attr_encrypted :cube_api_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_32,

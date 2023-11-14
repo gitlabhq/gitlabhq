@@ -36,7 +36,7 @@ export default function initDiffsApp(store = notesStore) {
         iid: dataset.iid || '',
         endpointCoverage: dataset.endpointCoverage || '',
         endpointCodequality: dataset.endpointCodequality || '',
-        sastReportAvailable: dataset.endpointSast,
+        sastReportAvailable: parseBoolean(dataset.sastReportAvailable),
         helpPagePath: dataset.helpPagePath,
         currentUser: JSON.parse(dataset.currentUserData) || {},
         changesEmptyStateIllustration: dataset.changesEmptyStateIllustration,

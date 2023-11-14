@@ -4,7 +4,9 @@ pre-push:
     - ref: master
   commands:
     danger:
-      run: bundle exec rake danger_local
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      # We need to specify {files} as part of the command, otherwise it won't execute the hook
+      run: echo {files} >/dev/null && FROM_LEFTHOOK=1 bundle exec rake danger_local
     eslint:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

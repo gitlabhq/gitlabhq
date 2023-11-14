@@ -210,6 +210,14 @@ RSpec.describe Gitlab::ApplicationContext do
         expect(result(context)).to include(job_id: job.id, project: project.full_path, pipeline_id: job.pipeline_id)
       end
     end
+
+    context 'when using bulk import context' do
+      it 'sets expected bulk_import_entity_id value' do
+        context = described_class.new(bulk_import_entity_id: 1)
+
+        expect(result(context)).to include(bulk_import_entity_id: 1)
+      end
+    end
   end
 
   describe '#use' do

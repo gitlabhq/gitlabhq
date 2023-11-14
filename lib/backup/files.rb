@@ -40,14 +40,14 @@ module Backup
         end
 
         tar_cmd = [tar, exclude_dirs(:tar), %W[-C #{backup_files_realpath} -cf - .]].flatten
-        status_list, output = run_pipeline!([tar_cmd, gzip_cmd], out: [backup_tarball, 'w', 0600])
+        status_list, output = run_pipeline!([tar_cmd, compress_cmd], out: [backup_tarball, 'w', 0600])
         FileUtils.rm_rf(backup_files_realpath)
       else
         tar_cmd = [tar, exclude_dirs(:tar), %W[-C #{app_files_realpath} -cf - .]].flatten
-        status_list, output = run_pipeline!([tar_cmd, gzip_cmd], out: [backup_tarball, 'w', 0600])
+        status_list, output = run_pipeline!([tar_cmd, compress_cmd], out: [backup_tarball, 'w', 0600])
       end
 
-      unless pipeline_succeeded?(tar_status: status_list[0], gzip_status: status_list[1], output: output)
+      unless pipeline_succeeded?(tar_status: status_list[0], compress_status: status_list[1], output: output)
         raise_custom_error(backup_tarball)
       end
     end
@@ -56,9 +56,9 @@ module Backup
     def restore(backup_tarball, backup_id)
       backup_existing_files_dir(backup_tarball)
 
-      cmd_list = [%w[gzip -cd], %W[#{tar} --unlink-first --recursive-unlink -C #{app_files_realpath} -xf -]]
+      cmd_list = [decompress_cmd, %W[#{tar} --unlink-first --recursive-unlink -C #{app_files_realpath} -xf -]]
       status_list, output = run_pipeline!(cmd_list, in: backup_tarball)
-      unless pipeline_succeeded?(gzip_status: status_list[0], tar_status: status_list[1], output: output)
+      unless pipeline_succeeded?(compress_status: status_list[0], tar_status: status_list[1], output: output)
         raise Backup::Error, "Restore operation failed: #{output}"
       end
     end
@@ -108,8 +108,8 @@ module Backup
       noncritical_warnings.map { |w| warning =~ w }.any?
     end
 
-    def pipeline_succeeded?(tar_status:, gzip_status:, output:)
-      return false unless gzip_status&.success?
+    def pipeline_succeeded?(tar_status:, compress_status:, output:)
+      return false unless compress_status&.success?
 
       tar_status&.success? || tar_ignore_non_success?(tar_status.exitstatus, output)
     end

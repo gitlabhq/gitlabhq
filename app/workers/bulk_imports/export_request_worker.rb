@@ -20,7 +20,9 @@ module BulkImports
       set_source_xid
       request_export
 
-      BulkImports::EntityWorker.perform_async(entity_id)
+      with_context(bulk_import_entity_id: entity_id) do
+        BulkImports::EntityWorker.perform_async(entity_id)
+      end
     end
 
     def perform_failure(exception, entity_id)

@@ -43315,6 +43315,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security Scan"
 msgstr ""
 
+msgid "SecurityOrchestration|Security policy overwrites this setting"
+msgstr ""
+
 msgid "SecurityOrchestration|Security policy project was linked successfully"
 msgstr ""
 
@@ -43463,6 +43466,9 @@ msgid "SecurityOrchestration|YAML"
 msgstr ""
 
 msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} policies."
+msgstr ""
+
+msgid "SecurityOrchestration|You can't change the default branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
 msgstr ""
 
 msgid "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."

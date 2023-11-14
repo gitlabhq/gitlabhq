@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Backup::Database, :reestablished_active_record_base, feature_category: :backup_restore do
   let(:progress) { StringIO.new }
-  let(:output) { progress.string }
+  let(:progress_output) { progress.string }
   let(:backup_id) { 'some_id' }
   let(:one_database_configured?) { base_models_for_backup.one? }
   let(:timeout_service) do
@@ -223,7 +223,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
         subject.restore(backup_dir, backup_id)
 
-        expect(output).to include('Removing all tables. Press `Ctrl-C` within 5 seconds to abort')
+        expect(progress_output).to include('Removing all tables. Press `Ctrl-C` within 5 seconds to abort')
       end
 
       it 'has a pre restore warning' do
@@ -241,9 +241,21 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
         subject.restore(backup_dir, backup_id)
 
-        expect(output).to include("Restoring PostgreSQL database")
-        expect(output).to include("[DONE]")
-        expect(output).not_to include("ERRORS")
+        expect(progress_output).to include("Restoring PostgreSQL database")
+        expect(progress_output).to include("[DONE]")
+        expect(progress_output).not_to include("ERRORS")
+      end
+
+      context 'when DECOMPRESS_CMD is set to tee' do
+        before do
+          stub_env('DECOMPRESS_CMD', 'tee')
+        end
+
+        it 'outputs a message about DECOMPRESS_CMD' do
+          expect do
+            subject.restore(backup_dir, backup_id)
+          end.to output(/Using custom DECOMPRESS_CMD 'tee'/).to_stdout
+        end
       end
     end
 
@@ -277,9 +289,9 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
         subject.restore(backup_dir, backup_id)
 
-        expect(output).to include("ERRORS")
-        expect(output).not_to include(noise)
-        expect(output).to include(visible_error)
+        expect(progress_output).to include("ERRORS")
+        expect(progress_output).not_to include(noise)
+        expect(progress_output).to include(visible_error)
         expect(subject.post_restore_warning).not_to be_nil
       end
     end

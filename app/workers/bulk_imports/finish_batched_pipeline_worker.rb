@@ -38,7 +38,9 @@ module BulkImports
     attr_reader :tracker
 
     def re_enqueue
-      self.class.perform_in(REQUEUE_DELAY, tracker.id)
+      with_context(bulk_import_entity_id: tracker.entity.id) do
+        self.class.perform_in(REQUEUE_DELAY, tracker.id)
+      end
     end
 
     def import_in_progress?

@@ -1212,6 +1212,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactusedcdn"></a>`artifactUsedCdn` | [`String`](#string) | Delete jobs matching artifact_used_cdn in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactsdependenciescount"></a>`artifactsDependenciesCount` | [`String`](#string) | Delete jobs matching artifacts_dependencies_count in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactsdependenciessize"></a>`artifactsDependenciesSize` | [`String`](#string) | Delete jobs matching artifacts_dependencies_size in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobsbulkimportentityid"></a>`bulkImportEntityId` | [`String`](#string) | Delete jobs matching bulk_import_entity_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobscallerid"></a>`callerId` | [`String`](#string) | Delete jobs matching caller_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsclientid"></a>`clientId` | [`String`](#string) | Delete jobs matching client_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |

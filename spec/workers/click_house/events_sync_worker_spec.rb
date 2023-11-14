@@ -63,10 +63,31 @@ RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_man
           end
 
           it 'inserts all records' do
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
+              { status: :processed, records_inserted: 4, reached_end_of_table: true })
+
             worker.perform
 
             events = ClickHouse::Client.select('SELECT * FROM events', :main)
             expect(events.size).to eq(4)
+          end
+
+          context 'when new records are inserted while processing' do
+            it 'does not process new records created during the iteration' do
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
+                { status: :processed, records_inserted: 4,
+                  reached_end_of_table: true })
+
+              # Simulating the case when there is an insert during the iteration
+              call_count = 0
+              allow(worker).to receive(:next_batch).and_wrap_original do |method|
+                call_count += 1
+                create(:event) if call_count == 3
+                method.call
+              end
+
+              worker.perform
+            end
           end
         end
 
@@ -96,6 +117,9 @@ RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_man
           end
 
           it 'syncs records after the cursor' do
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
+              { status: :processed, records_inserted: 3, reached_end_of_table: true })
+
             worker.perform
 
             events = ClickHouse::Client.select('SELECT id FROM events ORDER BY id', :main)

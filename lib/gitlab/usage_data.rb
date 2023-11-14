@@ -163,11 +163,6 @@ module Gitlab
 
       def features_usage_data_ce
         {
-          container_registry_enabled: alt_usage_data(fallback: nil) { Gitlab.config.registry.enabled },
-          dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
-          gitlab_shared_runners_enabled: alt_usage_data(fallback: nil) { Gitlab.config.gitlab_ci.shared_runners_enabled },
-          ldap_enabled: alt_usage_data(fallback: nil) { Gitlab.config.ldap.enabled },
-          mattermost_enabled: alt_usage_data(fallback: nil) { Gitlab.config.mattermost.enabled },
           omniauth_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth.omniauth_enabled? },
           prometheus_enabled: alt_usage_data(fallback: nil) { Gitlab::Prometheus::Internal.prometheus_enabled? },
           prometheus_metrics_enabled: alt_usage_data(fallback: nil) { Gitlab::Metrics.prometheus_metrics_enabled? },

@@ -49,7 +49,9 @@ module BulkImports
     attr_reader :entity
 
     def re_enqueue
-      BulkImports::EntityWorker.perform_in(PERFORM_DELAY, entity.id)
+      with_context(bulk_import_entity_id: entity.id) do
+        BulkImports::EntityWorker.perform_in(PERFORM_DELAY, entity.id)
+      end
     end
 
     def running_tracker
@@ -66,11 +68,13 @@ module BulkImports
       next_pipeline_trackers.each_with_index do |pipeline_tracker, index|
         log_info(message: 'Stage starting', entity_stage: pipeline_tracker.stage) if index == 0
 
-        BulkImports::PipelineWorker.perform_async(
-          pipeline_tracker.id,
-          pipeline_tracker.stage,
-          entity.id
-        )
+        with_context(bulk_import_entity_id: entity.id) do
+          BulkImports::PipelineWorker.perform_async(
+            pipeline_tracker.id,
+            pipeline_tracker.stage,
+            entity.id
+          )
+        end
       end
     end
 

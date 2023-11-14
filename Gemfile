@@ -504,7 +504,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'gitlab_quality-test_tooling', '~> 1.5.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'gitlab_quality-test_tooling', '~> 1.5.2', require: false, feature_category: :tooling
 end
 
 gem 'octokit', '~> 6.0' # rubocop:todo Gemfile/MissingFeatureCategory
