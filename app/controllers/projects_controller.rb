@@ -497,6 +497,7 @@ class ProjectsController < Projects::ApplicationController
       :name,
       :only_allow_merge_if_all_discussions_are_resolved,
       :only_allow_merge_if_pipeline_succeeds,
+      :allow_merge_without_pipeline,
       :path,
       :printing_merge_request_link_enabled,
       :public_builds,

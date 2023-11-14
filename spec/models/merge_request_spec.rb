@@ -6133,4 +6133,29 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#allow_merge_without_pipeline?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:result) { merge_request.allow_merge_without_pipeline? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:allow_merge_without_pipeline?)
+        .with(inherit_group_setting: true)
+        .and_return(allow_merge_without_pipeline?)
+    end
+
+    context 'when associated project allow_merge_without_pipeline? returns true' do
+      let(:allow_merge_without_pipeline?) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when associated project allow_merge_without_pipeline? returns false' do
+      let(:allow_merge_without_pipeline?) { false }
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

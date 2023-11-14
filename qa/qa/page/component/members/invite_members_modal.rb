@@ -76,8 +76,10 @@ module QA
           private
 
           def set_access_level(access_level)
-            # Guest option is selected by default, skipping these steps if desired option is 'Guest'
-            select_element(:access_level_dropdown, access_level) unless access_level == 'Guest'
+            within_element(:access_level_dropdown) do
+              expand_select_list
+              select_item access_level
+            end
           end
         end
       end

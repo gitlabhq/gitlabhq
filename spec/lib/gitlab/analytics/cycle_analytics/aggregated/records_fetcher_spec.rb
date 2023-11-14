@@ -2,11 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
-  let_it_be(:project) { create(:project) }
+RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher, feature_category: :value_stream_management do
+  let_it_be(:project, refind: true) { create(:project, :public) }
   let_it_be(:issue_1) { create(:issue, project: project) }
-  let_it_be(:issue_2) { create(:issue, project: project) }
+  let_it_be(:issue_2) { create(:issue, :confidential, project: project) }
   let_it_be(:issue_3) { create(:issue, project: project) }
+
+  let_it_be(:merge_request) { create(:merge_request, :unique_branches, source_project: project, target_project: project) }
+
+  let_it_be(:user) { create(:user).tap { |u| project.add_developer(u) } }
 
   let_it_be(:stage) { create(:cycle_analytics_stage, start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production, namespace: project.reload.project_namespace) }
 
@@ -14,7 +18,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
   let_it_be(:stage_event_2) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_2.id, start_event_timestamp: 5.years.ago, end_event_timestamp: 2.years.ago) } # duration: 3 years
   let_it_be(:stage_event_3) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_3.id, start_event_timestamp: 6.years.ago, end_event_timestamp: 3.months.ago) } # duration: 5+ years
 
-  let(:params) { { from: 10.years.ago, to: Date.today } }
+  let(:params) { { from: 10.years.ago, to: Date.today, current_user: user } }
 
   subject(:records_fetcher) do
     query_builder = Gitlab::Analytics::CycleAnalytics::Aggregated::BaseQueryBuilder.new(stage: stage, params: params)
@@ -25,7 +29,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
     it 'returns issues in the correct order' do
       returned_iids = records_fetcher.serialized_records.pluck(:iid).map(&:to_i)
 
-      expect(returned_iids).to eq(expected_issue_ids)
+      expect(returned_iids).to eq(expected_iids)
     end
 
     it 'passes a hash with all expected attributes to the serializer' do
@@ -52,7 +56,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
   describe '#serialized_records' do
     describe 'sorting' do
       context 'when sorting by end event DESC' do
-        let(:expected_issue_ids) { [issue_3.iid, issue_1.iid, issue_2.iid] }
+        let(:expected_iids) { [issue_3.iid, issue_1.iid, issue_2.iid] }
 
         before do
           params[:sort] = :end_event
@@ -76,7 +80,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
       end
 
       context 'when sorting by end event ASC' do
-        let(:expected_issue_ids) { [issue_2.iid, issue_1.iid, issue_3.iid] }
+        let(:expected_iids) { [issue_2.iid, issue_1.iid, issue_3.iid] }
 
         before do
           params[:sort] = :end_event
@@ -87,7 +91,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
       end
 
       context 'when sorting by duration DESC' do
-        let(:expected_issue_ids) { [issue_3.iid, issue_2.iid, issue_1.iid] }
+        let(:expected_iids) { [issue_3.iid, issue_2.iid, issue_1.iid] }
 
         before do
           params[:sort] = :duration
@@ -98,7 +102,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
       end
 
       context 'when sorting by duration ASC' do
-        let(:expected_issue_ids) { [issue_1.iid, issue_2.iid, issue_3.iid] }
+        let(:expected_iids) { [issue_1.iid, issue_2.iid, issue_3.iid] }
 
         before do
           params[:sort] = :duration
@@ -110,7 +114,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
     end
 
     describe 'pagination' do
-      let(:expected_issue_ids) { [issue_3.iid] }
+      let(:expected_iids) { [issue_3.iid] }
 
       before do
         params[:sort] = :duration
@@ -160,6 +164,68 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
 
         expect(stage_event_count).to eq(4)
         expect(issue_count).to eq(3)
+      end
+    end
+  end
+
+  describe 'respecting visibility rules' do
+    let(:expected_iids) { [issue_3.iid, issue_1.iid] }
+
+    subject(:returned_iids) { records_fetcher.serialized_records.pluck(:iid).map(&:to_i) }
+
+    context 'when current user is guest' do
+      before do
+        params[:current_user] = nil
+      end
+
+      it { is_expected.to eq(expected_iids) }
+    end
+
+    context 'when current user is logged and has no access to the project' do
+      before do
+        params[:current_user] = create(:user)
+      end
+
+      it { is_expected.to eq(expected_iids) }
+    end
+  end
+
+  context 'when querying merge requests' do
+    let_it_be(:mr_stage) { create(:cycle_analytics_stage, start_event_identifier: :merge_request_last_build_started, end_event_identifier: :merge_request_last_build_finished, namespace: project.reload.project_namespace) }
+    let_it_be(:mr_stage_event) { create(:cycle_analytics_merge_request_stage_event, stage_event_hash_id: mr_stage.stage_event_hash_id, project_id: project.id, merge_request_id: merge_request.id, start_event_timestamp: 2.years.ago, end_event_timestamp: 1.year.ago) }
+
+    let(:stage) { mr_stage }
+    let(:expected_iids) { [merge_request.iid] }
+
+    subject(:returned_iids) { records_fetcher.serialized_records.pluck(:iid).map(&:to_i) }
+
+    it { is_expected.to eq(expected_iids) }
+
+    context 'when current user is guest' do
+      before do
+        params[:current_user] = nil
+      end
+
+      it { is_expected.to eq([merge_request.iid]) }
+    end
+
+    context 'when current user is logged and has no access to the project' do
+      before do
+        params[:current_user] = create(:user)
+      end
+
+      it { is_expected.to eq([merge_request.iid]) }
+
+      context 'when MR access level is elevated' do
+        before do
+          project.project_feature.update!(
+            builds_access_level: ProjectFeature::PRIVATE,
+            repository_access_level: ProjectFeature::PRIVATE,
+            merge_requests_access_level: ProjectFeature::PRIVATE
+          )
+        end
+
+        it { is_expected.to eq([]) }
       end
     end
   end

@@ -1572,6 +1572,10 @@ class MergeRequest < ApplicationRecord
     project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
   end
 
+  def allow_merge_without_pipeline?
+    project.allow_merge_without_pipeline?(inherit_group_setting: true)
+  end
+
   def only_allow_merge_if_all_discussions_are_resolved?
     project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
   end
@@ -1579,6 +1583,7 @@ class MergeRequest < ApplicationRecord
   def mergeable_ci_state?
     return true unless only_allow_merge_if_pipeline_succeeds?
     return false unless actual_head_pipeline
+
     return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && actual_head_pipeline.skipped?
 
     actual_head_pipeline.success?

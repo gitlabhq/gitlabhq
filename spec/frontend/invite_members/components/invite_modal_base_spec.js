@@ -1,5 +1,5 @@
 import {
-  GlFormSelect,
+  GlCollapsibleListbox,
   GlDatepicker,
   GlFormGroup,
   GlLink,
@@ -9,7 +9,11 @@ import {
 } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  mountExtended,
+  shallowMountExtended,
+  extendedWrapper,
+} from 'helpers/vue_test_utils_helper';
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 
@@ -31,7 +35,7 @@ describe('InviteModalBase', () => {
         ? {}
         : {
             ContentTransition,
-            GlFormSelect: true,
+            GlCollapsibleListbox: true,
             GlSprintf,
             GlFormGroup: stubComponent(GlFormGroup, {
               props: ['state', 'invalidFeedback'],
@@ -54,8 +58,8 @@ describe('InviteModalBase', () => {
     });
   };
 
-  const findFormSelect = () => wrapper.findComponent(GlFormSelect);
-  const findFormSelectOptions = () => findFormSelect().findAllComponents('option');
+  const findListbox = () => extendedWrapper(wrapper.findComponent(GlCollapsibleListbox));
+  const findListboxOptions = () => findListbox().findAllByRole('option');
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
   const findLink = () => wrapper.findComponent(GlLink);
   const findIcon = () => wrapper.findComponent(GlIcon);
@@ -108,12 +112,13 @@ describe('InviteModalBase', () => {
       });
 
       it('sets the default dropdown text to the default access level name', () => {
-        expect(findFormSelect().exists()).toBe(true);
-        expect(findFormSelect().element.value).toBe('10');
+        expect(findListbox().exists()).toBe(true);
+        const option = findListbox().find('[aria-selected]');
+        expect(option.text()).toBe('Reporter');
       });
 
       it('renders dropdown items for each accessLevel', () => {
-        expect(findFormSelectOptions()).toHaveLength(5);
+        expect(findListboxOptions()).toHaveLength(5);
       });
     });
 
@@ -211,7 +216,7 @@ describe('InviteModalBase', () => {
       it('renders correct blocks', () => {
         expect(findIcon().exists()).toBe(false);
         expect(findDisabledInput().exists()).toBe(false);
-        expect(findFormSelect().exists()).toBe(true);
+        expect(findListbox().exists()).toBe(true);
         expect(findDatepicker().exists()).toBe(true);
         expect(wrapper.findComponent(GlModal).text()).toMatch(textRegex);
       });

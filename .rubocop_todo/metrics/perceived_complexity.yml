@@ -7,7 +7,6 @@ Metrics/PerceivedComplexity:
     - 'app/helpers/nav/top_nav_helper.rb'
     - 'app/services/projects/create_service.rb'
     - 'ee/app/controllers/ee/groups_controller.rb'
-    - 'ee/spec/support/shared_contexts/remote_development/remote_development_shared_contexts.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
     - 'lib/banzai/renderer.rb'
     - 'lib/gitlab/conflict/file.rb'

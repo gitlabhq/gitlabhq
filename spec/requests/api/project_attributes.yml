@@ -151,6 +151,7 @@ project_setting:
     - legacy_open_source_license_available
     - prevent_merge_without_jira_issue
     - only_allow_merge_if_all_status_checks_passed
+    - allow_merge_without_pipeline
     - warn_about_potentially_unwanted_characters
     - previous_default_branch
     - project_id

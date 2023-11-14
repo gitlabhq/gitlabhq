@@ -78,9 +78,7 @@ module UsageDataHelpers
     counts
     recorded_at
     mattermost_enabled
-    signup_enabled
     ldap_enabled
-    gravatar_enabled
     omniauth_enabled
     reply_by_email_enabled
     container_registry_enabled

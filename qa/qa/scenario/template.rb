@@ -4,10 +4,10 @@ module QA
   module Scenario
     class Template
       class << self
-        def perform(*args)
+        def perform(...)
           new.tap do |scenario|
             yield scenario if block_given?
-            break scenario.perform(*args)
+            break scenario.perform(...)
           end
         end
 
@@ -21,7 +21,10 @@ module QA
       end
 
       def perform(options, *args)
-        define_gitlab_address(options, args)
+        define_gitlab_address(args)
+
+        # Store passed options globally
+        Support::GlobalOptions.set(options)
 
         # Save the scenario class name
         Runtime::Scenario.define(:klass, self.class.name)
@@ -39,43 +42,24 @@ module QA
         #
         QA::Runtime::Release.perform_before_hooks unless QA::Runtime::Env.dry_run
 
-        Runtime::Feature.enable(options[:enable_feature]) if options.key?(:enable_feature)
-
-        if options.key?(:disable_feature) && (@feature_enabled = Runtime::Feature.enabled?(options[:disable_feature]))
-          Runtime::Feature.disable(options[:disable_feature])
-        end
-
-        Runtime::Feature.set(options[:set_feature_flags]) if options.key?(:set_feature_flags)
-
         Specs::Runner.perform do |specs|
           specs.tty = true
           specs.tags = self.class.focus
           specs.options = args if args.any?
         end
-      ensure
-        Runtime::Feature.disable(options[:enable_feature]) if options.key?(:enable_feature)
-        Runtime::Feature.enable(options[:disable_feature]) if options.key?(:disable_feature) && @feature_enabled
-      end
-
-      def extract_address(name, options)
-        address = options[name]
-        validate_address(name, address)
-
-        Runtime::Scenario.define(name, address)
       end
 
       private
 
-      delegate :define_gitlab_address_attribute!, to: 'QA::Support::GitlabAddress'
+      delegate :define_gitlab_address_attribute!, to: QA::Support::GitlabAddress
 
       # Define gitlab address attribute
       #
       # Use first argument if a valid address, else use named argument or default to environment variable
       #
-      # @param [Hash] options
       # @param [Array] args
       # @return [void]
-      def define_gitlab_address(options, args)
+      def define_gitlab_address(args)
         address_from_opt = Runtime::Scenario.attributes[:gitlab_address]
 
         return define_gitlab_address_attribute!(args.shift) if args.first && Runtime::Address.valid?(args.first)

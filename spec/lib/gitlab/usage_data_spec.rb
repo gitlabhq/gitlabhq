@@ -571,18 +571,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       subject { described_class.features_usage_data_ce }
 
       it 'gathers feature usage data', :aggregate_failures do
-        expect(subject[:instance_auto_devops_enabled]).to eq(Gitlab::CurrentSettings.auto_devops_enabled?)
         expect(subject[:mattermost_enabled]).to eq(Gitlab.config.mattermost.enabled)
-        expect(subject[:signup_enabled]).to eq(Gitlab::CurrentSettings.allow_signup?)
         expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)
-        expect(subject[:gravatar_enabled]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
         expect(subject[:omniauth_enabled]).to eq(Gitlab::Auth.omniauth_enabled?)
         expect(subject[:reply_by_email_enabled]).to eq(Gitlab::Email::IncomingEmail.enabled?)
         expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
         expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
         expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
-        expect(subject[:grafana_link_enabled]).to eq(Gitlab::CurrentSettings.grafana_enabled?)
-        expect(subject[:gitpod_enabled]).to eq(Gitlab::CurrentSettings.gitpod_enabled?)
       end
 
       context 'with embedded Prometheus' do
@@ -596,34 +591,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
 
           expect(subject[:prometheus_enabled]).to eq(false)
-        end
-      end
-
-      context 'with embedded grafana' do
-        it 'returns true when embedded grafana is enabled' do
-          stub_application_setting(grafana_enabled: true)
-
-          expect(subject[:grafana_link_enabled]).to eq(true)
-        end
-
-        it 'returns false when embedded grafana is disabled' do
-          stub_application_setting(grafana_enabled: false)
-
-          expect(subject[:grafana_link_enabled]).to eq(false)
-        end
-      end
-
-      context 'with Gitpod' do
-        it 'returns true when is enabled' do
-          stub_application_setting(gitpod_enabled: true)
-
-          expect(subject[:gitpod_enabled]).to eq(true)
-        end
-
-        it 'returns false when is disabled' do
-          stub_application_setting(gitpod_enabled: false)
-
-          expect(subject[:gitpod_enabled]).to eq(false)
         end
       end
     end

@@ -12,8 +12,10 @@ QA::Specs::QaDeprecationToolkitEnv.configure!
 
 Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
 
+# TODO: move all classes that perform rspec configuration under spec/helpers
 QA::Support::GitlabAddress.define_gitlab_address_attribute!
 QA::Runtime::Browser.configure! unless QA::Runtime::Env.dry_run
+QA::Specs::Helpers::FeatureSetup.configure!
 QA::Runtime::AllureReport.configure!
 QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 QA::Support::KnapsackReport.configure!
@@ -122,7 +124,7 @@ RSpec.configure do |config|
     # show exception that triggers a retry if verbose_retry is set to true
     config.display_try_failure_messages = true
 
-    non_quarantine_retries = QA::Runtime::Env.ci_project_name =~ /staging|canary|production/ ? 3 : 2
+    non_quarantine_retries = QA::Runtime::Env.ci_project_name.match?(/staging|canary|production/) ? 3 : 2
     config.around do |example|
       quarantine = example.metadata[:quarantine]
       different_quarantine_context = QA::Specs::Helpers::Quarantine.quarantined_different_context?(quarantine)
@@ -136,5 +138,5 @@ RSpec.configure do |config|
   end
 end
 
-Dir[::File.join(__dir__, "features/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[::File.join(__dir__, "features/shared_contexts/**/*.rb")].sort.each { |f| require f }
+Dir[::File.join(__dir__, "features/shared_examples/**/*.rb")].each { |f| require f }
+Dir[::File.join(__dir__, "features/shared_contexts/**/*.rb")].each { |f| require f }

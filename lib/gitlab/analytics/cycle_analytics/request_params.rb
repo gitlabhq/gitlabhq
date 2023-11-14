@@ -119,6 +119,7 @@ module Gitlab
             attrs[:namespace] = namespace_attributes
             attrs[:enable_tasks_by_type_chart] = 'false'
             attrs[:enable_customizable_stages] = 'false'
+            attrs[:can_edit] = 'false'
             attrs[:enable_projects_filter] = 'false'
             attrs[:default_stages] = Gitlab::Analytics::CycleAnalytics::DefaultStages.all.map do |stage_params|
               ::Analytics::CycleAnalytics::StagePresenter.new(stage_params)

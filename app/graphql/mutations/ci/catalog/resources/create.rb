@@ -4,12 +4,8 @@ module Mutations
   module Ci
     module Catalog
       module Resources
-        class Create < BaseMutation
+        class Create < Base
           graphql_name 'CatalogResourcesCreate'
-
-          argument :project_path, GraphQL::Types::ID,
-            required: true,
-            description: 'Project to convert to a catalog resource.'
 
           authorize :add_catalog_resource
 
@@ -22,12 +18,6 @@ module Mutations
             {
               errors: errors
             }
-          end
-
-          private
-
-          def find_object(project_path:)
-            Project.find_by_full_path(project_path)
           end
         end
       end

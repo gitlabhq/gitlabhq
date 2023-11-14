@@ -1,7 +1,7 @@
 <script>
 import {
+  GlCollapsibleListbox,
   GlFormGroup,
-  GlFormSelect,
   GlModal,
   GlDatepicker,
   GlLink,
@@ -36,8 +36,8 @@ const DEFAULT_SLOTS = [
 
 export default {
   components: {
+    GlCollapsibleListbox,
     GlFormGroup,
-    GlFormSelect,
     GlDatepicker,
     GlLink,
     GlModal,
@@ -194,14 +194,6 @@ export default {
       };
     },
   },
-  watch: {
-    selectedAccessLevel: {
-      immediate: true,
-      handler(val) {
-        this.$emit('access-level', val);
-      },
-    },
-  },
   methods: {
     onReset() {
       // This component isn't necessarily disposed,
@@ -308,11 +300,13 @@ export default {
               </template>
             </gl-sprintf>
           </template>
-          <gl-form-select
+          <gl-collapsible-listbox
             :id="dropdownId"
             v-model="selectedAccessLevel"
             data-qa-selector="access_level_dropdown"
-            :options="accessLevelsOptions"
+            data-testid="access-level-dropdown"
+            :items="accessLevelsOptions"
+            block
           />
         </gl-form-group>
 

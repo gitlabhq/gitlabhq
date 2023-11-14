@@ -103,13 +103,6 @@ member_tasks:
 members:
   index_members_on_member_namespace_id_compound:
     - index_members_on_member_namespace_id
-merge_requests:
-  index_merge_requests_on_author_id_and_created_at:
-    - index_merge_requests_on_author_id
-  index_merge_requests_on_author_id_and_id:
-    - index_merge_requests_on_author_id
-  index_merge_requests_on_author_id_and_target_project_id:
-    - index_merge_requests_on_author_id
 ml_candidate_params:
   index_ml_candidate_params_on_candidate_id_on_name:
     - index_ml_candidate_params_on_candidate_id

@@ -3,7 +3,7 @@
 describe QA::Runtime::AllureReport do
   include QA::Support::Helpers::StubEnv
 
-  let(:rspec_config) { instance_double('RSpec::Core::Configuration', 'add_formatter': nil, append_after: nil) }
+  let(:rspec_config) { instance_double('RSpec::Core::Configuration', add_formatter: nil, append_after: nil) }
 
   let(:png_path) { 'png_path' }
   let(:html_path) { 'html_path' }

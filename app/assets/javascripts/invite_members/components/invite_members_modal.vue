@@ -128,8 +128,6 @@ export default {
       invalidMembers: {},
       source: 'unknown',
       mode: 'default',
-      // Kept in sync with "base"
-      selectedAccessLevel: undefined,
       errorsLimit: 2,
       isErrorsSectionExpanded: false,
       shouldShowEmptyInvitesAlert: false,
@@ -355,9 +353,6 @@ export default {
 
       this.closeModal();
     },
-    onAccessLevelUpdate(val) {
-      this.selectedAccessLevel = val;
-    },
     clearValidation() {
       this.invalidFeedbackMessage = '';
       this.invalidMembers = {};
@@ -398,7 +393,6 @@ export default {
     @cancel="onCancel"
     @reset="resetFields"
     @submit="sendInvite"
-    @access-level="onAccessLevelUpdate"
   >
     <template #intro-text-before>
       <div v-if="isCelebration" class="gl-p-4 gl-font-size-h1">

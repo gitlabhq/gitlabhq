@@ -108,7 +108,10 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
       let(:current_user) { project_owner }
 
       it 'shows Owner in the dropdown' do
-        expect(page).to have_select('Select a role', options: %w[Guest Reporter Developer Maintainer Owner])
+        within_modal do
+          toggle_listbox
+          expect_listbox_items(%w[Guest Reporter Developer Maintainer Owner])
+        end
       end
     end
 
@@ -116,8 +119,10 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
       let(:current_user) { project_maintainer }
 
       it 'does not show the Owner option' do
-        expect(page).to have_select('Select a role', options: %w[Guest Reporter Developer Maintainer])
-        expect(page).not_to have_select('Select a role', options: %w[Owner])
+        within_modal do
+          toggle_listbox
+          expect_listbox_items(%w[Guest Reporter Developer Maintainer])
+        end
       end
     end
   end

@@ -32,9 +32,9 @@ module Gitlab
             super(metric_definition.reverse_merge(time_frame: 'none'))
           end
 
-          def value(...)
+          def value
             alt_usage_data(fallback: self.class.fallback) do
-              self.class.metric_value.call(...)
+              instance_eval(&self.class.metric_value)
             end
           end
         end

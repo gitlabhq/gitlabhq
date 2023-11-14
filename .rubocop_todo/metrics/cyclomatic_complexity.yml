@@ -9,7 +9,6 @@ Metrics/CyclomaticComplexity:
     - 'app/services/projects/create_service.rb'
     - 'ee/app/controllers/ee/groups_controller.rb'
     - 'ee/lib/gitlab/ci/parsers/security/formatters/dependency_list.rb'
-    - 'ee/spec/support/shared_contexts/remote_development/remote_development_shared_contexts.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
     - 'lib/gitlab/conflict/file.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'

@@ -1909,7 +1909,7 @@ Input type: `CatalogResourcesCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcatalogresourcescreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcatalogresourcescreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to convert to a catalog resource. |
+| <a id="mutationcatalogresourcescreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path belonging to the catalog resource. |
 
 #### Fields
 
@@ -1917,6 +1917,28 @@ Input type: `CatalogResourcesCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcatalogresourcescreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcatalogresourcescreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.catalogResourcesDestroy`
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `CatalogResourcesDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcatalogresourcesdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcatalogresourcesdestroyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path belonging to the catalog resource. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcatalogresourcesdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcatalogresourcesdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.ciAiGenerateConfig`
 
@@ -18761,6 +18783,7 @@ Returns [`PreviewBillableUserChange`](#previewbillableuserchange).
 | <a id="groupgitlabsubscriptionspreviewbillableuserchangeaddgroupid"></a>`addGroupId` | [`Int`](#int) | Group ID to add. |
 | <a id="groupgitlabsubscriptionspreviewbillableuserchangeadduseremails"></a>`addUserEmails` | [`[String!]`](#string) | User emails to add. |
 | <a id="groupgitlabsubscriptionspreviewbillableuserchangeadduserids"></a>`addUserIds` | [`[Int!]`](#int) | User IDs to add. |
+| <a id="groupgitlabsubscriptionspreviewbillableuserchangememberroleid"></a>`memberRoleId` | [`Int`](#int) | Custom role assigned to the users. |
 | <a id="groupgitlabsubscriptionspreviewbillableuserchangerole"></a>`role` | [`GitlabSubscriptionsUserRole!`](#gitlabsubscriptionsuserrole) | Role of users being added to group. |
 
 ##### `Group.groupMembers`
@@ -23569,6 +23592,7 @@ Returns [`PreviewBillableUserChange`](#previewbillableuserchange).
 | <a id="projectgitlabsubscriptionspreviewbillableuserchangeaddgroupid"></a>`addGroupId` | [`Int`](#int) | Group ID to add. |
 | <a id="projectgitlabsubscriptionspreviewbillableuserchangeadduseremails"></a>`addUserEmails` | [`[String!]`](#string) | User emails to add. |
 | <a id="projectgitlabsubscriptionspreviewbillableuserchangeadduserids"></a>`addUserIds` | [`[Int!]`](#int) | User IDs to add. |
+| <a id="projectgitlabsubscriptionspreviewbillableuserchangememberroleid"></a>`memberRoleId` | [`Int`](#int) | Custom role assigned to the users. |
 | <a id="projectgitlabsubscriptionspreviewbillableuserchangerole"></a>`role` | [`GitlabSubscriptionsUserRole!`](#gitlabsubscriptionsuserrole) | Role of users being added to group. |
 
 ##### `Project.incidentManagementEscalationPolicies`

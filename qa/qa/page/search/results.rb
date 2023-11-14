@@ -20,7 +20,7 @@ module QA
         end
 
         def switch_to_code
-          click_element(:nav_item_link, submenu_item: 'Code')
+          click_element('nav-item-link', submenu_item: 'Code')
         end
 
         def switch_to_projects

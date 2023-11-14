@@ -85,7 +85,13 @@ module Gitlab
 
       def mail_key
         strong_memoize(:mail_key) do
-          find_first_key_from(to) || key_from_additional_headers
+          find_most_concrete_key_from(to) || key_from_additional_headers
+        end
+      end
+
+      def find_most_concrete_key_from(items)
+        find_first_key_from(items) do |email|
+          Gitlab::Email::ServiceDesk::CustomEmail.key_from_reply_address(email) || email_class.key_from_address(email)
         end
       end
 
@@ -93,7 +99,8 @@ module Gitlab
         items.each do |item|
           email = item.is_a?(Mail::Field) ? item.value : item
 
-          key = email_class.key_from_address(email)
+          key = block_given? ? yield(email) : email_class.key_from_address(email)
+
           return key if key
         end
         nil

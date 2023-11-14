@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::Receiver do
+RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
   include_context 'email shared context'
 
-  let_it_be(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let(:metric_transaction) { instance_double(Gitlab::Metrics::WebTransaction) }
 
   shared_examples 'successful receive' do
@@ -129,6 +129,63 @@ RSpec.describe Gitlab::Email::Receiver do
       let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"] }
 
       it_behaves_like 'successful receive'
+    end
+
+    context 'when Service Desk custom email reply address in To header and no References header exists' do
+      let_it_be_with_refind(:setting) { create(:service_desk_setting, project: project, add_external_participants_from_cc: true) }
+
+      let!(:credential) { create(:service_desk_custom_email_credential, project: project) }
+      let!(:verification) { create(:service_desk_custom_email_verification, :finished, project: project) }
+      let(:incoming_email) { "incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com" }
+      let(:reply_key) { "5de1a83a6fc3c9fe34d756c7f484159e" }
+      let(:custom_email_reply) { "support+#{reply_key}@example.com" }
+
+      context 'when custom email is enabled' do
+        let(:email_raw) do
+          <<~EMAIL
+          Delivered-To: #{incoming_email}
+          From: jake@example.com
+          To: #{custom_email_reply}
+          Subject: Reply titile
+
+          Reply body
+          EMAIL
+        end
+
+        let(:meta_key) { :to_address }
+        let(:meta_value) { [custom_email_reply] }
+
+        before do
+          project.reset
+          setting.update!(custom_email: 'support@example.com', custom_email_enabled: true)
+        end
+
+        it_behaves_like 'successful receive' do
+          let(:mail_key) { reply_key }
+        end
+
+        # Email forwarding using a transport rule in Microsoft 365 adds the forwarding
+        # target to the `To` header. We have to select te custom email reply address
+        # before the incoming address (forwarding target)
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/426269#note_1629170865 for email structure
+        context 'when also Service Desk incoming address in To header' do
+          let(:email_raw) do
+            <<~EMAIL
+            From: jake@example.com
+            To: #{custom_email_reply}, #{incoming_email}
+            Subject: Reply titile
+
+            Reply body
+            EMAIL
+          end
+
+          let(:meta_value) { [custom_email_reply, incoming_email] }
+
+          it_behaves_like 'successful receive' do
+            let(:mail_key) { reply_key }
+          end
+        end
+      end
     end
   end
 

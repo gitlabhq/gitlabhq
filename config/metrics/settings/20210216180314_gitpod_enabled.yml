@@ -9,6 +9,9 @@ value_type: boolean
 status: active
 time_frame: none
 data_source: system
+instrumentation_class: GitlabSettingsMetric
+options:
+  setting_method: gitpod_enabled?
 distribution:
 - ce
 - ee

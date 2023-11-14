@@ -539,6 +539,7 @@ class Project < ApplicationRecord
 
   with_options to: :project_setting do
     delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?, :allow_merge_on_skipped_pipeline=
+    delegate :allow_merge_without_pipeline, :allow_merge_without_pipeline?, :allow_merge_without_pipeline=
     delegate :has_confluence?
     delegate :has_shimo?
     delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?
@@ -858,6 +859,7 @@ class Project < ApplicationRecord
   cascading_with_parent_namespace :only_allow_merge_if_pipeline_succeeds
   cascading_with_parent_namespace :allow_merge_on_skipped_pipeline
   cascading_with_parent_namespace :only_allow_merge_if_all_discussions_are_resolved
+  cascading_with_parent_namespace :allow_merge_without_pipeline
 
   def self.with_feature_available_for_user(feature, user)
     with_project_feature.merge(ProjectFeature.with_feature_available_for_user(feature, user))

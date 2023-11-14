@@ -14,12 +14,14 @@ module Gitlab
             Issue => {
               serializer_class: AnalyticsIssueSerializer,
               includes_for_query: { project: { namespace: [:route] }, author: [] },
-              columns_for_select: %I[title iid id created_at author_id project_id]
+              columns_for_select: %I[title iid id created_at author_id project_id],
+              finder_class: IssuesFinder
             },
             MergeRequest => {
               serializer_class: AnalyticsMergeRequestSerializer,
               includes_for_query: { target_project: [:namespace], author: [] },
-              columns_for_select: %I[title iid id created_at author_id state_id target_project_id]
+              columns_for_select: %I[title iid id created_at author_id state_id target_project_id],
+              finder_class: MergeRequestsFinder
             }
           }.freeze
 
@@ -80,12 +82,15 @@ module Gitlab
           def load_issuables(stage_event_records)
             stage_event_records_by_issuable_id = stage_event_records.index_by(&:issuable_id)
 
-            issuable_model = stage_event_model.issuable_model
-            issuables_by_id = issuable_model.id_in(stage_event_records_by_issuable_id.keys).index_by(&:id)
+            issuables_by_id = finder.execute.id_in(stage_event_records_by_issuable_id.keys).index_by(&:id)
 
             stage_event_records_by_issuable_id.map do |issuable_id, record|
               [issuables_by_id[issuable_id], record] if issuables_by_id[issuable_id]
             end.compact
+          end
+
+          def finder
+            MAPPINGS.fetch(subject_class).fetch(:finder_class).new(params[:current_user])
           end
 
           def serializer
